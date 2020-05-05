@@ -1,0 +1,17 @@
+org\shoulder\data\annotation\DataSource.class
+org\shoulder\data\mybatis\base\service\IBaseService.class
+org\shoulder\data\mybatis\config\handler\ModelMetaObjectHandler.class
+org\shoulder\data\mybatis\base\service\BaseServiceImpl.class
+org\shoulder\data\aspect\DataSourceAspect.class
+org\shoulder\data\mybatis\base\controller\BaseController.class
+org\shoulder\data\mybatis\base\entity\BaseEntity.class
+org\shoulder\data\mybatis\base\entity\ImmutableEntity$Update.class
+org\shoulder\data\context\DataSourceContextHolder.class
+org\shoulder\data\mybatis\base\entity\ImmutableEntity.class
+org\shoulder\data\constant\DataBaseConsts.class
+org\shoulder\data\mybatis\base\entity\ImmutableEntity$Save.class
+org\shoulder\data\mybatis\base\entity\TreeEntity.class
+org\shoulder\data\mybatis\query\CriteriaQueryWrapper.class
+org\shoulder\data\enums\DataSourceType.class
+org\shoulder\data\mybatis\base\dao\IBaseRepository.class
+org\shoulder\data\annotation\TableAlias.class

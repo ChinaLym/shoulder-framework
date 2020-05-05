@@ -1,0 +1,48 @@
+package org.shoulder.autoconfigure.log.operation;
+
+import org.shoulder.log.operation.annotation.OperationLog;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+/**
+ * 操作日志-当前用户信息
+ * @author lym
+ */
+@Configuration
+@ConditionalOnClass(OperationLog.class)
+@AutoConfigureAfter(OperationLogAopAutoConfiguration.class)
+public class OperationLogWebAutoConfig implements WebMvcConfigurer {
+
+    /**
+     * 用户信息填充器，不能为空
+     */
+    @Lazy
+    @Autowired
+    private OperationLogOperatorInfoInterceptor operationLogOperatorInfoInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        if (operationLogOperatorInfoInterceptor != null) {
+            registry.addInterceptor(operationLogOperatorInfoInterceptor).order(-10000);
+        } else {
+            LoggerFactory.getLogger(getClass()).warn("OperationLogOperatorInfoInterceptor can't be null!");
+        }
+        WebMvcConfigurer.super.addInterceptors(registry);
+    }
+
+    /** 激活对用户信息的 AOP 解析 */
+    @Bean
+    //@ConditionalOnClass(Assertion.class)
+    @ConditionalOnMissingBean(OperationLogOperatorInfoInterceptor.class)
+    public OperationLogOperatorInfoInterceptor OperationLogSsoOperatorInfoInterceptor(){
+        return new OperationLogSsoOperatorInfoInterceptor();
+    }
+}

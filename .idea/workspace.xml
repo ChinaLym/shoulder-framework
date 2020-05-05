@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="dcd7a7ca-4cc6-4add-80a9-e9caed55c4e9" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package-info" />
+        <option value="AnnotationType" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="$APPLICATION_HOME_DIR$/plugins/maven/lib/maven3" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="MavenRunner">
+    <option name="skipTests" value="true" />
+  </component>
+  <component name="ProjectId" id="1a9q9TOp4J1BPQI6C7BfQ99wo39" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-log/src/main/java/org/shoulder/log" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-core" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.17578125" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.shoulder.auth.uaa.configuration" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\codes\java\downloads\shoulder-framework\shoulder-build\shoulder-base\shoulder-core" />
+      <recent name="F:\codes\java\downloads\shoulder-framework\shoulder-build\shoulder-base\shoulder-rest-server" />
+      <recent name="F:\codes\java\downloads\shoulder-framework\shoulder-build\shoulder-starters\shoulder-auth-server-starter\src\main\java\org\shoulder\auth\uaa" />
+      <recent name="F:\codes\java\downloads\shoulder-framework\shoulder-build\shoulder-starters\shoulder-auth-server-starter" />
+      <recent name="F:\codes\java\downloads\shoulder-framework\shoulder-initializer\shoulder-initializer-ddd" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.shoulder.common.log" />
+      <recent name="org.shoulder.web" />
+      <recent name="org.shoulder.log" />
+      <recent name="org.shoulder.auth.uaa" />
+      <recent name="org.shoulder.security.code.impl.img.propertities" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\codes\java\downloads\shoulder-framework\shoulder-build\shoulder-base\shoulder-core\src\main\resources" />
+      <recent name="F:\codes\java\downloads\shoulder-framework\shoulder-build\shoulder-base\shoulder-common\src\main\resources\META-INF" />
+      <recent name="F:\codes\java\downloads\shoulder-framework\shoulder-build\shoulder-base\shoulder-code" />
+      <recent name="F:\codes\java\downloads\shoulder-framework\shoulder-build\shoulder-starters\shoulder-starter-code" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dcd7a7ca-4cc6-4add-80a9-e9caed55c4e9" name="Default Changelist" comment="" />
+      <created>1586158005302</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1586158005302</updated>
+      <workItem from="1586158007715" duration="10431000" />
+      <workItem from="1586267509336" duration="8667000" />
+      <workItem from="1586351661405" duration="7031000" />
+      <workItem from="1586437252064" duration="2067000" />
+      <workItem from="1586595054852" duration="4089000" />
+      <workItem from="1586622936614" duration="1830000" />
+      <workItem from="1586666957312" duration="14347000" />
+      <workItem from="1586784208281" duration="11134000" />
+      <workItem from="1586958852713" duration="4211000" />
+      <workItem from="1587045543619" duration="3372000" />
+      <workItem from="1587128199746" duration="1770000" />
+      <workItem from="1587181105671" duration="3602000" />
+      <workItem from="1587200688724" duration="14384000" />
+      <workItem from="1587266344864" duration="18914000" />
+      <workItem from="1587479202935" duration="1407000" />
+      <workItem from="1587561178021" duration="1620000" />
+      <workItem from="1587660821307" duration="1344000" />
+      <workItem from="1587777877518" duration="674000" />
+      <workItem from="1587904736298" duration="9405000" />
+      <workItem from="1588004724031" duration="914000" />
+      <workItem from="1588076536924" duration="1376000" />
+      <workItem from="1588091272413" duration="2927000" />
+      <workItem from="1588096563388" duration="196000" />
+      <workItem from="1588170619015" duration="2106000" />
+      <workItem from="1588245435529" duration="8207000" />
+      <workItem from="1588321090017" duration="6483000" />
+      <workItem from="1588392341540" duration="10561000" />
+      <workItem from="1588473891400" duration="8698000" />
+      <workItem from="1588562294955" duration="13679000" />
+      <workItem from="1588656217738" duration="4080000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

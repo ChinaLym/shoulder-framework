@@ -1,0 +1,6 @@
+org\shoulder\validate\validator\MimeTypeValidator.class
+org\shoulder\validate\annotation\MimeTypeValidate.class
+org\shoulder\validate\annotation\NoSpecialChar.class
+org\shoulder\validate\annotation\RejectRepeatCommit.class
+org\shoulder\validate\handler\ShoulderGlobalExceptionHandler.class
+org\shoulder\validate\validator\NoSpecialCharValidator.class

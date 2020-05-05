@@ -1,0 +1,124 @@
+{
+  "groups": [
+    {
+      "name": "lym.security.browser",
+      "type": "org.shoulder.autoconfigure.security.browser.BrowserProperties",
+      "sourceType": "org.shoulder.autoconfigure.security.browser.BrowserProperties"
+    },
+    {
+      "name": "lym.security.browser.session",
+      "type": "org.shoulder.autoconfigure.security.browser.BrowserProperties$SessionProperties",
+      "sourceType": "org.shoulder.autoconfigure.security.browser.BrowserProperties",
+      "sourceMethod": "getSession()"
+    },
+    {
+      "name": "shoulder",
+      "type": "org.shoulder.autoconfigure.property.ClusterProperties",
+      "sourceType": "org.shoulder.autoconfigure.property.ClusterProperties"
+    },
+    {
+      "name": "shoulder.crypto",
+      "type": "org.shoulder.autoconfigure.crypto.CryptoProperties",
+      "sourceType": "org.shoulder.autoconfigure.crypto.CryptoProperties"
+    },
+    {
+      "name": "shoulder.log.operation",
+      "type": "org.shoulder.autoconfigure.log.operation.OperationLogProperties",
+      "sourceType": "org.shoulder.autoconfigure.log.operation.OperationLogProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "lym.security.browser.remember-me-seconds",
+      "type": "java.lang.Integer",
+      "description": "'记住我'功能的有效时间，默认一个月",
+      "sourceType": "org.shoulder.autoconfigure.security.browser.BrowserProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "lym.security.browser.session.max-sessions-prevents-login",
+      "type": "java.lang.Boolean",
+      "description": "达到最大session时是否阻止新的登录请求，默认为false，不阻止，新的登录会将老的登录失效掉",
+      "sourceType": "org.shoulder.autoconfigure.security.browser.BrowserProperties$SessionProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "lym.security.browser.session.maximum-sessions",
+      "type": "java.lang.Integer",
+      "description": "同一个用户在系统中的最大session数，默认1",
+      "sourceType": "org.shoulder.autoconfigure.security.browser.BrowserProperties$SessionProperties",
+      "defaultValue": 1
+    },
+    {
+      "name": "lym.security.browser.session.session-invalid-url",
+      "type": "java.lang.String",
+      "description": "session失效时跳转的地址",
+      "sourceType": "org.shoulder.autoconfigure.security.browser.BrowserProperties$SessionProperties"
+    },
+    {
+      "name": "lym.security.browser.sign-in-page",
+      "type": "java.lang.String",
+      "description": "登录页面，当引发登录行为的url以html结尾时，会跳到这里配置的url上",
+      "sourceType": "org.shoulder.autoconfigure.security.browser.BrowserProperties"
+    },
+    {
+      "name": "lym.security.browser.sign-out-url",
+      "type": "java.lang.String",
+      "description": "退出成功时跳转的url，如果配置了，则跳到指定的url，如果没配置，则返回json数据。",
+      "sourceType": "org.shoulder.autoconfigure.security.browser.BrowserProperties"
+    },
+    {
+      "name": "lym.security.browser.sign-up-url",
+      "type": "java.lang.String",
+      "description": "社交登录，如果需要用户注册，跳转的页面",
+      "sourceType": "org.shoulder.autoconfigure.security.browser.BrowserProperties"
+    },
+    {
+      "name": "lym.security.browser.sing-in-success-url",
+      "type": "java.lang.String",
+      "description": "登录成功后跳转的地址，如果设置了此属性，则登录成功后总是会跳到这个地址上。 只在signInResponseType为REDIRECT时生效",
+      "sourceType": "org.shoulder.autoconfigure.security.browser.BrowserProperties"
+    },
+    {
+      "name": "shoulder.crypto.asymmetric",
+      "type": "java.util.List<org.shoulder.autoconfigure.crypto.CryptoProperties$AsymmetricCryptoProperties>",
+      "description": "@deprecated 不支持也不推荐使用配置方式，推荐使用 @Bean 注入方式",
+      "sourceType": "org.shoulder.autoconfigure.crypto.CryptoProperties"
+    },
+    {
+      "name": "shoulder.crypto.key-pair",
+      "type": "java.util.Map<java.lang.String,org.shoulder.crypto.asymmetric.dto.KeyPairDto>",
+      "description": "预留的公私钥对。若为空则代表采用自动生成，默认为空 key 为代码中使用的 id，value为公私钥对。",
+      "sourceType": "org.shoulder.autoconfigure.crypto.CryptoProperties"
+    },
+    {
+      "name": "shoulder.log.operation.async",
+      "type": "java.lang.Boolean",
+      "description": "是否以异步线程记录 操作日志.",
+      "sourceType": "org.shoulder.autoconfigure.log.operation.OperationLogProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "shoulder.log.operation.null-param-output",
+      "type": "java.lang.String",
+      "description": "参数值为 null 时的输出样式，一般取值为 '' 或 'null' 等",
+      "sourceType": "org.shoulder.autoconfigure.log.operation.OperationLogProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "shoulder.log.operation.thread-name",
+      "type": "java.lang.String",
+      "description": "异步记录日志线程的名称",
+      "sourceType": "org.shoulder.autoconfigure.log.operation.OperationLogProperties",
+      "defaultValue": "shoulder-async-operation-logger"
+    },
+    {
+      "name": "shoulder.log.operation.thread-num",
+      "type": "java.lang.Integer",
+      "description": "用于异步记录日志的线程数",
+      "sourceType": "org.shoulder.autoconfigure.log.operation.OperationLogProperties",
+      "defaultValue": 1
+    }
+  ],
+  "hints": []
+}

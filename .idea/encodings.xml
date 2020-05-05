@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/../lombok-intellij-plugin/gradle.properties" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-api-doc" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-aopx" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-api-doc" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-auth-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-cluster" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-code" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-crypto" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-data-db" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-http" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-log-business" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-rest-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-security" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-base/shoulder-validate" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-starters" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-starters/shoulder-auth-server-starter" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-starters/shoulder-autoconfiguration" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-starters/shoulder-starter" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-starters/shoulder-starter-code" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-starters/shoulder-starter-crypto" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-build/shoulder-starters/shoulder-starter-web" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-dependencies" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-initializers" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-initializers/shoulder-initializer-ddd" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-initializers/shoulder-initializer-mvc" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-initializers/shoulder-initializer-simple" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shoulder-parent" charset="UTF-8" />
+  </component>
+</project>

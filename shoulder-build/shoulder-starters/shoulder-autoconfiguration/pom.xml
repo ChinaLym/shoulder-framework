@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.shoulder</groupId>
+        <artifactId>shoulder-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../../../shoulder-parent/pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>shoulder-autoconfiguration</artifactId>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-cluster</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-crypto</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-log-business</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-http</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-data-db</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-security</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-code</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-auth-server</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-validate</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+
+        <!-- 生成 META-INF/spring-autoconfigure-metadata.properties，加快 spring boot 启动时排除不匹配的自动装配信息，用于缩短启动时间 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 根据 java doc 生成 additional-spring-configuration-metadata.json，这样 IDE 中配置项会有提示。但不支持 Enum 和 Collections -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+
+    </dependencies>
+
+
+</project>

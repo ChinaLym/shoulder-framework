@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- 最新 spring cloud 版本：https://spring.io/projects/spring-cloud#learn -->
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.shoulder</groupId>
+    <artifactId>shoulder-framework</artifactId>
+    <packaging>pom</packaging>
+
+    <version>0.0.1-SNAPSHOT</version>
+
+    <!--
+    shoulder 的所有jar都放在这了，采用与 spring、spring-boot 相似的包模块划分策略
+
+    shoulder-framework 管理了依赖的 spring-boot 的版本
+
+    shoulder-dependencies 是 shoulder 框架的依赖管理包，负责管理依赖的版本
+
+    shoulder-parent 是 shoulder 提供的所有jar的直接父类，它依赖了dependencies，负责管理所有 shoulder 及其公共依赖。
+        shoulder-parent 中分为 shoulder-base 和 shoulder-starters。他们内部都包含了不同模块。
+
+            shoulder-base   基础定义包，里面包含了 shoulder框架 的所有的基础定义包。
+                shoulder-xxx    xxx模块代码（开发时可以把一个模块当作一个工程）。作为 starter 的基础，使用者一般不会直接引入。
+                ...
+            shoulder-starters   某个模块开箱即用的 jar 包。以 shoulder-base 为基础，一般由 shoulder-xxx 以及自动配置的代码组成。
+                shoulder-starter-xxx    xxx模块的自动配置，供使用者直接引入。
+                ...
+
+     ====================================
+     其他：
+     shoulder-initializer: 一个 maven archetype. 用于快速创建 使用shoulder框架的项目。类似 Spring Initializer.
+
+     shoulder-demos: shoulder 框架功能使用演示
+
+     -->
+
+    <!-- 简介 -->
+    <name>shoulder Build</name>
+    <description>Modules to centralize common resources and configuration for shoulder Maven builds.</description>
+    <url>https://gitee.com/ChinaLym/shoulder</url>
+
+    <!-- 开源组织 -->
+    <organization>
+        <name>ChinaLym</name>
+        <url>http://shoulder.itlym.cn:8080</url>
+    </organization>
+
+    <!-- 模块 -->
+    <modules>
+        <module>shoulder-dependencies</module>
+        <module>shoulder-parent</module>
+        <module>shoulder-build</module>
+        <module>shoulder-initializers</module>
+    </modules>
+
+    <properties>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven-javadoc-plugin.version>3.0.0</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+        <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
+        <mt>false</mt>
+    </properties>
+
+
+    <!-- 开发者 -->
+    <developers>
+        <developer>
+            <id>ChinaLym</id>
+            <name>lym</name>
+            <email>cn_lym@foxmail.com</email>
+            <organization>shoulder.</organization>
+            <organizationUrl>http://shoulder.itlym.cn:8080</organizationUrl>
+            <roles>
+                <role>Java Development Engineer</role>
+            </roles>
+            <!--<timezone>+8</timezone>-->
+        </developer>
+    </developers>
+
+    <!-- 版本控制，供其他插件使用 -->
+    <scm>
+        <connection>scm:git@github.com:ChinaLym/shoulder-framework.git</connection>
+        <developerConnection>scm:git@github.com:ChinaLym/shoulder-framework.git</developerConnection>
+        <url>git@github.com:ChinaLym/shoulder-framework.git</url>
+    </scm>
+
+    <!-- 发布仓库 -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>nexus</id>
+            <url>http://119.3.65.142:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>nexus</id>
+            <url>http://119.3.65.142:8081/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
+
+    <!-- 许可 -->
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <comments>
+                Copyright 2020 the original author or authors.
+
+                Licensed under the Apache License, Version 2.0 (the "License");
+                you may not use this file except in compliance with the License.
+                You may obtain a copy of the License at
+
+                http://www.apache.org/licenses/LICENSE-2.0
+
+                Unless required by applicable law or agreed to in writing, software
+                distributed under the License is distributed on an "AS IS" BASIS,
+                WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+                implied.
+                See the License for the specific language governing permissions and
+                limitations under the License.
+            </comments>
+        </license>
+    </licenses>
+
+    <!-- 阿里云仓库，国内会快很多 -->
+    <!--<repositories>
+        <repository>
+            <id>aliyun</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    &lt;!&ndash; 阿里云仓库，国内会快很多 &ndash;&gt;
+    <pluginRepositories>
+        <pluginRepository>
+            <id>aliyun-plugin</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>-->
+
+    <build>
+        <plugins>
+            <!-- jar包 包含源码 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+            </plugin>
+            <!-- 测试覆盖率统计工具 -->
+           <!-- <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <configuration>
+                    <format>html</format>
+                    <encoding>utf-8</encoding>
+                    <instrumentation>
+                    </instrumentation>
+                </configuration>
+            </plugin>-->
+
+
+        <!-- 修改父模块的版本之后，进入父模块的pom所在路径执行mvn命令：mvn -N versions:update-child-modules,即可自动修改所有子模块中的版本号 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${versions-maven-plugin.version}</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

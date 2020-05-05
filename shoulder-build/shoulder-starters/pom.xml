@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.shoulder</groupId>
+        <artifactId>shoulder-build</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>shoulder-starters</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>shoulder-starter-web</module>
+        <module>shoulder-starter-crypto</module>
+        <module>shoulder-autoconfiguration</module>
+        <module>shoulder-starter</module>
+        <module>shoulder-starter-code</module>
+        <module>shoulder-auth-server-starter</module>
+    </modules>
+
+
+</project>

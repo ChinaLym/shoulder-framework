@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="shoulder-starter-web" />
+        <module name="shoulder-code" />
+        <module name="shoulder-security" />
+        <module name="shoulder-initializer-simple" />
+        <module name="shoulder-starter-code" />
+        <module name="shoulder-starter" />
+        <module name="shoulder-rest-server" />
+        <module name="shoulder-auth-server" />
+        <module name="shoulder-starter-crypto" />
+        <module name="shoulder-core" />
+        <module name="shoulder-autoconfiguration" />
+        <module name="shoulder-api-doc" />
+        <module name="shoulder-log-business" />
+        <module name="shoulder-initializer-ddd" />
+        <module name="shoulder-http" />
+        <module name="shoulder-cluster" />
+        <module name="shoulder-initializer-mvc" />
+        <module name="shoulder-aopx" />
+        <module name="shoulder-auth-server-starter" />
+        <module name="shoulder-validate" />
+        <module name="shoulder-crypto" />
+        <module name="shoulder-data-db" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="shoulder-aopx" target="11" />
+      <module name="shoulder-api-doc" target="11" />
+      <module name="shoulder-auth-server" target="11" />
+      <module name="shoulder-auth-server-starter" target="11" />
+      <module name="shoulder-autoconfiguration" target="11" />
+      <module name="shoulder-base" target="11" />
+      <module name="shoulder-build" target="11" />
+      <module name="shoulder-cluster" target="11" />
+      <module name="shoulder-code" target="11" />
+      <module name="shoulder-common" target="11" />
+      <module name="shoulder-core" target="11" />
+      <module name="shoulder-crypto" target="11" />
+      <module name="shoulder-data-db" target="11" />
+      <module name="shoulder-dependencies" target="11" />
+      <module name="shoulder-framework" target="11" />
+      <module name="shoulder-http" target="11" />
+      <module name="shoulder-initializer-ddd" target="11" />
+      <module name="shoulder-initializer-mvc" target="11" />
+      <module name="shoulder-initializer-simple" target="11" />
+      <module name="shoulder-initializers" target="11" />
+      <module name="shoulder-log" target="11" />
+      <module name="shoulder-log-business" target="11" />
+      <module name="shoulder-parent" target="11" />
+      <module name="shoulder-rest-server" target="11" />
+      <module name="shoulder-security" target="11" />
+      <module name="shoulder-security-browser" target="11" />
+      <module name="shoulder-starter" target="11" />
+      <module name="shoulder-starter-code" target="11" />
+      <module name="shoulder-starter-crypto" target="11" />
+      <module name="shoulder-starter-web" target="11" />
+      <module name="shoulder-starters" target="11" />
+      <module name="shoulder-validate" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

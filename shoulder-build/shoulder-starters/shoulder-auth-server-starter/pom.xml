@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.shoulder</groupId>
+        <artifactId>shoulder-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../../../shoulder-parent/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>shoulder-auth-server-starter</artifactId>
+    <description>
+        默认的认证服务器
+        （提供基础认证 账号密码认证、手机号认证、手机号密码认证；
+            作为认证服务器 Oauth2、OIDC、SAML2；
+            作为Oauth2客户端，如QQ、Wechat、gitee、github）
+    </description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-auth-server</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

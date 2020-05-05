@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.shoulder</groupId>
+        <artifactId>shoulder-framework</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <artifactId>shoulder-build</artifactId>
+
+    <!--
+	Global parent pom.xml for shoulder to inherit from.
+
+	Preconfigures the following:
+
+    - Dependency and plugin versions for commonly used dependencies.
+	- Logging dependencies: SLF4j + Commons Logging bridge and Logback as test dependency
+	- Test dependencies: spring-boot-starter-test
+	-->
+
+    <modules>
+        <module>shoulder-base</module>
+        <module>shoulder-starters</module>
+    </modules>
+
+</project>
