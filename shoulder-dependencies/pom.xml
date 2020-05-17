@@ -80,6 +80,7 @@
 
         <!-- log-trace -->
         <brave.version>5.8.0</brave.version>
+        <skywalking.version>7.0.0</skywalking.version>
 
         <!-- test -->
         <mockito-all.version>1.10.19</mockito-all.version>
@@ -465,6 +466,11 @@
                 <groupId>io.zipkin.brave</groupId>
                 <artifactId>brave-context-slf4j</artifactId>
                 <version>${brave.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.skywalking</groupId>
+                <artifactId>apm-toolkit-logback-1.x</artifactId>
+                <version>${skywalking.version}</version>
             </dependency>
             <!-- log-trace end -->
 

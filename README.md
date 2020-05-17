@@ -16,15 +16,18 @@ Shoulder 是一款 Java 微服务开发框架，以 Spring 为基础，实现了
 
 如优先采用JSR大于其他框架的定义，数据库采用 TiDB 而非 MySQL（但完全兼容 MySQL的协议，从MySQL迁移过来无需修改任何代码）
 
-## 版本选择标准:
-依赖版本为较新的生产可用的 Release 版本，如小型依赖可直接选用最新发布版，Spring 选用较新发布以保证其他依赖 Spring 的框架（如Spring Cloud Alibaba）可以正常使用。
+## shoulder 依赖的第三方库选择规范:
+核心依赖（如spring）版本为生产可用的较新的 Release 版本，其他第三方小型依赖可直接选用最新稳定版，最新版等2个月引入。
 
 已经依赖的
 
-Spring 5
-Spring Boot 2.2
-Spring Cloud H
+- Spring 5
+- Spring Boot 2.2
+- Spring Cloud H
 
+## 发行版本号说明
+[中文介绍](https://semver.org/lang/zh-CN)
+[English](https://semver.org)
 
 ---
 

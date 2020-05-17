@@ -19,6 +19,7 @@
         <module>shoulder-starter</module>
         <module>shoulder-starter-code</module>
         <module>shoulder-auth-server-starter</module>
+        <module>shoulder-starter-trace</module>
     </modules>
 
 

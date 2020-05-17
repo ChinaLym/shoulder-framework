@@ -1,8 +1,0 @@
-org\shoulder\auth\uaa\endpoint\IntrospectEndpoint.class
-org\shoulder\auth\uaa\AuthorizationServerConfiguration$SubjectAttributeUserTokenConverter.class
-org\shoulder\auth\uaa\endpoint\JwkSetEndpoint.class
-org\shoulder\auth\uaa\configuration\ShoulderAuthServerMarkConfiguration.class
-org\shoulder\auth\uaa\UserConfig.class
-org\shoulder\auth\uaa\annotation\EnableShoulderAuthServer.class
-org\shoulder\auth\uaa\KeyConfig.class
-org\shoulder\auth\uaa\AuthorizationServerConfiguration.class

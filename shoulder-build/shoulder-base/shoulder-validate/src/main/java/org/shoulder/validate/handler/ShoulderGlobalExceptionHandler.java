@@ -5,6 +5,9 @@ import org.shoulder.core.constant.CommonErrorEnum;
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.util.StringUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -29,7 +32,7 @@ import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 
 /**
- * 全局异常处理器 - 请求方错误，提供默认统一返回值
+ * RestController 全局异常处理器 - 请求方错误，提供默认统一场景错误返回值
  * 默认情况下该类优先用户自定义的全局处理器，如果使用者指定@Order(? < 0)，则优先于本框架处理
  *
  * @author lym
@@ -38,6 +41,8 @@ import java.sql.SQLException;
 @Order
 @Configuration
 @RestControllerAdvice
+@ConditionalOnWebApplication
+@ConditionalOnProperty(name = "shoulder.web.handlerCommonException", havingValue = "on", matchIfMissing = true)
 public class ShoulderGlobalExceptionHandler {
 
 

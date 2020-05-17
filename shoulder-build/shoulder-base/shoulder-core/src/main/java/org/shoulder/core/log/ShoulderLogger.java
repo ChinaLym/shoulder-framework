@@ -9,6 +9,11 @@ import org.springframework.util.StringUtils;
 
 /**
  * 在 slf4j 之上封装一层带错误码的记录实现
+ * 统一使用该 logger 记录日志，禁用 {@link System#out}
+ * trace、debug、info 这些可能不输出的日志的级别采用占位符或条件判断，warn、error则推荐字符串拼接避免占位符查找替换，参数非法一般用warn
+ * 推荐开启异步日志（todo 默认开启）
+ * 默认不配置日志框架输出日志打印处的类名，方法名及行号的信息（获取堆栈信息较消耗资源，应通过配置项是否开启）
+ *
  * @author lym
  */
 public class ShoulderLogger implements org.shoulder.core.log.Logger {
@@ -16,30 +21,30 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     /**
      * 已经格式化的错误码信息
      */
-    String MDC_ERROR_CODE_NAME = "S-ERR_CODE";
+    private static final String MDC_ERROR_CODE_NAME = "S-ERR_CODE";
 
     /**
      * 已经格式化的调用链信息
      * todo 使用 spring cloud sleuth 中定义的？还是在shoulder中定义？ B3Propagation
      */
-    String MDC_TRACE_NAME = "S-TRACE";
+    private static final String MDC_TRACE_NAME = "S-TRACE";
 
     // MDC key
 
-    String MDC_PARENT_ID = "parent_id";
-    String MDC_TRACE_ID = "trace_id";
-    String MDC_SPAN_ID = "span_id";
+    private static final String MDC_PARENT_ID = "parent_id";
+    private static final String MDC_TRACE_ID = "trace_id";
+    private static final String MDC_SPAN_ID = "span_id";
 
     // 定义前后缀，以便于日志分割和分析
 
-    String SPACE = " ";
+    private static final String SPACE = " ";
 
-    String ERROR_CODE_PREFIX = "[";
-    String ERROR_CODE_SUFFIX = "]";
+    private static final String ERROR_CODE_PREFIX = "[";
+    private static final String ERROR_CODE_SUFFIX = "]";
 
-    String TRACE_PREFIX = "<";
-    String DELIMITER = ",";
-    String TRACE_SUFFIX = ">";
+    private static final String TRACE_PREFIX = "<";
+    private static final String DELIMITER = ",";
+    private static final String TRACE_SUFFIX = ">";
 
     /**
      * Slf4j 的 logger

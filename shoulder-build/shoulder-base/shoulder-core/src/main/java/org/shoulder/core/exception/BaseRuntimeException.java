@@ -4,7 +4,8 @@ import org.shoulder.core.util.ExceptionUtil;
 
 /**
  * 通用异常
- * 在Controller层或service层校检或捕获到错误或异常时，可直接抛出 BaseRuntimeException，
+ * 推荐：非统一拦截捕获的异常使用子类，而非直接抛该类
+ * 在Controller层或service层校检或捕获到错误或异常时，可直接抛出 BaseRuntimeException
  *         会通过统一异常处理将该错误信息捕获封装返回
  *
  * 获取并填充异常信息 {@link ExceptionUtil#generateExceptionMessage}

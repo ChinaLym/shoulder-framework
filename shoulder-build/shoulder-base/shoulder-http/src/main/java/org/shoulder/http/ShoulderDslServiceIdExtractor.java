@@ -13,7 +13,7 @@ public class ShoulderDslServiceIdExtractor implements ServiceIdExtractor {
      *
      * @param uri 使用者发起 http 调用时填写的内容，如 (http://)order(:7000)/hello
      * @return 服务标识，如 order
-     *      如果不是 shoulder dsl 形式，则返回 host, 如 http://shoulder.framework/hello 则返回 shoulder.framework
+     *      如果不是 shoulder dsl 形式，则返回 host, 如 http://order/hello 则返回 order
      */
     @Override
     public String extract(URI uri) {
