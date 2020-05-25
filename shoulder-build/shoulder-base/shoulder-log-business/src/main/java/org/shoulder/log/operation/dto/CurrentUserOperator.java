@@ -6,12 +6,12 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * 单点登录的用户信息
+ * 当前登录的用户信息作为业务操作者
  * @author lym
  */
 @Data
 @Accessors(chain = true)
-public class SsoOperator implements Serializable, Operator {
+public class CurrentUserOperator implements Serializable, Operator {
 	private static final long serialVersionUID = 1429478242021042150L;
 	
 	protected String userId;
@@ -22,11 +22,11 @@ public class SsoOperator implements Serializable, Operator {
 	protected String languageId;
 
 	/** userId 必填 */
-    public SsoOperator(String userId) {
+    public CurrentUserOperator(String userId) {
         this.userId = userId;
     }
 
-    public SsoOperator(String userId, String personId, String ip, String mac, String tgc, String languageId) {
+    public CurrentUserOperator(String userId, String personId, String ip, String mac, String tgc, String languageId) {
         this.userId = userId;
         this.personId = personId;
         this.ip = ip;

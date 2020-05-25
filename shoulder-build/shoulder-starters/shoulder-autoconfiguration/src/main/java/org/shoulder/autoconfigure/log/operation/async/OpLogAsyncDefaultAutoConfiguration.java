@@ -34,7 +34,7 @@ public class OpLogAsyncDefaultAutoConfiguration {
 
 
     /** Wrapper for the async executor.
-     * @deprecated 已经包装了所有的线程池，无需针对 @Async 的线程池再次包装
+     * @deprecated 已经包装了所有的线程池，无需只针对 @Async 的线程池再次包装
      */
     //@Configuration
     //@ConditionalOnMissingBean({AsyncConfigurer.class})

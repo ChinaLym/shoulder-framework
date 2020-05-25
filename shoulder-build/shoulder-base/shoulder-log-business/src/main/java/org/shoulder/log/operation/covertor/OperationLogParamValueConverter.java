@@ -7,7 +7,7 @@ import org.springframework.lang.Nullable;
 import java.util.List;
 
 /**
- * OperationLog param.value 转换器，推荐使用枚举继承该接口
+ * OperationLog param.value 转换器，如需自定义或扩展推荐使用枚举继承该接口
  *
  * @author lym
  */

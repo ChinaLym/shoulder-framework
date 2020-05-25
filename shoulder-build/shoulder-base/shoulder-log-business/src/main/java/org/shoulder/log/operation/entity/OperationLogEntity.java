@@ -43,7 +43,7 @@ public class OperationLogEntity implements Cloneable {
      * 操作者标识 【必须】
      * 最长 128
      * 用户 ————————— 用户名（用户的账号），例： admin
-     * 服务内部任务 —— 执行任务的服务   格式："service.服务标识" 例： service.user-center
+     * 系统内部触发 —— 当前系统/服务标识   格式："system.服务标识" 例： system.user-center
      */
     protected String userId;
 
@@ -88,9 +88,9 @@ public class OperationLogEntity implements Cloneable {
     protected String mac;
 
     /**
-     * 操作者终端类型 （必填）- 默认值 web
+     * 操作者终端类型 （必填）- 默认值 SYSTEM
      */
-    protected String terminalType = OpLogConstants.TerminalType.WEB;
+    protected String terminalType = OpLogConstants.TerminalType.SYSTEM;
 
     /** ================== 被操作对象描述（均为选填） {@link Operable } ================== */
 
@@ -192,15 +192,7 @@ public class OperationLogEntity implements Cloneable {
      * 引导使用者填写必要字段
      */
     public OperationLogEntity(String action) {
-        super();
         this.action = action;
-    }
-
-    /**
-     * @deprecated use {@link #clone} 推荐使用 .clone 方法来复制，可读性更好。
-     */
-    public OperationLogEntity(OperationLogEntity opLogEntity) {
-        opLogEntity.cloneTo(this);
     }
 
     // ***********************************  增强的填充方式  ***********************************
@@ -214,13 +206,13 @@ public class OperationLogEntity implements Cloneable {
             this.personId = operator.getPersonId();
             this.ip = operator.getIp();
             this.mac = operator.getMac();
-            this.terminalType = OpLogConstants.TerminalType.WEB;
+            this.terminalType = operator.getTerminalType();
         }
         return this;
     }
 
     /**
-     * 填充被操作对象信息
+     * 填充单个被操作对象信息
      */
     public OperationLogEntity setOperableObject(Operable operable) {
         if (operable != null) {
@@ -246,6 +238,49 @@ public class OperationLogEntity implements Cloneable {
         return this;
     }
 
+    public OperationLogEntity setResultFail() {
+        return setResult(OperateResultEnum.FAIL);
+    }
+
+    // ------------------ clone ---------------
+
+    @Override
+    public OperationLogEntity clone() {
+        return cloneTo(new OperationLogEntity());
+    }
+
+    /**
+     * 克隆日志实体
+     */
+    private OperationLogEntity cloneTo(@NonNull OperationLogEntity clone) {
+
+        clone.setUserId(userId);
+        clone.setUserName(userName);
+        clone.setPersonId(personId);
+        clone.setUserOrgId(userOrgId);
+        clone.setIp(ip);
+        clone.setMac(mac);
+        clone.setTerminalType(terminalType);
+
+        clone.setAction(action);
+
+        clone.setObjectId(objectId);
+        clone.setObjectType(objectType);
+        clone.setObjectName(objectName);
+
+        clone.setOperationTime(operationTime);
+        clone.setResult(result);
+        clone.setDetailI18nKey(detailI18nKey);
+        clone.setDetailItem(new LinkedList<>(detailItem));
+        clone.setDetail(detail);
+
+        clone.setServiceId(serviceId);
+        clone.setTraceId(traceId);
+        clone.setRelationId(relationId);
+        clone.setErrorCode(errorCode);
+
+        return clone;
+    }
 
     // **************************************  格式化 todo 放外部  ************************************
 
@@ -366,41 +401,4 @@ public class OperationLogEntity implements Cloneable {
         return logString.toString();
     }
 
-    @Override
-    public OperationLogEntity clone() {
-        return cloneTo(new OperationLogEntity());
-    }
-
-    /**
-     * 克隆日志实体
-     */
-    private OperationLogEntity cloneTo(@NonNull OperationLogEntity clone) {
-
-        clone.setUserId(userId);
-        clone.setUserName(userName);
-        clone.setPersonId(personId);
-        clone.setUserOrgId(userOrgId);
-        clone.setIp(ip);
-        clone.setMac(mac);
-        clone.setTerminalType(terminalType);
-
-        clone.setAction(action);
-
-        clone.setObjectId(objectId);
-        clone.setObjectType(objectType);
-        clone.setObjectName(objectName);
-
-        clone.setOperationTime(operationTime);
-        clone.setResult(result);
-        clone.setDetailI18nKey(detailI18nKey);
-        clone.setDetailItem(new LinkedList<>(detailItem));
-        clone.setDetail(detail);
-
-        clone.setServiceId(serviceId);
-        clone.setTraceId(traceId);
-        clone.setRelationId(relationId);
-        clone.setErrorCode(errorCode);
-
-        return clone;
-    }
 }

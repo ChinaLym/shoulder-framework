@@ -54,7 +54,7 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @ConditionalOnProperty(value = "shoulder.log.operation.logger.async", havingValue = "true", matchIfMissing = true)
-    public AsyncOperationLogger asyncOperationLogger(OperationLogFormatter OperationLogFormatter) {
+    public AsyncOperationLogger asyncOperationLogger(OperationLogFormatter operationLogFormatter) {
         int threadNum = operationLogProperties.getThreadNum();
         String threadName = operationLogProperties.getThreadName();
 
@@ -69,7 +69,7 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
                             return loggingThread;
                         }
                 ))
-                .setLogger(new DefaultOperationLogger(OperationLogFormatter));
+                .setLogger(new DefaultOperationLogger(operationLogFormatter));
     }
 
 
@@ -103,17 +103,17 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
     @Override
     public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
         ApplicationContext applicationContext = event.getApplicationContext();
-        OperationLogger OperationLogger =
+        OperationLogger operationLogger =
                 applicationContext.getBean(OperationLogger.class);
 
         // set cross thread logger
-        AbstractOpLogAsyncRunner.setOperationLogger(OperationLogger);
+        AbstractOpLogAsyncRunner.setOperationLogger(operationLogger);
 
         // register all logInterceptors.
         Collection<OperationLoggerInterceptor> loggerInterceptors =
                 event.getApplicationContext().getBeansOfType(OperationLoggerInterceptor.class).values();
         if (CollectionUtils.isNotEmpty(loggerInterceptors)) {
-            loggerInterceptors.forEach(OperationLogger::addInterceptor);
+            loggerInterceptors.forEach(operationLogger::addInterceptor);
         }
 
         if (log.isDebugEnabled()) {

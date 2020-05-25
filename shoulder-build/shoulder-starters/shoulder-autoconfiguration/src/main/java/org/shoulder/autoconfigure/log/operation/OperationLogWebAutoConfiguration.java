@@ -18,8 +18,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 @ConditionalOnClass(OperationLog.class)
-@AutoConfigureAfter(OperationLogAopAutoConfiguration.class)
-public class OperationLogWebAutoConfig implements WebMvcConfigurer {
+@AutoConfigureAfter(OperationLogAspect.class)
+public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
 
     /**
      * 用户信息填充器，不能为空
@@ -42,7 +42,7 @@ public class OperationLogWebAutoConfig implements WebMvcConfigurer {
     @Bean
     //@ConditionalOnClass(Assertion.class)
     @ConditionalOnMissingBean(OperationLogOperatorInfoInterceptor.class)
-    public OperationLogOperatorInfoInterceptor OperationLogSsoOperatorInfoInterceptor(){
+    public OperationLogOperatorInfoInterceptor operationLogSsoOperatorInfoInterceptor(){
         return new OperationLogSsoOperatorInfoInterceptor();
     }
 }

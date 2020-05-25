@@ -16,6 +16,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.lang.NonNull;
+import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -77,13 +78,14 @@ public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
     private Object wrapExecutor(Object bean) {
         Method execute = ReflectionUtils.findMethod(bean.getClass(), "execute",
                 Runnable.class);
+        Assert.notNull(execute, () -> "not a executor bean:" + bean.getClass());
         boolean methodFinal = Modifier.isFinal(execute.getModifiers());
         boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
         boolean cglibProxy = !methodFinal && !classFinal;
         Executor executor = (Executor) bean;
         try {
             return createProxy(bean, cglibProxy,
-                    new ExecutorMethodInterceptor(executor));
+                    new ExecutorMethodInterceptor<>(executor));
         }
         catch (AopConfigException ex) {
             if (cglibProxy) {
@@ -93,7 +95,7 @@ public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
                             ex);
                 }
                 return createProxy(bean, false,
-                        new ExecutorMethodInterceptor(executor));
+                        new ExecutorMethodInterceptor<>(executor));
             }
             throw ex;
         }

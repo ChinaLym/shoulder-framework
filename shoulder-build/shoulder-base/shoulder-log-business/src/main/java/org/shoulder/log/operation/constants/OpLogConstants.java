@@ -14,7 +14,7 @@ public class OpLogConstants {
         /** 表示为系统内部操作 */
         public static final String SYSTEM = "0";
 
-        /** web 端，默认 */
+        /** web 浏览器端 */
         public static final String WEB = "1";
 
         /** C/S 客户端 */

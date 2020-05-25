@@ -1,13 +1,13 @@
 package org.shoulder.log.operation.annotation;
 
 import org.shoulder.log.operation.util.OperationLogBuilder;
-import org.shoulder.log.operation.util.OperationLogHolder;
+import org.shoulder.log.operation.util.OpLogContextHolder;
 
 import java.lang.annotation.*;
 
 /**
  * 操作日志注解
- * 将该注解加在业务方法上，可以在被注解的方法、子方法中、以及从该方法触发的线程中使用用 {@link OperationLogHolder}修改日志。并在方法执行结束自动记录日志
+ * 将该注解加在业务方法上，可以在被注解的方法、子方法中、以及从该方法触发的线程中使用用 {@link OpLogContextHolder}修改日志。并在方法执行结束自动记录日志
  * 若无法使用注解时，可以使用 {@link OperationLogBuilder#newLog}
  *
  * 【操作日志框架原理： Spring AOP（spring boot 1.4之后 Spring AOP 的默认实现为 cglib）】
@@ -72,7 +72,7 @@ public @interface OperationLog {
     String objectType() default "";
 
     /**
-     * 终端类型，选填 例： OpLogConstants.TerminalType.WEB
+     * 操作者终端类型，选填 例： OpLogConstants.TerminalType.WEB
      * 【推荐：在类注解 @OperationLogConfig 上描述该值，便不必在每个方法上填充】
      */
     String terminalType() default "";
@@ -81,6 +81,6 @@ public @interface OperationLog {
      * 是否在抛出异常后自动记录日志，默认记录一条失败日志。
      * 若置为false，则注解所在方法异常后，不自动记录操作日志
      */
-    boolean logAfterThrow() default true;
+    boolean logWhenThrow() default true;
 
 }

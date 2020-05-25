@@ -1,15 +1,10 @@
 package org.shoulder.log.operation.async;
 
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.Operator;
-import org.shoulder.log.operation.entity.OperationLogEntity;
 import org.shoulder.log.operation.logger.OperationLogger;
-import org.shoulder.log.operation.util.OperationLogBuilder;
-import org.shoulder.log.operation.util.OperationLogHolder;
+import org.shoulder.log.operation.util.OpLogContext;
+import org.shoulder.log.operation.util.OpLogContextHolder;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-
-import java.util.List;
 
 /**
  * 日志异步执行器公共方法
@@ -18,12 +13,19 @@ import java.util.List;
  */
 public abstract class AbstractOpLogAsyncRunner {
 
-    private static ThreadLocal<AbstractOpLogAsyncRunner> delegateMarkLocal = ThreadLocal.withInitial(() -> null);
+    /**
+     * 避免重复包装引入的问题
+     */
+    private ThreadLocal<AbstractOpLogAsyncRunner> delegateMarkLocal = ThreadLocal.withInitial(() -> null);
 
+    /**
+     *
+     */
     private static OperationLogger operationLogger;
-    private OperationLogEntity opLogEntity;
-    private List<? extends Operable> operableList;
-    private Operator operator;
+
+    private OpLogContext opLogContext;
+
+
 
     /**
      * 暂存日志跨线程需要的信息
@@ -31,38 +33,27 @@ public abstract class AbstractOpLogAsyncRunner {
      * OperationLogUtils.autoLog 不需要跨线程，新的线程里采用默认值，标识在方法执行完毕时会记录日志
      */
     AbstractOpLogAsyncRunner() {
-        this.opLogEntity = OperationLogHolder.getLogWithoutCheck();
-        this.operableList = OperationLogHolder.getOperableObjects();
-        this.operator = OperationLogBuilder.getDefaultOperator();
+        this.opLogContext = OpLogContextHolder.getContext();
     }
 
     /**
      * 在运行前暂存所需信息
      */
     void before() {
-        if (!hasEnhancer()) {
+        if (notEnhancer()) {
             markThis();
         }
         if(shouldEnhancer()){
-            if (opLogEntity != null) {
-                OperationLogHolder.setLog(this.opLogEntity.clone());
-            }
-            if (operableList != null) {
-                OperationLogHolder.setOperableObjects(this.operableList);
-            }
-            if (operator != null) {
-                OperationLogBuilder.setDefaultOperator(this.operator);
+            if (this.opLogContext.getLogEntity() != null) {
+                OpLogContextHolder.setLog(this.opLogContext.getLogEntity().clone());
             }
             // 默认不自动记录
-            OperationLogHolder.closeAutoLog();
+            OpLogContextHolder.closeAutoLog();
         }
 
-
         // 释放自身的引用 help gc
-        this.opLogEntity = null;
-        this.operableList = null;
-        this.operator = null;
-
+        this.opLogContext = null;
+        OpLogContextHolder.clean();
     }
 
     /**
@@ -73,13 +64,12 @@ public abstract class AbstractOpLogAsyncRunner {
             return;
         }
         // 记录日志
-        if (operationLogger != null && OperationLogHolder.isEnableAutoLog()) {
+        if (operationLogger != null && OpLogContextHolder.isEnableAutoLog()) {
             operationLogger.log();
         }
 
         // 清理线程变量
-        OperationLogHolder.clean();
-        OperationLogBuilder.clean();
+        OpLogContextHolder.clean();
         delegateMarkLocal.remove();
     }
 
@@ -104,7 +94,7 @@ public abstract class AbstractOpLogAsyncRunner {
     /**
      * 将增强者设为自己
      */
-    protected void markThis() {
+    protected synchronized void markThis() {
         if (delegateMarkLocal.get() == null) {
             delegateMarkLocal.set(this);
         } else {
@@ -114,10 +104,10 @@ public abstract class AbstractOpLogAsyncRunner {
     }
 
     /**
-     * 是否已经被增强
+     * 未被增强
      */
-    protected boolean hasEnhancer() {
-        return delegateMarkLocal.get() != null;
+    protected boolean notEnhancer() {
+        return delegateMarkLocal.get() == null;
     }
 
 

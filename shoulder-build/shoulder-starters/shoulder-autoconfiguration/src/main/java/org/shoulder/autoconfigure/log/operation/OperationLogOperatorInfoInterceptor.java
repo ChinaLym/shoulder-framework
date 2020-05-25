@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.log.operation;
 
 import org.shoulder.log.operation.dto.Operator;
+import org.shoulder.log.operation.util.OpLogContext;
 import org.shoulder.log.operation.util.OperationLogBuilder;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,18 +27,18 @@ public abstract class OperationLogOperatorInfoInterceptor implements HandlerInte
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        OperationLogBuilder.setDefaultOperator(resolveOperator(request));
+        OpLogContext.setDefaultOperator(resolveOperator(request));
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-        OperationLogBuilder.clean();
+        OpLogContext.cleanDefaultOperator();
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        OperationLogBuilder.clean();
+        OpLogContext.cleanDefaultOperator();
     }
 
 }

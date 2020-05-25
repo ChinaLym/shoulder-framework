@@ -3,7 +3,7 @@ package org.shoulder.log.operation.logger;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.entity.OperationLogEntity;
 import org.shoulder.log.operation.intercept.OperationLoggerInterceptor;
-import org.shoulder.log.operation.util.OperationLogHolder;
+import org.shoulder.log.operation.util.OpLogContextHolder;
 import org.springframework.lang.NonNull;
 
 import java.util.Collection;
@@ -18,12 +18,12 @@ import java.util.List;
 public interface OperationLogger {
 
     /**
-     * 根据 OperationLogUtils 里的内容记录日志
+     * 记录日志上下文中的日志实体内容 {@link OpLogContextHolder}
      * */
     default void log(){
-        OperationLogEntity opLogEntity = OperationLogHolder.getLog();
+        OperationLogEntity opLogEntity = OpLogContextHolder.getLog();
         if(opLogEntity != null){
-            List<? extends Operable> operableCollection = OperationLogHolder.getOperableObjects();
+            List<? extends Operable> operableCollection = OpLogContextHolder.getOperableObjects();
 
             if (operableCollection == null || operableCollection.isEmpty()) {
                 this.log(opLogEntity);

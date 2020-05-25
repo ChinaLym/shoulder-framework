@@ -1,7 +1,5 @@
 package org.shoulder.log.operation.annotation;
 
-import org.shoulder.log.operation.constants.OpLogConstants;
-
 import java.lang.annotation.*;
 
 /**
@@ -20,10 +18,5 @@ public @interface OperationLogConfig {
      * 【推荐实体实现 Operable，将不必在注解填充】
      */
     String objectType() default "";
-
-    /**
-     * 终端类型 默认为： OpLogConstants.TerminalType.WEB
-     */
-    String terminalType() default OpLogConstants.TerminalType.WEB;
 
 }

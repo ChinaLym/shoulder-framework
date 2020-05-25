@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.log.operation;
 
 import org.shoulder.log.operation.dto.Operator;
+import org.shoulder.log.operation.dto.SystemOperator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -19,7 +20,7 @@ public class OperationLogSsoOperatorInfoInterceptor extends OperationLogOperator
      */
     @Override
     Operator resolveOperator(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        return null;
+        //HttpSession session = request.getSession(false);
+        return SystemOperator.getInstance();
     }
 }

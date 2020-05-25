@@ -5,18 +5,18 @@
 
 ## 简介
 
-Shoulder 是一款 Java 微服务开发框架，以 Spring 为基础，实现了一些常用功能，提供了业界生产级主流前沿方案与功能完善，且开箱即用。
+Shoulder 是一款 Java 微服务开发框架（定位类似 Spring Boot），在 Spring Boot 基础上实现了一些常用功能，提供了业界生产级主流前沿方案与功能完善，且开箱即用。
 
 该框架主要提供了技术指导，和一定的编码规范，如果想知道该框架如何使用，以及希望运行，可以期待 **Shoulder-Platform**(一款使用了 Shoulder 框架的开源平台，规划中)
 
-## 技术选型规范：
+## 技术标准依赖选型：
 - 优先为业界标准
 - 其次为技术先进且已用于大厂的生产环境，并且容易从原有的主流技术迁移
 - 其次绝对主流
 
-如优先采用JSR大于其他框架的定义，数据库采用 TiDB 而非 MySQL（但完全兼容 MySQL的协议，从MySQL迁移过来无需修改任何代码）
+如优先采用JSR大于其他框架的定义；数据库选用 TiDB 而非 MySQL（完全兼容 MySQL的协议，从MySQL迁移过来无需修改任何代码）
 
-## shoulder 依赖的第三方库选择规范:
+## 第三方库依赖选型:
 核心依赖（如spring）版本为生产可用的较新的 Release 版本，其他第三方小型依赖可直接选用最新稳定版，最新版等2个月引入。
 
 已经依赖的
@@ -26,8 +26,7 @@ Shoulder 是一款 Java 微服务开发框架，以 Spring 为基础，实现了
 - Spring Cloud H
 
 ## 发行版本号说明
-[中文介绍](https://semver.org/lang/zh-CN)
-[English](https://semver.org)
+采用 [主版本号.次版本号.修订号](https://semver.org/lang/zh-CN)（[MAJOR.MINOR.PATCH](https://semver.org)） 的形式
 
 ---
 

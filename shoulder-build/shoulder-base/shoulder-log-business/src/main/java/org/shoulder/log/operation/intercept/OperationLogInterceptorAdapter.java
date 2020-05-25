@@ -39,12 +39,12 @@ public interface OperationLogInterceptorAdapter extends OperationLoggerIntercept
      * 在生成批量操作日志之后
      * 可以在这里对待记录的批量操作日志对象进行最终的处理
      *
-     * @param OperationLogEntities 组装完毕后的操作日志实体
+     * @param operationLogEntities 组装完毕后的操作日志实体
      * @return 需要记录的操作日志
      */
     @Override
-    default List<? extends OperationLogEntity> afterAssembleBatchLogs(List<? extends OperationLogEntity> OperationLogEntities) {
-        return OperationLogEntities;
+    default List<? extends OperationLogEntity> afterAssembleBatchLogs(List<? extends OperationLogEntity> operationLogEntities) {
+        return operationLogEntities;
     }
 
     // ======================================== 每条 =========================================

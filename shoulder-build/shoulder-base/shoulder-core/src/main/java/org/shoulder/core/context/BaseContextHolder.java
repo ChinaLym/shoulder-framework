@@ -17,21 +17,22 @@ public class BaseContextHolder {
 
     private static final ThreadLocal<Map<String, String>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(ShoulderContextKey.KEY_NUM));
 
-    public static void set(String key, Object value) {
-        Map<String, String> map = getLocalMap();
-        map.put(key, value == null ? StringUtils.EMPTY : value.toString());
+    private static String serviceId;
+
+    public static String getServiceId() {
+        return serviceId;
+    }
+    public static void setServiceId(String serviceId) {
+        BaseContextHolder.serviceId = serviceId;
     }
 
-    public static Map<String, String> getLocalMap() {
-        return THREAD_LOCAL.get();
-    }
 
     public static void setLocalMap(Map<String, String> threadLocalMap) {
         THREAD_LOCAL.set(threadLocalMap);
     }
 
     /**
-     * uid
+     * userId
      */
     public static Long getUserId() {
         return Long.valueOf(getLocalMap().get(ShoulderContextKey.JWT_KEY_USER_ID));
@@ -104,8 +105,16 @@ public class BaseContextHolder {
         set(ShoulderContextKey.GRAY_VERSION, tranceId);
     }
 
+    public static Map<String, String> getLocalMap() {
+        return THREAD_LOCAL.get();
+    }
+
+    public static void set(String key, Object value) {
+        Map<String, String> map = getLocalMap();
+        map.put(key, value == null ? StringUtils.EMPTY : value.toString());
+    }
+
     public static void clean() {
         THREAD_LOCAL.remove();
     }
-
 }

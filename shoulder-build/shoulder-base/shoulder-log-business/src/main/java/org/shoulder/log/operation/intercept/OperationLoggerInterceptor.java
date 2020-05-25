@@ -28,10 +28,10 @@ public interface OperationLoggerInterceptor {
      * 可以在日志组装前后做一些事情 —— 批量操作日志组装之后
      *      可以在这里对批量操作日志对象进行最终的处理
      *
-     * @param OperationLogEntities 组装完毕后的操作日志实体
-     * @return 个性处理后的 OperationLogEntities
+     * @param operationLogEntities 组装完毕后的操作日志实体
+     * @return 个性处理后的 operationLogEntities
      */
-    List<? extends OperationLogEntity> afterAssembleBatchLogs(List<? extends OperationLogEntity> OperationLogEntities);
+    List<? extends OperationLogEntity> afterAssembleBatchLogs(List<? extends OperationLogEntity> operationLogEntities);
 
 
 

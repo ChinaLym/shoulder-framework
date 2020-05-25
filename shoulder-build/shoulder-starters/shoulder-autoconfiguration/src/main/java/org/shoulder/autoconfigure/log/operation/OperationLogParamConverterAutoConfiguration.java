@@ -1,17 +1,16 @@
 package org.shoulder.autoconfigure.log.operation;
 
+import org.shoulder.log.operation.covertor.DefaultOperationLogParamValueConverter;
 import org.shoulder.log.operation.covertor.OperationLogParamValueConverter;
 import org.shoulder.log.operation.covertor.OperationLogParamValueConverterHolder;
-import org.shoulder.log.operation.covertor.DefaultOperationLogParamValueConverter;
-import org.apache.commons.collections4.MapUtils;
-import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 
 /**
  * 日志参数转换器
@@ -20,46 +19,25 @@ import java.util.Map;
  */
 @Configuration
 @EnableConfigurationProperties(OperationLogProperties.class)
-public class OperationLogParamConverterAutoConfiguration {
+public class OperationLogParamConverterAutoConfiguration implements ApplicationContextAware {
 
 
     /**
      * 默认的 value 解析器
      */
     @Bean
-    public DefaultOperationLogParamValueConverter defaultOperationLogParamValueConverter(OperationLogProperties OperationLogProperties){
+    public DefaultOperationLogParamValueConverter defaultOperationLogParamValueConverter(OperationLogProperties operationLogProperties) {
 
-        return new DefaultOperationLogParamValueConverter(OperationLogProperties.getNullParamOutput());
+        return new DefaultOperationLogParamValueConverter(operationLogProperties.getNullParamOutput());
     }
 
     /**
-     * 收集所有 converter
+     * 初始化 {@link OperationLogParamValueConverterHolder}
      */
-    @Bean
-    public OperationLogParamValueConverterHolder OperationLogParamValueConverterHolder(
-            ListableBeanFactory beanFactory,
-            DefaultOperationLogParamValueConverter defaultConverter
-    ){
-
-        Map<String, OperationLogParamValueConverter> allConverterMap =
-                beanFactory.getBeansOfType(OperationLogParamValueConverter.class);
-
-        boolean hasConverter = MapUtils.isNotEmpty(allConverterMap);
-
-        OperationLogParamValueConverterHolder holder =
-                new OperationLogParamValueConverterHolder(
-                        hasConverter ?
-                                new HashMap<>(allConverterMap.size())
-                                : Collections.emptyMap(),
-                defaultConverter);
-
-        if(hasConverter){
-            allConverterMap.values().forEach(holder::addConverter);
-        }
-
-        return holder;
-
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        Collection<OperationLogParamValueConverter> allConverters = applicationContext.getBeansOfType(OperationLogParamValueConverter.class).values();
+        DefaultOperationLogParamValueConverter defaultConverter = applicationContext.getBean(DefaultOperationLogParamValueConverter.class);
+        OperationLogParamValueConverterHolder.init(allConverters, defaultConverter);
     }
-
-
 }

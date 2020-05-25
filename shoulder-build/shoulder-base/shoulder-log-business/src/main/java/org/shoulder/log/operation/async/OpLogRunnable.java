@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.async;
 
-import org.shoulder.log.operation.util.OperationLogHolder;
+import org.shoulder.log.operation.util.OpLogContextHolder;
 
 /**
  * 继承日志相关线程变量的 Runnable
@@ -26,7 +26,7 @@ public class OpLogRunnable extends AbstractOpLogAsyncRunner implements Runnable 
 
         }catch (Exception e){
             // 如果异常则记录失败
-            OperationLogHolder.setResultFail();
+            OpLogContextHolder.getLog().setResultFail();
             throw e;
         }finally {
 

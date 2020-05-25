@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.log.operation;
 
+import lombok.extern.shoulder.SLog;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -16,17 +17,14 @@ import org.shoulder.log.operation.covertor.OperationLogParamValueConverterHolder
 import org.shoulder.log.operation.entity.ActionParam;
 import org.shoulder.log.operation.entity.OperationLogEntity;
 import org.shoulder.log.operation.logger.OperationLogger;
+import org.shoulder.log.operation.util.OpLogContext;
+import org.shoulder.log.operation.util.OpLogContextHolder;
 import org.shoulder.log.operation.util.OperationLogBuilder;
-import org.shoulder.log.operation.util.OperationLogHolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -46,46 +44,41 @@ import java.util.Objects;
  *
  * @author lym
  */
+@SLog
 @Aspect
 @Configuration
 @ConditionalOnClass(OperationLog.class)
 @AutoConfigureAfter(value = {
-        OperationLogBuilderAutoConfiguration.class,
+        OperationLoggerAutoConfiguration.class,
         OperationLogParamConverterAutoConfiguration.class
 })
 @EnableConfigurationProperties(OperationLogProperties.class)
-public class OperationLogAopAutoConfiguration {
-
-    private static final Logger log = LoggerFactory.getLogger(OperationLogAopAutoConfiguration.class);
+public class OperationLogAspect {
 
     /**
      * 操作日志记录器
      */
     @Autowired
-    OperationLogger OperationLogger;
+    private OperationLogger operationLogger;
 
     @Autowired
     private OperationLogProperties OperationLogProperties;
-
-    @Autowired
-    OperationLogParamValueConverterHolder converterHolder;
 
     /**
      * 用于SpEL表达式解析.
      */
     private SpelExpressionParser parser = new SpelExpressionParser();
+
+    //用于获取方法参数定义名字.
+    //private DefaultParameterNameDiscoverer nameDiscoverer = new DefaultParameterNameDiscoverer();
+
+
     /**
-     * 用于获取方法参数定义名字.
+     * 保存操作日志上次的上下文
      */
-    private DefaultParameterNameDiscoverer nameDiscoverer = new DefaultParameterNameDiscoverer();
+    private static ThreadLocal<OpLogContext> lastOpLogContext = new ThreadLocal<>();
 
     // ********************************* annotation AOP *********************************************
-
-    /**
-     * 记录日志开关 隶属于一个注解。注解所在方法执行完毕后就清理
-     */
-    private ThreadLocal<Boolean> logAfterThrowThreadLocal = new DefaultTrueBooleanThreadLocal(true);
-
 
     /**
      * 标识加了 OperationLog 注解的方法
@@ -97,35 +90,25 @@ public class OperationLogAopAutoConfiguration {
     @Around("methodAnnotatedByOperationLog()")
     public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        OperationLogEntity entity = null;
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
-        // 方法执行前：从注解中解析日志实体
-        OperationLog methodAnnotation = method.getAnnotation(OperationLog.class);
-        OperationLogConfig classAnnotation = method.getDeclaringClass().getAnnotation(OperationLogConfig.class);
-        if (methodAnnotation == null) {
-            throw new IllegalStateException("@OperationLog can't be null.");
-        }
-        // 解析日志
-        entity = createLog(methodAnnotation, classAnnotation);
-        // 解析日志参数
-        entity.setActionParams(createActionParams(entity, joinPoint));
+        // 保存之前的日志上下文信息
+        stashLastContext();
 
-        if (log.isDebugEnabled()) {
-            log.debug("auto create a OperationLog: " + entity);
-        }
-        OperationLogHolder.setLog(entity);
+        // 创建日志上下文
+        creatNewContext(joinPoint);
 
         // ---------------- 执行注解所在目标方法  ------------
         Object o = joinPoint.proceed();
         // ---------------- 注解所在方法正常反回后 -----------
 
-        log.debug("OperationLogUtils.autoLog = " + OperationLogHolder.isEnableAutoLog());
+        log.debug("OperationLogUtils.autoLog={}", OpLogContextHolder.isEnableAutoLog());
+
         // 方法执行后： 记录日志 并清除 threadLocal
-        if (OperationLogHolder.isEnableAutoLog()) {
-            OperationLogger.log();
+        if (OpLogContextHolder.isEnableAutoLog()) {
+            operationLogger.log();
         }
-        cleanLocal();
+
+        // 恢复之前的上下文
+        popLastContext();
         return o;
     }
 
@@ -134,23 +117,71 @@ public class OperationLogAopAutoConfiguration {
      * 1. 记录日志
      * 2. 清除 threadLocal
      */
-    @AfterThrowing(pointcut = "methodAnnotatedByOperationLog()", throwing = "e")
-    public void doAfterThrowing(Throwable e) {
-        if (logAfterThrowThreadLocal.get() && OperationLogHolder.isEnableAutoLog()) {
-            OperationLogHolder.setResultFail();
-            OperationLogger.log();
+    @AfterThrowing(pointcut = "methodAnnotatedByOperationLog()")
+    public void doAfterThrowing() {
+        if (OpLogContextHolder.isEnableAutoLog() && OpLogContextHolder.isLogWhenThrow()) {
+            OpLogContextHolder.getLog().setResultFail();
+            operationLogger.log();
         }
-        cleanLocal();
+
+        // 恢复之前的上下文
+        popLastContext();
     }
 
     // ************************************* 私有方法 ***********************************
 
     /**
-     * 解析注解，从注解创建日志实体
+     * 进方法前存储的之前的日志上下文
+     */
+    private void stashLastContext(){
+        lastOpLogContext.set(OpLogContextHolder.getContext());
+    }
+
+    private void creatNewContext(ProceedingJoinPoint joinPoint){
+        // 解析注解
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method method = methodSignature.getMethod();
+        OperationLog methodAnnotation = method.getAnnotation(OperationLog.class);
+        OperationLogConfig classAnnotation = method.getDeclaringClass().getAnnotation(OperationLogConfig.class);
+        if (methodAnnotation == null) {
+            // 不可能的情况，因为日志 AOP 就是以该注解为切点
+            throw new IllegalStateException("@OperationLog can't be null.");
+        }
+
+        // 创建日志
+        OperationLogEntity entity = createLog(joinPoint, methodAnnotation, classAnnotation);
+
+        if (log.isDebugEnabled()) {
+            log.debug("auto create a OperationLog: " + entity);
+        }
+
+        OpLogContext context = OpLogContext.create(lastOpLogContext.get()).setLogEntity(entity);
+
+        // 是否在抛出异常后自动记录日志
+
+        OpLogContextHolder.setContext(context);
+    }
+
+
+
+    /**
+     * 执行方法后，清理本方法的上下文，恢复上次的上下文
+     */
+    private void popLastContext(){
+        OpLogContext lastContext = lastOpLogContext.get();
+        if(lastContext != null) {
+            OpLogContextHolder.setContext(lastContext);
+        } else {
+            OpLogContextHolder.clean();
+        }
+        lastOpLogContext.remove();
+    }
+
+    /**
+     * 根据注解创建日志实体
      */
     @NonNull
-    private OperationLogEntity createLog(OperationLog methodAnnotation, OperationLogConfig classAnnotation) {
-
+    private OperationLogEntity createLog(ProceedingJoinPoint joinPoint, OperationLog methodAnnotation, OperationLogConfig classAnnotation) {
         // 创建日志实体
         OperationLogEntity entity =
                 OperationLogBuilder.newLog(methodAnnotation.action());
@@ -165,8 +196,6 @@ public class OperationLogAopAutoConfiguration {
         // terminalType
         if (StringUtils.isNotEmpty(methodAnnotation.terminalType())) {
             entity.setTerminalType(methodAnnotation.terminalType());
-        } else if (classAnnotation != null && StringUtils.isNotEmpty(classAnnotation.terminalType())) {
-            entity.setTerminalType(classAnnotation.terminalType());
         }
 
         //多语言、i18nKey、actionDetail
@@ -182,8 +211,8 @@ public class OperationLogAopAutoConfiguration {
             entity.setDetail(actionDetail);
         }
 
-        // 是否在抛出异常后自动记录日志
-        logAfterThrowThreadLocal.set(methodAnnotation.logAfterThrow());
+        // 解析日志参数
+        entity.setActionParams(createActionParams(entity, joinPoint));
 
         return entity;
     }
@@ -247,7 +276,7 @@ public class OperationLogAopAutoConfiguration {
 
                 } else {
                     // 使用 converter
-                    OperationLogParamValueConverter converter = converterHolder.getConvert(converterClazz);
+                    OperationLogParamValueConverter converter = OperationLogParamValueConverterHolder.getConvert(converterClazz);
 
                     actionParam.setValue(converter.convert(entity, args[i], parameters[i].getType()));
 
@@ -263,32 +292,6 @@ public class OperationLogAopAutoConfiguration {
             actionParams.add(actionParam);
         }
         return actionParams;
-    }
-
-
-    /**
-     * 清理日志框架本线程中使用的线程变量
-     */
-    private void cleanLocal() {
-        this.logAfterThrowThreadLocal.remove();
-        OperationLogHolder.clean();
-    }
-
-
-    /**
-     * 带默认值的 threadLocal
-     */
-    class DefaultTrueBooleanThreadLocal extends ThreadLocal<Boolean> {
-        private final Boolean defaultValue;
-
-        DefaultTrueBooleanThreadLocal(Boolean defaultValue) {
-            this.defaultValue = defaultValue;
-        }
-
-        @Override
-        protected Boolean initialValue() {
-            return defaultValue;
-        }
     }
 
 }

@@ -1,4 +1,6 @@
 # Auto Configuration
+org.springframework.boot.env.EnvironmentPostProcessor=org.shoulder.autoconfigure.config.ShoulderBaseInfoAutoConfiguration
+
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.redis.RedisAutoConfiguration, \
   org.shoulder.autoconfigure.http.HttpAutoConfiguration, \
@@ -7,8 +9,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.db.mybatis.MybatisPlusAutoConfiguration, \
   org.shoulder.autoconfigure.log.operation.async.OpLogAsyncCustomAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.async.OpLogAsyncDefaultAutoConfiguration,\
-  org.shoulder.autoconfigure.log.operation.OperationLogAopAutoConfiguration,\
-  org.shoulder.autoconfigure.log.operation.OperationLogBuilderAutoConfiguration,\
+  org.shoulder.autoconfigure.log.operation.OperationLogAspect,\
   org.shoulder.autoconfigure.log.operation.OperationLoggerAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.OperationLogParamConverterAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.OperationLogParamConverterAutoConfiguration,\
