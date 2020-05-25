@@ -35,7 +35,7 @@
 
         <dependency>
             <groupId>org.shoulder</groupId>
-            <artifactId>shoulder-log-business</artifactId>
+            <artifactId>shoulder-log-operation</artifactId>
             <optional>true</optional>
         </dependency>
 

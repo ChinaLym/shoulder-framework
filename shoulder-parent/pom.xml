@@ -44,12 +44,13 @@
         <pluginManagement>
             <plugins>
 
-                <!-- UTF8 coding -->
+                <!-- compiler settings -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>${maven-compiler-plugin.version}</version>
                     <configuration>
+                        <!-- UTF8 coding -->
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
@@ -165,17 +166,6 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
-
-                <!-- compiler settings -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
-                    <configuration>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                    </configuration>
                 </plugin>
 
                 <!-- findbugs -->

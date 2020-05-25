@@ -175,7 +175,7 @@
 
             <dependency>
                 <groupId>org.shoulder</groupId>
-                <artifactId>shoulder-log-business</artifactId>
+                <artifactId>shoulder-log-operation</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 

@@ -19,7 +19,7 @@
         <module>shoulder-security</module>
         <module>shoulder-validate</module>
         <module>shoulder-aopx</module>
-        <module>shoulder-log-business</module>
+        <module>shoulder-log-operation</module>
         <module>shoulder-cluster</module>
         <module>shoulder-http</module>
         <module>shoulder-code</module>
