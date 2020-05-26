@@ -7,6 +7,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -20,6 +21,8 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
      * 系统配置
      */
     private ImageCodeProperties imageCodeProperties;
+
+    private Random random = new SecureRandom();
 
     public ImageCodeGenerator(ImageCodeProperties imageCodeProperties) {
         this.imageCodeProperties = imageCodeProperties;
@@ -44,7 +47,6 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
         int codeLength = imageCodeProperties.getLength();
 
         // 生成随机验证码
-        Random random = new Random();
         StringBuilder validateCode = new StringBuilder();
         for (int i = 0; i < imageCodeProperties.getLength(); i++) {
             int index = random.nextInt(CHARS.length);
@@ -61,7 +63,8 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
         // 干扰线
         graphics.setColor(nextRandomColor(110, 180));
         graphics.setFont(new Font("Times New Roman", Font.ITALIC, height - 10));
-        for (int i = 0; i < 128; i++) {
+        int interferenceLineNum = 128;
+        for (int i = 0; i < interferenceLineNum; i++) {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
             int xl = random.nextInt(12);
@@ -95,7 +98,6 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
         if (minLight < 0 || minLight > maxLight || maxLight > 255) {
             throw new IllegalArgumentException("no such color(min=" + minLight + ",max=" + maxLight + ")!");
         }
-        Random random = new Random();
         int r = minLight + random.nextInt(maxLight - minLight);
         int g = minLight + random.nextInt(maxLight - minLight);
         int b = minLight + random.nextInt(maxLight - minLight);

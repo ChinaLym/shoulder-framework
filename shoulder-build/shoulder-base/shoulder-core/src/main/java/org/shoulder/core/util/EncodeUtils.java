@@ -52,7 +52,7 @@ public class EncodeUtils {
      */
     public static String encodeBase64(String input) {
         try {
-            return new String(Base64.encodeBase64(input.getBytes(ENCODING)));
+            return new String(Base64.encodeBase64(input.getBytes(ENCODING)), ENCODING);
         } catch (UnsupportedEncodingException e) {
             return null;
         }
@@ -70,7 +70,7 @@ public class EncodeUtils {
      */
     public static String decodeBase64String(String input) {
         try {
-            return new String(Base64.decodeBase64(input.getBytes()), ENCODING);
+            return new String(Base64.decodeBase64(input.getBytes(ENCODING)), ENCODING);
         } catch (UnsupportedEncodingException e) {
             return null;
         }

@@ -245,7 +245,8 @@ public class OperationLogEntity implements Cloneable {
     // ------------------ clone ---------------
 
     @Override
-    public OperationLogEntity clone() {
+    public OperationLogEntity clone() throws CloneNotSupportedException {
+        super.clone();
         return cloneTo(new OperationLogEntity());
     }
 

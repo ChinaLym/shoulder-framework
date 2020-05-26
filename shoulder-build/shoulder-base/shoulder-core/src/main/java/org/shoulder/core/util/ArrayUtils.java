@@ -7,7 +7,8 @@ import java.util.*;
 
 /**
  * 数组工具
- *	将几个数组相关的工具类代码复制到一起了
+ * 将几个数组相关的工具类代码复制到一起了
+ *
  * @author lym
  */
 public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
@@ -263,8 +264,8 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     @SuppressWarnings("unchecked")
     public static <T> T[] addElement(T[] array, T data, Class<T> componentType) {
         if (data == null) {
-			return array;
-		}
+            return array;
+        }
         T[] newArray;
         if (array == null) {
             Assert.notNull(componentType,
@@ -290,16 +291,16 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     @SuppressWarnings("unchecked")
     public static <T> T[] addElement(T[] array, T element) {
         if (element == null) {
-			return array;
-		}
+            return array;
+        }
         return addElement(array, element, (Class<T>) element.getClass());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T[] addAllElement(T[] array, T[] data) {
         if (data == null || data.length == 0) {
-			return array;
-		}
+            return array;
+        }
         T[] newArray;
         if (array == null) {
             return data;
@@ -372,12 +373,12 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      */
     public static <T> boolean fastContains(T[] list, T obj) {
         if (list == null) {
-			return false;
-		}
+            return false;
+        }
         for (T e : list) {
             if (e == obj) {
-				return true;
-			}
+                return true;
+            }
         }
         return false;
     }
@@ -458,8 +459,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      */
     public static Object toFixLength(Object obj, int len) {
         int length = length(obj);
-        if (length == len)
+        if (length == len) {
             return obj;
+        }
         Object result = Array.newInstance(obj.getClass().getComponentType(),
                 len);
         System.arraycopy(obj, 0, result, 0, Math.min(length, len));
@@ -484,7 +486,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     }
 
     /**
-	 * 复制
+     * 复制
      */
     public static byte[] copyOf(byte[] original, int newLength) {
         byte[] copy = new byte[newLength];
@@ -516,7 +518,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T, U> T[] copyOf(U[] original, int newLength,
-                                          Class<? extends T[]> newType) {
+                                    Class<? extends T[]> newType) {
         T[] copy = ((Object) newType == (Object) Object[].class) ? (T[]) new Object[newLength]
                 : (T[]) Array
                 .newInstance(newType.getComponentType(), newLength);

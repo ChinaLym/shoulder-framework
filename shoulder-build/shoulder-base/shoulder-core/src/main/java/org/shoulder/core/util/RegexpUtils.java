@@ -18,7 +18,7 @@ public class RegexpUtils {
 
     //正则表达式缓存池，为了防止反复编译相同的正则表达式浪费时间，设置长度为64的正则表达式缓存(pattern是线程安全的,Matcher不是)
     private static final int PATTERN_CACHE_SIZE = 64;
-    private static final Map<String, Pattern> cache = new ConcurrentHashMap<String, Pattern>(PATTERN_CACHE_SIZE);
+    private static final Map<String, Pattern> PATTERN_CACHE = new ConcurrentHashMap<String, Pattern>(PATTERN_CACHE_SIZE);
 
     public static final char[] STAR_QUESTION = new char[]{'*', '?', '+'};
 
@@ -86,9 +86,6 @@ public class RegexpUtils {
     /**
      * 将使用简易匹配语法的关键字修改为标准正则表达式
      * 简易语法就是用*表示匹配任意数量字符，用?表示匹配0~1个字符，其他字符一律按照字面理解。 这是为了和Windows用户的习惯相吻合
-     *
-     * @param key
-     * @return
      */
     public static String simpleMatchToRegexp(String key) {
         //将除了* ?之外的字符全部修改为正则表达式原义
@@ -99,13 +96,6 @@ public class RegexpUtils {
 
     /**
      * 得到简易通配的正则pattern
-     *
-     * @param key
-     * @param IgnoreCase
-     * @param matchStart
-     * @param matchEnd
-     * @param wildcardSpace
-     * @return
      */
     public static Pattern simplePattern(String key, boolean IgnoreCase, boolean matchStart, boolean matchEnd, boolean wildcardSpace) {
         if (IgnoreCase) {
@@ -114,16 +104,11 @@ public class RegexpUtils {
         // 将除了指定字符之外的所有正则元字符全部用转义符更改为字面含义
         String regStr = simpleMatchToRegexp(key);
         regStr = ((matchStart) ? "" : RegexpUtils.MATCH_ANY_STRING) + ((wildcardSpace) ? key.replace(" ", "\\s+") : regStr) + ((matchEnd) ? "" : RegexpUtils.MATCH_ANY_STRING);
-        Pattern p = Pattern.compile(regStr);
-        return p;
+        return Pattern.compile(regStr);
     }
 
     /**
      * 将除了指定字符之外的所有正则元字符全部用转义符更改为字面含义
-     *
-     * @param key
-     * @param sTARQUESTION
-     * @return
      */
     public static String escapeRegChars(String key, char[] keeps) {
         for (char c : REGEXP_KEY_CHARS) {
@@ -136,10 +121,6 @@ public class RegexpUtils {
 
     /**
      * 只要字符串中有部分匹配正则表达式，就返回true
-     *
-     * @param str
-     * @param regexp
-     * @return
      */
     public static boolean contains(String str, String regexp) {
         return matches(str, regexp, false);
@@ -147,10 +128,6 @@ public class RegexpUtils {
 
     /**
      * 效果等同于String.matches. 不过可以使用缓存
-     *
-     * @param str
-     * @param regexp
-     * @return
      */
     public static boolean matches(String str, String regexp) {
         return matches(str, regexp, true);
@@ -158,11 +135,6 @@ public class RegexpUtils {
 
     /**
      * 判断字符串和正则表达式是否匹配
-     *
-     * @param key
-     * @param regexp
-     * @param strict
-     * @return
      */
     public static boolean matches(String str, String regexp, boolean strict) {
         Matcher m = getMatcher(str, regexp, strict);
@@ -176,7 +148,7 @@ public class RegexpUtils {
     }
 
     /**
-     * 得到匹配结果分组。
+     * 得到匹配结果分组
      *
      * @param pattern 正则表达式
      * @param str     字符串
@@ -185,18 +157,23 @@ public class RegexpUtils {
      */
     public static String[] getMatcherResult(String str, String regexp, boolean strict) {
         if (!strict) {
-            String tmp = StringUtils.remove(str, "\\(");
-            tmp = StringUtils.remove(str, "\\)");
-            if (tmp.indexOf('(') > -1 && tmp.indexOf(')') > -1) {
-                //用户给出的正则中已经有了分组信息
-            } else {
-                regexp = "(" + regexp + ")";//补充一个默认分组
+            str = StringUtils.remove(str, "\\(");
+            String tmp = StringUtils.remove(str, "\\)");
+            boolean hasLeft = tmp.indexOf('(') > -1;
+            boolean hasRight = tmp.indexOf(')') > -1;
+            if (!hasLeft || !hasRight) {
+                //补充一个默认分组
+                regexp = "(" + regexp + ")";
             }
         }
         Matcher m = getMatcher(str, regexp, strict);
-        if (!m.matches()) return null;
+        if (!m.matches()) {
+            return null;
+        }
         int n = m.groupCount();
-        if (n == 0) return new String[]{m.group()};
+        if (n == 0) {
+            return new String[]{m.group()};
+        }
         String[] result = new String[n];
         for (int i = 1; i <= n; i++) {
             result[i - 1] = m.group(i);
@@ -206,9 +183,9 @@ public class RegexpUtils {
 
     private static Matcher getMatcher(String str, String regexp, boolean strict) {
         if (!strict) {
-			regexp = MATCH_ANY_STRING + regexp + MATCH_ANY_STRING;
-		}
-        Pattern p = cache.get(regexp);
+            regexp = MATCH_ANY_STRING + regexp + MATCH_ANY_STRING;
+        }
+        Pattern p = PATTERN_CACHE.get(regexp);
         if (p == null) {
             p = Pattern.compile(regexp);
             addToCache(p);
@@ -218,9 +195,9 @@ public class RegexpUtils {
 
     //将Pattern缓存
     private static void addToCache(Pattern p) {
-        if (cache.size() == PATTERN_CACHE_SIZE) {
-            cache.clear();
+        if (PATTERN_CACHE.size() == PATTERN_CACHE_SIZE) {
+            PATTERN_CACHE.clear();
         }
-        cache.put(p.pattern(), p);
+        PATTERN_CACHE.put(p.pattern(), p);
     }
 }
