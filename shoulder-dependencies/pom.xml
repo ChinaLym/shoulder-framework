@@ -40,13 +40,10 @@
         <!-- 使用 springfox 解析文档，管理 swagger2 的版本号 -->
         <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
         <!-- knife4j 前身是 swagger-bootstrap-ui，一个用于优化 swagger-ui 的项目，视觉效果更好 -->
-
-        <!--<knife4j.version>2.0.3</knife4j.version>
-
-        -->
-        <!-- openApi(swagger)是行业标准，swagger 17更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
+        <knife4j.version>2.0.3</knife4j.version>
 
         <!-- api-doc OPEN-API3 -->
+        <!-- openApi(swagger)是行业标准，swagger 17更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
         <swagger3.version>2.1.2</swagger3.version>
         <!-- springdoc-openapi 是一个基于 oenapi3（swagger3）的，类似于springfox与swagger2的关系，它可能是未来 -->
         <springdoc-openapi.version>1.3.0</springdoc-openapi.version>
@@ -277,17 +274,32 @@
 
             <!--Swagger begin -->
             <!-- swagger2 -->
-            <!--<dependency>
+            <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${springfox-swagger2.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>io.swagger</groupId>
+                        <artifactId>swagger-annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
                         <artifactId>swagger-models</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-models</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <!--springfox-bean-validators 用来支持 JSR 303 @ NotNull，@ Min，@ Max，@Size -->
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-bean-validators</artifactId>
@@ -300,28 +312,11 @@
             </dependency>
 
             <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-models</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>-->
-            <!--<dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
-            </dependency>-->
-
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger.version}</version>
-                <optional>true</optional>
             </dependency>
+
 
             <!--<dependency>
                 <groupId>io.swagger.core.v3</groupId>

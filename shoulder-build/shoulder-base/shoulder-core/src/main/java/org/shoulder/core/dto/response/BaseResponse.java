@@ -1,7 +1,8 @@
 package org.shoulder.core.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.IError;
 import org.shoulder.core.constant.CommonErrorEnum;
@@ -12,18 +13,24 @@ import java.lang.reflect.Constructor;
 /**
  * 通用返回对象
  *
+ * 统一返回值，code，msg，data
+ *
  * @author lym
  */
-@Schema(name = "通用 HTTP 响应 DTO")
+@ApiModel(value = "通用 HTTP 响应 DTO 格式")
+//@Schema(name = "通用 HTTP 响应 DTO")
 public class BaseResponse<T> implements Serializable {
 
-    @Schema(name = "状态码，成功为0，失败非0", example = "0")
+    @ApiModelProperty(value = "通用 HTTP 响应 DTO", dataType = "String", required = true, example = "0", position = 0)
+    //@Schema(name = "状态码，成功为0，失败非0", example = "0")
     private String code = "0";
 
-    @Schema(name = "描述，一般成功时不需要该值", example = "success")
+    @ApiModelProperty(value = "描述，一般成功时不需要该值", dataType = "String", required = false, example = "success", position = 1)
+    //@Schema(name = "描述，一般成功时不需要该值", example = "success")
     private String msg = "success";
 
-    @Schema(name = "传输的数据")
+    @ApiModelProperty(value = "传输的数据", dataType = "Object", required = false, example = "{\"name\":\"shoulder\"}", position = 2)
+    //@Schema(name = "传输的数据")
     private T data;
 
     public BaseResponse() {
