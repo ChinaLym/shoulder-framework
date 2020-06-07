@@ -16,7 +16,6 @@ import org.shoulder.log.operation.covertor.OperationLogParamValueConverter;
 import org.shoulder.log.operation.covertor.OperationLogParamValueConverterHolder;
 import org.shoulder.log.operation.entity.ActionParam;
 import org.shoulder.log.operation.entity.OperationLogEntity;
-import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.util.OpLogContext;
 import org.shoulder.log.operation.util.OpLogContextHolder;
 import org.shoulder.log.operation.util.OperationLogBuilder;
@@ -55,14 +54,8 @@ import java.util.Objects;
 @EnableConfigurationProperties(OperationLogProperties.class)
 public class OperationLogAspect {
 
-    /**
-     * 操作日志记录器
-     */
     @Autowired
-    private OperationLogger operationLogger;
-
-    @Autowired
-    private OperationLogProperties OperationLogProperties;
+    private OperationLogProperties operationLogProperties;
 
     /**
      * 用于SpEL表达式解析.
@@ -104,7 +97,7 @@ public class OperationLogAspect {
 
         // 方法执行后： 记录日志 并清除 threadLocal
         if (OpLogContextHolder.isEnableAutoLog()) {
-            operationLogger.log();
+            OpLogContextHolder.log();
         }
 
         // 恢复之前的上下文
@@ -121,7 +114,7 @@ public class OperationLogAspect {
     public void doAfterThrowing() {
         if (OpLogContextHolder.isEnableAutoLog() && OpLogContextHolder.isLogWhenThrow()) {
             OpLogContextHolder.getLog().setResultFail();
-            operationLogger.log();
+            OpLogContextHolder.log();
         }
 
         // 恢复之前的上下文
@@ -266,7 +259,7 @@ public class OperationLogAspect {
                     Expression expression = parser.parseExpression(valueSPEL);
                     EvaluationContext context = new StandardEvaluationContext();
                     if(args[i] == null){
-                        actionParam.setValue(Collections.singletonList(OperationLogProperties.getNullParamOutput()));
+                        actionParam.setValue(Collections.singletonList(operationLogProperties.getNullParamOutput()));
                     } else {
                         context.setVariable(parameterNames[i], args[i]);
                         //for (int i = 0; i < args.length; i++) { }

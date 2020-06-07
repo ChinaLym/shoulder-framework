@@ -253,7 +253,7 @@ public class OperationLogEntity implements Cloneable {
     /**
      * 克隆日志实体
      */
-    private OperationLogEntity cloneTo(@NonNull OperationLogEntity clone) {
+    public OperationLogEntity cloneTo(@NonNull OperationLogEntity clone) {
 
         clone.setUserId(userId);
         clone.setUserName(userName);

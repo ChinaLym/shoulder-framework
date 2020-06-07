@@ -1,11 +1,15 @@
 package org.shoulder.log.operation.util;
 
+import lombok.extern.shoulder.SLog;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.logger.OperationLogger;
+import org.springframework.beans.BeansException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +22,7 @@ import java.util.List;
  *
  * @author lym
  */
+@SLog
 public class OpLogContextHolder {
 
     /**
@@ -25,6 +30,27 @@ public class OpLogContextHolder {
      */
     private static ThreadLocal<OpLogContext> currentOpLogContext = new ThreadLocal<>();
 
+    /**
+     * 操作日志记录器
+     */
+    private static OperationLogger operationLogger;
+
+    /**
+     * 记录日志
+     */
+    public static void log(){
+        OpLogContext context = currentOpLogContext.get();
+        if(context != null){
+            OperationLogEntity opLogEntity = OpLogContextHolder.getLog();
+            List<? extends Operable> operableCollection = OpLogContextHolder.getOperableObjects();
+
+            if (CollectionUtils.isEmpty(operableCollection)) {
+                operationLogger.log(opLogEntity);
+            } else {
+                operationLogger.log(opLogEntity, operableCollection);
+            }
+        }
+    }
 
     // ============================ 日志上下文 =======================
 
@@ -173,5 +199,15 @@ public class OpLogContextHolder {
      */
     public static void clean() {
         currentOpLogContext.remove();
+    }
+
+    public static void setOperationLogger(OperationLogger opLogger) throws BeansException {
+        operationLogger = opLogger;
+        if (opLogger == null) {
+            log.warn("operationLogger is null!");
+        } else {
+            log.info("operationLogger:" + opLogger.getClass().getSimpleName());
+
+        }
     }
 }

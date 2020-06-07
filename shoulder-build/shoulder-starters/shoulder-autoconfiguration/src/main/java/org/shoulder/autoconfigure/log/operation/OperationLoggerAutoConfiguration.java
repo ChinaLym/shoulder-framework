@@ -1,18 +1,17 @@
 package org.shoulder.autoconfigure.log.operation;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.log.operation.annotation.OperationLog;
-import org.shoulder.log.operation.async.AbstractOpLogAsyncRunner;
 import org.shoulder.log.operation.async.OpLogRunnable;
-import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.format.DefaultOperationLogFormatter;
+import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.logger.impl.AsyncOperationLogger;
 import org.shoulder.log.operation.logger.impl.DefaultOperationLogger;
-import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.log.operation.util.OpLogContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -42,8 +41,11 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
 
     private static final Logger log = LoggerFactory.getLogger(OperationLoggerAutoConfiguration.class);
 
-    @Autowired
-    OperationLogProperties operationLogProperties;
+    private final OperationLogProperties operationLogProperties;
+
+    public OperationLoggerAutoConfiguration(OperationLogProperties operationLogProperties) {
+        this.operationLogProperties = operationLogProperties;
+    }
 
     /**
      * Provided a singleThread executor {@link Executors#newSingleThreadExecutor} for default.
@@ -80,9 +82,9 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
      */
     @Bean
     @ConditionalOnMissingBean(value = {OperationLogger.class})
-    public OperationLogger OperationLogger(OperationLogFormatter OperationLogFormatter) {
+    public OperationLogger operationLogger(OperationLogFormatter operationLogFormatter) {
         log.info("OperationLogger-async=false");
-        return new DefaultOperationLogger(OperationLogFormatter);
+        return new DefaultOperationLogger(operationLogFormatter);
     }
 
     /**
@@ -107,7 +109,7 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
                 applicationContext.getBean(OperationLogger.class);
 
         // set cross thread logger
-        AbstractOpLogAsyncRunner.setOperationLogger(operationLogger);
+        OpLogContextHolder.setOperationLogger(operationLogger);
 
         // register all logInterceptors.
         Collection<OperationLoggerInterceptor> loggerInterceptors =
