@@ -1,7 +1,5 @@
 package org.shoulder.data.annotation;
 
-import org.shoulder.data.enums.DataSourceType;
-
 import java.lang.annotation.*;
 
 /**
@@ -16,8 +14,7 @@ import java.lang.annotation.*;
 @Inherited
 public @interface DataSource {
     /**
-     * 切换数据源名称
-     * 默认从写库进行操作（默认只有一个数据库，既写又读）
+     * 使用的数据源 bean 名称
      */
-    DataSourceType value() default DataSourceType.WRITE;
+    String value();
 }

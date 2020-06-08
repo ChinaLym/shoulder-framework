@@ -71,7 +71,7 @@
 
         <dependency>
             <groupId>org.shoulder</groupId>
-            <artifactId>shoulder-validate</artifactId>
+            <artifactId>shoulder-validation</artifactId>
             <optional>true</optional>
         </dependency>
 

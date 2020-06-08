@@ -5,6 +5,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.data.annotation.DataSource;
 import org.shoulder.data.context.DataSourceContextHolder;
 import org.springframework.core.annotation.Order;
@@ -22,6 +23,10 @@ import java.lang.reflect.Method;
 @Component
 public class DataSourceAspect {
 
+    /**
+     * annotation 加了注解的方法
+     * within 加了注解的类内所有方法
+     */
     @Pointcut("@annotation(org.shoulder.data.annotation.DataSource) || @within(org.shoulder.data.annotation.DataSource)")
     public void dataSourcePointCut() {
 
@@ -29,32 +34,47 @@ public class DataSourceAspect {
 
     @Around("dataSourcePointCut()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
-        DataSource dataSource = getDataSource(point);
+        String dataSourceBeanName = getDataSourceBeanNam(point);
 
-        if (dataSource != null) {
-            DataSourceContextHolder.setDataSourceType(dataSource.value().name());
+        boolean enhance = StringUtils.isNotEmpty(dataSourceBeanName);
+        if(enhance){
+            DataSourceContextHolder.setDataSourceType(dataSourceBeanName);
         }
 
         try {
             return point.proceed();
         } finally {
-            DataSourceContextHolder.clean();
+            if(enhance){
+                DataSourceContextHolder.clean();
+            }
         }
     }
 
     /**
-     * 获取需要切换的数据源
-     * todo 明确注解加在方法和类的优先级
+     * 获取需要切换的数据源的 beanName
+     * 加在方法上优先级大于类上
+     * @return dataSource Bean 名称，返回空值则代表不变更
      */
-    public DataSource getDataSource(ProceedingJoinPoint point) {
+    public String getDataSourceBeanNam(ProceedingJoinPoint point) {
+        String dataSourceBeanName = null;
         MethodSignature signature = (MethodSignature) point.getSignature();
-        Class<?> targetClass = point.getTarget().getClass();
-        DataSource targetDataSource = targetClass.getAnnotation(DataSource.class);
-        if (targetDataSource != null) {
-            return targetDataSource;
-        } else {
-            Method method = signature.getMethod();
-            return method.getAnnotation(DataSource.class);
+        Method method = signature.getMethod();
+        if(method != null){
+            DataSource methodDataSource = method.getAnnotation(DataSource.class);
+            dataSourceBeanName = getValueFromAnnotation(methodDataSource);
         }
+        if(StringUtils.isEmpty(dataSourceBeanName)){
+            Class<?> targetClass = point.getTarget().getClass();
+            if(targetClass != null){
+                DataSource classDataSource = targetClass.getAnnotation(DataSource.class);
+                dataSourceBeanName = getValueFromAnnotation(classDataSource);
+            }
+        }
+        return dataSourceBeanName;
     }
+
+    private String getValueFromAnnotation(DataSource dataSource){
+        return dataSource == null ? null : dataSource.value();
+    }
+
 }

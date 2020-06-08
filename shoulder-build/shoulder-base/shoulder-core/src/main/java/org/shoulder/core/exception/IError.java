@@ -1,6 +1,5 @@
 package org.shoulder.core.exception;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.util.ExceptionUtil;
 

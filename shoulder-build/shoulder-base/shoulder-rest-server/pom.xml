@@ -19,6 +19,18 @@
             <artifactId>shoulder-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.shoulder</groupId>
+            <artifactId>shoulder-validation</artifactId>
+        </dependency>
+
+        <!--web项目相关依赖 start -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 </project>

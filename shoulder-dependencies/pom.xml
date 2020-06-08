@@ -214,7 +214,7 @@
 
             <dependency>
                 <groupId>org.shoulder</groupId>
-                <artifactId>shoulder-validate</artifactId>
+                <artifactId>shoulder-validation</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 

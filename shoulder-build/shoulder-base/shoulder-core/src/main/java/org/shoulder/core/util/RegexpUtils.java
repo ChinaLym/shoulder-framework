@@ -13,12 +13,12 @@ import java.util.regex.Pattern;
  * @author lym
  */
 public class RegexpUtils {
-    //用于匹配任意字符串的非贪婪表达式
+    /** 用于匹配任意字符串的非贪婪表达式 */
     public static final String MATCH_ANY_STRING = ".*?";
 
-    //正则表达式缓存池，为了防止反复编译相同的正则表达式浪费时间，设置长度为64的正则表达式缓存(pattern是线程安全的,Matcher不是)
-    private static final int PATTERN_CACHE_SIZE = 64;
-    private static final Map<String, Pattern> PATTERN_CACHE = new ConcurrentHashMap<String, Pattern>(PATTERN_CACHE_SIZE);
+    /** 正则表达式编译缓存池(pattern是线程安全的，Matcher不是) */
+    private static final int COMPILE_CACHE_SIZE = 64;
+    private static final Map<String, Pattern> CACHE = new ConcurrentHashMap<>(COMPILE_CACHE_SIZE);
 
     public static final char[] STAR_QUESTION = new char[]{'*', '?', '+'};
 
@@ -41,30 +41,59 @@ public class RegexpUtils {
     public static final String COUNT_1_N_RELUCTANT = "+?";
     public static final String COUNT_0_1_RELUCTANT = "??";
 
-    public static final Pattern USER_ACCOUNT = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]{4,15}$");
-    public static final Pattern USER_NAME = Pattern.compile("^[^'/\\\\:*?\"<>|]{1,32}$");
-    public static final Pattern TELEPHONE_NUMBER = Pattern.compile("\\d{3}-\\d{8}|\\d{4}-\\d{7}");
-    public static final Pattern ID_CARD = Pattern.compile("\\d{15}|\\d{18}");
-    public static final Pattern POSTCODE = Pattern.compile("[1-9]\\d{5}(?!\\d)");
-    public static final Pattern E_MAIL = Pattern.compile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
-
-    public static final Pattern URL = Pattern.compile("[a-zA-z]+://[^\\s]*");
-    public static final Pattern IP_ADDR = Pattern.compile("\\d+\\.\\d+\\.\\d+\\.\\d+");
-    public static final Pattern IP_ADDRESS = Pattern.compile("((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)");
-    public static final Pattern MAC_ADDRESS = Pattern.compile("([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}");
-
+    /** 字母开头包含数字或下划线，常用于账号 */
+    public static final Pattern CHAR_NUM_UNDERLINE = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]{4,15}$");
+    /** 非 '\:*?"<>| 特殊字符，常用于昵称等 */
+    public static final Pattern NO_SPECIAL = Pattern.compile("^[^'/\\\\:*?\"<>|]{1,32}$");
+    /** 中文 */
     public static final Pattern CHINESE = Pattern.compile("\\u4e00-\\u9fa5");
-    public static final Pattern HREF_LINK = Pattern.compile("(h|H)(r|R)(e|E)(f|F)  *=  *('|\")?(\\w|\\\\|\\/|\\.)+('|\"|  *|>)?");
+    /** href */
+    public static final Pattern HREF_LINK = Pattern.compile("([hH])([rR])([eE])([fF]) *= *(['\"])?(\\w|\\\\|/|\\.)+('|\"| *|>)?");
+    /** 数字（实数） */
     public static final Pattern NUM = Pattern.compile("(-?\\d*)(\\.\\d+)?");
+    /** 整数 */
+    public static final Pattern INTEGER = Pattern.compile("\\d+");
+    /** base64 格式字符串 */
     public static final Pattern BASE_64 = Pattern.compile("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$");
 
+    /** 中国大陆手机号 */
+    public static final Pattern PHONE_NUM = Pattern.compile("[1]([3-9])[0-9]{9}");
+    /** 中国大陆手机号（严格匹配） */
+    public static final Pattern PHONE_NUM_STRICT = Pattern.compile("[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}");
+    /** 中国大陆 身份证 15/18位，最后一位可以为x */
+    public static final Pattern ID_CARD = Pattern.compile("\\d{15}|\\d{18}|\\d{17}x|\\d{17}X");
+    /** 中国大陆 邮编 6位数字，非0开头 */
+    public static final Pattern POSTCODE = Pattern.compile("[1-9]\\d{5}(?!\\d)");
+    /** 中国大陆 车牌号 民用机动车 新能源 警车 武警车 领事馆车 军用车 */
+    public static final Pattern LICENSE_PLATE = Pattern.compile("([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]" +
+            "(([A-HJ-Z][A-HJ-NP-Z0-9]{5})|([A-HJ-Z](([DF][A-HJ-NP-Z0-9][0-9]{4})|([0-9]{5}[DF])))" +
+            "|([A-HJ-Z][A-D0-9][0-9]{3}警)))|([0-9]{6}使)|((([沪粤川云桂鄂陕蒙藏黑辽渝]A)|鲁B|闽D|蒙E|蒙H)[0-9]{4}领)" +
+            "|(WJ[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼·•][0-9]{4}[TDSHBXJ0-9])" +
+            "|([VKHBSLJNGCE][A-DJ-PR-TVY][0-9]{5})");
+
+    /** QQ */
+    public static final Pattern QQ = Pattern.compile("[1-9]\\d{4,10}");
+    /** 微信号 */
+    public static final Pattern WE_CHAT = Pattern.compile("[a-zA-Z][-_a-zA-Z0-9]{5,19}");
+    /** 邮箱 */
+    public static final Pattern EMAIL = Pattern.compile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
+    /** 链接 */
+    public static final Pattern URL = Pattern.compile("[a-zA-z]+://[^\\s]*");
+    /** IP地址 */
+    public static final Pattern IP = Pattern.compile("(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])");
+    /** 端口号 */
+    public static final Pattern PORT = Pattern.compile("([0-9]|[1-9]\\d{1,3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])");
+    /** MAC 地址 */
+    public static final Pattern MAC = Pattern.compile("([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}");
+
     /**
-     * 预定义的字符，凡是字符串中出现这些字符的话，都需要转义
-     * 目前设置的转义字符有14个
+     * Java 预定义的字符，凡是字符串中出现这些字符的话，都需要转义
+     * 注 Java使用\b来表示单词边界而非使用 '<' '>'
+     *      '-' '&' 当且仅当出现在方括号中时会被当作元字符
+     *      正则表达式在编译中，对于不匹配的括号会当作字面值在处理，但是对于+ * ?则会严格处理，不会当作字面值
      */
     public static final char[] REGEXP_KEY_CHARS = new char[]{
-            '\\',    //将下一个字符标记为或特殊字符、或原义字符、或后向引用、或八进制转义符
-            //注意：由于替换顺序，作为替换符的\\必须在最前面.
+            '\\',    //将下一个字符标记为或特殊字符、或原义字符、或后向引用、或八进制转义符。必须为第一个（替换顺序）
             '(', ')',//匹配分组关键字
             '{', '}',//匹配次数关键字
             '[', ']',//匹配字符集描述字
@@ -75,12 +104,6 @@ public class RegexpUtils {
             '$',    //匹配行尾
             '^',    //有两种含义，匹配行首。在[]中时表示对字符集合求非
             '|'        //用于分隔若干项匹配，表示其中之一
-            //注1：部分正则表达式规范使用< >来表示单词的开始与结束，实际测试发现Java不支持此规格，因此<,>不是Java中的元字符。Java使用\b来表示单词边界
-            //注2：'-'  是元字符，但是很奇怪的，不需要转义，当出现在方括号中时会被当作元字符，不在方括号中会被当作普通字符，
-            //但是如果你使用了转义描述，也能得到一样的结果。所以在Java中可转可不转。同样的情况还有'&'符
-            //注3：正则表达式在编译中，对于不匹配的括号，会当作字面值在处理，但是对于+ * ?则会严格处理，不会当作字面值，因此这些字符一定要转义。
-            //注4：本文中所说的非贪婪均指英语的reluctant，一般来说，正则表达式中有greedy(贪婪)、和reluctant、 possessive(占有)三种匹配方式，
-            //由于 possessive方式过于刚性，会造成整体匹配失败，实际使用价值不大，本类不予考虑。
     };
 
     /**
@@ -150,8 +173,8 @@ public class RegexpUtils {
     /**
      * 得到匹配结果分组
      *
-     * @param pattern 正则表达式
      * @param str     字符串
+     * @param regexp 正则表达式
      * @param strict  使用严格方式，即只有字符完全匹配上正则表达式时才返回结果
      * @return 如果没有匹配上，返回一个null。
      */
@@ -185,7 +208,7 @@ public class RegexpUtils {
         if (!strict) {
             regexp = MATCH_ANY_STRING + regexp + MATCH_ANY_STRING;
         }
-        Pattern p = PATTERN_CACHE.get(regexp);
+        Pattern p = CACHE.get(regexp);
         if (p == null) {
             p = Pattern.compile(regexp);
             addToCache(p);
@@ -195,9 +218,9 @@ public class RegexpUtils {
 
     //将Pattern缓存
     private static void addToCache(Pattern p) {
-        if (PATTERN_CACHE.size() == PATTERN_CACHE_SIZE) {
-            PATTERN_CACHE.clear();
+        if (CACHE.size() == COMPILE_CACHE_SIZE) {
+            CACHE.clear();
         }
-        PATTERN_CACHE.put(p.pattern(), p);
+        CACHE.put(p.pattern(), p);
     }
 }

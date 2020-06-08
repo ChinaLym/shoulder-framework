@@ -126,6 +126,10 @@ public enum CommonErrorEnum implements IError {
      * 服务不可用
      */
     SERVICE_UNAVAILABLE(10000, "Service unavailable."),
+    /**
+     * 无效的安全会话 xSessionId 不正确 xSessionId in valid.
+     */
+    SECURITY_SESSION_INVALID(10000, "Security session invalid."),
 
     // ----------------------- 作为服务消费者 ----------------------
     RPC_UNKNOWN(1000, "RPC error with none error code or msg."),

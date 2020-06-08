@@ -1,4 +1,4 @@
-package org.shoulder.validate.handler;
+package org.shoulder.web.advice;
 
 import lombok.extern.shoulder.SLog;
 import org.shoulder.core.constant.CommonErrorEnum;
@@ -43,7 +43,7 @@ import java.sql.SQLException;
 @RestControllerAdvice
 @ConditionalOnWebApplication
 @ConditionalOnProperty(name = "shoulder.web.handlerCommonException", havingValue = "on", matchIfMissing = true)
-public class ShoulderGlobalExceptionHandler {
+public class RestControllerExceptionAdvice {
 
 
     /**

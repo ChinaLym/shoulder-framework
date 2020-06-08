@@ -1,12 +1,11 @@
-package org.shoulder.validate.handler;
+package org.shoulder.web.advice;
 
 import org.shoulder.core.dto.response.BaseResponse;
-import org.shoulder.validate.annotation.SkipResponseWrap;
+import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;

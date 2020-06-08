@@ -116,7 +116,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
     }
 
-    public static String uuid(){
+    /**
+     * 32位的 uuid
+     */
+    public static String uuid32(){
         return UUID.randomUUID().toString().replace("-", "");
     }
 

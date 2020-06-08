@@ -17,7 +17,7 @@
         <module>shoulder-data-db</module>
         <module>shoulder-crypto</module>
         <module>shoulder-security</module>
-        <module>shoulder-validate</module>
+        <module>shoulder-validation</module>
         <module>shoulder-aopx</module>
         <module>shoulder-log-operation</module>
         <module>shoulder-cluster</module>
