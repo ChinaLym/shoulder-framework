@@ -10,24 +10,28 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>shoulder-auth-server-starter</artifactId>
-    <description>
-        默认的认证服务器
-        （提供基础认证 账号密码认证、手机号认证、手机号密码认证；
-            作为认证服务器 Oauth2、OIDC、SAML2；
-            作为Oauth2客户端，如QQ、Wechat、gitee、github）
-    </description>
+    <artifactId>shoulder-starter-minio</artifactId>
 
     <dependencies>
-
         <dependency>
-            <groupId>org.shoulder</groupId>
-            <artifactId>shoulder-starter</artifactId>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
-            <artifactId>shoulder-auth-server</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>

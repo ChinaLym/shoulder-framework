@@ -80,6 +80,9 @@
         <druid.version>1.1.21</druid.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
 
+        <!-- dataBase-->
+        <minio.version>7.0.2</minio.version>
+
 
         <!-- log-trace -->
         <brave.version>5.8.0</brave.version>
@@ -239,19 +242,7 @@
 
             <dependency>
                 <groupId>org.shoulder</groupId>
-                <artifactId>shoulder-starter-cluster</artifactId>
-                <version>${shoulder.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.shoulder</groupId>
-                <artifactId>shoulder-starter-web</artifactId>
-                <version>${shoulder.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.shoulder</groupId>
-                <artifactId>shoulder-starter-crypto</artifactId>
+                <artifactId>shoulder-starter-auth-server</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
@@ -263,9 +254,29 @@
 
             <dependency>
                 <groupId>org.shoulder</groupId>
-                <artifactId>shoulder-starter-auth</artifactId>
+                <artifactId>shoulder-starter-crypto</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.shoulder</groupId>
+                <artifactId>shoulder-starter-minio</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.shoulder</groupId>
+                <artifactId>shoulder-starter-trace</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.shoulder</groupId>
+                <artifactId>shoulder-starter-web</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+
 
             <!--shoulder-starters end -->
 
@@ -470,6 +481,13 @@
                 <version>${skywalking.version}</version>
             </dependency>
             <!-- log-trace end -->
+
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
+            </dependency>
+
 
             <!-- spring basepackage start -->
             <dependency>

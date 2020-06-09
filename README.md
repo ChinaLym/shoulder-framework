@@ -78,7 +78,7 @@ shoulder-parent 中分为 shoulder-base 和 shoulder-starters。他们内部都�
 
 ## 建议与反馈
 
-欢迎在 issue 交流，提出你的建议，留下你期待的新功能。
+感谢小伙伴们的Star/Fork，欢迎在 issue 交流，留下你的建议、期待的新功能等~
 
 欢迎 fork 并提交合并请求一起改善该框架 [分支模型介绍](INFO.MD)
 
