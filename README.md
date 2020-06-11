@@ -41,6 +41,25 @@ Shoulder 是一款 Java WEB/微服务/开发框架，在 `Spring Boot`、`Spring
 - 认证、授权、验证码框架。
 - 等。。。 
 
+## 工程目录与模块划分
+
+采用与 spring、spring-boot 相似的包模块划分、包命名策略
+
+最外层的 shoulder-build 管理了依赖的 spring-boot 的版本
+
+- shoulder-dependencies 是 shoulder 框架的依赖管理包，负责管理依赖的版本
+
+- shoulder-parent 是 shoulder 提供的所有jar的直接父类，它依赖了dependencies，负责管理所有 shoulder 及其公共依赖。
+shoulder-parent 中分为 shoulder-base 和 shoulder-starters。他们内部都包含了不同模块。
+
+    - shoulder-base: 基础定义包，里面包含了 shoulder框架 的所有的基础定义包。
+        - shoulder-xxx: xxx模块代码（开发时可以把一个模块当作一个工程）。作为 starter 的基础，使用者一般不会直接引入。
+        - ...
+        
+    - shoulder-starters: 某个模块开箱即用的 jar 包。以 shoulder-base 为基础，一般由 shoulder-xxx 以及自动配置的代码组成。
+        - shoulder-starter-xxx: xxx模块的自动配置，供使用者直接引入。
+        - ...
+
 
 ---
 
@@ -56,5 +75,5 @@ Shoulder 是一款 Java WEB/微服务/开发框架，在 `Spring Boot`、`Spring
 
 感谢小伙伴们的Star/Fork，欢迎在 issue 交流，留下你的建议、期待的新功能等~
 
-欢迎 fork 并提交合并请求一起改善该框架 [合作开发流程](CONTRIBUTING.MD)
+欢迎 fork 并提交合并请求一起改善该框架 [合作开发流程与项目介绍](CONTRIBUTING.MD)
 

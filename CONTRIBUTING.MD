@@ -10,7 +10,12 @@
  我们希望你贡献的代码遵循常见的编码规范（如符合阿里巴巴Java编码规范），最好附带单元测试代码~
 
  
-分支管理、发布流程、包管理：借鉴了 spring 的策略，并结合其他流行的方式。
+# 导航 
+- [分支管理](#分支管理)
+- [发布流程](#发布流程)
+
+这些部分均借鉴了 spring 的策略，并结合其他流行的方式。
+
 
 
 ## 分支管理
@@ -50,7 +55,8 @@ v{x.y.z}.RELEASE
 
 ---
 
-## 发布流程 TODO CICD
+## 发布流程
+
 - **发布前（准备）**
     - TODO 需要插件
     - 更新依赖版本
@@ -72,33 +78,20 @@ v{x.y.z}.RELEASE
     - 在其他频道、社交平台上宣布发行
 
 
-# 维护分支开发与发布流程
+## 维护分支开发与发布
 场景描述：已经发布`1.1.0.RELEASE`，但发现缺陷，需要发布`1.1.1.RELEASE`修复版本
 
-1.	基于1.1.0分支创建1.1.x的维护分支：maintain/1.1.x，1.1.x后续所有维护修改均以该分支为基础开发。
-2.	maintain/1.1.x 上将版本修改为1.1.1-SNAPSHOT，完成代码开发
-3.	基于maintain/1.1.x分支创建release/1.1.1分支，修改版本号为：1.1.1. RELEASE
-4.	release/1.1.1 上发布到maven仓库
-5.	release/1.1.1 上创建tag：v1.1.1.release
+1.	基于1.1.0分支创建1.1.x的维护分支：maintain/1.1.x，1.1.x版本后续所有维护修改均以该分支为基础开发，停止维护时删除该分支。
+2.	在 `maintain/1.1.x` 上将版本修改为 `1.1.1-SNAPSHOT`，修复缺陷
+3.	测试；通过后修改版本为 `1.1.1.RELEASE`
+4.  将 `1.1.1.RELEASE` 的jar发布到maven仓库
+5.  基于`maintain/1.1.x`分支创建`release/1.1.1`分支
+6.	在 `release/1.1.1` 上创建tag `v1.1.1.release`
+7.  删除 `release/1.1.1` 分支
+
+注：
+- 当`1.1.1-SNAPSHOT`再出现缺陷时，回到第2步直到7。
+- 当1.1.x不再维护后，删除`maintain/1.1.x`分支
 
 参考：[spring security 发布流程](https://github.com/spring-projects/spring-security/wiki/Release-Process)
 
-
-# 包结构介绍
-
-采用与 spring、spring-boot 相似的包模块划分、包命名策略
-
-最外层的 shoulder-build 管理了依赖的 spring-boot 的版本
-
-- shoulder-dependencies 是 shoulder 框架的依赖管理包，负责管理依赖的版本
-
-- shoulder-parent 是 shoulder 提供的所有jar的直接父类，它依赖了dependencies，负责管理所有 shoulder 及其公共依赖。
-shoulder-parent 中分为 shoulder-base 和 shoulder-starters。他们内部都包含了不同模块。
-
-    - shoulder-base: 基础定义包，里面包含了 shoulder框架 的所有的基础定义包。
-        - shoulder-xxx: xxx模块代码（开发时可以把一个模块当作一个工程）。作为 starter 的基础，使用者一般不会直接引入。
-        - ...
-        
-    - shoulder-starters: 某个模块开箱即用的 jar 包。以 shoulder-base 为基础，一般由 shoulder-xxx 以及自动配置的代码组成。
-        - shoulder-starter-xxx: xxx模块的自动配置，供使用者直接引入。
-        - ...
