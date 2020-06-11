@@ -4,7 +4,7 @@ import org.shoulder.code.dto.ValidateCodeDTO;
 import org.shoulder.code.exception.ValidateCodeException;
 import org.shoulder.code.generator.ValidateCodeGenerator;
 import org.shoulder.code.processor.AbstractValidateCodeProcessor;
-import org.shoulder.code.propertities.ValidateCodeProperties;
+import org.shoulder.code.propertities.BaseValidateCodeProperties;
 import org.shoulder.code.store.ValidateCodeStore;
 import org.shoulder.security.SecurityConst;
 import org.springframework.stereotype.Component;
@@ -30,9 +30,9 @@ public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode
         return true;
     }
 
-    public SmsCodeProcessor(ValidateCodeProperties validateCodeProperties, ValidateCodeGenerator validateCodeGenerator,
+    public SmsCodeProcessor(BaseValidateCodeProperties baseValidateCodeProperties, ValidateCodeGenerator validateCodeGenerator,
                             ValidateCodeStore validateCodeStore, SmsCodeSender smsCodeSender) {
-        super(validateCodeProperties, validateCodeGenerator, validateCodeStore);
+        super(baseValidateCodeProperties, validateCodeGenerator, validateCodeStore);
         this.smsCodeSender = smsCodeSender;
     }
 

@@ -3,7 +3,7 @@ package org.shoulder.security.code.img;
 import org.shoulder.code.exception.ValidateCodeException;
 import org.shoulder.code.generator.ValidateCodeGenerator;
 import org.shoulder.code.processor.AbstractValidateCodeProcessor;
-import org.shoulder.code.propertities.ValidateCodeProperties;
+import org.shoulder.code.propertities.BaseValidateCodeProperties;
 import org.shoulder.code.store.ValidateCodeStore;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -16,8 +16,8 @@ import java.util.Objects;
  */
 public class ImageCodeProcessor extends AbstractValidateCodeProcessor<ImageCode> implements ImageValidateCodeType {
 
-	public ImageCodeProcessor(ValidateCodeProperties validateCodeProperties, ValidateCodeGenerator validateCodeGenerator, ValidateCodeStore validateCodeStore) {
-		super(validateCodeProperties, validateCodeGenerator, validateCodeStore);
+	public ImageCodeProcessor(BaseValidateCodeProperties baseValidateCodeProperties, ValidateCodeGenerator validateCodeGenerator, ValidateCodeStore validateCodeStore) {
+		super(baseValidateCodeProperties, validateCodeGenerator, validateCodeStore);
 	}
 
 	/**

@@ -1,12 +1,17 @@
 package org.shoulder.code.dto;
 
+import lombok.ToString;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * 验证码
+ * todo refactor expireIn 改为 duration
+ *
  * @author lym
  */
+@ToString
 public class ValidateCodeDTO implements Serializable {
 
 	//private String type;
@@ -72,4 +77,6 @@ public class ValidateCodeDTO implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}*/
+
+
 }

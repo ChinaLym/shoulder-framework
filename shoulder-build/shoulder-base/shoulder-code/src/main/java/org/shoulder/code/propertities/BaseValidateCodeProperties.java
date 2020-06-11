@@ -1,5 +1,6 @@
 package org.shoulder.code.propertities;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -7,17 +8,18 @@ import java.util.List;
  *
  * @author lym
  * */
-public abstract class ValidateCodeProperties {
+public abstract class BaseValidateCodeProperties {
 
     /**
-     * 验证码长度
+     * 验证码长度，默认6个字符
      */
+    @Min(1)
     private int length = 6;
 
     /**
-     * 验证码有效时间，默认 10 分钟
+     * 验证码有效秒数，默认 10 分钟
      */
-    private int expireIn = 60 * 10;
+    private int effectiveSeconds = 60 * 10;
 
     /** 请求中的参数名 */
     private String parameterName;
@@ -35,12 +37,12 @@ public abstract class ValidateCodeProperties {
         this.length = length;
     }
 
-    public int getExpireIn() {
-        return expireIn;
+    public int getEffectiveSeconds() {
+        return effectiveSeconds;
     }
 
-    public void setExpireIn(int expireIn) {
-        this.expireIn = expireIn;
+    public void setEffectiveSeconds(int effectiveSeconds) {
+        this.effectiveSeconds = effectiveSeconds;
     }
 
     public List<String> getUrls() {

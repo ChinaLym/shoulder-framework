@@ -12,6 +12,7 @@ import java.util.Random;
 
 /**
  * 默认的图片验证码生成器
+ * 数字与字母
  *
  * @author lym
  */
@@ -25,13 +26,16 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
     private Random random = new SecureRandom();
 
     public ImageCodeGenerator(ImageCodeProperties imageCodeProperties) {
+        FONT_NAMES = imageCodeProperties.getFonts().toArray(new String[0]);
         this.imageCodeProperties = imageCodeProperties;
     }
 
-    private static final String[] FONT_NAMES = {"方正舒体", "华文彩云", "华文琥珀", "华文新魏", "幼圆",
-            "微软雅黑", "楷体", "Agency FB", "Bradley Hand ITC", "Copperplate Gothic Light"};
+    private final String[] FONT_NAMES;
 
-    private static final String[] CHARS = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H",
+    /**
+     * 生成的字符，只允许 0-9，与大写字母，除去容易与数字产生混淆的I、O
+     */
+    private final String[] CHARS = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H",
             "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
     /**
@@ -84,7 +88,7 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
         graphics.dispose();
 
         // 将图片返回
-        return new ImageCode(image, validateCode.toString(), imageCodeProperties.getExpireIn());
+        return new ImageCode(image, validateCode.toString(), imageCodeProperties.getEffectiveSeconds());
     }
 
     /**
@@ -95,7 +99,8 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
      * @param maxLight 颜色的最大亮度
      */
     private Color nextRandomColor(int minLight, int maxLight) {
-        if (minLight < 0 || minLight > maxLight || maxLight > 255) {
+        int rbgMax = 255;
+        if (minLight < 0 || minLight > maxLight || maxLight > rbgMax) {
             throw new IllegalArgumentException("no such color(min=" + minLight + ",max=" + maxLight + ")!");
         }
         int r = minLight + random.nextInt(maxLight - minLight);

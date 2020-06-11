@@ -2,7 +2,7 @@ package org.shoulder.code.processor;
 
 import org.shoulder.code.dto.ValidateCodeDTO;
 import org.shoulder.code.generator.ValidateCodeGenerator;
-import org.shoulder.code.propertities.ValidateCodeProperties;
+import org.shoulder.code.propertities.BaseValidateCodeProperties;
 import org.shoulder.code.store.ValidateCodeStore;
 import org.shoulder.code.exception.ValidateCodeAuthenticationException;
 import org.shoulder.code.exception.ValidateCodeException;
@@ -23,14 +23,14 @@ import java.util.Objects;
  */
 public abstract class AbstractValidateCodeProcessor<C extends ValidateCodeDTO> implements ValidateCodeProcessor {
 
-	protected ValidateCodeProperties validateCodeProperties;
+	protected BaseValidateCodeProperties validateCodeProperties;
 
 	protected ValidateCodeGenerator validateCodeGenerator;
 
 	protected ValidateCodeStore validateCodeStore;
 
 
-	public AbstractValidateCodeProcessor(@Nullable ValidateCodeProperties validateCodeProperties,
+	public AbstractValidateCodeProcessor(@Nullable BaseValidateCodeProperties validateCodeProperties,
 										 ValidateCodeGenerator validateCodeGenerator,
 										 ValidateCodeStore validateCodeStore){
 		this.validateCodeProperties = validateCodeProperties;

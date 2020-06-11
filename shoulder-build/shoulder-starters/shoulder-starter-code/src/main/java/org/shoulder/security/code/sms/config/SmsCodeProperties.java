@@ -1,7 +1,7 @@
 package org.shoulder.security.code.sms.config;
 
 import org.shoulder.code.consts.ValidateCodeConsts;
-import org.shoulder.code.propertities.ValidateCodeProperties;
+import org.shoulder.code.propertities.BaseValidateCodeProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author lym
  * */
 @ConfigurationProperties(prefix = ValidateCodeConsts.CONFIG_PREFIX + ".sms")
-public class SmsCodeProperties extends ValidateCodeProperties {
+public class SmsCodeProperties extends BaseValidateCodeProperties {
 
     public SmsCodeProperties() {
         setParameterName(ValidateCodeConsts.SMS);
