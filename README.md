@@ -5,19 +5,17 @@
 
 ## 简介
 
-Shoulder 是一款 Java 微服务开发框架（定位类似 Spring Boot），在 Spring Boot 基础上实现了一些常用功能，提供了业界生产级主流前沿方案与功能完善，且开箱即用。
+Shoulder 是一款 Java WEB/微服务/开发框架，并没有重复造轮子，对于业界成熟的解决方案采用复用的策略。在 Spring Boot 基础上实现了一些可扩展的常用功能。
 
-该框架主要提供了技术指导，和一定的编码规范，如果想知道该框架如何使用，以及希望运行，可以期待 **Shoulder-Platform**(一款使用了 Shoulder 框架的开源平台，规划中)
+该框架主要提供了技术选型指导、一定的开发规范，如果想知道该框架的效果，或希望看到一个基于本框架开发的的运行的系统，可以期待 **Shoulder-Platform**(一款使用了 Shoulder 框架的开源平台，`规划中`)
 
-## 技术标准依赖选型：
-- 优先为业界标准
-- 其次为技术先进且已用于大厂的生产环境，并且容易从原有的主流技术迁移
-- 其次绝对主流
-
-如优先采用JSR大于其他框架的定义；数据库选用 TiDB 而非 MySQL（完全兼容 MySQL的协议，从MySQL迁移过来无需修改任何代码）
+## 技术选型标准：
+- 优先为业界标准（如微服务里的 Spring Cloud、Dubbo）
+- 其次为技术先进且已用于互联网厂商的生产环境，且容易从原有的主流技术迁移（如 MySQL -> TiDB）
+- 其次绝对主流（如优先采用JSR大于其他框架的定义）
 
 ## 第三方库依赖选型:
-核心依赖（如spring）版本为生产可用的较新的 Release 版本，其他第三方小型依赖可直接选用最新稳定版，最新版等2个月引入。
+核心依赖（如spring）版本为生产可用的较新的 Release 版本，其他第三方小型依赖可直接选用最新稳定版。
 
 已经依赖的
 
@@ -42,32 +40,6 @@ Shoulder 是一款 Java 微服务开发框架（定位类似 Spring Boot），�
 
 ---
 
-## 包结构介绍
-
-### 包模块划分策略
-
-采用与 spring、spring-boot 相似的包模块划分策略
-
-最外层的 shoulder-build 管理了依赖的 spring-boot 的版本
-
-- shoulder-dependencies 是 shoulder 框架的依赖管理包，负责管理依赖的版本
-
-- shoulder-parent 是 shoulder 提供的所有jar的直接父类，它依赖了dependencies，负责管理所有 shoulder 及其公共依赖。
-shoulder-parent 中分为 shoulder-base 和 shoulder-starters。他们内部都包含了不同模块。
-
-    - shoulder-base: 基础定义包，里面包含了 shoulder框架 的所有的基础定义包。
-        - shoulder-xxx: xxx模块代码（开发时可以把一个模块当作一个工程）。作为 starter 的基础，使用者一般不会直接引入。
-        - ...
-        
-    - shoulder-starters: 某个模块开箱即用的 jar 包。以 shoulder-base 为基础，一般由 shoulder-xxx 以及自动配置的代码组成。
-        - shoulder-starter-xxx: xxx模块的自动配置，供使用者直接引入。
-        - ...
- 
- 其他：
- - shoulder-initializer: maven archetype. 用于快速创建 使用shoulder框架的项目。类似 Spring Initializer.
-
- - shoulder-demos: shoulder 框架功能使用演示
-
 
 ### 规范和约束
 
@@ -80,5 +52,5 @@ shoulder-parent 中分为 shoulder-base 和 shoulder-starters。他们内部都�
 
 感谢小伙伴们的Star/Fork，欢迎在 issue 交流，留下你的建议、期待的新功能等~
 
-欢迎 fork 并提交合并请求一起改善该框架 [分支模型介绍](INFO.MD)
+欢迎 fork 并提交合并请求一起改善该框架 [合作开发流程](CONTRIBUTING.MD)
 

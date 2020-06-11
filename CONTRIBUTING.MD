@@ -1,0 +1,104 @@
+# 如何贡献我的源代码
+
+ 目前使用 Git 来控制程序版本，如果你想为 `ShoulderFramework` 贡献源代码，请先大致了解 Git 的使用方法。我们目前把项目托管在 `Gitee` 上，任何 Gitee 用户都可以向我们贡献代码。
+ 
+ 参与的方式很简单，
+ - `fork` 一份 `ShoulderFramework` 的代码到你的仓库中
+ - 修改后提交，并向我们发起`pull request`申请
+ - 我们会及时对代码进行审查并处理你的申请并。审查通过后，你的代码将被 `merge` 进我们的仓库中，这样你就会自动出现在贡献者名单里了。
+ 
+ 我们希望你贡献的代码遵循常见的编码规范（如符合阿里巴巴Java编码规范），最好附带单元测试代码~
+
+ 
+分支管理、发布流程、包管理：借鉴了 spring 的策略，并结合其他流行的方式。
+
+
+## 分支管理
+
+### 分支命名
+
+【`1.0.0-RELEASE` 之前只有主分支】
+
+- 开发分支（开发完毕合并至预发布分支 或 维护分支）
+    - 新功能分支命名：
+    feature-{issue编号}
+    
+    - 缺陷修复分支命名：
+    bug-{issue编号}
+    
+    - 重构分支命名：
+    refactor-{issue编号}
+    
+    - 改进分支命名：
+    improvement-{issue编号}
+
+- 预发布分支（单人开发时，开发分支与预发布分支为同一分支）
+v{x.y.0}    
+
+- 发布分支（同 tag）：
+release-v{x.y.z}
+
+- 维护分支（基于发布分支）：
+maintain-v{x.y.z}
+
+- 创建 Tag（基于发布分支）：
+v{x.y.z}.RELEASE
+
+### 分支管理模型图：
+
+![分支管理模型图](doc/img/gitFlow.png)
+
+---
+
+## 发布流程 TODO CICD
+- **发布前（准备）**
+    - TODO 需要插件
+    - 更新依赖版本
+    - 更新发行版本号
+    - 本地构建、测试
+    - CHANGELOG、README修订或使用工具 TODO 根据 commit 自动生成
+
+- **发布**
+    - 推送到`Maven Central`，提交至代码库（git）并触发(Jenkins) CICD
+    - 打TAG，推到 github
+
+- **发布后（清理）**
+    - 在社交平台宣布发布一个新版本
+    - pom.xml更新到下一个开发版本，推到github
+    - 在web页面上更新版本
+    - 在GitHub上更新发行说明
+    - 关闭/创建里程碑、标签。TODO spring 开源的 label robot
+    - 分支清理，删掉里程碑内的无用分支，包括开发分支，发布分支
+    - 在其他频道、社交平台上宣布发行
+
+
+# 维护分支开发与发布流程
+场景描述：已经发布`1.1.0.RELEASE`，但发现缺陷，需要发布`1.1.1.RELEASE`修复版本
+
+1.	基于1.1.0分支创建1.1.x的维护分支：maintain/1.1.x，1.1.x后续所有维护修改均以该分支为基础开发。
+2.	maintain/1.1.x 上将版本修改为1.1.1-SNAPSHOT，完成代码开发
+3.	基于maintain/1.1.x分支创建release/1.1.1分支，修改版本号为：1.1.1. RELEASE
+4.	release/1.1.1 上发布到maven仓库
+5.	release/1.1.1 上创建tag：v1.1.1.release
+
+参考：[spring security 发布流程](https://github.com/spring-projects/spring-security/wiki/Release-Process)
+
+
+# 包结构介绍
+
+采用与 spring、spring-boot 相似的包模块划分、包命名策略
+
+最外层的 shoulder-build 管理了依赖的 spring-boot 的版本
+
+- shoulder-dependencies 是 shoulder 框架的依赖管理包，负责管理依赖的版本
+
+- shoulder-parent 是 shoulder 提供的所有jar的直接父类，它依赖了dependencies，负责管理所有 shoulder 及其公共依赖。
+shoulder-parent 中分为 shoulder-base 和 shoulder-starters。他们内部都包含了不同模块。
+
+    - shoulder-base: 基础定义包，里面包含了 shoulder框架 的所有的基础定义包。
+        - shoulder-xxx: xxx模块代码（开发时可以把一个模块当作一个工程）。作为 starter 的基础，使用者一般不会直接引入。
+        - ...
+        
+    - shoulder-starters: 某个模块开箱即用的 jar 包。以 shoulder-base 为基础，一般由 shoulder-xxx 以及自动配置的代码组成。
+        - shoulder-starter-xxx: xxx模块的自动配置，供使用者直接引入。
+        - ...

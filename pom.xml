@@ -29,12 +29,6 @@
                 shoulder-starter-xxx    xxx模块的自动配置，供使用者直接引入。
                 ...
 
-     ====================================
-     其他：
-     shoulder-initializer: 一个 maven archetype. 用于快速创建 使用shoulder框架的项目。类似 Spring Initializer.
-
-     shoulder-demos: shoulder 框架功能使用演示
-
      -->
 
     <!-- 简介 -->
@@ -53,7 +47,6 @@
         <module>shoulder-dependencies</module>
         <module>shoulder-parent</module>
         <module>shoulder-build</module>
-        <module>shoulder-initializers</module>
     </modules>
 
     <properties>
@@ -104,7 +97,7 @@
     </distributionManagement>
 
     <!-- 许可 -->
-    <!--开源协议采用 LGPL 协议-->
+    <!--开源协议采用 LGPL3 协议-->
     <licenses>
         <license>
             <name>GNU Lesser General Public License Version 3</name>
