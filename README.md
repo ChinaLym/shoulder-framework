@@ -1,5 +1,15 @@
 # shoulder （肩膀）
 
+![](https://img.shields.io/badge/build-passing-green.svg)
+![](https://img.shields.io/badge/modules-21-yellow.svg)
+![](https://img.shields.io/badge/license-Apche%202.0-orange.svg)
+
+![](https://img.shields.io/badge/Version-0.0.1--SNAPSHOT-red.svg) 
+
+![](https://img.shields.io/badge/Spring%20Boot%20Version-2.3.0-blue.svg)
+
+![](https://img.shields.io/badge/Spring%20Cloud%20Version-Hotox.SR5-blue.svg)
+
 ![LOGO](doc/img/logo.jpg)
 
 如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
@@ -47,17 +57,17 @@ Shoulder 是一款 Java WEB/微服务/开发框架，在 `Spring Boot`、`Spring
 
 最外层的 shoulder-build 管理了依赖的 spring-boot 的版本
 
-- shoulder-dependencies 是 shoulder 框架的依赖管理包，负责管理依赖的版本
+- **shoulder-dependencies** 是 shoulder 框架的依赖管理包，负责管理依赖的版本
 
-- shoulder-parent 是 shoulder 提供的所有jar的直接父类，它依赖了dependencies，负责管理所有 shoulder 及其公共依赖。
-shoulder-parent 中分为 shoulder-base 和 shoulder-starters。他们内部都包含了不同模块。
+- **shoulder-parent** 是 shoulder 提供的所有jar的直接父类，**shoulder-dependencies**，负责管理所有 **shoulder 模块** 和他们的公共依赖、插件等，**使用者也可以直接继承该模块**。
+**shoulder-parent** 中分为 **shoulder-base** 和 **shoulder-starters**。他们内部都包含了不同模块。
 
-    - shoulder-base: 基础定义包，里面包含了 shoulder框架 的所有的基础定义包。
-        - shoulder-xxx: xxx模块代码（开发时可以把一个模块当作一个工程）。作为 starter 的基础，使用者一般不会直接引入。
+    - **shoulder-base**: 基础定义包，里面包含了 shoulder框架 的所有的基础定义包。
+        - **shoulder-xxx**: xxx模块代码（开发时可以把一个模块当作一个工程）。作为 starter 的基础，使用者一般不会直接引入。
         - ...
         
-    - shoulder-starters: 某个模块开箱即用的 jar 包。以 shoulder-base 为基础，一般由 shoulder-xxx 以及自动配置的代码组成。
-        - shoulder-starter-xxx: xxx模块的自动配置，供使用者直接引入。
+    - **shoulder-starters**: 某个模块开箱即用的 jar 包。以 **shoulder-base** 为基础，一般由 **shoulder-xxx** 以及自动配置的代码组成。
+        - **shoulder-starter-xxx**: xxx模块的自动配置，供使用者直接引入。
         - ...
 
 
