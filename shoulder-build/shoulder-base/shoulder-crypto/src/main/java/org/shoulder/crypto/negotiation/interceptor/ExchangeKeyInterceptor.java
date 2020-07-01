@@ -1,5 +1,8 @@
 package org.shoulder.crypto.negotiation.interceptor;
 
+import org.shoulder.core.constant.CommonErrorCodeEnum;
+import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
@@ -8,6 +11,7 @@ import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -47,8 +51,15 @@ public class ExchangeKeyInterceptor extends HandlerInterceptorAdapter {
 
         // 一、处理请求：解密发送方的会话密钥
         KeyExchangeResult cacheKeyExchangeResult = keyNegotiationCache.getAsServer(xSessionId);
-        //todo
-        assert cacheKeyExchangeResult != null;
+
+        if(cacheKeyExchangeResult == null){
+            // 返回重新握手错误码
+            response.setStatus(HttpStatus.OK.value());
+            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            BaseResponse r = BaseResponse.error(CommonErrorCodeEnum.SECURITY_SESSION_INVALID);
+            response.getWriter().write(JsonUtils.toJson(r));
+            return false;
+        }
 
         transportCryptoUtil.verifyToken(xSessionId, xDk, token);
 

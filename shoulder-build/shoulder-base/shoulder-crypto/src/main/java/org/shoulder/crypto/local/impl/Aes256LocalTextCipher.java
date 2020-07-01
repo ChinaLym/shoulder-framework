@@ -57,7 +57,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 	private final LocalCryptoInfoRepository aesInfoDao;
 
 	/** 保护数据密钥的 iv */
-	private static final byte[] DATA_KEY_IV = "shoulderChinaLym".getBytes(CHARSET_UTF_8);
+	private static final byte[] DATA_KEY_IV = "shoulder:Cn-Lym!".getBytes(CHARSET_UTF_8);
 
 	private static final byte[] ROOT_KEY_FINAL_PART = "shoulderFramework:CN-Lym".getBytes(CHARSET_UTF_8);
 	private static final int aesKeyLength = 256;

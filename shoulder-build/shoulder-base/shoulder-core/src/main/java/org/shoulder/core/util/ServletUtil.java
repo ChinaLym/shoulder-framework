@@ -36,7 +36,7 @@ public class ServletUtil {
 	public static void setCookie(String cookieName, String cookieValue, int maxSecond){
 		HttpServletResponse response = ServletUtil.getResponse();
 		Cookie cookie = new Cookie(cookieName, cookieValue);
-		cookie.setMaxAge(maxSecond);//有效期单位为秒
+		cookie.setMaxAge(maxSecond);
 		cookie.setPath("/");
 		response.addCookie(cookie);
 	}
@@ -44,7 +44,7 @@ public class ServletUtil {
 	public static void expireCookie(String cookieName){
 		HttpServletResponse response = ServletUtil.getResponse();
 		Cookie cookie = new Cookie(cookieName, "");
-		cookie.setMaxAge(0);//有效期单位为秒
+		cookie.setMaxAge(0);
 		cookie.setPath("/");
 		response.addCookie(cookie);
 	}

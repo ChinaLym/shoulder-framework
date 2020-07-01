@@ -1,11 +1,10 @@
 package org.shoulder.web.advice;
 
 import lombok.extern.shoulder.SLog;
-import org.shoulder.core.constant.CommonErrorEnum;
+import org.shoulder.core.constant.CommonErrorCodeEnum;
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.util.StringUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
@@ -52,7 +51,7 @@ public class RestControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MissingServletRequestParameterException.class})
     public BaseResponse<Object[]> paramsMissingHandler(MissingServletRequestParameterException e) {
-        BaseRuntimeException stdEx = CommonErrorEnum.PARAM_BLANK.toException(e, e.getParameterName());
+        BaseRuntimeException stdEx = CommonErrorCodeEnum.PARAM_BLANK.toException(e, e.getParameterName());
         log.error(stdEx);
         return stdEx.toResponse();
     }
@@ -66,7 +65,7 @@ public class RestControllerExceptionAdvice {
         final String springErrorTipHeader = "Could not read document:";
         final String errorStackSplit = " at ";
         String message = e.getMessage();
-        BaseRuntimeException stdEx = CommonErrorEnum.PARAM_BODY_NOT_READABLE.toException(e);
+        BaseRuntimeException stdEx = CommonErrorCodeEnum.PARAM_BODY_NOT_READABLE.toException(e);
         if (StringUtils.contains(message, springErrorTipHeader)) {
             String errorInfo = StringUtils.subBetween(message, springErrorTipHeader, errorStackSplit);
             stdEx.setArgs(errorInfo);
@@ -84,7 +83,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public BaseResponse<Object[]> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
-        BaseRuntimeException stdEx = CommonErrorEnum.PARAM_NOT_VALID.toException(e, firstErrorInfo);
+        BaseRuntimeException stdEx = CommonErrorCodeEnum.PARAM_NOT_VALID.toException(e, firstErrorInfo);
         log.error(stdEx);
         return stdEx.toResponse();
     }
@@ -96,7 +95,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler({BindException.class})
     public BaseResponse<Object[]> bindExceptionHandler(BindException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
-        BaseRuntimeException stdEx = CommonErrorEnum.PARAM_NOT_VALID.toException(e, firstErrorInfo);
+        BaseRuntimeException stdEx = CommonErrorCodeEnum.PARAM_NOT_VALID.toException(e, firstErrorInfo);
         log.error(stdEx);
         return stdEx.toResponse();
     }
@@ -109,7 +108,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public BaseResponse<Object[]> constraintViolationExceptionHandler(ConstraintViolationException e) {
         String firstErrorInfo = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).findFirst().orElse("");
-        BaseRuntimeException stdEx = CommonErrorEnum.PARAM_NOT_VALID.toException(e, firstErrorInfo);
+        BaseRuntimeException stdEx = CommonErrorCodeEnum.PARAM_NOT_VALID.toException(e, firstErrorInfo);
         log.error(stdEx);
         return stdEx.toResponse();
     }
@@ -148,7 +147,7 @@ public class RestControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
     public BaseResponse methodNotSupportedHandler(HttpRequestMethodNotSupportedException e) {
-        return CommonErrorEnum.REQUEST_METHOD_MISMATCH.toResponse();
+        return CommonErrorCodeEnum.REQUEST_METHOD_MISMATCH.toResponse();
     }
 
 
@@ -157,7 +156,7 @@ public class RestControllerExceptionAdvice {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public BaseResponse methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
-        BaseRuntimeException ex = CommonErrorEnum.PARAM_TYPE_NOT_MATCH.toException(e.getName(), e.getValue(), e.getRequiredType().getName());
+        BaseRuntimeException ex = CommonErrorCodeEnum.PARAM_TYPE_NOT_MATCH.toException(e.getName(), e.getValue(), e.getRequiredType().getName());
         log.error(ex);
         return ex.toResponse();
     }
@@ -168,7 +167,7 @@ public class RestControllerExceptionAdvice {
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public BaseResponse httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
-        BaseRuntimeException ex = CommonErrorEnum.CONTENT_TYPE_INVALID.toException(String.valueOf(e.getContentType()));
+        BaseRuntimeException ex = CommonErrorCodeEnum.CONTENT_TYPE_INVALID.toException(String.valueOf(e.getContentType()));
         log.error(ex);
         return ex.toResponse();
     }
@@ -184,7 +183,7 @@ public class RestControllerExceptionAdvice {
      */
     @ExceptionHandler(MultipartException.class)
     public BaseResponse multipartException(MultipartException e) {
-        BaseRuntimeException ex = CommonErrorEnum.MULTIPART_INVALID.toException();
+        BaseRuntimeException ex = CommonErrorCodeEnum.MULTIPART_INVALID.toException();
         log.error(ex);
         return ex.toResponse();
     }
@@ -194,7 +193,7 @@ public class RestControllerExceptionAdvice {
      */
     @ExceptionHandler(Exception.class)
     public BaseResponse otherExceptionHandler(Exception e, HttpServletRequest request) {
-        BaseRuntimeException ex = CommonErrorEnum.UNKNOWN.toException(e);
+        BaseRuntimeException ex = CommonErrorCodeEnum.UNKNOWN.toException(e);
         log.error(ex);
         return ex.toResponse();
     }
@@ -219,7 +218,7 @@ public class RestControllerExceptionAdvice {
      */
     @ExceptionHandler(SQLException.class)
     public BaseResponse SQLExceptionHandler(SQLException e) {
-        BaseRuntimeException ex = CommonErrorEnum.PERSISTENCE_TO_DB_FAIL.toException(e);
+        BaseRuntimeException ex = CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL.toException(e);
         log.error(ex);
         return ex.toResponse();
     }

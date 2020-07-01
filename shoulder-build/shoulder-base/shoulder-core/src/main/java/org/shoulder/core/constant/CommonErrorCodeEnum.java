@@ -1,13 +1,13 @@
 package org.shoulder.core.constant;
 
 import org.shoulder.core.exception.BaseRuntimeException;
-import org.shoulder.core.exception.IError;
+import org.shoulder.core.exception.ErrorCode;
 
 /**
- * 通用错误
+ * 通用错误（2^14以下框架使用） todo 异常分类，不同的异常抛出时，类不同
  * @author lym
  */
-public enum CommonErrorEnum implements IError {
+public enum CommonErrorCodeEnum implements ErrorCode {
 
     /**
      * 成功
@@ -53,7 +53,7 @@ public enum CommonErrorEnum implements IError {
     /**
      * 请求错误：指定的请求方法不能被服务器处理
      */
-    REQUEST_METHOD_MISMATCH(20, "The specified request method cannot be processed by the server."),
+    REQUEST_METHOD_MISMATCH(20, "The request method can't be processed by the server."),
     /**
      * 请求错误：请求超时
      */
@@ -133,6 +133,10 @@ public enum CommonErrorEnum implements IError {
 
     // ----------------------- 作为服务消费者 ----------------------
     RPC_UNKNOWN(1000, "RPC error with none error code or msg."),
+    /**
+     * 返回了错误码:xxx
+     */
+    RPC_COMMON(1000, "RPC error with error code '%s'."),
 
     // ----------------------- 与中间件操作异常，代码正确时，常发于中间件宕机 ----------------------
     PERSISTENCE_TO_DB_FAIL(1000, "Persistent to database fail!"),
@@ -143,11 +147,11 @@ public enum CommonErrorEnum implements IError {
 
     private String message;
 
-    CommonErrorEnum(String code) {
+    CommonErrorCodeEnum(String code) {
         this.code = code;
     }
 
-    CommonErrorEnum(long code, String message) {
+    CommonErrorCodeEnum(long code, String message) {
         this.code = Long.toHexString(code);
         this.message = message;
     }

@@ -91,7 +91,7 @@
                         <licensesOutputDirectory>${project.basedir}/lic/licenses/</licensesOutputDirectory>
 
                         <!-- config for license:update-file-header -->
-                        <licenseName>lgpl_v3</licenseName>
+                        <licenseName>apache_v2</licenseName>
                         <inceptionYear>2020</inceptionYear>
                         <organizationName>shoulder</organizationName>
                         <projectName>shoulder-framework</projectName>

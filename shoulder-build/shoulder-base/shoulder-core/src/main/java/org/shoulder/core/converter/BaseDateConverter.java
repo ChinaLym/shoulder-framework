@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * 解决入参为 Date类型
+ * Controller 入参为 Date 类型如何转换
  *
  * @param <T> 时间类
  * @author lym

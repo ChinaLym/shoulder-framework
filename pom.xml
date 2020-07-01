@@ -20,7 +20,7 @@
     <!-- 开源组织 -->
     <organization>
         <name>ChinaLym</name>
-        <url>http://shoulder.itlym.cn:8080</url>
+        <url>coming soon</url>
     </organization>
 
     <!-- 模块 -->
@@ -36,10 +36,9 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven-javadoc-plugin.version>3.0.0</maven-javadoc-plugin.version>
-        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
-        <mt>false</mt>
     </properties>
 
 
@@ -47,14 +46,14 @@
     <developers>
         <developer>
             <id>ChinaLym</id>
-            <name>lym</name>
+            <name>cnlym</name>
             <email>cn_lym@foxmail.com</email>
             <organization>shoulder.</organization>
-            <organizationUrl>http://shoulder.itlym.cn:8080</organizationUrl>
+            <organizationUrl>coming soon</organizationUrl>
             <roles>
-                <role>Java Development Engineer</role>
+                <role>CAFE BABE</role>
             </roles>
-            <!--<timezone>+8</timezone>-->
+            <timezone>+8</timezone>
         </developer>
     </developers>
 
@@ -78,13 +77,13 @@
     </distributionManagement>
 
     <!-- 许可 -->
-    <!--开源协议采用 LGPL3 协议-->
+    <!--开源协议采用 Apache 2.0 协议-->
     <licenses>
         <license>
-            <name>GNU Lesser General Public License Version 3</name>
-            <url>http://www.gnu.org/licenses/lgpl.txt</url>
-
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
 

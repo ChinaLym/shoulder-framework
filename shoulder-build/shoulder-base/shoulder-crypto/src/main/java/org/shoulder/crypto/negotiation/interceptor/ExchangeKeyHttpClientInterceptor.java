@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
@@ -22,8 +23,10 @@ import java.io.IOException;
 
 /**
  * RestTemplate拦截器。
- * 向对方发出安全请求，响应自动解密
- * 用于处理server端加密返回的的信息，保存到ThreadLocal里面，用于client端解密
+ * client 向 server 发出安全请求，响应自动解密
+ * 用于 client 端解密目标服务返回的加密信息。
+ *
+ * todo 由于仅处理响应后，依赖发送上下文，处理强制握手返回错误码，考虑塞进 SecurityRestTemplate？
  *
  * @author lym
  */
@@ -49,6 +52,9 @@ public class ExchangeKeyHttpClientInterceptor implements ClientHttpRequestInterc
         ClientHttpResponse response = execution.execute(request, body);
 
         // *************************** afterRequest ***************************
+        if(response.getStatusCode() != HttpStatus.OK){
+            // todo 校验错误码，是否为强制重新进行密钥协商
+        }
 
         HttpHeaders headers = response.getHeaders();
         String token = headers.getFirst(KeyExchangeConstants.TOKEN);
@@ -67,7 +73,7 @@ public class ExchangeKeyHttpClientInterceptor implements ClientHttpRequestInterc
                 throw new RuntimeException("security token validate fail!");
             }
 
-            // 2. 获取本次请求真正的数据密钥THREAD_LOCAL
+            // 2. 获取本次请求真正的数据密钥 THREAD_LOCAL
             KeyExchangeResult keyExchangeInfo = KeyNegotiationCache.THREAD_LOCAL.get();
             byte[] realDataKey = TransportCryptoUtil.decryptDk(keyExchangeInfo, xDk);
 

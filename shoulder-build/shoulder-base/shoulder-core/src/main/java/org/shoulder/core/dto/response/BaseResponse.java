@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.shoulder.core.exception.BaseRuntimeException;
-import org.shoulder.core.exception.IError;
-import org.shoulder.core.constant.CommonErrorEnum;
+import org.shoulder.core.exception.ErrorCode;
+import org.shoulder.core.constant.CommonErrorCodeEnum;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -37,7 +37,7 @@ public class BaseResponse<T> implements Serializable {
     }
 
 
-    public BaseResponse(IError error) {
+    public BaseResponse(ErrorCode error) {
         this.code = error.getCode();
         this.msg = error.getMessage();
     }
@@ -50,24 +50,25 @@ public class BaseResponse<T> implements Serializable {
 
 
     public static <T> BaseResponse<T> success() {
-        return new BaseResponse<T>(CommonErrorEnum.SUCCESS);
+        return new BaseResponse<T>(CommonErrorCodeEnum.SUCCESS);
     }
 
     public static <T> BaseResponse<T> success(T data) {
-        return new BaseResponse<T>(CommonErrorEnum.SUCCESS).setData(data);
+        return new BaseResponse<T>(CommonErrorCodeEnum.SUCCESS).setData(data);
     }
 
-    public static <T> BaseResponse<T> error(IError errorCode) {
+    public static <T> BaseResponse<T> error(ErrorCode errorCode) {
         return new BaseResponse<T>(errorCode);
     }
 
-    public static <T> BaseResponse<T> error(IError error, T data) {
+    public static <T> BaseResponse<T> error(ErrorCode error, T data) {
         return new BaseResponse<T>(error).setData(data);
     }
 
 
-    // 用于获取 api 返回值时使用
-
+    /**
+     * 用于获取 api 返回值时使用
+     */
     @JsonIgnore
     public T getOrException() {
         return getOrException(BaseRuntimeException.class);
@@ -89,7 +90,7 @@ public class BaseResponse<T> implements Serializable {
     @JsonIgnore
     public T getOrException(Class<? extends BaseRuntimeException> exceptionType, String customMessage) {
         // success
-        if (CommonErrorEnum.SUCCESS.getCode().equals(code)) {
+        if (CommonErrorCodeEnum.SUCCESS.getCode().equals(code)) {
             return data;
         }
         String actualMessage = customMessage != null ? customMessage : msg;
@@ -113,7 +114,7 @@ public class BaseResponse<T> implements Serializable {
      * 检查 code，若不为 SUCCESS，则抛异常
      */
     public void checkCode() {
-        if (!CommonErrorEnum.SUCCESS.getCode().equals(code)) {
+        if (!CommonErrorCodeEnum.SUCCESS.getCode().equals(code)) {
             throw new BaseRuntimeException(code, msg);
         }
     }

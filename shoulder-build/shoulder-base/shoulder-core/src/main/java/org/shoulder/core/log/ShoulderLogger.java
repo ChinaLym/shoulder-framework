@@ -1,6 +1,6 @@
 package org.shoulder.core.log;
 
-import org.shoulder.core.exception.IError;
+import org.shoulder.core.exception.ErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -11,8 +11,8 @@ import org.springframework.util.StringUtils;
  * 在 slf4j 之上封装一层带错误码的记录实现
  * 统一使用该 logger 记录日志，禁用 {@link System#out}
  * trace、debug、info 这些可能不输出的日志的级别采用占位符或条件判断，warn、error则推荐字符串拼接避免占位符查找替换，参数非法一般用warn
- * 推荐开启异步日志（todo 默认开启）
- * 默认不配置日志框架输出日志打印处的类名，方法名及行号的信息（获取堆栈信息较消耗资源，应通过配置项是否开启）
+ * 推荐使用者开启异步日志优化IO（默认关闭）
+ * 默认info以及以下级别，不配置日志框架输出日志打印处的类名，方法名及行号的信息（获取堆栈信息较消耗资源，应通过配置项是否开启）
  *
  * @author lym
  */
@@ -303,8 +303,8 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void warn(String msg, Throwable t) {
-        if(t instanceof IError){
-            warnWithErrorCode(((IError)t).getCode(), ((IError)t).generateDetail(), t);
+        if(t instanceof ErrorCode){
+            warnWithErrorCode(((ErrorCode)t).getCode(), ((ErrorCode)t).generateDetail(), t);
             return;
         }
         uniformLog(() -> log.warn(msg, t));
@@ -349,7 +349,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     // --------- 带错误码的 WARN ---------
 
     @Override
-    public void warn(IError error){
+    public void warn(ErrorCode error){
         uniformLog(error.getCode(), () -> {
             if(error instanceof Throwable){
                 log.warn(error.generateDetail(), (Throwable)error);
@@ -424,8 +424,8 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void error(String msg, Throwable t) {
-        if(t instanceof IError){
-            errorWithErrorCode(((IError)t).getCode(), ((IError)t).generateDetail(), t);
+        if(t instanceof ErrorCode){
+            errorWithErrorCode(((ErrorCode)t).getCode(), ((ErrorCode)t).generateDetail(), t);
             return;
         }
         uniformLog(() -> log.error(msg, t));
@@ -470,7 +470,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     // --------- 带错误码的 ERROR ---------
 
     @Override
-    public void error(IError error){
+    public void error(ErrorCode error){
         uniformLog(error.getCode(), () -> {
             if(error instanceof Throwable){
                 log.error(error.generateDetail(), (Throwable)error);

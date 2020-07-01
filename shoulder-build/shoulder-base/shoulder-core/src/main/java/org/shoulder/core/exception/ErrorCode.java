@@ -2,19 +2,25 @@ package org.shoulder.core.exception;
 
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.util.ExceptionUtil;
+import org.springframework.lang.NonNull;
+
+import javax.validation.constraints.NotEmpty;
 
 /**
- * 带错误码和默认提示信息的异常信息
- *  通常错误码枚举、自定义异常类实现该接口
- *     业务中可以按模块或按业务定义枚举 保存错误码、错误提示信息
+ * 表示错误的接口
+ * 必带错误码，可带提示信息的异常/错误
+ * 通常错误码枚举、自定义异常类实现该接口
+ *
+ * 小提示：业务中可以按模块或按业务定义枚举 保存错误码、错误提示信息
  *
  * @author lym
  */
-public interface IError {
+public interface ErrorCode {
     /**
      * 获取错误码
      * @return 错误码
      */
+    @NotEmpty
     String getCode();
 
     /**
@@ -37,7 +43,7 @@ public interface IError {
      */
     default void setArgs(Object... args){
         // todo 是否抛出异常？
-        throw new BaseRuntimeException("not support set args");
+        throw new UnsupportedOperationException("not support set args");
     }
 
     /**

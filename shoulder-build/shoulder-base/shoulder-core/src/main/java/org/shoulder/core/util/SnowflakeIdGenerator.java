@@ -40,7 +40,7 @@ public class SnowflakeIdGenerator {
     /**
      * 支持的最大数据标识id，结果是31
      */
-    private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
+    private final long maxDataCenterId = -1L ^ (-1L << datacenterIdBits);
 
     /**
      * 序列在id中占的位数
@@ -55,7 +55,7 @@ public class SnowflakeIdGenerator {
     /**
      * 数据标识id向左移17位(12+5)
      */
-    private final long datacenterIdShift = sequenceBits + workerIdBits;
+    private final long dataCenterIdShift = sequenceBits + workerIdBits;
 
     /**
      * 时间截向左移22位(5+5+12)
@@ -99,8 +99,8 @@ public class SnowflakeIdGenerator {
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
         }
-        if (datacenterId > maxDatacenterId || datacenterId < 0) {
-            throw new IllegalArgumentException(String.format("datacenter Id can't be greater than %d or less than 0", maxDatacenterId));
+        if (datacenterId > maxDataCenterId || datacenterId < 0) {
+            throw new IllegalArgumentException(String.format("datacenter Id can't be greater than %d or less than 0", maxDataCenterId));
         }
         this.workerId = workerId;
         this.datacenterId = datacenterId;
@@ -141,7 +141,7 @@ public class SnowflakeIdGenerator {
 
         //移位并通过或运算拼到一起组成64位的ID
         return ((timestamp - twepoch) << timestampLeftShift)
-                | (datacenterId << datacenterIdShift)
+                | (datacenterId << dataCenterIdShift)
                 | (workerId << workerIdShift)
                 | sequence;
     }
