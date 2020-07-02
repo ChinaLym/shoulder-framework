@@ -2,20 +2,16 @@ package org.shoulder.log.operation.util;
 
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.shoulder.core.context.BaseContextHolder;
-import org.shoulder.log.operation.constants.OpLogConstants;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.entity.OperationLogEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.lang.Nullable;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 操作日志实体构建器
@@ -40,23 +36,23 @@ public class OperationLogBuilder {
     }
 
     /**
-     * 1. 根据 OperationLogTemplate 创建 operableList.size() 条操作日志
+     * 1. 根据 operationLogTemplate 创建 operableList.size() 条操作日志
      * 2. 用 operableList 分别填充每条日志的被操作对象和 actionDetail 字段
      *
-     *      如果 operableList 为空，则返回日志模板 OperationLogTemplate。
+     *      如果 operableList 为空，则返回日志模板 operationLogTemplate。
      *
-     * @param OperationLogTemplate 日志模板
+     * @param operationLogTemplate 日志模板
      * @param operableList        被操作对象集合
      * @return 多条填充完毕的日志对象，至少返回包含一条日志的 List
      * */
-    public static List<OperationLogEntity> newLogsFrom(OperationLogEntity OperationLogTemplate,
+    public static List<OperationLogEntity> newLogsFrom(OperationLogEntity operationLogTemplate,
                                                        @Nullable Collection<? extends Operable> operableList){
-        if(OperationLogTemplate == null || CollectionUtils.isEmpty(operableList)){
-            return Collections.singletonList(OperationLogTemplate);
+        if(operationLogTemplate == null || CollectionUtils.isEmpty(operableList)){
+            return Collections.singletonList(operationLogTemplate);
         }
         List<OperationLogEntity> resultLogs = new ArrayList<>(operableList.size());
         for (Operable operable : operableList) {
-            OperationLogEntity logEntity = OperationLogTemplate.clone();
+            OperationLogEntity logEntity = operationLogTemplate.clone();
             resultLogs.add(logEntity.setOperableObject(operable));
         }
         return resultLogs;

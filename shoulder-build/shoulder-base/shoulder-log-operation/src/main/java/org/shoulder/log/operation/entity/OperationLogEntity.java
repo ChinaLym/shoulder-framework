@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.constants.OpLogConstants;
 import org.shoulder.log.operation.constants.OperateResultEnum;
@@ -245,9 +246,13 @@ public class OperationLogEntity implements Cloneable {
     // ------------------ clone ---------------
 
     @Override
-    public OperationLogEntity clone() throws CloneNotSupportedException {
-        super.clone();
-        return cloneTo(new OperationLogEntity());
+    public OperationLogEntity clone() {
+        try {
+            super.clone();
+            return cloneTo(new OperationLogEntity());
+        } catch (CloneNotSupportedException e) {
+            throw new BaseRuntimeException(e);
+        }
     }
 
     /**
