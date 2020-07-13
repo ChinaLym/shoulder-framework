@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 public @interface OperationLogConfig {
 
     /**
-     * 对象类型 例：监控点： VmsObjectTypes.CAMERA
+     * 对象类型 例：角色： UserObjectTypes.ROLE
      * 【推荐实体实现 Operable，将不必在注解填充】
      */
     String objectType() default "";

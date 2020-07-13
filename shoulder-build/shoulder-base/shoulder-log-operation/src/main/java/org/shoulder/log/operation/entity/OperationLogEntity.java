@@ -43,14 +43,14 @@ public class OperationLogEntity implements Cloneable {
     /**
      * 操作者标识 【必须】
      * 最长 128
-     * 用户 ————————— 用户名（用户的账号），例： admin
+     * 用户 ————————— 用户名（用户id或用户的登录账号），例： admin
      * 系统内部触发 —— 当前系统/服务标识   格式："system.服务标识" 例： system.user-center
      */
     protected String userId;
 
     /**
      * 操作者姓名（选填）
-     * 最长 255
+     * 最长 128
      * 用户 ————————— 用户昵称， 例： lym
      * 服务内部任务 —— 不填
      */
@@ -97,7 +97,7 @@ public class OperationLogEntity implements Cloneable {
 
     /**
      * 被操作对象的类型标识 最长 128 （选填）
-     * Key格式为：log.objectType.<操作对象类型表示>
+     * Key格式为：log.objectType.<操作对象类型标识>
      */
     protected String objectType;
 
@@ -173,8 +173,7 @@ public class OperationLogEntity implements Cloneable {
     /**
      * 与本次操作所关联其他业务操作的业务号 （选填）
      * 最长 128
-     * 例1：结束视频预览，与开始视频预览的业务有关联，该字段可填写开始视频预览操作的业务号；
-     * 例2：批量导入场景，确认导入时，与上传批量导入文件操作有关；
+     * 例：上传csv进行数据的批量导入场景：上传导入文件、校验导入数据、点击确认导入、导入成功业务相关可以填同一个标识符
      */
     protected String relationId;
 

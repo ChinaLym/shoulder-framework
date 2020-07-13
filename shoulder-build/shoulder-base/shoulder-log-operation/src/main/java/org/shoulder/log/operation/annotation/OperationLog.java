@@ -38,7 +38,7 @@ public @interface OperationLog {
     String action();
 
     /**
-     * 操作详情多语言key   例： ArmingActionMessageIds.BATCH_ARM         (选填)
+     * 操作详情多语言key   例： UserActionI18nKey.REGISTER         (选填)
      * log.i18nKey.<操作内容标识>.message
      */
     String i18nKey() default "";
@@ -63,7 +63,7 @@ public @interface OperationLog {
     // ==================================== 下方不太常用 =========================================
 
     /**
-     * 对象类型，选填      例：    VmsObjectTypes.CAMERA
+     * 对象类型，选填      例：    UserObjectTypes.ROLE
      * 【
      * 推荐1：实体实现 Operable，便不必在注解填充。
      * 推荐2：在类注解 @OperationLogConfig 上描述该值，便不必在每个方法上填充
