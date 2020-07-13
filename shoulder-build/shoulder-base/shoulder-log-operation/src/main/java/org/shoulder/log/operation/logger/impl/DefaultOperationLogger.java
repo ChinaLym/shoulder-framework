@@ -116,7 +116,7 @@ public class DefaultOperationLogger implements OperationLogger {
 
     /**
      * 在验证之前。
-     * 可以继续针对自己的组件统一补充某些有规律的值
+     * 可以继续针对自己的业务场景统一补充某些有规律的值
      */
     private void beforeValidate(OperationLogEntity opLogEntity) {
         logInterceptors.forEach(listener -> listener.beforeValidate(opLogEntity));

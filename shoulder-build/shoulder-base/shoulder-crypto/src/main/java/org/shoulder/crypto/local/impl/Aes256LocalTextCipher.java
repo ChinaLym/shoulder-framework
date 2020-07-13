@@ -179,7 +179,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 	}
 
 	/**
-	 * 初始化本组件的加密信息，并保存至数据库的加密固件表中
+	 * 初始化本应用的加密信息，并保存至数据库的加密固件表中
 	 * 同时会填充缓存
 	 */
 	private void initSecurityInfo() throws Exception {
@@ -203,7 +203,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 	 * 向量以16进制字符串编码后持久化。
 	 * 数据秘钥本质为随机数，但需要根秘钥、根加密向量的保护
 	 *
-	 * @return 本组件加密记录
+	 * @return 本应用加密记录
 	 */
 	private LocalCryptoInfoEntity generateSecurity() throws AesCryptoException {
 		byte[] rootKeyRandomPart = ByteUtils.randomBytes(needLength);

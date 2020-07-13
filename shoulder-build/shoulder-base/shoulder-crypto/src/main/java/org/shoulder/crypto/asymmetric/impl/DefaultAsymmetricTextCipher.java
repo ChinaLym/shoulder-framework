@@ -20,7 +20,7 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
 	/** 非对称加密处理器 */
 	private final AsymmetricCryptoProcessor processor;
 
-	/** 秘钥对 id ：用于获取加解密的公钥私钥对。分布式时无需关心其他组件是否会有冲突 */
+	/** 秘钥对 id ：用于获取加解密的公钥私钥对。分布式时无需关心其他应用是否会有冲突 */
 	private final String defaultKeyId;
 
 	public DefaultAsymmetricTextCipher(AsymmetricCryptoProcessor processor) {

@@ -51,7 +51,7 @@ public interface OperationLogInterceptorAdapter extends OperationLoggerIntercept
 
     /**
      * 在验证之前。
-     * 可以继续针对自己的组件统一补充某些有规律的值
+     * 可以继续针对自己的应用统一补充某些有规律的值
      *
      * @param opLogEntity 待验证的日志实体
      */
