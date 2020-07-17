@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * 实现了 spring i18n接口的类，扩展了
- * HTTP header : Accept-Language 标记语言。
+ * 默认以 HTTP header 的 Accept-Language 作为标记语言。
  * todo 扩展spring i18？
  * @author lym
  */

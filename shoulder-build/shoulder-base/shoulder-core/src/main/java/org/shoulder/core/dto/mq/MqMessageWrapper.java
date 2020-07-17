@@ -25,7 +25,7 @@ public class MqMessageWrapper {
     private String from;
 
     /**
-     * 真正的 msg json 化的部分
+     * 真正的 msg json 化的部分，建议对应数据添加 version 以应对多版本服务共存
      */
     private String data;
 

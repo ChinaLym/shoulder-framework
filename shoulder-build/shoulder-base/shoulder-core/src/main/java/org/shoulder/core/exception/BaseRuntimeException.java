@@ -1,6 +1,7 @@
 package org.shoulder.core.exception;
 
 import org.shoulder.core.util.ExceptionUtil;
+import org.springframework.boot.logging.LogLevel;
 
 /**
  * 基础通用异常【一般不会发生的问题，一旦发生，通常需要人工排查和修复】
@@ -26,6 +27,10 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * 参数，用于填充 message。message 支持{}、%s这种
      */
     private Object[] args;
+
+    private LogLevel logLevel;
+
+
 
     // ==================== 当且仅当发生在编码错误时发生 =================
 
