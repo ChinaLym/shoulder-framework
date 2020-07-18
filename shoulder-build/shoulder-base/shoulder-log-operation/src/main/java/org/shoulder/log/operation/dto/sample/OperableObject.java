@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.dto.sample;
 
-import org.shoulder.log.operation.dto.ActionDetailAble;
+import org.shoulder.log.operation.dto.OperationDetailAble;
 import org.shoulder.log.operation.dto.Operable;
 
 import java.util.*;
@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 
 /**
  * 被操作对象 DTO
- * 
+ *
  * @author lym
  */
-public class OperableObject implements Operable, ActionDetailAble {
+public class OperableObject implements Operable, OperationDetailAble {
 
     protected String objectId;
 
@@ -19,7 +19,7 @@ public class OperableObject implements Operable, ActionDetailAble {
 
     protected String objectType;
 
-    protected List<String> actionDetail;
+    protected List<String> detailItems;
 
     public OperableObject(){}
 
@@ -27,7 +27,7 @@ public class OperableObject implements Operable, ActionDetailAble {
         this.objectId = operable.getObjectId();
         this.objectName = operable.getObjectName();
         this.objectType = operable.getObjectType();
-        this.actionDetail = operable.getActionDetail();
+        this.detailItems = operable.getDetailItems();
     }
 
     @Override
@@ -46,8 +46,8 @@ public class OperableObject implements Operable, ActionDetailAble {
     }
 
     @Override
-    public List<String> getActionDetail() {
-        return actionDetail;
+    public List<String> getDetailItems() {
+        return detailItems;
     }
 
     public OperableObject setObjectId(String objectId) {
@@ -65,24 +65,16 @@ public class OperableObject implements Operable, ActionDetailAble {
         return this;
     }
 
-    public OperableObject setActionDetail(List<String> actionDetail) {
-        this.actionDetail = actionDetail;
+    public OperableObject setDetailItems(List<String> detailItems) {
+        this.detailItems = detailItems;
         return this;
     }
 
-    public OperableObject addActionDetailStr(String actionDetail){
-        if (this.actionDetail == null){
-            this.actionDetail = new LinkedList<>();
+    public OperableObject addDetailItem(String... item){
+        if (this.detailItems == null){
+            this.detailItems = new LinkedList<>();
         }
-        this.actionDetail.addAll(Arrays.asList(actionDetail.split(",")));
-        return this;
-    }
-
-    public OperableObject addActionDetail(String actionDetail){
-        if (this.actionDetail == null){
-            this.actionDetail = new LinkedList<>();
-        }
-        this.actionDetail.add(actionDetail);
+        this.detailItems.addAll(Arrays.asList(item));
         return this;
     }
 

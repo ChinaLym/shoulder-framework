@@ -16,7 +16,7 @@ public interface OperationLogParamValueConverter {
 
     /**
      * 转换日志参数值
-     * @param logEntity           预先生成的日志实体，可以从这里拿到 action 等自定义业务标识
+     * @param logEntity           预先生成的日志实体，可以从这里拿到操动作标识等自定义业务标识
      * @param paramValue    参数值，paramValue.getClass() 不一定等于 methodParamClazz
      * @param methodParamClazz    代码中方法描述的参数类型
      * @return 转化后的 value，允许有多个值

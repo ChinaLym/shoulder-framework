@@ -8,27 +8,26 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-import static org.shoulder.log.operation.constants.OpLogConstants.I18nPrefix.ACTION;
+import static org.shoulder.log.operation.constants.OpLogI18nPrefix.OPERATION;
 
 /**
- * 操作参数
- *
+ * 操作对应业务方法/接口的入参
  * @author lym
  */
-public class ActionParam {
+public class OpLogParam {
 
     /**
      * 参数值是否支持多语言
      */
-    protected boolean i18nValue = false;
+    protected boolean supportI18n = false;
 
     /**
      * 参数名称
-     * 多语言key的格式为：log.action.<动作标识>.<名称标识>.displayName
+     * 多语言key的格式为：op.op.<动作标识>.<参数名称标识>
      *
-     *  示例：查询操作（log.action.query.displayName）的操作参数
+     *  示例：查询操作（op.op.query）的操作参数
      * [{"name":"role","type":"locale","value":"admin,operation"}]
-     * name字段的多语言 key 为log.action.query.role.displayName=角色
+     * name字段的多语言 key 为 op.op.query.role=角色
      */
     protected String name;
 
@@ -38,15 +37,15 @@ public class ActionParam {
      */
     protected List<String> value = new LinkedList<>();
 
-    public ActionParam() {
+    public OpLogParam() {
     }
 
-    public boolean isI18nValue() {
-        return i18nValue;
+    public boolean isSupportI18n() {
+        return supportI18n;
     }
 
-    public void setI18nValue(boolean i18nValue) {
-        this.i18nValue = i18nValue;
+    public void setSupportI18n(boolean supportI18n) {
+        this.supportI18n = supportI18n;
     }
 
     public String getName() {
@@ -75,44 +74,44 @@ public class ActionParam {
     /**
      * 组装 name
      */
-    private String buildName(String action){
-        if(this.name.startsWith(ACTION)){
+    private String buildName(String operation){
+        if(this.name.startsWith(OPERATION)){
             return this.name;
-        }else if(action.startsWith(ACTION)){
-            return action + "." + this.name;
+        }else if(operation.startsWith(OPERATION)){
+            return operation + "." + this.name;
         }else {
-            return ACTION + action + "." + this.name;
+            return OPERATION + operation + "." + this.name;
         }
     }
 
-    private String buildValue(String value, String action) {
-        if(value.startsWith(ACTION)){
+    private String buildValue(String value, String operation) {
+        if(value.startsWith(OPERATION)){
             return value;
         }
-        if(this.name.startsWith(ACTION)){
+        if(this.name.startsWith(OPERATION)){
             return this.name + "." + value;
-        }else if(action.startsWith(ACTION)){
-            return action + "." + this.name + ".";
+        }else if(operation.startsWith(OPERATION)){
+            return operation + "." + this.name + ".";
         }else {
-            return ACTION + action +
+            return OPERATION + operation +
                     "." + this.name +
                     "." + value;
         }
     }
 
     /**
-     * @param action 操作动作
+     * @param operation 操作动作
      */
-    public String format(String action) {
+    public String format(String operation) {
 
-        String name = buildName(action);
+        String name = buildName(operation);
 
         StringJoiner valueJoiner = new StringJoiner(",");
         if(CollectionUtils.isNotEmpty(value)){
                 value = value.stream()
                         .map( v -> {
                             if(StringUtils.isNotEmpty(v)) {
-                                v = buildValue(v, action);
+                                v = buildValue(v, operation);
                             }
                             valueJoiner.add(v);
                             return v;
@@ -120,7 +119,7 @@ public class ActionParam {
                         .collect(Collectors.toList());
         }
         /*else {
-            throw new IllegalStateException("不应该出现的状态，要么 actionParam == null 要么 actionParam.value.size() > 0 ");
+            throw new IllegalStateException("不应该出现的状态，要么 operationParam == null 要么 operationParam.value.size() > 0 ");
         }*/
         return "{\"name\"=\"" + name + '\"' + ", \"value\"=\"" + valueJoiner.toString() + "\"}";
     }

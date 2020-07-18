@@ -5,6 +5,6 @@ package org.shoulder.log.operation.dto;
  *
  * @author lym
  */
-public interface OperateRecord extends Operable, ActionDetailAble, OperateResult {
+public interface OperateRecord extends Operable, OperationDetailAble, OperateResult {
 
 }

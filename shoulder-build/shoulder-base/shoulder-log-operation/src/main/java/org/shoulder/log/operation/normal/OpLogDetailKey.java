@@ -5,17 +5,17 @@ package org.shoulder.log.operation.normal;
  * 【若偏好使用注解：不推荐实现该接口，而是用常量类】
  * @author lym
  */
-public interface DetailI18nKey {
+public interface OpLogDetailKey {
 
     /**
      * 操作详情多语言标识
      * @return 例： add
      */
-    String getDetailI18nKey();
+    String getDetailKey();
 
     /**
-     * 动作表示
-     * @return
+     * 操作标识
+     * @return 操作标识
      */
-    String getAction();
+    String getOperation();
 }

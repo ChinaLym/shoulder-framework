@@ -25,6 +25,7 @@
         <module>shoulder-code</module>
         <module>shoulder-auth-server</module>
         <module>shoulder-rest-server</module>
+        <module>shoulder-crypto-transport</module>
         <!--<module>shoulder-api-doc-swagger2</module>-->
     </modules>
 

@@ -7,30 +7,27 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.log.operation.annotation.OperationLogParam;
-import org.shoulder.log.operation.constants.OpLogConstants;
-import org.shoulder.log.operation.constants.OperateResultEnum;
-import org.shoulder.log.operation.dto.ActionDetailAble;
+import org.shoulder.log.operation.constants.OpLogI18nPrefix;
+import org.shoulder.log.operation.constants.OperationResultEnum;
+import org.shoulder.log.operation.constants.TerminalType;
+import org.shoulder.log.operation.dto.OperationDetailAble;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperateResult;
 import org.shoulder.log.operation.dto.Operator;
-import org.shoulder.log.operation.normal.Action;
-import org.shoulder.log.operation.normal.DetailI18nKey;
+import org.shoulder.log.operation.normal.Operation;
+import org.shoulder.log.operation.normal.OpLogDetailKey;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 
 
 /**
  * 操作日志实体
  * （所有字段均为 protect: 方便使用者灵活扩展）
  * 重要信息：操作时间、用户id、用户名称，IP、操作动作、被操作对象、操作结果、操作详情
- * 其他信息：操作者所在机器的MAC地址、操作者使用的终端类型、追踪链路标识 traceId
- *
- * todo 日志多语言实现设计和说明
+ * 其他信息：操作者终端标识、操作者使用的终端类型、追踪链路标识 traceId
+ * todo 字段修改后，修改对应校验、toString、赋值、扩展字段的使用优化、记录、将原来 detail 拆成两个，需要补充定义等
  *
  * @author lym
  */
@@ -57,20 +54,29 @@ public class OperationLogEntity implements Cloneable {
     protected String userName;
 
     /**
-     * 操作者实名关联的人员唯一标识（选填）
-     * 最长 255
+     * 操作者实名关联的人员唯一标识 255 （选填）
      * 用户 ————————— 用户对应的真实人标识 例： tb_person 表 主键
      * 服务内部任务 —— 不填
      */
     protected String personId;
 
     /**
-     * 操作者组织唯一标识（选填）
-     * 最长 128
+     * 操作者组织唯一标识 128（选填）
      * 用户 ————————— 用户所属组织/部门唯一标识  例： tb_org 表的 主键
      * 服务内部任务 —— 不填
      */
     protected String userOrgId;
+
+    /**
+     * 操作者用户组名称 128 （选填）
+     * 用户所属用户组名称
+     */
+    protected String userOrgName;
+
+    /**
+     * 操作者终端类型 （必填）
+     */
+    protected TerminalType terminalType = TerminalType.SYSTEM;
 
     /**
      * IP （选填）
@@ -81,17 +87,16 @@ public class OperationLogEntity implements Cloneable {
     protected String ip;
 
     /**
-     * MAC地址 （选填）
-     * 最长 255
-     * 用户 ————————— 用户登录机器MAC地址 例：8C-RC-5B-54-89-2P
-     * 服务内部任务 —— 服务所在机器MAC地址
+     * 操作者终端标识 128（选填），也可以生成 UUID
+     * 手机设备的唯一标识：IMSI、IMEI、ESN、MEID
+     * PC 中网卡唯一标识 MAC 地址 系统内部操作记为服务器所在机器 MAC 地址
      */
-    protected String mac;
+    protected String terminalId;
 
     /**
-     * 操作者终端类型 （必填）- 默认值 SYSTEM
+     * 操作者终端信息，如浏览器可获取 UserAgent、App 可获取手机类型 （选填）
      */
-    protected String terminalType = OpLogConstants.TerminalType.SYSTEM;
+    protected String terminalInfo;
 
     /** ================== 被操作对象描述（均为选填） {@link Operable } ================== */
 
@@ -116,11 +121,11 @@ public class OperationLogEntity implements Cloneable {
     // ====================================== 操作动作描述 ===================================
 
     /**
-     * 具体操作标识      【必填】  相关接口：{@link Action}
+     * 具体操作标识      【必填】  相关接口：{@link Operation}
      * 最长 255   多语言翻译由服务提供。
      * 例：登录、退出、查询、新增、修改、删除、下载等
      */
-    protected String action;
+    protected String operation;
 
     /**
      * 操作发生时间
@@ -128,40 +133,54 @@ public class OperationLogEntity implements Cloneable {
     protected LocalDateTime operationTime = LocalDateTime.now();
 
     /**
-     * 本次操作结果       （必填） 默认成功
+     * 操作参数，记录业务操作的参数信息，用于操作审计和分析 （选填），最长 4096
+     *
+     * @see OpLogParam
+     * @see OperationLogParam
      */
-    protected OperateResultEnum result = OperateResultEnum.SUCCESS;
+    protected List<OpLogParam> params;
 
     /**
-     * 最长 128 （选填） 相关接口：{@link DetailI18nKey}
-     * - 若不支持多语言则不填。
-     * 占位符使用 %1,%2,%n形式，n表示第n个参数；
-     */
-    protected String detailI18nKey;
-
-    /**
-     * 操作详情占位填充项，用于填充 detailI18nKey 中的 %1,%2,%n
-     */
-    protected List<String> detailItem;
-
-    /**
-     * 本次操作的详细描述  最长 4096 （选填） todo 分为两个字段
-     * 以上数据项无法清楚描述的情况下能通过本项尽可能准确、详细的描述用户的操作内容
+     * 本次操作的详细描述  最长 4096 （选填）
+     * 详细的描述用户的操作内容，如被操作对象的 json 输出，注意不要输出密码等敏感信息，或是具体发生了怎样的事情
      */
     protected String detail;
 
-    // ========================= 其他描述（均为选填） ======================
-
     /**
-     * 操作参数，记录业务操作的参数信息，用于操作审计和分析 （选填），最长 4096
-     *
-     * @see ActionParam
-     * @see OperationLogParam
+     * 最长 128 （选填） 相关接口：{@link OpLogDetailKey}
+     * - 若不支持多语言则不填。
+     * 占位符使用 %1,%2,%n形式，n表示第n个参数；
      */
-    protected List<ActionParam> actionParams;
+    protected String detailKey;
 
     /**
-     * 服务标识 （必填） 默认为 `spring.application.name`
+     * 操作详情占位填充项，用于填充 detailKey 中的 %1,%2,%n
+     */
+    protected List<String> detailItems;
+
+    /**
+     * 本次操作结果（必填）
+     */
+    protected OperationResultEnum result = OperationResultEnum.SUCCESS;
+
+
+    /**
+     * 当操作结果为失败时，记录操作失败对应的错误码（选填）
+     */
+    protected String errorCode;
+
+    // ========================= 其他描述 ======================
+
+    /**
+     * 与本次操作所关联其他业务操作的业务号 ，用于多个请求完共同完成一个业务功能时（选填）
+     * 最长 128
+     * 例   上传csv进行数据的批量导入场景：上传导入文件、校验导入数据、点击确认导入、导入成功业务相关可以填同一个标识符
+     *      上传新头像、确定修改个人信息也可以有相同的业务标识
+     */
+    protected String businessId;
+
+    /**
+     * 服务标识 （必填） 默认取 `spring.application.name`
      */
     protected String serviceId;
 
@@ -170,18 +189,8 @@ public class OperationLogEntity implements Cloneable {
      */
     protected String traceId;
 
-    /**
-     * 与本次操作所关联其他业务操作的业务号 （选填）
-     * 最长 128
-     * 例：上传csv进行数据的批量导入场景：上传导入文件、校验导入数据、点击确认导入、导入成功业务相关可以填同一个标识符
-     */
-    protected String relationId;
-
-    /**
-     * 当操作结果为失败时，记录操作失败对应的错误码（选填）
-     */
-    protected String errorCode;
-
+    /** 扩展字段 */
+    protected Map<String, String> extFields;
 
     // ***********************************  构造函数  ***********************************
 
@@ -191,8 +200,8 @@ public class OperationLogEntity implements Cloneable {
     /**
      * 引导使用者填写必要字段
      */
-    public OperationLogEntity(String action) {
-        this.action = action;
+    public OperationLogEntity(String operation) {
+        this.operation = operation;
     }
 
     // ***********************************  增强的填充方式  ***********************************
@@ -205,7 +214,7 @@ public class OperationLogEntity implements Cloneable {
             this.userId = operator.getUserId();
             this.personId = operator.getPersonId();
             this.ip = operator.getIp();
-            this.mac = operator.getMac();
+            this.terminalId = operator.getTerminalId();
             this.terminalType = operator.getTerminalType();
         }
         return this;
@@ -220,26 +229,26 @@ public class OperationLogEntity implements Cloneable {
             this.objectName = operable.getObjectName();
             this.objectType = operable.getObjectType();
 
-            if (operable instanceof ActionDetailAble && operable.getActionDetail() != null && operable.getActionDetail().size() > 0) {
-                this.detailItem = operable.getActionDetail();
+            if (operable instanceof OperationDetailAble && operable.getDetailItems() != null && operable.getDetailItems().size() > 0) {
+                this.detailItems = operable.getDetailItems();
             }
 
             if (operable instanceof OperateResult) {
-                this.setResult(OperateResultEnum.of(((OperateResult) operable).success()));
+                this.setResult(OperationResultEnum.of(((OperateResult) operable).success()));
             }
         }
         return this;
     }
 
-    public OperationLogEntity addDetailItem(String actionDetail) {
-        if (actionDetail != null) {
-            this.detailItem.add(actionDetail);
+    public OperationLogEntity addDetailItem(String detailItem) {
+        if (detailItem != null) {
+            this.detailItems.add(detailItem);
         }
         return this;
     }
 
     public OperationLogEntity setResultFail() {
-        return setResult(OperateResultEnum.FAIL);
+        return setResult(OperationResultEnum.FAIL);
     }
 
     // ------------------ clone ---------------
@@ -264,10 +273,10 @@ public class OperationLogEntity implements Cloneable {
         clone.setPersonId(personId);
         clone.setUserOrgId(userOrgId);
         clone.setIp(ip);
-        clone.setMac(mac);
+        clone.setTerminalId(terminalId);
         clone.setTerminalType(terminalType);
 
-        clone.setAction(action);
+        clone.setOperation(operation);
 
         clone.setObjectId(objectId);
         clone.setObjectType(objectType);
@@ -275,13 +284,13 @@ public class OperationLogEntity implements Cloneable {
 
         clone.setOperationTime(operationTime);
         clone.setResult(result);
-        clone.setDetailI18nKey(detailI18nKey);
-        clone.setDetailItem(new LinkedList<>(detailItem));
+        clone.setDetailKey(detailKey);
+        clone.setDetailItems(new LinkedList<>(detailItems));
         clone.setDetail(detail);
 
         clone.setServiceId(serviceId);
         clone.setTraceId(traceId);
-        clone.setRelationId(relationId);
+        clone.setBusinessId(businessId);
         clone.setErrorCode(errorCode);
 
         return clone;
@@ -304,57 +313,52 @@ public class OperationLogEntity implements Cloneable {
     public String toString() {
         StringBuilder logString = new StringBuilder();
 
-        // action
-        boolean hasActionIdPrefix = action.startsWith(OpLogConstants.I18nPrefix.ACTION);
-        logString.append("action:\"");
-        if (hasActionIdPrefix) {
-            logString.append(this.action);
+        boolean hasOperationPrefix = operation.startsWith(OpLogI18nPrefix.OPERATION);
+        logString.append("operation:\"");
+        if (hasOperationPrefix) {
+            logString.append(this.operation);
         } else {
-            logString.append(OpLogConstants.I18nPrefix.ACTION)
-                    .append(this.action);
+            logString.append(OpLogI18nPrefix.OPERATION)
+                    .append(this.operation);
         }
         logString.append("\",");
 
         // objectType
         if (StringUtils.isNotEmpty(this.objectType)) {
-            boolean hasObjectTypePrefix = objectType.startsWith(OpLogConstants.I18nPrefix.OBJECT_TYPE);
+            boolean hasObjectTypePrefix = objectType.startsWith(OpLogI18nPrefix.OBJECT_TYPE);
             logString.append("objectType:\"");
             if (hasObjectTypePrefix) {
                 logString.append(this.objectType);
             } else {
-                logString.append(OpLogConstants.I18nPrefix.OBJECT_TYPE)
+                logString.append(OpLogI18nPrefix.OBJECT_TYPE)
                         .append(this.objectType);
             }
             logString.append("\",");
         }
 
-        // i18nKey
-        if (StringUtils.isNotEmpty(this.detailI18nKey)) {
-            logString.append("i18nKey:\"");
-            boolean hasMsgIdIdPrefix = detailI18nKey.startsWith(OpLogConstants.I18nPrefix.ACTION_DETAIL);
+        // 操作详情
+        if (StringUtils.isNotEmpty(this.detailKey)) {
+            logString.append("detailKey:\"");
+            boolean hasMsgIdIdPrefix = detailKey.startsWith(OpLogI18nPrefix.DETAIL);
             if (hasMsgIdIdPrefix) {
-                logString.append(this.detailI18nKey);
+                logString.append(this.detailKey);
             } else {
-                logString.append(OpLogConstants.I18nPrefix.ACTION_DETAIL)
-                        .append(this.detailI18nKey);
+                logString.append(OpLogI18nPrefix.DETAIL)
+                        .append(this.detailKey);
             }
             logString.append("\",");
         }
 
-        if (CollectionUtils.isNotEmpty(this.detailItem)) {
+        if (CollectionUtils.isNotEmpty(this.detailItems)) {
             StringJoiner detailsStr = new StringJoiner(",");
-            detailItem.stream().filter(Objects::nonNull).forEach(detailsStr::add);
-            logString.append("actionDetail:\"")
+            detailItems.stream().filter(Objects::nonNull).forEach(detailsStr::add);
+            logString.append("detail:\"")
                     .append(detailsStr.toString())
                     .append("\",");
         }
 
         if (StringUtils.isNotEmpty(this.ip)) {
             logString.append("ip:\"").append(this.ip).append("\",");
-        }
-
-        if (StringUtils.isNotEmpty(this.mac)) {
-            logString.append("mac:\"").append(this.mac).append("\",");
         }
 
         if (StringUtils.isNotEmpty(this.objectId)) {
@@ -366,7 +370,7 @@ public class OperationLogEntity implements Cloneable {
         }
 
         logString.append("serviceId:\"").append(this.serviceId).append("\",");
-        logString.append("terminalType:\"").append(this.terminalType).append("\",");
+        logString.append("terminalType:\"").append(this.terminalType.getType()).append("\",");
 
         logString.append("userId:\"").append(this.userId).append("\",");
         logString.append("result:\"").append(this.result.getCode()).append("\",");
@@ -384,19 +388,19 @@ public class OperationLogEntity implements Cloneable {
             logString.append("traceId:\"").append(this.getTraceId()).append("\",");
         }
 
-        if (StringUtils.isNotEmpty(this.relationId)) {
-            logString.append("relationId:\"").append(this.relationId).append("\",");
+        if (StringUtils.isNotEmpty(this.businessId)) {
+            logString.append("relationId:\"").append(this.businessId).append("\",");
         }
 
         if (StringUtils.isNotEmpty(this.personId)) {
             logString.append("personId:\"").append(this.personId).append("\",");
         }
 
-        if (CollectionUtils.isNotEmpty(actionParams)) {
+        if (CollectionUtils.isNotEmpty(params)) {
             StringJoiner sj = new StringJoiner(",", "[", "]");
-            actionParams.stream().map(param -> param.format(action)).filter(Objects::nonNull).forEach(sj::add);
+            params.stream().map(param -> param.format(operation)).filter(Objects::nonNull).forEach(sj::add);
             logString
-                    .append("actionParam:\"")
+                    .append("params:\"")
                     .append(sj)
                     .append("\",");
         }

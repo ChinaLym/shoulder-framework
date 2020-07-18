@@ -13,6 +13,7 @@ import java.util.concurrent.Future;
  * @author lym
  */
 public class OpLogAsyncTaskExecutor implements AsyncTaskExecutor {
+
     private final AsyncTaskExecutor delegate;
 
     public OpLogAsyncTaskExecutor(AsyncTaskExecutor delegate) {

@@ -2,7 +2,6 @@ package org.shoulder.log.operation.dto;
 
 import org.shoulder.core.context.BaseContextHolder;
 import org.shoulder.core.util.IpUtils;
-import org.shoulder.log.operation.constants.OpLogConstants;
 
 /**
  * 有些操作（如定时任务）是非用户操作的，那么操作者就是系统了
@@ -30,18 +29,13 @@ public class SystemOperator implements Operator {
     }
 
     @Override
-    public String getMac() {
+    public String getTerminalId() {
         return mac;
     }
 
     @Override
     public String getPersonId() {
         return null;
-    }
-
-    @Override
-    public String getTerminalType(){
-        return OpLogConstants.TerminalType.SYSTEM;
     }
 
     public static SystemOperator getInstance(){

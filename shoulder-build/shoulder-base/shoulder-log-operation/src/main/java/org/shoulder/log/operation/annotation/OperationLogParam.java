@@ -12,7 +12,7 @@ import java.lang.annotation.*;
  *
  * 如果参数值为 null 则默认不在日志输出该参数，如需输出，参见 OperationLogProperties
  *
- * 若将参数中的大对象标记为记录，且使用默认的参数解析方式（展平，类似json），容易造成 actionParam 字段较长
+ * 若将参数中的大对象标记为记录，且使用默认的参数解析方式（展平，类似json），容易造成解析后的字符串较长
  *
  * @author lym
  */

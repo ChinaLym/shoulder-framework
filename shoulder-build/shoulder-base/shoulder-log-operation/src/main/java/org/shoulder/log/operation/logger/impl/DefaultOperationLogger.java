@@ -27,7 +27,7 @@ public class DefaultOperationLogger implements OperationLogger {
     /**
      * logback.xml 中用于记录操作日志的 logger 名称
      */
-    private static final String LOGBACK_XML_OPERATION_LOGGER_NAME = "OperationLogger";
+    private static final String LOGBACK_XML_OPERATION_LOGGER_NAME = "OPERATION_LOGGER";
 
     private static final Logger opLogger = initOperationLogger();
 

@@ -9,18 +9,18 @@ import java.util.List;
  *
  * @author lym
  */
-public interface ActionDetailAble {
+public interface OperationDetailAble {
 
     /** 忽略这个值 */
     List<String> LOG_DETAIL_IGNORE = null;
 
     /**
-     * 获取操作详情
+     * 获取操作详情填充参数
      *
-     * @return 操作日志 actionDetail 字段
+     * @return 操作日志 detailItems 字段
      *          返回值格式：框架支持 ['a,b,c'] 也支持 ['a','b','c']，甚至['a,b','c']，这几种填充方式是等效的。
      *          特殊：返回 null，日志框架将忽略该值
      */
     @JsonIgnore
-    List<String> getActionDetail();
+    List<String> getDetailItems();
 }

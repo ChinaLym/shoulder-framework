@@ -14,7 +14,7 @@ import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.covertor.DefaultOperationLogParamValueConverter;
 import org.shoulder.log.operation.covertor.OperationLogParamValueConverter;
 import org.shoulder.log.operation.covertor.OperationLogParamValueConverterHolder;
-import org.shoulder.log.operation.entity.ActionParam;
+import org.shoulder.log.operation.entity.OpLogParam;
 import org.shoulder.log.operation.entity.OperationLogEntity;
 import org.shoulder.log.operation.util.OpLogContext;
 import org.shoulder.log.operation.util.OpLogContextHolder;
@@ -177,7 +177,7 @@ public class OperationLogAspect {
     private OperationLogEntity createLog(ProceedingJoinPoint joinPoint, OperationLog methodAnnotation, OperationLogConfig classAnnotation) {
         // 创建日志实体
         OperationLogEntity entity =
-                OperationLogBuilder.newLog(methodAnnotation.action());
+                OperationLogBuilder.newLog(methodAnnotation.operation());
 
         // objectType
         if (StringUtils.isNotEmpty(methodAnnotation.objectType())) {
@@ -187,41 +187,39 @@ public class OperationLogAspect {
         }
 
         // terminalType
-        if (StringUtils.isNotEmpty(methodAnnotation.terminalType())) {
-            entity.setTerminalType(methodAnnotation.terminalType());
-        }
+        entity.setTerminalType(methodAnnotation.terminalType());
 
-        //多语言、i18nKey、actionDetail
-        String i18nKey = methodAnnotation.i18nKey();
-        String actionDetail = methodAnnotation.actionDetail();
+        // 操作详情
+        String detailI18nKey = methodAnnotation.detailKey();
+        String detail = methodAnnotation.detail();
 
-        if (StringUtils.isNotBlank(i18nKey)) {
-            // 填写 i18nKey 代表支持多语言
-            entity.setDetailI18nKey(i18nKey);
+        if (StringUtils.isNotBlank(detailI18nKey)) {
+            // 填写则表示支持多语言
+            entity.setDetailKey(detailI18nKey);
         }
-        if (StringUtils.isNotEmpty(actionDetail)) {
-            // 填写 actionDetail 不填写 i18nKey 认为不支持多语言
-            entity.setDetail(actionDetail);
+        if (StringUtils.isNotEmpty(detail)) {
+            // 填写 detail 不填写 detailI18nKey 认为不支持多语言
+            entity.setDetail(detail);
         }
 
         // 解析日志参数
-        entity.setActionParams(createActionParams(entity, joinPoint));
+        entity.setParams(createOperationParams(entity, joinPoint));
 
         return entity;
     }
 
 
     /**
-     * 解析 actionParams
+     * 解析操作参数
      *
      * @param entity 解析过的日志实体
      * @param joinPoint 连接点
      * @return 本方法中要记录的参数
      */
-    private List<ActionParam> createActionParams(@NonNull OperationLogEntity entity, ProceedingJoinPoint joinPoint) {
+    private List<OpLogParam> createOperationParams(@NonNull OperationLogEntity entity, ProceedingJoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
-        List<ActionParam> actionParams = new LinkedList<>();
+        List<OpLogParam> opLogParams = new LinkedList<>();
         Parameter[] parameters = method.getParameters();
         String[] parameterNames = methodSignature.getParameterNames();
         Object[] args = joinPoint.getArgs();
@@ -233,11 +231,12 @@ public class OperationLogAspect {
             if (paramAnnotation == null && !methodAnnotation.logAllParam()) {
                 continue;
             }
-            ActionParam actionParam = new ActionParam();
+            OpLogParam opLogParam = new OpLogParam();
 
             String name = parameterNames[i];
             boolean supportI18n = false;
-            String valueSPEL = "";
+            // Spring Expression Language
+            String valueSpEL = "";
             Class<? extends OperationLogParamValueConverter> converterClazz =
                     DefaultOperationLogParamValueConverter.class;
 
@@ -246,24 +245,24 @@ public class OperationLogAspect {
                     name = paramAnnotation.name();
                 }
                 supportI18n = paramAnnotation.supportI18n();
-                valueSPEL = paramAnnotation.value();
+                valueSpEL = paramAnnotation.value();
                 converterClazz = paramAnnotation.converter();
             }
 
-            actionParam.setName(name);
-            actionParam.setI18nValue(supportI18n);
+            opLogParam.setName(name);
+            opLogParam.setSupportI18n(supportI18n);
             // setValue
             try {
-                if (StringUtils.isNotBlank(valueSPEL)) {
+                if (StringUtils.isNotBlank(valueSpEL)) {
                     // 使用 spel -> value
-                    Expression expression = parser.parseExpression(valueSPEL);
+                    Expression expression = parser.parseExpression(valueSpEL);
                     EvaluationContext context = new StandardEvaluationContext();
                     if(args[i] == null){
-                        actionParam.setValue(Collections.singletonList(operationLogProperties.getNullParamOutput()));
+                        opLogParam.setValue(Collections.singletonList(operationLogProperties.getNullParamOutput()));
                     } else {
                         context.setVariable(parameterNames[i], args[i]);
                         //for (int i = 0; i < args.length; i++) { }
-                        actionParam.setValue(Collections.singletonList(Objects.requireNonNull(
+                        opLogParam.setValue(Collections.singletonList(Objects.requireNonNull(
                                 expression.getValue(context)).toString()));
                     }
 
@@ -271,7 +270,7 @@ public class OperationLogAspect {
                     // 使用 converter
                     OperationLogParamValueConverter converter = OperationLogParamValueConverterHolder.getConvert(converterClazz);
 
-                    actionParam.setValue(converter.convert(entity, args[i], parameters[i].getType()));
+                    opLogParam.setValue(converter.convert(entity, args[i], parameters[i].getType()));
 
                 }
             } catch (Exception e) {
@@ -282,9 +281,9 @@ public class OperationLogAspect {
                 // 忽略该参数
                 continue;
             }
-            actionParams.add(actionParam);
+            opLogParams.add(opLogParam);
         }
-        return actionParams;
+        return opLogParams;
     }
 
 }

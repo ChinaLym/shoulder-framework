@@ -1,14 +1,17 @@
 package org.shoulder.log.operation.annotation;
 
+import org.shoulder.log.operation.constants.TerminalType;
+import org.shoulder.log.operation.entity.OperationLogEntity;
 import org.shoulder.log.operation.util.OperationLogBuilder;
 import org.shoulder.log.operation.util.OpLogContextHolder;
 
 import java.lang.annotation.*;
 
 /**
- * 操作日志注解
- * 将该注解加在业务方法上，可以在被注解的方法、子方法中、以及从该方法触发的线程中使用用 {@link OpLogContextHolder}修改日志。并在方法执行结束自动记录日志
- * 若无法使用注解时，可以使用 {@link OperationLogBuilder#newLog}
+ * 创建操作日志注解
+ * 将该注解加在业务方法上，可以在被注解的方法执行前创建一个操作日志对象，在该方法、调用方法、以及他们创建的线程中使用用 {@link OpLogContextHolder}修改日志。并在该方法执行结束自动记录日志
+ * 该注解中的值后续可以修改
+ * 无法使用注解时，可以使用 {@link OperationLogBuilder#newLog}
  *
  * 【操作日志框架原理： Spring AOP（spring boot 1.4之后 Spring AOP 的默认实现为 cglib）】
  *
@@ -31,26 +34,26 @@ import java.lang.annotation.*;
 public @interface OperationLog {
 
     /**
-     * 操作动作标识            例：     UserActions.ADD        【必填】，后续可以覆盖，可暂填写空来绕过检测
+     * 操作动作标识 【必填】，
      * 如登录、登出、查询、新增、修改、删除、上传、下载等操作。
      * 操作动作标识的多语言词条在多语言翻译文件中提供。
      */
-    String action();
+    String operation();
 
     /**
-     * 操作详情多语言key   例： UserActionI18nKey.REGISTER         (选填)
-     * log.i18nKey.<操作内容标识>.message
+     * 操作详情多语言 key (选填)
+     * op.detail.<操作动作标识>
      */
-    String i18nKey() default "";
+    String detailKey() default "";
 
     /**
-     * 不支持多语言，写操作内容         (选填)
-     * 【支持多语言时，请在代码中 setActionDetail 或 addActionDetail 来填充，这里仅为不支持多语言的情况提供快速入口。】
+     * 操作内容        (选填)
+     * 该字段仅适用于不支持多语言的情况
+     * 【支持多语言时，请在代码中 set {@link OperationLogEntity#detailItems} 或 {@link OperationLogEntity#addDetailItem} 来填充】
      *
-     * 填写 actionDetail 且不填写 i18nKey 认为不支持多语言，(自动将多语言置为不支持)
-     * 若都填写，将忽略该值
+     * 填写 {@link #detailKey} 将忽略该字段，认为支持多语言
      */
-    String actionDetail() default "";
+    String detail() default "";
 
 
     /**
@@ -63,23 +66,20 @@ public @interface OperationLog {
     // ==================================== 下方不太常用 =========================================
 
     /**
-     * 对象类型，选填      例：    UserObjectTypes.ROLE
-     * 【
-     * 推荐1：实体实现 Operable，便不必在注解填充。
-     * 推荐2：在类注解 @OperationLogConfig 上描述该值，便不必在每个方法上填充
-     * 】
+     * 被操作对象类型 （选填）
+     * 【 推荐1：实体、DTO入参、BO 等，实现 Operable，便不必在注解填充该值。
+     *   推荐2：在类注解 {@link OperationLogConfig} 上描述该值，便不必在每个方法上填充 】
      */
     String objectType() default "";
 
     /**
-     * 操作者终端类型，选填 例： OpLogConstants.TerminalType.WEB
-     * 【推荐：在类注解 @OperationLogConfig 上描述该值，便不必在每个方法上填充】
+     * 操作者终端类型，选填 例： TerminalType.BROWSER
+     * 【推荐：在类注解 {@link OperationLogConfig} 上描述该值，便不必在每个方法上填充】
      */
-    String terminalType() default "";
+    TerminalType terminalType() default TerminalType.BROWSER;
 
     /**
-     * 是否在抛出异常后自动记录日志，默认记录一条失败日志。
-     * 若置为false，则注解所在方法异常后，不自动记录操作日志
+     * 是否在抛出异常后自动记录一条操作结果为失败的操作日志。默认记录
      */
     boolean logWhenThrow() default true;
 

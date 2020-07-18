@@ -28,16 +28,16 @@ public class OperationLogBuilder {
      *  2. 填充为内部任务日志
      *  3. 若上下文存在登录的用户则将其当做操作者
      */
-    public static OperationLogEntity newLog(String action){
+    public static OperationLogEntity newLog(String operation){
         Operator currentOperator = OpLogContextHolder.getCurrentOperator();
-        return new OperationLogEntity(action)
+        return new OperationLogEntity(operation)
                 .setOperator(currentOperator)
                 .setServiceId(BaseContextHolder.getServiceId());
     }
 
     /**
      * 1. 根据 operationLogTemplate 创建 operableList.size() 条操作日志
-     * 2. 用 operableList 分别填充每条日志的被操作对象和 actionDetail 字段
+     * 2. 用 operableList 分别填充每条日志的被操作对象和 detailItem 字段
      *
      *      如果 operableList 为空，则返回日志模板 operationLogTemplate。
      *

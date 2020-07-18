@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.dto;
 
-import org.shoulder.log.operation.constants.OpLogConstants;
+import org.shoulder.log.operation.constants.TerminalType;
 
 /**
  * 操作者信息
@@ -12,16 +12,8 @@ public interface Operator {
     /** 操作者 用户标识 【必填】 */
     String getUserId();
 
-    /** 操作者所在机器 ip */
-    String getIp();
-
     /** 操作者 用户姓名/昵称 */
     default String getUserName(){
-        return null;
-    }
-
-    /** 操作者的 mac地址 */
-    default String getMac(){
         return null;
     }
 
@@ -35,9 +27,27 @@ public interface Operator {
         return null;
     }
 
+    /** 操作者所属 组织名称 */
+    default String getUserOrgName(){
+        return null;
+    }
+
     /** 操作者 登录终端类型 */
-    default String getTerminalType(){
-        return OpLogConstants.TerminalType.SYSTEM;
+    default TerminalType getTerminalType(){
+        return TerminalType.SYSTEM;
+    }
+
+    /** 操作者所在机器 ip */
+    String getIp();
+
+    /** 操作者的 terminalId */
+    default String getTerminalId(){
+        return null;
+    }
+
+    /** 操作者的 terminalInfo */
+    default String getTerminalInfo(){
+        return null;
     }
 
 }

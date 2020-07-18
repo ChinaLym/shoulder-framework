@@ -13,11 +13,11 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class CurrentUserOperator implements Serializable, Operator {
 	private static final long serialVersionUID = 1429478242021042150L;
-	
+
 	protected String userId;
 	protected String personId;
 	protected String ip;
-	protected String mac;
+	protected String terminalId;
 	protected String tgc;
 	protected String languageId;
 
@@ -26,11 +26,11 @@ public class CurrentUserOperator implements Serializable, Operator {
         this.userId = userId;
     }
 
-    public CurrentUserOperator(String userId, String personId, String ip, String mac, String tgc, String languageId) {
+    public CurrentUserOperator(String userId, String personId, String ip, String terminalId, String tgc, String languageId) {
         this.userId = userId;
         this.personId = personId;
         this.ip = ip;
-        this.mac = mac;
+        this.terminalId = terminalId;
         this.tgc = tgc;
         this.languageId = languageId;
     }

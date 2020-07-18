@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
  * @author lym
  */
 public class OpLogAsyncListenableTaskExecutor implements AsyncListenableTaskExecutor {
+
     private final AsyncListenableTaskExecutor delegate;
 
     public OpLogAsyncListenableTaskExecutor(AsyncListenableTaskExecutor delegate) {

@@ -5,7 +5,7 @@ package org.shoulder.log.operation.normal;
  * 【若偏好使用注解：不推荐实现该接口，而是用常量类】
  * @author lym
  */
-public interface ObjectType {
+public interface OperableObjectType {
 
     /**
      * 被操作对象类型

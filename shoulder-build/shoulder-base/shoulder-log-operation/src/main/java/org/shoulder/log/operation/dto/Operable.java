@@ -9,7 +9,7 @@ import java.util.List;
  * 【推荐】被操作对象实现该接口（如：入参、数据库模型）
  * @author lym
  */
-public interface Operable extends ActionDetailAble {
+public interface Operable extends OperationDetailAble {
 
     // ============================ 全部可空，如果无对应，返回null即可 ===============================
 
@@ -37,15 +37,15 @@ public interface Operable extends ActionDetailAble {
     }
 
     /**
-     * 操作日志的 actionDetail 字段，由于批量日志中 易变的部分包括 被操作对象 和 actionDetail
-     *      且操作详情通常是根据操作对象生成的，为了使用者方便，特集成在这里。
+     * 对应 {@link org.shoulder.log.operation.entity.OperationLogEntity#detailItems}，
+     * 批量日志中 易变的部分包括 被操作对象 和 detailItems 且操作详情通常是根据操作对象生成的，为了使用者方便，特集成在这里。
      *
-     * @implSpec 但并不是所有时候都能通过可操作对象生成操作日志的 actionDetail 故默认为不能生成 actionDetail
+     * @implSpec 但并不是所有时候都能通过可操作对象生成 故默认为不能生成
      *
      * */
     @Override
     @JsonIgnore
-    default List<String> getActionDetail(){
+    default List<String> getDetailItems(){
         return LOG_DETAIL_IGNORE;
     }
 

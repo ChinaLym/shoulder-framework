@@ -17,7 +17,7 @@ public interface OperationLoggerInterceptor {
      * 可以在日志组装前后做一些事情 —— 批量操作日志组装之前
      *      可以在这里对操作对象集合进行压缩、填充或者剔除
      *
-     * @param template      日志模板，可以通过该参数获取是哪个 module，哪个 action 等
+     * @param template      日志模板，可以通过该参数获取是哪个模块，操作类型
      * @param operableList  待组装的被操作对象
      * @return 个性处理后的 operableList
      */
@@ -55,7 +55,7 @@ public interface OperationLoggerInterceptor {
      * 记录日后。
      *      如果 beforeValidate 设置类某些线程变量，可以在这里完成清理工作。
      *
-     * @param opLogEntity 记录完毕的日志实体。该变量主要是利于组件区分是哪个 module，哪个action。
+     * @param opLogEntity 记录完毕的日志实体。该变量主要是利于组件区分是哪个模块的什么操作。
      *                     1. 日志已经记录，修改该变量已经没有意义。
      *                     2. 为了利于GC，不要增加该变量的引用
      */
