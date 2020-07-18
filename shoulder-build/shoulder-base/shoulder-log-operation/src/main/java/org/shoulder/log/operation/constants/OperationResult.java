@@ -13,17 +13,17 @@ import java.util.Collection;
  * 操作结果在一个业务中哪怕输入相同结果也可能不确定，常用作函数参数，不在注解中出现，因此通过枚举类使用
  * @author lym
  */
-public enum OperationResultEnum {
+public enum OperationResult {
 
     /**
      * 成功 | 正确
      */
-    SUCCESS("1"),
+    SUCCESS("0"),
 
     /**
      * 失败 | 不正确
      */
-    FAIL("0"),
+    FAIL("1"),
 
     /**
      * 部分成功
@@ -32,7 +32,7 @@ public enum OperationResultEnum {
 
     public final String code;
 
-    OperationResultEnum(String code) {
+    OperationResult(String code) {
         this.code = code;
     }
 
@@ -40,26 +40,26 @@ public enum OperationResultEnum {
         return code;
     }
 
-    public static OperationResultEnum of(boolean success) {
+    public static OperationResult of(boolean success) {
         return success ? SUCCESS : FAIL;
     }
 
     /**
      * 如果 hasSuccess、hasFail 都为 false 则默认为操作成功
      */
-    public static OperationResultEnum of(boolean hasSuccess, boolean hasFail) {
+    public static OperationResult of(boolean hasSuccess, boolean hasFail) {
         return hasSuccess && hasFail ?
-                    OperationResultEnum.PARTIAL :
+                    OperationResult.PARTIAL :
                 hasFail ?
-                        OperationResultEnum.FAIL : OperationResultEnum.SUCCESS;
+                        OperationResult.FAIL : OperationResult.SUCCESS;
     }
 
     /**
      * 如果操作结果为空默认为成功
      */
-    public static OperationResultEnum of(Collection<? extends OperateResult> results) {
+    public static OperationResult of(Collection<? extends OperateResult> results) {
         if(CollectionUtils.isEmpty(results)) {
-            return OperationResultEnum.SUCCESS;
+            return OperationResult.SUCCESS;
         }
 
         boolean hasSuccess = false;

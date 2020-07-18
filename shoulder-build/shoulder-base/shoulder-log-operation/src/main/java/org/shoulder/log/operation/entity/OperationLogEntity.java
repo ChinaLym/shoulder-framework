@@ -8,7 +8,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.constants.OpLogI18nPrefix;
-import org.shoulder.log.operation.constants.OperationResultEnum;
+import org.shoulder.log.operation.constants.OperationResult;
 import org.shoulder.log.operation.constants.TerminalType;
 import org.shoulder.log.operation.dto.OperationDetailAble;
 import org.shoulder.log.operation.dto.Operable;
@@ -161,7 +161,7 @@ public class OperationLogEntity implements Cloneable {
     /**
      * 本次操作结果（必填）
      */
-    protected OperationResultEnum result = OperationResultEnum.SUCCESS;
+    protected OperationResult result = OperationResult.SUCCESS;
 
 
     /**
@@ -234,7 +234,7 @@ public class OperationLogEntity implements Cloneable {
             }
 
             if (operable instanceof OperateResult) {
-                this.setResult(OperationResultEnum.of(((OperateResult) operable).success()));
+                this.setResult(OperationResult.of(((OperateResult) operable).success()));
             }
         }
         return this;
@@ -248,7 +248,7 @@ public class OperationLogEntity implements Cloneable {
     }
 
     public OperationLogEntity setResultFail() {
-        return setResult(OperationResultEnum.FAIL);
+        return setResult(OperationResult.FAIL);
     }
 
     // ------------------ clone ---------------
