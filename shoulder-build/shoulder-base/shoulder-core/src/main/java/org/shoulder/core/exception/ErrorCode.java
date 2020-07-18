@@ -2,7 +2,8 @@ package org.shoulder.core.exception;
 
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.util.ExceptionUtil;
-import org.springframework.lang.NonNull;
+import org.slf4j.event.Level;
+import org.springframework.http.HttpStatus;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -16,6 +17,17 @@ import javax.validation.constraints.NotEmpty;
  * @author lym
  */
 public interface ErrorCode {
+
+    /**
+     * 默认错误码、异常类日志记录级别为 warn
+     */
+    Level DEFAULT_LOG_LEVEL = Level.WARN;
+
+    /**
+     * 默认错误码、异常类 HTTP 响应码为 500
+     */
+    HttpStatus DEFAULT_HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
+
     /**
      * 获取错误码
      * @return 错误码
@@ -42,13 +54,27 @@ public interface ErrorCode {
      * @param args 用于填充错误信息的数据
      */
     default void setArgs(Object... args){
-        // todo 是否抛出异常？
         throw new UnsupportedOperationException("not support set args");
     }
 
     /**
+     * 发生时记录什么级别日志
+     * @return 日志级别
+     */
+    default Level getLogLevel(){
+        return DEFAULT_LOG_LEVEL;
+    }
+
+    /**
+     * 发生时应该给调用方返回怎样的错误
+     * @return httpStatusCode
+     */
+    default HttpStatus getHttpStatusCode(){
+        return DEFAULT_HTTP_STATUS_CODE;
+    }
+
+    /**
      * 转化为 api 返回值
-     *     // todo 返回值data必须为数组？
      * @param args 填充异常信息的参数
      * @return api 返回值
      */
