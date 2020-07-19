@@ -2,6 +2,8 @@ package org.shoulder.log.operation.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,7 +48,12 @@ public interface Operable extends OperationDetailAble {
     @Override
     @JsonIgnore
     default List<String> getDetailItems(){
-        return LOG_DETAIL_IGNORE;
+        return Collections.emptyList();
+    }
+
+    // todo addTo logEntity
+    default String getDetail(){
+        return null;
     }
 
 }
