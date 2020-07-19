@@ -3,20 +3,22 @@ package org.shoulder.log.operation.logger.impl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.log.operation.entity.OpLogParam;
 import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.logger.OperationLogValidator;
 import org.springframework.util.Assert;
 
 import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
- * 操作日志格式校验类
+ * 操作日志格式默认校验类
  *
  * @author lym
  */
-class OperationLogValidator {
+public class DefaultOperationLogValidator implements OperationLogValidator {
 
     /**校验失败将抛出 runtimeException */
-    static void validate(OperationLogEntity log) {
+    @Override
+    public void validate(OperationLogEntity log) {
         Assert.notNull(log, "log is null.");
         // 必填项校验
         validateRequiredFields(log);
@@ -29,7 +31,7 @@ class OperationLogValidator {
             StringJoiner sj = new StringJoiner(",", "[", "]");
             log.getParams().stream().map(param -> param.format(log.getOperation())).filter(Objects::nonNull).forEach(sj::add);
             assertSmallerLimit(sj.length(), 2048, "opLogParam");
-            log.getParams().forEach(OperationLogValidator::validate);
+            log.getParams().forEach(this::validate);
         }
     }
 
@@ -39,12 +41,12 @@ class OperationLogValidator {
      *  供使用者填写的优先校验
      * @param log 待校验日志实体
      */
-    private static void validateRequiredFields(OperationLogEntity log){
+    private void validateRequiredFields(OperationLogEntity log){
+        Assert.hasText(log.getUserId(), "userId is blank.");
+        Assert.notNull(log.getTerminalType(), "terminalType is null.");
+        Assert.hasText(log.getOperation(), "operation is blank.");
         Assert.notNull(log.getOperationTime(), "operationTime is null.");
         Assert.notNull(log.getResult(), "result is null.");
-        Assert.notNull(log.getTerminalType(), "terminalType is null.");
-        Assert.hasText(log.getUserId(), "userId is blank.");
-        Assert.hasText(log.getOperation(), "operation is blank.");
         Assert.hasText(log.getServiceId(), "serviceId is blank.");
     }
 
@@ -52,7 +54,7 @@ class OperationLogValidator {
      * 字段长度校验
      * @param log 日志实体
      */
-    private static void validateLengthLimit(OperationLogEntity log) {
+    private void validateLengthLimit(OperationLogEntity log) {
         // operationTime 长度由 format 保证
         assertLengthLimit(log.getServiceId(), 128, "serviceId");
         assertLengthLimit(log.getUserOrgId(), 128, "userOrgId");
@@ -64,15 +66,14 @@ class OperationLogValidator {
         assertLengthLimit(log.getObjectId(), 128, "objectId");
         assertLengthLimit(log.getObjectName(), 255, "objectName");
         assertLengthLimit(log.getOperation(), 255, "operation");
-        assertLengthLimit(log.getDetailKey(), 128, "i18nKey");
+        assertLengthLimit(log.getDetailKey(), 128, "detailKey");
         if(log.getDetailItems() != null && log.getDetailItems().isEmpty()){
             assertSmallerLimit(log.getDetailItems().stream().map(String::length).reduce(Integer::sum).orElse(0), 4096, "detail");
         }
     }
 
-    private static void validate(OpLogParam param) {
+    private void validate(OpLogParam param) {
         if(param != null){
-            // 必填项校验（目前规范中未明确是否必填）
             validateRequiredFields(param);
         }
     }
@@ -80,21 +81,21 @@ class OperationLogValidator {
     /**
      * 校验必填项
      */
-    private static void validateRequiredFields(OpLogParam param){
+    private void validateRequiredFields(OpLogParam param){
         Assert.hasText(param.getName(), "OpLogParam.name is empty.");
     }
 
     // ---------------------- base validate ----------------------
 
     /** 长度不超过 */
-    private static void assertLengthLimit(String str, int limit, String name) {
+    private void assertLengthLimit(String str, int limit, String name) {
         if (str != null) {
             assertSmallerLimit(str.length(), limit, name);
         }
     }
 
     /** 长度不超过 */
-    private static void assertSmallerLimit(int num, int limit, String name) {
+    private void assertSmallerLimit(int num, int limit, String name) {
         if (num  > limit) {
             throw new IllegalArgumentException(name + " over maximum size. yours length: " + num +
                     ". It should shorter than " + limit);
@@ -103,7 +104,7 @@ class OperationLogValidator {
 
     /** 只允许枚举范围内 */
     @Deprecated
-    private static void assertEnum(String enumStr, int limit, String name) {
+    private void assertEnum(String enumStr, int limit, String name) {
         final int char0Ascii = 48;
         limit += char0Ascii;
         if (enumStr != null && (enumStr.length() != 1 || enumStr.toCharArray()[0] > limit)) {

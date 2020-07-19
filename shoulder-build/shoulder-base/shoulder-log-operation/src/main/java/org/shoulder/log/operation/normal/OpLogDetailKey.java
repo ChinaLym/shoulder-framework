@@ -1,7 +1,7 @@
 package org.shoulder.log.operation.normal;
 
 /**
- * 操作日志 i18nKey 枚举类接口
+ * 操作日志 操作详情 枚举类接口
  * 【若偏好使用注解：不推荐实现该接口，而是用常量类】
  * @author lym
  */

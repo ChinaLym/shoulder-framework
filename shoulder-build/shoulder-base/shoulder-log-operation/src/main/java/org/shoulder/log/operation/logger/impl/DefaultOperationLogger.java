@@ -4,6 +4,7 @@ import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.entity.OperationLogEntity;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.intercept.OperationLoggerInterceptor;
+import org.shoulder.log.operation.logger.OperationLogValidator;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.util.OperationLogBuilder;
 import org.slf4j.Logger;
@@ -33,6 +34,8 @@ public class DefaultOperationLogger implements OperationLogger {
 
     private final OperationLogFormatter operationLogFormatter;
 
+    private final OperationLogValidator opLogValidator = new DefaultOperationLogValidator();
+
     /**
      * 日志拦截器
      */
@@ -48,18 +51,13 @@ public class DefaultOperationLogger implements OperationLogger {
     @Override
     public void log(OperationLogEntity opLogEntity) {
         try {
-            // 1. 校验之前
-            beforeValidate(opLogEntity);
-            // 2. 校验
-            OperationLogValidator.validate(opLogEntity);
-            // 3. 记录日志**
+            beforeLog(opLogEntity);
             opLogger.info(operationLogFormatter.format(opLogEntity));
-            // 4. 记录日志后
             afterLog(opLogEntity);
         } catch (Exception e) {
             // 当抛出异常先进行处理
             //afterValidateFail();
-            log.warn("logEntity is not qualified! -- " + e.getMessage() + opLogEntity.toString(), e);
+            log.warn("logEntity is not qualified! -- " + e.getMessage() + operationLogFormatter.format(opLogEntity), e);
 
         }
     }
@@ -91,9 +89,6 @@ public class DefaultOperationLogger implements OperationLogger {
 
     // **************************** 监听器相关 ******************************
 
-    /**
-     * 在生成批量操作日志之前。
-     */
     private List<? extends Operable> beforeAssembleBatchLogs(OperationLogEntity template, List<? extends Operable> operableCollection) {
         List<? extends Operable> result = operableCollection;
         for (OperationLoggerInterceptor interceptor : logInterceptors) {
@@ -102,11 +97,8 @@ public class DefaultOperationLogger implements OperationLogger {
         return result;
     }
 
-    /**
-     * 在生成批量操作日志之后。
-     */
-    private List<? extends OperationLogEntity> afterAssembleBatchLogs(List<? extends OperationLogEntity> OperationLogEntities) {
-        List<? extends OperationLogEntity> result = OperationLogEntities;
+    private List<? extends OperationLogEntity> afterAssembleBatchLogs(List<? extends OperationLogEntity> operationLogEntities) {
+        List<? extends OperationLogEntity> result = operationLogEntities;
         for (OperationLoggerInterceptor interceptor : logInterceptors) {
             result = interceptor.afterAssembleBatchLogs(result);
         }
@@ -114,25 +106,14 @@ public class DefaultOperationLogger implements OperationLogger {
     }
 
 
-    /**
-     * 在验证之前。
-     * 可以继续针对自己的业务场景统一补充某些有规律的值
-     */
-    private void beforeValidate(OperationLogEntity opLogEntity) {
-        logInterceptors.forEach(listener -> listener.beforeValidate(opLogEntity));
+    private void beforeLog(OperationLogEntity opLogEntity) {
+        logInterceptors.forEach(listener -> listener.beforeLog(opLogEntity));
     }
 
-    /**
-     * 在日志字段检查 失败后。
-     */
     /*private void afterValidateFail(OperationLogEntity opLogEntity){
         logInterceptors.forEach(listener -> listener.afterValidateFail(opLogEntity));
-    }
-*/
+    }*/
 
-    /**
-     * 记录日后。
-     */
     private void afterLog(OperationLogEntity opLogEntity) {
         logInterceptors.forEach(listener -> listener.afterLog(opLogEntity));
     }

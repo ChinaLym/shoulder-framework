@@ -2,24 +2,23 @@ package org.shoulder.log.operation.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.log.operation.annotation.OperationLogParam;
-import org.shoulder.log.operation.constants.OpLogI18nPrefix;
 import org.shoulder.log.operation.constants.OperationResult;
 import org.shoulder.log.operation.constants.TerminalType;
-import org.shoulder.log.operation.dto.OperationDetailAble;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperateResult;
+import org.shoulder.log.operation.dto.OperationDetailAble;
 import org.shoulder.log.operation.dto.Operator;
-import org.shoulder.log.operation.normal.Operation;
 import org.shoulder.log.operation.normal.OpLogDetailKey;
+import org.shoulder.log.operation.normal.Operation;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -27,7 +26,7 @@ import java.util.*;
  * （所有字段均为 protect: 方便使用者灵活扩展）
  * 重要信息：操作时间、用户id、用户名称，IP、操作动作、被操作对象、操作结果、操作详情
  * 其他信息：操作者终端标识、操作者使用的终端类型、追踪链路标识 traceId
- * todo 字段修改后，修改对应校验、toString、赋值、扩展字段的使用优化、记录、将原来 detail 拆成两个，需要补充定义等
+ * todo 修改校验；将原来 detail 拆成两个，生态接口需要补充定义。分为几个小对象
  *
  * @author lym
  */
@@ -98,26 +97,6 @@ public class OperationLogEntity implements Cloneable {
      */
     protected String terminalInfo;
 
-    /** ================== 被操作对象描述（均为选填） {@link Operable } ================== */
-
-    /**
-     * 被操作对象的类型标识 最长 128 （选填）
-     * Key格式为：log.objectType.<操作对象类型标识>
-     */
-    protected String objectType;
-
-    /**
-     * 被操作对象唯一标示 最长 128 （选填）
-     * 例： tb_user 的 userId
-     */
-    protected String objectId;
-
-    /**
-     * 操作对象的名称  最长 255 （选填）
-     * 若存在多个值时，以 ","分隔 例： "user1,user2,user3"
-     */
-    protected String objectName;
-
     // ====================================== 操作动作描述 ===================================
 
     /**
@@ -169,6 +148,26 @@ public class OperationLogEntity implements Cloneable {
      */
     protected String errorCode;
 
+    /** ================== 被操作对象描述（均为选填） {@link Operable } ================== */
+
+    /**
+     * 被操作对象的类型标识 最长 128 （选填）
+     * Key格式为：log.objectType.<操作对象类型标识>
+     */
+    protected String objectType;
+
+    /**
+     * 被操作对象唯一标示 最长 128 （选填）
+     * 例： tb_user 的 userId
+     */
+    protected String objectId;
+
+    /**
+     * 操作对象的名称  最长 255 （选填）
+     * 若存在多个值时，以 ","分隔 例： "user1,user2,user3"
+     */
+    protected String objectName;
+
     // ========================= 其他描述 ======================
 
     /**
@@ -189,7 +188,7 @@ public class OperationLogEntity implements Cloneable {
      */
     protected String traceId;
 
-    /** 扩展字段 */
+    /** 扩展字段 （选填） key 不能为 null */
     protected Map<String, String> extFields;
 
     // ***********************************  构造函数  ***********************************
@@ -247,6 +246,17 @@ public class OperationLogEntity implements Cloneable {
         return this;
     }
 
+    public OperationLogEntity setExtField(String extKey, String value) {
+        if (extKey == null) {
+            return this;
+        }
+        if(this.extFields == null){
+            this.extFields = new LinkedHashMap<>();
+        }
+        this.extFields.put(extKey, value);
+        return this;
+    }
+
     public OperationLogEntity setResultFail() {
         return setResult(OperationResult.FAIL);
     }
@@ -272,142 +282,30 @@ public class OperationLogEntity implements Cloneable {
         clone.setUserName(userName);
         clone.setPersonId(personId);
         clone.setUserOrgId(userOrgId);
+        clone.setTerminalType(terminalType);
         clone.setIp(ip);
         clone.setTerminalId(terminalId);
-        clone.setTerminalType(terminalType);
-
-        clone.setOperation(operation);
+        clone.setTerminalInfo(terminalInfo);
 
         clone.setObjectId(objectId);
         clone.setObjectType(objectType);
         clone.setObjectName(objectName);
 
+        clone.setOperation(operation);
+        clone.setParams(params);//todo clone
         clone.setOperationTime(operationTime);
         clone.setResult(result);
         clone.setDetailKey(detailKey);
         clone.setDetailItems(new LinkedList<>(detailItems));
         clone.setDetail(detail);
+        clone.setErrorCode(errorCode);
 
         clone.setServiceId(serviceId);
         clone.setTraceId(traceId);
         clone.setBusinessId(businessId);
-        clone.setErrorCode(errorCode);
+        clone.setExtFields(extFields);
 
         return clone;
-    }
-
-    // **************************************  格式化 todo 放外部  ************************************
-
-    /**
-     * 日期格式化:线程安全高性能
-     */
-    private static FastDateFormat fastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-
-    /**
-     * 按照规范格式拼接日志字符串。必填项不进行非空校验，规范要求的前后缀会根据属性值是否规范进行动态矫正
-     * 只是单纯按照格式拼接，禁止在本方法动态修改实体属性值
-     *
-     * @return 规范要求的日志格式的 string
-     */
-    @Override
-    public String toString() {
-        StringBuilder logString = new StringBuilder();
-
-        boolean hasOperationPrefix = operation.startsWith(OpLogI18nPrefix.OPERATION);
-        logString.append("operation:\"");
-        if (hasOperationPrefix) {
-            logString.append(this.operation);
-        } else {
-            logString.append(OpLogI18nPrefix.OPERATION)
-                    .append(this.operation);
-        }
-        logString.append("\",");
-
-        // objectType
-        if (StringUtils.isNotEmpty(this.objectType)) {
-            boolean hasObjectTypePrefix = objectType.startsWith(OpLogI18nPrefix.OBJECT_TYPE);
-            logString.append("objectType:\"");
-            if (hasObjectTypePrefix) {
-                logString.append(this.objectType);
-            } else {
-                logString.append(OpLogI18nPrefix.OBJECT_TYPE)
-                        .append(this.objectType);
-            }
-            logString.append("\",");
-        }
-
-        // 操作详情
-        if (StringUtils.isNotEmpty(this.detailKey)) {
-            logString.append("detailKey:\"");
-            boolean hasMsgIdIdPrefix = detailKey.startsWith(OpLogI18nPrefix.DETAIL);
-            if (hasMsgIdIdPrefix) {
-                logString.append(this.detailKey);
-            } else {
-                logString.append(OpLogI18nPrefix.DETAIL)
-                        .append(this.detailKey);
-            }
-            logString.append("\",");
-        }
-
-        if (CollectionUtils.isNotEmpty(this.detailItems)) {
-            StringJoiner detailsStr = new StringJoiner(",");
-            detailItems.stream().filter(Objects::nonNull).forEach(detailsStr::add);
-            logString.append("detail:\"")
-                    .append(detailsStr.toString())
-                    .append("\",");
-        }
-
-        if (StringUtils.isNotEmpty(this.ip)) {
-            logString.append("ip:\"").append(this.ip).append("\",");
-        }
-
-        if (StringUtils.isNotEmpty(this.objectId)) {
-            logString.append("objectId:\"").append(this.objectId).append("\",");
-        }
-
-        if (StringUtils.isNotEmpty(this.objectName)) {
-            logString.append("objectName:\"").append(this.objectName).append("\",");
-        }
-
-        logString.append("serviceId:\"").append(this.serviceId).append("\",");
-        logString.append("terminalType:\"").append(this.terminalType.getType()).append("\",");
-
-        logString.append("userId:\"").append(this.userId).append("\",");
-        logString.append("result:\"").append(this.result.getCode()).append("\",");
-        logString.append("operationTime:\"").append(fastDateFormat.format(this.operationTime)).append("\",");
-
-        if (StringUtils.isNotEmpty(this.userName)) {
-            logString.append("userName:\"").append(this.userName).append("\",");
-        }
-
-        if (StringUtils.isNotEmpty(this.userOrgId)) {
-            logString.append("userOrgId:\"").append(this.userOrgId).append("\",");
-        }
-
-        if (StringUtils.isNotEmpty(this.getTraceId())) {
-            logString.append("traceId:\"").append(this.getTraceId()).append("\",");
-        }
-
-        if (StringUtils.isNotEmpty(this.businessId)) {
-            logString.append("relationId:\"").append(this.businessId).append("\",");
-        }
-
-        if (StringUtils.isNotEmpty(this.personId)) {
-            logString.append("personId:\"").append(this.personId).append("\",");
-        }
-
-        if (CollectionUtils.isNotEmpty(params)) {
-            StringJoiner sj = new StringJoiner(",", "[", "]");
-            params.stream().map(param -> param.format(operation)).filter(Objects::nonNull).forEach(sj::add);
-            logString
-                    .append("params:\"")
-                    .append(sj)
-                    .append("\",");
-        }
-
-
-        logString.setLength(logString.length() - 1);
-        return logString.toString();
     }
 
 }

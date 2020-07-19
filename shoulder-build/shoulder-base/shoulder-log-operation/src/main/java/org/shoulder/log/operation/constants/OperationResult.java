@@ -18,25 +18,25 @@ public enum OperationResult {
     /**
      * 成功 | 正确
      */
-    SUCCESS("0"),
+    SUCCESS(0),
 
     /**
      * 失败 | 不正确
      */
-    FAIL("1"),
+    FAIL(1),
 
     /**
      * 部分成功
      */
-    PARTIAL("2");
+    PARTIAL(2);
 
-    public final String code;
+    public final int code;
 
-    OperationResult(String code) {
+    OperationResult(int code) {
         this.code = code;
     }
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
