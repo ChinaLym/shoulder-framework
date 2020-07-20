@@ -22,12 +22,12 @@ public interface Operator {
         return null;
     }
 
-    /** 操作者所属 组织标识 */
+    /** 操作者所属组标识 */
     default String getUserOrgId(){
         return null;
     }
 
-    /** 操作者所属 组织名称 */
+    /** 操作者所属组名称 */
     default String getUserOrgName(){
         return null;
     }

@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.format;
+package org.shoulder.log.operation.format.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -6,6 +6,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.log.operation.constants.OpLogI18nPrefix;
 import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.format.OperationLogFormatter;
 
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -15,8 +16,9 @@ import java.util.StringJoiner;
  * "key1":"v1","k2":"v2"
  *
  * @author lym
+ * @implNote  该类是 shoulder 规范中推荐的格式，可能并不是所有系统都希望的
  */
-public class DefaultOperationLogFormatter implements OperationLogFormatter {
+public class ShoulderOpLogFormatter implements OperationLogFormatter {
 
     /**
      * 日期格式化:高性能线程安全

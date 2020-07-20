@@ -2,6 +2,7 @@ package org.shoulder.log.operation.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.constants.OperationResult;
@@ -10,8 +11,6 @@ import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperateResult;
 import org.shoulder.log.operation.dto.OperationDetailAble;
 import org.shoulder.log.operation.dto.Operator;
-import org.shoulder.log.operation.normal.OpLogDetailKey;
-import org.shoulder.log.operation.normal.Operation;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
@@ -34,41 +33,39 @@ import java.util.Map;
 @Accessors(chain = true)
 public class OperationLogEntity implements Cloneable {
 
-    /** ============= 操作者描述（操作者分两种情况，用户、服务内部任务） {@link Operator }  ================ */
+    /** ============= 操作者描述（操作者分两种情况，用户、系统内部触发） {@link Operator }  ================ */
 
     /**
      * 操作者标识 【必须】
-     * 最长 128
-     * 用户 ————————— 用户名（用户id或用户的登录账号），例： admin
-     * 系统内部触发 —— 当前系统/服务标识   格式："system.服务标识" 例： system.user-center
+     * 用户 ————————— 用户名唯一标识，用户名、用户id等
+     * 系统内部触发 —— 服务标识   格式为 "system.服务标识" 例： system.order
      */
     protected String userId;
 
     /**
      * 操作者姓名（选填）
-     * 最长 128
      * 用户 ————————— 用户昵称， 例： lym
-     * 服务内部任务 —— 不填
+     * 系统内部触发 —— 不填
      */
     protected String userName;
 
     /**
-     * 操作者实名关联的人员唯一标识 255 （选填）
+     * 操作者实名关联的人员唯一标识 （选填）
      * 用户 ————————— 用户对应的真实人标识 例： tb_person 表 主键
-     * 服务内部任务 —— 不填
+     * 系统内部触发 —— 不填
      */
     protected String personId;
 
     /**
-     * 操作者组织唯一标识 128（选填）
-     * 用户 ————————— 用户所属组织/部门唯一标识  例： tb_org 表的 主键
-     * 服务内部任务 —— 不填
+     * 操作者所属组唯一标识（选填）
+     * 用户 ————————— 用户所属用户组/群/部门标识  例： tb_user_group 表的 主键
+     * 系统内部触发 —— 不填
      */
     protected String userOrgId;
 
     /**
-     * 操作者用户组名称 128 （选填）
-     * 用户所属用户组名称
+     * 操作者用户组名称（选填）
+     * 用户所属组名称
      */
     protected String userOrgName;
 
@@ -79,16 +76,15 @@ public class OperationLogEntity implements Cloneable {
 
     /**
      * IP （选填）
-     * 最长 255
-     * 用户 ————————— 用户登录机器IP 例：10.16.66.66
-     * 服务内部任务 —— 应用部署机器IP
+     * 用户终端机器IP 例：192.168.0.10
+     * 若系统内部触发为服务部署机器IP
      */
     protected String ip;
 
     /**
-     * 操作者终端标识 128（选填），也可以生成 UUID
+     * 操作者终端标识 （选填），也可以生成 UUID
      * 手机设备的唯一标识：IMSI、IMEI、ESN、MEID
-     * PC 中网卡唯一标识 MAC 地址 系统内部操作记为服务器所在机器 MAC 地址
+     * PC 中网卡唯一标识 MAC 地址 系统内部触发记为服务器所在机器 MAC 地址
      */
     protected String terminalId;
 
@@ -100,9 +96,9 @@ public class OperationLogEntity implements Cloneable {
     // ====================================== 操作动作描述 ===================================
 
     /**
-     * 具体操作标识      【必填】  相关接口：{@link Operation}
-     * 最长 255   多语言翻译由服务提供。
-     * 例：登录、退出、查询、新增、修改、删除、下载等
+     * 具体操作标识 【必填】
+     * 多语言翻译文件由服务提供，导入到网关或日志服务前端，展示时翻译。
+     * 例：注册、登录、退出、查询、新增、修改、删除、下载等
      */
     protected String operation;
 
@@ -112,7 +108,7 @@ public class OperationLogEntity implements Cloneable {
     protected LocalDateTime operationTime = LocalDateTime.now();
 
     /**
-     * 操作参数，记录业务操作的参数信息，用于操作审计和分析 （选填），最长 4096
+     * 操作参数，记录业务操作的参数信息，用于操作审计和分析 （选填）
      *
      * @see OpLogParam
      * @see OperationLogParam
@@ -120,13 +116,13 @@ public class OperationLogEntity implements Cloneable {
     protected List<OpLogParam> params;
 
     /**
-     * 本次操作的详细描述  最长 4096 （选填）
+     * 本次操作的详细描述（选填）
      * 详细的描述用户的操作内容，如被操作对象的 json 输出，注意不要输出密码等敏感信息，或是具体发生了怎样的事情
      */
     protected String detail;
 
     /**
-     * 最长 128 （选填） 相关接口：{@link OpLogDetailKey}
+     * 操作详情对应的多语言key（选填）
      * - 若不支持多语言则不填。
      * 占位符使用 %1,%2,%n形式，n表示第n个参数；
      */
@@ -151,19 +147,19 @@ public class OperationLogEntity implements Cloneable {
     /** ================== 被操作对象描述（均为选填） {@link Operable } ================== */
 
     /**
-     * 被操作对象的类型标识 最长 128 （选填）
+     * 被操作对象的类型标识 （选填）
      * Key格式为：log.objectType.<操作对象类型标识>
      */
     protected String objectType;
 
     /**
-     * 被操作对象唯一标示 最长 128 （选填）
+     * 被操作对象唯一标示 （选填）
      * 例： tb_user 的 userId
      */
     protected String objectId;
 
     /**
-     * 操作对象的名称  最长 255 （选填）
+     * 操作对象的名称 （选填）
      * 若存在多个值时，以 ","分隔 例： "user1,user2,user3"
      */
     protected String objectName;
@@ -172,7 +168,6 @@ public class OperationLogEntity implements Cloneable {
 
     /**
      * 与本次操作所关联其他业务操作的业务号 ，用于多个请求完共同完成一个业务功能时（选填）
-     * 最长 128
      * 例   上传csv进行数据的批量导入场景：上传导入文件、校验导入数据、点击确认导入、导入成功业务相关可以填同一个标识符
      *      上传新头像、确定修改个人信息也可以有相同的业务标识
      */
@@ -184,7 +179,7 @@ public class OperationLogEntity implements Cloneable {
     protected String serviceId;
 
     /**
-     * 本次业务操作的业务号 最长 128（选填）
+     * 本次业务操作的业务号（选填）
      */
     protected String traceId;
 
@@ -228,7 +223,7 @@ public class OperationLogEntity implements Cloneable {
             this.objectName = operable.getObjectName();
             this.objectType = operable.getObjectType();
 
-            if (operable instanceof OperationDetailAble && operable.getDetailItems() != null && operable.getDetailItems().size() > 0) {
+            if (operable instanceof OperationDetailAble && CollectionUtils.isNotEmpty(operable.getDetailItems())) {
                 this.detailItems = operable.getDetailItems();
             }
 

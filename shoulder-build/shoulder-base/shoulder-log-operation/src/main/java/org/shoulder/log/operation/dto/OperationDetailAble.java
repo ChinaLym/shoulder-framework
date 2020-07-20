@@ -1,6 +1,7 @@
 package org.shoulder.log.operation.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.shoulder.log.operation.entity.OperationLogEntity;
 
 import java.util.List;
 
@@ -15,12 +16,21 @@ public interface OperationDetailAble {
     List<String> LOG_DETAIL_IGNORE = null;
 
     /**
-     * 获取操作详情填充参数
+     * 获取操作详情填充参数。
      *
-     * @return 操作日志 detailItems 字段
-     *          返回值格式：框架支持 ['a,b,c'] 也支持 ['a','b','c']，甚至['a,b','c']，这几种填充方式是等效的。
-     *          特殊：返回 null，日志框架将忽略该值
+     * @return 对应 {@link OperationLogEntity#detailItems} 字段
      */
     @JsonIgnore
     List<String> getDetailItems();
+
+    /**
+     * 获取操作详情填充参数。
+     *
+     * @return 对应 {@link OperationLogEntity#detail} 字段
+     */
+    @JsonIgnore
+    default String getDetail(){
+        return null;
+    }
+
 }

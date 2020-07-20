@@ -2,9 +2,7 @@ package org.shoulder.log.operation.logger.impl;
 
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.entity.OperationLogEntity;
-import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.intercept.OperationLoggerInterceptor;
-import org.shoulder.log.operation.logger.OperationLogValidator;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.util.OperationLogBuilder;
 import org.slf4j.Logger;
@@ -16,34 +14,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 操作日志记录
+ * 基础操作日志记录，封装了记录前后触发逻辑
  * 记录前先校验，若日志不符合自己的规范要求则不记录这条操作日志，并在运行日志中记录为什么不合规
  *
  * @author lym
  */
-public class DefaultOperationLogger implements OperationLogger {
+public abstract class AbstractOperationLogger implements OperationLogger {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultOperationLogger.class);
-
-    /**
-     * logback.xml 中用于记录操作日志的 logger 名称
-     */
-    private static final String LOGBACK_XML_OPERATION_LOGGER_NAME = "OPERATION_LOGGER";
-
-    private static final Logger opLogger = initOperationLogger();
-
-    private final OperationLogFormatter operationLogFormatter;
-
-    private final OperationLogValidator opLogValidator = new DefaultOperationLogValidator();
+    private static final Logger log = LoggerFactory.getLogger(AbstractOperationLogger.class);
 
     /**
      * 日志拦截器
      */
     private Collection<OperationLoggerInterceptor> logInterceptors = new LinkedList<>();
-
-    public DefaultOperationLogger(OperationLogFormatter operationLogFormatter) {
-        this.operationLogFormatter = operationLogFormatter;
-    }
 
     /**
      * 记录一条操作日志
@@ -52,13 +35,11 @@ public class DefaultOperationLogger implements OperationLogger {
     public void log(OperationLogEntity opLogEntity) {
         try {
             beforeLog(opLogEntity);
-            opLogger.info(operationLogFormatter.format(opLogEntity));
+            doLog(opLogEntity);
             afterLog(opLogEntity);
         } catch (Exception e) {
-            // 当抛出异常先进行处理
             //afterValidateFail();
-            log.warn("logEntity is not qualified! -- " + e.getMessage() + operationLogFormatter.format(opLogEntity), e);
-
+            handleLogException(e, opLogEntity);
         }
     }
 
@@ -85,6 +66,22 @@ public class DefaultOperationLogger implements OperationLogger {
 
         // 如果过多，需要考虑多线程
         opLogs.forEach(this::log);
+    }
+
+
+    /**
+     * 子类需要实现具体如何记录日志
+     * @param opLogEntity 需要记录日志的实体
+     */
+    protected abstract void doLog(OperationLogEntity opLogEntity);
+
+    /**
+     * 默认记录一条warn日志，但子类可以覆盖当记录日志时出现异常如何处理
+     * @param e 具体是什么异常
+     * @param opLogEntity 需要记录日志的实体
+     */
+    protected void handleLogException(Exception e, OperationLogEntity opLogEntity){
+        log.warn("logEntity is not qualified! -- " + e.getMessage() + opLogEntity, e);
     }
 
     // **************************** 监听器相关 ******************************
@@ -126,19 +123,4 @@ public class DefaultOperationLogger implements OperationLogger {
         }
     }
 
-    // **************************** 初始化 logger ******************************
-
-    private static Logger initOperationLogger() {
-        return getOperationLogger(LOGBACK_XML_OPERATION_LOGGER_NAME);
-    }
-
-    private static Logger getOperationLogger(final String loggerName) {
-        Logger logger = LoggerFactory.getLogger(loggerName);
-        if (logger != null) {
-            return logger;
-        }
-        throw new RuntimeException("No OperationLogger named " + loggerName + " in LoggerFactory! " +
-                "Please check if there were any logger that name='" + loggerName + "' in your " +
-                "logback.xml.");
-    }
 }

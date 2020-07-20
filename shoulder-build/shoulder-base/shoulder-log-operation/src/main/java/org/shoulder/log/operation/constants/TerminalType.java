@@ -6,7 +6,7 @@ package org.shoulder.log.operation.constants;
  */
 public enum TerminalType {
 
-    /** 系统内部操作 */
+    /** 系统内部触发 */
     SYSTEM(0),
 
     /** 浏览器端 */

@@ -1,9 +1,9 @@
-package org.shoulder.log.operation.logger.impl;
+package org.shoulder.log.operation.format.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.log.operation.entity.OpLogParam;
 import org.shoulder.log.operation.entity.OperationLogEntity;
-import org.shoulder.log.operation.logger.OperationLogValidator;
+import org.shoulder.log.operation.format.OperationLogValidator;
 import org.springframework.util.Assert;
 
 import java.util.Objects;
@@ -13,8 +13,9 @@ import java.util.StringJoiner;
  * 操作日志格式默认校验类
  *
  * @author lym
+ * @implNote  该类是 shoulder 规范中推荐的格式，可能并不是所有系统都希望的
  */
-public class DefaultOperationLogValidator implements OperationLogValidator {
+public class ShoulderOperationLogValidator implements OperationLogValidator {
 
     /**校验失败将抛出 runtimeException */
     @Override
@@ -28,10 +29,13 @@ public class DefaultOperationLogValidator implements OperationLogValidator {
         // 由于该字段校验较浪费资源，运行时不校验（因为即便校验也无默认补救措施）
         if(CollectionUtils.isNotEmpty(log.getParams())
                 && "true".equals(System.getProperty("intellij.debug.agent"))){
+            // 必填项校验
+            log.getParams().forEach(this::validate);
+            // 校验参数拼接后的长度小于 maxParamLength
             StringJoiner sj = new StringJoiner(",", "[", "]");
             log.getParams().stream().map(param -> param.format(log.getOperation())).filter(Objects::nonNull).forEach(sj::add);
-            assertSmallerLimit(sj.length(), 2048, "opLogParam");
-            log.getParams().forEach(this::validate);
+            int maxParamLength = 2048;
+            assertSmallerLimit(sj.length(), maxParamLength, "opLogParam");
         }
     }
 
@@ -41,7 +45,7 @@ public class DefaultOperationLogValidator implements OperationLogValidator {
      *  供使用者填写的优先校验
      * @param log 待校验日志实体
      */
-    private void validateRequiredFields(OperationLogEntity log){
+    protected void validateRequiredFields(OperationLogEntity log){
         Assert.hasText(log.getUserId(), "userId is blank.");
         Assert.notNull(log.getTerminalType(), "terminalType is null.");
         Assert.hasText(log.getOperation(), "operation is blank.");
@@ -54,7 +58,7 @@ public class DefaultOperationLogValidator implements OperationLogValidator {
      * 字段长度校验
      * @param log 日志实体
      */
-    private void validateLengthLimit(OperationLogEntity log) {
+    protected void validateLengthLimit(OperationLogEntity log) {
         // operationTime 长度由 format 保证
         assertLengthLimit(log.getServiceId(), 128, "serviceId");
         assertLengthLimit(log.getUserOrgId(), 128, "userOrgId");
@@ -72,45 +76,32 @@ public class DefaultOperationLogValidator implements OperationLogValidator {
         }
     }
 
-    private void validate(OpLogParam param) {
-        if(param != null){
-            validateRequiredFields(param);
-        }
-    }
-
     /**
-     * 校验必填项
+     * 校验参数
      */
-    private void validateRequiredFields(OpLogParam param){
-        Assert.hasText(param.getName(), "OpLogParam.name is empty.");
+    protected void validate(OpLogParam param) {
+        if(param != null){
+            // 校验必填项
+            Assert.hasText(param.getName(), "opLogParam.name is blank.");
+        }
     }
 
     // ---------------------- base validate ----------------------
 
     /** 长度不超过 */
-    private void assertLengthLimit(String str, int limit, String name) {
+    protected void assertLengthLimit(String str, int limit, String name) {
         if (str != null) {
             assertSmallerLimit(str.length(), limit, name);
         }
     }
 
     /** 长度不超过 */
-    private void assertSmallerLimit(int num, int limit, String name) {
+    protected void assertSmallerLimit(int num, int limit, String name) {
         if (num  > limit) {
             throw new IllegalArgumentException(name + " over maximum size. yours length: " + num +
                     ". It should shorter than " + limit);
         }
     }
 
-    /** 只允许枚举范围内 */
-    @Deprecated
-    private void assertEnum(String enumStr, int limit, String name) {
-        final int char0Ascii = 48;
-        limit += char0Ascii;
-        if (enumStr != null && (enumStr.length() != 1 || enumStr.toCharArray()[0] > limit)) {
-            throw new IllegalArgumentException("'" + name + "' illegal value. yours is [" + enumStr + "]"+
-                    ". It should in ['0','1'" + (limit == 1 ? "]." : ",'2','3']."));
-        }
-    }
 
 }

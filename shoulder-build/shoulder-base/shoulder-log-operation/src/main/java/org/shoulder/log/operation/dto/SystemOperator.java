@@ -25,7 +25,7 @@ public class SystemOperator implements Operator {
 
     @Override
     public String getUserName() {
-        return "system";
+        return "_system_";
     }
 
     @Override

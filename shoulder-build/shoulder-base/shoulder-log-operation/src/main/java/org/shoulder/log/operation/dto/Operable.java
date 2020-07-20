@@ -38,22 +38,4 @@ public interface Operable extends OperationDetailAble {
         return null;
     }
 
-    /**
-     * 对应 {@link org.shoulder.log.operation.entity.OperationLogEntity#detailItems}，
-     * 批量日志中 易变的部分包括 被操作对象 和 detailItems 且操作详情通常是根据操作对象生成的，为了使用者方便，特集成在这里。
-     *
-     * @implSpec 但并不是所有时候都能通过可操作对象生成 故默认为不能生成
-     *
-     * */
-    @Override
-    @JsonIgnore
-    default List<String> getDetailItems(){
-        return Collections.emptyList();
-    }
-
-    // todo addTo logEntity
-    default String getDetail(){
-        return null;
-    }
-
 }

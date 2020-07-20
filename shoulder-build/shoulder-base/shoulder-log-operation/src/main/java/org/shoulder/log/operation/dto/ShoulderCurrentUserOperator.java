@@ -8,10 +8,11 @@ import java.io.Serializable;
 /**
  * 当前登录的用户信息作为业务操作者
  * @author lym
+ * @implSpec 该类针对 shoulder 系统中单点登录用户信息进行封装
  */
 @Data
 @Accessors(chain = true)
-public class CurrentUserOperator implements Serializable, Operator {
+public class ShoulderCurrentUserOperator implements Serializable, Operator {
 	private static final long serialVersionUID = 1429478242021042150L;
 
 	protected String userId;
@@ -22,11 +23,11 @@ public class CurrentUserOperator implements Serializable, Operator {
 	protected String languageId;
 
 	/** userId 必填 */
-    public CurrentUserOperator(String userId) {
+    public ShoulderCurrentUserOperator(String userId) {
         this.userId = userId;
     }
 
-    public CurrentUserOperator(String userId, String personId, String ip, String terminalId, String tgc, String languageId) {
+    public ShoulderCurrentUserOperator(String userId, String personId, String ip, String terminalId, String tgc, String languageId) {
         this.userId = userId;
         this.personId = personId;
         this.ip = ip;
