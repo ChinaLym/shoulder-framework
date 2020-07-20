@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.annotation;
 
-import org.shoulder.log.operation.constants.TerminalType;
+import org.shoulder.log.operation.enums.TerminalType;
 import org.shoulder.log.operation.entity.OperationLogEntity;
 import org.shoulder.log.operation.util.OperationLogBuilder;
 import org.shoulder.log.operation.util.OpLogContextHolder;

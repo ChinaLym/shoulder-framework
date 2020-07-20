@@ -2,8 +2,10 @@ package org.shoulder.log.operation.format.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.log.operation.entity.OpLogParam;
 import org.shoulder.log.operation.entity.OperationLogEntity;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 
@@ -77,8 +79,7 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
         if (CollectionUtils.isNotEmpty(opLog.getParams())) {
             StringJoiner sj = new StringJoiner(",", "[", "]");
             opLog.getParams().stream()
-                .map(param -> param.format(opLog.getOperation()))
-                .filter(Objects::nonNull)
+                .map(param -> formatParam(opLog.getOperation(), param))
                 .forEach(sj::add);
             builder.add("params", sj.toString());
         }
@@ -90,6 +91,25 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
 
         return builder.formatResult();
 
+    }
+
+    /**
+     * @param operation 操作标识
+     * @param param 参数
+     */
+    public static String formatParam(String operation, OpLogParam param) {
+        if(CollectionUtils.isEmpty(param.getValue())){
+            throw new IllegalStateException("operationParam.values is empty!");
+        }
+
+        String name = operation + "." + param.getName();
+        StringJoiner valueJoiner = new StringJoiner(",");
+        param.getValue().stream()
+            .filter(StringUtils::isEmpty)
+            .map( v -> name + v)
+            .forEach(valueJoiner::add);
+
+        return "{\"name\"=\"" + name + '\"' + ", \"value\"=\"" + valueJoiner.toString() + "\"}";
     }
 
 }

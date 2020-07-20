@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.constants;
+package org.shoulder.log.operation.enums;
 
 /**
  * 操作者使用的终端类型

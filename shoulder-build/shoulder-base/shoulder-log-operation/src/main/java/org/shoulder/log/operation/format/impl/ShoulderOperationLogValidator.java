@@ -6,7 +6,6 @@ import org.shoulder.log.operation.entity.OperationLogEntity;
 import org.shoulder.log.operation.format.OperationLogValidator;
 import org.springframework.util.Assert;
 
-import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
@@ -33,7 +32,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
             log.getParams().forEach(this::validate);
             // 校验参数拼接后的长度小于 maxParamLength
             StringJoiner sj = new StringJoiner(",", "[", "]");
-            log.getParams().stream().map(param -> param.format(log.getOperation())).filter(Objects::nonNull).forEach(sj::add);
+            log.getParams().stream().map(param -> ShoulderOpLogFormatter.formatParam(log.getOperation(), param)).forEach(sj::add);
             int maxParamLength = 2048;
             assertSmallerLimit(sj.length(), maxParamLength, "opLogParam");
         }

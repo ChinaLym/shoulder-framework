@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.dto;
 
-import org.shoulder.log.operation.constants.TerminalType;
+import org.shoulder.log.operation.enums.TerminalType;
 
 /**
  * 操作者信息

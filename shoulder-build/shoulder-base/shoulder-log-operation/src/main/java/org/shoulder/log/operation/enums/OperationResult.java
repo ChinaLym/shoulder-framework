@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.constants;
+package org.shoulder.log.operation.enums;
 
 import org.shoulder.log.operation.dto.OperateResult;
 import org.apache.commons.collections4.CollectionUtils;

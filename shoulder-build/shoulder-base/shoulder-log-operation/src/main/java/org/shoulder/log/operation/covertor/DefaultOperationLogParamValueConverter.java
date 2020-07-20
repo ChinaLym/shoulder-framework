@@ -21,7 +21,11 @@ public class DefaultOperationLogParamValueConverter implements OperationLogParam
     /**
      * 当参数值为 null 时，输出内容
      */
-    private String nullValueOutputText = "";
+    private String nullValueOutputText;
+
+    public DefaultOperationLogParamValueConverter() {
+        this("");
+    }
 
     public DefaultOperationLogParamValueConverter(String nullValueOutputText){
         this.nullValueOutputText = nullValueOutputText;
@@ -43,6 +47,7 @@ public class DefaultOperationLogParamValueConverter implements OperationLogParam
 
         Class clazz = obj.getClass();
         if (obj instanceof Iterable) {
+            // 可遍历的
             Iterable<?> iterableToLogParam = (Iterable<?>) obj;
             iterableToLogParam.forEach(
                     item -> {
@@ -55,6 +60,7 @@ public class DefaultOperationLogParamValueConverter implements OperationLogParam
                         }
                     });
         } else if (clazz.isArray()) {
+            // 数组类型
             Object[] objects = ((Object[]) obj);
             for (Object object : objects) {
                 if (object != null) {
@@ -64,7 +70,7 @@ public class DefaultOperationLogParamValueConverter implements OperationLogParam
                 }
             }
         } else {
-            // if Map...other object then just to String
+            // just to String（object类型、Map类型等）
             resultList.add(obj.toString());
         }
         return resultList;

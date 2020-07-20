@@ -1,7 +1,7 @@
 package org.shoulder.log.operation.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.shoulder.log.operation.constants.OperationResult;
+import org.shoulder.log.operation.enums.OperationResult;
 
 /**
  * 可以判断操作结果的对象
