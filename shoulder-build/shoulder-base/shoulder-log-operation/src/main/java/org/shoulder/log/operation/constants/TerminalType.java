@@ -19,13 +19,13 @@ public enum TerminalType {
     CLIENT(2),
     ;
 
-    private int type;
+    private int code;
 
-    TerminalType(int type){
-        this.type = type;
+    TerminalType(int code){
+        this.code = code;
     }
 
-    public int getType() {
-        return type;
+    public int getCode() {
+        return code;
     }
 }
