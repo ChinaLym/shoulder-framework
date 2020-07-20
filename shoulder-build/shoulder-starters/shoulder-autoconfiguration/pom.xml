@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.shoulder</groupId>
+        <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
@@ -16,61 +16,61 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-core</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-cluster</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-crypto</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-log-operation</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-http</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-data-db</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-security</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-code</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-auth-server</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-validation</artifactId>
             <optional>true</optional>
         </dependency>

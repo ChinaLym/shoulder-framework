@@ -3,12 +3,12 @@ package org.shoulder.autoconfigure.log.operation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.async.OpLogRunnable;
-import org.shoulder.log.operation.format.DefaultOperationLogFormatter;
+import org.shoulder.log.operation.format.impl.ShoulderOpLogFormatter;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.logger.impl.AsyncOperationLogger;
-import org.shoulder.log.operation.logger.impl.DefaultOperationLogger;
+import org.shoulder.log.operation.logger.impl.Sl4jOperationLogger;
 import org.shoulder.log.operation.util.OpLogContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
 
     /**
      * Provided a singleThread executor {@link Executors#newSingleThreadExecutor} for default.
-     * {@link AsyncOperationLogger} entrust {@link DefaultOperationLogger} as a delegator with log.
+     * {@link AsyncOperationLogger} entrust {@link ShoulderOpLogFormatter} as a delegator with log.
      *
      * @return {@link AsyncOperationLogger}
      */
@@ -71,31 +71,31 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
                             return loggingThread;
                         }
                 ))
-                .setLogger(new DefaultOperationLogger(operationLogFormatter));
+                .setLogger(new Sl4jOperationLogger(operationLogFormatter));
     }
 
 
     /**
      * Provide a sync logger for default.
      *
-     * @see DefaultOperationLogger
+     * @see Sl4jOperationLogger
      */
     @Bean
     @ConditionalOnMissingBean(value = {OperationLogger.class})
     public OperationLogger operationLogger(OperationLogFormatter operationLogFormatter) {
         log.info("OperationLogger-async=false");
-        return new DefaultOperationLogger(operationLogFormatter);
+        return new Sl4jOperationLogger(operationLogFormatter);
     }
 
     /**
      * Provide a logger for default.
      *
-     * @see DefaultOperationLogFormatter
+     * @see ShoulderOpLogFormatter
      */
     @Bean
     @ConditionalOnMissingBean
     public OperationLogFormatter defaultOperationLogFormatter() {
-        return new DefaultOperationLogFormatter();
+        return new ShoulderOpLogFormatter();
     }
 
     /**

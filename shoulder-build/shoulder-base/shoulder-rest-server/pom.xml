@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.shoulder</groupId>
+        <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
@@ -15,12 +15,12 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-validation</artifactId>
         </dependency>
 

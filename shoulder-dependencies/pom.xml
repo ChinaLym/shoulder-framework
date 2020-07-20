@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.shoulder</groupId>
+        <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <!--<relativePath>../pom.xml</relativePath>-->
@@ -149,68 +149,68 @@
 
             <!--shoulder-base begin -->
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-lombok</artifactId>
                 <version>${shoulder-lombok.version}</version>
                 <optional>true</optional>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-core</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-cluster</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-crypto</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-log-operation</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-security</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-code</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-auth-server</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-data-db</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-http</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-validation</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
@@ -223,49 +223,49 @@
             <!--shoulder-starters begin -->
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-autoconfiguration</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-auth-server</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-code</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-crypto</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-minio</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-trace</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.shoulder</groupId>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-web</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>

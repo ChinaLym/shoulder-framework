@@ -26,7 +26,7 @@
 引入方式
 ```xml
         <dependency>
-            <groupId>org.shoulder</groupId>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-lombok</artifactId>
         </dependency>
 
