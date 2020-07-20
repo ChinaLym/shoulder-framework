@@ -1,7 +1,7 @@
 # shoulder （肩膀）
 
 ![](https://img.shields.io/badge/build-passing-green.svg)
-![](https://img.shields.io/badge/modules-21-yellow.svg)
+![](https://img.shields.io/badge/modules-27-yellow.svg)
 ![](https://img.shields.io/badge/license-Apche%202.0-orange.svg)
 
 ![](https://img.shields.io/badge/Version-0.0.1--SNAPSHOT-red.svg) 
@@ -17,7 +17,11 @@
 
 ## 简介
 
-Shoulder 是一款 基于 `Spring Boot`、`Spring Cloud` 的 Java WEB/微服务/开发框架，在其基础上实现了一些`可扩展`的常用功能(可以再次开发)。Shoulder 并没有重复造轮子，正如其名，对于业界成熟的解决方案选择复用/优化的策略（站在巨人的肩膀上）。Shoulder 和 `Spring Boot` 的关系就像 `maven 插件` 和 `maven` 的关系一样，核心没有变，只是在原来的基础上实现了一些常用的能力，简化外包、毕设等项目的开发。且这些能力支持扩展、二次开发，代码规范，非常适合公司里拿他作为基础脚手架（商业友好）。
+**Shoulder** 是一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能(可以再次开发)。
+
+**Shoulder** 设计上参照了 **[软件设计开发规范](http://spec.itlym.cn)** 为了减少使用者的上手成本，**shoulder** 不去造轮子，而是复用/优化当前业界成熟的解决方案（站在巨人的肩膀上），优秀的开源社区给 shoulder 一个肩膀，shoulder 把优秀的实现带给使用者，给使用者一个肩膀！
+
+Shoulder 和 `Spring Boot` 的关系就像 `maven 插件` 和 `maven` 的关系一样，实现了**[软件设计开发规范](http://spec.itlym.cn)** 要求的部分，并在 `spring boot` 原来的基础上实现了一些常用的能力，以为应用提供统一风格，简化多个服务的大系统之间的设计难度，且这些能力支持扩展、二次开发，代码规范，非常适合公司里拿他作为基础脚手架（`Apache2.0` 商业友好），当然，这些便利的能力也适合外包、毕设等项目的快速开发。。
 
 虽然业界基础框架大都已经有了成熟的解决方案，但一千开发手里有一千种实践之路，一千条路里宽阔和坎坷的可能差的很大。因此开发者在使用时如果不按照一定的实践原则，还是会导致代码性能差、难维护等问题。Shoulder 框架不仅提供了Java Web开发中的常用能力，还提供了技术选型指导、一定的开发规范，以使你开发的软件更迅速和易于维护，带你轻松踏上最佳实践之路！[点击这里可以查看 Shoulder Framework 遵循的规范](http://doc.itlym.cn)
 
@@ -34,8 +38,8 @@ Shoulder 是一款 基于 `Spring Boot`、`Spring Cloud` 的 Java WEB/微服务/
 已经依赖的
 
 - Spring 5
-- Spring Boot 2.2
-- Spring Cloud H
+- Spring Boot 2.3
+- Spring Cloud H S5
 
 ## 发行版本号说明
 采用 [主版本号.次版本号.修订号](https://semver.org/lang/zh-CN)（[MAJOR.MINOR.PATCH](https://semver.org)） 的形式
@@ -83,7 +87,7 @@ Shoulder 是一款 基于 `Spring Boot`、`Spring Cloud` 的 Java WEB/微服务/
 
 ## 建议与反馈
 
-感谢小伙伴们的Star/Fork，欢迎在 issue 交流，留下你的建议、期待的新功能等~
+感谢小伙伴们的 **[Star](https://gitee.com/ChinaLym/shoulder-framework/star)** / **Fork**，欢迎在 issue 交流，留下你的建议、期待的新功能等~
 
 欢迎 fork 并提交合并请求一起改善该框架 [合作开发流程与项目介绍](CONTRIBUTING.MD)
 
