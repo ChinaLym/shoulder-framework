@@ -42,7 +42,6 @@ public @interface OperationLog {
 
     /**
      * 操作详情多语言 key (选填)
-     * op.detail.<操作动作标识>
      */
     String detailKey() default "";
 
