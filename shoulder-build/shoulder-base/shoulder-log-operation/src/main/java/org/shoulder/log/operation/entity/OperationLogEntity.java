@@ -1,9 +1,11 @@
 package org.shoulder.log.operation.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.enums.OperationResult;
 import org.shoulder.log.operation.enums.TerminalType;
@@ -58,14 +60,13 @@ public class OperationLogEntity implements Cloneable {
 
     /**
      * 操作者所属组唯一标识（选填）
-     * 用户 ————————— 用户所属用户组/群/部门标识  例： tb_user_group 表的 主键
+     * 用户 ————————— 所属组织/用户组/群/部门标识  例： tb_user_group 表的 主键
      * 系统内部触发 —— 不填
      */
     protected String userOrgId;
 
     /**
-     * 操作者用户组名称（选填）
-     * 用户所属组名称
+     * 操作者所属组名称（选填）
      */
     protected String userOrgName;
 
@@ -203,11 +204,16 @@ public class OperationLogEntity implements Cloneable {
     /**
      * 填充操作者信息
      */
+    @JsonIgnore
     public OperationLogEntity setOperator(Operator operator) {
         if (operator != null) {
             this.userId = operator.getUserId();
+            this.userName = operator.getUserName();
             this.personId = operator.getPersonId();
+            this.userOrgId = operator.getUserOrgId();
+            this.userOrgName = operator.getUserOrgName();
             this.ip = operator.getIp();
+            this.terminalType = operator.getTerminalType();
             this.terminalId = operator.getTerminalId();
             this.terminalType = operator.getTerminalType();
         }
@@ -217,14 +223,20 @@ public class OperationLogEntity implements Cloneable {
     /**
      * 填充单个被操作对象信息
      */
+    @JsonIgnore
     public OperationLogEntity setOperableObject(Operable operable) {
         if (operable != null) {
             this.objectId = operable.getObjectId();
             this.objectName = operable.getObjectName();
             this.objectType = operable.getObjectType();
 
-            if (operable instanceof OperationDetailAble && CollectionUtils.isNotEmpty(operable.getDetailItems())) {
-                this.detailItems = operable.getDetailItems();
+            if (operable instanceof OperationDetailAble) {
+                if(CollectionUtils.isNotEmpty(operable.getDetailItems())){
+                    this.detailItems = operable.getDetailItems();
+                }
+                if(StringUtils.isNotEmpty(operable.getDetail())){
+                    this.detail = operable.getDetail();
+                }
             }
 
             if (operable instanceof OperateResult) {
@@ -241,6 +253,7 @@ public class OperationLogEntity implements Cloneable {
         return this;
     }
 
+    @JsonIgnore
     public OperationLogEntity setExtField(String extKey, String value) {
         if (extKey == null) {
             return this;
@@ -252,6 +265,15 @@ public class OperationLogEntity implements Cloneable {
         return this;
     }
 
+    @JsonIgnore
+    public String getExtField(String extKey) {
+        if (extKey == null || this.extFields == null) {
+            return null;
+        }
+        return this.extFields.get(extKey);
+    }
+
+    @JsonIgnore
     public OperationLogEntity setResultFail() {
         return setResult(OperationResult.FAIL);
     }
@@ -287,7 +309,8 @@ public class OperationLogEntity implements Cloneable {
         clone.setObjectName(objectName);
 
         clone.setOperation(operation);
-        clone.setParams(params);//todo clone
+        // 这里不是深克隆
+        clone.setParams(params);
         clone.setOperationTime(operationTime);
         clone.setResult(result);
         clone.setDetailKey(detailKey);

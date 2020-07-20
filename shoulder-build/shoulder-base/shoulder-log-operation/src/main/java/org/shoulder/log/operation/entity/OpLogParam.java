@@ -1,11 +1,7 @@
 package org.shoulder.log.operation.entity;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.StringJoiner;
 
 /**
  * 操作对应业务方法/接口的入参
