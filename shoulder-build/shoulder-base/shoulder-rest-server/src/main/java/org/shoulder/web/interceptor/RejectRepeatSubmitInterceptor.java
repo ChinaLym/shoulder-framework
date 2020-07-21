@@ -1,4 +1,4 @@
-package org.shoulder.web;
+package org.shoulder.web.interceptor;
 
 import org.shoulder.web.annotation.RejectRepeatSubmit;
 import org.springframework.beans.factory.annotation.Value;

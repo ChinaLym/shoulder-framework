@@ -1,4 +1,4 @@
-package org.shoulder.web.waf.properties;
+package org.shoulder.web;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
