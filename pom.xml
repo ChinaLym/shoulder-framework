@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
 
     <version>0.0.1-SNAPSHOT</version>
+    <!-- mvn versions:set -DnewVersion=1.0.1-RELEASE、mvn versions:commit、mvn versions:revert -->
 
     <!-- 简介 -->
     <name>shoulder Build</name>

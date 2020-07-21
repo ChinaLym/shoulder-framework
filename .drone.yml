@@ -2,6 +2,20 @@ kind: pipeline
 name: default
 
 steps:
+  - name: 发现SNAPSHOT依赖
+    image: maven:3-jdk-11
+    volumes:
+      - name: mvnCache
+        path: /root/.m2
+    commands:
+      - mvn dependency:tree -Dincludes=:::*-SNAPSHOT
+      - echo 'FINISHED dependencyCheck!'
+      # mvn versions:use-releases
+      # mvn versions:use-next-releases
+      # mvn versions:use-latest-releases
+      # mvn versions:display-dependency-updates
+
+
   - name: 编译、打包、发布到 maven 仓库
     image: maven:3-jdk-11
     volumes:
