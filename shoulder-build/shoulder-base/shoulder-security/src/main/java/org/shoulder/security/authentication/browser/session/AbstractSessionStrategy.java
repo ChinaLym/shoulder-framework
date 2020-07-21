@@ -73,7 +73,7 @@ public class AbstractSessionStrategy {
             logger.debug("redirectTo:" + targetUrl);
             redirectStrategy.sendRedirect(request, response, targetUrl);
         } else {
-            Object result = buildResponseContent(request);
+            String result = buildResponseContent(request);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             response.getWriter().write(ResponseUtil.jsonMsg(result));
@@ -81,7 +81,7 @@ public class AbstractSessionStrategy {
 
     }
 
-    protected Object buildResponseContent(HttpServletRequest request) {
+    protected String buildResponseContent(HttpServletRequest request) {
         StringBuilder result = new StringBuilder("session invalid");
         if (isConcurrency()) {
             result.append(",it may caused by concurrent logIn.");

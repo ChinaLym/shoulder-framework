@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.shoulder.security.code.img;
 
 

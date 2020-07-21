@@ -9,6 +9,7 @@ public interface SecurityConst {
 
     /** 表单方式认证（用户名密码登录） */
     String URL_AUTHENTICATION_FORM = "/authentication/form";
+
     /** 短信验证码认证（短信验证码登录） */
     String URL_AUTHENTICATION_SMS = "/authentication/sms";
 

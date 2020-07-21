@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.shoulder.auth.token.properties;
 
 import org.shoulder.security.SecurityConst;
@@ -11,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 /**
  * OAuth2 认证相关配置
  *
- * @author zhailiang
+ * @author lym
  */
 @ConfigurationProperties(prefix = SecurityConst.CONFIG_PREFIX + ".app")
 public class OAuth2Properties {

@@ -42,7 +42,7 @@ import java.sql.SQLException;
 @Configuration
 @RestControllerAdvice
 @ConditionalOnWebApplication
-@ConditionalOnProperty(name = "shoulder.web.handlerCommonException", havingValue = "on", matchIfMissing = true)
+@ConditionalOnProperty(name = "shoulder.web.handleGlobalException", havingValue = "on", matchIfMissing = true)
 public class RestControllerExceptionAdvice {
 
 
