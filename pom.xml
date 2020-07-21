@@ -180,14 +180,14 @@
                     </plugin>
 
                     <!-- 修改父模块的版本之后，进入父模块的pom所在路径执行mvn命令：mvn -N versions:update-child-modules,即可自动修改所有子模块中的版本号 -->
-                    <plugin>
+                    <!--<plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>versions-maven-plugin</artifactId>
                         <version>${versions-maven-plugin.version}</version>
                         <configuration>
                             <generateBackupPoms>false</generateBackupPoms>
                         </configuration>
-                    </plugin>
+                    </plugin>-->
 
                 </plugins>
             </build>
