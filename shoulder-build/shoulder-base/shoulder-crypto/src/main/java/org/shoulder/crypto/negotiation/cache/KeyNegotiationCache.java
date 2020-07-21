@@ -17,11 +17,11 @@ public interface KeyNegotiationCache {
 
     /**
      * 放缓存
-     * @param serviceId 对方服务标识
+     * @param appId 对方应用标识
      * @param keyExchangeResult  密钥协商结果
      */
-    default void putAsClient(@NonNull String serviceId, @NonNull KeyExchangeResult keyExchangeResult){
-        put(serviceId, keyExchangeResult, true);
+    default void putAsClient(@NonNull String appId, @NonNull KeyExchangeResult keyExchangeResult){
+        put(appId, keyExchangeResult, true);
     }
     
     /**
@@ -35,12 +35,12 @@ public interface KeyNegotiationCache {
 
     /**
      * 从缓存中拿数据，发送安全请求时
-     * @param serviceId 服务标识
+     * @param appId 应用标识
      * @return 密钥协商结果 如果没有则为 null
      */
     @Nullable
-    default KeyExchangeResult getAsClient(String serviceId) {
-        return get(serviceId, true);
+    default KeyExchangeResult getAsClient(String appId) {
+        return get(appId, true);
     }
 
     /**

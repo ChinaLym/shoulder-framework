@@ -40,7 +40,7 @@ public class OperationLogEntity implements Cloneable {
     /**
      * 操作者标识 【必须】
      * 用户 ————————— 用户名唯一标识，用户名、用户id等
-     * 系统内部触发 —— 服务标识   格式为 "system.服务标识" 例： system.order
+     * 系统内部触发 —— 应用标识   格式为 "system.应用标识" 例： system.order
      */
     protected String userId;
 
@@ -175,9 +175,9 @@ public class OperationLogEntity implements Cloneable {
     protected String businessId;
 
     /**
-     * 服务标识 （必填） 默认取 `spring.application.name`
+     * 应用标识 （必填） 默认取 `spring.application.name`
      */
-    protected String serviceId;
+    protected String appId;
 
     /**
      * 本次业务操作的业务号（选填）
@@ -318,7 +318,7 @@ public class OperationLogEntity implements Cloneable {
         clone.setDetail(detail);
         clone.setErrorCode(errorCode);
 
-        clone.setServiceId(serviceId);
+        clone.setAppId(appId);
         clone.setTraceId(traceId);
         clone.setBusinessId(businessId);
         clone.setExtFields(extFields);

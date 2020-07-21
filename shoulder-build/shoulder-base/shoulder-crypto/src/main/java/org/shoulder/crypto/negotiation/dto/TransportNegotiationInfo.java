@@ -12,9 +12,9 @@ import lombok.Data;
 public class TransportNegotiationInfo {
 
     /**
-     * 服务标识（服务名称），用于寻址
+     * 应用标识（服务名称），用于寻址
      */
-    private String serviceId;
+    private String appId;
 
     /**
      * 密钥协商地址，用于密钥协商

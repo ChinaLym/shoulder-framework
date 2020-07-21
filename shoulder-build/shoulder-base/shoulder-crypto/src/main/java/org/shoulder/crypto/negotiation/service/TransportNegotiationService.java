@@ -12,11 +12,11 @@ public interface TransportNegotiationService {
 
     /**
      * 与服务方进行密钥协商请求
-     * @param serviceId 目标服务标识
+     * @param appId 目标应用标识
      * @return 是否协商成功
      * @throws NegotiationException 密钥协商异常
      */
-    KeyExchangeResult requestForNegotiate(String serviceId) throws NegotiationException;
+    KeyExchangeResult requestForNegotiate(String appId) throws NegotiationException;
 
 
     /**

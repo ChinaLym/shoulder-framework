@@ -84,7 +84,7 @@ public class ServletUtil {
 	 * 判断请求是否为ajax请求
 	 *
 	 * @param request 请求
-	 * @return boolean型判断结果
+	 * @return 判断结果
 	 */
 	public static boolean isAjax(final HttpServletRequest request) {
 		// 如果 requestType 值为 XMLHttpRequest ，证明请求为ajax请求
@@ -92,8 +92,27 @@ public class ServletUtil {
 		return XML_HTTP_REQ_VALUE.equalsIgnoreCase(requestHeader.trim());
 	}
 
+    /**
+     * 需要返回application/json格式
+     *
+     * @param request 请求
+     * @return 判断结果
+     */
+    public static boolean acceptJson(HttpServletRequest request){
+        String accept = request.getHeader("Accept");
+        return accept.startsWith("application/json");
+    }
+
 	public static boolean isAjax() {
 		return isAjax(getRequest());
+	}
+
+    /**
+     * 是否需要返回application/json格式
+     */
+	public static boolean needReturnJson() {
+        HttpServletRequest request = getRequest();
+		return acceptJson(request) || isAjax(request);
 	}
 
 

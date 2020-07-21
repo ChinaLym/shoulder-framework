@@ -9,7 +9,7 @@ import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
-import org.shoulder.http.ServiceIdExtractor;
+import org.shoulder.http.AppIdExtractor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -45,12 +45,12 @@ public class SecurityRestTemplate extends RestTemplate {
 
     private final TransportCryptoUtil cryptoUtil;
 
-    private final ServiceIdExtractor serviceIdExtractor;
+    private final AppIdExtractor appIdExtractor;
 
-    public SecurityRestTemplate(TransportNegotiationService transportNegotiationService, TransportCryptoUtil cryptoUtil, ServiceIdExtractor serviceIdExtractor) {
+    public SecurityRestTemplate(TransportNegotiationService transportNegotiationService, TransportCryptoUtil cryptoUtil, AppIdExtractor appIdExtractor) {
         this.transportNegotiationService = transportNegotiationService;
         this.cryptoUtil = cryptoUtil;
-        this.serviceIdExtractor = serviceIdExtractor;
+        this.appIdExtractor = appIdExtractor;
     }
 
 
@@ -104,13 +104,13 @@ public class SecurityRestTemplate extends RestTemplate {
          * 在请求构建发送前，确保已经完成密钥协商
          */
         private HttpHeaders negotiateBeforeExecute(URI uri) throws AesCryptoException, AsymmetricCryptoException {
-            // 根据 url 获取服务标识，从配置项中获取协商 url，没有则抛异常
-            String serviceId = serviceIdExtractor.extract(uri);
+            // 根据 url 获取应用标识，从配置项中获取协商 url，没有则抛异常
+            String appId = appIdExtractor.extract(uri);
 
             int time = 0;
             KeyExchangeResult keyExchangeResult = null;
             while (keyExchangeResult == null){
-                keyExchangeResult = negotiate(serviceId, time);
+                keyExchangeResult = negotiate(appId, time);
                 time ++;
             }
 
@@ -123,7 +123,7 @@ public class SecurityRestTemplate extends RestTemplate {
 
         }
 
-        private KeyExchangeResult negotiate(String serviceId, int time) {
+        private KeyExchangeResult negotiate(String appId, int time) {
 
             // 限制协商尝试次数。超过重试次数，抛异常，
             /**
@@ -131,15 +131,15 @@ public class SecurityRestTemplate extends RestTemplate {
              */
             int negotiationMaxTimes = 2;
             if (time >= negotiationMaxTimes) {
-                log.error("check secure session exceed the max time(" + negotiationMaxTimes + "), FAIL! serverId={}", serviceId);
-                throw new IllegalStateException("check secure session exceed the max time(" + negotiationMaxTimes + "), FAIL! serverId=" + serviceId);
+                log.error("check secure session exceed the max time(" + negotiationMaxTimes + "), FAIL! serverId={}", appId);
+                throw new IllegalStateException("check secure session exceed the max time(" + negotiationMaxTimes + "), FAIL! serverId=" + appId);
             }
 
             // 密钥协商
             try {
-                return transportNegotiationService.requestForNegotiate(serviceId);
+                return transportNegotiationService.requestForNegotiate(appId);
             } catch (NegotiationException e) {
-                log.warn("Try negotiate FAIL with {}, time({})", serviceId, time, e);
+                log.warn("Try negotiate FAIL with {}, time({})", appId, time, e);
                 return null;
             }
         }

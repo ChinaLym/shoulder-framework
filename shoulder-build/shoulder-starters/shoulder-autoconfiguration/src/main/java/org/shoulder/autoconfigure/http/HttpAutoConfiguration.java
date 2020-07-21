@@ -1,8 +1,7 @@
 package org.shoulder.autoconfigure.http;
 
-import lombok.extern.slf4j.Slf4j;
-import org.shoulder.http.ServiceIdExtractor;
-import org.shoulder.http.ShoulderDslServiceIdExtractor;
+import org.shoulder.http.AppIdExtractor;
+import org.shoulder.http.ShoulderDslAppIdExtractor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -14,13 +13,13 @@ import org.springframework.web.client.RestTemplate;
  * @author lym
  */
 @Configuration
-@ConditionalOnClass(ServiceIdExtractor.class)
+@ConditionalOnClass(AppIdExtractor.class)
 public class HttpAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ServiceIdExtractor serviceIdExtractor(){
-        return new ShoulderDslServiceIdExtractor();
+    public AppIdExtractor appIdExtractor(){
+        return new ShoulderDslAppIdExtractor();
     }
 
     @Bean

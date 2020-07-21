@@ -17,13 +17,13 @@ public class BaseContextHolder {
 
     private static final ThreadLocal<Map<String, String>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(ShoulderContextKey.KEY_NUM));
 
-    private static String serviceId;
+    private static String appId;
 
-    public static String getServiceId() {
-        return serviceId;
+    public static String getAppId() {
+        return appId;
     }
-    public static void setServiceId(String serviceId) {
-        BaseContextHolder.serviceId = serviceId;
+    public static void setAppId(String appId) {
+        BaseContextHolder.appId = appId;
     }
 
 

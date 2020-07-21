@@ -2,7 +2,7 @@ package org.shoulder.autoconfigure.crypto;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.autoconfigure.redis.RedisAutoConfiguration;
-import org.shoulder.cluster.redis.annotation.ServiceExclusive;
+import org.shoulder.cluster.redis.annotation.ApplicationExclusive;
 import org.shoulder.core.constant.ShoulderFramework;
 import org.shoulder.crypto.TextCipher;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
@@ -100,7 +100,7 @@ public class CryptoAutoConfiguration {
          */
         @Bean("redisKeyPairCache")
         @ConditionalOnProperty(name = ShoulderFramework.CONFIG_PREFIX + "cluster", value = "true")
-        public KeyPairCache redisKeyPairCache(@ServiceExclusive StringRedisTemplate redisTemplate, LocalTextCipher localTextCipher){
+        public KeyPairCache redisKeyPairCache(@ApplicationExclusive StringRedisTemplate redisTemplate, LocalTextCipher localTextCipher){
             KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate, localTextCipher);
             return addPropertyKeyPairs(keyPairCache);
         }

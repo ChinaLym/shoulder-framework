@@ -15,7 +15,7 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         String applicationName = environment.getProperty("spring.application.name");
-        BaseContextHolder.setServiceId(applicationName);
+        BaseContextHolder.setAppId(applicationName);
     }
 
     @Override

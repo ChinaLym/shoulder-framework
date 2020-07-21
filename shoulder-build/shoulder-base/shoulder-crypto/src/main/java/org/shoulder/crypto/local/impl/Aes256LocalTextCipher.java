@@ -224,7 +224,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
 	/**
 	 * 生成 rootKey ： SHA256(rootKeyParts)
-	 *	根密钥总长度为 256 位，其中一部分写死在代码中。另一部分启动时随机生成，以确保每个 服务/项目 中不出现重复。
+	 *	根密钥总长度为 256 位，其中一部分写死在代码中。另一部分启动时随机生成，以确保每个应用中不出现重复。
 	 *	 因为 AES256算法 要求秘钥部件为总长度等于256位( Java 中一个 byte 为 8位)
 	 *	 这里需要 64 位
 	 *

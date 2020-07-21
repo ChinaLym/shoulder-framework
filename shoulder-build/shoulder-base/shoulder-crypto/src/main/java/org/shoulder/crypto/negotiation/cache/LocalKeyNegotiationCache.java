@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LocalKeyNegotiationCache implements KeyNegotiationCache {
 
     /**
-     * 客户端缓存，key为对方服务标识
+     * 客户端缓存，key为对方应用标识
      */
     private static Map<String, KeyExchangeResult> clientKeyExchangeResultMap = new ConcurrentHashMap<>(8);
 

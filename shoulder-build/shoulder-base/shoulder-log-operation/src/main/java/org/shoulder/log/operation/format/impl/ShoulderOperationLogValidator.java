@@ -50,7 +50,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
         Assert.hasText(log.getOperation(), "operation is blank.");
         Assert.notNull(log.getOperationTime(), "operationTime is null.");
         Assert.notNull(log.getResult(), "result is null.");
-        Assert.hasText(log.getServiceId(), "serviceId is blank.");
+        Assert.hasText(log.getAppId(), "appId is blank.");
     }
 
     /**
@@ -59,7 +59,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
      */
     protected void validateLengthLimit(OperationLogEntity log) {
         // operationTime 长度由 format 保证
-        assertLengthLimit(log.getServiceId(), 128, "serviceId");
+        assertLengthLimit(log.getAppId(), 128, "appId");
         assertLengthLimit(log.getUserOrgId(), 128, "userOrgId");
         assertLengthLimit(log.getUserId(), 128, "userId");
         assertLengthLimit(log.getUserName(), 128, "userName");

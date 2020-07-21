@@ -50,7 +50,7 @@ public class SystemOperator implements Operator {
 
     private static class SingletonHolder{
         private static final SystemOperator INSTANCE =
-                new SystemOperator("system." + BaseContextHolder.getServiceId(),
+                new SystemOperator("system." + BaseContextHolder.getAppId(),
                         IpUtils.getIPFromCache(), IpUtils.getMACFromCache());
     }
 

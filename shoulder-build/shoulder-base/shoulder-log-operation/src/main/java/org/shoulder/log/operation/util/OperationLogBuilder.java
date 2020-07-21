@@ -32,7 +32,7 @@ public class OperationLogBuilder {
         Operator currentOperator = OpLogContextHolder.getCurrentOperator();
         return new OperationLogEntity(operation)
                 .setOperator(currentOperator)
-                .setServiceId(BaseContextHolder.getServiceId());
+                .setAppId(BaseContextHolder.getAppId());
     }
 
     /**

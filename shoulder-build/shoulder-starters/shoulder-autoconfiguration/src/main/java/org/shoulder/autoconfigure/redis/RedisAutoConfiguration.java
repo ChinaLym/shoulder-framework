@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.redis;
 
 import org.shoulder.autoconfigure.property.ClusterProperties;
-import org.shoulder.cluster.redis.annotation.ServiceExclusive;
+import org.shoulder.cluster.redis.annotation.ApplicationExclusive;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -16,7 +16,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
- * 提供两个服务专属的
+ * redis相关配置，提供一下 Bean
  *      redisTemplate<String, Object>
  *      StringRedisTemplate
  *
@@ -44,10 +44,10 @@ public class RedisAutoConfiguration {
 
     /**
      * 必须配置 redis 相关参数
-     * 服务专属
+     * 应用专属
      */
     @Bean
-    @ServiceExclusive
+    @ApplicationExclusive
     public RedisTemplate<String, Object> serviceExclusiveRedisTemplate(LettuceConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         //new StringRedisSerializer(StandardCharsets.UTF_8)
@@ -62,10 +62,10 @@ public class RedisAutoConfiguration {
 
     /**
      * 必须配置 redis 相关参数
-     * 服务专属
+     * 应用专属
      */
     @Bean
-    @ServiceExclusive
+    @ApplicationExclusive
     public StringRedisTemplate stringRedisTemplate(LettuceConnectionFactory redisConnectionFactory) {
         StringRedisTemplate redisTemplate = new StringRedisTemplate();
         RedisSerializer<String> redisKeySerializer = new KeyStringRedisSerializer(getKeyPrefix());

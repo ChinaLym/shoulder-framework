@@ -7,7 +7,7 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * 禁止特殊字符注解（黑名单）
+ * 禁止特殊字符注解（禁用名单）
  * 使用：加在 CharSequence 类型的字段上
  *
  * @author lym
@@ -18,12 +18,12 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {NoForbiddenCharValidator.class})
 public @interface NoForbiddenChar {
 
+    String forbiddenPattern() default "[\\\\/:*?\"<|'>]";
+
     /**
      * 默认提示为 input.special.character 翻译为：参数中包含了特殊字符
      */
     String message() default "input.special.character";
-
-    String forbiddenPattern() default "[\\\\/:*?\"<|'>]";
 
     Class<?>[] groups() default {};
 

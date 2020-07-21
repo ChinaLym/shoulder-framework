@@ -51,24 +51,24 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
     /**
      * 发起密钥协商请求
-     * @param serviceId 目标服务标识
+     * @param appId 目标应用标识
      * @return 密钥协商结果
      * @throws NegotiationException 协商失败
      */
     @Override
-    public KeyExchangeResult requestForNegotiate(String serviceId) throws NegotiationException {
+    public KeyExchangeResult requestForNegotiate(String appId) throws NegotiationException {
         try {
             // 1. 先尝试走缓存
-            KeyExchangeResult cacheResult = keyNegotiationCache.getAsClient(serviceId);
+            KeyExchangeResult cacheResult = keyNegotiationCache.getAsClient(appId);
             if(cacheResult != null){
                 return cacheResult;
             }
 
             // 2. 缓存不存在，发协商请求
-            String negotiationUrl = getNegotiationUrl(serviceId);
-            // 通过服务标识组装 http 地址
-            String dslAimUrl = "http://" + serviceId + negotiationUrl;
-            log.info("negotiate with {}, url is {}", serviceId, dslAimUrl);
+            String negotiationUrl = getNegotiationUrl(appId);
+            // 通过应用标识组装 http 地址
+            String dslAimUrl = "http://" + appId + negotiationUrl;
+            log.info("negotiate with {}, url is {}", appId, dslAimUrl);
             ResponseEntity<KeyExchangeResponse> httpResponse = restTemplate.postForEntity(negotiationUrl, createKeyNegotiationHttpEntity(), KeyExchangeResponse.class);
 
             // 3. 校验密钥协商的结果
@@ -78,10 +78,10 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             KeyExchangeResult result = transportCryptoUtil.negotiation(keyExchangeResponse);
 
             // 5. 放缓存
-            keyNegotiationCache.putAsClient(serviceId, result);
+            keyNegotiationCache.putAsClient(appId, result);
             return result;
         } catch (Exception e) {
-            throw new NegotiationException("Negotiate FAIL with " + serviceId, e);
+            throw new NegotiationException("Negotiate FAIL with " + appId, e);
         }
     }
 
@@ -215,22 +215,22 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
     /**
      * 获取与目标服务的密钥协商地址，如果不存在则返回默认地址
-     * @param serviceId 服务标识
+     * @param appId 应用标识
      * @return negotiationUrl
      */
-    private String getNegotiationUrl(String serviceId) {
-        return this.negotiationUrls.computeIfAbsent(serviceId, serviceIndex -> {
-            log.warn("Not config [{}]'s negotiationUrl, will use default" + KeyExchangeConstants.DEFAULT_NEGOTIATION_URL, serviceId);
+    private String getNegotiationUrl(String appId) {
+        return this.negotiationUrls.computeIfAbsent(appId, serviceIndex -> {
+            log.warn("Not config [{}]'s negotiationUrl, will use default" + KeyExchangeConstants.DEFAULT_NEGOTIATION_URL, appId);
             return KeyExchangeConstants.DEFAULT_NEGOTIATION_URL;
         });
     }
 
     /**
      * 服务名，服务的协商地址
-     * @param negotiationInfo 服务标识和对应的密钥协商地址
+     * @param negotiationInfo 应用标识和对应的密钥协商地址
      */
     public void addNegotiationUrl(TransportNegotiationInfo negotiationInfo) {
-        this.negotiationUrls.put(negotiationInfo.getServiceId(), negotiationInfo.getNegotiationUrl());
+        this.negotiationUrls.put(negotiationInfo.getAppId(), negotiationInfo.getNegotiationUrl());
     }
 
 
