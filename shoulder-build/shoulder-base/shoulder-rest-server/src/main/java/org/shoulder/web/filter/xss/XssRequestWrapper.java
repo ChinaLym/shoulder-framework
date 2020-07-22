@@ -12,9 +12,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
+ * xss 安全保护
  * @author lym
  */
-public class XSSRequestWrapper extends HttpServletRequestWrapper {
+public class XssRequestWrapper extends HttpServletRequestWrapper {
 
     /**
      * 脚本正则
@@ -57,7 +58,7 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
 
     private static String charset;
 
-    public XSSRequestWrapper(HttpServletRequest servletRequest) {
+    public XssRequestWrapper(HttpServletRequest servletRequest) {
         super(servletRequest);
         charset = super.getCharacterEncoding();
     }

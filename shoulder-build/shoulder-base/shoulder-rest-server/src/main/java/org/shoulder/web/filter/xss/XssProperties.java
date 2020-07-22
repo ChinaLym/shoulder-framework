@@ -1,11 +1,15 @@
 package org.shoulder.web.filter.xss;
 
 import lombok.Data;
-import org.shoulder.web.BaseWafProperties;
+import org.shoulder.web.filter.AbstractPathFilterProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Xss 配置项
+ * @author lym
+ */
 @Data
-@ConfigurationProperties(prefix = "waf")
-public class XssProperties extends BaseWafProperties {
+@ConfigurationProperties(prefix = "shoulder.web.waf.xss")
+public class XssProperties extends AbstractPathFilterProperties {
 
 }

@@ -1,14 +1,15 @@
-package org.shoulder.web;
+package org.shoulder.web.filter;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author lym
+ */
 @Data
-@ConfigurationProperties(prefix = "waf")
-public class BaseWafProperties {
+public class AbstractPathFilterProperties {
 
     /**
      * 拦截请求请求路径。默认拦截所有，支持 antMatcher
