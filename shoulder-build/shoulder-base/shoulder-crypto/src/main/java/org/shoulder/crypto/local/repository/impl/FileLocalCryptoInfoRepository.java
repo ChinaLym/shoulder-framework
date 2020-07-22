@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * 使用文件实现持久化 AES加密所需信息
+ *
  * @author lym
  */
 public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
@@ -39,10 +40,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
 	@Override
 	public void save(@NonNull LocalCryptoInfoEntity aesInfo) throws Exception {
-		if(aesInfo == null) {
-			throw new NullPointerException("aesInfo can't be null!");
-		}
-		String jsonStr = JsonUtils.toJson(aesInfo);
+        String jsonStr = JsonUtils.toJson(aesInfo);
 		Files.write(getFilePath(), jsonStr.getBytes(utf8));
 	}
 
@@ -69,7 +67,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 	}
 
 	public List<LocalCryptoInfoEntity> getAll() throws Exception {
-		String jsonStr = new String(Files.readAllBytes(getFilePath()), utf8);
+		String jsonStr = Files.readString(getFilePath(), utf8);
 		return (List<LocalCryptoInfoEntity>) JsonUtils.toObject(jsonStr, List.class);
 	}
 

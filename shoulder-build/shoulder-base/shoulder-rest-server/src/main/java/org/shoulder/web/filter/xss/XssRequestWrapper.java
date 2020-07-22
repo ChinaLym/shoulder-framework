@@ -18,11 +18,11 @@ import java.util.regex.Pattern;
 public class XssRequestWrapper extends HttpServletRequestWrapper {
 
     /**
-     * 脚本正则
+     * xss脚本正则
      */
-    private static final Pattern[] SCRIPT_PATTERNS = new Pattern[]{
+    private static final Pattern[] XSS_SCRIPT_PATTERNS = new Pattern[]{
         // Avoid anything between script tags
-        Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE),
+        Pattern.compile("<(no)?script>(.*?)</(no)?script>", Pattern.CASE_INSENSITIVE),
         // Avoid anything in a src='...' type of expression
         Pattern.compile("src[\\s]*=[\\s]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
         Pattern.compile("src[\\s]*=[\\s]*\\\"(.*?)\\\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
@@ -34,12 +34,13 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
         Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
         // Avoid expression(...) expressions
         Pattern.compile("expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Avoid javascript:... expressions
-        Pattern.compile("javascript:", Pattern.CASE_INSENSITIVE),
-        // Avoid vbscript:... expressions
-        Pattern.compile("vbscript:", Pattern.CASE_INSENSITIVE),
+        // Avoid javascript:vbscript:view-source:xxx expressions
+        Pattern.compile("(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE),
         // Avoid onload= expressions
-        Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
+        Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("<(\"[^\"]*\"|\'[^\']*\'|[^\'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
     };
 
     /**
@@ -166,7 +167,7 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
         context = context.replaceAll("\0", "");
 
         // 去除脚本正则
-        for (Pattern scriptPattern : SCRIPT_PATTERNS) {
+        for (Pattern scriptPattern : XSS_SCRIPT_PATTERNS) {
             context = scriptPattern.matcher(context).replaceAll("");
         }
         return filterHtmlEscape(context);

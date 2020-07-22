@@ -9,6 +9,7 @@ import org.shoulder.crypto.local.LocalTextCipher;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -37,7 +38,7 @@ public class RedisKeyPairCache implements KeyPairCache {
 	}
 
 	@Override
-	public void set(String id, KeyPairDto keyPairDto) {
+	public void set(String id, @NonNull KeyPairDto keyPairDto) {
 		String key = addRedisPrefix(id);
 		try {
 			String kpJson = JsonUtils.toJson(keyPairDto);
@@ -48,7 +49,7 @@ public class RedisKeyPairCache implements KeyPairCache {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
 	public KeyPairDto get(String id) throws NoSuchKeyPairException {
 		String key = addRedisPrefix(id);
@@ -68,7 +69,7 @@ public class RedisKeyPairCache implements KeyPairCache {
 			throw new NoSuchKeyPairException("can't found keyPair id= " + id);
 		}
 	}
-	
+
 	private String addRedisPrefix(String id) {
 		return keyPrefix + id;
 	}
@@ -92,7 +93,7 @@ public class RedisKeyPairCache implements KeyPairCache {
 
 	@Override
 	public void destroy() {
-		
+
 	}
-	
+
 }

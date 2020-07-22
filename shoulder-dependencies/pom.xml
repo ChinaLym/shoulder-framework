@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.0.1</version><!-- shoulder-version -->
+        <version>0.0.1-RELEASE</version><!-- shoulder-version -->
         <!--<relativePath>../pom.xml</relativePath>-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -91,6 +91,8 @@
         <!-- test -->
         <mockito-all.version>1.10.19</mockito-all.version>
         <powermock.version>1.7.4</powermock.version>
+
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     </properties>
 
     <!--
@@ -520,5 +522,25 @@
 
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <!-- GPG  发布插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven-gpg-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

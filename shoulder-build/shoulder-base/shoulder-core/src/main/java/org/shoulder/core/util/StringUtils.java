@@ -3,46 +3,40 @@ package org.shoulder.core.util;
 import cn.hutool.core.util.StrUtil;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.shoulder.core.context.ApplicationInfo;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * 字符串工具类
+ * @author lym
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     private static final char SEPARATOR = '_';
-    private static final String CHARSET = "UTF-8";
+    private static final Charset CHARSET = ApplicationInfo.charset();
 
     /**
      * 转换为字节数组
      */
     public static byte[] getBytes(String str) {
-        if (str != null) {
-            try {
-                return str.getBytes(CHARSET);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
+        if (str == null) {
             return null;
         }
+        return str.getBytes(CHARSET);
     }
 
     /**
      * 转换为字节数组
      */
     public static String toString(byte[] bytes) {
-        try {
-            return new String(bytes, CHARSET);
-        } catch (UnsupportedEncodingException e) {
-            return EMPTY;
-        }
+        return new String(bytes, CHARSET);
     }
 
     /**
@@ -68,14 +62,14 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 是否包含字符串
      *
-     * @param str  验证字符串
-     * @param strs 字符串组
+     * @param aimString  验证字符串
+     * @param toMatch 字符串组
      * @return 包含返回true
      */
-    public static boolean contains(String str, String... strs) {
-        if (str != null) {
-            for (String s : strs) {
-                if (str.equals(trim(s))) {
+    public static boolean contains(String aimString, String... toMatch) {
+        if (aimString != null) {
+            for (String s : toMatch) {
+                if (aimString.equals(trim(s))) {
                     return true;
                 }
             }
@@ -92,12 +86,14 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /**
      * 判断是否是Base64编码后的值
+     *
      * @param str 目标字符串
      * @return boolean
      */
     public static boolean isBase64(String str) {
         return RegexpUtils.BASE_64.matcher(str).matches();
     }
+
     public static boolean isNotBase64(String str) {
         return !isBase64(str);
     }
@@ -119,7 +115,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 32位的 uuid
      */
-    public static String uuid32(){
+    public static String uuid32() {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
@@ -183,8 +179,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         String regEx = "<.+?>";
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(html);
-        String s = m.replaceAll("");
-        return s;
+        return m.replaceAll("");
     }
 
     /**
@@ -218,7 +213,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * url追加参数
      *
-     * @param url   传入的url ex："http://exp.kunnr.com/so/index.html?kunnrId=16&userProfile=16#/app/home"
+     * @param url   url
      * @param name  参数名
      * @param value 参数值
      */
@@ -231,14 +226,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 组装新的URL
      *
-     * @param url
-     * @param map
-     * @return
+     * @param url url
+     * @param map map
+     * @return newUrl
      */
     public static String appendURIParam(String url, Map<String, String> map) {
-        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, String> entry = it.next();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
             url = appendURIParam(url, entry.getKey(), entry.getValue());
         }
         return url;
@@ -315,13 +308,15 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
     }
 
+    // ---------- 常用正则处理 ------------
+
     /**
      * 匿名手机号
      *
      * @param mobile 11100001234
      * @return 111****1234
      */
-    public static String formatMobile(String mobile) {
+    public static String anonymizeMobile(String mobile) {
 
         if (isEmpty(mobile)) {
             return null;
@@ -335,7 +330,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param bankCard 12345 12345 12 1234
      * @return 12345****1234
      */
-    public static String formatBankCard(String bankCard) {
+    public static String anonymizeBankCard(String bankCard) {
         if (isEmpty(bankCard)) {
             return null;
         }
@@ -348,13 +343,15 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param idCard 1234 1234567890 1234
      * @return 1234****1234
      */
-    public static String formatIdCard(String idCard) {
+    public static String anonymizeIdCard(String idCard) {
 
         if (isEmpty(idCard)) {
             return null;
         }
         return idCard.replaceAll("(\\d{4})\\d{10}(\\w{4})", "$1*****$2");
     }
+
+    // ---------- 常用正则匹配 ------------
 
     /**
      * 检测是否未手机号
@@ -399,6 +396,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /**
      * 检测域名
+     *
      * @param domain domain
      * @return bool
      */
@@ -412,6 +410,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /**
      * 检测IP
+     *
      * @param ip ip
      * @return bool
      */
@@ -425,6 +424,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /**
      * 检测HttpUrl
+     *
      * @param url http
      * @return bool
      */
@@ -458,14 +458,14 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /**
-     * 从不含校验位的银行卡卡号采用 Luhm 校验算法获得校验位
+     * 用 Luhm 校验算法，获取不含校验位的银行卡卡号的校验位
      *
-     * @param nonCheckCodeBankCard
-     * @return
+     * @param nonCheckCodeBankCard 不含校验位的银行卡卡号
+     * @return 校验位
      */
     public static char getBankCardCheckCode(String nonCheckCodeBankCard) {
         if (nonCheckCodeBankCard == null || nonCheckCodeBankCard.trim().length() == 0
-                || !nonCheckCodeBankCard.matches("\\d+")) {
+            || !nonCheckCodeBankCard.matches("\\d+")) {
             //如果传的不是数据返回N
             return 'N';
         }
@@ -484,12 +484,37 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
 
     /**
+     * xss脚本正则
+     */
+    private static final List<Pattern> XSS_SCRIPT_PATTERNS = Arrays.asList(
+        // Avoid anything between script tags
+        Pattern.compile("<(no)?script>(.*?)</(no)?script>", Pattern.CASE_INSENSITIVE),
+        // Avoid anything in a src='...' type of expression
+        Pattern.compile("src[\\s]*=[\\s]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("src[\\s]*=[\\s]*\\\"(.*?)\\\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        // Remove any lonesome </script> tag
+        Pattern.compile("</script>", Pattern.CASE_INSENSITIVE),
+        // Remove any lonesome <script ...> tag
+        Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        // Avoid eval(...) expressions
+        Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        // Avoid expression(...) expressions
+        Pattern.compile("expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        // Avoid javascript:vbscript:view-source:xxx expressions
+        Pattern.compile("(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE),
+        // Avoid onload= expressions
+        Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("<(\"[^\"]*\"|\'[^\']*\'|[^\'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
+    );
+
+    /**
      * 处理非法字符
      */
-    private static List<Pattern> patterns = null;
 
     private static List<Object[]> getXssPatternList() {
-        List<Object[]> ret = new ArrayList<Object[]>();
+        List<Object[]> ret = new ArrayList<>();
         ret.add(new Object[]{"<(no)?script[^>]*>.*?</(no)?script>", Pattern.CASE_INSENSITIVE});
         ret.add(new Object[]{"eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
         ret.add(new Object[]{"expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
@@ -500,35 +525,33 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return ret;
     }
 
-    private static List<Pattern> getPatterns() {
-
-        if (patterns == null) {
-
-            List<Pattern> list = new ArrayList<Pattern>();
-
-            String regex = null;
-            Integer flag = null;
-            int arrLength = 0;
-
-            for (Object[] arr : getXssPatternList()) {
-                arrLength = arr.length;
-                for (int i = 0; i < arrLength; i++) {
-                    regex = (String) arr[0];
-                    flag = (Integer) arr[1];
-                    list.add(Pattern.compile(regex, flag));
-                }
-            }
-
-            patterns = list;
-        }
-
-        return patterns;
+    /**
+     * html 转义符
+     */
+    private static final Map<String, String> HTML_ESCAPE_CHARACTER_MAP = new HashMap<>();
+    static {
+        HTML_ESCAPE_CHARACTER_MAP.put("<", "&lt;");
+        HTML_ESCAPE_CHARACTER_MAP.put(">", "&gt;");
+        HTML_ESCAPE_CHARACTER_MAP.put("\\(", "&#x28;");
+        HTML_ESCAPE_CHARACTER_MAP.put("\\)", "&#x29;");
+        HTML_ESCAPE_CHARACTER_MAP.put("'", "&#x27;");
+        HTML_ESCAPE_CHARACTER_MAP.put("\"", "&quot;");
+        HTML_ESCAPE_CHARACTER_MAP.put("/", "&#x2f;");
     }
+
+    public static List<Pattern> getXssPatterns() {
+        return XSS_SCRIPT_PATTERNS;
+    }
+
+    private static Map<String, String> getHtmlEscapeCharacterMap() {
+        return HTML_ESCAPE_CHARACTER_MAP;
+    }
+
 
     public static String stripXss(String value) {
         if (StringUtils.isNotBlank(value)) {
             Matcher matcher = null;
-            for (Pattern pattern : getPatterns()) {
+            for (Pattern pattern : getXssPatterns()) {
                 matcher = pattern.matcher(value);
                 if (matcher.find()) {
                     value = matcher.replaceAll("");
@@ -581,8 +604,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 将 Exception 转化为 String
      */
-    public static String getExceptionToString(Throwable e) {
-        if (e == null){
+    public static String convertExceptionToString(Throwable e) {
+        if (e == null) {
             return "";
         }
         StringWriter stringWriter = new StringWriter();

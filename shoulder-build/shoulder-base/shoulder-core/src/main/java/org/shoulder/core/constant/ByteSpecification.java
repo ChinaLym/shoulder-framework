@@ -1,18 +1,20 @@
 package org.shoulder.core.constant;
 
+import org.shoulder.core.context.ApplicationInfo;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * 加密编码规范（Base64、UTF-8）
+ * 统一字符集与比特编码（Base64）
  * @author lym
  */
 public interface ByteSpecification {
     /**
      * 统一字符编码
      */
-    Charset CHARSET_UTF_8 = StandardCharsets.UTF_8;
+    Charset STD_CHAR_SET = ApplicationInfo.charset();
 
     /**
      * 统一比特编码
@@ -20,7 +22,7 @@ public interface ByteSpecification {
      * @return 经过默认编码并可以在网络中无损传播的字符串
      */
     static String encodeToString(byte[] bytes){
-        return new String(Base64.getEncoder().encode(bytes), CHARSET_UTF_8);
+        return new String(Base64.getEncoder().encode(bytes), STD_CHAR_SET);
     }
 
     /**
