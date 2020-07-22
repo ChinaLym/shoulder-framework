@@ -20,13 +20,13 @@
         <module>shoulder-validation</module>
         <module>shoulder-rest-server</module>
         <module>shoulder-http</module>
-        <module>shoulder-crypto-transport</module>
+        <module>shoulder-crypto-negotiation</module>
 
-        <!--<module>shoulder-cluster</module>
+       <module>shoulder-cluster</module>
         <module>shoulder-security</module>
         <module>shoulder-code</module>
         <module>shoulder-auth-server</module>
-        <module>shoulder-aopx</module>-->
+        <!--<module>shoulder-aopx</module>-->
         <!--<module>shoulder-api-doc-swagger2</module>-->
     </modules>
 

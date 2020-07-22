@@ -25,7 +25,7 @@
 
     <modules>
         <module>shoulder-base</module>
-        <!--<module>shoulder-starters</module>-->
+        <module>shoulder-starters</module>
     </modules>
 
     <build>

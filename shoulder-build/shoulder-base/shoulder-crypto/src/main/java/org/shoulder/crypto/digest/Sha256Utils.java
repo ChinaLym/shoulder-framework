@@ -2,6 +2,7 @@ package org.shoulder.crypto.digest;
 
 import org.shoulder.core.constant.ByteSpecification;
 
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -31,14 +32,14 @@ public class Sha256Utils implements ByteSpecification {
     }
 
     public static String digest(String toHashStr) {
-        return ByteSpecification.encodeToString(digest(toHashStr.getBytes(CHARSET_UTF_8)));
+        return ByteSpecification.encodeToString(digest(toHashStr.getBytes(ByteSpecification.STD_CHAR_SET)));
     }
 
     /**
     * sha256之后转为十六进制的String
     **/
     public static String digestToHex(String toHashStr) {
-        byte[] cipher = digest(toHashStr.getBytes(CHARSET_UTF_8));
+        byte[] cipher = digest(toHashStr.getBytes(ByteSpecification.STD_CHAR_SET));
         return byte2Hex(cipher);
     }
 
@@ -76,7 +77,7 @@ public class Sha256Utils implements ByteSpecification {
      * @param cipher text hash厚的
      */
     public static boolean verify(String text, String cipher) {
-        return verify(text.getBytes(CHARSET_UTF_8), ByteSpecification.decodeToBytes(cipher));
+        return verify(text.getBytes(ByteSpecification.STD_CHAR_SET), ByteSpecification.decodeToBytes(cipher));
     }
 
     public static void main(String[] args) {
@@ -87,7 +88,7 @@ public class Sha256Utils implements ByteSpecification {
 		}
 
 		System.out.println("========== 测试byte进行hash后验证 ==========");
-		byte[] textBytes = "123".getBytes(CHARSET_UTF_8);
+		byte[] textBytes = "123".getBytes(ByteSpecification.STD_CHAR_SET);
 		byte[] cipherBytes = Sha256Utils.digest(textBytes);
 		System.out.println("是否成功：" + Sha256Utils.verify(textBytes, cipherBytes));
 

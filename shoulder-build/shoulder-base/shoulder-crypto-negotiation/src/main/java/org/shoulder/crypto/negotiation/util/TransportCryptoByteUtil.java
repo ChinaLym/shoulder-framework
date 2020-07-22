@@ -20,8 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static org.shoulder.core.constant.ByteSpecification.CHARSET_UTF_8;
-
 /**
  * 传输加解密相关实现。仅为 byte 提供服务
  * todo Exception 整理
@@ -170,7 +168,7 @@ public class TransportCryptoByteUtil {
      * @return 需要签名的数据
      */
     private byte[] getNeedToSign(KeyExchangeRequest request) {
-        byte[] xSessionIdBytes = request.getxSessionId().getBytes(CHARSET_UTF_8);
+        byte[] xSessionIdBytes = request.getxSessionId().getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] publicKeyBytes = ByteSpecification.decodeToBytes(request.getPublicKey());
         return ByteUtils.compound(Arrays.asList(xSessionIdBytes, publicKeyBytes));
     }
@@ -203,9 +201,9 @@ public class TransportCryptoByteUtil {
      * @return 需要签名的数据
      */
     private byte[] getNeedToSign(KeyExchangeResponse response) {
-        byte[] xSessionIdBytes = response.getxSessionId().getBytes(CHARSET_UTF_8);
+        byte[] xSessionIdBytes = response.getxSessionId().getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] publicKeyBytes = ByteSpecification.decodeToBytes(response.getPublicKey());
-        byte[] aesBytes = response.getAes().getBytes(CHARSET_UTF_8);
+        byte[] aesBytes = response.getAes().getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] aesKeyLength = ByteUtils.intToBytes(response.getKeyLength());
         byte[] expireTimeBytes = ByteUtils.intToBytes(response.getExpireTime());
         return ByteUtils.compound(Arrays.asList(xSessionIdBytes, publicKeyBytes, aesBytes, aesKeyLength, expireTimeBytes));
@@ -238,7 +236,7 @@ public class TransportCryptoByteUtil {
      * @param xDk 每次请求的临时密钥密文
      */
     public byte[] generateToken(String xSessionId, byte[] xDk) throws AsymmetricCryptoException {
-        byte[] xSessionIdBytes = xSessionId.getBytes(CHARSET_UTF_8);
+        byte[] xSessionIdBytes = xSessionId.getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] toSin = ByteUtils.compound(Arrays.asList(xSessionIdBytes, xDk));
         return eccProcessor.sign(xSessionId, toSin);
     }
@@ -251,7 +249,7 @@ public class TransportCryptoByteUtil {
      * @param signature     签名
      */
     public boolean verifyToken(String xSessionId, byte[] xDk, byte[] signature) throws AsymmetricCryptoException {
-        byte[] xSessionIdBytes = xSessionId.getBytes(CHARSET_UTF_8);
+        byte[] xSessionIdBytes = xSessionId.getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] toSin = ByteUtils.compound(Arrays.asList(xSessionIdBytes, xDk));
         return eccProcessor.verify(xSessionId, toSin, signature);
     }
