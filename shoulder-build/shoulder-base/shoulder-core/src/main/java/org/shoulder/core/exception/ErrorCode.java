@@ -29,6 +29,11 @@ public interface ErrorCode {
     HttpStatus DEFAULT_HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
 
     /**
+     * 特殊值，0代表成功
+     */
+    SuccessCode SUCCESS = new SuccessCode();
+
+    /**
      * 获取错误码（不带前缀）
      * @return 错误码
      */
@@ -111,5 +116,39 @@ public interface ErrorCode {
     default void throwRuntime(Throwable t) throws BaseRuntimeException {
         throw new BaseRuntimeException(getCode(), getMessage(), t);
     }
+
+    class SuccessCode implements ErrorCode {
+
+        @Override
+        public @NotEmpty String getCode() {
+            return "0";
+        }
+
+        @Override
+        public String getMessage() {
+            return "success";
+        }
+
+        @Override
+        public Level getLogLevel() {
+            return Level.DEBUG;
+        }
+
+        @Override
+        public HttpStatus getHttpStatusCode() {
+            return HttpStatus.OK;
+        }
+
+        @Override
+        public void throwRuntime() throws BaseRuntimeException {
+            // doNothing
+        }
+
+        @Override
+        public void throwRuntime(Throwable t) throws BaseRuntimeException {
+            // doNothing
+        }
+    }
+
 
 }

@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.ErrorCode;
-import org.shoulder.core.constant.CommonErrorCodeEnum;
 import org.shoulder.core.util.ExceptionUtil;
 
 import java.io.Serializable;
@@ -51,11 +50,11 @@ public class BaseResponse<T> implements Serializable {
 
 
     public static <T> BaseResponse<T> success() {
-        return new BaseResponse<T>(CommonErrorCodeEnum.SUCCESS);
+        return new BaseResponse<T>(ErrorCode.SUCCESS);
     }
 
     public static <T> BaseResponse<T> success(T data) {
-        return new BaseResponse<T>(CommonErrorCodeEnum.SUCCESS).setData(data);
+        return new BaseResponse<T>(ErrorCode.SUCCESS).setData(data);
     }
 
     public static <T> BaseResponse<T> error(ErrorCode errorCode) {
@@ -91,7 +90,7 @@ public class BaseResponse<T> implements Serializable {
     @JsonIgnore
     public T getOrException(Class<? extends BaseRuntimeException> exceptionType, String customMessage) {
         // success
-        if (CommonErrorCodeEnum.SUCCESS.getCode().equals(code)) {
+        if (ErrorCode.SUCCESS.getCode().equals(code)) {
             return data;
         }
         String actualMessage = customMessage != null ? customMessage : msg;
@@ -115,7 +114,7 @@ public class BaseResponse<T> implements Serializable {
      * 检查 code，若不为 SUCCESS，则抛异常
      */
     public void checkCode() {
-        if (!CommonErrorCodeEnum.SUCCESS.getCode().equals(code)) {
+        if (!ErrorCode.SUCCESS.getCode().equals(code)) {
             throw new BaseRuntimeException(code, msg);
         }
     }
