@@ -218,7 +218,7 @@ public class RestControllerExceptionAdvice {
      * 数据库保存失败
      */
     @ExceptionHandler(SQLException.class)
-    public BaseResponse SQLExceptionHandler(SQLException e) {
+    public BaseResponse sqlExceptionHandler(SQLException e) {
         BaseRuntimeException ex = CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL.toException(e);
         log.error(ex);
         return ex.toResponse();
