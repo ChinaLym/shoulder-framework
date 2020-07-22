@@ -22,12 +22,6 @@
             <artifactId>shoulder-starter</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-http</artifactId>
-        </dependency>
-
-
     </dependencies>
 
 
@@ -39,7 +33,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
 
-            <!-- attach source to jar -->
+            <!-- attach source -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>

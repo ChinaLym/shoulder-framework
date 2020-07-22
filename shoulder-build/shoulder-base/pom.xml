@@ -16,16 +16,17 @@
         <module>shoulder-core</module>
         <module>shoulder-data-db</module>
         <module>shoulder-crypto</module>
-        <module>shoulder-security</module>
-        <module>shoulder-validation</module>
-        <module>shoulder-aopx</module>
         <module>shoulder-log-operation</module>
+        <module>shoulder-validation</module>
+        <module>shoulder-rest-server</module>
+
         <module>shoulder-cluster</module>
         <module>shoulder-http</module>
+        <module>shoulder-security</module>
         <module>shoulder-code</module>
         <module>shoulder-auth-server</module>
-        <module>shoulder-rest-server</module>
         <module>shoulder-crypto-transport</module>
+        <!--<module>shoulder-aopx</module>-->
         <!--<module>shoulder-api-doc-swagger2</module>-->
     </modules>
 

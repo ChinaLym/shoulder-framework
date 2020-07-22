@@ -17,8 +17,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import java.util.Objects;
-
 /**
  * 统一接口返回值
  * 默认自动将 RestController 的返回值用 {@link BaseResponse} 包装。

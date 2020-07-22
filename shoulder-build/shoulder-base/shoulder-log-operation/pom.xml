@@ -31,10 +31,15 @@
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
 
-            <!-- attach source to jar -->
+            <!-- attach source -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <!-- generate javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
 
             <!-- findbugs -->

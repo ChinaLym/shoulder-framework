@@ -1,5 +1,6 @@
 # shoulder-security
-安全相关基础定义
+
+认证、授权能力
 依赖并跟随 spring security
 
 - 认证（登录） Oauth2.0、OIDC（Open ID Connect）、SAML

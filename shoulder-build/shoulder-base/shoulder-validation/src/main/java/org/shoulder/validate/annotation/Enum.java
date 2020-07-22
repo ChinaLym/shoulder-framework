@@ -21,7 +21,7 @@ public @interface Enum {
     /**
      * 默认提示翻译为：参数输入不在预期范围之内
      */
-    String message() default "input.excepted";
+    String message() default "input.notExcepted";
 
     /**
      * 允许的值
