@@ -12,16 +12,16 @@ import java.nio.charset.Charset;
  */
 public class HmacSha256Util {
 
-    private static final Charset UTF_8 = ByteSpecification.CHARSET_UTF_8;
+    private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
 
     private static final String HMAC_SHA256 = "HmacSHA256";
 
     public static String digest(String toDigest, String key) throws Exception {
 
         Mac hmacSha256 = Mac.getInstance(HMAC_SHA256);
-        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(UTF_8), HMAC_SHA256);
+        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(CHAR_SET), HMAC_SHA256);
         hmacSha256.init(secretKey);
-        byte[] array = hmacSha256.doFinal(toDigest.getBytes(UTF_8));
+        byte[] array = hmacSha256.doFinal(toDigest.getBytes(CHAR_SET));
         StringBuilder sb = new StringBuilder();
         for (byte item : array) {
             sb.append(Integer.toHexString((item & 0xFF) | 0x100), 1, 3);

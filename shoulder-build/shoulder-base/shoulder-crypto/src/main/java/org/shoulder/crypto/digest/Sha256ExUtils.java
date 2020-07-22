@@ -35,7 +35,7 @@ public class Sha256ExUtils implements ByteSpecification {
 	 * 加盐哈西
 	 */
 	public static String digest(String text) {
-		return ByteSpecification.encodeToString(digest(text.getBytes(CHARSET_UTF_8)));
+		return ByteSpecification.encodeToString(digest(text.getBytes(ByteSpecification.STD_CHAR_SET)));
 	}
 
 
@@ -56,7 +56,7 @@ public class Sha256ExUtils implements ByteSpecification {
 	 * @param cipher	text hash厚的
 	 */
 	public static boolean verify(String text, String cipher){
-		return verify(text.getBytes(CHARSET_UTF_8), ByteSpecification.decodeToBytes(cipher));
+		return verify(text.getBytes(ByteSpecification.STD_CHAR_SET), ByteSpecification.decodeToBytes(cipher));
 	}
 
 	public static void main(String[] args) {
@@ -67,7 +67,7 @@ public class Sha256ExUtils implements ByteSpecification {
 		}
 
 		System.out.println("========== 测试byte进行hash后验证 ==========");
-		byte[] textBytes = "123".getBytes(CHARSET_UTF_8);
+		byte[] textBytes = "123".getBytes(ByteSpecification.STD_CHAR_SET);
 		byte[] cipherBytes = Sha256ExUtils.digest(textBytes);
 		System.out.println("是否成功：" + Sha256ExUtils.verify(textBytes, cipherBytes));
 

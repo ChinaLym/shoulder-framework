@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.CollectionUtils;
 
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -48,6 +49,8 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
 	private final static Logger log = LoggerFactory.getLogger(Aes256LocalTextCipher.class);
 
+    private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
+
 	private String appId;
 
 	/** 长度为6的加密标记，与加密版本挂钩，该字段的存在支持升级版本。AES256 2^8 */
@@ -57,9 +60,9 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 	private final LocalCryptoInfoRepository aesInfoDao;
 
 	/** 保护数据密钥的 iv */
-	private static final byte[] DATA_KEY_IV = "shoulder:Cn-Lym!".getBytes(CHARSET_UTF_8);
+	private static final byte[] DATA_KEY_IV = "shoulder:Cn-Lym!".getBytes(CHAR_SET);
 
-	private static final byte[] ROOT_KEY_FINAL_PART = "shoulderFramework:CN-Lym".getBytes(CHARSET_UTF_8);
+	private static final byte[] ROOT_KEY_FINAL_PART = "shoulderFramework:CN-Lym".getBytes(CHAR_SET);
 	private static final int AES_KEY_LENGTH = 256;
 	private static final int NEED_LENGTH = AES_KEY_LENGTH - ROOT_KEY_FINAL_PART.length;
 
@@ -76,7 +79,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 	public String encrypt(@NonNull String text) throws AesCryptoException {
 		ensureEncryption();
 		AesInfoCache cacheInfo = CacheManager.getAesInfoCache(ALGORITHM_HEADER);
-		byte[] encryptResult = AesUtil.encrypt(text.getBytes(CHARSET_UTF_8), cacheInfo.dataKey,
+		byte[] encryptResult = AesUtil.encrypt(text.getBytes(CHAR_SET), cacheInfo.dataKey,
 				cacheInfo.dateIv);
 		return ALGORITHM_HEADER + ByteSpecification.encodeToString(encryptResult);
 	}
@@ -92,7 +95,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
             throw new HeaderNotMatchDecryptException("cipher's markHeader is " + cipherTextHeader);
         }
 		byte[] decryptData = AesUtil.decrypt(Base64.getDecoder().decode(realCipherText), cacheInfo.dataKey, cacheInfo.dateIv);
-		return new String(decryptData, CHARSET_UTF_8);
+		return new String(decryptData, CHAR_SET);
 	}
 
     /**

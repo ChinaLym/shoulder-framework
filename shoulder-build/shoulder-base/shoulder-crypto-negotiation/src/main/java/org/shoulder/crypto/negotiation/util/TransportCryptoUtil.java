@@ -13,8 +13,6 @@ import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import static org.shoulder.core.constant.ByteSpecification.CHARSET_UTF_8;
-
 /**
  * 为 String 提供适配
  * @author lym
@@ -78,14 +76,14 @@ public class TransportCryptoUtil {
      * 加密数据
      */
     public static String encrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, String toCipher) throws AesCryptoException {
-        return ByteSpecification.encodeToString(TransportCryptoByteUtil.encrypt(keyExchangeResult, dataKey, toCipher.getBytes(CHARSET_UTF_8)));
+        return ByteSpecification.encodeToString(TransportCryptoByteUtil.encrypt(keyExchangeResult, dataKey, toCipher.getBytes(ByteSpecification.STD_CHAR_SET)));
     }
 
     /**
      * 解密数据
      */
     public static String decrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, String cipherText) throws AesCryptoException {
-        return new String(TransportCryptoByteUtil.decrypt(keyExchangeResult, dataKey, ByteSpecification.decodeToBytes(cipherText)), CHARSET_UTF_8);
+        return new String(TransportCryptoByteUtil.decrypt(keyExchangeResult, dataKey, ByteSpecification.decodeToBytes(cipherText)), ByteSpecification.STD_CHAR_SET);
     }
 
 

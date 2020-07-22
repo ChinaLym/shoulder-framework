@@ -35,6 +35,12 @@
 
         <dependency>
             <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-crypto-negotiation</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-log-operation</artifactId>
             <optional>true</optional>
         </dependency>

@@ -9,11 +9,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.Charset;
+
 /**
  * RSA 的加解密以及签名工具实现：用于与前端交互。填充方式为 jdk 默认（RSA/None/PKCS1Padding）
  * @author lym
  */
 public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
+
+    private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
 
 	private static final Logger log = LoggerFactory.getLogger(DefaultAsymmetricTextCipher.class);
 
@@ -47,7 +51,7 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
 	public String decrypt(String cipher) throws AsymmetricCryptoException {
 		if(StringUtils.isNotBlank(cipher)) {
 			byte[] text = processor.decrypt(defaultKeyId, ByteSpecification.decodeToBytes(cipher));
-			return new String(text, CHARSET_UTF_8);
+			return new String(text, CHAR_SET);
 		}
 		return cipher;
 	}
@@ -55,7 +59,7 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
 	@Override
 	public String encrypt(String text) throws AsymmetricCryptoException {
 		if(StringUtils.isNotBlank(text)) {
-			byte[] cipher = processor.encrypt(defaultKeyId, text.getBytes(CHARSET_UTF_8));
+			byte[] cipher = processor.encrypt(defaultKeyId, text.getBytes(CHAR_SET));
 			return ByteSpecification.encodeToString(cipher);
 		}
 		return text;
@@ -69,18 +73,18 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
 		if(StringUtils.isEmpty(text)){
 			return text;
 		}
-		byte[] cipher = processor.encrypt(text.getBytes(CHARSET_UTF_8), ByteSpecification.decodeToBytes(publicKey));
+		byte[] cipher = processor.encrypt(text.getBytes(CHAR_SET), ByteSpecification.decodeToBytes(publicKey));
 		return ByteSpecification.encodeToString(cipher);
 	}
 
 	@Override
 	public String sign(String content) throws AsymmetricCryptoException {
-		return new String(processor.sign(defaultKeyId, content.getBytes(CHARSET_UTF_8)), CHARSET_UTF_8);
+		return new String(processor.sign(defaultKeyId, content.getBytes(CHAR_SET)), CHAR_SET);
 	}
 
 	@Override
 	public boolean verify(String content, String signature) throws AsymmetricCryptoException {
-		return processor.verify(defaultKeyId, content.getBytes(CHARSET_UTF_8), signature.getBytes(CHARSET_UTF_8));
+		return processor.verify(defaultKeyId, content.getBytes(CHAR_SET), signature.getBytes(CHAR_SET));
 	}
 
 }
