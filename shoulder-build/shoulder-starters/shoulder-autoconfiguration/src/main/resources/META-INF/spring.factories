@@ -1,5 +1,5 @@
 # Auto Configuration
-org.springframework.boot.env.EnvironmentPostProcessor=org.shoulder.autoconfigure.config.ShoulderBaseInfoAutoConfiguration
+org.springframework.boot.env.EnvironmentPostProcessor=org.shoulder.autoconfigure.core.config.ShoulderBaseInfoAutoConfiguration
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.redis.RedisAutoConfiguration, \

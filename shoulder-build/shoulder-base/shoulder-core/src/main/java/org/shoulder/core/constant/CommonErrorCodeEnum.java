@@ -3,6 +3,7 @@ package org.shoulder.core.constant;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.ErrorCode;
 
+
 /**
  * 通用错误（2^14以下框架使用） todo 异常分类，不同的异常抛出时，类不同
  * @author lym

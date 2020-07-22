@@ -29,7 +29,7 @@ public interface ErrorCode {
     HttpStatus DEFAULT_HTTP_STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
 
     /**
-     * 获取错误码
+     * 获取错误码（不带前缀）
      * @return 错误码
      */
     @NotEmpty

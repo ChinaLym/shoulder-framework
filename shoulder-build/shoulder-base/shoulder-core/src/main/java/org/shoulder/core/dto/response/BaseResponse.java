@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.constant.CommonErrorCodeEnum;
+import org.shoulder.core.util.ExceptionUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -38,14 +39,14 @@ public class BaseResponse<T> implements Serializable {
 
 
     public BaseResponse(ErrorCode error) {
-        this.code = error.getCode();
-        this.msg = error.getMessage();
+        setCode(error.getCode());
+        setMsg(error.getMessage());
     }
 
     public BaseResponse(String code, String msg, T data) {
-        this.code = code;
-        this.msg = msg;
-        this.data = data;
+        setCode(code);
+        setMsg(msg);
+        setData(data);
     }
 
 
@@ -125,7 +126,7 @@ public class BaseResponse<T> implements Serializable {
     }
 
     public BaseResponse<T> setCode(String code) {
-        this.code = code;
+        this.code = ExceptionUtil.formatErrorCode(code);
         return this;
     }
 

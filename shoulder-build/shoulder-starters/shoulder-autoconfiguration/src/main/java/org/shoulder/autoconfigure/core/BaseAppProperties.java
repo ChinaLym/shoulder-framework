@@ -1,4 +1,4 @@
-package org.shoulder.core.properties;
+package org.shoulder.autoconfigure.core;
 
 import lombok.Data;
 import org.shoulder.core.constant.ShoulderFramework;
@@ -6,28 +6,28 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 /**
- *
+ * 应用信息，启动后不再变化
  * @author lym
  */
 @Data
 @Validated
-@ConfigurationProperties(prefix = ShoulderFramework.NAME)
-public class BaseProperties {
+@ConfigurationProperties(prefix = ShoulderFramework.CONFIG_PREFIX + "application")
+public class BaseAppProperties {
 
     /**
-     * 应用标识
+     * 应用标识 appId/identify，若不填写，使用 spring.application.name
      */
-    private String appId;
-
-    /**
-     * 应用版本
-     */
-    private String version = "unknown";
+    private String id;
 
     /**
      * 应用错误码前缀
      */
-    private String errorCodePrefix;
+    private String errorCodePrefix = "";
+
+    /**
+     * 应用版本（用于灰度发布、版本兼容等）
+     */
+    private String version = "unknown";
 
     /**
      * 全局统一日期格式

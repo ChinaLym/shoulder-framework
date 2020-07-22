@@ -1,6 +1,7 @@
 package org.shoulder.core.log;
 
 import org.shoulder.core.exception.ErrorCode;
+import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -556,10 +557,10 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     /**
      * 统一打印错误码格式
      * @param errorCode 错误码
-     * @return [errorCode]
+     * @return [errorCodePrefix + errorCode]
      */
     String generateErrorCode(String errorCode) {
-        return SPACE + ERROR_CODE_PREFIX + errorCode + ERROR_CODE_SUFFIX;
+        return SPACE + ERROR_CODE_PREFIX + ExceptionUtil.formatErrorCode(errorCode) + ERROR_CODE_SUFFIX;
     }
 
     /**

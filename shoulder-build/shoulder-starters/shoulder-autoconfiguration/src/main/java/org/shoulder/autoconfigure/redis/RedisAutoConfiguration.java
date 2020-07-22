@@ -1,10 +1,8 @@
 package org.shoulder.autoconfigure.redis;
 
-import org.shoulder.autoconfigure.property.ClusterProperties;
 import org.shoulder.cluster.redis.annotation.ApplicationExclusive;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -24,7 +22,6 @@ import org.springframework.util.StringUtils;
  */
 @Configuration
 @ConditionalOnClass(RedisTemplate.class)
-@EnableConfigurationProperties(ClusterProperties.class)
 public class RedisAutoConfiguration {
 
     /**

@@ -8,7 +8,7 @@ import java.util.Map;
 
 
 /**
- * 当前上下文中的值保存
+ * 当前上下文中的值
  *
  * @author lym
  */
@@ -16,16 +16,6 @@ import java.util.Map;
 public class BaseContextHolder {
 
     private static final ThreadLocal<Map<String, String>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(ShoulderContextKey.KEY_NUM));
-
-    private static String appId;
-
-    public static String getAppId() {
-        return appId;
-    }
-    public static void setAppId(String appId) {
-        BaseContextHolder.appId = appId;
-    }
-
 
     public static void setLocalMap(Map<String, String> threadLocalMap) {
         THREAD_LOCAL.set(threadLocalMap);
@@ -53,7 +43,6 @@ public class BaseContextHolder {
     public static void setAccount(String name) {
         set(ShoulderContextKey.JWT_KEY_ACCOUNT, name);
     }
-
 
     /**
      * 登录的账号
@@ -85,15 +74,6 @@ public class BaseContextHolder {
         set(ShoulderContextKey.TENANT, val);
     }
 
-    /**
-     * 灰度发布版本
-     */
-    public static String getGrayVersion() {
-        return getLocalMap().get(ShoulderContextKey.GRAY_VERSION);
-    }
-    public static void setGrayVersion(String val) {
-        set(ShoulderContextKey.GRAY_VERSION, val);
-    }
 
     /**
      * 链路追踪

@@ -2,6 +2,7 @@ package org.shoulder.core.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.shoulder.core.context.ApplicationInfo;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -54,4 +55,17 @@ public class ExceptionUtil {
         }
         return StringUtils.defaultString(msg);
     }
+
+
+    public static String formatErrorCode(String errorCode){
+        if("0".equals(errorCode)){
+            return "0";
+        }
+        return ApplicationInfo.errorCodePrefix() + errorCode;
+    }
+
+    public static String formatErrorCode(Long errorCode){
+        return formatErrorCode(String.format("%08x", errorCode));
+    }
+
 }
