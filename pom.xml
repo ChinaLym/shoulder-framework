@@ -10,7 +10,7 @@
     <artifactId>shoulder-framework</artifactId>
     <packaging>pom</packaging>
 
-    <version>0.0.1</version><!-- shoulder-version -->
+    <version>0.0.1-RELEASE</version><!-- shoulder-version -->
     <!-- mvn versions:set -DnewVersion=1.0.1-RELEASE、mvn versions:commit、mvn versions:revert -->
 
     <!-- 简介 -->
@@ -114,9 +114,9 @@
         </snapshotRepository>
     </distributionManagement>
 
-    <profiles>
+    <!--<profiles>
         <profile>
-            <id>release</id>
+            <id>release</id>-->
             <build>
                 <plugins>
                     <!-- UTF8 coding -->
@@ -203,8 +203,8 @@
                     <url>http://mvn.itlym.cn/repository/maven-releases/</url>
                 </repository>
             </distributionManagement>-->
-        </profile>
+        <!--</profile>
 
-    </profiles>
+    </profiles>-->
 
 </project>

@@ -1,13 +1,20 @@
 package org.shoulder.core.context;
 
+import lombok.extern.shoulder.SLog;
+import org.shoulder.core.util.StringUtils;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 /**
  * 应用信息
  * 需要保证该类的赋值实际要足够早
  *
  * @author lym
  */
+@SLog
 public class ApplicationInfo {
-    
+
     /**
      * 应用标识
      */
@@ -31,7 +38,7 @@ public class ApplicationInfo {
     /**
      * 全局统一字符集
      */
-    private static String charset;
+    private static Charset charset;
 
     /**
      * 支持集群、多实例部署
@@ -55,7 +62,7 @@ public class ApplicationInfo {
         return dateFormat;
     }
 
-    public static String charset() {
+    public static Charset charset() {
         return charset;
     }
 
@@ -66,25 +73,26 @@ public class ApplicationInfo {
     public static void initAppId(String appId) {
         ApplicationInfo.appId = appId;
     }
-    
+
     public static void initErrorCodePrefix(String errorCodePrefix) {
         ApplicationInfo.errorCodePrefix = errorCodePrefix;
     }
-    
+
     public static void initVersion(String version) {
         ApplicationInfo.version = version;
     }
-    
+
     public static void initDateFormat(String dateFormat) {
         ApplicationInfo.dateFormat = dateFormat;
     }
-    
+
     public static void initCharset(String charset) {
-        ApplicationInfo.charset = charset;
+        ApplicationInfo.charset = StringUtils.isNotEmpty(charset) && Charset.isSupported(charset) ?
+            Charset.forName(charset) : StandardCharsets.UTF_8;
     }
-    
+
     public static void initCluster(boolean cluster) {
         ApplicationInfo.cluster = cluster;
     }
-    
+
 }

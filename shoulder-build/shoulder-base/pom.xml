@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-build</artifactId>
-        <version>0.0.1</version><!-- shoulder-version -->
+        <version>0.0.1-RELEASE</version><!-- shoulder-version -->
     </parent>
 
     <artifactId>shoulder-base</artifactId>
@@ -19,15 +19,35 @@
         <module>shoulder-log-operation</module>
         <module>shoulder-validation</module>
         <module>shoulder-rest-server</module>
-
-        <module>shoulder-cluster</module>
         <module>shoulder-http</module>
+        <module>shoulder-crypto-transport</module>
+
+        <!--<module>shoulder-cluster</module>
         <module>shoulder-security</module>
         <module>shoulder-code</module>
         <module>shoulder-auth-server</module>
-        <module>shoulder-crypto-transport</module>
-        <!--<module>shoulder-aopx</module>-->
+        <module>shoulder-aopx</module>-->
         <!--<module>shoulder-api-doc-swagger2</module>-->
     </modules>
+
+    <build>
+        <plugins>
+            <!-- GPG  发布插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -3,7 +3,7 @@ name: default
 
 steps:
   - name: 发现SNAPSHOT依赖
-    image: maven:3-jdk-11
+    image: cnlym/maven:3-jdk-11-aliyun
     volumes:
       - name: mvnCache
         path: /root/.m2
@@ -17,51 +17,51 @@ steps:
 
 
   - name: 编译、打包、发布到 maven 仓库
-    image: maven:3-jdk-11
+    image: cnlym/maven:3-jdk-11-aliyun
     volumes:
       - name: mvnCache
         path: /root/.m2
     commands:
-      - mvn deploy -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+      - mvn deploy -DskipTests=true -B -V
       - echo 'FINISHED deploy!'
 
   - name: 根据 commit 自动生成 CHANGELOG、README
-    image: maven:3-jdk-11
+    image: cnlym/maven:3-jdk-11-aliyun
     commands:
       - echo 'mock autogenerate changeLog!'
 
   - name: 在CSDN、OSCHINA发文章宣布发布一个新版本
-    image: maven:3-jdk-11
+    image: cnlym/maven:3-jdk-11-aliyun
     commands:
       - echo 'mock autogenerate new version blog!'
 
   - name: 创建此版本的维护分支（创建一个新分支，并更新到下一个次版本）
-    image: maven:3-jdk-11
+    image: cnlym/maven:3-jdk-11-aliyun
     commands:
       - echo 'mock autogenerate maintain branch!'
 
   - name: 在官网，start上添加该版本
-    image: maven:3-jdk-11
+    image: cnlym/maven:3-jdk-11-aliyun
     commands:
       - echo 'mock notify Official website!'
 
   - name: 在GitHub上更新发行说明，有哪些新特性，修复了哪些bug(issue号)，感谢该版本的参与者
-    image: maven:3-jdk-11
+    image: cnlym/maven:3-jdk-11-aliyun
     commands:
       - echo 'mock notify Official website!'
 
   - name: 关闭/创建里程碑、标签。TODO spring 开源的 label robot
-    image: maven:3-jdk-11
+    image: cnlym/maven:3-jdk-11-aliyun
     commands:
       - echo 'mock close issue!'
 
   - name: 分支清理，删掉里程碑内的无用分支，包括开发分支，发布分支
-    image: maven:3-jdk-11
+    image: cnlym/maven:3-jdk-11-aliyun
     commands:
       - echo 'mock delete useless branch!'
 
   - name: 在其他频道、社交平台上宣布发行
-    image: maven:3-jdk-11
+    image: cnlym/maven:3-jdk-11-aliyun
     commands:
       - echo 'mock announcement of issuance!'
 

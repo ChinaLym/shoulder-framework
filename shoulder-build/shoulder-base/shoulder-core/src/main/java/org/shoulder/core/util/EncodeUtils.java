@@ -3,10 +3,12 @@ package org.shoulder.core.util;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.shoulder.core.constant.ByteSpecification;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 
 /**
  * 封装各种格式的编码解码工具类.
@@ -19,7 +21,7 @@ import java.net.URLEncoder;
  */
 public class EncodeUtils {
 
-    private static final String ENCODING = "UTF-8";
+    private static final Charset ENCODING = ByteSpecification.STD_CHAR_SET;
     private static final char[] BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
     /**
@@ -51,11 +53,7 @@ public class EncodeUtils {
      * Base64编码.
      */
     public static String encodeBase64(String input) {
-        try {
-            return new String(Base64.encodeBase64(input.getBytes(ENCODING)), ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        return new String(Base64.encodeBase64(input.getBytes(ENCODING)), ENCODING);
     }
 
     /**
@@ -69,11 +67,7 @@ public class EncodeUtils {
      * Base64解码.
      */
     public static String decodeBase64String(String input) {
-        try {
-            return new String(Base64.decodeBase64(input.getBytes(ENCODING)), ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        return new String(Base64.decodeBase64(input.getBytes(ENCODING)), ENCODING);
     }
 
     /**
@@ -91,22 +85,14 @@ public class EncodeUtils {
      * URL 编码, Encode默认为UTF-8.
      */
     public static String encodeUrl(String part) {
-        try {
-            return URLEncoder.encode(part, ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        return URLEncoder.encode(part, ENCODING);
     }
 
     /**
      * URL 解码, Encode默认为UTF-8.
      */
     public static String decodeUrl(String part) {
-        try {
-            return URLDecoder.decode(part, ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        return URLDecoder.decode(part, ENCODING);
     }
 
 }

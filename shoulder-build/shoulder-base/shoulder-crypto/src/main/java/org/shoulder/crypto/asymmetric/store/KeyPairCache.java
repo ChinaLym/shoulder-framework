@@ -14,10 +14,10 @@ public interface KeyPairCache {
 	/**
 	 * 存储密钥对
 	 * @param id		id
-	 * @param keyPair	密钥对
+	 * @param keyPairDto	密钥对
 	 */
 	void set(String id, @NonNull KeyPairDto keyPairDto);
-	
+
 	/**
 	 * 获取密钥对
 	 * @param id 	id
@@ -26,7 +26,7 @@ public interface KeyPairCache {
 	 */
 	@NonNull
 	KeyPairDto get(String id) throws NoSuchKeyPairException;
-	
+
 	/**
 	 * 销毁
 	 */

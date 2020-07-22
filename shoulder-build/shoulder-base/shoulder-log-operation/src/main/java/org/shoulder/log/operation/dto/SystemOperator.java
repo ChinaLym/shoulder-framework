@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.dto;
 
-import org.shoulder.core.context.BaseContextHolder;
+import org.shoulder.core.context.ApplicationInfo;
 import org.shoulder.core.util.IpUtils;
 
 /**
@@ -50,7 +50,7 @@ public class SystemOperator implements Operator {
 
     private static class SingletonHolder{
         private static final SystemOperator INSTANCE =
-                new SystemOperator("system." + BaseContextHolder.getAppId(),
+                new SystemOperator("system." + ApplicationInfo.appId(),
                         IpUtils.getIPFromCache(), IpUtils.getMACFromCache());
     }
 

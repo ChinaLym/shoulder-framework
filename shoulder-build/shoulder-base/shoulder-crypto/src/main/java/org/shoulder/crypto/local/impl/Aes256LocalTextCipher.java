@@ -60,8 +60,8 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 	private static final byte[] DATA_KEY_IV = "shoulder:Cn-Lym!".getBytes(CHARSET_UTF_8);
 
 	private static final byte[] ROOT_KEY_FINAL_PART = "shoulderFramework:CN-Lym".getBytes(CHARSET_UTF_8);
-	private static final int aesKeyLength = 256;
-	private static final int needLength = aesKeyLength - ROOT_KEY_FINAL_PART.length;
+	private static final int AES_KEY_LENGTH = 256;
+	private static final int NEED_LENGTH = AES_KEY_LENGTH - ROOT_KEY_FINAL_PART.length;
 
 
 	public Aes256LocalTextCipher(LocalCryptoInfoRepository aesInfoRepository, String appId) {
@@ -206,7 +206,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 	 * @return 本应用加密记录
 	 */
 	private LocalCryptoInfoEntity generateSecurity() throws AesCryptoException {
-		byte[] rootKeyRandomPart = ByteUtils.randomBytes(needLength);
+		byte[] rootKeyRandomPart = ByteUtils.randomBytes(NEED_LENGTH);
 		String rootKeyRandomPartStr = ByteSpecification.encodeToString(rootKeyRandomPart);
 		byte[] rootKey = generateRootKey(rootKeyRandomPart);
 		// 用于加密数据秘钥的 iv 向量，写死
@@ -232,11 +232,11 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 	 * @return rootKey
 	 */
 	private static byte[] generateRootKey(byte[] randomPart) {
-		assert randomPart.length == needLength;
+		assert randomPart.length == NEED_LENGTH;
 
 		byte[] rootKey = new byte[256];
 		ByteUtils.copy(ROOT_KEY_FINAL_PART, 0, rootKey, 0, rootKey.length);
-		ByteUtils.copy(randomPart, 0, rootKey, ROOT_KEY_FINAL_PART.length, needLength);
+		ByteUtils.copy(randomPart, 0, rootKey, ROOT_KEY_FINAL_PART.length, NEED_LENGTH);
 
 		return Sha256Utils.digest(rootKey);
 	}

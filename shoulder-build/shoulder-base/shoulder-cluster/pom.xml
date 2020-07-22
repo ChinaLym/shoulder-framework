@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.0.1</version><!-- shoulder-version -->
+        <version>0.0.1-RELEASE</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -35,11 +35,7 @@
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
 
-            <!-- findbugs -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-            </plugin>
+
 
             <!-- unit test settings when mvn test -->
             <plugin>
