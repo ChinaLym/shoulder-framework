@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.dto.SystemOperator;
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class OpLogContext {
     /** 保存当前线程用户信息 */
     private static ThreadLocal<Operator> currentOperatorThreadLocal = new ThreadLocal<>();
 
-    private OperationLogEntity logEntity;
+    private OperationLogDTO operationLog;
 
     /** 当被操作对象为多个时，保存在这里 */
     private List<Operable> operableObjects;
@@ -69,51 +69,44 @@ public class OpLogContext {
         currentOperatorThreadLocal.remove();
     }
 
-
     public static final class Builder {
-        private OperationLogEntity logEntity;
-        private List<Operable> operableObjects;
-        private Operator currentOperator;
-        private boolean autoLog = true;
-        private boolean logWhenThrow = true;
+        private OpLogContext opLogContext;
 
         private Builder() {
+            opLogContext = new OpLogContext();
         }
 
-        public Builder logEntity(OperationLogEntity logEntity) {
-            this.logEntity = logEntity;
+        public static Builder anOpLogContext() {
+            return new Builder();
+        }
+
+        public Builder operationLog(OperationLogDTO operationLog) {
+            opLogContext.setOperationLog(operationLog);
             return this;
         }
 
         public Builder operableObjects(List<Operable> operableObjects) {
-            this.operableObjects = operableObjects;
+            opLogContext.setOperableObjects(operableObjects);
             return this;
         }
 
         public Builder currentOperator(Operator currentOperator) {
-            this.currentOperator = currentOperator;
+            opLogContext.setCurrentOperator(currentOperator);
             return this;
         }
 
-        public Builder autoLog(Boolean autoLog) {
-            this.autoLog = autoLog;
+        public Builder autoLog(boolean autoLog) {
+            opLogContext.setAutoLog(autoLog);
             return this;
         }
 
-        public Builder logWhenThrow(Boolean logWhenThrow) {
-            this.logWhenThrow = logWhenThrow;
+        public Builder logWhenThrow(boolean logWhenThrow) {
+            opLogContext.setLogWhenThrow(logWhenThrow);
             return this;
         }
 
         public OpLogContext build() {
-            Assert.notNull(currentOperator, "currentOperator can't be null!");
-
-            OpLogContext opLogContext = new OpLogContext();
-            opLogContext.setLogEntity(logEntity);
-            opLogContext.setOperableObjects(operableObjects);
-            opLogContext.setCurrentOperator(currentOperator);
-            opLogContext.setAutoLog(autoLog);
-            opLogContext.setLogWhenThrow(logWhenThrow);
+            Assert.notNull(opLogContext.getCurrentOperator(), "currentOperator can't be null!");
             return opLogContext;
         }
     }

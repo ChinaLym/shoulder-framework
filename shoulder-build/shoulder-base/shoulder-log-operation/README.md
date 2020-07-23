@@ -73,6 +73,8 @@ public class UserServiceImpl implements IUserSerivce {
 
 ----
 
+
+
 # 常见问题
 
 #### 术语不懂
@@ -93,4 +95,28 @@ public class UserServiceImpl implements IUserSerivce {
 
 TODO
 
+## 目录结构
+```
+├─annotation            注解
+├─async                 异步，跨线程相关类
+│  └─executors              线程池的包装器
+├─dto                   日志类，以及辅助接口、辅助类
+│  └─sample                 默认实现
+├─enums                 枚举定义
+├─format                日志格式相关的类（修改输出格式）
+│  ├─covertor               转换日志参数使用
+│  └─impl                   格式相关实现
+├─logger                日志记录相关（用于自定义输出方式）
+│  ├─impl                   日志记录器实现
+│  └─intercept              在日志记录拦截器前后可以做一些事情
+└─util                  日志相关工具
+```
+
+* 核心类：
+** `OperationLogDTO`
+** `@OperationLog`
+** `OpLogContextHolder`
+** 两个枚举
+*** `OperationResult`
+*** `TerminalType`
 

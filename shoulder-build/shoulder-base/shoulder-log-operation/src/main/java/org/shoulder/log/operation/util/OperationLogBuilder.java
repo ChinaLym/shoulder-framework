@@ -5,7 +5,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.context.ApplicationInfo;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.Operator;
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
@@ -28,9 +28,9 @@ public class OperationLogBuilder {
      *  2. 填充为内部任务日志
      *  3. 若上下文存在登录的用户则将其当做操作者
      */
-    public static OperationLogEntity newLog(String operation){
+    public static OperationLogDTO newLog(String operation){
         Operator currentOperator = OpLogContextHolder.getCurrentOperator();
-        return new OperationLogEntity(operation)
+        return new OperationLogDTO(operation)
                 .setOperator(currentOperator)
                 .setAppId(ApplicationInfo.appId());
     }
@@ -45,15 +45,15 @@ public class OperationLogBuilder {
      * @param operableList        被操作对象集合
      * @return 多条填充完毕的日志对象，至少返回包含一条日志的 List
      * */
-    public static List<OperationLogEntity> newLogsFrom(OperationLogEntity operationLogTemplate,
-                                                       @Nullable Collection<? extends Operable> operableList){
+    public static List<OperationLogDTO> newLogsFrom(OperationLogDTO operationLogTemplate,
+                                                    @Nullable Collection<? extends Operable> operableList){
         if(operationLogTemplate == null || CollectionUtils.isEmpty(operableList)){
             return Collections.singletonList(operationLogTemplate);
         }
-        List<OperationLogEntity> resultLogs = new ArrayList<>(operableList.size());
+        List<OperationLogDTO> resultLogs = new ArrayList<>(operableList.size());
         for (Operable operable : operableList) {
-            OperationLogEntity logEntity = operationLogTemplate.clone();
-            resultLogs.add(logEntity.setOperableObject(operable));
+            OperationLogDTO opLog = operationLogTemplate.clone();
+            resultLogs.add(opLog.setOperableObject(operable));
         }
         return resultLogs;
     }

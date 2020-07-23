@@ -1,7 +1,7 @@
-package org.shoulder.log.operation.intercept;
+package org.shoulder.log.operation.logger.intercept;
 
 import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public interface OperationLoggerInterceptor {
      * @param operableList  待组装的被操作对象
      * @return 个性处理后的 operableList
      */
-    default List<? extends Operable> beforeAssembleBatchLogs(OperationLogEntity template, List<?
+    default List<? extends Operable> beforeAssembleBatchLogs(OperationLogDTO template, List<?
             extends Operable> operableList){
         return operableList;
     }
@@ -41,7 +41,7 @@ public interface OperationLoggerInterceptor {
      * @param opLogs 组装完毕后的操作日志实体
      * @return 个性处理后的 opLogs
      */
-    default List<? extends OperationLogEntity> afterAssembleBatchLogs(List<? extends OperationLogEntity> opLogs){
+    default List<? extends OperationLogDTO> afterAssembleBatchLogs(List<? extends OperationLogDTO> opLogs){
         return opLogs;
     }
 
@@ -50,9 +50,9 @@ public interface OperationLoggerInterceptor {
      *      可以继续针对自己的应用统一补充某些有规律的值
      *      可以进行一些格式校验，以免记录的日志某些字段超长（加入存储是关系型数据库则推荐使用）
      *
-     * @param opLogEntity 待验证的日志实体
+     * @param opLog 待验证的日志实体
      */
-    default void beforeLog(OperationLogEntity opLogEntity){
+    default void beforeLog(OperationLogDTO opLog){
 
     }
 
@@ -60,11 +60,11 @@ public interface OperationLoggerInterceptor {
      * 记录日后。
      *      如果 beforeLog 设置类某些线程变量，可以在这里完成清理工作。
      *
-     * @param opLogEntity 记录完毕的日志实体。该变量主要是利于组件区分是哪个模块的什么操作。
+     * @param opLog 记录完毕的日志实体。该变量主要是利于组件区分是哪个模块的什么操作。
      *                     1. 日志已经记录，修改该变量已经没有意义。
      *                     2. 为了利于GC，不要增加该变量的引用
      */
-    default void afterLog(OperationLogEntity opLogEntity){
+    default void afterLog(OperationLogDTO opLog){
 
     }
 

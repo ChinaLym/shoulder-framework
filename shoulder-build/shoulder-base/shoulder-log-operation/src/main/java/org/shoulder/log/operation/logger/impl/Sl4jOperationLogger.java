@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.logger.impl;
 
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.slf4j.Logger;
@@ -36,8 +36,8 @@ public class Sl4jOperationLogger extends AbstractOperationLogger implements Oper
     }
 
     @Override
-    protected void doLog(OperationLogEntity opLogEntity) {
-        opLogger.info(operationLogFormatter.format(opLogEntity));
+    protected void doLog(OperationLogDTO opLog) {
+        opLogger.info(operationLogFormatter.format(opLog));
     }
 
     // **************************** 初始化 logger ******************************

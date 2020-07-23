@@ -1,7 +1,6 @@
 package org.shoulder.log.operation.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.shoulder.log.operation.entity.OperationLogEntity;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public interface OperationDetailAble {
     /**
      * 获取操作详情填充参数。
      *
-     * @return 对应 {@link OperationLogEntity#detailItems} 字段
+     * @return 对应 {@link OperationLogDTO#detailItems} 字段
      */
     @JsonIgnore
     List<String> getDetailItems();
@@ -26,7 +25,7 @@ public interface OperationDetailAble {
     /**
      * 获取操作详情填充参数。
      *
-     * @return 对应 {@link OperationLogEntity#detail} 字段
+     * @return 对应 {@link OperationLogDTO#detail} 字段
      */
     @JsonIgnore
     default String getDetail(){

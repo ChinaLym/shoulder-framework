@@ -1,6 +1,6 @@
-package org.shoulder.log.operation.covertor;
+package org.shoulder.log.operation.format.covertor;
 
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -32,7 +32,7 @@ public class DefaultOperationLogParamValueConverter implements OperationLogParam
     }
 
     @Override
-    public List<String> convert(@NonNull OperationLogEntity logEntity, @Nullable Object paramValue,
+    public List<String> convert(@NonNull OperationLogDTO opLog, @Nullable Object paramValue,
                                 Class methodParamClazz) {
         return toStringList(paramValue);
     }

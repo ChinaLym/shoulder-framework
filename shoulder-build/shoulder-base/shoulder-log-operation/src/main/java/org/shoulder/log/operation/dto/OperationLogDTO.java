@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.entity;
+package org.shoulder.log.operation.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -9,10 +9,6 @@ import org.shoulder.core.util.StringUtils;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.enums.OperationResult;
 import org.shoulder.log.operation.enums.TerminalType;
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.OperateResult;
-import org.shoulder.log.operation.dto.OperationDetailAble;
-import org.shoulder.log.operation.dto.Operator;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
@@ -33,7 +29,7 @@ import java.util.Map;
  */
 @Data
 @Accessors(chain = true)
-public class OperationLogEntity implements Cloneable {
+public class OperationLogDTO implements Cloneable {
 
     /** ============= 操作者描述（操作者分两种情况，用户、系统内部触发） {@link Operator }  ================ */
 
@@ -189,13 +185,13 @@ public class OperationLogEntity implements Cloneable {
 
     // ***********************************  构造函数  ***********************************
 
-    public OperationLogEntity() {
+    public OperationLogDTO() {
     }
 
     /**
      * 引导使用者填写必要字段
      */
-    public OperationLogEntity(String operation) {
+    public OperationLogDTO(String operation) {
         this.operation = operation;
     }
 
@@ -205,7 +201,7 @@ public class OperationLogEntity implements Cloneable {
      * 填充操作者信息
      */
     @JsonIgnore
-    public OperationLogEntity setOperator(Operator operator) {
+    public OperationLogDTO setOperator(Operator operator) {
         if (operator != null) {
             this.userId = operator.getUserId();
             this.userName = operator.getUserName();
@@ -224,7 +220,7 @@ public class OperationLogEntity implements Cloneable {
      * 填充单个被操作对象信息
      */
     @JsonIgnore
-    public OperationLogEntity setOperableObject(Operable operable) {
+    public OperationLogDTO setOperableObject(Operable operable) {
         if (operable != null) {
             this.objectId = operable.getObjectId();
             this.objectName = operable.getObjectName();
@@ -246,7 +242,7 @@ public class OperationLogEntity implements Cloneable {
         return this;
     }
 
-    public OperationLogEntity addDetailItem(String detailItem) {
+    public OperationLogDTO addDetailItem(String detailItem) {
         if (detailItem != null) {
             this.detailItems.add(detailItem);
         }
@@ -254,7 +250,7 @@ public class OperationLogEntity implements Cloneable {
     }
 
     @JsonIgnore
-    public OperationLogEntity setExtField(String extKey, String value) {
+    public OperationLogDTO setExtField(String extKey, String value) {
         if (extKey == null) {
             return this;
         }
@@ -274,17 +270,17 @@ public class OperationLogEntity implements Cloneable {
     }
 
     @JsonIgnore
-    public OperationLogEntity setResultFail() {
+    public OperationLogDTO setResultFail() {
         return setResult(OperationResult.FAIL);
     }
 
     // ------------------ clone ---------------
 
     @Override
-    public OperationLogEntity clone() {
+    public OperationLogDTO clone() {
         try {
             super.clone();
-            return cloneTo(new OperationLogEntity());
+            return cloneTo(new OperationLogDTO());
         } catch (CloneNotSupportedException e) {
             throw new BaseRuntimeException(e);
         }
@@ -293,7 +289,7 @@ public class OperationLogEntity implements Cloneable {
     /**
      * 克隆日志实体
      */
-    public OperationLogEntity cloneTo(@NonNull OperationLogEntity clone) {
+    public OperationLogDTO cloneTo(@NonNull OperationLogDTO clone) {
 
         clone.setUserId(userId);
         clone.setUserName(userName);

@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.async;
 
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.util.OpLogContext;
 import org.shoulder.log.operation.util.OpLogContextHolder;
 
@@ -36,7 +36,7 @@ public abstract class AbstractOpLogAsyncRunner {
         }
         if(shouldEnhancer()){
             if (this.opLogContext != null) {
-                OpLogContextHolder.setLog(this.opLogContext.getLogEntity().cloneTo(new OperationLogEntity()));
+                OpLogContextHolder.setLog(this.opLogContext.getOperationLog().cloneTo(new OperationLogDTO()));
             }
         }
 

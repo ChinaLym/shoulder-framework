@@ -5,8 +5,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.exception.BaseRuntimeException;
-import org.shoulder.log.operation.entity.OpLogParam;
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OpLogParam;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 
 import java.lang.reflect.Field;
@@ -31,13 +31,13 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
     private static FastDateFormat fastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     /**
-     * {@link OperationLogEntity} 类中所有 String 类型的字段
+     * {@link OperationLogDTO} 类中所有 String 类型的字段
      */
     private static List<Field> opLogStrFields;
 
     static {
         // 反射获取所有文本字段并设置可访问
-        opLogStrFields = Arrays.stream(OperationLogEntity.class.getDeclaredFields())
+        opLogStrFields = Arrays.stream(OperationLogDTO.class.getDeclaredFields())
             .filter(field -> CharSequence.class.isAssignableFrom(field.getClass()))
             .peek(field -> field.setAccessible(true))
             .collect(Collectors.toList());
@@ -45,7 +45,7 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
     }
 
     @Override
-    public String format(OperationLogEntity opLog) {
+    public String format(OperationLogDTO opLog) {
 
         KeyValueContextBuilder builder = new KeyValueContextBuilder();
         // 反射拼接所有 String 类型

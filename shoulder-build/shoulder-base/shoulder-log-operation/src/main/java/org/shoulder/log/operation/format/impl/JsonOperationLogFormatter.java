@@ -1,7 +1,7 @@
 package org.shoulder.log.operation.format.impl;
 
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 
 /**
@@ -12,7 +12,7 @@ import org.shoulder.log.operation.format.OperationLogFormatter;
 public class JsonOperationLogFormatter implements OperationLogFormatter {
 
     @Override
-    public String format(OperationLogEntity opLog){
+    public String format(OperationLogDTO opLog){
         return JsonUtils.toJson(opLog);
 
     }

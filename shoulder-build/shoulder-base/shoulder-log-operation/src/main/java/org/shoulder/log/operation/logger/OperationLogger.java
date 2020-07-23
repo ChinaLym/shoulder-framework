@@ -1,8 +1,8 @@
 package org.shoulder.log.operation.logger;
 
 import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.entity.OperationLogEntity;
-import org.shoulder.log.operation.intercept.OperationLoggerInterceptor;
+import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.util.OpLogContextHolder;
 import org.springframework.lang.NonNull;
 
@@ -21,36 +21,36 @@ public interface OperationLogger {
      * 记录日志上下文中的日志实体内容 {@link OpLogContextHolder}
      * */
     default void log(){
-        OperationLogEntity opLogEntity = OpLogContextHolder.getLog();
-        if(opLogEntity != null){
+        OperationLogDTO opLog = OpLogContextHolder.getLog();
+        if(opLog != null){
             List<? extends Operable> operableCollection = OpLogContextHolder.getOperableObjects();
 
             if (operableCollection == null || operableCollection.isEmpty()) {
-                this.log(opLogEntity);
+                this.log(opLog);
             } else {
-                this.log(opLogEntity, operableCollection);
+                this.log(opLog, operableCollection);
             }
         }
     }
 
     /**
      * 记录一条操作日志
-     * @param opLogEntity 操作日志对象
+     * @param opLog 操作日志对象
      */
-    void log(OperationLogEntity opLogEntity);
+    void log(OperationLogDTO opLog);
 
     /**
      * 记录多条操作日志
-     * @param opLogEntityList 操作日志对象集合
+     * @param opLogList 操作日志对象集合
      */
-    void log(@NonNull Collection<? extends OperationLogEntity> opLogEntityList);
+    void log(@NonNull Collection<? extends OperationLogDTO> opLogList);
 
     /**
      * 组装并记录多条操作日志
-     * @param opLogEntity     记录模板
+     * @param opLog     记录模板
      * @param operableList     被操作对象集合
      */
-    void log(@NonNull OperationLogEntity opLogEntity, List<? extends Operable> operableList);
+    void log(@NonNull OperationLogDTO opLog, List<? extends Operable> operableList);
 
     /**
      * 注册拦截器

@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.entity;
+package org.shoulder.log.operation.dto;
 
 import java.util.LinkedList;
 import java.util.List;

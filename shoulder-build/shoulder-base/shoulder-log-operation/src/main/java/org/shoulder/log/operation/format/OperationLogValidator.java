@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.format;
 
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 
 /**
  * 日志校验器，若日志格式有一定要求则可以添加校验器。
@@ -15,5 +15,5 @@ public interface OperationLogValidator {
      * 校验失败将抛出 RuntimeException
      * @param log 操作日志
      */
-    void validate(OperationLogEntity log);
+    void validate(OperationLogDTO log);
 }

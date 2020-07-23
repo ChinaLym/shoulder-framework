@@ -11,11 +11,11 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.annotation.OperationLogParam;
-import org.shoulder.log.operation.covertor.DefaultOperationLogParamValueConverter;
-import org.shoulder.log.operation.covertor.OperationLogParamValueConverter;
-import org.shoulder.log.operation.covertor.OperationLogParamValueConverterHolder;
-import org.shoulder.log.operation.entity.OpLogParam;
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
+import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverter;
+import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
+import org.shoulder.log.operation.dto.OpLogParam;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.util.OpLogContext;
 import org.shoulder.log.operation.util.OpLogContextHolder;
 import org.shoulder.log.operation.util.OperationLogBuilder;
@@ -142,13 +142,13 @@ public class OperationLogAspect {
         }
 
         // 创建日志
-        OperationLogEntity entity = createLog(joinPoint, methodAnnotation, classAnnotation);
+        OperationLogDTO entity = createLog(joinPoint, methodAnnotation, classAnnotation);
 
         if (log.isDebugEnabled()) {
             log.debug("auto create a OperationLog: " + entity);
         }
 
-        OpLogContext context = OpLogContext.create(lastOpLogContext.get()).setLogEntity(entity);
+        OpLogContext context = OpLogContext.create(lastOpLogContext.get()).setOperationLog(entity);
 
         // 是否在抛出异常后自动记录日志
 
@@ -174,9 +174,9 @@ public class OperationLogAspect {
      * 根据注解创建日志实体
      */
     @NonNull
-    private OperationLogEntity createLog(ProceedingJoinPoint joinPoint, OperationLog methodAnnotation, OperationLogConfig classAnnotation) {
+    private OperationLogDTO createLog(ProceedingJoinPoint joinPoint, OperationLog methodAnnotation, OperationLogConfig classAnnotation) {
         // 创建日志实体
-        OperationLogEntity entity =
+        OperationLogDTO entity =
                 OperationLogBuilder.newLog(methodAnnotation.operation());
 
         // objectType
@@ -216,7 +216,7 @@ public class OperationLogAspect {
      * @param joinPoint 连接点
      * @return 本方法中要记录的参数
      */
-    private List<OpLogParam> createOperationParams(@NonNull OperationLogEntity entity, ProceedingJoinPoint joinPoint) {
+    private List<OpLogParam> createOperationParams(@NonNull OperationLogDTO entity, ProceedingJoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         List<OpLogParam> opLogParams = new LinkedList<>();

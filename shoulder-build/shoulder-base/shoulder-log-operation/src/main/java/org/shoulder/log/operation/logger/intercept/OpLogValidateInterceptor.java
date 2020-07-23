@@ -1,7 +1,7 @@
-package org.shoulder.log.operation.intercept.impl;
+package org.shoulder.log.operation.logger.intercept;
 
-import org.shoulder.log.operation.entity.OperationLogEntity;
-import org.shoulder.log.operation.intercept.OperationLoggerInterceptor;
+import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.format.OperationLogValidator;
 
 /**
@@ -18,8 +18,8 @@ public class OpLogValidateInterceptor implements OperationLoggerInterceptor {
     }
 
     @Override
-    public void beforeLog(OperationLogEntity opLogEntity){
-        operationLogValidator.validate(opLogEntity);
+    public void beforeLog(OperationLogDTO opLog){
+        operationLogValidator.validate(opLog);
     }
 
 }

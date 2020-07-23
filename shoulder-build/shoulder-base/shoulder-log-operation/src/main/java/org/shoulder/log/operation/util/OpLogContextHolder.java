@@ -4,7 +4,7 @@ import lombok.extern.shoulder.SLog;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.Operator;
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.springframework.beans.BeansException;
 import org.springframework.lang.NonNull;
@@ -41,13 +41,13 @@ public class OpLogContextHolder {
     public static void log(){
         OpLogContext context = currentOpLogContext.get();
         if(context != null){
-            OperationLogEntity opLogEntity = OpLogContextHolder.getLog();
+            OperationLogDTO opLog = OpLogContextHolder.getLog();
             List<? extends Operable> operableCollection = OpLogContextHolder.getOperableObjects();
 
             if (CollectionUtils.isEmpty(operableCollection)) {
-                operationLogger.log(opLogEntity);
+                operationLogger.log(opLog);
             } else {
-                operationLogger.log(opLogEntity, operableCollection);
+                operationLogger.log(opLog, operableCollection);
             }
         }
     }
@@ -91,15 +91,15 @@ public class OpLogContextHolder {
      *
      * @return 日志上下文中日志实体
      */
-    public static OperationLogEntity getLog() {
-        return getContextOrException().getLogEntity();
+    public static OperationLogDTO getLog() {
+        return getContextOrException().getOperationLog();
     }
 
     /**
      * 设置日志实体
      */
-    public static void setLog(OperationLogEntity entity) {
-        getContextOrException().setLogEntity(entity);
+    public static void setLog(OperationLogDTO entity) {
+        getContextOrException().setOperationLog(entity);
     }
 
     // ============================ 当前用户） =======================

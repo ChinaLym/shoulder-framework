@@ -1,8 +1,8 @@
 package org.shoulder.log.operation.logger.impl;
 
 import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.entity.OperationLogEntity;
-import org.shoulder.log.operation.intercept.OperationLoggerInterceptor;
+import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.util.OperationLogBuilder;
 import org.slf4j.Logger;
@@ -32,14 +32,14 @@ public abstract class AbstractOperationLogger implements OperationLogger {
      * 记录一条操作日志
      */
     @Override
-    public void log(OperationLogEntity opLogEntity) {
+    public void log(OperationLogDTO opLog) {
         try {
-            beforeLog(opLogEntity);
-            doLog(opLogEntity);
-            afterLog(opLogEntity);
+            beforeLog(opLog);
+            doLog(opLog);
+            afterLog(opLog);
         } catch (Exception e) {
             //afterValidateFail();
-            handleLogException(e, opLogEntity);
+            handleLogException(e, opLog);
         }
     }
 
@@ -47,20 +47,20 @@ public abstract class AbstractOperationLogger implements OperationLogger {
      * 记录多条操作日志
      */
     @Override
-    public void log(@NonNull Collection<? extends OperationLogEntity> opLogEntityList) {
+    public void log(@NonNull Collection<? extends OperationLogDTO> opLogList) {
         // 如果过多，需要考虑多线程
-        opLogEntityList.forEach(this::log);
+        opLogList.forEach(this::log);
     }
 
     /**
      * 拼装记录多条操作日志
      */
     @Override
-    public void log(@NonNull OperationLogEntity opLogEntity, List<? extends Operable> operableList) {
+    public void log(@NonNull OperationLogDTO opLog, List<? extends Operable> operableList) {
         // 组装前
-        operableList = beforeAssembleBatchLogs(opLogEntity, operableList);
+        operableList = beforeAssembleBatchLogs(opLog, operableList);
         // 组装批量操作日志
-        List<? extends OperationLogEntity> opLogs = OperationLogBuilder.newLogsFrom(opLogEntity, operableList);
+        List<? extends OperationLogDTO> opLogs = OperationLogBuilder.newLogsFrom(opLog, operableList);
         // 组装后
         opLogs = afterAssembleBatchLogs(opLogs);
 
@@ -71,22 +71,22 @@ public abstract class AbstractOperationLogger implements OperationLogger {
 
     /**
      * 子类需要实现具体如何记录日志
-     * @param opLogEntity 需要记录日志的实体
+     * @param opLog 需要记录日志的实体
      */
-    protected abstract void doLog(OperationLogEntity opLogEntity);
+    protected abstract void doLog(OperationLogDTO opLog);
 
     /**
      * 默认记录一条warn日志，但子类可以覆盖当记录日志时出现异常如何处理
      * @param e 具体是什么异常
-     * @param opLogEntity 需要记录日志的实体
+     * @param opLog 需要记录日志的实体
      */
-    protected void handleLogException(Exception e, OperationLogEntity opLogEntity){
-        log.warn("logEntity is not qualified! -- " + e.getMessage() + opLogEntity, e);
+    protected void handleLogException(Exception e, OperationLogDTO opLog){
+        log.warn("Log is not qualified! -- " + e.getMessage() + opLog, e);
     }
 
     // **************************** 监听器相关 ******************************
 
-    private List<? extends Operable> beforeAssembleBatchLogs(OperationLogEntity template, List<? extends Operable> operableCollection) {
+    private List<? extends Operable> beforeAssembleBatchLogs(OperationLogDTO template, List<? extends Operable> operableCollection) {
         List<? extends Operable> result = operableCollection;
         for (OperationLoggerInterceptor interceptor : logInterceptors) {
             result = interceptor.beforeAssembleBatchLogs(template, result);
@@ -94,8 +94,8 @@ public abstract class AbstractOperationLogger implements OperationLogger {
         return result;
     }
 
-    private List<? extends OperationLogEntity> afterAssembleBatchLogs(List<? extends OperationLogEntity> operationLogEntities) {
-        List<? extends OperationLogEntity> result = operationLogEntities;
+    private List<? extends OperationLogDTO> afterAssembleBatchLogs(List<? extends OperationLogDTO> operationLogEntities) {
+        List<? extends OperationLogDTO> result = operationLogEntities;
         for (OperationLoggerInterceptor interceptor : logInterceptors) {
             result = interceptor.afterAssembleBatchLogs(result);
         }
@@ -103,16 +103,16 @@ public abstract class AbstractOperationLogger implements OperationLogger {
     }
 
 
-    private void beforeLog(OperationLogEntity opLogEntity) {
-        logInterceptors.forEach(listener -> listener.beforeLog(opLogEntity));
+    private void beforeLog(OperationLogDTO opLog) {
+        logInterceptors.forEach(listener -> listener.beforeLog(opLog));
     }
 
-    /*private void afterValidateFail(OperationLogEntity opLogEntity){
-        logInterceptors.forEach(listener -> listener.afterValidateFail(opLogEntity));
+    /*private void afterValidateFail(OperationLog opLog){
+        logInterceptors.forEach(listener -> listener.afterValidateFail(opLog));
     }*/
 
-    private void afterLog(OperationLogEntity opLogEntity) {
-        logInterceptors.forEach(listener -> listener.afterLog(opLogEntity));
+    private void afterLog(OperationLogDTO opLog) {
+        logInterceptors.forEach(listener -> listener.afterLog(opLog));
     }
 
     @Override

@@ -1,8 +1,8 @@
 package org.shoulder.log.operation.format.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.log.operation.entity.OpLogParam;
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OpLogParam;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogValidator;
 import org.springframework.util.Assert;
 
@@ -18,7 +18,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
 
     /**校验失败将抛出 runtimeException */
     @Override
-    public void validate(OperationLogEntity log) {
+    public void validate(OperationLogDTO log) {
         Assert.notNull(log, "log is null.");
         // 必填项校验
         validateRequiredFields(log);
@@ -44,7 +44,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
      *  供使用者填写的优先校验
      * @param log 待校验日志实体
      */
-    protected void validateRequiredFields(OperationLogEntity log){
+    protected void validateRequiredFields(OperationLogDTO log){
         Assert.hasText(log.getUserId(), "userId is blank.");
         Assert.notNull(log.getTerminalType(), "terminalType is null.");
         Assert.hasText(log.getOperation(), "operation is blank.");
@@ -57,7 +57,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
      * 字段长度校验
      * @param log 日志实体
      */
-    protected void validateLengthLimit(OperationLogEntity log) {
+    protected void validateLengthLimit(OperationLogDTO log) {
         // operationTime 长度由 format 保证
         assertLengthLimit(log.getAppId(), 128, "appId");
         assertLengthLimit(log.getUserOrgId(), 128, "userOrgId");

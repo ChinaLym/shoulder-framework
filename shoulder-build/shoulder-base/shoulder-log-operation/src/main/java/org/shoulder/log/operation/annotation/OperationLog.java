@@ -1,7 +1,7 @@
 package org.shoulder.log.operation.annotation;
 
 import org.shoulder.log.operation.enums.TerminalType;
-import org.shoulder.log.operation.entity.OperationLogEntity;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.util.OperationLogBuilder;
 import org.shoulder.log.operation.util.OpLogContextHolder;
 
@@ -48,7 +48,7 @@ public @interface OperationLog {
     /**
      * 操作内容        (选填)
      * 该字段仅适用于不支持多语言的情况
-     * 【支持多语言时，请在代码中 set {@link OperationLogEntity#detailItems} 或 {@link OperationLogEntity#addDetailItem} 来填充】
+     * 【支持多语言时，请在代码中 set {@link OperationLogDTO#detailItems} 或 {@link OperationLogDTO#addDetailItem} 来填充】
      *
      * 填写 {@link #detailKey} 将忽略该字段，认为支持多语言
      */

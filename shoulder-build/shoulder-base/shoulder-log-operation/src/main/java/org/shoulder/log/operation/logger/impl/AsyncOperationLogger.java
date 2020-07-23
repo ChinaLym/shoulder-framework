@@ -1,8 +1,8 @@
 package org.shoulder.log.operation.logger.impl;
 
 import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.entity.OperationLogEntity;
-import org.shoulder.log.operation.intercept.OperationLoggerInterceptor;
+import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.springframework.lang.NonNull;
 
@@ -25,21 +25,21 @@ public class AsyncOperationLogger implements OperationLogger {
      * 记录一条操作日志
      */
     @Override
-    public void log(OperationLogEntity opLogEntity) {
-        executor.execute(() -> delegate.log(opLogEntity));
+    public void log(OperationLogDTO opLog) {
+        executor.execute(() -> delegate.log(opLog));
     }
 
     /**
      * 记录多条操作日志
      */
     @Override
-    public void log(@NonNull Collection<? extends OperationLogEntity> opLogEntityList) {
-        executor.execute(() -> delegate.log(opLogEntityList));
+    public void log(@NonNull Collection<? extends OperationLogDTO> opLogList) {
+        executor.execute(() -> delegate.log(opLogList));
     }
 
     @Override
-    public void log(@NonNull OperationLogEntity opLogEntity, List<? extends Operable> operableList) {
-        executor.execute(() -> delegate.log(opLogEntity, operableList));
+    public void log(@NonNull OperationLogDTO opLog, List<? extends Operable> operableList) {
+        executor.execute(() -> delegate.log(opLog, operableList));
     }
 
     @Override

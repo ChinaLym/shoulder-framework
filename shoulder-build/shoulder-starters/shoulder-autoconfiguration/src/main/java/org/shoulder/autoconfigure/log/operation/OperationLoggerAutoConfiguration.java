@@ -5,7 +5,7 @@ import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.async.OpLogRunnable;
 import org.shoulder.log.operation.format.impl.ShoulderOpLogFormatter;
 import org.shoulder.log.operation.format.OperationLogFormatter;
-import org.shoulder.log.operation.intercept.OperationLoggerInterceptor;
+import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.logger.impl.AsyncOperationLogger;
 import org.shoulder.log.operation.logger.impl.Sl4jOperationLogger;
