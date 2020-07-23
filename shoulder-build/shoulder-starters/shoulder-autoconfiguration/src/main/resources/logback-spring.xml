@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 扩展参考： https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/reference/html/spring-boot-features.html#boot-features-custom-log-configuration -->
+
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+<!--scan="true", 是否支持动态调整打印级别-->
+
+    <!--从 Spring Environment 中获取应用标识 -->
+    <springProperty scope="context" name="appId" source="shoulder.application.id"/>
+
+    <!-- 日志输出路径 -->
+    <property name="LOG_HOME" value="/opt/logs/${appId}/" />
+
+    <!-- 非测试、生产环境配置 -->
+    <springProfile name="!prod,!test">
+        <!-- 控制台Appender, 不要修改 -->
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="logback.encoder.LazyTimeZonePatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %highlight(%-5level) ${appId} [%thread] 
+                    [%cyan(%logger{50}):%line] %msg%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <root level="DEBUG">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+
+    <!-- 测试、生产环境配置-->
+    <springProfile name="prod,test">
+        <!-- 操作日志 -->
+        <appender name="OP_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <File>${LOG_HOME}/${appId}.op.log</File>
+            <rollingPolicy class="logback.rolling.log.gather.TimeBasedBackUpRollingPolicy">
+                <FileNamePattern>${LOG_HOME}/${appId}.op.log.%i.zip</FileNamePattern>
+                <MinIndex>1</MinIndex>
+                <!--最多十个文件 -->
+                <MaxIndex>10</MaxIndex>
+            </rollingPolicy>
+            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <MaxFileSize>10MB</MaxFileSize>
+            </triggeringPolicy>
+            <encoder class="logback.encoder.LazyTimeZonePatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} - %msg%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <logger name="OPERATION_LOGGER" level="INFO" additivity="false">
+            <appender-ref ref="OP_APPENDER" />
+        </logger>
+
+        <!-- 操作日志 结束 -->
+
+        <!-- 系统运行日志文件打印配置     开始 -->
+        <!--
+        如要增加自定义模块日志打印配置：
+            appender名称格式为：FILE-debug-模块名
+            文件名格式：${appId}.模块名.debug.log
+        日志打印文件越多, 越影响磁盘I/O效率, 造成程度卡顿
+        -->
+        <!-- TRACE及以上级别打印在 *.debug.log中 -->
+        <appender name="FILE-debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>TRACE</level>
+            </filter>
+            <File>${LOG_HOME}/${appId}.debug.log</File>
+            <rollingPolicy class="logback.rolling.log.gather.TimeBasedBackUpRollingPolicy">
+                <FileNamePattern>${LOG_HOME}/${appId}.debug.log.%i.zip
+                </FileNamePattern>
+                <MinIndex>1</MinIndex>
+                <MaxIndex>10</MaxIndex>
+            </rollingPolicy>
+            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <!-- debug文件大小达到 100M 后再压缩 -->
+                <MaxFileSize>100MB</MaxFileSize>
+            </triggeringPolicy>
+            <encoder class="logback.encoder.LazyTimeZonePatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${appId} [%thread] [%logger{50}:%line] %msg%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <!-- 错误日志输出配置, error及以上日志单独再打印一个*.error.log, 防止重要信息被覆盖-->
+        <appender name="FILE-error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>ERROR</level>
+            </filter>
+            <File>${LOG_HOME}/${appId}.error.log</File>
+            <rollingPolicy class="logback.rolling.log.gather.TimeBasedBackUpRollingPolicy">
+                <FileNamePattern>${LOG_HOME}/${appId}.error.log.%i.zip
+                </FileNamePattern>
+                <MinIndex>1</MinIndex>
+                <MaxIndex>10</MaxIndex>
+            </rollingPolicy>
+            <triggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <MaxFileSize>20MB</MaxFileSize>
+            </triggeringPolicy>
+            <encoder class="logback.encoder.LazyTimeZonePatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${appId} [%thread] [%logger{50}:%line] %msg%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <!-- ef框架sql默认是INFO级别, 打印级别改成WARN, 防止sql频繁打印 -->
+        <logger name="GeeQuery" level="WARN"/>
+
+        <!-- SPRING等第三方框架类代码日志打印, 输出到OTHER文件中, 默认WARN以上 （这类日志无法统一解析） -->
+        <appender name="OTHER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>WARN</level>
+            </filter>
+            <File>${LOG_HOME}/${appId}.other.log</File>
+            <rollingPolicy class="logback.rolling.log.gather.TimeBasedBackUpRollingPolicy">
+                <FileNamePattern>${LOG_HOME}/${appId}.other.log.%i.zip</FileNamePattern>
+                <MinIndex>1</MinIndex>
+                <!--最多十个文件 -->
+                <MaxIndex>10</MaxIndex>
+            </rollingPolicy>
+            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <MaxFileSize>20MB</MaxFileSize>
+            </triggeringPolicy>
+            <encoder class="logback.encoder.LazyTimeZonePatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${appId} [%thread] [%logger{50}:%line] - %msg%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <!-- 对第三方框架日志打印频率特别高的部分进行限制 -->
+        <logger name="org.apache.zookeeper.ClientCnxn" level="ERROR" />
+        <logger name="org.springframework.boot" level="WARN" />
+        <logger name="org.springframework.boot.web.filter" level="ERROR" />
+
+        <!-- shoulder 框架中日志的默认输出级别 WARN, 排查问题时, 可以通过工具切换为TRACE -->
+        <logger name="org.shoulder" level="INFO" additivity="false">
+            <appender-ref ref="FILE-debug" />
+            <appender-ref ref="FILE-error" />
+        </logger>
+
+        <!-- shoulder 框架配置模块日志的打印级别为 INFO -->
+        <logger name="org.shoulder.autoconfigure" level="INFO" additivity="false">
+            <appender-ref ref="FILE-debug" />
+            <appender-ref ref="FILE-error" />
+        </logger>
+
+        <root level="WARN">
+            <appender-ref ref="OTHER" />
+        </root>
+
+    </springProfile>
+
+</configuration>

@@ -37,6 +37,7 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
     private void initApplicationInfo(ConfigurableEnvironment environment){
         String appId = environment.getProperty("shoulder.application.id");
         if(StringUtils.isEmpty(appId)){
+            // todo 放置于 shoulder.application.id 中
             appId = environment.getProperty("spring.application.name");
         }
         ApplicationInfo.initAppId(appId);
