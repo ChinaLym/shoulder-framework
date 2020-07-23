@@ -27,6 +27,9 @@
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.javadoc.charset>${project.build.sourceEncoding}</maven.javadoc.charset>
+
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
@@ -151,6 +154,53 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
+                    <configuration>
+                        <aggregate>true</aggregate>
+                        <encoding>${maven.javadoc.charset}</encoding>
+                        <charset>${maven.javadoc.charset}</charset>
+                        <docencoding>${maven.javadoc.charset}</docencoding>
+                    </configuration>
+                    <!--MAVEN_OPTS=-Dfile.encoding=UTF-8;JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8-->
+                    <!--<tags>
+                        <tag>
+                            <head>描述</head>
+                            <name>Description</name>
+                            <placement>a</placement>
+                        </tag>
+                        <tag>
+                            <head>return</head>
+                            <name>return</name>
+                            <placement>a</placement>
+                        </tag>
+                        <tag>
+                            <head>参数</head>
+                            <name>param...</name>
+                            <placement>a</placement>
+                        </tag>
+                        <tag>
+                            <head>时间</head>
+                            <name>date</name>
+                            <placement>a</placement>
+                        </tag>
+                        <tag>
+                            <head>时间</head>
+                            <name>Date</name>
+                            <placement>a</placement>
+                        </tag>
+                    </tags>-->
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                            <configuration>
+                                <!--取消对源码中的doc参数注释等检查-->
+                                <additionalparam>-Xdoclint:none</additionalparam>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
 
                 <!-- GPG  发布插件-->

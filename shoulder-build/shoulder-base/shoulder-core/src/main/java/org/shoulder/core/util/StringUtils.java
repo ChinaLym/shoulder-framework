@@ -240,7 +240,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /**
      * 驼峰转下划线
-     * createTime > create_time
+     * createTime 转为 create_time
      */
     public static String camelToUnderline(String param) {
         if (param == null || "".equals(param.trim())) {
@@ -262,7 +262,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /**
      * 下划线转驼峰
-     * create_time > createTime
+     * create_time 变为 createTime
      */
     public static String underlineToCamel(String param) {
         if (param == null || "".equals(param.trim())) {
@@ -279,10 +279,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /**
-     * 格式化存储单位
+     * 格式化存储单位，如 2048 转为 2K
      *
      * @param size byte 字节
-     * @return 2048 -> 2K
+     * @return 人性化的大小表示方式
      */
     public static String formatBytes(long size) {
         // 如果字节数少于1024，则直接以B为单位，否则先除于1024，后3位因太少无意义

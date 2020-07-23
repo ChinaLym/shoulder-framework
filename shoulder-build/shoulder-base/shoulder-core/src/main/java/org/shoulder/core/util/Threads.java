@@ -53,7 +53,7 @@ public class Threads {
     /**
      * 使用该方法包装线程类，将自动将线程放入延迟队列并延时执行
      *
-     * @param r    要延时执行的事情
+     * @param runnable    要延时执行的事情
      * @param time 延时时间
      * @param unit time 的单位
      */

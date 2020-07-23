@@ -181,20 +181,8 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
 
     /**
-     * 去掉重复数据，过滤重复数据有两个算法，1是简单算法（即遍历查找重复），例如
-     * List<T> list=new ArrayList<T>();
-     * for (T obj : array) {
-     * if (!list.contains(obj))
-     * list.add(obj);
-     * }
-     * return list.toArray();
-     * <p>
-     * 2是复杂算法，使用hashset查找重复
-     * Set<T> set=new LinkedHashSet<T>(); //因为前一算法保证了元素的顺序，为对相同功能比较，此处用linkedhashset
-     * for (T obj : array) {
-     * set.add(obj);
-     * }
-     * return set.toArray();
+     * 去掉重复数据，过滤重复数据有两个算法，1是简单算法（即遍历查找重复）
+     * 2是复杂算法，使用 {@link LinkedHashSet} （保证元素的顺序）查找重复
      * 根据测试当元素数量少于50个时，前一算法要比后一算法快。当元素数量激增时，后者要更快
      * 后者——更通用
      * 前者——极限情况下针对特定场景的优化。
@@ -412,21 +400,31 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     /**
      * 判断列表中是否包含指定的对象,和Collection.contains方法比起来，前者是用obj1.equals(obj2)，
      * 这里用==直接判断是否<B>同一对象</B>，速度更快，但是不能比较出两个值完全相同的对象来。
+     *
+     * @param list 源列表
+     * @param keys 目标对象
+     * @return 是否包含
      */
     public static <T> boolean fastContainsAny(T[] list, T[] keys) {
-        if (list == null) return false;
+        if (list == null) {
+            return false;
+        }
         for (T e : list) {
             for (T obj : keys) {
-                if (e == obj)
+                if (e == obj) {
                     return true;
+                }
             }
         }
         return false;
     }
 
     /**
-     * 同Arrays.asList()方法类似,但包装容器改为常用的ArrayList。
+     * 同Arrays.asList()方法类似,但包装容器改为可变的的 ArrayList。
      * 前者是包装出数组的一个只读视图。本方法则是转换为一个全新的集合对象。
+     * @param args 对象
+     * @param <T> 支持泛型
+     * @return 可变数组
      */
     @SafeVarargs
     public static <T> List<T> asList(T... args) {
@@ -437,6 +435,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     /**
      * 计算是否 包含目标子串，忽略大小写
+     * @param values 源字符串
+     * @param str 匹配字符串
+     * @return 是否存在
      */
     public static boolean containsIgnoreCase(String[] values, String str) {
         for (String v : values) {
@@ -456,6 +457,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     /**
      * 转换为指定长度的数组,超过则截断，不足则补null
+     * @param obj 任意类型数组
+     * @param len 新长度
+     * @return 新数组
      */
     public static Object toFixLength(Object obj, int len) {
         int length = length(obj);
@@ -474,6 +478,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     /**
      * 从可枚举对象中选出需要的目标组成新的List
+     * @param list 筛选目标
+     * @param filter 筛选条件
+     * @return 筛选结果
      */
     public static <T> List<T> doSelect(Iterable<T> list, Filter<T> filter) {
         ArrayList<T> result = new ArrayList<T>();
@@ -486,7 +493,10 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     }
 
     /**
-     * 复制
+     * 复制到一个新数组中
+     * @param original 源数组
+     * @param newLength 新长度
+     * @return 新数组
      */
     public static byte[] copyOf(byte[] original, int newLength) {
         byte[] copy = new byte[newLength];

@@ -22,14 +22,13 @@ public abstract class BaseDateConverter<T> implements Converter<String, T> {
 
     /**
      * 用于初始化格式表达式 Map
-     * @return Map<时间转换格式，匹配正则>
+     * @return key:时间转换格式，value:匹配正则
      */
     protected abstract Map<String, String> initTimeParserMap();
 
     /**
      * 转换
      * @param source 待转换字符串
-     * @param dateParser 转换规则
      * @return 转换后的对象
      */
     @Override

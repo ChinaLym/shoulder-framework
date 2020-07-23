@@ -29,7 +29,7 @@ public class JsonUtils {
 			throw new JsonException(e);
 		}
 	}
-	
+
 	/**
 	 * 序列化Object为 JSON 字符串
 	 * @param object 待序列化对象
@@ -43,10 +43,10 @@ public class JsonUtils {
 			throw new JsonException(e);
 		}
 	}
-	
+
 	/**
 	 * 序列化Object为 JSON 字符串
-	 * 
+	 *
 	 * @param object 被序列化对象
 	 * @param modifier  自定义修改器
 	 * @param ignoreProperties 需要忽略得属性
@@ -59,7 +59,7 @@ public class JsonUtils {
 			throw new JsonException(e);
 		}
 	}
-	
+
 	/**
 	 * 反序列化 JSON 字符串为 Object
 	 */
@@ -72,7 +72,7 @@ public class JsonUtils {
 	}
 
     /**
-     * 反序列化 JSON 字符串为 Clazz<ParamClasses> obj
+     * 将 JSON 字符串反序列化为对象
 	 *
      * @param json json字符串
      * @param clazz 反序列化的类型

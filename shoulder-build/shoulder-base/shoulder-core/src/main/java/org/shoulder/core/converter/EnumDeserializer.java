@@ -23,7 +23,9 @@ import java.lang.reflect.Method;
 public class EnumDeserializer extends StdDeserializer<Enum<?>> {
 
     /**
-     * 约定方法名，当且仅当枚举中存在 public static <自身> from(String str) 的方法时，才能转换
+     * 约定方法名，当且仅当枚举中存在
+     * <code>public static Enum from(String str)</code> Enum代表自身
+     * 的方法时，才能转换
      */
     private final String stringToEnumMethodName;
 

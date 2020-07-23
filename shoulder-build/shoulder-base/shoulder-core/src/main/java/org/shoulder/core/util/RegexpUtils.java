@@ -43,7 +43,7 @@ public class RegexpUtils {
 
     /** 字母开头包含数字或下划线，常用于账号 */
     public static final Pattern CHAR_NUM_UNDERLINE = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]{4,15}$");
-    /** 非 '\:*?"<>| 特殊字符，常用于昵称等 */
+    /** 不含特殊字符，常用于昵称等 */
     public static final Pattern NO_SPECIAL = Pattern.compile("^[^'/\\\\:*?\"<>|]{1,32}$");
     /** 中文 */
     public static final Pattern CHINESE = Pattern.compile("\\u4e00-\\u9fa5");
@@ -88,8 +88,8 @@ public class RegexpUtils {
 
     /**
      * Java 预定义的字符，凡是字符串中出现这些字符的话，都需要转义
-     * 注 Java使用\b来表示单词边界而非使用 '<' '>'
-     *      '-' '&' 当且仅当出现在方括号中时会被当作元字符
+     * 注 Java使用\b来表示单词边界而非使用尖括号
+     *      中划线、与符号 当且仅当出现在方括号中时会被当作元字符
      *      正则表达式在编译中，对于不匹配的括号会当作字面值在处理，但是对于+ * ?则会严格处理，不会当作字面值
      */
     public static final char[] REGEXP_KEY_CHARS = new char[]{
