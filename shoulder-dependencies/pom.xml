@@ -183,7 +183,7 @@
 
             <dependency>
                 <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-log-operation</artifactId>
+                <artifactId>shoulder-operation-log</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 

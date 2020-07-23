@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 扩展参考： https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/reference/html/spring-boot-features.html#boot-features-custom-log-configuration -->
+<!-- 扩展参考：https://docs.spring.io/spring-boot/docs/2.3.x/reference/html/spring-boot-features.html#boot-features-custom-log-configuration -->
 
-<configuration scan="true" scanPeriod="60 seconds" debug="false">
 <!--scan="true", 是否支持动态调整打印级别-->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
 
     <!--从 Spring Environment 中获取应用标识 -->
     <springProperty scope="context" name="appId" source="shoulder.application.id"/>
 
-    <!-- 日志输出路径 -->
+    <!-- 日志默认输出路径 -->
     <property name="LOG_HOME" value="/opt/logs/${appId}/" />
 
     <!-- 非测试、生产环境配置 -->
@@ -16,7 +16,7 @@
         <!-- 控制台Appender, 不要修改 -->
         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="logback.encoder.LazyTimeZonePatternLayoutEncoder">
-                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %highlight(%-5level) ${appId} [%thread] 
+                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %highlight(%-5level) ${appId} [%thread]
                     [%cyan(%logger{50}):%line] %msg%n</pattern>
                 <charset>UTF-8</charset>
             </encoder>

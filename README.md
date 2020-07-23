@@ -19,45 +19,143 @@
 
 **Shoulder** 是一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能(可以再次开发)。
 
-**Shoulder** 设计上参照了 **[软件设计开发规范](http://spec.itlym.cn)** 为了减少使用者的上手成本，**shoulder** 不去造轮子，而是复用/优化当前业界成熟的解决方案（站在巨人的肩膀上），优秀的开源社区给 shoulder 一个肩膀，shoulder 把优秀的实现带给使用者，给使用者一个肩膀！
+### **Shoulder** 设计依据
 
-Shoulder 和 `Spring Boot` 的关系就像 `maven 插件` 和 `maven` 的关系一样，实现了**[软件设计开发规范](http://spec.itlym.cn)** 要求的部分，并在 `spring boot` 原来的基础上实现了一些常用的能力，以为应用提供统一风格，简化多服务系统的设计难度，且这些能力支持扩展、二次开发，代码规范，非常适合公司里拿他作为基础脚手架（`Apache2.0` 商业友好），当然，这些便利的能力也适合外包、毕设等项目的快速开发。。
+为了减少使用者的上手成本，**shoulder** 不去造轮子，而是复用/优化当前业界成熟的解决方案（站在巨人的肩膀上），shoulder 把 `开源社区` 中优秀的实现带给使用者，给使用者一个肩膀！
+同时，在使用上借鉴了 `Spring Boot`，如果你会 `Spring Boot`，学习 `Shoulder` 的难度就像学 `Spring Boot` 的一个 `starter` 那么简单（开箱即用）！
 
-虽然业界基础框架大都已经有了成熟的解决方案，但一千开发手里有一千种实践之路，一千条路里宽阔和坎坷的可能差的很大。因此开发者在使用时如果不按照一定的实践原则，还是会导致代码性能差、难维护等问题。Shoulder 框架不仅提供了Java Web开发中的常用能力，还提供了技术选型指导、一定的开发规范，以使你开发的软件更迅速和易于维护，带你轻松踏上最佳实践之路！[点击这里可以查看 Shoulder Framework 遵循的规范](http://doc.itlym.cn)
+在设计参照了 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 
 
-想知道该框架的效果，或希望看到一个基于本框架开发的的运行的系统，可以期待 **Shoulder-Platform**(一款使用了 Shoulder 框架的开源平台，`规划中`)
+- **Shoulder** 并未与该规范完全绑定，而是实现功能性的接口，以扩展形式作为默认实现。
+- **Shoulder** 允许使用者二次开发，制定自己团队的规范，通过简单地对 **Shoulder** 扩展即可实现自己的规范与丰富的功能。
 
-## 技术选型标准：
-- 优先为业界标准（如微服务里的 Spring Cloud、Dubbo）
-- 其次为技术先进且已用于互联网厂商的生产环境，且容易从原有的主流技术迁移（如 MySQL -> TiDB）
-- 其次绝对主流（如优先采用JSR大于其他框架的定义）
+### Shoulder 和 `Spring Boot` 的关系就
 
-## 第三方库依赖选型:
-核心依赖（如spring）版本为生产可用的较新的 Release 版本，其他第三方小型依赖可直接选用最新稳定版。
+可以把 `Shoulder` 看作为 `Spring Boot` 的一个 `插件`，在 `Spring Boot` 基础上实现了常用能力的集合，并将 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 落地。
 
-已经依赖的
+以为应用提供统一风格，简化多服务系统的设计难度，且这些能力支持扩展、二次开发，非常适合公司里拿他作为基础脚手架（`Apache2.0` 商业友好），当然，这些便利的能力也十分适合外包、毕设等项目的快速开发。
 
-- Spring 5
-- Spring Boot 2.3
-- Spring Cloud H S5
+### Shoulder 介绍和框架定位
 
-## 发行版本号说明
-采用 [主版本号.次版本号.修订号](https://semver.org/lang/zh-CN)（[MAJOR.MINOR.PATCH](https://semver.org)） 的形式
+`Shoulder` 希望做一个整套的可复用的平台（`PaaS`），使用者只需要做做自己的业务即可。`Shoulder` 整体格局如下
 
----
+Web/微服务开发脚手架，完整系统中的定位如下：
+
+- `iPaaS`层 
+    `Shoulder iPaaS` 基础中间件环境 Shoulder 提供依赖中间件的`Docker`镜像或部署教程（如 数据库、消息队列、服务注册中心、任务调度中心、搜索引擎、报警与监控系统等）。
+- `aPaaS` 层：
+    - `Shoulder Specific` 软件系开发设计注意事项、[落地方案和规范](http://spec.itlym.cn)
+    - **Shoulder Framework**  即本开源项目，提供共性能力封装，减少代码冗余，降低系统开发维护成本。
+    - `Shoulder Platform` 共性业务平台，提供 `用户平台`、`支付平台`、`通知中心`、`业务网关`、`数据字典`、`全局ID生产器` 等基础、通用业务能力平台
+    - `Shoulder Platform SDK` 以 sdk 形式方便业务层对接使用。 
+    
 
 ## 提供能力
-包括但不限于：
-- 加解密方案（AES\RSA\ECC\SHA\MD5）与配套工具以及开箱即用的实现。安全传输方案（ECDH）与配套工具以及HTTP的自动实现。
-- 日志（审计日志、业务日志、追踪日志）方案、简单使用。
-- 异常、错误码。
-- 数据库封装。
-- 认证、授权、验证码框架。
-- 等。。。 
+
+- 统一配置项（可配置）
+    - 字符集、语言、日期格式..
+        、、全局异常处理
+- 日志、异常、错误码
+    - `日志`、`异常`、`错误码` 打通、改造了 `lombok` 源码，提供简化开发注解，极大减少代码量
+    - 采用 `Sl4j` 规范，无兼容问题，最小化配置、开箱即用
+    - 统一错误码格式（也支持配置）、规范代码中的错误
+    - 提供错误码实践方案，让 `错误码规范` 不在头疼
+    - 提供全局`异常`、`错误码`处理
+- 操作/审计日志
+    - 可扩展的输出格式
+    - 可扩展的目标源
+    - 可扩展的记录流程
+    - 基于注解的使用
+- 国际化与多语言翻译
+    - 丝滑的翻译封装
+    - 完善的多语言支持
+- *完善的*加密方案与实现
+    - 不像其他第三方 jar ，仅提供只提供 `AES\RSA\ECC\SHA\MD5` 等公开算法的实现。*shoulder* 还在这之上提供了`安全` `可靠` `可生产落地` 的方案与实现，如 `多级密钥管理`、`加密算法平滑升级`
+    - 安全存储加解密
+    - 可配置的非对称密钥端点
+    - 安全认证方案
+    - 数字摘要算法（哈希算法）、抗抵赖的签名算法
+    - 简化使用的统一接口
+    - 便于快速上手的门面工具类
+    - 基于 `ECC` 的密钥协商实现
+    - 安全传输方案（基于 `注解` 极简使用）
+- 通用业务代码封装
+    - 数据库封装，如枚举与字段转换
+    - 基本业务封装，增删改查系列
+- 校验框架
+    - 基于 `JSR` 规范，实现更多常用校验规则
+    - 与异常、错误码、多语言打通，简化开发难度
+- 安全系列
+    - 常见web攻击的防御器
+    - Oauth 授权
+        - 认证服务器、资源服务器等（扩展 `Spring Security` ）
+    - 充分灵活的认证框架（扩展 `Spring Security` 迁移自 [learn-spring-security](https://gitee.com/ChinaLym/learn-spring-security)）
+- 依赖管理 & 开箱即用
+    - 与 `Spring Boot` 类似，无需再思考引入哪个版本，会不会冲突，`Shoulder` 管理了常用依赖的版本号，如 `spring-boot`、`spring-cloud`、`spring-cloud-alibaba`
+    - 自动依赖，当你引入 `shoulder-starter-web` 不需要再引入 `spring-boot-starter-web` 也不需要担心还要依赖什么
+    - 最小化配置，提供了默认的配置项，自带建议配置。
+    - 配置项支持 `IDE` 的自动提示
+- 更多
+    - ...
+    
+## 快速开始
+
+以 Maven web 工程为例
+
+
+对于 `maven` 工程，继承
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.itlym</groupId>
+        <artifactId>shoulder-framework</artifactId>
+        <version>0.0.1-RELEASE</version><!-- shoulder 版本号 -->
+    </parent>
+    <groupId>com.demo</groupId>
+    <artifactId>hello-shoulder</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>shoulder 示例工程</name>
+    <description>Demo project for Shoulder Framework</description>
+
+
+    <dependencies>
+        <!-- web 相关依赖 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-web</artifactId>
+        </dependency>    
+        <!-- shoulder仅仅管理了 Spring Boot 版本号，提供了功能扩展，并未改变其用法哟~ -->
+    </dependencies>
+
+</project>
+
+```
+版本号、相关依赖（如 `spring-boot-starter-web` ）已经帮你自动引入咯~
+
+## 常见问题
+
+### xxx功能的使用/扩展
+
+首选要确定该能力是否是 `Shoulder` 提供的，不然方向错了，就白忙活啦（注：可以通过包路径、类路径来判断~）。
+
+Shoulder提供的能力可以参见[使用手册]()（TODO）
+一些功能并不是 Shoulder 提供的，Shoulder仅仅是帮你引入咯~ 如 `Spring Boot`、`Spring Cloud` 等优秀第三方库为我们提供了大量能力（致敬），使用这些时可以去看他们官方的一手教程，或搜索对应关键词。如
+
+- shoulder Web 工程中如何使用添加自己的过滤器、拦截器
+    - 过滤器、拦截器等的基本功能是 `Spring Boot` 提供的，可以搜索 `Spring Boot 过滤器` 而非 ~~`Shoulder 过滤器`~~
+
+### 使用中遇到问题、报错
+
+认为是 Shoulder 框架的 Bug 时可以在 `Issure` 中留下你遇到的问题，如何复现，尝试排查、解决的手段，甚至缺陷修复方案。
+
+欢迎提交代码~ 为 Shoulder 添加一个你设计/实现/扩展的能力、修改 `BUG`、修改代码格式、完善注释都可以的~ 
 
 ## 工程目录与模块划分
 
-采用与 spring、spring-boot 相似的包模块划分、包命名策略
+采用与 spring、spring-boot 相似的包模块划分、包命名策略（借鉴、简化使用者学习成本）
 
 最外层的 shoulder-build 管理了依赖的 spring-boot 的版本
 
@@ -74,16 +172,30 @@ Shoulder 和 `Spring Boot` 的关系就像 `maven 插件` 和 `maven` 的关系�
         - **shoulder-starter-xxx**: xxx模块的自动配置，供使用者直接引入。
         - ...
 
-
 ---
 
+## Shoulder 技术选型偏好：
 
-### 规范和约束
+更喜欢引入新的优秀技术，但不盲目追捧，当且仅当有完整的实践方案
 
-本框架定义一些限制性的使用方式，如统一返回值，统一错误码，统一日志格式，统一消息格式等，是为了更好的服务治理而考虑的。
+- 优先为业界标准
+- 其次为技术先进且已用于互联网厂商的生产环境，且容易从原有的主流技术迁移
+- 其次绝对主流
+- 依赖的第三方库中核心部分的版本选型偏好：生产可用（安全）的较新的 `Release` 版本
 
-当一个系统不再是单机运行，而是被拆分为多个微服务独立运行时，如果没有一套规范和约束，在服务治理上就会相当困难，因此做了一些必要的约束
+##  **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)**  是什么
 
+虽然业界基础框架大都已经有了成熟的解决方案，但一千开发手里有一千种实践之路，这一千条路中，`平坦的`（开发维护成本低）、`坎坷的`（开发维护成本高） 差别很大。
+因此为了优化 `代码性能` 降低 `维护成本`、`开发成本`。**Shoulder** 框架还提供了`技术选型指导`和一定的`开发规范`，带你轻松踏上最佳实践之路！[点击这里可以查看 Shoulder Framework 遵循的规范](http://doc.itlym.cn)
+
+
+## 发行版本号说明
+
+采用 [主版本号.次版本号.修订号](https://semver.org/lang/zh-CN)（[MAJOR.MINOR.PATCH](https://semver.org)） 的形式
+
+## 未来计划
+
+**Shoulder-Platform**(一款使用了 `Shoulder` 框架的开源 `aPaaS` 平台，`规划中...`)
 
 ## 建议与反馈
 

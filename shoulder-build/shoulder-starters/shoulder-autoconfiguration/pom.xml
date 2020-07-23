@@ -41,7 +41,7 @@
 
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-log-operation</artifactId>
+            <artifactId>shoulder-operation-log</artifactId>
             <optional>true</optional>
         </dependency>
 
