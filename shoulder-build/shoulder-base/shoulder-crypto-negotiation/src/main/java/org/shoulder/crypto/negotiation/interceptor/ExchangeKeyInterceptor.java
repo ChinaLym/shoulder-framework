@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.interceptor;
 
-import org.shoulder.core.constant.CommonErrorCodeEnum;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;

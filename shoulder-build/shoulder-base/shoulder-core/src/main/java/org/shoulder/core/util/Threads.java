@@ -47,7 +47,7 @@ public class Threads {
      * @return 当前任务执行的结果
      */
     public static <T> Future<T> submit(Callable<T> callable) {
-        return DEFAULT_THREAD_POOL.submit(getTtlRunnable(callable));
+        return DEFAULT_THREAD_POOL.submit(getTtlCallable(callable));
     }
 
     /**
@@ -73,22 +73,24 @@ public class Threads {
 
     /**
      * 添加了空校验的 {@link TtlRunnable#get}
+     * @param runnable runnable
      */
-    public static Runnable getTtlRunnable(Runnable r){
-        if (r == null) {
+    public static Runnable getTtlRunnable(Runnable runnable){
+        if (runnable == null) {
             throw new NullPointerException("runnable can not be null!");
         }
-        return TtlRunnable.get(r, true, false);
+        return TtlRunnable.get(runnable, true, false);
     }
 
     /**
      * 添加了空校验的 {@link TtlCallable#get}
+     * @param callable callable
      */
-    public static <T>  Callable<T>  getTtlRunnable(Callable<T> c){
-        if (c == null) {
+    public static <T>  Callable<T> getTtlCallable(Callable<T> callable){
+        if (callable == null) {
             throw new NullPointerException("callable can not be null!");
         }
-        return TtlCallable.get(c, true, false);
+        return TtlCallable.get(callable, true, false);
     }
 
 }

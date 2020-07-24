@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.util.ExceptionUtil;
 
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
 
 /**
  * 通用返回对象
@@ -36,12 +36,22 @@ public class BaseResponse<T> implements Serializable {
     public BaseResponse() {
     }
 
-
-    public BaseResponse(ErrorCode error) {
-        setCode(error.getCode());
-        setMsg(error.getMessage());
+    /**
+     * 构造器
+     * @param errorCode 错误码
+     */
+    public BaseResponse(ErrorCode errorCode) {
+        setCode(errorCode.getCode());
+        setMsg(errorCode.getMessage());
     }
 
+
+    /**
+     * 构造器
+     * @param code 错误码
+     * @param msg  提示信息
+     * @param data 返回数据
+     */
     public BaseResponse(String code, String msg, T data) {
         setCode(code);
         setMsg(msg);
@@ -67,47 +77,15 @@ public class BaseResponse<T> implements Serializable {
 
 
     /**
-     * 用于获取 api 返回值时使用
+     * 获取 data 用于获取 api 返回值时使用，当 code 不为 success 时抛出传入的异常类型
      */
     @JsonIgnore
     public T getOrException() {
-        return getOrException(BaseRuntimeException.class);
-    }
-
-    /**
-     * 获取 data
-     * 当 code 不为 success 时抛出传入的异常类型
-     */
-    @JsonIgnore
-    public T getOrException(Class<? extends BaseRuntimeException> exceptionType) {
-        return getOrException(exceptionType, null);
-    }
-
-    /**
-     * @param exceptionType 抛什么异常
-     * @param customMessage 自定义的异常描述信息
-     */
-    @JsonIgnore
-    public T getOrException(Class<? extends BaseRuntimeException> exceptionType, String customMessage) {
         // success
         if (ErrorCode.SUCCESS.getCode().equals(code)) {
             return data;
         }
-        String actualMessage = customMessage != null ? customMessage : msg;
-
-        // BaseRuntimeException
-        if (BaseRuntimeException.class == exceptionType) {
-            throw new BaseRuntimeException(code, actualMessage);
-        }
-
-        // customer exception
-        try {
-            Constructor<? extends BaseRuntimeException> constructor = exceptionType.getConstructor(String.class,
-                    String.class);
-            throw constructor.newInstance(code, actualMessage);
-        } catch (Exception e) {
-            throw new BaseRuntimeException(code, actualMessage, e);
-        }
+        throw CommonErrorCodeEnum.RPC_COMMON.toException(code);
     }
 
     /**

@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.0.1-RELEASE</version><!-- shoulder-version -->
+        <version>0.1.0-SNAPSHOT</version><!-- shoulder-version -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -155,7 +155,6 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
                     <configuration>
-                        <aggregate>true</aggregate>
                         <encoding>${maven.javadoc.charset}</encoding>
                         <charset>${maven.javadoc.charset}</charset>
                         <docencoding>${maven.javadoc.charset}</docencoding>
@@ -163,32 +162,33 @@
                     <!--MAVEN_OPTS=-Dfile.encoding=UTF-8;JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8-->
                     <!--<tags>
                         <tag>
-                            <head>描述</head>
                             <name>Description</name>
                             <placement>a</placement>
+                            <head>描述</head>
                         </tag>
                         <tag>
-                            <head>return</head>
                             <name>return</name>
                             <placement>a</placement>
+                            <head>返回值</head>
                         </tag>
                         <tag>
-                            <head>参数</head>
                             <name>param...</name>
                             <placement>a</placement>
+                            <head>参数</head>
                         </tag>
                         <tag>
-                            <head>时间</head>
                             <name>date</name>
                             <placement>a</placement>
+                            <head>时间</head>
                         </tag>
                         <tag>
-                            <head>时间</head>
                             <name>Date</name>
                             <placement>a</placement>
+                            <head>时间</head>
                         </tag>
                     </tags>-->
-                    <executions>
+                    <!--网络不佳，snapshot仅发布jar以提高快照发布速度-->
+                    <!--<executions>
                         <execution>
                             <id>attach-javadocs</id>
                             <phase>package</phase>
@@ -196,11 +196,11 @@
                                 <goal>jar</goal>
                             </goals>
                             <configuration>
-                                <!--取消对源码中的doc参数注释等检查-->
-                                <additionalparam>-Xdoclint:none</additionalparam>
+                                &lt;!&ndash; 取消对源码中的doc参数注释等检查 3.x 之前为 additionalparam &ndash;&gt;
+                                <additionalJOption>-Xdoclint:none</additionalJOption>
                             </configuration>
                         </execution>
-                    </executions>
+                    </executions>-->
                 </plugin>
 
                 <!-- GPG  发布插件-->

@@ -9,10 +9,8 @@ import java.util.List;
 
 /**
  * 默认的 value 转换器
- *
- * 对可遍历的对象做了展平处理，如 List<String>、 xxxObject[]。如 1,2,3
- *
- * 普通对象如DTO 则使用其 toString() 方法，如 XxxDTO(field1=1, field2=2,field3=3)
+ * 对数组和可迭代的对象做了展平处理。
+ *  普通对象如DTO 则使用其 toString() 方法，如 XxxDTO(field1=1, field2=2,field3=3)
  *
  * @author lym
  */

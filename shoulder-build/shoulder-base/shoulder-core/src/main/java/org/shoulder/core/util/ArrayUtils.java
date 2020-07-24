@@ -12,15 +12,19 @@ import java.util.*;
  * @author lym
  */
 public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
+
     /**
      * 数组对象遍历执行toString方法，获得String数组对象。
+     *
+     * @param list 列表
+     * @return toString 后的数组
      */
     public static String[] toStringArray(List<?> list) {
         List<String> result = new ArrayList<>();
         for (Object f : list) {
             result.add(f.toString());
         }
-        return result.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
+        return result.toArray(EMPTY_STRING_ARRAY);
     }
 
     @SuppressWarnings("unchecked")
@@ -35,19 +39,22 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     /**
      * 将CharSequence变为可遍历的char对象
      * 便于以 Iterator模式的遍历 StringBuilder 等。
+     *
+     * @param charSequence 字符串
+     * @return 字符迭代器
      */
-    public static Iterable<Character> toIterable(final CharSequence e) {
-        return () -> new Iterator<Character>() {
+    public static Iterable<Character> toIterable(final CharSequence charSequence) {
+        Iterable<Character> characters = () -> new Iterator<>() {
             int n = 0;
 
             @Override
             public boolean hasNext() {
-                return n < e.length();
+                return n < charSequence.length();
             }
 
             @Override
             public Character next() {
-                return e.charAt(n++);
+                return charSequence.charAt(n++);
             }
 
             @Override
@@ -55,6 +62,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
                 throw new UnsupportedOperationException();
             }
         };
+        return characters;
     }
 
     /**
@@ -89,7 +97,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
         // 因为ArrayList.toArray[]的实现是将List元素拷贝到给出的容器中，如果容器大于List的空间，则在超出部分补上null.
         // 因此不能起到消除null元素的作用。
         T[] t = (T[]) Array.newInstance(arr1.getClass().getComponentType(),
-                list.size());
+            list.size());
         return list.toArray(t);
     }
 
@@ -157,8 +165,8 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     @SuppressWarnings("unchecked")
     public static <T> T[] merge(T[] array1, T[] array2) {
         Set<T> set = new HashSet<>();
-        set.addAll(ArrayUtils.asList(array1));
-        set.addAll(ArrayUtils.asList(array2));
+        set.addAll(asList(array1));
+        set.addAll(asList(array2));
         return (T[]) set.toArray();
     }
 
@@ -207,8 +215,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     public static <T> boolean containsAny(T[] otherContains, T[] formats) {
         for (T obj1 : otherContains) {
             for (T obj2 : formats) {
-                if (obj1.equals(obj2))
+                if (obj1.equals(obj2)) {
                     return true;
+                }
             }
         }
         return false;
@@ -257,7 +266,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
         T[] newArray;
         if (array == null) {
             Assert.notNull(componentType,
-                    "The componentType shoule be assigned when the array is null.");
+                "The componentType shoule be assigned when the array is null.");
             newArray = (T[]) Array.newInstance(componentType, 1);
             newArray[0] = data;
         } else {
@@ -265,9 +274,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
             if (!containerType.isAssignableFrom(data.getClass())) {
                 // prompt the type error.
                 throw new ArrayStoreException("The new element which typed "
-                        + data.getClass().getName()
-                        + " can not be put into a array whoes type is "
-                        + containerType.getName());
+                    + data.getClass().getName()
+                    + " can not be put into a array whoes type is "
+                    + containerType.getName());
             }
             newArray = (T[]) Array.newInstance(containerType, array.length + 1);
             System.arraycopy(array, 0, newArray, 0, array.length);
@@ -294,7 +303,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
             return data;
         } else {
             newArray = (T[]) Array.newInstance(data.getClass()
-                    .getComponentType(), array.length + data.length);
+                .getComponentType(), array.length + data.length);
             System.arraycopy(array, 0, newArray, 0, array.length);
             System.arraycopy(data, 0, newArray, array.length, data.length);
         }
@@ -390,8 +399,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     public static <T> boolean fastContainsAny(Collection<T> list, T[] keys) {
         for (T e : list) {
             for (T obj : keys) {
-                if (e == obj)
+                if (e == obj) {
                     return true;
+                }
             }
         }
         return false;
@@ -422,8 +432,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     /**
      * 同Arrays.asList()方法类似,但包装容器改为可变的的 ArrayList。
      * 前者是包装出数组的一个只读视图。本方法则是转换为一个全新的集合对象。
+     *
      * @param args 对象
-     * @param <T> 支持泛型
+     * @param <T>  支持泛型
      * @return 可变数组
      */
     @SafeVarargs
@@ -435,8 +446,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     /**
      * 计算是否 包含目标子串，忽略大小写
+     *
      * @param values 源字符串
-     * @param str 匹配字符串
+     * @param str    匹配字符串
      * @return 是否存在
      */
     public static boolean containsIgnoreCase(String[] values, String str) {
@@ -457,6 +469,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     /**
      * 转换为指定长度的数组,超过则截断，不足则补null
+     *
      * @param obj 任意类型数组
      * @param len 新长度
      * @return 新数组
@@ -467,7 +480,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
             return obj;
         }
         Object result = Array.newInstance(obj.getClass().getComponentType(),
-                len);
+            len);
         System.arraycopy(obj, 0, result, 0, Math.min(length, len));
         return result;
     }
@@ -478,7 +491,8 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     /**
      * 从可枚举对象中选出需要的目标组成新的List
-     * @param list 筛选目标
+     *
+     * @param list   筛选目标
      * @param filter 筛选条件
      * @return 筛选结果
      */
@@ -494,14 +508,15 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     /**
      * 复制到一个新数组中
-     * @param original 源数组
+     *
+     * @param original  源数组
      * @param newLength 新长度
      * @return 新数组
      */
     public static byte[] copyOf(byte[] original, int newLength) {
         byte[] copy = new byte[newLength];
         System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+            Math.min(original.length, newLength));
         return copy;
     }
 
@@ -511,7 +526,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     public static char[] copyOf(char[] original, int newLength) {
         char[] copy = new char[newLength];
         System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+            Math.min(original.length, newLength));
         return copy;
     }
 
@@ -530,10 +545,10 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     public static <T, U> T[] copyOf(U[] original, int newLength,
                                     Class<? extends T[]> newType) {
         T[] copy = ((Object) newType == (Object) Object[].class) ? (T[]) new Object[newLength]
-                : (T[]) Array
-                .newInstance(newType.getComponentType(), newLength);
+            : (T[]) Array
+            .newInstance(newType.getComponentType(), newLength);
         System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+            Math.min(original.length, newLength));
         return copy;
     }
 
@@ -541,12 +556,15 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      * 两个对象数组的比较
      */
     public static boolean equals(Object[] a1, Object[] a2) {
-        if (a1 == null && a2 == null)
+        if (a1 == null && a2 == null) {
             return true;
-        if (a1 == null || a2 == null)
+        }
+        if (a1 == null || a2 == null) {
             return false;
-        if (a1.length != a2.length)
+        }
+        if (a1.length != a2.length) {
             return false;
+        }
         for (int n = 0; n < a1.length; n++) {
             if (!Objects.equals(a1[n], a2[n])) {
                 return false;
@@ -605,8 +623,12 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      * @see Arrays#equals(Object[], Object[])
      */
     public static boolean equals(Object a1, Object a2) {
-        if (a1 == a2) return true;
-        if (a1 == null || a2 == null) return false;
+        if (a1 == a2) {
+            return true;
+        }
+        if (a1 == null || a2 == null) {
+            return false;
+        }
         Class<?> clz1 = a1.getClass();
         Class<?> clz2 = a2.getClass();
         if (!clz1.isArray() || !clz2.isArray()) {
@@ -651,8 +673,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      * 操作未知类型的数组:set 当序号为负数时，-1表示最后一个元素，-2表示倒数第二个，以此类推
      * 和set方法的区别在于，此方法如果发现数组大小不够，会自动扩大数组。
      */
-    public static Object setValueAndExpandArray(Object obj, int index,
-                                                Object value) {
+    public static Object setValueAndExpandArray(Object obj, int index, Object value) {
         int length = Array.getLength(obj);
         Object result = obj;
         if (index < 0 && index + length >= 0) {
@@ -674,8 +695,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      */
     public static boolean isIndexValid(Object obj, int index) {
         int length = length(obj);
-        if (index < 0)
+        if (index < 0) {
             index += length;
+        }
         return index >= 0 && index < length;
     }
 
@@ -738,10 +760,10 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      */
     public static Object[] xor(Object[] ls, Object[] ls2) {
         // 计算全集
-        Set<Object> setAll = new HashSet<Object>(Arrays.asList(ls));
+        Set<Object> setAll = new HashSet<>(Arrays.asList(ls));
         setAll.addAll(Arrays.asList(ls2));
         // 交集
-        HashSet<Object> setInter = new HashSet<Object>(Arrays.asList(ls));
+        HashSet<Object> setInter = new HashSet<>(Arrays.asList(ls));
         setInter.retainAll(Arrays.asList(ls2));
         // 取差
         setAll.removeAll(setInter);

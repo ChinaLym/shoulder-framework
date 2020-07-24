@@ -1,7 +1,5 @@
-package org.shoulder.core.constant;
+package org.shoulder.core.exception;
 
-import org.shoulder.core.exception.BaseRuntimeException;
-import org.shoulder.core.exception.ErrorCode;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 

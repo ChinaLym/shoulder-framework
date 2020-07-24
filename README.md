@@ -29,32 +29,16 @@
 - **Shoulder** 并未与该规范完全绑定，而是实现功能性的接口，以扩展形式作为默认实现。
 - **Shoulder** 允许使用者二次开发，制定自己团队的规范，通过简单地对 **Shoulder** 扩展即可实现自己的规范与丰富的功能。
 
-### Shoulder 和 `Spring Boot` 的关系就
+### `Shoulder` 与 `Spring Boot`
 
-可以把 `Shoulder` 看作为 `Spring Boot` 的一个 `插件`，在 `Spring Boot` 基础上实现了常用能力的集合，并将 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 落地。
+可以简单地把 `Shoulder` 看作为 `Spring Boot` 的一个 `插件`，即在 `Spring Boot` 基础上实现了常用能力的集合，并将 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 落地。
 
 以为应用提供统一风格，简化多服务系统的设计难度，且这些能力支持扩展、二次开发，非常适合公司里拿他作为基础脚手架（`Apache2.0` 商业友好），当然，这些便利的能力也十分适合外包、毕设等项目的快速开发。
 
-### Shoulder 介绍和框架定位
-
-`Shoulder` 希望做一个整套的可复用的平台（`PaaS`），使用者只需要做做自己的业务即可。`Shoulder` 整体格局如下
-
-Web/微服务开发脚手架，完整系统中的定位如下：
-
-- `iPaaS`层 
-    `Shoulder iPaaS` 基础中间件环境 Shoulder 提供依赖中间件的`Docker`镜像或部署教程（如 数据库、消息队列、服务注册中心、任务调度中心、搜索引擎、报警与监控系统等）。
-- `aPaaS` 层：
-    - `Shoulder Specific` 软件系开发设计注意事项、[落地方案和规范](http://spec.itlym.cn)
-    - **Shoulder Framework**  即本开源项目，提供共性能力封装，减少代码冗余，降低系统开发维护成本。
-    - `Shoulder Platform` 共性业务平台，提供 `用户平台`、`支付平台`、`通知中心`、`业务网关`、`数据字典`、`全局ID生产器` 等基础、通用业务能力平台
-    - `Shoulder Platform SDK` 以 sdk 形式方便业务层对接使用。 
-    
-
 ## 提供能力
 
-- 统一配置项（可配置）
-    - 字符集、语言、日期格式..
-        、、全局异常处理
+- 统一系统级配置项（可配置）
+    - 字符集、语言、日期格式等
 - 日志、异常、错误码
     - `日志`、`异常`、`错误码` 打通、改造了 `lombok` 源码，提供简化开发注解，极大减少代码量
     - 采用 `Sl4j` 规范，无兼容问题，最小化配置、开箱即用
@@ -100,26 +84,26 @@ Web/微服务开发脚手架，完整系统中的定位如下：
     
 ## 快速开始
 
-以 Maven web 工程为例
+### 新建 Maven web 工程
 
+可以直接使用以下 `pom.xml`
 
-对于 `maven` 工程，继承
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <!-- 继承 shoulder 提供的父工程，自动管理版本号 -->
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.0.1-RELEASE</version><!-- shoulder 版本号 -->
+        <version>0.0.1-RELEASE</version>
     </parent>
+
     <groupId>com.demo</groupId>
     <artifactId>hello-shoulder</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>shoulder 示例工程</name>
-    <description>Demo project for Shoulder Framework</description>
-
+    <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
         <!-- web 相关依赖 -->
@@ -127,13 +111,25 @@ Web/微服务开发脚手架，完整系统中的定位如下：
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
         </dependency>    
-        <!-- shoulder仅仅管理了 Spring Boot 版本号，提供了功能扩展，并未改变其用法哟~ -->
     </dependencies>
 
 </project>
 
 ```
-版本号、相关依赖（如 `spring-boot-starter-web` ）已经帮你自动引入咯~
+版本号、相关依赖（如 `spring-boot-starter-web` ）已经帮你自动引入咯，注：shoulder仅仅管理了 Spring Boot 版本号，提供了功能扩展，但并未改变 spring boot 的用法哟~
+
+### 已有工程使用
+
+已有工程大多数已经继承了 Spring Boot 提供的父工程，如果不想改动，只需要引入 shoulder 的特定 jar 即可~
+
+如操作日志模块
+```xml
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-operation-log</artifactId>
+            <version>xxx</version>
+        </dependency> 
+```
 
 ## 常见问题
 
@@ -188,6 +184,18 @@ Shoulder提供的能力可以参见[使用手册]()（TODO）
 虽然业界基础框架大都已经有了成熟的解决方案，但一千开发手里有一千种实践之路，这一千条路中，`平坦的`（开发维护成本低）、`坎坷的`（开发维护成本高） 差别很大。
 因此为了优化 `代码性能` 降低 `维护成本`、`开发成本`。**Shoulder** 框架还提供了`技术选型指导`和一定的`开发规范`，带你轻松踏上最佳实践之路！[点击这里可以查看 Shoulder Framework 遵循的规范](http://doc.itlym.cn)
 
+## Shoulder 平台
+
+`Shoulder` 希望做一个整套的可复用的平台（`PaaS`），使用者只需要做做自己的业务即可。`Shoulder` 整体格局如下
+
+- `iPaaS`层 
+    `Shoulder iPaaS` 基础中间件环境 Shoulder 提供依赖中间件的`Docker`镜像或部署教程（如 数据库、消息队列、服务注册中心、任务调度中心、搜索引擎、报警与监控系统等）。
+- `aPaaS` 层：
+    - `Shoulder Specific` 软件系开发设计注意事项、[落地方案和规范](http://spec.itlym.cn)
+    - **Shoulder Framework**  即本开源项目，提供共性能力封装，减少代码冗余，降低系统开发维护成本。
+    - `Shoulder Platform` 共性业务平台，提供 `用户平台`、`支付平台`、`通知中心`、`业务网关`、`数据字典`、`全局ID生产器` 等基础、通用业务能力平台
+    - `Shoulder Platform SDK` 以 sdk 形式方便业务层对接使用。 
+    
 
 ## 发行版本号说明
 

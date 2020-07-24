@@ -1,7 +1,7 @@
 package org.shoulder.web.advice;
 
 import lombok.extern.shoulder.SLog;
-import org.shoulder.core.constant.CommonErrorCodeEnum;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.util.StringUtils;

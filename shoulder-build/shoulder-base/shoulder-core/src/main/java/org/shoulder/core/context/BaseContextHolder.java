@@ -1,7 +1,9 @@
 package org.shoulder.core.context;
 
 import lombok.extern.shoulder.SLog;
+import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.util.StringUtils;
+import org.springframework.lang.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,84 +19,164 @@ public class BaseContextHolder {
 
     private static final ThreadLocal<Map<String, String>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(ShoulderContextKey.KEY_NUM));
 
-    public static void setLocalMap(Map<String, String> threadLocalMap) {
-        THREAD_LOCAL.set(threadLocalMap);
-    }
-
     /**
      * userId
      */
     public static Long getUserId() {
-        return Long.valueOf(getLocalMap().get(ShoulderContextKey.JWT_KEY_USER_ID));
+        String uid = get(ShoulderContextKey.JWT_KEY_USER_ID);
+        return StringUtils.isEmpty(uid) ? null : Long.valueOf(uid);
     }
+
+    /**
+     * 设置用户标识
+     * @param userId 用户标识
+     */
     public static void setUserId(Long userId) {
-        set(ShoulderContextKey.JWT_KEY_USER_ID, userId);
+        set(ShoulderContextKey.JWT_KEY_USER_ID, String.valueOf(userId));
     }
+
+    /**
+     * 设置用户标识
+     * @param userId 用户标识
+     */
     public static void setUserId(String userId) {
         set(ShoulderContextKey.JWT_KEY_USER_ID, userId);
     }
 
     /**
      * 用户名 name
+     *
+     * @return 账户信息
      */
     public static String getAccount() {
-        return getLocalMap().get(ShoulderContextKey.JWT_KEY_ACCOUNT);
-    }
-    public static void setAccount(String name) {
-        set(ShoulderContextKey.JWT_KEY_ACCOUNT, name);
+        return get(ShoulderContextKey.JWT_KEY_ACCOUNT);
     }
 
     /**
-     * 登录的账号
+     * 设用户账户
+     * @param account 设用户账户
+     */
+    public static void setAccount(String account) {
+        set(ShoulderContextKey.JWT_KEY_ACCOUNT, account);
+    }
+
+    /**
+     * 登录用户的名称
+     *
+     * @return 账户信息
      */
     public static String getName() {
-        return getLocalMap().get(ShoulderContextKey.JWT_KEY_NAME);
+        return get(ShoulderContextKey.JWT_KEY_NAME);
     }
+
+    /**
+     * 设用户账户
+     * @param account 设用户账户
+     */
     public static void setName(String account) {
         set(ShoulderContextKey.JWT_KEY_NAME, account);
     }
 
     /**
      * 获取认证 token
+     *
+     * @return token
      */
     public static String getToken() {
-        return getLocalMap().get(ShoulderContextKey.HEADER_TOKEN);
+        return get(ShoulderContextKey.HEADER_TOKEN);
     }
+
+    /**
+     * 获取认证 token
+     *
+     * @param  token 认证 token
+     */
     public static void setToken(String token) {
         set(ShoulderContextKey.HEADER_TOKEN, token);
     }
 
     /**
      * 获取租户标识
+     *
+     * @return 租户标识
      */
-    public static String getTenant() {
-        return getLocalMap().get(ShoulderContextKey.TENANT);
+    public static String getTenantId() {
+        return get(ShoulderContextKey.TENANT);
     }
-    public static void setTenant(String val) {
-        set(ShoulderContextKey.TENANT, val);
+
+    /**
+     * 设置租户标识
+     *
+     * @param tenantId 租户标识
+     */
+    public static void setTenant(String tenantId) {
+        set(ShoulderContextKey.TENANT, tenantId);
     }
 
 
     /**
-     * 链路追踪
+     * 获取链路追踪标识
+     *
+     * @return traceId
      */
     public static String getTranceId() {
-        return getLocalMap().get(ShoulderContextKey.GRAY_VERSION);
+        return get(ShoulderContextKey.GRAY_VERSION);
     }
+
+    /**
+     * 设置链路追踪标识
+     * @param tranceId 链路追踪标识
+     */
     public static void setTranceId(String tranceId) {
         set(ShoulderContextKey.GRAY_VERSION, tranceId);
     }
 
-    public static Map<String, String> getLocalMap() {
-        return THREAD_LOCAL.get();
+    /**
+     * 从上下文中获取值
+     *
+     * @param key key
+     * @return 值
+     */
+    @Nullable
+    public static String get(String key){
+        Map<String, String> map = THREAD_LOCAL.get();
+        if(MapUtils.isNotEmpty(map)){
+            return null;
+        }
+        return map.get(key);
     }
 
-    public static void set(String key, Object value) {
-        Map<String, String> map = getLocalMap();
-        map.put(key, value == null ? StringUtils.EMPTY : value.toString());
+    /**
+     * 向上下文中设置值，用于扩展
+     *
+     * @param key   key，若 key 为空，则直接返回
+     * @param value value
+     */
+    public static void set(String key, @Nullable String value) {
+        if (StringUtils.isEmpty(key)) {
+            return;
+        }
+        Map<String, String> map = THREAD_LOCAL.get();
+        if (map == null) {
+            map = new HashMap<>();
+            THREAD_LOCAL.set(map);
+        }
+        map.put(key, value);
     }
 
+    /**
+     * 清理上下文信息
+     */
     public static void clean() {
         THREAD_LOCAL.remove();
     }
+
+    /**
+     * 以参数重置全部上下文
+     * @param contextMap 上下文属性
+     */
+    public static void setLocalMap(Map<String, String> contextMap) {
+        THREAD_LOCAL.set(contextMap);
+    }
+
 }
