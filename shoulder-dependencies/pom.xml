@@ -87,6 +87,7 @@
 
         <!-- log-trace -->
         <brave.version>5.12.3</brave.version>
+        <micrometer.version>1.5.2</micrometer.version>
 
         <!-- test -->
         <mockito-all.version>1.10.19</mockito-all.version>
@@ -477,6 +478,15 @@
                 <version>${brave.version}</version>
             </dependency>
             <!-- log-trace end -->
+
+
+            <!-- monitor -->
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer.version}</version>
+            </dependency>
+            <!-- monitor end -->
 
             <dependency>
                 <groupId>io.minio</groupId>

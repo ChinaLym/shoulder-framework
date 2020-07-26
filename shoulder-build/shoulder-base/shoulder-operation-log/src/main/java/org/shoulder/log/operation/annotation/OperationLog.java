@@ -1,9 +1,9 @@
 package org.shoulder.log.operation.annotation;
 
-import org.shoulder.log.operation.enums.TerminalType;
 import org.shoulder.log.operation.dto.OperationLogDTO;
-import org.shoulder.log.operation.util.OperationLogBuilder;
+import org.shoulder.log.operation.enums.TerminalType;
 import org.shoulder.log.operation.util.OpLogContextHolder;
+import org.shoulder.log.operation.util.OperationLogBuilder;
 
 import java.lang.annotation.*;
 
@@ -48,7 +48,7 @@ public @interface OperationLog {
     /**
      * 操作内容        (选填)
      * 该字段仅适用于不支持多语言的情况
-     * 【支持多语言时，请在代码中 set {@link OperationLogDTO#detailItems} 或 {@link OperationLogDTO#addDetailItem} 来填充】
+     * 【支持多语言时，请在代码中 set {@link OperationLogDTO#setDetailItems} 或 {@link OperationLogDTO#addDetailItem} 来填充】
      *
      * 填写 {@link #detailKey} 将忽略该字段，认为支持多语言
      */
@@ -81,5 +81,53 @@ public @interface OperationLog {
      * 是否在抛出异常后自动记录一条操作结果为失败的操作日志。默认记录
      */
     boolean logWhenThrow() default true;
+
+
+    /**
+     * 一些通用的操作，用于填充 Operation
+     * @author lym
+     */
+    interface Operations {
+        /**
+         * 新增
+         */
+        String ADD = "add";
+
+        /**
+         * 修改
+         */
+        String UPDATE = "update";
+
+        /**
+         * 删除
+         */
+        String DELETE = "delete";
+
+        /**
+         * 查询
+         */
+        String QUERY = "query";
+
+        /**
+         * 上传
+         */
+        String UPLOAD = "upload";
+
+        /**
+         * 下载
+         */
+        String DOWNLOAD = "download";
+
+        /**
+         * 导入
+         */
+        String IMPORT = "import";
+
+        /**
+         * 导出
+         */
+        String EXPORT = "export";
+
+    }
 
 }
