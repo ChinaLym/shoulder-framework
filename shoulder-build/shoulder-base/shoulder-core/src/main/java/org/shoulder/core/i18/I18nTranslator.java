@@ -1,6 +1,7 @@
 package org.shoulder.core.i18;
 
-import java.util.Locale;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
 
 /**
  * 国际化(翻译)工具类
@@ -9,58 +10,21 @@ import java.util.Locale;
  *
  * @author lym
  */
-public interface I18nTranslator {
-
-    /**
-     * 获取多语言区域信息
-     *  包含语言和地区，同时会将返回值写入线程变量
-     *
-     * @return 位置和语言信息
-     */
-    Locale getLocale();
+public interface I18nTranslator extends MessageSource {
 
     /**
      * 多语言自动翻译
      * @param languageKey   待翻译的多语言 key
-     * @param params        填充参数
+     * @param args          填充参数（支持嵌套翻译，如参数为 MessageSourceResolvable）
      * @return  翻译后的
      */
-    String tr(String languageKey, String... params);
+    String getMessage(String languageKey, Object... args);
 
     /**
      * 多语言自动翻译
      * @param translatable 可翻译的目标
-     * @param params 填充参数
      * @return 翻译后的
      */
-    String tr(Translatable translatable, String... params);
+    String getMessage(MessageSourceResolvable translatable);
 
-    /**
-     * 使用指定的语言翻译 (直接依赖框架实现)
-     * @param languageId    指定的翻译语言
-     * @param languageKey   待翻译的多语言 key
-     * @param params 填充参数
-     * @return  翻译后的
-     */
-    String trSpecial(String languageId, String languageKey, String... params);
-
-    /**
-     * 使用指定的地区翻译 ，允许带参数 (直接依赖框架实现)
-     * @param locale 地区和多语言信息
-     * @param languageKey 待翻译的多语言key
-     * @param params 填充参数
-     * @return  翻译后的
-     */
-    String trSpecial(Locale locale, String languageKey, String... params);
-
-    /**
-     * 重置多语言缓存
-     * 清空多语言缓存，重新读取多语言资源文件
-     */
-    void refresh();
-
-    /**
-     * 清空线程变量
-     */
-    void clean();
 }

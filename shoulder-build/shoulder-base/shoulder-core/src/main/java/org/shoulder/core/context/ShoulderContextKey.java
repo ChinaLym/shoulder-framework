@@ -9,7 +9,7 @@ public interface ShoulderContextKey {
     /**
      * 定义的 key 个数
      */
-    int KEY_NUM = 8;
+    int KEY_NUM = 9;
 
     /**
      * 认证标识 (accessToken)
@@ -28,6 +28,10 @@ public interface ShoulderContextKey {
      * 用户账号
      */
     String JWT_KEY_ACCOUNT = "account";
+    /**
+     * 语言标识
+     */
+    String Locale = "locale";
 
 
     /**

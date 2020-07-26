@@ -78,6 +78,24 @@ public class BaseContextHolder {
     }
 
     /**
+     * 获取语言标识
+     *
+     * @return 语言标识
+     */
+    public static String getLocale() {
+        return get(ShoulderContextKey.Locale);
+    }
+
+    /**
+     * 设置语言标识
+     *
+     * @param  locale 语言标识
+     */
+    public static void setLocale(String locale) {
+        set(ShoulderContextKey.Locale, locale);
+    }
+
+    /**
      * 获取认证 token
      *
      * @return token
@@ -87,7 +105,7 @@ public class BaseContextHolder {
     }
 
     /**
-     * 获取认证 token
+     * 设置认证 token
      *
      * @param  token 认证 token
      */
