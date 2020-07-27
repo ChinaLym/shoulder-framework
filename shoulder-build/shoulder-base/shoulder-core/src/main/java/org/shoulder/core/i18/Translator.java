@@ -5,12 +5,10 @@ import org.springframework.context.MessageSourceResolvable;
 
 /**
  * 国际化(翻译)工具类
- * 默认以 HTTP header 的 Accept-Language 作为标记语言。
- * 翻译场景推荐 注：Thymeleaf、FreeMark 等动态页面由后端翻译，html静态页面或前后分离时推荐由前端翻译
  *
  * @author lym
  */
-public interface I18nTranslator extends MessageSource {
+public interface Translator extends MessageSource {
 
     /**
      * 多语言自动翻译

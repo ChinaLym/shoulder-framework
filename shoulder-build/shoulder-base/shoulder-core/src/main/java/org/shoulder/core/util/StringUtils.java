@@ -1,9 +1,11 @@
 package org.shoulder.core.util;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.val;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.BaseContextHolder;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -15,6 +17,7 @@ import java.util.regex.Pattern;
 
 /**
  * 字符串工具类
+ *
  * @author lym
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
@@ -62,8 +65,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 是否包含字符串
      *
-     * @param aimString  验证字符串
-     * @param toMatch 字符串组
+     * @param aimString 验证字符串
+     * @param toMatch   字符串组
      * @return 包含返回true
      */
     public static boolean contains(String aimString, String... toMatch) {
@@ -96,6 +99,33 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     public static boolean isNotBase64(String str) {
         return !isBase64(str);
+    }
+
+    /**
+     * 将字符串转换为语言和时区
+     *
+     * @param locale 语言地区字符串
+     * @return 对应的语言和地区
+     */
+    public static Locale toLocale(String locale) {
+        return toLocale(locale, Locale.getDefault());
+    }
+    /**
+     * 将字符串转换为语言和时区
+     *
+     * @param locale 语言地区字符串
+     * @param defaultLocale 如果转换失败使用该值
+     * @return 对应的语言和地区
+     */
+    public static Locale toLocale(String locale, Locale defaultLocale) {
+        if (StringUtils.isEmpty(locale)) {
+            return defaultLocale;
+        }
+        String[] localeParts = BaseContextHolder.getLocale().split("_");
+        String language = localeParts[0];
+        String country = localeParts.length > 1 ? localeParts[1] : "";
+        return new Locale(language, country);
+
     }
 
     /**
@@ -529,6 +559,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * html 转义符
      */
     private static final Map<String, String> HTML_ESCAPE_CHARACTER_MAP = new HashMap<>();
+
     static {
         HTML_ESCAPE_CHARACTER_MAP.put("<", "&lt;");
         HTML_ESCAPE_CHARACTER_MAP.put(">", "&gt;");

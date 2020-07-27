@@ -5,6 +5,7 @@ import org.shoulder.core.util.StringUtils;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 /**
  * 应用信息
@@ -45,6 +46,11 @@ public class ApplicationInfo {
      * 开启后一些缓存将使用外部缓存，默认使用 redis
      */
     private static boolean cluster = false;
+
+    /**
+     * 默认语言环境
+     */
+    private static Locale defaultLocale = Locale.CHINA;
 
     public static String appId() {
         return appId;
@@ -93,6 +99,24 @@ public class ApplicationInfo {
 
     public static void initCluster(boolean cluster) {
         ApplicationInfo.cluster = cluster;
+    }
+
+    /**
+     * 获取语言标识
+     *
+     * @return 语言标识
+     */
+    public static Locale defaultLocale() {
+        return defaultLocale;
+    }
+
+    /**
+     * 设置语言标识
+     *
+     * @param  locale 语言标识
+     */
+    public static void initDefaultLocale(Locale locale) {
+        ApplicationInfo.defaultLocale = locale;
     }
 
 }

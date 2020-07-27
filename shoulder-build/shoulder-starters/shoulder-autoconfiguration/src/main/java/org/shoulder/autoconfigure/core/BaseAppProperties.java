@@ -45,4 +45,9 @@ public class BaseAppProperties {
      */
     private Boolean cluster = false;
 
+    /**
+     * 默认语言与地域
+     */
+    private String defaultLocale = "zh_CN";
+
 }

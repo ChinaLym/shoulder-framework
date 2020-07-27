@@ -12,6 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -53,6 +54,7 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
         ApplicationInfo.initDateFormat(environment.getProperty("shoulder.application.dateFormat"));
         ApplicationInfo.initCharset(environment.getProperty("shoulder.application.charset"));
         ApplicationInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
+        ApplicationInfo.initDefaultLocale(StringUtils.toLocale(environment.getProperty("shoulder.application.defaultLocale")));
     }
 
 
