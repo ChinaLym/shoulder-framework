@@ -18,12 +18,15 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = {NoForbiddenCharValidator.class})
 public @interface NoForbiddenChar {
 
+    /**
+     * 禁止包含的字符
+     */
     String forbiddenPattern() default "[\\\\/:*?\"<|'>]";
 
     /**
-     * 默认提示为 input.special.character 翻译为：参数中包含了特殊字符
+     * 提示信息
      */
-    String message() default "input.special.character";
+    String message() default "shoulder.validate.input.specialCharacter";
 
     Class<?>[] groups() default {};
 

@@ -22,13 +22,13 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = MimeTypeValidator.class)
 public @interface MimeType {
 
-    /**
-     * 默认提示为 input.mimeType.illegal 翻译为：上传文件格式非法
-     */
-    String message() default "input.mimeType.illegal";
-
     /** mimeType 白名单 */
     MIMEEnum[] whiteList();
+
+    /**
+     * 提示信息对应的翻译key
+     */
+    String message() default "shoulder.validate.input.mimeType.illegal";
 
     Class<?>[] groups() default {};
 

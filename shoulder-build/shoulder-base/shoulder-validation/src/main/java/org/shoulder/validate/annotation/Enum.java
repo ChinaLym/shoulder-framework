@@ -19,14 +19,14 @@ import java.lang.annotation.*;
 public @interface Enum {
 
     /**
-     * 默认提示翻译为：参数输入不在预期范围之内
-     */
-    String message() default "input.notExcepted";
-
-    /**
      * 允许的值
      */
     String[] enums() default {};
+
+    /**
+     * 提示信息对应的翻译key
+     */
+    String message() default "shoulder.validate.input.notExcepted";
 
     Class<?>[] groups() default {};
 

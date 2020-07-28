@@ -19,14 +19,14 @@ import java.lang.annotation.*;
 public @interface OnlyAllowChar {
 
     /**
-     * 默认提示为 input.special.character 翻译为：参数中包含了特殊字符
-     */
-    String message() default "input.special.character";
-
-    /**
      * 白名单正则，默认只允许字母数字下划线
      */
     String allowPattern() default "[a-zA-Z0-9_-]";
+
+    /**
+     * 提示信息
+     */
+    String message() default "shoulder.validate.input.specialCharacter";
 
     Class<?>[] groups() default {};
 

@@ -23,12 +23,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface NotAllFieldsNull {
 
     /**
-     * 需要校验的字段，这几个字段不能同时为空，至少有一个非空才行
+     * 不能同时为空的字段名
      */
     String[] fields();
 
-    /** 默认错误消息 */
-    String message() default "";
+    /**
+     * 提示信息
+     */
+    String message() default "shoulder.validate.input.allEmpty";
 
     /** 分组 */
     Class<?>[] groups() default {};
