@@ -11,11 +11,11 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.annotation.OperationLogParam;
+import org.shoulder.log.operation.dto.OpLogParam;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
-import org.shoulder.log.operation.dto.OpLogParam;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.util.OpLogContext;
 import org.shoulder.log.operation.util.OpLogContextHolder;
 import org.shoulder.log.operation.util.OperationLogBuilder;
@@ -46,7 +46,7 @@ import java.util.Objects;
 @SLog
 @Aspect
 @Configuration
-@ConditionalOnClass(OperationLog.class)
+@ConditionalOnClass(OperationLogDTO.class)
 @AutoConfigureAfter(value = {
         OperationLoggerAutoConfiguration.class,
         OperationLogParamConverterAutoConfiguration.class

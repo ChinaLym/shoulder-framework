@@ -11,8 +11,10 @@ import org.springframework.validation.annotation.Validated;
  */
 @Data
 @Validated
-@ConfigurationProperties(prefix = ShoulderFramework.CONFIG_PREFIX + "application")
+@ConfigurationProperties(prefix = BaseAppProperties.APPLICATION_CONFIG_PREFIX)
 public class BaseAppProperties {
+
+    public static final String APPLICATION_CONFIG_PREFIX = ShoulderFramework.CONFIG_PREFIX + "application";
 
     /**
      * 应用标识 appId/identify，若不填写，使用 spring.application.name

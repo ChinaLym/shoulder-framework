@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.crypto;
 
 import lombok.extern.slf4j.Slf4j;
+import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.autoconfigure.redis.RedisAutoConfiguration;
 import org.shoulder.core.constant.ShoulderFramework;
 import org.shoulder.crypto.asymmetric.annotation.Ecc;
@@ -40,8 +41,7 @@ public class TransportCryptoAutoConfiguration {
     public static class KeyNegotiationCacheAutoConfiguration {
 
         @Bean
-        @ConditionalOnProperty(name = ShoulderFramework.CONFIG_PREFIX + "cluster", value = "true")
-        @ConditionalOnMissingBean
+        @ConditionalOnCluster
         public KeyNegotiationCache redisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate,
                                                             @Value("${spring.application.name}") String applicationName){
 
@@ -51,7 +51,7 @@ public class TransportCryptoAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean
+        @ConditionalOnCluster(cluster = false)
         public KeyNegotiationCache localKeyNegotiationCache(){
             return new LocalKeyNegotiationCache();
         }

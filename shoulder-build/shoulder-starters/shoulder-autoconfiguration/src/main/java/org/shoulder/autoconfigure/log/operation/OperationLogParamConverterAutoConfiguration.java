@@ -1,9 +1,11 @@
 package org.shoulder.autoconfigure.log.operation;
 
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
 import org.springframework.beans.BeansException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -18,6 +20,7 @@ import java.util.Collection;
  * @author lym
  */
 @Configuration
+@ConditionalOnClass(OperationLogDTO.class)
 @EnableConfigurationProperties(OperationLogProperties.class)
 public class OperationLogParamConverterAutoConfiguration implements ApplicationContextAware {
 

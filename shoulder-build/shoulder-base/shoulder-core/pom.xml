@@ -151,7 +151,7 @@
             </plugin>
 
             <!-- for test -->
-            <plugin>
+            <!--<plugin>
                 <groupId>cn.itlym.shoulder</groupId>
                 <artifactId>errcode-maven-plugin</artifactId>
                 <version>0.1-SNAPSHOT</version>
@@ -168,7 +168,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
         </plugins>
     </build>

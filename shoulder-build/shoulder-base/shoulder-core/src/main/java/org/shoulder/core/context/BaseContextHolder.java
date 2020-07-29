@@ -6,6 +6,7 @@ import org.shoulder.core.util.StringUtils;
 import org.springframework.lang.Nullable;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -82,8 +83,8 @@ public class BaseContextHolder {
      *
      * @return 语言标识
      */
-    public static String getLocale() {
-        return get(ShoulderContextKey.Locale);
+    public static Locale getLocale() {
+        return StringUtils.parseLocale(get(ShoulderContextKey.Locale));
     }
 
     /**
@@ -91,8 +92,8 @@ public class BaseContextHolder {
      *
      * @param  locale 语言标识
      */
-    public static void setLocale(String locale) {
-        set(ShoulderContextKey.Locale, locale);
+    public static void setLocale(Locale locale) {
+        set(ShoulderContextKey.Locale, locale.toString());
     }
 
     /**
@@ -190,10 +191,17 @@ public class BaseContextHolder {
     }
 
     /**
-     * 以参数重置全部上下文
+     * 清理上下文信息
+     */
+    public static String remove(String key) {
+        return THREAD_LOCAL.get() == null ? null : THREAD_LOCAL.get().remove(key);
+    }
+
+    /**
+     * 以参数重置全部上下文，不推荐使用
      * @param contextMap 上下文属性
      */
-    public static void setLocalMap(Map<String, String> contextMap) {
+    public static void setAttributes(Map<String, String> contextMap) {
         THREAD_LOCAL.set(contextMap);
     }
 

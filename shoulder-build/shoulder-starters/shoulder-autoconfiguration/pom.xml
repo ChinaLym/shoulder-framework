@@ -82,6 +82,12 @@
         </dependency>
 
         <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-rest-server</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <optional>true</optional>

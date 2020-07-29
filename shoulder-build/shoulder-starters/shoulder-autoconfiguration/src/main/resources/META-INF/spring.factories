@@ -8,6 +8,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.crypto.CryptoAutoConfiguration,\
   org.shoulder.autoconfigure.crypto.TransportCryptoAutoConfiguration, \
   org.shoulder.autoconfigure.db.mybatis.MybatisPlusAutoConfiguration, \
+  org.shoulder.autoconfigure.web.WebMvcAutoConfiguration, \
   org.shoulder.autoconfigure.log.operation.async.OpLogAsyncCustomAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.async.OpLogAsyncDefaultAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.OperationLogAspect,\

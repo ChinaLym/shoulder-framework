@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import java.util.Locale;
+import java.time.Duration;
 
 /**
  * 多语言相关配置
@@ -41,7 +41,14 @@ public class I18nAutoConfiguration {
         messageSource.setFallbackToSystemLocale(properties.isFallbackToSystemLocale());
         messageSource.setUseCodeAsDefaultMessage(properties.isUseCodeAsDefaultMessage());
         messageSource.setAlwaysUseMessageFormat(properties.isAlwaysUseMessageFormat());
-        messageSource.setCacheMillis(properties.getCacheDuration().toMillis());
+
+        // -1 means never reload cache (spring default)
+        long cacheMillis = -1;
+        Duration cacheDuration = properties.getCacheDuration();
+        if(cacheDuration != null){
+            cacheMillis = cacheDuration.toMillis();
+        }
+        messageSource.setCacheMillis(cacheMillis);
         return messageSource;
     }
 

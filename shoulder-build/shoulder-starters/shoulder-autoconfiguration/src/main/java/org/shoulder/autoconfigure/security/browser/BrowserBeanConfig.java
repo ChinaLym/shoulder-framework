@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.security.browser;
 
+import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.browser.handler.BrowserAuthenticationFailureHandler;
 import org.shoulder.security.authentication.browser.handler.BrowserAuthenticationSuccessHandler;
 import org.shoulder.security.authentication.browser.handler.BrowserLogoutSuccessHandler;
@@ -31,6 +32,7 @@ import javax.sql.DataSource;
  * @author lym
  * */
 @Configuration
+@ConditionalOnClass(SecurityConst.class)
 @EnableConfigurationProperties(BrowserProperties.class)
 public class BrowserBeanConfig {
 

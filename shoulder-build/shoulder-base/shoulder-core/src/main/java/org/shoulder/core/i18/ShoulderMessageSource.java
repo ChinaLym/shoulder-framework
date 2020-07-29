@@ -89,7 +89,8 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
      */
     private Locale currentLocale() {
         // 尝试从上下（当前用户）中获取
-        return StringUtils.parseLocale(BaseContextHolder.getLocale(), getDefaultLocale());
+        Locale currentLocale = BaseContextHolder.getLocale();
+        return currentLocale == null ? getDefaultLocale() : currentLocale;
     }
 
 

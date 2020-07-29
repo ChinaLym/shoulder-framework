@@ -7,8 +7,7 @@ import org.springframework.validation.annotation.Validated;
 /**
  * EnumTest
  *
- * @author liuyanming6
- * @since 2.0
+ * @author lym
  */
 public class EnumTest {
 

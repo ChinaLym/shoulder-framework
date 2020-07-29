@@ -1,10 +1,13 @@
 package org.shoulder.core.i18;
 
+import org.shoulder.core.context.BaseContextHolder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
  * 国际化(翻译)工具类
+ * 在 spring 翻译的核心接口 {@link MessageSource} 基础上额外提供了两个使用的更简单方法
+ *  getMessage 时不再需要传语言标识，简化使用（默认语言标识为 {@link BaseContextHolder#getLocale}）
  *
  * @author lym
  */

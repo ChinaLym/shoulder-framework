@@ -1,6 +1,8 @@
 package org.shoulder.autoconfigure.security;
 
+import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  *
  */
 @Configuration
+@ConditionalOnClass(SecurityConst.class)
 public class AuthenticationBeanConfig {
 
 	/**

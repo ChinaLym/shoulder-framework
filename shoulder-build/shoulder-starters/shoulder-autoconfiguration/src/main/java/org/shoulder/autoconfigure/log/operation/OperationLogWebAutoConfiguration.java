@@ -1,6 +1,6 @@
 package org.shoulder.autoconfigure.log.operation;
 
-import org.shoulder.log.operation.annotation.OperationLog;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -17,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author lym
  */
 @Configuration
-@ConditionalOnClass(OperationLog.class)
+@ConditionalOnClass(OperationLogDTO.class)
 @AutoConfigureAfter(OperationLogAspect.class)
 public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
 

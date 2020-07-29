@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.shoulder.core.context.ApplicationInfo;
-import org.shoulder.core.context.BaseContextHolder;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -120,7 +119,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         if (StringUtils.isEmpty(locale)) {
             return defaultLocale;
         }
-        String[] localeParts = BaseContextHolder.getLocale().split("_");
+        String[] localeParts = locale.split("_");
         String language = localeParts[0];
         String country = localeParts.length > 1 ? localeParts[1] : "";
         return new Locale(language, country);

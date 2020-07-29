@@ -1,9 +1,9 @@
 package org.shoulder.autoconfigure.crypto;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.autoconfigure.redis.RedisAutoConfiguration;
 import org.shoulder.cluster.redis.annotation.ApplicationExclusive;
-import org.shoulder.core.constant.ShoulderFramework;
 import org.shoulder.crypto.TextCipher;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.annotation.Ecc;
@@ -26,10 +26,10 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.lang.Nullable;
 
@@ -99,7 +99,8 @@ public class CryptoAutoConfiguration {
          * 如果支持集群，则默认使用 redis 作为非对称秘钥对存储
          */
         @Bean("redisKeyPairCache")
-        @ConditionalOnProperty(name = ShoulderFramework.CONFIG_PREFIX + "cluster", value = "true")
+        @ConditionalOnCluster
+        @ConditionalOnClass(name = "org.springframework.data.redis.core.RedisTemplate")
         public KeyPairCache redisKeyPairCache(@ApplicationExclusive StringRedisTemplate redisTemplate, LocalTextCipher localTextCipher){
             KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate, localTextCipher);
             return addPropertyKeyPairs(keyPairCache);
@@ -108,7 +109,7 @@ public class CryptoAutoConfiguration {
          * 默认使用 Hash Map 作为非对称秘钥对存储
          */
         @Bean("hashMapKeyPairCache")
-        @ConditionalOnProperty(name = ShoulderFramework.CONFIG_PREFIX + "cluster", value = "false", matchIfMissing = true)
+        @ConditionalOnCluster(cluster = false)
         public KeyPairCache hashMapKeyPairCache(){
             KeyPairCache keyPairCache = new HashMapKeyPairCache();
             return addPropertyKeyPairs(keyPairCache);

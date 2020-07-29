@@ -17,7 +17,7 @@
     <properties>
         <!-- shoulder framework bom -->
         <shoulder-lombok.version>0.0.1</shoulder-lombok.version>
-        <shoulder.version>${project.version}</shoulder.version>
+        <shoulder.version>${project.parent.version}</shoulder.version>
 
         <!-- dependencies bom -->
         <!--<spring.version>5.2.4.RELEASE</spring.version>-->
