@@ -21,6 +21,10 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-rest-server</artifactId>
+        </dependency>
 
     </dependencies>
 

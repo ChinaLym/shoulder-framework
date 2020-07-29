@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.swagger;
+package org.shoulder.autoconfigure.apidoc;
 
 /**
  * 访问

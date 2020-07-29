@@ -224,6 +224,11 @@
                 <version>${shoulder.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-rest-server</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
 
             <!--shoulder-base end -->
 

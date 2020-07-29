@@ -2,7 +2,6 @@ package org.shoulder.autoconfigure.core.config;
 
 import org.shoulder.autoconfigure.core.BaseAppProperties;
 import org.shoulder.core.context.ApplicationInfo;
-import org.shoulder.core.context.BaseContextHolder;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,7 +11,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 
-import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -54,7 +52,7 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
         ApplicationInfo.initDateFormat(environment.getProperty("shoulder.application.dateFormat"));
         ApplicationInfo.initCharset(environment.getProperty("shoulder.application.charset"));
         ApplicationInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
-        ApplicationInfo.initDefaultLocale(StringUtils.toLocale(environment.getProperty("shoulder.application.defaultLocale")));
+        ApplicationInfo.initDefaultLocale(StringUtils.parseLocale(environment.getProperty("shoulder.application.defaultLocale")));
     }
 
 

@@ -1,7 +1,6 @@
 package org.shoulder.core.util;
 
 import cn.hutool.core.util.StrUtil;
-import lombok.val;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.shoulder.core.context.ApplicationInfo;
@@ -107,8 +106,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param locale 语言地区字符串
      * @return 对应的语言和地区
      */
-    public static Locale toLocale(String locale) {
-        return toLocale(locale, Locale.getDefault());
+    public static Locale parseLocale(String locale) {
+        return parseLocale(locale, Locale.getDefault());
     }
     /**
      * 将字符串转换为语言和时区
@@ -117,7 +116,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param defaultLocale 如果转换失败使用该值
      * @return 对应的语言和地区
      */
-    public static Locale toLocale(String locale, Locale defaultLocale) {
+    public static Locale parseLocale(String locale, Locale defaultLocale) {
         if (StringUtils.isEmpty(locale)) {
             return defaultLocale;
         }
