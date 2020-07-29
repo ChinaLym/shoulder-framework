@@ -1,6 +1,7 @@
 package com.example.demo1.controller.i18n;
 
 import org.shoulder.core.context.BaseContextHolder;
+import org.shoulder.core.i18.ShoulderMessageSource;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +18,43 @@ import java.util.Locale;
  * @author lym
  */
 @RestController
-@RequestMapping("shoulder/i18n")
+@RequestMapping("i18n")
 public class ShoulderI18nDemoController {
 
 
+    /**
+     * shoulder 100%兼容 Spring Boot，查看 import 并没有引入 shoulder 的任何类
+     */
     @Autowired
     private MessageSource messageSource;
 
     /**
-     * 实际上与 messageSource 是同一个对象，额外提供了两个方法，
-     * 不需要在代码中传对应语言标识的（默认使用 {@link BaseContextHolder#getLocale}），以 AOP 的思想简化代码编写
+     * 实际上与 messageSource 为同一个对象，具体实现类都是 {@link ShoulderMessageSource}
      */
     @Autowired
     private Translator translator;
+
+    /**
+     * Spring boot 中的使用
+     * @param toBeTranslate 待翻译的
+     * @param args 用于填充翻译的参数
+     * @param locale 语言
+     * @return 翻译后的
+     */
+    @GetMapping("messageSource")
+    public String messageSource(String toBeTranslate, String args, String locale){
+
+        Locale aimLocale = org.springframework.util.StringUtils.parseLocale(locale);
+        if(aimLocale == null){
+            aimLocale = Locale.getDefault();
+        }
+        String[] trArgs = null;
+        if(!org.springframework.util.StringUtils.isEmpty(args)){
+            trArgs = args.split(",");
+        }
+        return messageSource.getMessage(toBeTranslate, trArgs, aimLocale);
+    }
+
 
     /**
      * Shoulder 中扩展 Spring boot 的使用，不必再填写 Locale，将自动获取
@@ -38,17 +63,32 @@ public class ShoulderI18nDemoController {
      * @param locale 语言
      * @return 翻译后的
      */
-    @GetMapping("translate")
+    @GetMapping("translator")
     public String translator(String toBeTranslate, String args, String locale){
-        Locale aimLocale = StringUtils.toLocale(locale, Locale.getDefault());
+        Locale aimLocale = StringUtils.parseLocale(locale, Locale.getDefault());
         String[] trArgs = StringUtils.isNotEmpty(args) ? args.split(",") : null;
 
         return translator.getMessage(toBeTranslate, trArgs, aimLocale);
     }
 
     @GetMapping("case1")
-    public String translator(){
+    public String case1(){
+        // spring:
+        messageSource.getMessage("shoulder.test.hi", null, BaseContextHolder.getLocale());
+
+        // shoulder
         return translator.getMessage("shoulder.test.hi");
+    }
+
+    @GetMapping("case2")
+    public String case2(){
+        // spring:
+        Object[] args = new Object[1];
+        args[0] = "shoulder";
+        messageSource.getMessage("shoulder.test.hi", args, BaseContextHolder.getLocale());
+
+        // shoulder
+        return translator.getMessage("shoulder.test.hello", "shoulder");
     }
 
 

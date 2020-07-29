@@ -26,12 +26,6 @@
 			<artifactId>shoulder-starter-web</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>cn.itlym</groupId>
-			<artifactId>shoulder-rest-server</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-		</dependency>
-
 		<!-- shoulder 改写的 lombok，额外提供 @SLog -->
 		<dependency>
 			<groupId>cn.itlym</groupId>

@@ -1,5 +1,7 @@
 package com.example.demo1.config;
 
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
 /**
  * LocaleInterceptor
  *
