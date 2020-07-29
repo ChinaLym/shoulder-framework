@@ -1,4 +1,4 @@
-package org.shoulder.web.advice;
+package org.shoulder.autoconfigure.web.advice;
 
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.web.annotation.SkipResponseWrap;
@@ -73,5 +73,5 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
         return withoutMethodAnnotation && withoutClassAnnotation;
 
     }
-	
+
 }

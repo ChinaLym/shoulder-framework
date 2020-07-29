@@ -3,6 +3,8 @@ org.springframework.boot.env.EnvironmentPostProcessor=org.shoulder.autoconfigure
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.core.i8n.I18nAutoConfiguration, \
+  org.shoulder.autoconfigure.web.advice.RestControllerExceptionAdvice, \
+  org.shoulder.autoconfigure.web.advice.RestControllerUnionResponseAdvice, \
   org.shoulder.autoconfigure.redis.RedisAutoConfiguration, \
   org.shoulder.autoconfigure.http.HttpAutoConfiguration, \
   org.shoulder.autoconfigure.crypto.CryptoAutoConfiguration,\

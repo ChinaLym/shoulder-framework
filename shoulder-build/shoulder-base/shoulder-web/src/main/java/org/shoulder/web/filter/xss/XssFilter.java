@@ -1,9 +1,9 @@
 package org.shoulder.web.filter.xss;
 
-import org.shoulder.web.filter.AbstractPathFilterProperties;
 import org.shoulder.web.filter.BasePathFilter;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

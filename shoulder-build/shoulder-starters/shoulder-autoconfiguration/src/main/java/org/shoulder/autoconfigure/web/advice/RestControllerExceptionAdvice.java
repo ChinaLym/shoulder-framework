@@ -1,4 +1,4 @@
-package org.shoulder.web.advice;
+package org.shoulder.autoconfigure.web.advice;
 
 import lombok.extern.shoulder.SLog;
 import org.shoulder.core.exception.CommonErrorCodeEnum;

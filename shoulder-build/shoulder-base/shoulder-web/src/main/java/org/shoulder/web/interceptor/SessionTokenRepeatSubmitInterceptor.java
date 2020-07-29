@@ -1,7 +1,6 @@
 package org.shoulder.web.interceptor;
 
 import org.shoulder.web.annotation.RejectRepeatSubmit;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,23 +16,24 @@ import java.lang.reflect.Method;
 public class SessionTokenRepeatSubmitInterceptor extends BaseRejectRepeatSubmitInterceptor {
 
     /**
-     * 用于重复提交校验的 token 名
+     * 请求中 token 的参数名
      */
-    @Value("${shoulder.web.waf.repeatSubmit.requestTokenName:__repeat_token}")
     private String requestTokenName;
 
-    @Value("${shoulder.web.waf.repeatSubmit.sessionTokenName:__repeat_token}")
+    /**
+     * 会话中 token 的 key
+     */
     private String sessionTokenName;
 
-    /**
-     * 是否开启校验，开发时可以关闭
-     */
-    @Value("${shoulder.web.repeatSubmit.enable:true}")
-    private boolean enable;
+    public SessionTokenRepeatSubmitInterceptor(String requestTokenName, String sessionTokenName) {
+        super();
+        this.requestTokenName = requestTokenName;
+        this.sessionTokenName = sessionTokenName;
+    }
 
     @Override
     protected boolean needIntercept(HttpServletRequest request, Object handler) {
-        if (enable || handler instanceof HandlerMethod) {
+        if (handler instanceof HandlerMethod) {
             // 当前仅当开启校验，且为 HandlerMethod 才拦截
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Method method = handlerMethod.getMethod();

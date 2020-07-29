@@ -11,18 +11,6 @@
     <packaging>pom</packaging>
     <artifactId>shoulder-parent</artifactId>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-dependencies</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <properties>
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -30,6 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.javadoc.charset>${project.build.sourceEncoding}</maven.javadoc.charset>
 
+        <shoulder.version>${project.parent.version}</shoulder.version><!-- shoulder-version -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
@@ -41,6 +30,18 @@
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
 
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-dependencies</artifactId>
+                <version>${shoulder.version}</version><!-- shoulder-version -->
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
 

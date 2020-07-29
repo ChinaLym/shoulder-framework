@@ -18,7 +18,7 @@
         <module>shoulder-crypto</module>
         <module>shoulder-operation-log</module>
         <module>shoulder-validation</module>
-        <module>shoulder-rest-server</module>
+        <module>shoulder-web</module>
         <module>shoulder-http</module>
         <module>shoulder-crypto-negotiation</module>
 

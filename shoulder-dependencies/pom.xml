@@ -226,7 +226,7 @@
 
             <dependency>
                 <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-rest-server</artifactId>
+                <artifactId>shoulder-web</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 

@@ -1,4 +1,4 @@
-# shoulder-rest-server
+# shoulder-web
 
 对外暴露restful http 接口时引入该jar。
 
