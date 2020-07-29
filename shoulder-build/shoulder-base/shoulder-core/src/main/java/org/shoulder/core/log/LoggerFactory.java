@@ -6,7 +6,7 @@ import java.util.ServiceLoader;
 
 /**
  * Shoulder loggerFactory Facade 门面，用于加载 ILoggerFactory
- * 
+ *
  * @author lym
  */
 public class LoggerFactory {
@@ -33,7 +33,7 @@ public class LoggerFactory {
         // 唯一绑定
         if(loggerFactoryImplNum == 0){
             // 未扩展，则使用默认的 LoggerFactory
-            System.out.println("Shoulder LoggerFactory: use default LoggerFactory[" + ShoulderLoggerSl4jFactory.class.getName() + "]");
+            //System.out.println("Shoulder LoggerFactory: use default LoggerFactory[" + ShoulderLoggerSl4jFactory.class.getName() + "]");
             delegate = ShoulderLoggerSl4jFactory.getInstance();
         }else {
             // 否则取第一个

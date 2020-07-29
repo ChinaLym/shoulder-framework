@@ -1,9 +1,10 @@
-package org.shoulder.log.operation.logger.logback.pattern;
+package org.shoulder.core.log.logback.pattern;
 
 import ch.qos.logback.classic.pattern.ClassicConverter;
 import ch.qos.logback.classic.pattern.DateConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
+import org.springframework.lang.NonNull;
 
 import java.lang.reflect.Method;
 import java.util.TimeZone;
@@ -26,9 +27,9 @@ public class TimeZoneLazyAwareDateConverter extends ClassicConverter {
      */
     private static final int UPDATE_TIMEZONE_PERIOD = 60;
 
-    private final Method GET_SYSTEM_GMT_OFF_SET_ID_METHOD;
+    private final Method GET_SYSTEM_GMT_OFF_SET_ID_METHOD = null;
 
-    public TimeZoneLazyAwareDateConverter() {
+    /*public TimeZoneLazyAwareDateConverter() {
         Method gtsyszMethod = null;
         try {
             // native invoke
@@ -38,6 +39,12 @@ public class TimeZoneLazyAwareDateConverter extends ClassicConverter {
             addWarn("get native method fail", e);
         }
         GET_SYSTEM_GMT_OFF_SET_ID_METHOD = gtsyszMethod;
+    }*/
+
+    @Override
+    public String convert(ILoggingEvent le) {
+        long timestamp = le.getTimeStamp();
+        return dateFormatter.format(timestamp);
     }
 
     @Override
@@ -72,53 +79,35 @@ public class TimeZoneLazyAwareDateConverter extends ClassicConverter {
                     thread.setName("timezoneRefreshTimer");
                     return thread;
                 });
-            timezoneTaskExecutor.scheduleAtFixedRate(new TimezoneRefreshTask(),
+            timezoneTaskExecutor.scheduleAtFixedRate(() -> {
+                    synchronized (TimeZoneLazyAwareDateConverter.class) {
+                        dateFormatter.setTimeZone(currentTimeZone());
+                    }
+                },
                 TimeZoneLazyAwareDateConverter.UPDATE_TIMEZONE_PERIOD,
                 TimeZoneLazyAwareDateConverter.UPDATE_TIMEZONE_PERIOD, TimeUnit.SECONDS);
         }
 
     }
 
-    @Override
-    public String convert(ILoggingEvent le) {
-        long timestamp = le.getTimeStamp();
-        return dateFormatter.format(timestamp);
-    }
-
-    class TimezoneRefreshTask implements Runnable {
-        @Override
-        public void run() {
-            synchronized (TimeZoneLazyAwareDateConverter.class) {
-                TimeZone defaultTimeZone = refreshAndGetCurrentTimeZone();
-                //if zone is null, do next time
-                if (defaultTimeZone != null) {
-                    dateFormatter.setTimeZone(defaultTimeZone);
+    /**
+     * 刷新时区
+     * 该方法使用了反射，故需放在该类中才有权限
+     */
+    @NonNull
+    private TimeZone currentTimeZone() {
+        if (GET_SYSTEM_GMT_OFF_SET_ID_METHOD != null) {
+            try {
+                Object result = GET_SYSTEM_GMT_OFF_SET_ID_METHOD.invoke(this);
+                if (result instanceof String) {
+                    return (TimeZone) TimeZone.getTimeZone((String) result).clone();
                 }
+            } catch (Exception ignored) {
+                // will return default timezone
             }
         }
+        return TimeZone.getDefault();
 
-        private TimeZone refreshAndGetCurrentTimeZone() {
-            TimeZone timeZoneRef = refreshAndGetCurrentTimeZoneRef();
-            if (timeZoneRef == null) {
-                return TimeZone.getDefault();
-            }
-            return (TimeZone) timeZoneRef.clone();
-        }
-
-        private TimeZone refreshAndGetCurrentTimeZoneRef() {
-            if (GET_SYSTEM_GMT_OFF_SET_ID_METHOD != null) {
-                //use TimeZone.getSystemGMTOffsetID get system current timeZone
-                try {
-                    Object result = GET_SYSTEM_GMT_OFF_SET_ID_METHOD.invoke(this);
-                    if (result instanceof String) {
-                        return TimeZone.getTimeZone((String) result);
-                    }
-                } catch (Exception e) {
-                    // If this were to fail, get default.
-                }
-            }
-            return TimeZone.getDefault();
-        }
     }
 
 }
