@@ -1,9 +1,9 @@
 package org.shoulder.core.delay;
 
 import lombok.extern.shoulder.SLog;
-import org.springframework.beans.factory.DisposableBean;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * 延迟任务能力的默认实现
@@ -41,14 +41,15 @@ public class DelayTasDispatcher implements Runnable {
             return;
         }
         running = true;
-        defaultExecutor.execute(this);
+        Thread dispatcherThread = Executors.defaultThreadFactory().newThread(this);
+        dispatcherThread.setDaemon(true);
+        dispatcherThread.setName("shoulderDelayTaskPorter");
+        dispatcherThread.start();
     }
 
     @Override
     public void run() {
         log.info("DelayTaskPorter started.");
-        Thread.currentThread().setDaemon(true);
-        Thread.currentThread().setName("shoulderDelayTaskPorter");
         DelayTask delay;
         while (true) {
             try {

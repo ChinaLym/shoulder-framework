@@ -143,7 +143,7 @@ public class RestControllerExceptionAdvice {
 
 
     /**
-     * 请求方法不允许
+     * 请求方法不允许 fixme
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
@@ -158,7 +158,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public BaseResponse methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
         BaseRuntimeException ex =
-            new BaseRuntimeException(CommonErrorCodeEnum.PARAM_TYPE_NOT_MATCH,
+            new BaseRuntimeException(CommonErrorCodeEnum.PARAM_TYPE_NOT_MATCH, e,
                 e.getName(), e.getValue(), e.getRequiredType() == null ? null : e.getRequiredType().getName());
         log.error(ex);
         return ex.toResponse();
@@ -170,7 +170,7 @@ public class RestControllerExceptionAdvice {
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public BaseResponse httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
-        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.CONTENT_TYPE_INVALID, String.valueOf(e.getContentType()));
+        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.CONTENT_TYPE_INVALID,  e, String.valueOf(e.getContentType()));
         log.error(ex);
         return ex.toResponse();
     }
@@ -186,7 +186,7 @@ public class RestControllerExceptionAdvice {
      */
     @ExceptionHandler(MultipartException.class)
     public BaseResponse multipartException(MultipartException e) {
-        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.MULTIPART_INVALID);
+        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.MULTIPART_INVALID,  e);
         log.error(ex);
         return ex.toResponse();
     }

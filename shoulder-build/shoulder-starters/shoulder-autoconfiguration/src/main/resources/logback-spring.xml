@@ -16,7 +16,7 @@
         <!-- 控制台Appender, 不要修改 -->
         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
-                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %highlight(%-5level) ${appId} [%thread] [%cyan(%logger{50}):%line] %msg%n</pattern>
+                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %highlight(%-5level) [%thread] [%cyan(%logger{50}):%line] %msg%n</pattern>
                 <charset>UTF-8</charset>
             </encoder>
         </appender>
@@ -103,9 +103,6 @@
             </encoder>
         </appender>
 
-        <!-- ef框架sql默认是INFO级别, 打印级别改成WARN, 防止sql频繁打印 -->
-        <logger name="GeeQuery" level="WARN"/>
-
         <!-- SPRING等第三方框架类代码日志打印, 输出到OTHER文件中, 默认WARN以上 （这类日志无法统一解析） -->
         <appender name="OTHER" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -132,7 +129,7 @@
         <logger name="org.springframework.boot" level="WARN" />
         <logger name="org.springframework.boot.web.filter" level="ERROR" />
 
-        <!-- shoulder 框架中日志的默认输出级别 WARN, 排查问题时, 可以通过工具切换为TRACE -->
+        <!-- shoulder 框架中日志的默认输出级别 WARN, 排查问题时, 可以切换为TRACE -->
         <logger name="org.shoulder" level="INFO" additivity="false">
             <appender-ref ref="FILE-debug" />
             <appender-ref ref="FILE-error" />

@@ -7,12 +7,13 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.core.I18nAutoConfiguration, \
   org.shoulder.autoconfigure.web.advice.RestControllerExceptionAdvice, \
   org.shoulder.autoconfigure.web.advice.RestControllerUnionResponseAdvice, \
+  org.shoulder.autoconfigure.web.MvcConverterAutoConfiguration, \
+  org.shoulder.autoconfigure.web.WebMvcAutoConfiguration, \
   org.shoulder.autoconfigure.redis.RedisAutoConfiguration, \
   org.shoulder.autoconfigure.http.HttpAutoConfiguration, \
   org.shoulder.autoconfigure.crypto.CryptoAutoConfiguration,\
   org.shoulder.autoconfigure.crypto.TransportCryptoAutoConfiguration, \
   org.shoulder.autoconfigure.db.mybatis.MybatisPlusAutoConfiguration, \
-  org.shoulder.autoconfigure.web.WebMvcAutoConfiguration, \
   org.shoulder.autoconfigure.log.operation.async.OpLogAsyncCustomAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.async.OpLogAsyncDefaultAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.OperationLogAspect,\

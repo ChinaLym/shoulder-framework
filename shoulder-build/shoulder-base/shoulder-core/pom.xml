@@ -48,7 +48,7 @@
             <artifactId>lombok</artifactId>
         </dependency>-->
         <dependency>
-            <groupId>cn.itlym</groupId>
+            <groupId>cn.itlym.shoulder</groupId>
             <artifactId>shoulder-lombok</artifactId>
         </dependency>
 

@@ -16,7 +16,7 @@
     <!-- dependencies version definition -->
     <properties>
         <!-- shoulder framework bom -->
-        <shoulder-lombok.version>0.0.1</shoulder-lombok.version>
+        <shoulder-lombok.version>0.1</shoulder-lombok.version>
         <shoulder.version>${project.parent.version}</shoulder.version>
 
         <!-- dependencies bom -->
@@ -152,7 +152,7 @@
 
             <!--shoulder-base begin -->
             <dependency>
-                <groupId>cn.itlym</groupId>
+                <groupId>cn.itlym.shoulder</groupId>
                 <artifactId>shoulder-lombok</artifactId>
                 <version>${shoulder-lombok.version}</version>
                 <optional>true</optional>
