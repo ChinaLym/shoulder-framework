@@ -23,7 +23,7 @@ public class ShoulderI18nDemoController {
 
 
     /**
-     * shoulder 100%兼容 Spring Boot，查看 import 并没有引入 shoulder 的任何类
+     * Spring 定义的接口，shoulder 100%兼容
      */
     @Autowired
     private MessageSource messageSource;
@@ -35,13 +35,14 @@ public class ShoulderI18nDemoController {
     private Translator translator;
 
     /**
-     * Spring boot 中的使用
+     * Spring 中提供的用法
+     *
      * @param toBeTranslate 待翻译的
      * @param args 用于填充翻译的参数
      * @param locale 语言
      * @return 翻译后的
      */
-    @GetMapping("messageSource")
+    @GetMapping("spring")
     public String messageSource(String toBeTranslate, String args, String locale){
 
         Locale aimLocale = org.springframework.util.StringUtils.parseLocale(locale);
@@ -57,13 +58,15 @@ public class ShoulderI18nDemoController {
 
 
     /**
-     * Shoulder 中扩展 Spring boot 的使用，不必再填写 Locale，将自动获取
+     * Shoulder 中的推荐用法
+     * 在 Spring 之上简化了使用，不必再填写 Locale，将自动获取
+     *
      * @param toBeTranslate 待翻译的
      * @param args 用于填充翻译的参数
      * @param locale 语言
      * @return 翻译后的
      */
-    @GetMapping("translator")
+    @GetMapping("shoulder")
     public String translator(String toBeTranslate, String args, String locale){
         Locale aimLocale = StringUtils.parseLocale(locale, Locale.getDefault());
         String[] trArgs = StringUtils.isNotEmpty(args) ? args.split(",") : null;
@@ -71,7 +74,7 @@ public class ShoulderI18nDemoController {
         return translator.getMessage(toBeTranslate, trArgs, aimLocale);
     }
 
-    @GetMapping("case1")
+    @GetMapping("1")
     public String case1(){
         // spring:
         messageSource.getMessage("shoulder.test.hi", null, BaseContextHolder.getLocale());
@@ -80,7 +83,7 @@ public class ShoulderI18nDemoController {
         return translator.getMessage("shoulder.test.hi");
     }
 
-    @GetMapping("case2")
+    @GetMapping("2")
     public String case2(){
         // spring:
         Object[] args = new Object[1];

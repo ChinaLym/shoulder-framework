@@ -1,7 +1,10 @@
 package com.example.demo1.controller.ex;
 
-import lombok.extern.shoulder.SLog;
-import org.shoulder.core.exception.BaseRuntimeException;
+import com.example.demo1.ex.MyEx1;
+import com.example.demo1.ex.MyEx2;
+import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,24 +15,63 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lym
  */
-@SLog
 @RestController
 @RequestMapping("exception")
 public class ExceptionDemoController {
 
+
+    private static final Logger log = LoggerFactory.getLogger(ExceptionDemoController.class);
+
+    // --------------------------- 全局异常处理 ------------------------------
+
     /**
-     * 打印日志
+     * 没用框架之前写法举例（不推荐这么写）
+     * 分类处理异常、记录日志
      */
-    @GetMapping("case1")
-    public String messageSource(){
-        foo();
-        return "exception already.";
+    @GetMapping("0")
+    public BaseResponse<String> normal(){
+        try{
+            String businessResult = businessMethod();
+            return BaseResponse.success(businessResult);
+        } catch (Exception e){
+            // 根据异常分类
+            BaseResponse<String> errorResponse = new BaseResponse<>();
+            if(e instanceof MyEx1){
+                // 记录 error 级别的日志，返回 500 错误码
+                log.errorWithErrorCode("xxxxx1", "发生了一个异常", e);
+                errorResponse.setCode("xxxxx1");
+                errorResponse.setMsg(e.getMessage());
+            }else if(e instanceof MyEx2){
+                // 记录 warn 级别的日志，返回 400 错误码
+                log.warnWithErrorCode("xxxxx1", "发生了一个很神奇的异常", e);
+                errorResponse.setCode("xxxxx2");
+                errorResponse.setMsg(e.getMessage());
+            }
+            return errorResponse;
+        }
+
     }
 
-    // todo 补充更多异常、错误码使用方式
-
-    private void foo(){
-        throw new BaseRuntimeException("demo ex");
+    /**
+     * 使用 shoulder 框架：不需要管异常，框架会自动记录日志与包装返回值
+     */
+    @GetMapping("1")
+    public String case1(){
+        return businessMethod();
     }
+
+    /**
+     * 模拟一个会抛出多种异常的业务方法
+     */
+    private String businessMethod(){
+        boolean fakerRandom = (((int)System.currentTimeMillis()) ^ 1 ) == 0;
+        if(fakerRandom){
+            throw new MyEx1("0xaaa01", "demo ex1");
+        } else {
+            throw new MyEx2("0xaaa02", "demo ex2");
+        }
+
+    }
+
 
 }
