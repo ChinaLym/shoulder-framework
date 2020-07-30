@@ -1,8 +1,8 @@
 package org.shoulder.core.delay;
 
-import org.shoulder.core.util.Threads;
 import org.springframework.lang.NonNull;
 
+import java.time.Duration;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
@@ -13,37 +13,60 @@ import java.util.concurrent.TimeUnit;
  */
 public class DelayTask implements Delayed {
 
+    /**
+     * 延迟执行的纳秒数
+     */
     private final long time;
 
+    /**
+     * 要执行的任务
+     */
     private final Runnable task;
 
+    /**
+     * 运行该任务的线程池名称，如果设置该值将从 spring 上下文中寻找名为 threadPoolName 的线程池，未找到或不设置则使用默认的
+     */
     private final String threadPoolName;
 
     /**
      * @param task        要执行的任务
      * @param nanoTimeOut 多久后执行，单位纳秒
+     * @param threadPoolName 线程池 bean 名称
      */
-    public DelayTask(Runnable task, long nanoTimeOut) {
-        this(task, nanoTimeOut, Threads.DEFAULT_THREAD_POOL_NAME);
-    }
-
-    public DelayTask(Runnable task, long nanoTimeOut, String threadPoolName) {
+    private DelayTask(Runnable task, long nanoTimeOut, String threadPoolName) {
         this.time = System.nanoTime() + nanoTimeOut;
-        this.task = Threads.getTtlRunnable(task);
+        this.task = task;
         this.threadPoolName = threadPoolName;
     }
 
     /**
      * @param task 要执行的任务
      * @param time 多久后执行
-     * @param unit time的计时单位
+     * @param unit time的时间单位
      */
     public DelayTask(Runnable task, long time, TimeUnit unit) {
-        this(task, TimeUnit.NANOSECONDS.convert(time, unit));
+        this(task, TimeUnit.NANOSECONDS.convert(time, unit), (String) null);
     }
 
     public DelayTask(Runnable task, long time, TimeUnit unit, String threadPoolName) {
         this(task, TimeUnit.NANOSECONDS.convert(time, unit), threadPoolName);
+    }
+
+    /**
+     * @param task 要执行的任务
+     * @param daleyTime 多久后执行
+     */
+    public DelayTask(Runnable task, Duration daleyTime) {
+        this(task, daleyTime.getNano(), (String) null);
+    }
+
+    /**
+     * @param task 要执行的任务
+     * @param daleyTime 多久后执行
+     * @param threadPoolName 线程池 bean 名称
+     */
+    public DelayTask(Runnable task, Duration daleyTime, String threadPoolName) {
+        this(task, daleyTime.getNano(), threadPoolName);
     }
 
     @Override

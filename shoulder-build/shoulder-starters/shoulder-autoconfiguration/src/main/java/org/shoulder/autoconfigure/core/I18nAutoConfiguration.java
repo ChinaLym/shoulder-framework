@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.core.i8n;
+package org.shoulder.autoconfigure.core;
 
 import org.shoulder.core.context.ApplicationInfo;
 import org.shoulder.core.i18.ShoulderMessageSource;

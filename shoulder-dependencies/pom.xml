@@ -27,7 +27,7 @@
         <!--<spring-security.version></spring-security.version>-->
         <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info -->
         <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
-        <spring-cloud-alibaba.version>2.2.3.RELEASE</spring-cloud-alibaba.version>
+        <spring-cloud-alibaba.version>2.2.1.RELEASE</spring-cloud-alibaba.version>
 
         <!-- build -->
         <java.version>11</java.version>
@@ -64,7 +64,7 @@
         <!-- useful tools -->
         <hutool.version>5.3.8</hutool.version>
         <guava.version>29.0-jre</guava.version>
-        <alibaba.transmittable.version>2.11.4</alibaba.transmittable.version>
+        <alibaba.transmittable.version>2.11.5</alibaba.transmittable.version>
 
         <bcprov.jdk15on.version>1.65.01</bcprov.jdk15on.version>
         <bcpkix.jdk15on.version>1.65</bcpkix.jdk15on.version>

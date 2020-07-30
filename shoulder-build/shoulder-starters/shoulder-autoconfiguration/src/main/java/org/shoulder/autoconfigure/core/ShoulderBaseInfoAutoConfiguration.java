@@ -1,6 +1,5 @@
-package org.shoulder.autoconfigure.core.config;
+package org.shoulder.autoconfigure.core;
 
-import org.shoulder.autoconfigure.core.BaseAppProperties;
 import org.shoulder.core.context.ApplicationInfo;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.boot.SpringApplication;

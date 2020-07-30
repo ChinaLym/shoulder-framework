@@ -1,8 +1,10 @@
 # Auto Configuration
-org.springframework.boot.env.EnvironmentPostProcessor=org.shoulder.autoconfigure.core.config.ShoulderBaseInfoAutoConfiguration
+org.springframework.boot.env.EnvironmentPostProcessor=org.shoulder.autoconfigure.core.ShoulderBaseInfoAutoConfiguration
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.shoulder.autoconfigure.core.i8n.I18nAutoConfiguration, \
+  org.shoulder.autoconfigure.core.ThreadAutoConfiguration, \
+  org.shoulder.autoconfigure.core.DelayTaskAutoConfiguration, \
+  org.shoulder.autoconfigure.core.I18nAutoConfiguration, \
   org.shoulder.autoconfigure.web.advice.RestControllerExceptionAdvice, \
   org.shoulder.autoconfigure.web.advice.RestControllerUnionResponseAdvice, \
   org.shoulder.autoconfigure.redis.RedisAutoConfiguration, \

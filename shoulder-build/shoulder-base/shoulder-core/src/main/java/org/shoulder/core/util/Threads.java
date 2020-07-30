@@ -1,53 +1,38 @@
 package org.shoulder.core.util;
 
-import com.alibaba.ttl.TtlCallable;
-import com.alibaba.ttl.TtlRunnable;
-import org.shoulder.core.delay.DelayTaskHolder;
+import lombok.extern.shoulder.SLog;
 import org.shoulder.core.delay.DelayTask;
+import org.shoulder.core.delay.DelayTaskHolder;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 
+import java.time.Duration;
 import java.util.concurrent.*;
 
 /**
  * 线程工具类
- * 提供创建线程和延时任务方法的封装
- * 注意：
- * 1. 封装的方法，会自动继承线程变量
- * 2. 该类必须在 ApplicationContextAware 之后使用，否则 IllegalStateException。
- * <p>
- * 如果单纯使用以及更多底层 api，推荐直接用 @Autowired 注入线程池使用
+ *  提供延时任务和常用线程池拒绝策略的封装
+ * 该类必须设置线程池之后使用，否则 IllegalStateException。
  *
  * @author lym
  */
+@SLog
 public class Threads {
 
-    private final static ThreadPoolExecutor DEFAULT_THREAD_POOL;
+    private static ExecutorService DEFAULT_THREAD_POOL;
+
+    private static DelayTaskHolder DELAY_TASK_HOLDER;
+
     public final static String DEFAULT_THREAD_POOL_NAME = "shoulderThreadPool";
 
-    static {
-        DEFAULT_THREAD_POOL = SpringUtils.getBean(DEFAULT_THREAD_POOL_NAME);
+    public static void setExecutorService(ExecutorService executorService){
+        Threads.DEFAULT_THREAD_POOL = executorService;
+        log.info("Threads' DEFAULT_THREAD_POOL has changed to " + executorService);
     }
 
-    /**
-     * 放入线程池执行，且传递父线程的 threadLocal 变量到子线程（默认为浅拷贝）
-     * 若希望为深拷贝，重写 {@link com.alibaba.ttl.TransmittableThreadLocal#copy} 方法即可
-     *
-     * @param runnable 要执行的任务
-     */
-    public static void execute(Runnable runnable) {
-        // 线程变量自动继承和清理
-        Runnable ttlRunnable = getTtlRunnable(runnable);
-        DEFAULT_THREAD_POOL.execute(ttlRunnable);
-    }
-
-    /**
-     * 放入线程池执行，且传递父线程的 threadLocal 变量到子线程（默认为浅拷贝）
-     * 若希望为深拷贝，重写 {@link com.alibaba.ttl.TransmittableThreadLocal#copy} 方法即可
-     *
-     * @param callable 要执行的任务
-     * @return 当前任务执行的结果
-     */
-    public static <T> Future<T> submit(Callable<T> callable) {
-        return DEFAULT_THREAD_POOL.submit(getTtlCallable(callable));
+    public static void setDelayTaskHolder(DelayTaskHolder delayTaskHolder){
+        Threads.DELAY_TASK_HOLDER = delayTaskHolder;
+        log.info("Threads' DELAY_TASK_HOLDER has changed to " + delayTaskHolder);
     }
 
     /**
@@ -68,29 +53,147 @@ public class Threads {
      * @param delayTask 要延时执行的任务
      */
     public static void delay(DelayTask delayTask) {
-        DelayTaskHolder.put(delayTask);
+        if(DELAY_TASK_HOLDER == null){
+            throw new IllegalStateException("You must setDelayTaskHolder first.");
+        }
+        DELAY_TASK_HOLDER.put(delayTask);
     }
 
     /**
-     * 添加了空校验的 {@link TtlRunnable#get}
-     * @param runnable runnable
+     * 放入线程池执行
+     *
+     * @param runnable 要执行的任务
      */
-    public static Runnable getTtlRunnable(Runnable runnable){
-        if (runnable == null) {
-            throw new NullPointerException("runnable can not be null!");
+    public static void execute(Runnable runnable) {
+        if(DEFAULT_THREAD_POOL == null){
+            throw new IllegalStateException("You must setExecutorService first.");
         }
-        return TtlRunnable.get(runnable, true, false);
+        DEFAULT_THREAD_POOL.execute(runnable);
     }
 
     /**
-     * 添加了空校验的 {@link TtlCallable#get}
-     * @param callable callable
+     * 放入线程池执行
+     *
+     * @param callable 要执行的任务
+     * @return 当前任务执行的 Future
      */
-    public static <T>  Callable<T> getTtlCallable(Callable<T> callable){
-        if (callable == null) {
-            throw new NullPointerException("callable can not be null!");
+    public static <T> Future<T> submit(Callable<T> callable) {
+        if(DEFAULT_THREAD_POOL == null){
+            throw new IllegalStateException("You must setExecutorService first.");
         }
-        return TtlCallable.get(callable, true, false);
+        return DEFAULT_THREAD_POOL.submit(callable);
+    }
+
+
+
+    // ------------------------ Shoulder 的线程池拒绝策略 ------------------------
+
+
+    /**
+     * 修复了 jdk 使用 FutureTask 可能一直阻塞的 bug {@link ThreadPoolExecutor.DiscardPolicy}
+     */
+    public static class Discard implements RejectedExecutionHandler {
+
+        private static final Logger log = LoggerFactory.getLogger(Discard.class);
+
+        @Override
+        public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+            if (!executor.isShutdown()) {
+                if (r instanceof FutureTask) {
+                    ((FutureTask) r).cancel(true);
+                }
+            }
+            log.warn("Discard for the executor's queue is full. Task({}), Executor({})", r.toString(),
+                executor.toString());
+        }
+    }
+
+    /**
+     * 修复了 jdk 使用 FutureTask 可能一直阻塞的 bug {@link ThreadPoolExecutor.DiscardOldestPolicy}
+     */
+    public static class DiscardOldest implements RejectedExecutionHandler {
+
+        private static final Logger log = LoggerFactory.getLogger(DiscardOldest.class);
+
+        @Override
+        public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+            if (!executor.isShutdown()) {
+                if (r instanceof FutureTask) {
+                    ((FutureTask) r).cancel(true);
+                }
+            }
+            log.warn("Discard for the executor's queue is full. Task({}), Executor({})", r.toString(),
+                executor.toString());
+        }
+    }
+
+    /**
+     * 类比jdk的：{@link ThreadPoolExecutor.AbortPolicy}，jdk的默认策略，这里将其转为框架异常
+     *
+     * @deprecated use {@link ThreadPoolExecutor.AbortPolicy}
+     */
+    public static class Abort implements RejectedExecutionHandler {
+
+        private static final Logger log = LoggerFactory.getLogger(Abort.class);
+
+        @Override
+        public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+            throw new RejectedExecutionException("Discard for the executor's queue is full. " +
+                "Task(" + r.toString() + "), Executor({" + executor.toString() + "})");
+        }
+    }
+
+
+    /**
+     * 阻塞调用者策略
+     */
+    public static class Block implements RejectedExecutionHandler {
+
+        private static final Logger log = LoggerFactory.getLogger(Abort.class);
+
+        /**
+         * 最长等待时间 null 代表永远阻塞，直至放入
+         */
+        private final Duration maxWait;
+
+        /**
+         * @param maxWait 最长等待时间
+         */
+        public Block(Duration maxWait) {
+            this.maxWait = maxWait;
+        }
+
+        /**
+         * 默认一直阻塞，直至放入
+         */
+        public Block() {
+            this.maxWait = null;
+        }
+
+        @Override
+        public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+            if (executor.isShutdown()) {
+                throw new RejectedExecutionException("Executor has been shut down");
+            }
+            try {
+                BlockingQueue<Runnable> queue = executor.getQueue();
+                if(maxWait == null){
+                    log.debug("Attempting to queue task execution till success, blocking...");
+                    queue.put(r);
+                }else {
+                    log.debug("Attempting to queue task execution, maxWait: {}", this.maxWait);
+                    if (!queue.offer(r, this.maxWait.getNano(), TimeUnit.NANOSECONDS)) {
+                        throw new RejectedExecutionException("Max wait time expired to queue task");
+                    }
+                }
+                log.debug("Task execution queued");
+            } catch (InterruptedException e) {
+                log.debug("Interrupted while queuing task execution");
+                Thread.currentThread().interrupt();
+                throw new RejectedExecutionException("Interrupted", e);
+            }
+        }
+
     }
 
 }
