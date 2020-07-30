@@ -22,7 +22,7 @@ public class LocalTimeConverter extends BaseDateConverter<LocalTime> implements 
 
     @Override
     protected Map<String, String> initTimeParserMap() {
-        return Collections.singletonMap("yyyy-MM-dd HH:mm:ss", "^\\d{1,2}:\\d{1,2}:\\d{1,2}$");
+        return Collections.singletonMap("HH:mm:ss", "^\\d{1,2}:\\d{1,2}:\\d{1,2}$");
     }
 
     @Override
