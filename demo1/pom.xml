@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>cn.itlym</groupId>
 		<artifactId>shoulder-parent</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.1.0-RELEASE</version>
 	</parent>
     
 	<groupId>com.example</groupId>
@@ -28,7 +28,7 @@
 
 		<!-- shoulder 改写的 lombok，额外提供 @SLog -->
 		<dependency>
-			<groupId>cn.itlym</groupId>
+			<groupId>cn.itlym.shoulder</groupId>
 			<artifactId>shoulder-lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
