@@ -3,7 +3,6 @@ package org.shoulder.core.i18;
 import org.shoulder.core.context.BaseContextHolder;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.StringUtils;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -35,6 +34,7 @@ import java.util.stream.Collectors;
  * 约定：会加载 classPath:language 中的多语言，便于自定义jar包中扩充，优先级较低，优先使用用户的
  * <p>
  * 翻译场景推荐 注：Thymeleaf、FreeMark 等动态页面由后端翻译，html静态页面或前后分离时推荐由前端翻译
+ *              若有大量重复 message 映射时，如多租户，每个租户可以定制自己的界面和提示信息，可采用继承方式简化多语言管理
  * <p>
  * 清空多语言缓存 {@link super#clearCacheIncludingAncestors}
  * todo 目前仅支持文件加载，需要支持Spring中Resource允许的加载方式

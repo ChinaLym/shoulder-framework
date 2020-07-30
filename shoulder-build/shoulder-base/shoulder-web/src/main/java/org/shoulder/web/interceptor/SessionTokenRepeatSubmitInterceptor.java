@@ -60,7 +60,10 @@ public class SessionTokenRepeatSubmitInterceptor extends BaseRejectRepeatSubmitI
 
     @Override
     protected void cleanServerToken(HttpServletRequest request){
-        request.getSession(false).removeAttribute(sessionTokenName);
+        HttpSession session = request.getSession(false);
+        if(session != null){
+            session.removeAttribute(sessionTokenName);
+        }
     }
 
     /**

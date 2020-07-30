@@ -12,8 +12,8 @@ public class ShoulderPatternLayout extends PatternLayout {
 
     public ShoulderPatternLayout() {
         super();
-        super.getDefaultConverterMap().put("d", TimeZoneLazyAwareDateConverter.class.getName());
-        super.getDefaultConverterMap().put("date", TimeZoneLazyAwareDateConverter.class.getName());
+        super.getDefaultConverterMap().put("d", ShoulderDateConverter.class.getName());
+        super.getDefaultConverterMap().put("date", ShoulderDateConverter.class.getName());
     }
 
 }

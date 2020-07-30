@@ -192,20 +192,14 @@ public enum CommonErrorCodeEnum implements ErrorCode {
         return httpStatus;
     }
 
+    // 提供了两个生成异常的方法，可选择使用
+
     public BaseRuntimeException toException(Object... args){
         return new BaseRuntimeException(this, args);
     }
 
     public BaseRuntimeException toException(Throwable t, Object... args){
-        return new BaseRuntimeException(getCode(), getMessage(), t, args);
-    }
-
-    public void throwException(Object... args) throws BaseRuntimeException {
-        throw toException(args);
-    }
-
-    public void throwException(Throwable t, Object... args) throws BaseRuntimeException {
-        throw toException(t, args);
+        return new BaseRuntimeException(this, t, args);
     }
 
 }

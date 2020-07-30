@@ -15,7 +15,7 @@
     <springProfile name="!prod,!test">
         <!-- 控制台Appender, 不要修改 -->
         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
                 <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %highlight(%-5level) ${appId} [%thread] [%cyan(%logger{50}):%line] %msg%n</pattern>
                 <charset>UTF-8</charset>
             </encoder>
@@ -40,7 +40,7 @@
             <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
                 <MaxFileSize>10MB</MaxFileSize>
             </triggeringPolicy>
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
                 <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} - %msg%n</pattern>
                 <charset>UTF-8</charset>
             </encoder>
@@ -75,7 +75,7 @@
                 <!-- debug文件大小达到 100M 后再压缩 -->
                 <MaxFileSize>100MB</MaxFileSize>
             </triggeringPolicy>
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
                 <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${appId} [%thread] [%logger{50}:%line] %msg%n</pattern>
                 <charset>UTF-8</charset>
             </encoder>
@@ -97,7 +97,7 @@
                     class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
                 <MaxFileSize>20MB</MaxFileSize>
             </triggeringPolicy>
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
                 <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${appId} [%thread] [%logger{50}:%line] %msg%n</pattern>
                 <charset>UTF-8</charset>
             </encoder>
@@ -121,7 +121,7 @@
             <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
                 <MaxFileSize>20MB</MaxFileSize>
             </triggeringPolicy>
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
                 <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${appId} [%thread] [%logger{50}:%line] - %msg%n</pattern>
                 <charset>UTF-8</charset>
             </encoder>

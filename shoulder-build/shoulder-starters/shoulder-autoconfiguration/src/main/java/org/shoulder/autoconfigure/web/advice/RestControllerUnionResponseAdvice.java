@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.web.advice;
 
 import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -10,6 +11,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -19,9 +21,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 /**
  * 统一接口返回值
- * 默认自动将 RestController 的返回值用 {@link BaseResponse} 包装。
- * 如果某个方法不希望被包装，则添加 {@link SkipResponseWrap}，也可以直接在类上添加
- * 如果希望使用自己项目中的返回值类，返回值继承 {@link BaseResponse} 类即可。
+ * 自动将 json 或者 str 类型返回值（RestController 的返回值）用 {@link BaseResponse} 包装。
+ *      关闭包装：
+ *          禁止对某个方法返回值包装： 方法上添加 {@link SkipResponseWrap}
+ *          禁止对某个RestController类的所有返回值包装： 类上添加 {@link SkipResponseWrap}
+ *          禁用功能： shoulder.web.unionResponse=false
+ *
+ *      如果希望使用自己项目中的返回值类，返回值继承 {@link BaseResponse} 类即可。
  *
  * todo 统一加密，签名？
  *
@@ -45,13 +51,25 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
                                   @NonNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   @NonNull ServerHttpRequest request,
                                   @NonNull ServerHttpResponse response) {
-		if (body == null) {
-			return BaseResponse.success();
-		}
-		if (BaseResponse.class.isAssignableFrom(body.getClass())) {
-			return body;
-		}
-		return BaseResponse.success().setData(body);
+	    if(MappingJackson2HttpMessageConverter.class.isAssignableFrom(selectedConverterType)){
+	        // json
+            if (body == null) {
+                return BaseResponse.success();
+            }
+            if (BaseResponse.class.isAssignableFrom(body.getClass())) {
+                return body;
+            }
+            return BaseResponse.success().setData(body);
+        } else {
+	        // string
+            if(StringUtils.isEmpty((CharSequence) body)){
+                return "{\"code\":\"0\",\"msg\":\"success\",\"data\":\"\"}";
+            }else {
+                return "{\"code\":\"0\",\"msg\":\"success\",\"data\":\"" + body + "\"}";
+            }
+
+        }
+
 	}
 
     /**
@@ -62,8 +80,10 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
      */
     private boolean needWrapResponse(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         boolean jsonType = MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
+        boolean stringType = StringHttpMessageConverter.class.isAssignableFrom(converterType);
+        boolean supportToJson = jsonType || stringType;
         boolean springStdResponseType = ResponseEntity.class.isAssignableFrom(returnType.getParameterType());
-        if (!jsonType || springStdResponseType){
+        if (supportToJson || springStdResponseType){
             return false;
         }
 

@@ -85,7 +85,7 @@ public class BaseResponse<T> implements Serializable {
         if (ErrorCode.SUCCESS.getCode().equals(code)) {
             return data;
         }
-        throw CommonErrorCodeEnum.RPC_COMMON.toException(code);
+        throw new BaseRuntimeException(CommonErrorCodeEnum.RPC_COMMON, code);
     }
 
     /**
