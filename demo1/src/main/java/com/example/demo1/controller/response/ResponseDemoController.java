@@ -29,7 +29,7 @@ public class ResponseDemoController {
      * 正常写法举例，框架不会嵌套包装
      */
     @GetMapping("0")
-    public BaseResponse<String> normal(){
+    public BaseResponse<String> notRecommended(){
         BaseResponse<String> response = new BaseResponse<>();
         response.setCode("0");
         response.setMsg("msg");

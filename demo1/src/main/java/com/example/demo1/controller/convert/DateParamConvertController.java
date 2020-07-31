@@ -11,18 +11,17 @@ import java.util.Date;
 
 /**
  * 可以自动将日期转为对应的类
- * 注：日期输出时，java 默认以 0 时区格式输出
  *
  * @author lym
  */
 @RestController
 @RequestMapping("date")
-public class ParamConvertController {
+public class DateParamConvertController {
 
     /**
      * 自动将字符串转换为 {@link Date}，如访问 <a href="http://localhost:8080/date/1?date=2020"/>
-     * 格式要求：yyyy-MM-dd HH:mm:ss 可以只填前面一段，如 yyyy-MM，'-' 可以替换为 / 如 yyyy/MM/dd
-     *
+     *  格式要求：yyyy-MM-dd HH:mm:ss 可以只填前面一段，如 yyyy-MM，'-' 可以替换为 / 如 yyyy/MM/dd
+     * 注：输出时，java 默认以 0 时区格式输出
      */
     @GetMapping("1")
     public Date case1(Date date){
@@ -31,7 +30,7 @@ public class ParamConvertController {
     }
 
     /**
-     * fixme 自动将字符串转换为 {@link LocalDate}，如访问 <a href="http://localhost:8080/date/2?date=2020-1-01"/>
+     * 自动将字符串转换为 {@link LocalDate}，如访问 <a href="http://localhost:8080/date/2?date=2020-1-01"/>
      * 入参格式要求
      *      yyyy-MM-dd 或 yyyy/MM/dd
      */
@@ -42,7 +41,7 @@ public class ParamConvertController {
     }
 
     /**
-     * fixme 自动将字符串转换为 {@link LocalDateTime}，如访问 <a href="http://localhost:8080/date/3?date=2020-1-01%2012:20:13"/>
+     * 自动将字符串转换为 {@link LocalDateTime}，如访问 <a href="http://localhost:8080/date/3?date=2020-1-01%2012:20:13"/>
      * 入参格式要求
      *      yyyy-MM-dd HH:mm:ss 或 yyyy/MM/dd HH:mm:ss
      */
@@ -61,6 +60,5 @@ public class ParamConvertController {
         System.out.println(date);
         return date;
     }
-
 
 }

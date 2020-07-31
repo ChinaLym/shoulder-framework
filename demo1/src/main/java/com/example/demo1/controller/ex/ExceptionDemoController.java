@@ -29,7 +29,7 @@ public class ExceptionDemoController {
      * 分类处理异常、记录日志
      */
     @GetMapping("0")
-    public BaseResponse<String> normal(){
+    public BaseResponse<String> notRecommended(){
         try{
             String businessResult = businessMethod();
             return BaseResponse.success(businessResult);

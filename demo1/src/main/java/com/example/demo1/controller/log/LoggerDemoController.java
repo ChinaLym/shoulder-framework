@@ -42,7 +42,7 @@ public class LoggerDemoController {
      * 使用彩色展示，优化了 logback 的性能
      */
     @GetMapping("0")
-    public String normal(){
+    public String notRecommended(){
         log.info("this is a example log.");
         return TIP;
     }
