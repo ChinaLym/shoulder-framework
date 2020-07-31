@@ -4,16 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 import javax.validation.constraints.NotEmpty;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 解决入参为 Date类型
+ * Controller 方法 String 类型入参自动转为日期类型
  *
  * @author lym
  */
@@ -39,20 +37,18 @@ public class DateConverter extends BaseDateConverter<Date> {
         formatMap.put("yyyy/MM/dd HH", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}");
         formatMap.put("yyyy/MM/dd HH:mm", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}:\\d{1,2}$");
         formatMap.put("yyyy/MM/dd HH:mm:ss", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$");
+        // "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
         return formatMap;
     }
 
-    private static FastDateFormat fastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     @Override
-    protected Date parseDateOrTime(@NotEmpty String sourceDataString, String dateTimeTemplate){
+    protected Date parseDateOrTime(@NotEmpty String sourceDateString, String dateTimeTemplate) {
         try {
-            DateFormat dateFormat = new SimpleDateFormat(dateTimeTemplate);
-            dateFormat.setLenient(lenientMode);
-            return dateFormat.parse(sourceDataString);
+            return FastDateFormat.getInstance(dateTimeTemplate).parse(sourceDateString);
         } catch (ParseException e) {
-            log.info("dateFormatError, date={}, format={}", sourceDataString, dateTimeTemplate, e);
-            throw new DateTimeParseException("Text '" + sourceDataString + "' could not be parsed: " + e.getMessage(), sourceDataString, 0, e);
+            log.info("dateFormatError, date={}, format={}", sourceDateString, dateTimeTemplate, e);
+            throw new DateTimeParseException("Text '" + sourceDateString + "' could not be parsed: " + e.getMessage(), sourceDateString, 0, e);
         }
     }
 

@@ -76,7 +76,7 @@ public class EnumDeserializer extends StdDeserializer<Enum<?>> {
             Method method = fieldType.getMethod(stringToEnumMethodName, String.class);
             return (Enum<?>) method.invoke(null, value);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException e) {
-            log.warn("Deserialize enum fail! Can't invoke the method named  '" + stringToEnumMethodName  + "'", e);
+            log.warn("Deserialize enum fail! Can't invoke the method named  '" + stringToEnumMethodName + "'", e);
             return null;
         }
     }

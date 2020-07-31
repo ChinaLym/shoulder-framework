@@ -5,6 +5,7 @@ import org.springframework.lang.NonNull;
 
 /**
  * 接口入参，枚举接收字符串，通用转换类
+ *
  * @author lym
  */
 public class EnumConverter implements Converter<String, Enum> {

@@ -1,34 +1,43 @@
 package org.shoulder.core.converter;
 
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.NonNull;
-
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 
 /**
- * 解决入参为 Date类型
+ * Controller 方法 String 类型入参自动转为日期类型
  *
  * @author lym
  */
-public class LocalDateTimeConverter extends BaseDateConverter<LocalDateTime> implements Converter<String, LocalDateTime> {
+public class LocalDateTimeConverter extends BaseLocalDateTimeConverter<LocalDateTime> {
 
     @Override
     protected Map<String, String> initTimeParserMap() {
         Map<String, String> formatMap = new LinkedHashMap<>(2);
-        formatMap.put("yyyy-MM-dd HH:mm:ss", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$");
-        formatMap.put("yyyy/MM/dd HH:mm:ss", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$");
+        formatMap.put("yyyy-MM-dd HH:mm:ss", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{2}:\\d{2}:\\d{2}$");
+        formatMap.put("yyyy/MM/dd HH:mm:ss", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{2}:\\d{2}:\\d{2}$");
         return formatMap;
     }
 
     @Override
-    protected LocalDateTime parseDateOrTime(@NotEmpty String sourceDataString, String dateTimeTemplate){
-        return LocalDateTime.parse(sourceDataString, DateTimeFormatter.ofPattern(dateTimeTemplate));
+    protected String toStandFormat(@NotEmpty String sourceDateString) {
+        if (sourceDateString.length() == 19) {
+            return sourceDateString;
+        } else {
+            String[] dateTimeParts = sourceDateString.split(" ");
+            String date = dateTimeParts[0];
+            String time = dateTimeParts[1];
+            return super.toStandYearMonthDay(date) + " " + time;
+        }
+    }
+
+    @Override
+    protected BiFunction<String, DateTimeFormatter, LocalDateTime> parseFunction() {
+        return LocalDateTime::parse;
     }
 
 }
