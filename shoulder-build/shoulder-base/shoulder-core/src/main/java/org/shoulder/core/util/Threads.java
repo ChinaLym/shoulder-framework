@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 /**
  * 线程工具类
  *  提供延时任务和常用线程池拒绝策略的封装
- * 该类必须设置线程池之后使用，否则 IllegalStateException。
+ * 注意！该类必须设置线程池之后使用，否则 IllegalStateException！
  *
  * @author lym
  */

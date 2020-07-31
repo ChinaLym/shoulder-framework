@@ -19,7 +19,7 @@ public class ThreadAutoConfiguration {
     @ConditionalOnMissingBean(name = Threads.DEFAULT_THREAD_POOL_NAME)
     public ExecutorService shoulderThreadPool() {
         // 默认使用 5 个线程
-            return Executors.newFixedThreadPool(5,
+        ExecutorService executorService = Executors.newFixedThreadPool(5,
                 r -> {
                     Thread thread = Executors.defaultThreadFactory().newThread(r);
                     thread.setDaemon(true);
@@ -27,6 +27,8 @@ public class ThreadAutoConfiguration {
                     return thread;
                 }
             );
+        Threads.setExecutorService(executorService);
+        return executorService;
     }
 
 }

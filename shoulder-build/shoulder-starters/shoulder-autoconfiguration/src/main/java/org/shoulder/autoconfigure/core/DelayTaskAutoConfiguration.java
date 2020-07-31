@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.lang.NonNull;
 
@@ -19,19 +20,23 @@ import java.util.concurrent.Executor;
 
 /**
  * 延迟任务相关配置
+ *
  * @author lym
  */
 @Configuration
 @ConditionalOnProperty(name = "shoulder.delayTask.enable", havingValue = "true", matchIfMissing = false)
 public class DelayTaskAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
 
+    @Lazy
     @Autowired
     private DelayTasDispatcher delayTasDispatcher;
 
     @Bean
     @ConditionalOnMissingBean
-    public DelayTaskHolder delayTaskHolder(){
-        return new DelayQueueDelayTaskHolder();
+    public DelayTaskHolder delayTaskHolder() {
+        DelayTaskHolder delayTaskHolder = new DelayQueueDelayTaskHolder();
+        Threads.setDelayTaskHolder(delayTaskHolder);
+        return delayTaskHolder;
     }
 
     @Bean
@@ -44,9 +49,7 @@ public class DelayTaskAutoConfiguration implements ApplicationListener<ContextRe
 
     @Override
     public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
-        if (event.getApplicationContext().getParent() == null) {
-            delayTasDispatcher.start();
-        }
+        delayTasDispatcher.start();
     }
 
 }
