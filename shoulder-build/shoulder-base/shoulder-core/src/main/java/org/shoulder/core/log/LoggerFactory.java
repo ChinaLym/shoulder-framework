@@ -23,7 +23,7 @@ public class LoggerFactory {
     /**
      * 绑定日志工厂
      */
-    private static void initLoggerFactoryImpl(){
+    private static void initLoggerFactoryImpl() {
         ServiceLoader<ILoggerFactory> loads = ServiceLoader.load(ILoggerFactory.class);
         List<ILoggerFactory> loggerFactoryList = new LinkedList<>();
         for (ILoggerFactory loggerFactory : loads) {
@@ -31,15 +31,15 @@ public class LoggerFactory {
         }
         int loggerFactoryImplNum = loggerFactoryList.size();
         // 唯一绑定
-        if(loggerFactoryImplNum == 0){
+        if (loggerFactoryImplNum == 0) {
             // 未扩展，则使用默认的 LoggerFactory
             //System.out.println("Shoulder LoggerFactory: use default LoggerFactory[" + ShoulderLoggerSl4jFactory.class.getName() + "]");
             delegate = ShoulderLoggerSl4jFactory.getInstance();
-        }else {
+        } else {
             // 否则取第一个
             ILoggerFactory firstLoggerFactory = loggerFactoryList.get(0);
             System.err.println("Shoulder LoggerFactory is not unique. Found impl.size = " + loggerFactoryList.size() +
-                    ", use the first:" + firstLoggerFactory.getClass().getName());
+                ", use the first:" + firstLoggerFactory.getClass().getName());
             delegate = firstLoggerFactory;
         }
     }

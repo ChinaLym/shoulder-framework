@@ -11,23 +11,33 @@ import java.util.List;
  */
 public interface TranslatableUiResult<T> {
 
-    /** code @return code */
+    /**
+     * code @return code
+     */
     String getCode();
 
-    /** data @return data */
+    /**
+     * data @return data
+     */
     T getData();
 
-    /** msg @return msg */
+    /**
+     * msg @return msg
+     */
     String getMsg();
 
     /**
      * 多语言翻译时的用于填充占位符，如果没有占位符则自动返回空（代表多语言字段无可填充项，直接翻译即可）
+     *
      * @return 填充翻译的部分
      */
-    default List<String> getPlaceholders(){return null;}
+    default List<String> getPlaceholders() {
+        return null;
+    }
 
     /**
      * 统一格式转换：转为框架标准的
+     *
      * @return 框架中提供的
      */
     default BaseResponse<T> unified() {

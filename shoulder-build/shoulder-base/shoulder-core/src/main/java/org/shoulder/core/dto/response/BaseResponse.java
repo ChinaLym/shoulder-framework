@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * 通用返回对象
- *
+ * <p>
  * 统一返回值，code，msg，data
  *
  * @author lym
@@ -38,6 +38,7 @@ public class BaseResponse<T> implements Serializable {
 
     /**
      * 构造器
+     *
      * @param errorCode 错误码
      */
     public BaseResponse(ErrorCode errorCode) {
@@ -48,6 +49,7 @@ public class BaseResponse<T> implements Serializable {
 
     /**
      * 构造器
+     *
      * @param code 错误码
      * @param msg  提示信息
      * @param data 返回数据

@@ -22,19 +22,27 @@ import static org.shoulder.core.constant.PageConst.*;
 public class PageQuery implements Serializable {
 
 
-    /** 页码 */
+    /**
+     * 页码
+     */
     @ApiModelProperty(value = "", dataType = "int", example = "1")
     private int pageNo = DEFAULT_PAGE_NO;
 
-    /** 每页大小 */
+    /**
+     * 每页大小
+     */
     @ApiModelProperty(value = "", dataType = "int", example = "20")
     private int pageSize = DEFAULT_PAGE_SIZE;
 
-    /** 待排序的字段名称 */
+    /**
+     * 待排序的字段名称
+     */
     @ApiModelProperty(value = "", dataType = "String", example = "xxx")
     private String sortBy;
 
-    /** 排序顺序 asc | desc */
+    /**
+     * 排序顺序 asc | desc
+     */
     @ApiModelProperty(value = "", dataType = "String", example = "asc")
     private String order = DEFAULT_ORDER;
 
@@ -58,6 +66,7 @@ public class PageQuery implements Serializable {
 
     /**
      * 从当前请求中获取与分页相关信息
+     *
      * @return 分页相关信息
      */
     public static PageQuery fromRequest() {
@@ -72,6 +81,7 @@ public class PageQuery implements Serializable {
 
     /**
      * 从请求中获取与分页相关信息
+     *
      * @param request 请求
      * @return 分页相关信息
      */

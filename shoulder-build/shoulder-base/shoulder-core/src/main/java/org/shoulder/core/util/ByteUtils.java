@@ -1,6 +1,8 @@
 package org.shoulder.core.util;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Objects;
@@ -47,9 +49,8 @@ public class ByteUtils {
     /**
      * 把源数组内容拷贝到目标数组的 index
      * 如 source = [1,2,3,4]， destination = new byte[]{0,0,0,0,0,0,0,0,0,0}
-     *  经过 copy(source, destination, 1)
-     *  结果：destination: [0,1,2,3,4,0,0,0,0,0]
-     *
+     * 经过 copy(source, destination, 1)
+     * 结果：destination: [0,1,2,3,4,0,0,0,0,0]
      */
     public static void copy(byte[] source, byte[] destination, int index) {
         int limit = Integer.min(source.length, destination.length - index);
@@ -174,7 +175,7 @@ public class ByteUtils {
      */
     public static long toLong(byte[] bytes) throws IOException {
         ByteArrayInputStream bai = new ByteArrayInputStream(bytes);
-        DataInputStream dis =new DataInputStream(bai);
+        DataInputStream dis = new DataInputStream(bai);
         return dis.readLong();
     }
 

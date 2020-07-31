@@ -27,7 +27,7 @@ public class DelayTasDispatcher implements Runnable {
 
     private static volatile boolean running = false;
 
-    public DelayTasDispatcher(Executor defaultExecutor, DelayTaskHolder delayTaskHolder){
+    public DelayTasDispatcher(Executor defaultExecutor, DelayTaskHolder delayTaskHolder) {
         this.defaultExecutor = defaultExecutor;
         this.delayTaskHolder = delayTaskHolder;
     }
@@ -36,7 +36,7 @@ public class DelayTasDispatcher implements Runnable {
      * 启动延迟任务调度线程
      */
     public synchronized void start() {
-        if(running){
+        if (running) {
             log.debug("invalid operation, already running.");
             return;
         }

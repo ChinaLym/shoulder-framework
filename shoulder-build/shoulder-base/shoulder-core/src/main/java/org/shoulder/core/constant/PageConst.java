@@ -2,7 +2,7 @@ package org.shoulder.core.constant;
 
 /**
  * 分页相关常量
- * 
+ *
  * @author lym
  */
 public interface PageConst {
@@ -47,5 +47,5 @@ public interface PageConst {
      * 排序方向 KEY (ASC\DESC)
      */
     String PARAM_ORDER = "order";
-    
+
 }

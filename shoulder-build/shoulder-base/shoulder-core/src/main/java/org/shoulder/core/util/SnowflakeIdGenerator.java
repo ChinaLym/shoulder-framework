@@ -120,7 +120,7 @@ public class SnowflakeIdGenerator {
         //如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
         if (timestamp < lastTimestamp) {
             throw new RuntimeException(
-                    String.format("Clock moved backwards.  Refusing to generate autoconfigure for %d milliseconds", lastTimestamp - timestamp));
+                String.format("Clock moved backwards.  Refusing to generate autoconfigure for %d milliseconds", lastTimestamp - timestamp));
         }
 
         //如果是同一时间生成的，则进行毫秒内序列
@@ -142,9 +142,9 @@ public class SnowflakeIdGenerator {
 
         //移位并通过或运算拼到一起组成64位的ID
         return ((timestamp - timeEpoch) << timestampLeftShift)
-                | (datacenterId << dataCenterIdShift)
-                | (workerId << workerIdShift)
-                | sequence;
+            | (datacenterId << dataCenterIdShift)
+            | (workerId << workerIdShift)
+            | sequence;
     }
 
     /**

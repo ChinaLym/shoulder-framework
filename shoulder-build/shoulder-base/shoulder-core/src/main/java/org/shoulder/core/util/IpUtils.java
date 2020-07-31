@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * 获取本机 IP、MAC 等
+ *
  * @author lym
  */
 public class IpUtils {
@@ -31,17 +32,23 @@ public class IpUtils {
         return matcher.matches();
     }
 
-    /** 获取本机mac */
+    /**
+     * 获取本机mac
+     */
     public static String getMACFromCache() {
         return LOCAL_MAC;
     }
-    /** 获取本机IP */
+
+    /**
+     * 获取本机IP
+     */
     public static String getIPFromCache() {
         return LOCAL_IP;
     }
 
     /**
      * 获取本机ip
+     *
      * @return ip ：10.10.10.10
      */
     public static String getIP() {
@@ -56,6 +63,7 @@ public class IpUtils {
 
     /**
      * 获取本机主机名
+     *
      * @return xxxx
      */
     public static String getHostName() {
@@ -68,14 +76,15 @@ public class IpUtils {
 
     /**
      * 获取本机MAC地址，推荐从缓存中获取
+     *
      * @return mac：2C-4D-54-E5-86-0E
      */
     private static String getMAC() {
         try {
             byte[] mac = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress();
             StringBuilder sb = new StringBuilder();
-            for(int i=0;i<mac.length;i++) {
-                if(i!=0){
+            for (int i = 0; i < mac.length; i++) {
+                if (i != 0) {
                     sb.append("-");
                 }
                 //mac[i] & 0xFF 是为了把byte转化为正整数

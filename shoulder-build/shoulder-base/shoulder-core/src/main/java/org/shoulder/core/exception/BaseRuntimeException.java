@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 /**
  * 基础通用异常
  * 代码中可直接抛出该类异常，会通过统一异常处理将该错误信息捕获封装返回
- *
+ * <p>
  * 获取并填充异常信息 {@link ExceptionUtil#generateExceptionMessage}
  *
  * @author lym

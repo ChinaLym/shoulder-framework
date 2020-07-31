@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * 真正的 loggerFactory, 底层依赖的是 slf4j
+ *
  * @author lym
  */
 public class ShoulderLoggerSl4jFactory implements ILoggerFactory {
@@ -18,17 +19,17 @@ public class ShoulderLoggerSl4jFactory implements ILoggerFactory {
     /**
      * 获取 logger
      *
-     * @param key logger 标识
+     * @param loggerName logger 标识
      * @return logger
      */
     @Override
-    public Logger getLogger(Class<?> key) {
+    public Logger getLogger(Class<?> loggerName) {
         ServiceLoader<Logger> loggerImpl = ServiceLoader.load(Logger.class);
 
-        Logger logger = LOGGERS.get(key.getName());
+        Logger logger = LOGGERS.get(loggerName.getName());
         if (logger == null) {
-            LOGGERS.putIfAbsent(key.getName(), new ShoulderLogger(key));
-            logger = LOGGERS.get(key.getName());
+            LOGGERS.putIfAbsent(loggerName.getName(), new ShoulderLogger(loggerName));
+            logger = LOGGERS.get(loggerName.getName());
         }
         return logger;
     }
@@ -36,20 +37,20 @@ public class ShoulderLoggerSl4jFactory implements ILoggerFactory {
     /**
      * 获取 logger
      *
-     * @param key logger 标识
+     * @param loggerName logger 标识
      * @return logger
      */
     @Override
-    public Logger getLogger(String key) {
-        Logger logger = LOGGERS.get(key);
+    public Logger getLogger(String loggerName) {
+        Logger logger = LOGGERS.get(loggerName);
         if (logger == null) {
-            LOGGERS.putIfAbsent(key, new ShoulderLogger(key));
-            logger = LOGGERS.get(key);
+            LOGGERS.putIfAbsent(loggerName, new ShoulderLogger(loggerName));
+            logger = LOGGERS.get(loggerName);
         }
         return logger;
     }
 
-    public static ShoulderLoggerSl4jFactory getInstance(){
+    public static ShoulderLoggerSl4jFactory getInstance() {
         return SingleTonHolder.instance;
     }
 

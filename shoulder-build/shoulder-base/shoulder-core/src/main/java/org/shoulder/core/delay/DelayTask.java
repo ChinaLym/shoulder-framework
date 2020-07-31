@@ -29,8 +29,8 @@ public class DelayTask implements Delayed {
     private final String threadPoolName;
 
     /**
-     * @param task        要执行的任务
-     * @param nanoTimeOut 多久后执行，单位纳秒
+     * @param task           要执行的任务
+     * @param nanoTimeOut    多久后执行，单位纳秒
      * @param threadPoolName 线程池 bean 名称
      */
     private DelayTask(Runnable task, long nanoTimeOut, String threadPoolName) {
@@ -53,7 +53,7 @@ public class DelayTask implements Delayed {
     }
 
     /**
-     * @param task 要执行的任务
+     * @param task      要执行的任务
      * @param daleyTime 多久后执行
      */
     public DelayTask(Runnable task, Duration daleyTime) {
@@ -61,8 +61,8 @@ public class DelayTask implements Delayed {
     }
 
     /**
-     * @param task 要执行的任务
-     * @param daleyTime 多久后执行
+     * @param task           要执行的任务
+     * @param daleyTime      多久后执行
      * @param threadPoolName 线程池 bean 名称
      */
     public DelayTask(Runnable task, Duration daleyTime, String threadPoolName) {

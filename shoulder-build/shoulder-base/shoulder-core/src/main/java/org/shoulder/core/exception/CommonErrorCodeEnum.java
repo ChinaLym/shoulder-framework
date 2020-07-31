@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * 通用错误（2^14以下框架使用）
+ *
  * @author lym
  */
 public enum CommonErrorCodeEnum implements ErrorCode {
@@ -183,22 +184,22 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     }
 
     @Override
-    public Level getLogLevel(){
+    public Level getLogLevel() {
         return logLevel;
     }
 
     @Override
-    public HttpStatus getHttpStatusCode(){
+    public HttpStatus getHttpStatusCode() {
         return httpStatus;
     }
 
     // 提供了两个生成异常的方法，可选择使用
 
-    public BaseRuntimeException toException(Object... args){
+    public BaseRuntimeException toException(Object... args) {
         return new BaseRuntimeException(this, args);
     }
 
-    public BaseRuntimeException toException(Throwable t, Object... args){
+    public BaseRuntimeException toException(Throwable t, Object... args) {
         return new BaseRuntimeException(this, t, args);
     }
 

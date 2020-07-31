@@ -15,21 +15,28 @@ import static org.shoulder.core.constant.PageConst.*;
 @ApiModel("分页查询 DTO param")
 public class BasePageQuery<T> implements Serializable {
 
-
-    /** 页码 */
-    @ApiModelProperty(value = "", dataType = "int", example = "1",required = false)
+    /**
+     * 页码
+     */
+    @ApiModelProperty(value = "", dataType = "int", example = "1", required = false)
     private int pageNo = DEFAULT_PAGE_NO;
 
-    /** 每页大小 */
-    @ApiModelProperty(value = "", dataType = "int", example = "20",required = false)
+    /**
+     * 每页大小
+     */
+    @ApiModelProperty(value = "", dataType = "int", example = "20", required = false)
     private int pageSize = DEFAULT_PAGE_SIZE;
 
-    /** 待排序的字段名称 */
-    @ApiModelProperty(value = "", dataType = "String", example = "xxx",required = false)
+    /**
+     * 待排序的字段名称
+     */
+    @ApiModelProperty(value = "", dataType = "String", example = "xxx", required = false)
     private String sortBy;
 
-    /** 排序顺序 asc | desc */
-    @ApiModelProperty(value = "", dataType = "String", example = "asc",required = false)
+    /**
+     * 排序顺序 asc | desc
+     */
+    @ApiModelProperty(value = "", dataType = "String", example = "asc", required = false)
     private String order = DEFAULT_ORDER;
 
     private T condition;

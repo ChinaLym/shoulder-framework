@@ -4,6 +4,7 @@ import org.shoulder.core.exception.ErrorCode;
 
 /**
  * 在 slf4j 的基础上添加带错误码的记录方式
+ *
  * @author lym
  */
 public interface Logger extends org.slf4j.Logger {
@@ -12,6 +13,7 @@ public interface Logger extends org.slf4j.Logger {
 
     /**
      * 推荐的 warn 日志
+     *
      * @param error 带错误码和默认提示信息的异常
      */
     void warn(ErrorCode error);

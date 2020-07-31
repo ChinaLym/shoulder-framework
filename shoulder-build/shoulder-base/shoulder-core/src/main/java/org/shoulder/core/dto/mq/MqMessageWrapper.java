@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * mq 消息统一包装类
+ *
  * @author lym
  */
 @Data

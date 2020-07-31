@@ -12,21 +12,22 @@ public interface Translatable extends MessageSourceResolvable {
 
     /**
      * 对应的语言标识
+     *
      * @return 语言标识
      */
-    default String getCode(){
+    default String getCode() {
         return null;
     }
 
     /**
      * Spring 中支持多个语言标识，依次尝试翻译
-     *  但实际中往往只需一个，由于 String[] 不如 String 类型通用，可以只使用 {@link #getCode()}，但并不强制
+     * 但实际中往往只需一个，由于 String[] 不如 String 类型通用，可以只使用 {@link #getCode()}，但并不强制
      *
-     * @implNote 提升易用性
      * @return 语言标识
+     * @implNote 提升易用性
      */
     @Override
-    default String[] getCodes(){
+    default String[] getCodes() {
         return new String[]{getCode()};
     }
 

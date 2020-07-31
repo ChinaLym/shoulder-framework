@@ -30,6 +30,7 @@ public class BaseContextHolder {
 
     /**
      * 设置用户标识
+     *
      * @param userId 用户标识
      */
     public static void setUserId(Long userId) {
@@ -38,6 +39,7 @@ public class BaseContextHolder {
 
     /**
      * 设置用户标识
+     *
      * @param userId 用户标识
      */
     public static void setUserId(String userId) {
@@ -55,6 +57,7 @@ public class BaseContextHolder {
 
     /**
      * 设用户账户
+     *
      * @param account 设用户账户
      */
     public static void setAccount(String account) {
@@ -72,6 +75,7 @@ public class BaseContextHolder {
 
     /**
      * 设用户账户
+     *
      * @param account 设用户账户
      */
     public static void setName(String account) {
@@ -90,7 +94,7 @@ public class BaseContextHolder {
     /**
      * 设置语言标识 todo 默认以 HTTP header 的 Accept-Language 作为标记语言。
      *
-     * @param  locale 语言标识
+     * @param locale 语言标识
      */
     public static void setLocale(Locale locale) {
         set(ShoulderContextKey.Locale, locale.toString());
@@ -108,7 +112,7 @@ public class BaseContextHolder {
     /**
      * 设置认证 token
      *
-     * @param  token 认证 token
+     * @param token 认证 token
      */
     public static void setToken(String token) {
         set(ShoulderContextKey.HEADER_TOKEN, token);
@@ -144,6 +148,7 @@ public class BaseContextHolder {
 
     /**
      * 设置链路追踪标识
+     *
      * @param tranceId 链路追踪标识
      */
     public static void setTranceId(String tranceId) {
@@ -157,9 +162,9 @@ public class BaseContextHolder {
      * @return 值
      */
     @Nullable
-    public static String get(String key){
+    public static String get(String key) {
         Map<String, String> map = THREAD_LOCAL.get();
-        if(MapUtils.isNotEmpty(map)){
+        if (MapUtils.isNotEmpty(map)) {
             return null;
         }
         return map.get(key);
@@ -199,6 +204,7 @@ public class BaseContextHolder {
 
     /**
      * 以参数重置全部上下文，不推荐使用
+     *
      * @param contextMap 上下文属性
      */
     public static void setAttributes(Map<String, String> contextMap) {

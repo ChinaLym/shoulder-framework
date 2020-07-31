@@ -76,18 +76,22 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public void trace(String msg) {
         uniformLog(() -> log.trace(msg));
     }
+
     @Override
     public void trace(String format, Object arg) {
         uniformLog(() -> log.trace(format, arg));
     }
+
     @Override
     public void trace(String format, Object arg1, Object arg2) {
         uniformLog(() -> log.trace(format, arg1, arg2));
     }
+
     @Override
     public void trace(String format, Object... arguments) {
         uniformLog(() -> log.trace(format, arguments));
     }
+
     @Override
     public void trace(String msg, Throwable t) {
         uniformLog(() -> log.trace(msg, t));
@@ -97,10 +101,12 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public boolean isTraceEnabled(Marker marker) {
         return log.isTraceEnabled(marker);
     }
+
     @Override
     public void trace(Marker marker, String msg) {
         uniformLog(() -> log.trace(marker, msg));
     }
+
     @Override
     public void trace(Marker marker, String format, Object arg) {
         uniformLog(() -> log.trace(marker, format, arg));
@@ -304,8 +310,8 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void warn(String msg, Throwable t) {
-        if(t instanceof ErrorCode){
-            warnWithErrorCode(((ErrorCode)t).getCode(), ((ErrorCode)t).generateDetail(), t);
+        if (t instanceof ErrorCode) {
+            warnWithErrorCode(((ErrorCode) t).getCode(), ((ErrorCode) t).generateDetail(), t);
             return;
         }
         uniformLog(() -> log.warn(msg, t));
@@ -350,11 +356,11 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     // --------- 带错误码的 WARN ---------
 
     @Override
-    public void warn(ErrorCode error){
+    public void warn(ErrorCode error) {
         uniformLog(error.getCode(), () -> {
-            if(error instanceof Throwable){
-                log.warn(error.generateDetail(), (Throwable)error);
-            }else {
+            if (error instanceof Throwable) {
+                log.warn(error.generateDetail(), (Throwable) error);
+            } else {
                 log.warn(error.generateDetail());
             }
         });
@@ -425,8 +431,8 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void error(String msg, Throwable t) {
-        if(t instanceof ErrorCode){
-            errorWithErrorCode(((ErrorCode)t).getCode(), ((ErrorCode)t).generateDetail(), t);
+        if (t instanceof ErrorCode) {
+            errorWithErrorCode(((ErrorCode) t).getCode(), ((ErrorCode) t).generateDetail(), t);
             return;
         }
         uniformLog(() -> log.error(msg, t));
@@ -471,11 +477,11 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     // --------- 带错误码的 ERROR ---------
 
     @Override
-    public void error(ErrorCode error){
+    public void error(ErrorCode error) {
         uniformLog(error.getCode(), () -> {
-            if(error instanceof Throwable){
-                log.error(error.generateDetail(), (Throwable)error);
-            }else {
+            if (error instanceof Throwable) {
+                log.error(error.generateDetail(), (Throwable) error);
+            } else {
                 log.error(error.generateDetail());
             }
         });
@@ -516,6 +522,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     /**
      * 统一格式打印日志
      * 在第三方日志记录器的基础上封装一点信息，如调用链信息
+     *
      * @param logger 第三方日志
      */
     private void uniformLog(GeneralLogger logger) {
@@ -528,9 +535,11 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
             MDC.remove(MDC_TRACE_NAME);
         }
     }
+
     /**
      * 统一格式打印日志
      * 在第三方日志记录器的基础上封装一点信息，如调用链信息
+     *
      * @param logger 第三方日志
      */
     private void uniformLog(String errorCode, GeneralLogger logger) {
@@ -556,6 +565,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     /**
      * 统一打印错误码格式
+     *
      * @param errorCode 错误码
      * @return [errorCodePrefix + errorCode]
      */
@@ -565,6 +575,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     /**
      * 统一打印调用链信息
+     *
      * @return <traceId,spanId>
      */
     String generateTraceInfo() {
@@ -574,23 +585,24 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
         }
         String spanId = MDC.get(MDC_SPAN_ID);
         return SPACE +
-                TRACE_PREFIX + traceId +
-                DELIMITER + (spanId == null ? "" : spanId) +
-                TRACE_SUFFIX;
+            TRACE_PREFIX + traceId +
+            DELIMITER + (spanId == null ? "" : spanId) +
+            TRACE_SUFFIX;
     }
 
     /**
      * 将错误码信息放到 MDC 中，以方便输出时填充
+     *
      * @param errorCode 错误码
      */
-    void addErrorCodeInfo(String errorCode){
+    void addErrorCodeInfo(String errorCode) {
         MDC.put(MDC_ERROR_CODE_NAME, generateErrorCode(errorCode));
     }
 
     /**
      * 清理错误码信息
      */
-    void cleanErrorCodeInfo(){
+    void cleanErrorCodeInfo() {
         MDC.remove(MDC_ERROR_CODE_NAME);
     }
 }
