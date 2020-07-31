@@ -42,6 +42,8 @@
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
     </properties>
 
+    <!--发布前检查编译测试无用依赖 mvn dependency:analyze-->
+    <!--发布前检查依赖是否有新版本 mvn dependency:analyze-->
 
     <!-- 开发者 -->
     <developers>

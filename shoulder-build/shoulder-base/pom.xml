@@ -14,15 +14,15 @@
 
     <modules>
         <module>shoulder-core</module>
+        <module>shoulder-validation</module>
+        <module>shoulder-web</module>
         <module>shoulder-data-db</module>
         <module>shoulder-crypto</module>
         <module>shoulder-operation-log</module>
-        <module>shoulder-validation</module>
-        <module>shoulder-web</module>
         <module>shoulder-http</module>
         <module>shoulder-crypto-negotiation</module>
 
-       <module>shoulder-cluster</module>
+        <module>shoulder-cluster</module>
         <module>shoulder-security</module>
         <module>shoulder-code</module>
         <module>shoulder-auth-server</module>

@@ -4,11 +4,10 @@
 ![](https://img.shields.io/badge/modules-27-yellow.svg)
 ![](https://img.shields.io/badge/license-Apche%202.0-orange.svg)
 
-![](https://img.shields.io/badge/Version-0.0.1--SNAPSHOT-red.svg) 
-
 ![](https://img.shields.io/badge/Spring%20Boot%20Version-2.3.0-blue.svg)
-
 ![](https://img.shields.io/badge/Spring%20Cloud%20Version-Hotox.SR5-blue.svg)
+
+![](https://img.shields.io/badge/Version-0.1.0--SNAPSHOT-red.svg) 
 
 ![LOGO](doc/img/logo.jpg)
 
@@ -98,7 +97,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.0.1-RELEASE</version>
+        <version>0.1.0-SNAPSHOT</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId>
@@ -120,14 +119,27 @@
 
 ### 已有工程使用
 
-已有工程大多数已经继承了 Spring Boot 提供的父工程，如果不想改动，只需要引入 shoulder 的特定 jar 即可~
+已有工程大多数已经继承了 Spring Boot 提供的父工程，如果不想改动，只需要引入 shoulder 的 bom，然后引入希望的模块即可即可~
 
-如操作日志模块
+```xml
+    <!-- shoulder 的依赖管理 -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-dependencies</artifactId>
+                <version>${shoulder.version}</version><!-- shoulder-version -->
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+```
+希望的模块，如操作日志模块
 ```xml
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-operation-log</artifactId>
-            <version>xxx</version>
         </dependency> 
 ```
 

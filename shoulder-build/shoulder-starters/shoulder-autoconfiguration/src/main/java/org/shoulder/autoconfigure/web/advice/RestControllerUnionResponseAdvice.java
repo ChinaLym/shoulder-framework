@@ -83,7 +83,7 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
         boolean stringType = StringHttpMessageConverter.class.isAssignableFrom(converterType);
         boolean supportToJson = jsonType || stringType;
         boolean springStdResponseType = ResponseEntity.class.isAssignableFrom(returnType.getParameterType());
-        if (supportToJson || springStdResponseType){
+        if (!supportToJson || springStdResponseType){
             return false;
         }
 

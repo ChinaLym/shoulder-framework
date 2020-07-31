@@ -49,7 +49,7 @@
         </dependency>-->
         <dependency>
             <groupId>cn.itlym.shoulder</groupId>
-            <artifactId>shoulder-lombok</artifactId>
+            <artifactId>lombok</artifactId>
         </dependency>
 
 

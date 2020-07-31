@@ -153,7 +153,7 @@
             <!--shoulder-base begin -->
             <dependency>
                 <groupId>cn.itlym.shoulder</groupId>
-                <artifactId>shoulder-lombok</artifactId>
+                <artifactId>lombok</artifactId>
                 <version>${shoulder-lombok.version}</version>
                 <optional>true</optional>
             </dependency>
@@ -294,6 +294,12 @@
             <!--Swagger begin -->
             <!-- swagger2 -->
             <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
+            <!--<dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${springfox-swagger2.version}</version>
@@ -308,17 +314,13 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-models</artifactId>
                 <version>${swagger.version}</version>
             </dependency>
-            <!--springfox-bean-validators 用来支持 JSR 303 @ NotNull，@ Min，@ Max，@Size -->
+            &lt;!&ndash;springfox-bean-validators 用来支持 JSR 303 @ NotNull，@ Min，@ Max，@Size &ndash;&gt;
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-bean-validators</artifactId>
@@ -328,7 +330,7 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-core</artifactId>
                 <version>${springfox-swagger2.version}</version>
-            </dependency>
+            </dependency>-->
 
             <!--<dependency>
                 <groupId>com.github.xiaoymin</groupId>
@@ -393,12 +395,13 @@
 
             <dependency>
                 <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
+                <artifactId>hutool-core</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>cn.hutool</groupId>
-                <artifactId>hutool-core</artifactId>
+                <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
 
@@ -459,7 +462,7 @@
 
 
             <!-- log-trace begin -->
-            <dependency>
+            <!--<dependency>
                 <groupId>io.zipkin.brave</groupId>
                 <artifactId>brave</artifactId>
                 <version>${brave.version}</version>
@@ -482,22 +485,22 @@
                 <artifactId>brave-context-slf4j</artifactId>
                 <version>${brave.version}</version>
             </dependency>
-            <!-- log-trace end -->
+            &lt;!&ndash; log-trace end &ndash;&gt;
 
 
-            <!-- monitor -->
+            &lt;!&ndash; monitor &ndash;&gt;
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-prometheus</artifactId>
                 <version>${micrometer.version}</version>
             </dependency>
-            <!-- monitor end -->
+            &lt;!&ndash; monitor end &ndash;&gt;
 
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
-            </dependency>
+            </dependency>-->
 
 
             <!-- spring basepackage start -->
