@@ -57,7 +57,7 @@ public class DelayTask implements Delayed {
      * @param daleyTime 多久后执行
      */
     public DelayTask(Runnable task, Duration daleyTime) {
-        this(task, daleyTime.getNano(), (String) null);
+        this(task, daleyTime.toNanos(), (String) null);
     }
 
     /**
@@ -66,7 +66,7 @@ public class DelayTask implements Delayed {
      * @param threadPoolName 线程池 bean 名称
      */
     public DelayTask(Runnable task, Duration daleyTime, String threadPoolName) {
-        this(task, daleyTime.getNano(), threadPoolName);
+        this(task, daleyTime.toNanos(), threadPoolName);
     }
 
     @Override

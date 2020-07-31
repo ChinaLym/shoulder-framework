@@ -182,7 +182,7 @@ public class Threads {
                     queue.put(r);
                 }else {
                     log.debug("Attempting to queue task execution, maxWait: {}", this.maxWait);
-                    if (!queue.offer(r, this.maxWait.getNano(), TimeUnit.NANOSECONDS)) {
+                    if (!queue.offer(r, this.maxWait.toNanos(), TimeUnit.NANOSECONDS)) {
                         throw new RejectedExecutionException("Max wait time expired to queue task");
                     }
                 }
