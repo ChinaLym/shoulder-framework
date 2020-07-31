@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Locale;
 
 /**
- * DemoController
+ * 翻译、国际化、多语言功能介绍
+ *
+ * @see ShoulderMessageSource 该类的类注释，必看，shoulder 翻译核心简介
  *
  * @author lym
  */
@@ -35,7 +37,7 @@ public class ShoulderI18nDemoController {
     private Translator translator;
 
     /**
-     * Spring 中提供的用法
+     * Spring 中提供的用法 <a href="http://localhost:8080/i18n/spring?code=shoulder.test.hi&locale=zh_CN" />
      *
      * @param toBeTranslate 待翻译的
      * @param args 用于填充翻译的参数
@@ -58,7 +60,7 @@ public class ShoulderI18nDemoController {
 
 
     /**
-     * Shoulder 中的推荐用法
+     * Shoulder 中的推荐用法  <a href="http://localhost:8080/i18n/shoulder?code=shoulder.test.hi" />
      * 在 Spring 之上简化了使用，不必再填写 Locale，将自动获取
      *
      * @param toBeTranslate 待翻译的
@@ -67,13 +69,16 @@ public class ShoulderI18nDemoController {
      * @return 翻译后的
      */
     @GetMapping("shoulder")
-    public String translator(String toBeTranslate, String args, String locale){
-        Locale aimLocale = StringUtils.parseLocale(locale, Locale.getDefault());
-        String[] trArgs = StringUtils.isNotEmpty(args) ? args.split(",") : null;
+    public String translator(String toBeTranslate, String args){
+        Object[] trArgs = StringUtils.isNotEmpty(args) ? args.split(",") : null;
 
-        return translator.getMessage(toBeTranslate, trArgs, aimLocale);
+        return translator.getMessage(toBeTranslate, (Object[]) trArgs);
     }
 
+    /**
+     *   <a href="http://localhost:8080/i18n/shoulder" />
+     * @return 翻译好的
+     */
     @GetMapping("1")
     public String case1(){
         // spring:
@@ -83,6 +88,10 @@ public class ShoulderI18nDemoController {
         return translator.getMessage("shoulder.test.hi");
     }
 
+    /**
+     * 翻译带填充参数的 <a href="http://localhost:8080/i18n/shoulder" />
+     * @return 翻译好的
+     */
     @GetMapping("2")
     public String case2(){
         // spring:

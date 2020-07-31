@@ -25,7 +25,7 @@ public class ExceptionDemoController {
     // --------------------------- 全局异常处理 ------------------------------
 
     /**
-     * 没用框架之前写法举例（不推荐这么写）
+     * 不优雅的写法举例  <a href="http://localhost:8080/exception/0" />
      * 分类处理异常、记录日志
      */
     @GetMapping("0")
@@ -53,7 +53,7 @@ public class ExceptionDemoController {
     }
 
     /**
-     * 使用 shoulder 框架：不需要管异常，框架会自动记录日志与包装返回值
+     * 使用 shoulder 框架：不需要管异常，框架会自动记录日志与包装返回值 <a href="http://localhost:8080/exception/1" />
      */
     @GetMapping("1")
     public String case1(){

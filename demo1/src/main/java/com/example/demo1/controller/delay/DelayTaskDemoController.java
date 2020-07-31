@@ -1,12 +1,19 @@
 package com.example.demo1.controller.delay;
 
 import lombok.extern.shoulder.SLog;
+import org.shoulder.core.delay.DelayTask;
+import org.shoulder.core.delay.DelayTaskHolder;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.Threads;
 import org.shoulder.web.annotation.SkipResponseWrap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 延迟任务使用示例
@@ -26,28 +33,44 @@ public class DelayTaskDemoController {
 
     private static final String TIP = "5秒中后，控制台将输出一条日志";
 
+    @Autowired
+    private DelayTaskHolder delayTaskHolder;
+
     /**
-     * 不建议通过睡眠的方式达到延迟触发的目的
+     * 不建议通过睡眠的方式达到延迟触发的目的，该方式创建出来，在触发前会一直占用一个线程
+     * <a href="http://localhost:8080/delay/0" />
      */
     @GetMapping("0")
     public String notRecommended(){
         Thread delay = new Thread(() -> {
             // 5s 后触发
-            Thread.sleep(5000);
-            log.warn("I'am a delay Task");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.warn("I'am a thread delayTask!");
         });
-
+        delay.start();
         return TIP;
     }
 
     /**
-     * 打印带错误码的日志，目前只有 warn 和 error 级别提供了错误码（更推荐 {@link #case2} 的方式）
+     * 建议使用 Shoulder 中的方式，触发前不会占用线程 <a href="http://localhost:8080/delay/1" />
      */
     @GetMapping("1")
     public String case1(){
-        String errorCode = "0xxxxx1";
-        log.warnWithErrorCode(errorCode, "This is a warn log with errorCode");
-        log.errorWithErrorCode(errorCode, "This is a error log with errorCode");
+        DelayTask delayTask = new DelayTask(() -> log.warn("I'am a shoulder delayTask"), Duration.ofSeconds(5));
+        delayTaskHolder.put(delayTask);
+        return TIP;
+    }
+
+    /**
+     * 封装过的方式，写起来更少 <a href="http://localhost:8080/delay/2" />
+     */
+    @GetMapping("2")
+    public String case2(){
+        Threads.delay(() -> log.warn("I'am a simple shoulder delayTask"), 5, TimeUnit.SECONDS);
         return TIP;
     }
 

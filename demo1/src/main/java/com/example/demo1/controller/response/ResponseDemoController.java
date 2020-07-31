@@ -26,7 +26,7 @@ public class ResponseDemoController {
 
 
     /**
-     * 正常写法举例，框架不会嵌套包装
+     * 正常写法举例，框架不会嵌套包装   <a href="http://localhost:8080/response/0" />
      */
     @GetMapping("0")
     public BaseResponse<String> notRecommended(){
@@ -38,7 +38,7 @@ public class ResponseDemoController {
     }
 
     /**
-     * 字符串类型
+     * 字符类型返回值自动包装   <a href="http://localhost:8080/response/1" />
      */
     @GetMapping("1")
     public String case1(){
@@ -47,7 +47,7 @@ public class ResponseDemoController {
 
 
     /**
-     * 自定义类型
+     * json 类型返回值自动包装   <a href="http://localhost:8080/response/2" />
      */
     @GetMapping("2")
     public Map<String, User> case2(){
@@ -58,7 +58,7 @@ public class ResponseDemoController {
     }
 
     /**
-     * 跳过包装
+     * 跳过包装   <a href="http://localhost:8080/response/3" />
      */
     @SkipResponseWrap
     @GetMapping("3")
@@ -67,7 +67,7 @@ public class ResponseDemoController {
     }
 
     /**
-     * 重定义标准返回值
+     * 自己定义的标准返回值不自动包装   <a href="http://localhost:8080/response/4" />
      */
     @SkipResponseWrap
     @GetMapping("4")
