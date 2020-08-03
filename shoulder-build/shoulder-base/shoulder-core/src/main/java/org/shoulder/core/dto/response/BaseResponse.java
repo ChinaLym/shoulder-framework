@@ -13,7 +13,7 @@ import java.io.Serializable;
 /**
  * 通用返回对象
  * <p>
- * 统一返回值，code，msg，data
+ * 统一接口返回值格式，包含 code，msg，data
  *
  * @author lym
  */
