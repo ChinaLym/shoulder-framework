@@ -5,26 +5,39 @@ import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 /**
  * 服务端者返回参数
  * Token = 服务端私钥签名（所有参数拼接）
+ *
  * @author lym
  */
 public class KeyExchangeResponse {
 
-    /** Header 中 会话标识 */
+    /**
+     * Header 中 会话标识
+     */
     private transient String xSessionId;
 
-    /** Header 中 防篡改签名 */
+    /**
+     * Header 中 防篡改签名
+     */
     private transient String token;
 
-    /** 服务端的公钥 */
+    /**
+     * 服务端的公钥
+     */
     private String publicKey;
 
-    /** 本次会话 aes 算法 */
+    /**
+     * 本次会话 aes 算法
+     */
     private String aes;
 
-    /** 算法密钥长度 256/8=32 */
+    /**
+     * 算法密钥长度 256/8=32
+     */
     private Integer keyLength = 32;
 
-    /** 多少毫秒之后本次协商过期 */
+    /**
+     * 多少毫秒之后本次协商过期
+     */
     private int expireTime = KeyExchangeConstants.EXPIRE_TIME;
 
     public String getxSessionId() {

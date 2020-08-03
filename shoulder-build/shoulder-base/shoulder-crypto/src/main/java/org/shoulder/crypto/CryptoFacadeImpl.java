@@ -1,16 +1,17 @@
 package org.shoulder.crypto;
 
+import lombok.NonNull;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
-import lombok.NonNull;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * 加解密工具
+ * 加解密门面
+ *
  * @author lym
  */
 @Service
@@ -64,12 +65,12 @@ public class CryptoFacadeImpl implements CryptoFacade {
     }
 
     @Override
-    public String sign(String text) throws AsymmetricCryptoException {
+    public String signAsymmetric(String text) throws AsymmetricCryptoException {
         return asymmetric.sign(text);
     }
 
     @Override
-    public boolean verify(String text, String signature) throws AsymmetricCryptoException {
+    public boolean verifyAsymmetric(String text, String signature) throws AsymmetricCryptoException {
         return asymmetric.verify(text, signature);
     }
 

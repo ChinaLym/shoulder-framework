@@ -2,7 +2,6 @@ package org.shoulder.crypto.digest;
 
 import org.shoulder.core.constant.ByteSpecification;
 
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -36,16 +35,16 @@ public class Sha256Utils implements ByteSpecification {
     }
 
     /**
-    * sha256之后转为十六进制的String
-    **/
+     * sha256之后转为十六进制的String
+     **/
     public static String digestToHex(String toHashStr) {
         byte[] cipher = digest(toHashStr.getBytes(ByteSpecification.STD_CHAR_SET));
         return byte2Hex(cipher);
     }
 
     /**
-    * 将byte转为16进制
-    **/
+     * 将byte转为16进制
+     **/
     private static String byte2Hex(byte[] bytes) {
         StringBuilder stringBuffer = new StringBuilder();
         String temp = null;

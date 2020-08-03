@@ -54,14 +54,14 @@ public class ECDHUtils {
             KeyAgreement aKeyAgree = KeyAgreement.getInstance(ECDH, PROVIDER);
             aKeyAgree.init(ecPriKey);
             aKeyAgree.doPhase(ecPubKey, true);
-            return getLocalKeyAndIv(aKeyAgree.generateSecret(), keyLength);
+            return generateLocalKeyAndIv(aKeyAgree.generateSecret(), keyLength);
         } catch (Exception e) {
             logger.error("秘钥磋商出现异常", e);
             throw new NegotiationException("秘钥磋商出现异常", e);
         }
     }
 
-    private static List<byte[]> getLocalKeyAndIv(byte[] negotiationKey, int keyLength) throws NegotiationException {
+    private static List<byte[]> generateLocalKeyAndIv(byte[] negotiationKey, int keyLength) {
         Assert.notNull(negotiationKey, "negotiationKey can't be null!");
         Assert.isTrue(negotiationKey.length == 32, "ECDH256 negotiationKey.length must be 32(256bit)!");
         byte[] temp = Sha256Utils.digest(negotiationKey);

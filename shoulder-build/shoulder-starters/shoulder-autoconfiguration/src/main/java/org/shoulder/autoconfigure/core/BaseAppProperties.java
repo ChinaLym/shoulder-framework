@@ -29,12 +29,12 @@ public class BaseAppProperties {
     /**
      * 应用版本（用于灰度发布、版本兼容等）
      */
-    private String version = "unknown";
+    private String version = "v1";
 
     /**
      * 全局统一日期格式
      */
-    private String dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+    private String dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
 
     /**
      * 全局统一字符集

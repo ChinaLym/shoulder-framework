@@ -12,6 +12,7 @@ public interface TransportNegotiationService {
 
     /**
      * 与服务方进行密钥协商请求
+     *
      * @param appId 目标应用标识
      * @return 是否协商成功
      * @throws NegotiationException 密钥协商异常
@@ -21,6 +22,7 @@ public interface TransportNegotiationService {
 
     /**
      * 处理其他服务发起的密钥交换请求
+     *
      * @param keyExchangeRequest 请求参数
      * @return 是否协商成功
      * @throws NegotiationException 密钥协商异常

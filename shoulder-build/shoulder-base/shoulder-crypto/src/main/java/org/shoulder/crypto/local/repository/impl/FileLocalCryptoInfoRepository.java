@@ -23,53 +23,55 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     private final Charset utf8 = StandardCharsets.UTF_8;
 
-	public String getAesInfoPath() {
-		return aesInfoPath;
-	}
+    public String getAesInfoPath() {
+        return aesInfoPath;
+    }
 
-	public void setAesInfoPath(String aesInfoPath) {
-		this.aesInfoPath = aesInfoPath;
-	}
+    public void setAesInfoPath(String aesInfoPath) {
+        this.aesInfoPath = aesInfoPath;
+    }
 
-	/** 文件存储路径 */
-	private String aesInfoPath;
+    /**
+     * 文件存储路径
+     */
+    private String aesInfoPath;
 
-	public FileLocalCryptoInfoRepository(String aesInfoPath){
-		this.aesInfoPath = aesInfoPath;
-	}
+    public FileLocalCryptoInfoRepository(String aesInfoPath) {
+        this.aesInfoPath = aesInfoPath;
+    }
 
-	@Override
-	public void save(@NonNull LocalCryptoInfoEntity aesInfo) throws Exception {
+    @Override
+    public void save(@NonNull LocalCryptoInfoEntity aesInfo) throws Exception {
         String jsonStr = JsonUtils.toJson(aesInfo);
-		Files.write(getFilePath(), jsonStr.getBytes(utf8));
-	}
+        Files.write(getFilePath(), jsonStr.getBytes(utf8));
+    }
 
-	@Override
-	public LocalCryptoInfoEntity get(String appId, String markHeader) throws Exception {
-		return getAll().stream()
-				.filter(info -> appId.equals(info.getAppId()) && markHeader.equals(info.getHeader()))
-				.findFirst().orElse(null);
-	}
+    @Override
+    public LocalCryptoInfoEntity get(String appId, String markHeader) throws Exception {
+        return getAll().stream()
+            .filter(info -> appId.equals(info.getAppId()) && markHeader.equals(info.getHeader()))
+            .findFirst().orElse(null);
+    }
 
-	@Override
-	@NonNull
-	public List<LocalCryptoInfoEntity> get(String appId) throws Exception {
-		return getAll().stream().filter(info -> appId.equals(info.getAppId())).collect(Collectors.toList());
-	}
+    @Override
+    @NonNull
+    public List<LocalCryptoInfoEntity> get(String appId) throws Exception {
+        return getAll().stream().filter(info -> appId.equals(info.getAppId())).collect(Collectors.toList());
+    }
 
-	private Path getFilePath() throws IOException {
-		Path fileLocation = Paths.get(aesInfoPath);
-		if(Files.notExists(fileLocation)){
-			Files.createDirectories(fileLocation);
-		}
-		String fileName = "aesInfo.json";
-		return fileLocation.resolve(fileName);
-	}
+    private Path getFilePath() throws IOException {
+        Path fileLocation = Paths.get(aesInfoPath);
+        if (Files.notExists(fileLocation)) {
+            Files.createDirectories(fileLocation);
+        }
+        String fileName = "aesInfo.json";
+        return fileLocation.resolve(fileName);
+    }
 
-	public List<LocalCryptoInfoEntity> getAll() throws Exception {
-		String jsonStr = Files.readString(getFilePath(), utf8);
-		return (List<LocalCryptoInfoEntity>) JsonUtils.toObject(jsonStr, List.class);
-	}
+    public List<LocalCryptoInfoEntity> getAll() throws Exception {
+        String jsonStr = Files.readString(getFilePath(), utf8);
+        return (List<LocalCryptoInfoEntity>) JsonUtils.toObject(jsonStr, List.class);
+    }
 
 
 }

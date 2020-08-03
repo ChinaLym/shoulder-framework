@@ -18,44 +18,44 @@ import java.util.List;
  */
 public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
-	private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-	private static final String KEY_PREFIX = "aesInfo";
+    private static final String KEY_PREFIX = "aesInfo";
 
     public RedisLocalCryptoInfoRepository(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
     @Override
-	public void save(@NonNull LocalCryptoInfoEntity aesInfo) throws Exception {
-		boolean set = redisTemplate.opsForHash().putIfAbsent(getCacheId(aesInfo.getAppId()), aesInfo.getHeader(), aesInfo);
-		if(!set){
-		    throw new IllegalStateException("appId, markHeader exist, maybe another instance has init.");
+    public void save(@NonNull LocalCryptoInfoEntity aesInfo) throws Exception {
+        boolean set = redisTemplate.opsForHash().putIfAbsent(getCacheId(aesInfo.getAppId()), aesInfo.getHeader(), aesInfo);
+        if (!set) {
+            throw new IllegalStateException("appId, markHeader exist, maybe another instance has init.");
         }
-	}
+    }
 
-	@Override
-	public LocalCryptoInfoEntity get(String appId, String markHeader) throws Exception {
-        return (LocalCryptoInfoEntity)redisTemplate.opsForHash().get(getCacheId(appId), markHeader);
-	}
+    @Override
+    public LocalCryptoInfoEntity get(String appId, String markHeader) throws Exception {
+        return (LocalCryptoInfoEntity) redisTemplate.opsForHash().get(getCacheId(appId), markHeader);
+    }
 
-	@Override
-	@NonNull
-	public List<LocalCryptoInfoEntity> get(String appId) throws Exception {
-		List<Object> objects = redisTemplate.opsForHash().values(getCacheId(appId));
-		if(CollectionUtils.isEmpty(objects)){
-			return Collections.emptyList();
-		}
-		List<LocalCryptoInfoEntity> localCryptoInfoEntityList = new LinkedList<>();
-		for (Object obj : objects){
-			LocalCryptoInfoEntity aesInfo = (LocalCryptoInfoEntity)obj;
-			localCryptoInfoEntityList.add(aesInfo);
-		}
-		return localCryptoInfoEntityList;
-	}
+    @Override
+    @NonNull
+    public List<LocalCryptoInfoEntity> get(String appId) throws Exception {
+        List<Object> objects = redisTemplate.opsForHash().values(getCacheId(appId));
+        if (CollectionUtils.isEmpty(objects)) {
+            return Collections.emptyList();
+        }
+        List<LocalCryptoInfoEntity> localCryptoInfoEntityList = new LinkedList<>();
+        for (Object obj : objects) {
+            LocalCryptoInfoEntity aesInfo = (LocalCryptoInfoEntity) obj;
+            localCryptoInfoEntityList.add(aesInfo);
+        }
+        return localCryptoInfoEntityList;
+    }
 
 
-    public String getCacheId(String appId){
+    public String getCacheId(String appId) {
         return KEY_PREFIX + "." + appId;
     }
 

@@ -29,11 +29,11 @@ public class RedisKeyNegotiationCache implements KeyNegotiationCache {
 
 
     @Override
-    public void put(@NonNull String cacheKey, @NonNull KeyExchangeResult keyExchangeResult, boolean asClient){
+    public void put(@NonNull String cacheKey, @NonNull KeyExchangeResult keyExchangeResult, boolean asClient) {
         redisTemplate.opsForValue().set(
-                (asClient ? clientKeyPrefix : serverKeyPrefix) + cacheKey,
-                JsonUtils.toJson(keyExchangeResult),
-                keyExchangeResult.getExpireTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS
+            (asClient ? clientKeyPrefix : serverKeyPrefix) + cacheKey,
+            JsonUtils.toJson(keyExchangeResult),
+            keyExchangeResult.getExpireTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS
         );
     }
 
@@ -42,7 +42,7 @@ public class RedisKeyNegotiationCache implements KeyNegotiationCache {
     @Nullable
     public KeyExchangeResult get(String cacheKey, boolean asClient) {
         String keyPrefix = asClient ?
-                clientKeyPrefix : serverKeyPrefix;
+            clientKeyPrefix : serverKeyPrefix;
         String key = keyPrefix + cacheKey;
 
         Object obj = redisTemplate.opsForValue().get(key);

@@ -1,7 +1,7 @@
 package org.shoulder.crypto.negotiation.interceptor;
 
-import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -52,7 +52,7 @@ public class ExchangeKeyInterceptor extends HandlerInterceptorAdapter {
         // 一、处理请求：解密发送方的会话密钥
         KeyExchangeResult cacheKeyExchangeResult = keyNegotiationCache.getAsServer(xSessionId);
 
-        if(cacheKeyExchangeResult == null){
+        if (cacheKeyExchangeResult == null) {
             // 返回重新握手错误码
             response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);

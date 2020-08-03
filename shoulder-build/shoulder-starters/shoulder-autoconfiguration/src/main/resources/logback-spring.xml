@@ -11,9 +11,9 @@
     <!-- 日志默认输出路径 -->
     <property name="LOG_HOME" value="/opt/logs/${appId}/" />
 
-    <!-- 非测试、生产环境配置 -->
+    <!-- 开发者本地 debug 运行时激活的配置 -->
     <springProfile name="!prod,!test">
-        <!-- 控制台Appender, 不要修改 -->
+        <!-- 控制台Appender -->
         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
                 <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %highlight(%-5level) [%thread] [%cyan(%logger{50}):%line] %msg%n</pattern>
@@ -54,10 +54,10 @@
 
         <!-- 系统运行日志文件打印配置     开始 -->
         <!--
-        如要增加自定义模块日志打印配置：
+        增加自定义模块日志打印时配置推荐：
             appender名称格式为：FILE-debug-模块名
-            文件名格式：${appId}.模块名.debug.log
-        日志打印文件越多, 越影响磁盘I/O效率, 造成程度卡顿
+            推荐文件名格式：${appId}.模块名.debug.log
+            注意：日志打印文件越多, 越影响磁盘I/O效率, 可能会造成程度卡顿
         -->
         <!-- TRACE及以上级别打印在 *.debug.log中 -->
         <appender name="FILE-debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -81,7 +81,7 @@
             </encoder>
         </appender>
 
-        <!-- 错误日志输出配置, error及以上日志单独再打印一个*.error.log, 防止重要信息被覆盖-->
+        <!-- 错误日志输出配置, error及以上日志额外打印到 *.error.log 专门记录错误日志 -->
         <appender name="FILE-error" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>ERROR</level>
@@ -129,7 +129,7 @@
         <logger name="org.springframework.boot" level="WARN" />
         <logger name="org.springframework.boot.web.filter" level="ERROR" />
 
-        <!-- shoulder 框架中日志的默认输出级别 WARN, 排查问题时, 可以切换为TRACE -->
+        <!-- shoulder 框架中日志的默认输出级别 WARN -->
         <logger name="org.shoulder" level="INFO" additivity="false">
             <appender-ref ref="FILE-debug" />
             <appender-ref ref="FILE-error" />

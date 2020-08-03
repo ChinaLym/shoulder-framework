@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 
 /**
  * 为 String 提供适配
+ *
  * @author lym
  */
 public class TransportCryptoUtil {
@@ -40,11 +41,12 @@ public class TransportCryptoUtil {
     }
 
     /**
-     *  协商密钥与 iv
+     * 协商密钥与 iv
      */
     public KeyExchangeResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
         return adapter.negotiation(keyExchangeResponse);
     }
+
     public KeyExchangeResponse negotiation(KeyExchangeRequest keyExchangeRequest) throws NegotiationException, AsymmetricCryptoException {
         return adapter.negotiation(keyExchangeRequest);
     }
@@ -58,6 +60,7 @@ public class TransportCryptoUtil {
 
     /**
      * 生成数据密钥的密文（用于协商完毕，每次请求中）
+     *
      * @return xDk
      */
     public static String encryptDk(KeyExchangeResult keyExchangeResult, byte[] dataKey) throws AesCryptoException {
@@ -66,6 +69,7 @@ public class TransportCryptoUtil {
 
     /**
      * 解密 xDk（用于协商完毕，每次请求中）
+     *
      * @return dataKey
      */
     public static byte[] decryptDk(KeyExchangeResult keyExchangeResult, String xDk) throws SymmetricCryptoException {
@@ -123,6 +127,7 @@ public class TransportCryptoUtil {
 
     /**
      * 生成 token（协商完毕，每次发送安全会话请求时）
+     *
      * @param xDk 每次请求发过来的临时密钥
      */
     public String generateToken(String xSessionId, String xDk) throws AsymmetricCryptoException {
@@ -149,9 +154,10 @@ public class TransportCryptoUtil {
 
     /**
      * 请求发起时，生成头部信息
+     *
      * @param keyExchangeResult 密钥交换结果
      * @param dataKey           数据密钥明文
-     * @return                  请求头
+     * @return 请求头
      * @throws AsymmetricCryptoException
      * @throws AesCryptoException
      */

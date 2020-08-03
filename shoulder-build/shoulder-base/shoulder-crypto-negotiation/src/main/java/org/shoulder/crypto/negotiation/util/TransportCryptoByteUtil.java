@@ -186,9 +186,9 @@ public class TransportCryptoByteUtil {
     public boolean verifyRequestToken(KeyExchangeRequest request) throws AsymmetricCryptoException {
         byte[] signature = ByteSpecification.decodeToBytes(request.getToken());
         return eccProcessor.verify(
-                ByteSpecification.decodeToBytes(request.getPublicKey()),
-                getNeedToSign(request),
-                signature
+            ByteSpecification.decodeToBytes(request.getPublicKey()),
+            getNeedToSign(request),
+            signature
         );
     }
 
@@ -223,9 +223,9 @@ public class TransportCryptoByteUtil {
     public boolean verifyResponseToken(KeyExchangeResponse response) throws AsymmetricCryptoException {
         byte[] signature = ByteSpecification.decodeToBytes(response.getToken());
         return eccProcessor.verify(
-                ByteSpecification.decodeToBytes(response.getPublicKey()),
-                getNeedToSign(response),
-                signature
+            ByteSpecification.decodeToBytes(response.getPublicKey()),
+            getNeedToSign(response),
+            signature
         );
     }
 
@@ -233,6 +233,7 @@ public class TransportCryptoByteUtil {
 
     /**
      * 生成 token（协商完毕，每次发送安全会话请求时）
+     *
      * @param xDk 每次请求的临时密钥密文
      */
     public byte[] generateToken(String xSessionId, byte[] xDk) throws AsymmetricCryptoException {
@@ -244,9 +245,9 @@ public class TransportCryptoByteUtil {
     /**
      * 验签，防篡改（协商完毕，每次处理请求时）
      *
-     * @param xSessionId    安全会话标识（密钥交换缓存 key )
-     * @param xDk           临时数据密钥密文
-     * @param signature     签名
+     * @param xSessionId 安全会话标识（密钥交换缓存 key )
+     * @param xDk        临时数据密钥密文
+     * @param signature  签名
      */
     public boolean verifyToken(String xSessionId, byte[] xDk, byte[] signature) throws AsymmetricCryptoException {
         byte[] xSessionIdBytes = xSessionId.getBytes(ByteSpecification.STD_CHAR_SET);

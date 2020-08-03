@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * 支持多版本并存的本地存储方案（无感知切换加密方案）
+ *
  * @author lym
  */
 public class LocalTextCipherManager implements LocalTextCipher {
@@ -23,13 +24,13 @@ public class LocalTextCipherManager implements LocalTextCipher {
      */
     private List<JudgeAbleLocalTextCipher> ciphers;
 
-    public LocalTextCipherManager(JudgeAbleLocalTextCipher mainCipher){
+    public LocalTextCipherManager(JudgeAbleLocalTextCipher mainCipher) {
         this.ciphers = new LinkedList<>();
         addCipher(mainCipher);
     }
 
-    public LocalTextCipherManager(List<JudgeAbleLocalTextCipher> ciphers){
-        if(CollectionUtils.isEmpty(ciphers)){
+    public LocalTextCipherManager(List<JudgeAbleLocalTextCipher> ciphers) {
+        if (CollectionUtils.isEmpty(ciphers)) {
             return;
         }
         this.ciphers = new LinkedList<>(ciphers);
@@ -44,8 +45,8 @@ public class LocalTextCipherManager implements LocalTextCipher {
     @Override
     public String decrypt(@NonNull String cipherText) throws SymmetricCryptoException {
         // 遍历所有加密器，这里认为每个加密器是互斥的，因为一般来说 a 加密器无法解密由 b 加密器加密过的数据，因此直接交给第一个能解密的加密器进行解密
-        for (JudgeAbleLocalTextCipher cipher : ciphers){
-            if(cipher.support(cipherText)){
+        for (JudgeAbleLocalTextCipher cipher : ciphers) {
+            if (cipher.support(cipherText)) {
                 return cipher.decrypt(cipherText);
             }
         }
@@ -63,13 +64,14 @@ public class LocalTextCipherManager implements LocalTextCipher {
 
     /**
      * 是否可用，可以在启动时检查一下
+     *
      * @return 是否可用
      */
-    public boolean isPrepared(){
+    public boolean isPrepared() {
         return CollectionUtils.isEmpty(ciphers);
     }
 
-    private void sortCiphers(){
+    private void sortCiphers() {
         this.ciphers.sort(Comparator.comparingInt(Ordered::getOrder));
     }
 

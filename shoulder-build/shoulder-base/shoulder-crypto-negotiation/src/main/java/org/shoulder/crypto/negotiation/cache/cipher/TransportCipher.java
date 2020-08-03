@@ -6,13 +6,16 @@ import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 
 /**
  * 传输加解密，使用者使用
+ *
  * @author lym
  */
 public class TransportCipher {
 
     private KeyExchangeResult keyExchangeResult;
 
-    /** 数据密钥明文 */
+    /**
+     * 数据密钥明文
+     */
     private byte[] dk;
 
 
@@ -23,8 +26,9 @@ public class TransportCipher {
 
     /**
      * 创建加密专用
+     *
      * @param keyExchangeInfo 密钥协商结果信息
-     * @param dk 数据密钥明文
+     * @param dk              数据密钥明文
      * @return 解密器
      */
     public static TransportCipher decryptor(KeyExchangeResult keyExchangeInfo, byte[] dk) {
@@ -33,18 +37,20 @@ public class TransportCipher {
 
     /**
      * 创建加密专用
+     *
      * @param keyExchangeInfo 密钥协商结果信息
      * @return 加密器
      */
-    public static Encryptor encryptor(KeyExchangeResult keyExchangeInfo, byte[] dk){
+    public static Encryptor encryptor(KeyExchangeResult keyExchangeInfo, byte[] dk) {
         return new Encryptor(keyExchangeInfo, dk);
     }
 
 
     /**
      * 加密
+     *
      * @param toCipher 待加密明文
-     * @return  密文
+     * @return 密文
      * @throws AesCryptoException 加密异常
      */
     public String encrypt(String toCipher) throws AesCryptoException {
@@ -53,6 +59,7 @@ public class TransportCipher {
 
     /**
      * 解密
+     *
      * @param cipherText 对方加密过的密文
      * @return 明文
      * @throws AesCryptoException 加密异常

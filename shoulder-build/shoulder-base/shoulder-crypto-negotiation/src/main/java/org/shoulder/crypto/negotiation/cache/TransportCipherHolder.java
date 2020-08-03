@@ -35,6 +35,7 @@ public class TransportCipherHolder {
     public static void setRequestEncryptor(TransportCipher transportCipher) {
         setRequestCipher(transportCipher);
     }
+
     /**
      * 用于服务提供端 解密
      */
@@ -56,6 +57,7 @@ public class TransportCipherHolder {
     public static void setResponseEncryptor(TransportCipher transportCipher) {
         setResponseCipher(transportCipher);
     }
+
     /**
      * 用于请求发起端 解密收到得响应
      */
@@ -78,12 +80,12 @@ public class TransportCipherHolder {
         response.remove();
     }
 
-/*
+    /*
 
-    */
+     */
 /**
-     * 请求状态，用于合成两个注解
-     *//*
+ * 请求状态，用于合成两个注解
+ *//*
 
     private static ThreadLocal<Boolean> status = ThreadLocal.withInitial(() -> null);
 
@@ -93,8 +95,8 @@ public class TransportCipherHolder {
 
     */
 /**
-     * 标记为正在进行请求
-     *//*
+ * 标记为正在进行请求
+ *//*
 
     public static void setRequestStatus() {
         status.set(true);
@@ -102,24 +104,24 @@ public class TransportCipherHolder {
 
     */
 /**
-     * 标记为正在进行处理响应
-     *//*
+ * 标记为正在进行处理响应
+ *//*
 
     public static void setResponseStatus() {
         status.set(false);
     }
     */
 /**
-     * 现在是否处于请求阶段
-     *//*
+ * 现在是否处于请求阶段
+ *//*
 
     public static boolean isRequesting() {
         return status.get() == null ? false : status.get();
     }
     */
 /**
-     * 现在是否处于响应阶段
-     *//*
+ * 现在是否处于响应阶段
+ *//*
 
     public static boolean isResponsed() {
         return status.get() != null && !status.get();

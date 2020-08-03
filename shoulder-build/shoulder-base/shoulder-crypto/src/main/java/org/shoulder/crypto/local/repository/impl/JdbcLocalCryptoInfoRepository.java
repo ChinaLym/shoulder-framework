@@ -25,23 +25,23 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     private RowMapper<LocalCryptoInfoEntity> rowMapper = new AesInfoRowMapper();
 
     private static final String CREATE_STATEMENT =
-            "create table tb_security_info " +
-                    "( " +
-                    "     id varchar " +
-                    "     app_id varchar, " +
-                    "     data_key varchar, " +
-                    "     root_key_part varchar, " +
-                    "     iv varchar, " +
-                    "     header varchar, " +
-                    "     create_time date, " +
+        "create table tb_security_info " +
+            "( " +
+            "     id varchar " +
+            "     app_id varchar, " +
+            "     data_key varchar, " +
+            "     root_key_part varchar, " +
+            "     iv varchar, " +
+            "     header varchar, " +
+            "     create_time date, " +
 
-                    "     constraint tb_security_info_pk " +
-                    "          primary key, " +
-                    "     constraint tb_security_info_uk " +
-                    "          unique (app_id, header) " +
-                    "); " +
-                    " " +
-                    "comment on table tb_security_info is 'support local crypto';";
+            "     constraint tb_security_info_pk " +
+            "          primary key, " +
+            "     constraint tb_security_info_uk " +
+            "          unique (app_id, header) " +
+            "); " +
+            " " +
+            "comment on table tb_security_info is 'support local crypto';";
 
     private static final String FIELDS = "id, app_id, data_key, root_key_part, iv, header, create_time";
 
@@ -58,7 +58,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     protected static final String SELECT_BATCH_STATEMENT = SELECT_STATEMENT + WHERE;
 
     protected static final String DEFAULT_INSERT_STATEMENT = "INSERT INTO " + TABLE_NAME + " (" + FIELDS
-            + ") values (?,?,?,?,?,?,?)";
+        + ") values (?,?,?,?,?,?,?)";
 
 
     private String selectBatchSql = SELECT_BATCH_STATEMENT;
@@ -101,20 +101,20 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     protected Object[] getAllFields(LocalCryptoInfoEntity aesInfo) {
         return new Object[]{
-                aesInfo.getId(),
-                aesInfo.getAppId(),
-                aesInfo.getDataKey(),
-                aesInfo.getRootKeyPart(),
-                aesInfo.getIv(),
-                aesInfo.getHeader(),
-                aesInfo.getCreateTime(),
+            aesInfo.getId(),
+            aesInfo.getAppId(),
+            aesInfo.getDataKey(),
+            aesInfo.getRootKeyPart(),
+            aesInfo.getIv(),
+            aesInfo.getHeader(),
+            aesInfo.getCreateTime(),
         };
     }
 
     protected Object[] getWhereFields(LocalCryptoInfoEntity aesInfo) {
         return new Object[]{
-                aesInfo.getAppId(),
-                aesInfo.getHeader()
+            aesInfo.getAppId(),
+            aesInfo.getHeader()
         };
     }
 
@@ -123,13 +123,13 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         @Override
         public LocalCryptoInfoEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new LocalCryptoInfoEntity(
-                    rs.getString(1),
-                    rs.getString(2),
-                    rs.getString(3),
-                    rs.getString(4),
-                    rs.getString(5),
-                    rs.getString(6),
-                    rs.getDate(7)
+                rs.getString(1),
+                rs.getString(2),
+                rs.getString(3),
+                rs.getString(4),
+                rs.getString(5),
+                rs.getString(6),
+                rs.getDate(7)
             );
         }
     }

@@ -24,6 +24,7 @@ import java.util.*;
 
 /**
  * 安全会话，密钥协商
+ *
  * @author lym
  */
 @Slf4j
@@ -51,6 +52,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
     /**
      * 发起密钥协商请求
+     *
      * @param appId 目标应用标识
      * @return 密钥协商结果
      * @throws NegotiationException 协商失败
@@ -60,7 +62,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         try {
             // 1. 先尝试走缓存
             KeyExchangeResult cacheResult = keyNegotiationCache.getAsClient(appId);
-            if(cacheResult != null){
+            if (cacheResult != null) {
                 return cacheResult;
             }
 
@@ -137,6 +139,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
     /**
      * 用于服务端处理调用方发来的密钥协商请求
+     *
      * @param keyExchangeRequest 请求参数
      * @return 协商响应
      * @throws NegotiationException 协商异常
@@ -147,10 +150,10 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         // 校验
         try {
             validateAndFill(keyExchangeRequest);
-            if(!keyExchangeRequest.isRefresh()){
+            if (!keyExchangeRequest.isRefresh()) {
                 //不强制刷新 尝试走缓存
                 keyExchangeResult = keyNegotiationCache.getAsServer(keyExchangeRequest.getxSessionId());
-                if(keyExchangeResult != null){
+                if (keyExchangeResult != null) {
                     return generateResponse(keyExchangeResult);
                 }
             }
@@ -215,6 +218,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
     /**
      * 获取与目标服务的密钥协商地址，如果不存在则返回默认地址
+     *
      * @param appId 应用标识
      * @return negotiationUrl
      */
@@ -227,6 +231,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
     /**
      * 服务名，服务的协商地址
+     *
      * @param negotiationInfo 应用标识和对应的密钥协商地址
      */
     public void addNegotiationUrl(TransportNegotiationInfo negotiationInfo) {

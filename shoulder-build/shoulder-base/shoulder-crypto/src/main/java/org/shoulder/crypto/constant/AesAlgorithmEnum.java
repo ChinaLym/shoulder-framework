@@ -4,12 +4,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * aes 算法枚举 —— AES 已经足够安全
+ * aes 安全算法枚举，用于密钥协商
+ *
  * @author lym
  */
 
 public enum AesAlgorithmEnum {
-    /** 所有支持的 aes 算法 */
+    /**
+     * 支持的 aes 算法
+     */
     AES_128_CBC("AES/CBC/PKCS5Padding", 128),
     AES_128_ECB("AES/ECB/PKCS5Padding", 128),
     AES_128_CBC_NoPadding("AES/CBC/NoPadding", 128),
@@ -28,7 +31,7 @@ public enum AesAlgorithmEnum {
     AES_256_ECB_NoPadding("AES/ECB/NoPadding", 256);
 
     private String algorithmName;
-    
+
     private int keyLength;
 
     public String getAlgorithmName() {
@@ -38,6 +41,7 @@ public enum AesAlgorithmEnum {
     public int getKeyLength() {
         return keyLength;
     }
+
     AesAlgorithmEnum(String algorithmName, int keyLength) {
         this.algorithmName = algorithmName;
         this.keyLength = keyLength;

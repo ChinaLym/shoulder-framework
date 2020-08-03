@@ -25,7 +25,7 @@ import java.io.IOException;
  * RestTemplate拦截器。
  * client 向 server 发出安全请求，响应自动解密
  * 用于 client 端解密目标服务返回的加密信息。
- *
+ * <p>
  * todo 由于仅处理响应后，依赖发送上下文，处理强制握手返回错误码，考虑塞进 SecurityRestTemplate？
  *
  * @author lym
@@ -46,13 +46,13 @@ public class ExchangeKeyHttpClientInterceptor implements ClientHttpRequestInterc
     }
 
     @Override
-    public ClientHttpResponse intercept( HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         // *************************** preRequest ***************************
 
         ClientHttpResponse response = execution.execute(request, body);
 
         // *************************** afterRequest ***************************
-        if(response.getStatusCode() != HttpStatus.OK){
+        if (response.getStatusCode() != HttpStatus.OK) {
             // todo 校验错误码，是否为强制重新进行密钥协商
         }
 

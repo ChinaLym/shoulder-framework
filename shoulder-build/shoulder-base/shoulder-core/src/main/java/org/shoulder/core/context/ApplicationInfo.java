@@ -1,6 +1,7 @@
 package org.shoulder.core.context;
 
 import lombok.extern.shoulder.SLog;
+import org.apache.commons.codec.Charsets;
 import org.shoulder.core.util.StringUtils;
 
 import java.nio.charset.Charset;
@@ -19,27 +20,27 @@ public class ApplicationInfo {
     /**
      * 应用标识
      */
-    private static String appId;
+    private static String appId = "";
 
     /**
      * 应用错误码前缀
      */
-    private static String errorCodePrefix;
+    private static String errorCodePrefix = "";
 
     /**
      * 应用版本（用于灰度发布、版本兼容等）
      */
-    private static String version;
+    private static String version = "v1";
 
     /**
-     * 全局统一日期格式
+     * 全局统一日期格式，默认世界标准时间格式
      */
-    private static String dateFormat;
+    private static String dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
 
     /**
-     * 全局统一字符集
+     * 全局统一字符集，默认 UTF-8
      */
-    private static Charset charset;
+    private static Charset charset = StandardCharsets.UTF_8;
 
     /**
      * 支持集群、多实例部署

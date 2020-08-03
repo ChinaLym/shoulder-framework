@@ -2,6 +2,7 @@ package org.shoulder.crypto.exception;
 
 /**
  * 加密解密根异常
+ *
  * @author lym
  */
 public class CryptoException extends Exception {

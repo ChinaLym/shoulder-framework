@@ -29,7 +29,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.lang.Nullable;
 
@@ -137,7 +136,7 @@ public class CryptoAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public DefaultAsymmetricCryptoProcessor eccAsymmetricProcessor(KeyPairCache keyPairCache){
-        return DefaultAsymmetricCryptoProcessor.Default.ecc256(keyPairCache);
+        return DefaultAsymmetricCryptoProcessor.ecc256(keyPairCache);
     }
 
     /**

@@ -25,9 +25,9 @@ public class LocalKeyNegotiationCache implements KeyNegotiationCache {
     private static Map<String, KeyExchangeResult> serverKeyExchangeResultMap = new ConcurrentHashMap<>(8);
 
     @Override
-    public void put(@NonNull String cacheKey, @NonNull KeyExchangeResult keyExchangeResult, boolean asClient){
+    public void put(@NonNull String cacheKey, @NonNull KeyExchangeResult keyExchangeResult, boolean asClient) {
         Map<String, KeyExchangeResult> keyExchangeResultMap = asClient ?
-                clientKeyExchangeResultMap : serverKeyExchangeResultMap;
+            clientKeyExchangeResultMap : serverKeyExchangeResultMap;
         keyExchangeResultMap.put(cacheKey, keyExchangeResult);
     }
 
@@ -35,7 +35,7 @@ public class LocalKeyNegotiationCache implements KeyNegotiationCache {
     @Nullable
     public KeyExchangeResult get(String cacheKey, boolean asClient) {
         Map<String, KeyExchangeResult> keyExchangeResultMap = asClient ?
-                clientKeyExchangeResultMap : serverKeyExchangeResultMap;
+            clientKeyExchangeResultMap : serverKeyExchangeResultMap;
         long now = System.currentTimeMillis();
         KeyExchangeResult cacheResult = keyExchangeResultMap.get(cacheKey);
         if (cacheResult == null) {
@@ -52,8 +52,6 @@ public class LocalKeyNegotiationCache implements KeyNegotiationCache {
             return cacheResult;
         }
     }
-
-
 
 
 }

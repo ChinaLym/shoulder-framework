@@ -11,6 +11,7 @@ import org.shoulder.crypto.asymmetric.exception.KeyPairException;
  * 加解密工具门面
  *
  * @author lym
+ * @deprecated 不推荐直接这么用
  */
 public final class CryptoUtil {
 
@@ -24,9 +25,10 @@ public final class CryptoUtil {
 
     /**
      * 本地存储加密
-     * @param text	待加密数据，不能为null，否则 NPE
-     * @return		参数 text 加密后的密文
+     *
+     * @param text 待加密数据，不能为null，否则 NPE
      * @throws SymmetricCryptoException 加密异常
+     * @return 参数 text 加密后的密文
      */
     public static String encryptAes(String text) throws SymmetricCryptoException {
         return crypto.encryptLocal(text);
@@ -34,9 +36,10 @@ public final class CryptoUtil {
 
     /**
      * 本地存储加密解密
-     * @param cipherText	密文，不能为null，否则 NPE
-     * @return				参数 cipherText 解密后的明文
+     *
+     * @param cipherText 密文，不能为null，否则 NPE
      * @throws SymmetricCryptoException 加密异常
+     * @return 参数 cipherText 解密后的明文
      */
     public static String decryptAes(String cipherText) throws SymmetricCryptoException {
         return crypto.decryptLocal(cipherText);
@@ -54,6 +57,7 @@ public final class CryptoUtil {
 
     /**
      * 获取 RSA 公钥
+     *
      * @return 公钥
      */
     public static String getPk() throws KeyPairException {
@@ -62,7 +66,8 @@ public final class CryptoUtil {
 
     /**
      * 加密
-     * @param text                待加密数据
+     *
+     * @param text 待加密数据
      * @return 加密后的
      * @throws AsymmetricCryptoException RsaCryptoException
      */
@@ -72,7 +77,8 @@ public final class CryptoUtil {
 
     /**
      * 解密
-     * @param cipherText   	待解密的数据，密文
+     *
+     * @param cipherText 待解密的数据，密文
      * @return 解密后的
      * @throws AsymmetricCryptoException RsaCryptoException
      */
@@ -83,7 +89,8 @@ public final class CryptoUtil {
 
     /**
      * RSA加密（公钥加密）
-     * @param text 需加密的数据
+     *
+     * @param text      需加密的数据
      * @param publicKey 对方的公钥
      * @return 密文
      * @throws AsymmetricCryptoException 加解密出错
@@ -94,23 +101,25 @@ public final class CryptoUtil {
 
     /**
      * 签名
+     *
      * @param text 签名内容
      * @return 签名结果
      * @throws AsymmetricCryptoException 加解密出错
      */
     public String signRsa(String text) throws AsymmetricCryptoException {
-        return crypto.sign(text);
+        return crypto.signAsymmetric(text);
     }
 
     /**
      * 签名验证
-     * @param text   内容
+     *
+     * @param text      内容
      * @param signature 签名
      * @return 是否合法
      * @throws AsymmetricCryptoException 加解密出错
      */
     public boolean verifyRsa(String text, String signature) throws AsymmetricCryptoException {
-        return crypto.verify(text, signature);
+        return crypto.verifyAsymmetric(text, signature);
     }
 
 }

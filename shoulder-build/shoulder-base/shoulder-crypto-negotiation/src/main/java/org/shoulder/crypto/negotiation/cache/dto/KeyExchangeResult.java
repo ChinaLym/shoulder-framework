@@ -4,32 +4,45 @@ import java.io.Serializable;
 
 /**
  * 协商完成后用于缓存的数据
+ *
  * @author lym
  */
 public class KeyExchangeResult implements Serializable {
 
-    /** 对方的公钥 */
+    /**
+     * 对方的公钥
+     */
     private byte[] publicKey;
 
-    /** 协商标识 */
+    /**
+     * 协商标识
+     */
     private String xSessionId;
 
-    /** 协商结果key，会话双方的共享密钥 */
+    /**
+     * 协商结果key，会话双方的共享密钥
+     */
     private byte[] localKey;
 
-    /** 协商结果向量 */
+    /**
+     * 协商结果向量
+     */
     private byte[] localIv;
 
-    /** 协商结果key长度 256/8=32 */
+    /**
+     * 协商结果key长度 256/8=32
+     */
     private int keyLength;
 
-    /** 过期的时间点 */
+    /**
+     * 过期的时间点
+     */
     private long expireTime;
 
     public KeyExchangeResult() {
     }
 
-    public KeyExchangeResult(String xSessionId, byte[] localKey, byte[] localIv,int keyLength, int expireTime) {
+    public KeyExchangeResult(String xSessionId, byte[] localKey, byte[] localIv, int keyLength, int expireTime) {
         this.xSessionId = xSessionId;
 
         setLocalKey(localKey);

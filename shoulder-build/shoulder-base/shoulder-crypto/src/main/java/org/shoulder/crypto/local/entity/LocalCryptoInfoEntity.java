@@ -5,22 +5,43 @@ import java.util.Date;
 
 /**
  * AES加解密相关秘钥存储
+ *
  * @author lym
  */
 public class LocalCryptoInfoEntity implements Serializable {
-    /** 唯一标识 */
+    /**
+     * 唯一标识
+     */
     private String id;
-    /** 应用唯一标识 */
+
+    /**
+     * 应用唯一标识
+     */
     private String appId;
-    /** 数据密钥 */
+
+    /**
+     * 数据密钥
+     */
     private String dataKey;
-    /** 跟密钥部件，用于生成根密钥 */
+
+    /**
+     * 跟密钥部件，用于生成根密钥
+     */
     private String rootKeyPart;
-    /** 加密向量 */
+
+    /**
+     * 加密向量
+     */
     private String iv;
-    /** 密文头部标识信息，方便识别是否为该算法加密的密文，更新加密算法等 */
+
+    /**
+     * 密文头部标识信息，方便识别是否为该算法加密的密文，更新加密算法等
+     */
     private String header;
-    /** 创建时间 */
+
+    /**
+     * 创建时间
+     */
     private Date createTime;
 
     public LocalCryptoInfoEntity() {

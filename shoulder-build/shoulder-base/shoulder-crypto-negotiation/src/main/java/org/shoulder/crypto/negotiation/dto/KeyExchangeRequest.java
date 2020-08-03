@@ -3,23 +3,34 @@ package org.shoulder.crypto.negotiation.dto;
 /**
  * 协商发起者提供参数
  * Token = 服务端公钥签名（xSessionId + publicKey）
+ *
  * @author lym
  */
 public class KeyExchangeRequest {
 
-    /** Header 中 会话标识 */
+    /**
+     * Header 中 会话标识
+     */
     private transient String xSessionId;
 
-    /** Header 中 防篡改签名 */
+    /**
+     * Header 中 防篡改签名
+     */
     private transient String token;
 
-    /** 发起者用于协商的公钥 */
+    /**
+     * 发起者用于协商的公钥
+     */
     private String publicKey;
 
-    /** 发起者支持的 aes 加解密算法，128/192/256 */
+    /**
+     * 发起者支持的 aes 加解密算法，128/192/256
+     */
     private String aesSupports = "256";
 
-    /** 是否强制双方重新协商 */
+    /**
+     * 是否强制双方重新协商
+     */
     private boolean refresh = false;
 
     public String getxSessionId() {

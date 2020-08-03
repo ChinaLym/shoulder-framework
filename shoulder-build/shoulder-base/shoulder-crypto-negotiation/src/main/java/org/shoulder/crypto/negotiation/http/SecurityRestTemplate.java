@@ -32,9 +32,9 @@ import java.util.stream.Stream;
 
 /**
  * 安全的 restTemplate，用于安全传输带私密字段的请求
- *  不适配 spring 的支持 kotlin 调不带 RequestCallback 参数的 execute 方法
- *  Java 代码使用 rest Template 最终都会经过 3个带 RequestCallback 参数的 execute 方法(General execution)去调 doExecute
- *  创建请求头的部分涉及 {@link RestTemplate#acceptHeaderRequestCallback} 两个方法，因此在 acceptHeaderRequestCallback 进行拦截而不是 doExecute
+ * 不适配 spring 的支持 kotlin 调不带 RequestCallback 参数的 execute 方法
+ * Java 代码使用 rest Template 最终都会经过 3个带 RequestCallback 参数的 execute 方法(General execution)去调 doExecute
+ * 创建请求头的部分涉及 {@link RestTemplate#acceptHeaderRequestCallback} 两个方法，因此在 acceptHeaderRequestCallback 进行拦截而不是 doExecute
  *
  * @author lym
  */
@@ -77,7 +77,6 @@ public class SecurityRestTemplate extends RestTemplate {
     }
 
 
-
     // ******************************* RequestCallback *******************************
 
     protected class SecuritySessionRequestCallback extends SecurityRestTemplate.HttpEntityRequestCallback {
@@ -109,9 +108,9 @@ public class SecurityRestTemplate extends RestTemplate {
 
             int time = 0;
             KeyExchangeResult keyExchangeResult = null;
-            while (keyExchangeResult == null){
+            while (keyExchangeResult == null) {
                 keyExchangeResult = negotiate(appId, time);
-                time ++;
+                time++;
             }
 
             // 创建加密器 todo 小优化，如果请求不带参数，则无需生成数据密钥
@@ -162,11 +161,9 @@ public class SecurityRestTemplate extends RestTemplate {
             super(responseType);
             if (requestBody instanceof HttpEntity) {
                 this.requestEntity = (HttpEntity<?>) requestBody;
-            }
-            else if (requestBody != null) {
+            } else if (requestBody != null) {
                 this.requestEntity = new HttpEntity<>(requestBody);
-            }
-            else {
+            } else {
                 this.requestEntity = HttpEntity.EMPTY;
             }
         }
@@ -185,18 +182,17 @@ public class SecurityRestTemplate extends RestTemplate {
                 if (httpHeaders.getContentLength() < 0) {
                     httpHeaders.setContentLength(0L);
                 }
-            }
-            else {
+            } else {
                 Class<?> requestBodyClass = requestBody.getClass();
                 Type requestBodyType = (this.requestEntity instanceof RequestEntity ?
-                        ((RequestEntity<?>)this.requestEntity).getType() : requestBodyClass);
+                    ((RequestEntity<?>) this.requestEntity).getType() : requestBodyClass);
                 HttpHeaders httpHeaders = httpRequest.getHeaders();
                 HttpHeaders requestHeaders = this.requestEntity.getHeaders();
                 MediaType requestContentType = requestHeaders.getContentType();
                 for (HttpMessageConverter<?> messageConverter : getMessageConverters()) {
                     if (messageConverter instanceof GenericHttpMessageConverter) {
                         GenericHttpMessageConverter<Object> genericConverter =
-                                (GenericHttpMessageConverter<Object>) messageConverter;
+                            (GenericHttpMessageConverter<Object>) messageConverter;
                         if (genericConverter.canWrite(requestBodyType, requestBodyClass, requestContentType)) {
                             if (!requestHeaders.isEmpty()) {
                                 requestHeaders.forEach((key, values) -> httpHeaders.put(key, new LinkedList<>(values)));
@@ -205,14 +201,13 @@ public class SecurityRestTemplate extends RestTemplate {
                             genericConverter.write(requestBody, requestBodyType, requestContentType, httpRequest);
                             return;
                         }
-                    }
-                    else if (messageConverter.canWrite(requestBodyClass, requestContentType)) {
+                    } else if (messageConverter.canWrite(requestBodyClass, requestContentType)) {
                         if (!requestHeaders.isEmpty()) {
                             requestHeaders.forEach((key, values) -> httpHeaders.put(key, new LinkedList<>(values)));
                         }
                         logBody(requestBody, requestContentType, messageConverter);
                         ((HttpMessageConverter<Object>) messageConverter).write(
-                                requestBody, requestContentType, httpRequest);
+                            requestBody, requestContentType, httpRequest);
                         return;
                     }
                 }
@@ -228,8 +223,7 @@ public class SecurityRestTemplate extends RestTemplate {
             if (logger.isDebugEnabled()) {
                 if (mediaType != null) {
                     logger.debug("Writing [" + body + "] as \"" + mediaType + "\"");
-                }
-                else {
+                } else {
                     logger.debug("Writing [" + body + "] with " + converter.getClass().getName());
                 }
             }
@@ -252,11 +246,11 @@ public class SecurityRestTemplate extends RestTemplate {
         public void doWithRequest(ClientHttpRequest request) throws IOException {
             if (this.responseType != null) {
                 List<MediaType> allSupportedMediaTypes = getMessageConverters().stream()
-                        .filter(converter -> canReadResponse(this.responseType, converter))
-                        .flatMap(this::getSupportedMediaTypes)
-                        .distinct()
-                        .sorted(MediaType.SPECIFICITY_COMPARATOR)
-                        .collect(Collectors.toList());
+                    .filter(converter -> canReadResponse(this.responseType, converter))
+                    .flatMap(this::getSupportedMediaTypes)
+                    .distinct()
+                    .sorted(MediaType.SPECIFICITY_COMPARATOR)
+                    .collect(Collectors.toList());
                 if (logger.isDebugEnabled()) {
                     logger.debug("Accept=" + allSupportedMediaTypes);
                 }
@@ -268,8 +262,7 @@ public class SecurityRestTemplate extends RestTemplate {
             Class<?> responseClass = (responseType instanceof Class ? (Class<?>) responseType : null);
             if (responseClass != null) {
                 return converter.canRead(responseClass, null);
-            }
-            else if (converter instanceof GenericHttpMessageConverter) {
+            } else if (converter instanceof GenericHttpMessageConverter) {
                 GenericHttpMessageConverter<?> genericConverter = (GenericHttpMessageConverter<?>) converter;
                 return genericConverter.canRead(responseType, null, null);
             }
@@ -278,13 +271,13 @@ public class SecurityRestTemplate extends RestTemplate {
 
         private Stream<MediaType> getSupportedMediaTypes(HttpMessageConverter<?> messageConverter) {
             return messageConverter.getSupportedMediaTypes()
-                    .stream()
-                    .map(mediaType -> {
-                        if (mediaType.getCharset() != null) {
-                            return new MediaType(mediaType.getType(), mediaType.getSubtype());
-                        }
-                        return mediaType;
-                    });
+                .stream()
+                .map(mediaType -> {
+                    if (mediaType.getCharset() != null) {
+                        return new MediaType(mediaType.getType(), mediaType.getSubtype());
+                    }
+                    return mediaType;
+                });
         }
     }
 

@@ -8,6 +8,8 @@ import java.nio.charset.Charset;
 
 /**
  * HmacSha256
+ * Hash-based Message Authentication Code
+ *
  * @author lym
  */
 public class HmacSha256Util {
@@ -16,7 +18,7 @@ public class HmacSha256Util {
 
     private static final String HMAC_SHA256 = "HmacSHA256";
 
-    public static String digest(String toDigest, String key) throws Exception {
+    public static String digest(String key, String toDigest) throws Exception {
 
         Mac hmacSha256 = Mac.getInstance(HMAC_SHA256);
         SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(CHAR_SET), HMAC_SHA256);

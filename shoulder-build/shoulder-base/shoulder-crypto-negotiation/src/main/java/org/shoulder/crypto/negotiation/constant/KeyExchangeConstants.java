@@ -3,6 +3,7 @@ package org.shoulder.crypto.negotiation.constant;
 
 /**
  * 密钥交换相关常量
+ *
  * @author lym
  */
 public class KeyExchangeConstants {

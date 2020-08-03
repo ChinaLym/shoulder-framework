@@ -63,7 +63,7 @@ public class TransportCryptoAutoConfiguration {
     public TransportCryptoUtil transportCryptoUtilAdapter(@Nullable @Ecc AsymmetricCryptoProcessor eccAsymmetricProcessor, KeyPairCache keyPairCache){
         AsymmetricCryptoProcessor eccCryptoProcessor = eccAsymmetricProcessor;
         if(eccAsymmetricProcessor == null){
-            eccCryptoProcessor = DefaultAsymmetricCryptoProcessor.Default.ecc256(keyPairCache);
+            eccCryptoProcessor = DefaultAsymmetricCryptoProcessor.ecc256(keyPairCache);
         }
         TransportCryptoByteUtil util = new TransportCryptoByteUtil(eccCryptoProcessor);
         return new TransportCryptoUtil(util);
