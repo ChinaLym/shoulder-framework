@@ -16,7 +16,6 @@
 
 	<properties>
 		<java.version>11</java.version>
-		<shoulder.version>${project.parent.version}</shoulder.version><!-- shoulder-version -->
 	</properties>
 
 	<dependencies>
@@ -33,6 +32,11 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-crypto</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>cn.itlym</groupId>
