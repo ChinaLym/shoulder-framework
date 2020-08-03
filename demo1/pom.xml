@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>cn.itlym</groupId>
 		<artifactId>shoulder-parent</artifactId>
-		<version>0.1.0-RELEASE</version>
+		<version>0.1.0-SNAPSHOT</version>
 	</parent>
     
 	<groupId>com.example</groupId>
@@ -16,6 +16,7 @@
 
 	<properties>
 		<java.version>11</java.version>
+		<shoulder.version>${project.parent.version}</shoulder.version><!-- shoulder-version -->
 	</properties>
 
 	<dependencies>
@@ -29,8 +30,14 @@
 		<!-- shoulder 改写的 lombok，额外提供 @SLog -->
 		<dependency>
 			<groupId>cn.itlym.shoulder</groupId>
-			<artifactId>shoulder-lombok</artifactId>
+			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>cn.itlym</groupId>
+			<artifactId>shoulder-starter-beanmap</artifactId>
+			<version>${shoulder.version}</version>
 		</dependency>
 
 		<!-- shoulder 继承了 spring boot 的所有特性，引入 spring boot 的jar 一样不需要写版本号 -->
@@ -42,6 +49,7 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+
 
 		<!-- 测试 -->
 		<dependency>
