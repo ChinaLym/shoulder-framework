@@ -11,6 +11,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface TableAlias {
-    /** 别名 */
+
+    /**
+     * 别名
+     */
     String value();
 }

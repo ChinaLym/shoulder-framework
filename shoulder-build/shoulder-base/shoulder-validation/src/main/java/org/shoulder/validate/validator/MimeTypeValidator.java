@@ -25,7 +25,7 @@ public class MimeTypeValidator implements ConstraintValidator<MimeType, Multipar
 
     @Override
     public void initialize(MimeType constraintAnnotation) {
-        mimeTypeArray = constraintAnnotation.whiteList();
+        mimeTypeArray = constraintAnnotation.allowList();
     }
 
     @Override

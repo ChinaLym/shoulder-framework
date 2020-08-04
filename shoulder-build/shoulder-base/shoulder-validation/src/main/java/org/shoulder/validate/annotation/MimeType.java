@@ -22,8 +22,8 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = MimeTypeValidator.class)
 public @interface MimeType {
 
-    /** mimeType 白名单 */
-    MIMEEnum[] whiteList();
+    /** 允许的 mimeType 类型 */
+    MIMEEnum[] allowList();
 
     /**
      * 提示信息对应的翻译key

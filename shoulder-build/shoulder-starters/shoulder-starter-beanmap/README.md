@@ -43,7 +43,7 @@
 又考虑到框架是为了方便使用者，降低使用者上手成本，且本框架作为服务端框架，忽略单次开销，**MapStruct**成了最佳的选择，
 且其基于注解的处理方式，消除了编译依赖，故 `Shoulder` 推荐使用 **[MapStruct](https://github.com/mapstruct/mapstruct)** 作为bean转换工具。
 
-
+快速入门：[https://blog.csdn.net/zhige_me/article/details/80699784](https://blog.csdn.net/zhige_me/article/details/80699784)
 
 参考：[https://www.baeldung.com/java-performance-mapping-frameworks](https://www.baeldung.com/java-performance-mapping-frameworks)
 [https://segmentfault.com/a/1190000020663215?utm_source=tag-newest](https://segmentfault.com/a/1190000020663215?utm_source=tag-newest)

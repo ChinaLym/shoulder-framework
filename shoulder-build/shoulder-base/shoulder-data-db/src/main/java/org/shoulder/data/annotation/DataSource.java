@@ -13,6 +13,7 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 public @interface DataSource {
+
     /**
      * 使用的数据源 bean 名称
      */

@@ -97,7 +97,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.1.0-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.1</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId>

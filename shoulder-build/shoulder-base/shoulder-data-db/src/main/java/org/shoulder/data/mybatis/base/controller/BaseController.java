@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 基础控制器
+ *
  * @author lym
  */
 public class BaseController<Biz extends IBaseService<T>, T> {

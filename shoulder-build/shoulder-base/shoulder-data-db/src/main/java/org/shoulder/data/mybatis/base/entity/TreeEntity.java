@@ -14,6 +14,7 @@ import static com.baomidou.mybatisplus.annotation.SqlCondition.LIKE;
 
 /**
  * 树形实体
+ * 举例：组织类、位置类（）
  *
  * @author lym
  */

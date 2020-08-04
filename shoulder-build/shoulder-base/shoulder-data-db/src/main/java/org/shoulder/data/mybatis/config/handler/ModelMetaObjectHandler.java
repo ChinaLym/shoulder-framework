@@ -14,6 +14,7 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
 
     /**
      * 插入时添加创建时间
+     *
      * @param metaObject 页面传递过来的参数的包装对象
      */
     @Override
@@ -28,6 +29,7 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
 
     /**
      * 更新时添加更新时间
+     *
      * @param metaObject 页面传递过来的参数的包装对象
      */
     @Override
