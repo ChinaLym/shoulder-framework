@@ -162,7 +162,7 @@
                         <charset>${maven.javadoc.charset}</charset>
                         <docencoding>${maven.javadoc.charset}</docencoding>
                     </configuration>
-                    <!--MAVEN_OPTS=-Dfile.encoding=UTF-8;JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8-->
+                    <!-- settings -> build tool -> Maven -> Runner -> MAVEN_OPTS=-Dfile.encoding=UTF-8;JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8-->
                     <!--<tags>
                         <tag>
                             <name>Description</name>
@@ -191,7 +191,7 @@
                         </tag>
                     </tags>-->
                     <!--网络不佳，snapshot仅发布jar以提高快照发布速度-->
-                    <!--<executions>
+                    <executions>
                         <execution>
                             <id>attach-javadocs</id>
                             <phase>package</phase>
@@ -199,11 +199,11 @@
                                 <goal>jar</goal>
                             </goals>
                             <configuration>
-                                &lt;!&ndash; 取消对源码中的doc参数注释等检查 3.x 之前为 additionalparam &ndash;&gt;
+                                <!-- 取消对源码中的doc参数注释等检查 3.x 之前为 additionalparam -->
                                 <additionalJOption>-Xdoclint:none</additionalJOption>
                             </configuration>
                         </execution>
-                    </executions>-->
+                    </executions>
                 </plugin>
 
                 <!-- GPG  发布插件-->

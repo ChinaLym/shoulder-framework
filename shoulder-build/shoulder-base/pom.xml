@@ -7,9 +7,11 @@
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-build</artifactId>
         <version>0.1</version><!-- shoulder-version -->
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>shoulder-base</artifactId>
+    <version>0.1</version><!-- shoulder-version -->
     <packaging>pom</packaging>
 
     <modules>
