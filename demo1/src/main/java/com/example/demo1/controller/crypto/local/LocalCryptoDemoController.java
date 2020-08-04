@@ -1,5 +1,6 @@
 package com.example.demo1.controller.crypto.local;
 
+import com.example.demo1.dto.CryptoTestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.local.LocalTextCipher;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 本地存储加解密，用于对数据库中的数据进行加密解密
  *
+ * 本地：指的是本应用加密，其他应用无法解密
+ *
  * @author lym
  */
 @Slf4j
@@ -20,29 +23,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("crypto/local")
 public class LocalCryptoDemoController {
 
-
+    // 1. 注入 LocalTextCipher
     @Autowired
     private LocalTextCipher localTextCipher;
 
     /**
-     * 本地加密  <a href="http://localhost:8080/crypto/local/encrypt?text=123456"/>
+     * 本地加密  <a href="http://localhost:8080/crypto/local/crypto?text=123456"/>
      */
-    @GetMapping("encrypt")
-    public String localEncrypt(String text) throws SymmetricCryptoException {
+    @GetMapping("crypto")
+    public CryptoTestDTO testCrypto(String text) throws SymmetricCryptoException {
+        // 2. 加密
         String cipher = localTextCipher.encrypt(text);
         log.info("text({}) encrypt result: {}", text, cipher);
-        return cipher;
-    }
-
-    /**
-     * 本地解密  <a href="http://localhost:8080/crypto/local/encrypt?cipher="/>
-     * todo 将 <a href="http://localhost:8080/crypto/local/encrypt?text=123456"/> 接口返回值放入，才能正确调用该接口，否则将报错
-     */
-    @GetMapping("decrypt")
-    public String localDecrypt(String cipher) throws SymmetricCryptoException {
-        String text = localTextCipher.decrypt(cipher);
-        log.info("cipher({}) decrypt result: {}", cipher, text);
-        return text;
+        // 3. 解密
+        String decryptText = localTextCipher.decrypt(cipher);
+        log.info("cipher({}) decrypt result: {}", cipher, decryptText);
+        return new CryptoTestDTO(text, cipher, decryptText);
     }
 
 }

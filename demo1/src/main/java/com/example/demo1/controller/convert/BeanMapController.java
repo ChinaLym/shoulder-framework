@@ -6,14 +6,19 @@ import com.example.demo1.bo.map.DemoBeanMapping;
 import com.example.demo1.enums.MyColorEnum;
 import org.shoulder.core.converter.EnumConverter;
 import org.shoulder.core.util.StringUtils;
+import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
+
 /**
  * @author lym
  */
+@SkipResponseWrap
 @RestController
 @RequestMapping("bean")
 public class BeanMapController {
@@ -22,17 +27,36 @@ public class BeanMapController {
     private DemoBeanMapping beanMapping;
 
     /**
-     * <a href="http://localhost:8080/bean/1"/> 输入枚举对应的名称可以成功转换
+     * <a href="http://localhost:8080/bean/1"/> 自动转换，懒人专享
      *
      * 默认采用名称严格匹配，也可以实现自己的转换器，实现方式参见 {@link EnumConverter}
      */
     @GetMapping("1")
     public ShopDTO case1(){
+        return beanMapping.toDTO(demoBO());
+    }
+
+    /**
+     * <a href="http://localhost:8080/bean/2"/> 复杂的转换
+     */
+    @GetMapping("2")
+    public ShopDTO case2(){
+        return beanMapping.toComposeDTO(demoBO());
+    }
+
+    /**
+     * 假设有这么一个 BO
+     */
+    private ShopBO demoBO(){
         ShopBO bo = new ShopBO();
         bo.setId(StringUtils.uuid32());
-        bo.setName(StringUtils.uuid32());
+        bo.setName("解忧杂货铺");
         bo.setColor(MyColorEnum.BLUE);
-        return beanMapping.toShopDTO(bo);
+        bo.setAddr("Beijing");
+        ShopBO.Owner owner = new ShopBO.Owner("xiaoming", 20);
+        bo.setBoss(owner);
+        bo.setCreateTime(new Date(System.currentTimeMillis()));
+        return bo;
     }
 
 }
