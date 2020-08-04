@@ -1,8 +1,11 @@
 package org.shoulder.crypto.asymmetric.store;
 
+import org.apache.commons.collections4.MapUtils;
 import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
 import org.shoulder.crypto.asymmetric.exception.NoSuchKeyPairException;
 import org.springframework.lang.NonNull;
+
+import java.util.Map;
 
 /**
  * 密钥对存储
@@ -18,6 +21,17 @@ public interface KeyPairCache {
      * @param keyPairDto 密钥对
      */
     void set(String id, @NonNull KeyPairDto keyPairDto);
+
+
+    /**
+     * 存储多个秘钥对
+     * @param keyPairDtoMap 秘钥对 map。key: id; value: keyPairDto
+     */
+    default void set(Map<String, KeyPairDto> keyPairDtoMap){
+        if(MapUtils.isNotEmpty(keyPairDtoMap)){
+            keyPairDtoMap.forEach(this::set);
+        }
+    }
 
     /**
      * 获取密钥对

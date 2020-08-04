@@ -11,7 +11,8 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.web.WebMvcAutoConfiguration, \
   org.shoulder.autoconfigure.redis.RedisAutoConfiguration, \
   org.shoulder.autoconfigure.http.HttpAutoConfiguration, \
-  org.shoulder.autoconfigure.crypto.CryptoAutoConfiguration,\
+  org.shoulder.autoconfigure.crypto.LocalCryptoAutoConfiguration,\
+  org.shoulder.autoconfigure.crypto.AsymmetricCryptoAutoConfiguration,\
   org.shoulder.autoconfigure.crypto.TransportCryptoAutoConfiguration, \
   org.shoulder.autoconfigure.db.mybatis.MybatisPlusAutoConfiguration, \
   org.shoulder.autoconfigure.log.operation.async.OpLogAsyncCustomAutoConfiguration,\

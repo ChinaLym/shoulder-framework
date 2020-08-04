@@ -250,6 +250,12 @@
 
             <dependency>
                 <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-starter-beanmap</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-auth-server</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
