@@ -69,6 +69,7 @@
         <bcprov.jdk15on.version>1.65.01</bcprov.jdk15on.version>
         <bcpkix.jdk15on.version>1.65</bcpkix.jdk15on.version>
         <caffeine.version>2.8.5</caffeine.version>
+        <mapstruct.version>1.3.1.Final</mapstruct.version>
 
         <!-- tools-file -->
         <tika-core.version>1.24.1</tika-core.version>
@@ -233,7 +234,6 @@
             <!--shoulder-base end -->
 
 
-
             <!--shoulder-starters begin -->
 
             <dependency>
@@ -283,7 +283,6 @@
                 <artifactId>shoulder-starter-web</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
-
 
 
             <!--shoulder-starters end -->
@@ -416,6 +415,18 @@
                 <groupId>net.java.dev.jna</groupId>
                 <artifactId>jna</artifactId>
                 <version>${jna.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
             </dependency>
 
             <!-- inheritable threadLocal -->
@@ -557,7 +568,7 @@
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
-                                <phase>deploy</phase>
+                        <phase>deploy</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
