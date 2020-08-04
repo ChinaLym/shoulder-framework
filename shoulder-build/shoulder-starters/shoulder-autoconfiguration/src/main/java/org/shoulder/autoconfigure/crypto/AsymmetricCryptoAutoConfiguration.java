@@ -26,20 +26,24 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  */
 @Configuration
 @ConditionalOnClass(AsymmetricTextCipher.class)
-@AutoConfigureAfter(LocalCryptoAutoConfiguration.class)
+@AutoConfigureAfter(value={AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class,
+    AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class})
 public class AsymmetricCryptoAutoConfiguration {
 
     /**
      * 默认使用 Hash Map 作为非对称秘钥对存储
      */
-    @Bean("hashMapKeyPairCache")
-    @ConditionalOnMissingBean(KeyPairCache.class)
+    @Configuration
     @ConditionalOnCluster(cluster = false)
-    public KeyPairCache hashMapKeyPairCache(CryptoProperties cryptoProperties) {
-        KeyPairCache keyPairCache = new HashMapKeyPairCache();
-        // 将配置文件中的预置密钥对加入临时存储
-        keyPairCache.set(cryptoProperties.getKeyPair());
-        return keyPairCache;
+    @EnableConfigurationProperties(CryptoProperties.class)
+    public static class AsymmetricKeyNonClusterPairCacheConfig {
+        @Bean
+        public KeyPairCache hashMapKeyPairCache(CryptoProperties cryptoProperties) {
+            KeyPairCache keyPairCache = new HashMapKeyPairCache();
+            // 将配置文件中的预置密钥对加入临时存储
+            keyPairCache.set(cryptoProperties.getKeyPair());
+            return keyPairCache;
+        }
     }
 
     /**
@@ -48,11 +52,10 @@ public class AsymmetricCryptoAutoConfiguration {
     @Configuration
     @ConditionalOnCluster
     @ConditionalOnClass(StringRedisTemplate.class)
-    @ConditionalOnMissingBean(KeyPairCache.class)
     @EnableConfigurationProperties(CryptoProperties.class)
     public static class AsymmetricKeyClusterPairCacheConfig {
 
-        @Bean("redisKeyPairCache")
+        @Bean("keyPairCache")
         public KeyPairCache redisKeyPairCache(@ApplicationExclusive StringRedisTemplate redisTemplate,
                                               LocalTextCipher localTextCipher, CryptoProperties cryptoProperties) {
             KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate, localTextCipher);
