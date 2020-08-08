@@ -30,6 +30,8 @@
 
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
 
+        <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+
     </properties>
 
     <dependencyManagement>
@@ -214,7 +216,7 @@
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
-                                <phase>deploy</phase>
+                            <phase>verify</phase>
                             <goals>
                                 <goal>sign</goal>
                             </goals>

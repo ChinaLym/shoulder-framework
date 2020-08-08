@@ -64,7 +64,7 @@
         <!-- useful tools -->
         <hutool.version>5.3.8</hutool.version>
         <guava.version>29.0-jre</guava.version>
-        <findbugs-annotations.version>3.0.1</findbugs-annotations.version>
+        <findbugs-annotations.version>3.0.0</findbugs-annotations.version>
         <alibaba.transmittable.version>2.11.5</alibaba.transmittable.version>
 
         <bcprov.jdk15on.version>1.65.01</bcprov.jdk15on.version>
@@ -420,7 +420,7 @@
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>annotations</artifactId>
-                <version>{findbugs-annotations.version}</version>
+                <version>${findbugs-annotations.version}</version>
             </dependency>
 
             <!-- java native access -->
@@ -581,7 +581,7 @@
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
-                        <phase>deploy</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
