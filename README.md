@@ -96,16 +96,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- 继承 shoulder 提供的父工程，自动管理版本号 -->
+    <!-- 继承 shoulder 提供的父工程，自动管理版本号，包含了 spring-boot-parent -->
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
         <version>0.1</version><!-- shoulder-version -->
     </parent>
 
-    <groupId>com.demo</groupId>
-    <artifactId>hello-shoulder</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <groupId>com.demo</groupId><!-- 你的 groupId -->
+    <artifactId>hello-shoulder</artifactId><!-- 你的 artifactId -->
+    <version>1.0.0-SNAPSHOT</version><!-- 你的 version -->
 
     <dependencies>
         <!-- web 相关依赖，已经自动引入对应的 spring-boot-starter-web -->
