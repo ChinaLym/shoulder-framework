@@ -1,6 +1,7 @@
 ![LOGO](doc/img/logo.jpg)
 
-<p align="center">如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿</p>
+如果说我比别人看得更远些,那是因为我站在了巨人的肩上.
+<p align="center"> ——牛顿</p>
 
 ![](https://img.shields.io/badge/build-passing-green.svg)
 ![](https://img.shields.io/badge/modules-27-yellow.svg)
@@ -16,22 +17,23 @@
 
 一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能。
 
-### **Shoulder** 设计依据
-
-为减少使用者的上手成本，**shoulder** 选择复用/优化当前业界成熟的解决方案（站在巨人的肩膀上），将 `开源社区` 中优秀的实现带给使用者，给使用者一个肩膀！
-同时，在使用上借鉴了 `Spring Boot`，使用 `Shoulder` 就像使用 `Spring Boot` 的 `starter` 一样简单（开箱即用）！
-
-在设计参照了 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 
-
-- **Shoulder** 并未与该规范完全绑定，而是将上述实践方案作为默认实现，可替换。
-- **Shoulder** 允许使用者二次开发，制定自己团队的规范，仅在 **Shoulder** 基础上增加自己的扩展部分，即可实现自定义规范与丰富的功能。
-
 ### **Shoulder** 与 **Spring Boot**
 
 可简单地把 `Shoulder` 看作为 `Spring Boot` 的一个 `插件`。即在 `Spring Boot` 基础上实现了常用能力的集合，将 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 落地。
 
 许多系统内部需要统一规范，为降低实现该目的难度，`Shoulder` 实现了这项工作中重复的部分，提供了支持扩展、二次开发的能力。
 非常适合公司里拿它作为基础脚手架（`Apache2.0` 商业友好），或是在`毕设`、`外包`、等项目中快速获得一些常用功能，加速开发！
+
+### 设计依据
+
+为减少使用者的上手成本，**shoulder** 选择复用/优化当前业界成熟的解决方案（站在巨人的肩膀上），将 `开源社区` 中优秀的实现带给使用者，给使用者一个肩膀！
+同时，在使用上借鉴了 `Spring Boot`，使用 `Shoulder` 就像使用 `Spring Boot` 的 `starter` 一样简单（开箱即用）！
+
+参照了 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 
+
+- 但 **Shoulder** 并未与该规范完全绑定，而是将上述实践方案作为默认实现，可替换、可二次开发
+- 可制定自己团队/项目的规范，在 **Shoulder** 基础上增加自己个性化部分，即可快速实现自定义规范并获得常用的功能实现。
+
 
 ### 提供的能力
 
@@ -85,7 +87,7 @@
 推荐通过 `Shoulder` 提供的示例工程，快速感受 `Shoulder` 带来的优雅编码体验。
 - Demo 地址: [github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)
 
-### 新建 Maven web 工程
+### 新建 Maven 工程
 
 可以直接使用以下 `pom.xml`
 
@@ -107,7 +109,7 @@
     <version>1.0.0-SNAPSHOT</version><!-- 你的 version -->
 
     <dependencies>
-        <!-- web 相关依赖，已经自动引入对应的 spring-boot-starter-web -->
+        <!-- 版本号、web 相关依赖 自动管理。已自动引入对应的 spring-boot-starter-web -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
@@ -117,11 +119,11 @@
 </project>
 
 ```
-版本号、相关依赖（如 `spring-boot-starter-web` ）已经帮你自动引入咯，注：`Shoulder` 仅仅管理了 `Spring Boot` 版本号，提供了功能扩展，但并未屏蔽或改变 `Spring Boot` 的功能与用法哟~
+注：`Shoulder` 自动管理了 `Spring Boot` 版本号，提供了功能扩展，但并未屏蔽或改变 `Spring Boot` 给我们的功能与用法哟~
 
 ### 已有工程使用
 
-已有工程大多数已经继承了 Spring Boot 提供的父工程，如果不想改动，只需要引入 shoulder 的 bom，然后引入希望的模块即可即可~
+已有工程大多数已经继承了 Spring Boot 提供的父工程，如果不想改动，只需要引入 shoulder 的 bom，然后引入想要的模块即可即可~
 
 ```xml
     <!-- shoulder 的依赖管理 -->
@@ -137,7 +139,7 @@
         </dependencies>
     </dependencyManagement>
 ```
-如：希望使用 Shoulder 对 web 开发增强的能力，只需引入 web 模块
+如希望使用 Shoulder 中 web 相关的能力增强，只需引入 web 模块
 ```xml
         <dependency>
             <groupId>cn.itlym</groupId>
