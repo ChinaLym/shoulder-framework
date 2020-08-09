@@ -1,7 +1,6 @@
 ![LOGO](doc/img/logo.jpg)
 
-如果说我比别人看得更远些,那是因为我站在了巨人的肩上.
-<p align="center"> ——牛顿</p>
+> 如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
 
 ![](https://img.shields.io/badge/build-passing-green.svg)
 ![](https://img.shields.io/badge/modules-27-yellow.svg)
@@ -21,19 +20,16 @@
 
 可简单地把 `Shoulder` 看作为 `Spring Boot` 的一个 `插件`。即在 `Spring Boot` 基础上实现了常用能力的集合，将 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 落地。
 
-许多系统内部需要统一规范，为降低实现该目的难度，`Shoulder` 实现了这项工作中重复的部分，提供了支持扩展、二次开发的能力。
-非常适合公司里拿它作为基础脚手架（`Apache2.0` 商业友好），或是在`毕设`、`外包`、等项目中快速获得一些常用功能，加速开发！
+- 许多系统内部有一些统一规范，为降低实现该目的难度，`Shoulder` 实现了这项工作中重复的部分，提供了支持扩展、二次开发的能力。
+- 非常适合里将 `Shoulder` 作为公司里的基础脚手架，或是在`毕设`、`外包`、等项目中快速获得一些常用功能，加速开发！
 
 ### 设计依据
 
-为减少使用者的上手成本，**shoulder** 选择复用/优化当前业界成熟的解决方案（站在巨人的肩膀上），将 `开源社区` 中优秀的实现带给使用者，给使用者一个肩膀！
-同时，在使用上借鉴了 `Spring Boot`，使用 `Shoulder` 就像使用 `Spring Boot` 的 `starter` 一样简单（开箱即用）！
+**shoulder** 复用/优化当前业界成熟的解决方案（站在巨人的肩膀上），将 `开源社区` 中优秀的实现带给使用者，给使用者一个肩膀！
+为减少使用者的上手成本，在用法上借鉴了 `Spring Boot`，使用 `Shoulder` 就像使用 `Spring Boot` 的 `starter` 一样简单（开箱即用）！
 
-参照了 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 
-
-- 但 **Shoulder** 并未与该规范完全绑定，而是将上述实践方案作为默认实现，可替换、可二次开发
+- 实现上参照了 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 中提到的内容，但没与它完全绑定，仅将该实践方案作为默认实现，实际中可替换、可二次开发。
 - 可制定自己团队/项目的规范，在 **Shoulder** 基础上增加自己个性化部分，即可快速实现自定义规范并获得常用的功能实现。
-
 
 ### 提供的能力
 
@@ -82,7 +78,7 @@
 - 更多
     - ...
     
-## 快速开始
+# 快速开始
 
 推荐通过 `Shoulder` 提供的示例工程，快速感受 `Shoulder` 带来的优雅编码体验。
 - Demo 地址: [github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)
@@ -147,7 +143,7 @@
         </dependency> 
 ```
 
-## 常见问题
+# 常见问题
 
 ### xxx功能的使用/扩展
 
@@ -165,22 +161,23 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 
 欢迎提交代码~ 为 Shoulder 添加一个你设计/实现/扩展的能力、修改 `BUG`、修改代码格式、完善注释都可以的~ 
 
-## 工程目录与模块划分
+# 工程目录 & 模块划分
 
-采用与 spring、spring-boot 相似的包模块划分、包命名策略（借鉴、简化使用者学习成本）
+> 与 spring、spring-boot 的包模块划分、包命名策略相似（简化使用者学习成本）
 
-最外层的 shoulder-build 管理了依赖的 spring-boot 的版本
+最外层的 shoulder-build 管理了 shoulder 的构建，包含了三个部分
 
-- **shoulder-dependencies** 是 shoulder 框架的依赖管理包，负责管理依赖的版本
+- **shoulder-dependencies** 负责依赖版本管理
 
-- **shoulder-parent** 是 shoulder 提供的所有jar的直接父类，**shoulder-dependencies**，负责管理所有 **shoulder 模块** 和他们的公共依赖、插件等，**使用者也可以直接继承该模块**。
-**shoulder-parent** 中分为 **shoulder-base** 和 **shoulder-starters**。他们内部都包含了不同模块。
+- **shoulder-parent** 是 shoulder 所有功能模块的直接父类，负责管理他们的公共依赖、插件配置等，**使用者也可以直接继承该模块**。
 
-    - **shoulder-base**: 基础定义包，里面包含了 shoulder框架 的所有的基础定义包。
-        - **shoulder-xxx**: xxx模块代码（开发时可以把一个模块当作一个工程）。作为 starter 的基础，使用者一般不会直接引入。
+- **shoulder-build** 包含 shoulder 的代码，其下面又按照用途分为两个模块。
+
+    - **shoulder-base**: 基础定义与功能模块，真正实现功能代码，但使用者一般不会直接引入。
+        - **shoulder-xxx**: xxx模块代码（开发时可以把一个模块当作一个工程）。
         - ...
         
-    - **shoulder-starters**: 某个模块开箱即用的 jar 包。以 **shoulder-base** 为基础，一般由 **shoulder-xxx** 以及自动配置的代码组成。
+    - **shoulder-starters**: 带 `Spring Boot` 自动配置的开箱即用模块，并提供 `shoulder` 功能的默认实现，简化使用者上手难度。
         - **shoulder-starter-xxx**: xxx模块的自动配置，供使用者直接引入。
         - ...
 
@@ -188,7 +185,7 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 
 ## Shoulder 技术选型偏好：
 
-更喜欢引入新的优秀技术，但不盲目追捧，当且仅当有完整的实践方案
+喜欢引入新的优秀技术，但不盲目追捧，当且仅当有完整的实践方案
 
 - 优先为业界标准
 - 其次为技术先进且已用于互联网厂商的生产环境，且容易从原有的主流技术迁移
@@ -197,29 +194,22 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 
 ##  **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)**  是什么
 
-虽然业界基础框架大都已经有了成熟的解决方案，但一千开发手里有一千种实践之路，这一千条路中，`平坦的`（开发维护成本低）、`坎坷的`（开发维护成本高） 差别很大。
-因此为了优化 `代码性能` 降低 `维护成本`、`开发成本`。**Shoulder** 框架还提供了`技术选型指导`和一定的`开发规范`，带你轻松踏上最佳实践之路！[点击这里可以查看 Shoulder Framework 遵循的规范](http://doc.itlym.cn)
+一千开发手里有一千种实践之路，这一千条路中，`平坦的`（开发维护成本低）、`坎坷的`（开发维护成本高） 差别很大，使用业界有成熟的解决方案往往会**事半功倍**！
+为保证 `代码性能` ，降低 `维护成本`、`开发成本`。**Shoulder** 还提供了`技术选型指导`和一定的`开发规范`，带你轻松踏上最佳实践之路！[点击这里可以查看 Shoulder Framework 推荐的开发规约](http://doc.itlym.cn)
 
-## Shoulder 平台
+## Shoulder 平台与计划
 
-`Shoulder` 希望做一个整套的可复用的平台（`PaaS`），使用者只需要做做自己的业务即可。`Shoulder` 整体格局如下
+`Shoulder` 希望做一个整套的可复用的平台（`PaaS`），使用者只需要做做自己的业务即可。整体格局如下
 
-- `iPaaS`层 
-    `Shoulder iPaaS` 基础中间件环境 Shoulder 提供依赖中间件的`Docker`镜像或部署教程（如 数据库、消息队列、服务注册中心、任务调度中心、搜索引擎、报警与监控系统等）。
-- `aPaaS` 层：
-    - `Shoulder Specific` 软件系开发设计注意事项、[落地方案和规范](http://spec.itlym.cn)
-    - **Shoulder Framework**  即本开源项目，提供共性能力封装，减少代码冗余，降低系统开发维护成本。
-    - `Shoulder Platform` 共性业务平台，提供 `用户平台`、`支付平台`、`通知中心`、`业务网关`、`数据字典`、`全局ID生产器` 等基础、通用业务能力平台
-    - `Shoulder Platform SDK` 以 sdk 形式方便业务层对接使用。 
-    
+- `Shoulder iPaaS` 基础中间件环境 Shoulder 提供依赖中间件的`Docker`镜像或部署教程（如 数据库、消息队列、服务注册中心、任务调度中心、搜索引擎、报警与监控系统等）。
+- `Shoulder Specific` 软件系开发设计注意事项、[落地方案和规范](http://spec.itlym.cn)
+- **Shoulder Framework**  即本开源项目，提供共性能力封装，减少代码冗余，降低系统开发维护成本。
+- `Shoulder Platform` 共性业务平台，提供 `用户平台`、`支付平台`、`通知中心`、`业务网关`、`数据字典`、`全局ID生产器` 等基础、通用业务能力平台
+- `Shoulder Platform SDK` 以 sdk 形式方便业务层对接使用。 
 
 ## 发行版本号说明
 
 采用 [主版本号.次版本号.修订号](https://semver.org/lang/zh-CN)（[MAJOR.MINOR.PATCH](https://semver.org)） 的形式
-
-## 未来计划
-
-**Shoulder-Platform**(一款使用了 `Shoulder` 框架的开源 `aPaaS` 平台，`规划中...`)
 
 ## 建议与反馈
 
