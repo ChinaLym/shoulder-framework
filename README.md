@@ -3,11 +3,13 @@
 ![](https://img.shields.io/badge/build-passing-green.svg)
 ![](https://img.shields.io/badge/modules-27-yellow.svg)
 ![](https://img.shields.io/badge/license-Apche%202.0-orange.svg)
+![](https://img.shields.io/badge/Version-0.1-blue.svg)
 
 ![](https://img.shields.io/badge/Spring%20Boot%20Version-2.3.0-blue.svg)
 ![](https://img.shields.io/badge/Spring%20Cloud%20Version-Hotox.SR5-blue.svg)
 
-![](https://img.shields.io/badge/Version-0.1.0--SNAPSHOT-red.svg) 
+- 地址： [github](https://github.com/ChinaLym/Shoulder-Framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)
+
 
 ![LOGO](doc/img/logo.jpg)
 
@@ -34,7 +36,7 @@
 
 以为应用提供统一风格，简化多服务系统的设计难度，且这些能力支持扩展、二次开发，非常适合公司里拿他作为基础脚手架（`Apache2.0` 商业友好），当然，这些便利的能力也十分适合外包、毕设等项目的快速开发。
 
-## 提供能力
+### 提供的能力
 
 - 统一系统级配置项（可配置）
     - 字符集、语言、日期格式等
@@ -84,7 +86,7 @@
 ## 快速开始
 
 推荐通过 `Shoulder` 提供的示例工程，快速感受 `Shoulder` 带来的优雅编码体验。
-- [Demo 地址：https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)
+- Demo 地址: [github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)
 
 ### 新建 Maven web 工程
 
