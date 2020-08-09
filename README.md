@@ -83,6 +83,9 @@
     
 ## 快速开始
 
+推荐通过 `Shoulder` 提供的示例工程，快速感受 `Shoulder` 带来的优雅编码体验。
+- [Demo 地址：https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)
+
 ### 新建 Maven web 工程
 
 可以直接使用以下 `pom.xml`
@@ -105,7 +108,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
-        <!-- web 相关依赖 -->
+        <!-- web 相关依赖，已经自动引入对应的 spring-boot-starter-web -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
@@ -115,7 +118,7 @@
 </project>
 
 ```
-版本号、相关依赖（如 `spring-boot-starter-web` ）已经帮你自动引入咯，注：shoulder仅仅管理了 Spring Boot 版本号，提供了功能扩展，但并未改变 spring boot 的用法哟~
+版本号、相关依赖（如 `spring-boot-starter-web` ）已经帮你自动引入咯，注：`Shoulder` 仅仅管理了 `Spring Boot` 版本号，提供了功能扩展，但并未屏蔽或改变 `Spring Boot` 的功能与用法哟~
 
 ### 已有工程使用
 
@@ -135,11 +138,11 @@
         </dependencies>
     </dependencyManagement>
 ```
-希望的模块，如操作日志模块
+如：希望使用 Shoulder 对 web 开发增强的能力，只需引入 web 模块
 ```xml
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-operation-log</artifactId>
+            <artifactId>shoulder-starter-web</artifactId>
         </dependency> 
 ```
 
@@ -149,7 +152,7 @@
 
 首选要确定该能力是否是 `Shoulder` 提供的，不然方向错了，就白忙活啦（注：可以通过包路径、类路径来判断~）。
 
-Shoulder提供的能力可以参见[使用手册]()（TODO）
+Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 一些功能并不是 Shoulder 提供的，Shoulder仅仅是帮你引入咯~ 如 `Spring Boot`、`Spring Cloud` 等优秀第三方库为我们提供了大量能力（致敬），使用这些时可以去看他们官方的一手教程，或搜索对应关键词。如
 
 - shoulder Web 工程中如何使用添加自己的过滤器、拦截器
