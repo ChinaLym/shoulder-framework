@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>cn.itlym</groupId>
 		<artifactId>shoulder-parent</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.1</version><!-- shoulder-version -->
 	</parent>
     
 	<groupId>com.example</groupId>
@@ -41,7 +41,6 @@
 		<dependency>
 			<groupId>cn.itlym</groupId>
 			<artifactId>shoulder-starter-beanmap</artifactId>
-			<version>${shoulder.version}</version>
 		</dependency>
 
 		<!-- shoulder 继承了 spring boot 的所有特性，引入 spring boot 的jar 一样不需要写版本号 -->
