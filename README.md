@@ -1,4 +1,6 @@
-# shoulder （肩膀）
+![LOGO](doc/img/logo.jpg)
+
+如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
 
 ![](https://img.shields.io/badge/build-passing-green.svg)
 ![](https://img.shields.io/badge/modules-27-yellow.svg)
@@ -10,13 +12,7 @@
 
 - 地址： [github](https://github.com/ChinaLym/Shoulder-Framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)
 
-
-![LOGO](doc/img/logo.jpg)
-
-如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
-
-
-## 简介
+# shoulder （肩膀）
 
 **Shoulder** 是一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能(可以再次开发)。
 
