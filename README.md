@@ -16,22 +16,14 @@
 
 一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能。
 
-### **Shoulder** 与 **Spring Boot**
+### 与 `Spring Boot` 的关系
 
-可简单地把 `Shoulder` 看作为 `Spring Boot` 的一个 `插件`。即在 `Spring Boot` 基础上实现了常用能力的集合，将 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 落地。
+可以把 `Shoulder` 看作为 `Spring Boot` 的一个 `插件`。即在 `Spring Boot` 基础上实现了常用能力的集合，将 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 落地。
 
 - 许多系统内部有一些统一规范，为降低实现该目的难度，`Shoulder` 实现了这项工作中重复的部分，提供了支持扩展、二次开发的能力。
 - 非常适合里将 `Shoulder` 作为公司里的基础脚手架，或是在`毕设`、`外包`、等项目中快速获得一些常用功能，加速开发！
 
-### 设计依据
-
-**shoulder** 复用/优化当前业界成熟的解决方案（站在巨人的肩膀上），将 `开源社区` 中优秀的实现带给使用者，给使用者一个肩膀！
-为减少使用者的上手成本，在用法上借鉴了 `Spring Boot`，使用 `Shoulder` 就像使用 `Spring Boot` 的 `starter` 一样简单（开箱即用）！
-
-- 实现上参照了 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 中提到的内容，但没与它完全绑定，仅将该实践方案作为默认实现，实际中可替换、可二次开发。
-- 可制定自己团队/项目的规范，在 **Shoulder** 基础上增加自己个性化部分，即可快速实现自定义规范并获得常用的功能实现。
-
-### 提供的能力
+### 功能
 
 - 统一系统级配置项（可配置）
     - 字符集、语言、日期格式等
@@ -80,10 +72,9 @@
     
 # 快速开始
 
-推荐通过 `Shoulder` 提供的示例工程，快速感受 `Shoulder` 带来的优雅编码体验。
-- Demo 地址: [github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)
+推荐通过一个简单的 **示例工程**（[github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)），快速感受 `Shoulder` 带来的优雅编码体验。
 
-### 新建 Maven 工程
+### 在新的 Maven 项目中使用
 
 可以直接使用以下 `pom.xml`
 
@@ -115,11 +106,10 @@
 </project>
 
 ```
-注：`Shoulder` 自动管理了 `Spring Boot` 版本号，提供了功能扩展，但并未屏蔽或改变 `Spring Boot` 给我们的功能与用法哟~
 
-### 已有工程使用
+### 在已有的工程中使用（不继承父类）
 
-已有工程大多数已经继承了 Spring Boot 提供的父工程，如果不想改动，只需要引入 shoulder 的 bom，然后引入想要的模块即可即可~
+已经继承了其他父工程，如（`spring-boot-parent`）且不想修改，只需加入 `Shoulder` 的依赖清单，然后在 `dependency` 中引入想要的模块即可~
 
 ```xml
     <!-- shoulder 的依赖管理 -->
@@ -134,32 +124,41 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-```
-如希望使用 Shoulder 中 web 相关的能力增强，只需引入 web 模块
-```xml
+
+    <dependencies>
+        <!--如希望使用 Shoulder 中 web 相关的能力增强，只需引入 web 模块-->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
         </dependency> 
+    </dependencies>
 ```
 
 # 常见问题
 
 ### xxx功能的使用/扩展
 
-首选要确定该能力是否是 `Shoulder` 提供的，不然方向错了，就白忙活啦（注：可以通过包路径、类路径来判断~）。
+首选要确定该能力是否是 `Shoulder` 提供的，不然方向错了，就白忙活啦~ （注：可以通过包路径、类路径来判断~）
 
 Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
-一些功能并不是 Shoulder 提供的，Shoulder仅仅是帮你引入咯~ 如 `Spring Boot`、`Spring Cloud` 等优秀第三方库为我们提供了大量能力（致敬），使用这些时可以去看他们官方的一手教程，或搜索对应关键词。如
+
+`Shoulder` 自动引入并管理了 `Spring Boot` 的版本，但未屏蔽或改变 `Spring Boot` 用法，一些功能并不是 Shoulder 提供的，Shoulder仅仅是帮你引入咯~ 
+如 `Spring Boot`、`Spring Cloud` 等优秀第三方库为我们提供了大量能力（致敬），使用这些时可以去看他们官方的一手教程，或到搜索引擎搜索对应关键词。如
 
 - shoulder Web 工程中如何使用添加自己的过滤器、拦截器
-    - 过滤器、拦截器等的基本功能是 `Spring Boot` 提供的，可以搜索 `Spring Boot 过滤器` 而非 ~~`Shoulder 过滤器`~~
+    - 过滤器、拦截器等的基本功能是 `Spring Boot` 提供的，应该搜索 `Spring Boot 自定义过滤器` 而不是 ~~`Shoulder 自定义过滤器`~~
+- shoulder Web 工程中如何访问静态资源文件
+    - web 的基础功能是由`Spring Boot` 提供哒，所以这么搜索会更合适哟~ `Spring Boot 如何访问静态资源文件`
 
 ### 使用中遇到问题、报错
 
-认为是 Shoulder 框架的 Bug 时可以在 `Issure` 中留下你遇到的问题，如何复现，尝试排查、解决的手段，甚至缺陷修复方案。
+当认为是 Shoulder 框架的 Bug 时可以在 `issure` 中描述你遇到的`问题`、`如何复现`、你尝试过的`排查与解决方式`，甚至可行的缺陷修复方案。
 
-欢迎提交代码~ 为 Shoulder 添加一个你设计/实现/扩展的能力、修改 `BUG`、修改代码格式、完善注释都可以的~ 
+欢迎提交代码~ 以下提交都是可以的~
+
+- 优化代码格式、完善注释、标准化`JavaDoc`
+- 修复 BUG
+- 添加功能
 
 # 工程目录 & 模块划分
 
@@ -183,21 +182,27 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 
 ---
 
-## Shoulder 技术选型偏好：
+# 设计 & 路线
+
+> **shoulder** 复用/优化当前业界成熟的解决方案（站在巨人的肩膀上），将 `开源社区` 中优秀的实现带给使用者，给使用者一个肩膀！
+为减少使用者的上手成本，在用法上借鉴了 `Spring Boot`，使用 `Shoulder` 就像使用 `Spring Boot` 的 `starter` 一样简单（开箱即用）！
+
+- 实现上参照了 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 中提到的内容，但没与它完全绑定，仅将该实践方案作为默认实现，实际中可替换、可二次开发。
+- 可制定自己团队/项目的规范，在 **Shoulder** 基础上增加自己个性化部分，即可快速实现自定义规范并获得常用的功能实现。
+
+## 技术选择
 
 喜欢引入新的优秀技术，但不盲目追捧，当且仅当有完整的实践方案
 
-- 优先为业界标准
-- 其次为技术先进且已用于互联网厂商的生产环境，且容易从原有的主流技术迁移
-- 其次绝对主流
-- 依赖的第三方库中核心部分的版本选型偏好：生产可用（安全）的较新的 `Release` 版本
+- 业界标准或绝对主流
+- 技术先进、可用于生产环境，且容易从原有的主流技术迁移
 
 ##  **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)**  是什么
 
 一千开发手里有一千种实践之路，这一千条路中，`平坦的`（开发维护成本低）、`坎坷的`（开发维护成本高） 差别很大，使用业界有成熟的解决方案往往会**事半功倍**！
 为保证 `代码性能` ，降低 `维护成本`、`开发成本`。**Shoulder** 还提供了`技术选型指导`和一定的`开发规范`，带你轻松踏上最佳实践之路！[点击这里可以查看 Shoulder Framework 推荐的开发规约](http://doc.itlym.cn)
 
-## Shoulder 平台与计划
+## 平台 & 未来
 
 `Shoulder` 希望做一个整套的可复用的平台（`PaaS`），使用者只需要做做自己的业务即可。整体格局如下
 
@@ -215,5 +220,5 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 
 感谢小伙伴们的 **[Star](https://gitee.com/ChinaLym/shoulder-framework/star)** / **Fork**，欢迎在 issue 交流，留下你的建议、期待的新功能等~
 
-欢迎 fork 并提交合并请求一起改善该框架 [合作开发流程与项目介绍](CONTRIBUTING.MD)
+欢迎 `fork` 并提交合并请求一起改善该框架 [合作开发流程与项目介绍](CONTRIBUTING.MD)
 
