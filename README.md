@@ -1,6 +1,6 @@
 ![LOGO](doc/img/logo.jpg)
 
-如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
+<p align="center">如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿</p>
 
 ![](https://img.shields.io/badge/build-passing-green.svg)
 ![](https://img.shields.io/badge/modules-27-yellow.svg)
