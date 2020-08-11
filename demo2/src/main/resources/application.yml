@@ -1,0 +1,16 @@
+# demo2 使用 yaml 格式配置作为示例，properties转yaml: https://www.toyaml.com/index.html
+
+spring:
+  application:
+    name: demo2
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: ${MYSQL_PWD} # 这里使用了系统的环境变量，参见 spring boot 的特性
+    url: jdbc:mysql://${MYSQL_ADDR}/beta?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
+    username: cicd
+
+shoulder:
+  application:
+    errorCodePrefix: '0x000b'
+    id: ${spring.application.name}
