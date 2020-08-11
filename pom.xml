@@ -173,7 +173,7 @@
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
-                                <phase>verify</phase><!-- gpg phase verify deploy -->
+                                <phase>deploy</phase><!-- gpg phase verify deploy -->
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
