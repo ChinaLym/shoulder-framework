@@ -15,8 +15,10 @@
     <springProfile name="!prod,!test">
         <!-- 控制台Appender -->
         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <!-- 考虑到有的系统可能对日志进行扫描与检测，故仅对开发态进行彩色渲染，开发者可通过修改 logging.pattern.console 覆盖默认设置
+            IDEA 中推荐使用控制台颜色过滤插件，实现更高的定制化，更高级的使用参见 http://logback.qos.ch/manual/layouts.html#conversionWord -->
             <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
-                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %highlight(%-5level) [%thread] [%cyan(%logger{50}):%line] %msg%n</pattern>
+                <pattern>%cyan(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}) %highlight(%-5level) [%thread] [%cyan(%logger{50}):%highlight(%line)] %msg%n</pattern>
                 <charset>UTF-8</charset>
             </encoder>
         </appender>

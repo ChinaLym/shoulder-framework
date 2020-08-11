@@ -6,12 +6,12 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-build</artifactId>
-        <version>0.1</version><!-- shoulder-version -->
+        <version>0.2-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>shoulder-base</artifactId>
-    <version>0.1</version><!-- shoulder-version -->
+    <version>0.2-SNAPSHOT</version><!-- shoulder-version -->
     <packaging>pom</packaging>
 
     <modules>
@@ -42,7 +42,7 @@
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
-                                <phase>verify</phase>
+                        <phase>verify</phase><!-- gpg phase verify deploy -->
                         <goals>
                             <goal>sign</goal>
                         </goals>

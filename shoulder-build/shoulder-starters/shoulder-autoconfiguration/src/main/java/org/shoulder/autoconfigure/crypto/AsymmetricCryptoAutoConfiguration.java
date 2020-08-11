@@ -14,6 +14,7 @@ import org.shoulder.crypto.local.LocalTextCipher;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @ConditionalOnClass(AsymmetricTextCipher.class)
 @AutoConfigureAfter(value={AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class,
     AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class})
+@ConditionalOnProperty(value = "shoulder.crypto.asymmetric.enable", havingValue = "true", matchIfMissing = true)
 public class AsymmetricCryptoAutoConfiguration {
 
     /**

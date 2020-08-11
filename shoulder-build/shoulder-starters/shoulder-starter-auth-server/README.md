@@ -1,7 +1,7 @@
 # 快速创建授权服务器
 提供本系统账号认证
     账号密码认证、手机号认证、手机号密码认证【基于Spring Security】
-    作为Oauth2客户端，支持通过第三方平台登录 如QQ、Wechat、gitee、github【基于Spring Security】
+    作为Oauth2客户端，支持通过第三方平台登录 如 GitHub、QQ、WeChat、Gitee【基于Spring Security】
 作为认证服务器 Oauth2、OIDC、SAML2【基于 Spring Security Oauth2】
 
 ## 技术、版本选型

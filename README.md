@@ -10,7 +10,7 @@
 ![](https://img.shields.io/badge/Spring%20Boot%20Version-2.3.0-blue.svg)
 ![](https://img.shields.io/badge/Spring%20Cloud%20Version-Hotox.SR5-blue.svg)
 
-- 地址： [github](https://github.com/ChinaLym/Shoulder-Framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)
+- [地址: github](https://github.com/ChinaLym/Shoulder-Framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)
 
 # shoulder （肩膀）
 
@@ -72,7 +72,7 @@
     
 # 快速开始
 
-推荐通过一个简单的 **示例工程**（[github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)），快速感受 `Shoulder` 带来的优雅编码体验。
+推荐通过一个简单的 **[示例工程](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)**（[github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)），快速感受 `Shoulder` 带来的优雅编码体验。
 
 ### 在新的 Maven 项目中使用
 

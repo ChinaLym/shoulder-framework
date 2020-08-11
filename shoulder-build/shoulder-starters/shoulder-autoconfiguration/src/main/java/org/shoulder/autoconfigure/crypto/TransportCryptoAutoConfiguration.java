@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ConditionalOnClass(TransportNegotiationService.class)
 @AutoConfigureAfter(LocalCryptoAutoConfiguration.class)
+@ConditionalOnProperty(value = "shoulder.crypto.transport.enable", havingValue = "true", matchIfMissing = true)
 public class TransportCryptoAutoConfiguration {
 
     @ConditionalOnMissingBean(value = KeyNegotiationCache.class)

@@ -10,18 +10,18 @@
     <artifactId>shoulder-framework</artifactId>
     <packaging>pom</packaging>
 
-    <version>0.1</version><!-- shoulder-version -->
+    <version>0.2-SNAPSHOT</version><!-- shoulder-version -->
     <!-- mvn versions:set -DnewVersion=1.0.1-RELEASE、mvn versions:commit、mvn versions:revert -->
 
     <!-- 简介 -->
     <name>shoulder Build</name>
     <description>Modules to centralize common resources and configuration for shoulder Maven builds.</description>
-    <url>https://gitee.com/ChinaLym/shoulder</url>
+    <url>https://github.com/ChinaLym/shoulder</url>
 
     <!-- 开源组织 -->
     <organization>
         <name>ChinaLym</name>
-        <url>coming soon</url>
+        <url>https://github.com/ChinaLym</url>
     </organization>
 
     <!-- 模块 -->
@@ -173,7 +173,7 @@
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
-                                <phase>verify</phase>
+                                <phase>verify</phase><!-- gpg phase verify deploy -->
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
