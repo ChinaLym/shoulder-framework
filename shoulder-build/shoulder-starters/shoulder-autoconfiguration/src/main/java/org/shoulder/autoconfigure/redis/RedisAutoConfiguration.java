@@ -47,7 +47,7 @@ public class RedisAutoConfiguration {
     @ApplicationExclusive
     public RedisTemplate<String, Object> serviceExclusiveRedisTemplate(LettuceConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        //new StringRedisSerializer(StandardCharsets.UTF_8)
+        //new StringRedisSerializer(ApplicationInfo.charset())
         RedisSerializer<String> redisKeySerializer = new KeyStringRedisSerializer(getKeyPrefix());
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(redisKeySerializer);

@@ -1,12 +1,12 @@
 package org.shoulder.web.filter.xss;
 
+import org.shoulder.core.context.ApplicationInfo;
 import org.shoulder.core.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -144,22 +144,22 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
      * todo 开启是否转义等
      */
     private String securityContext(String context) {
-        return filterHtmlEscape(stripXSS(context));
+        return filterHtmlEscape(stripXss(context));
     }
 
     /**
      * 去掉 script 脚本关键字
      */
-    private String stripXSS(String context) {
+    private String stripXss(String context) {
         if(StringUtils.isEmpty(context)){
             return context;
         }
         try {
             if (charset == null) {
-                // todo 支持修改
-                charset = StandardCharsets.UTF_8.name();
+                // 支持修改?
+                charset = ApplicationInfo.charset().name();
             }
-            context = URLDecoder.decode(context, StandardCharsets.UTF_8.name());
+            context = URLDecoder.decode(context, charset);
         } catch (UnsupportedEncodingException e) {
             return context;
         }

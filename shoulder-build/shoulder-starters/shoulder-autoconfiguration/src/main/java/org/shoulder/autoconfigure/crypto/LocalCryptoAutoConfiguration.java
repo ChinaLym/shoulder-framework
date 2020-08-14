@@ -7,11 +7,10 @@ import org.shoulder.crypto.local.LocalTextCipher;
 import org.shoulder.crypto.local.impl.Aes256LocalTextCipher;
 import org.shoulder.crypto.local.impl.LocalTextCipherManager;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
+import org.shoulder.crypto.local.repository.impl.FileLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
-import org.shoulder.crypto.local.repository.impl.JdbcLocalCryptoInfoRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.lang.Nullable;
 
-import javax.sql.DataSource;
+import java.io.FileNotFoundException;
 import java.security.Security;
 import java.util.List;
 
@@ -34,7 +33,6 @@ import java.util.List;
 @Configuration
 @ConditionalOnClass(LocalTextCipher.class)
 @ConditionalOnProperty(value = "shoulder.crypto.local.enable", havingValue = "true", matchIfMissing = true)
-//@AutoConfigureAfter(RedisAutoConfiguration.class)
 @EnableConfigurationProperties(CryptoProperties.class)
 public class LocalCryptoAutoConfiguration {
 
@@ -46,32 +44,28 @@ public class LocalCryptoAutoConfiguration {
         }
     }
 
-    @ConditionalOnBean(DataSource.class)
     @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
-    @AutoConfigureAfter(name = {
-        "org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration.Tomcat",
-        "org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration.Hikari",
-        "org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration.Dbcp2",
-        "org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration.Generic",
-    })
-    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "jdbc", matchIfMissing = true)
-    public static class JdbcLocalCryptoInfoRepositoryAutoConfiguration {
+    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "file", matchIfMissing = true)
+    public static class TempFileLocalCryptoInfoRepositoryAutoConfiguration {
 
         /**
-         * 默认使用 数据库 作为 localCrypto 的秘钥部件存储
-         * todo default use file?
+         * 默认使用启动路径下的文件作为密钥部件存储
          *
          * @see LocalCryptoInfoRepository
          */
         @Bean
-        public LocalCryptoInfoRepository jdbcLocalCryptoInfoRepository(DataSource dataSource) {
-            log.debug("No LocalCryptoInfoRepository available, try fall back to use JdbcLocalCryptoInfoRepository");
-            return new JdbcLocalCryptoInfoRepository(dataSource);
+        public LocalCryptoInfoRepository fileLocalCryptoInfoRepository() throws FileNotFoundException {
+            log.warn("No LocalCryptoInfoRepository available,  fallback to FileLocalCryptoInfoRepository, " +
+                "storage in your project path, file named {}. " +
+                "Consider create a bean(JdbcLocalCryptoInfoRepository.class) for better security.",
+                FileLocalCryptoInfoRepository.DEFAULT_FILE_NAME);
+
+            return new FileLocalCryptoInfoRepository();
         }
     }
 
     @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
-    @AutoConfigureAfter(JdbcLocalCryptoInfoRepositoryAutoConfiguration.class)
+    @AutoConfigureAfter(TempFileLocalCryptoInfoRepositoryAutoConfiguration.class)
     public static class HashMapLocalCryptoInfoRepositoryAutoConfiguration {
         /**
          * 使用了 hashMap，仅供演示。重启后，密钥对将丢失，加密过的数据无法解密！

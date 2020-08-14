@@ -11,17 +11,36 @@
     <!-- 日志默认输出路径 -->
     <property name="LOG_HOME" value="/opt/logs/${appId}/" />
 
+    <property name="CONSOLE_LOG_PATTERN"
+              value="${CONSOLE_LOG_PATTERN:-%sclear(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %sclear(%-5p) %cyan([${PID:-}]){magenta} %cyan(---){faint} %sclear([%15.15t]){faint} %cyan(%-40.40logger{39} :){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+
     <!-- 开发者本地 debug 运行时激活的配置 -->
     <springProfile name="!prod,!test">
+        <!-- 彩色日志依赖的渲染类 -->
+        <conversionRule conversionWord="sclear" converterClass="org.shoulder.core.log.logback.pattern.color.ShoulderClearCompositeConverter" />
+        <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+        <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+        <conversionRule conversionWord="wEx"
+                        converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
         <!-- 控制台Appender -->
         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
             <!-- 考虑到有的系统可能对日志进行扫描与检测，故仅对开发态进行彩色渲染，开发者可通过修改 logging.pattern.console 覆盖默认设置
             IDEA 中推荐使用控制台颜色过滤插件，实现更高的定制化，更高级的使用参见 http://logback.qos.ch/manual/layouts.html#conversionWord -->
             <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
-                <pattern>%cyan(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}) %highlight(%-5level) [%thread] [%cyan(%logger{50}):%highlight(%line)] %msg%n</pattern>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
                 <charset>UTF-8</charset>
             </encoder>
         </appender>
+
+        <!-- 对第三方框架日志打印频率特别高的部分进行限制 -->
+        <logger name="org.apache.zookeeper.ClientCnxn" level="ERROR" />
+        <logger name="org.springframework.boot" level="WARN" />
+        <logger name="org.springframework.boot.web.filter" level="ERROR" />
+
+        <!-- shoulder 框架中日志的默认输出级别 WARN additivity="false" 可以修改日志文件 -->
+        <logger name="org.shoulder" level="WARN" />
+        <!-- shoulder 框架配置模块日志的打印级别为 INFO -->
+        <logger name="org.shoulder.autoconfigure" level="INFO" />
 
         <root level="DEBUG">
             <appender-ref ref="STDOUT"/>
@@ -105,7 +124,7 @@
             </encoder>
         </appender>
 
-        <!-- SPRING等第三方框架类代码日志打印, 输出到OTHER文件中, 默认WARN以上 （这类日志无法统一解析） -->
+        <!-- 第三方框架类代码日志打印, 输出到 OTHER 文件中, 默认 WARN 以上 （这类日志无法统一解析） -->
         <appender name="OTHER" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>WARN</level>
@@ -131,18 +150,12 @@
         <logger name="org.springframework.boot" level="WARN" />
         <logger name="org.springframework.boot.web.filter" level="ERROR" />
 
-        <!-- shoulder 框架中日志的默认输出级别 WARN -->
-        <logger name="org.shoulder" level="INFO" additivity="false">
-            <appender-ref ref="FILE-debug" />
-            <appender-ref ref="FILE-error" />
-        </logger>
-
+        <!-- shoulder 框架中日志的默认输出级别 WARN additivity="false" 可以修改日志文件 -->
+        <logger name="org.shoulder" level="WARN" />
         <!-- shoulder 框架配置模块日志的打印级别为 INFO -->
-        <logger name="org.shoulder.autoconfigure" level="INFO" additivity="false">
-            <appender-ref ref="FILE-debug" />
-            <appender-ref ref="FILE-error" />
-        </logger>
+        <logger name="org.shoulder.autoconfigure" level="INFO" />
 
+        <!-- 默认为 WARN -->
         <root level="WARN">
             <appender-ref ref="OTHER" />
         </root>

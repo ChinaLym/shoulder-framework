@@ -1,13 +1,14 @@
 package org.shoulder.crypto.local.repository.impl;
 
+import org.shoulder.core.context.ApplicationInfo;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.springframework.lang.NonNull;
+import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,29 +22,41 @@ import java.util.stream.Collectors;
  */
 public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
-    private final Charset utf8 = StandardCharsets.UTF_8;
-
-    public String getAesInfoPath() {
-        return aesInfoPath;
-    }
-
-    public void setAesInfoPath(String aesInfoPath) {
-        this.aesInfoPath = aesInfoPath;
-    }
+    public static final String DEFAULT_FILE_NAME = "_shoulder_aesInfo.json";
 
     /**
      * 文件存储路径
      */
     private String aesInfoPath;
 
-    public FileLocalCryptoInfoRepository(String aesInfoPath) {
+    /**
+     * 存储文件名称
+     */
+    private final String fileName;
+
+    /**
+     * 存储文件字符集
+     */
+    private final Charset charset;
+
+    public FileLocalCryptoInfoRepository() {
+        this(
+            ClassUtils.getDefaultClassLoader().getResource("").getPath(),
+            DEFAULT_FILE_NAME,
+            ApplicationInfo.charset()
+        );
+    }
+
+    public FileLocalCryptoInfoRepository(String aesInfoPath, String fileName, Charset charset) {
         this.aesInfoPath = aesInfoPath;
+        this.fileName = fileName;
+        this.charset = charset;
     }
 
     @Override
     public void save(@NonNull LocalCryptoInfoEntity aesInfo) throws Exception {
         String jsonStr = JsonUtils.toJson(aesInfo);
-        Files.write(getFilePath(), jsonStr.getBytes(utf8));
+        Files.write(getFilePath(), jsonStr.getBytes(charset));
     }
 
     @Override
@@ -64,13 +77,12 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         if (Files.notExists(fileLocation)) {
             Files.createDirectories(fileLocation);
         }
-        String fileName = "aesInfo.json";
         return fileLocation.resolve(fileName);
     }
 
     public List<LocalCryptoInfoEntity> getAll() throws Exception {
-        String jsonStr = Files.readString(getFilePath(), utf8);
-        return (List<LocalCryptoInfoEntity>) JsonUtils.toObject(jsonStr, List.class);
+        String jsonStr = Files.readString(getFilePath(), charset);
+        return (List<LocalCryptoInfoEntity>) JsonUtils.toObject(jsonStr, List.class, LocalCryptoInfoEntity.class);
     }
 
 
