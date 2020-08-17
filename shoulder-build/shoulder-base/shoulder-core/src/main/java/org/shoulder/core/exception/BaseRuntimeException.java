@@ -34,34 +34,75 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      */
     private Object[] args;
 
-    // ==================== 当且仅当发生在编码错误时发生 =================
+    // ==================== 不带错误码的，不推荐使用 =================
 
+    /**
+     * 不带错误码的运行异常（传统方式、不推荐）
+     *
+     * @param cause 上级异常
+     */
     public BaseRuntimeException(Throwable cause) {
         super(cause);
+        if(cause instanceof ErrorCode){
+            ErrorCode errorCode = (ErrorCode)cause;
+            this.setHttpStatus(errorCode.getHttpStatusCode());
+            this.setLogLevel(errorCode.getLogLevel());
+            this.setCode(errorCode.getCode());
+            this.setArgs(errorCode.getArgs());
+        }
     }
 
+    /**
+     * 不带错误码的运行异常（传统方式、不推荐）
+     *
+     * @param message 异常信息
+     */
     public BaseRuntimeException(String message) {
         super(message);
     }
 
+    /**
+     * 不带错误码的运行异常（传统方式、不推荐）
+     *
+     * @param message 异常信息
+     * @param cause   上级异常
+     */
     public BaseRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 
     // ==================== 推荐使用错误码封装的 =================
 
+    /**
+     * 根据定义的错误码直接抛出运行异常（推荐）
+     *
+     * @param error 规范的错误码
+     */
     public BaseRuntimeException(ErrorCode error) {
         this(error.getCode(), error.getMessage());
         setLogLevel(error.getLogLevel());
         setHttpStatus(error.getHttpStatusCode());
     }
 
+    /**
+     * 根据定义的错误码直接抛出运行异常（推荐）
+     *
+     * @param error 规范的错误码
+     * @param args  错误码信息填充参数
+     */
     public BaseRuntimeException(ErrorCode error, Object... args) {
         this(error.getCode(), error.getMessage(), args);
         setLogLevel(error.getLogLevel());
         setHttpStatus(error.getHttpStatusCode());
     }
 
+    /**
+     * 根据定义的错误码直接抛出运行异常（推荐）
+     *
+     * @param error 规范的错误码
+     * @param t     上级异常
+     * @param args  错误码信息填充参数
+     */
     public BaseRuntimeException(ErrorCode error, Throwable t, Object... args) {
         this(error.getCode(), error.getMessage(), t, args);
         setLogLevel(error.getLogLevel());
@@ -71,7 +112,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
     // ==================== 带错误码的 =================
 
     /**
-     * 核心接口
+     * 带错误码的异常（推荐）
      *
      * @param code    错误码
      * @param message 错误描述
@@ -80,12 +121,27 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
         this(code, message, (Object) null);
     }
 
+    /**
+     * 带错误码的异常（推荐）
+     *
+     * @param code    错误码
+     * @param message 错误描述
+     * @param cause   上級异常
+     * @param args    错误信息填充参数
+     */
     public BaseRuntimeException(String code, String message, Throwable cause, Object... args) {
         super(message, cause);
         this.code = code;
         this.setArgs(args);
     }
 
+    /**
+     * 带错误码的异常（推荐）
+     *
+     * @param code    错误码
+     * @param message 错误描述
+     * @param args    错误信息填充参数
+     */
     public BaseRuntimeException(String code, String message, Object... args) {
         super(message);
         this.code = code;

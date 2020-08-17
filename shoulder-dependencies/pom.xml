@@ -82,6 +82,7 @@
         <postgresql.version>42.2.5</postgresql.version>
         <druid.version>1.1.21</druid.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
+        <BeeCP.version>2.5.3</BeeCP.version>
         <p6spy.version>3.9.1</p6spy.version>
 
         <!-- dataBase-->
@@ -473,6 +474,19 @@
             </dependency>
 
             <!-- db begin -->
+            <!-- 数据库 连接池 默认使用高性能的 beecp （性能是 spring-boot 默认 hikairCP 的两倍，功能较少）-->
+            <dependency>
+                <groupId>com.github.chris2018998</groupId>
+                <artifactId>BeeCP</artifactId>
+                <version>${BeeCP.version}</version>
+            </dependency>
+            <!-- 弥补 beecp 的功能缺失（SQL日志打印、监控） -->
+            <dependency>
+                <groupId>p6spy</groupId>
+                <artifactId>p6spy</artifactId>
+                <version>${p6spy.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
@@ -482,11 +496,6 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-generator</artifactId>
                 <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>p6spy</groupId>
-                <artifactId>p6spy</artifactId>
-                <version>${p6spy.version}</version>
             </dependency>
             <!-- db end -->
 

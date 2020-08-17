@@ -37,7 +37,7 @@
             <dependency>
                 <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-dependencies</artifactId>
-                <version>${project.parent.version}</version><!-- shoulder-version -->
+                <version>0.2-SNAPSHOT</version><!-- shoulder-version -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

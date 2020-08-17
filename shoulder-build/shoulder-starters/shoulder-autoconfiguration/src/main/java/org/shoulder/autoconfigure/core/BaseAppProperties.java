@@ -2,6 +2,7 @@ package org.shoulder.autoconfigure.core;
 
 import lombok.Data;
 import org.shoulder.core.constant.ShoulderFramework;
+import org.shoulder.core.context.ApplicationInfo;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -34,7 +35,7 @@ public class BaseAppProperties {
     /**
      * 全局统一日期格式
      */
-    private String dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
+    private String dateFormat = ApplicationInfo.UTC_DATE_FORMAT;
 
     /**
      * 全局统一字符集
