@@ -15,7 +15,9 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author lym
  * */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @AutoConfigureBefore(ValidateCodeBeanConfig.class)
 @EnableConfigurationProperties(ImageCodeProperties.class)
 public class ImageCodeBeanConfig {

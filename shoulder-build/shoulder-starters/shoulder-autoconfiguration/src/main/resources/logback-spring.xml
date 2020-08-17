@@ -52,6 +52,7 @@
         <!-- 操作日志 -->
         <appender name="OP_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <File>${LOG_HOME}/${appId}.op.log</File>
+            <!-- 保留最近十个文件的日志 -->
             <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
                 <FileNamePattern>${LOG_HOME}/${appId}.op.log.%i.zip</FileNamePattern>
                 <MinIndex>1</MinIndex>

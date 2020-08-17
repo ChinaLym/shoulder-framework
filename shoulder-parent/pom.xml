@@ -18,7 +18,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.javadoc.charset>${project.build.sourceEncoding}</maven.javadoc.charset>
 
-        <shoulder.version>${project.parent.version}</shoulder.version><!-- shoulder-version -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
@@ -29,7 +28,6 @@
         <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
 
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
-
         <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
 
     </properties>
@@ -39,7 +37,7 @@
             <dependency>
                 <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-dependencies</artifactId>
-                <version>${shoulder.version}</version><!-- shoulder-version -->
+                <version>${project.parent.version}</version><!-- shoulder-version -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

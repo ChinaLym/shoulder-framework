@@ -12,7 +12,9 @@ import org.springframework.web.client.RestTemplate;
  * http 相关配置
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnClass(AppIdExtractor.class)
 public class HttpAutoConfiguration {
 

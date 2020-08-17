@@ -31,7 +31,9 @@ import javax.sql.DataSource;
  *
  * @author lym
  * */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnClass(SecurityConst.class)
 @EnableConfigurationProperties(BrowserProperties.class)
 public class BrowserBeanConfig {

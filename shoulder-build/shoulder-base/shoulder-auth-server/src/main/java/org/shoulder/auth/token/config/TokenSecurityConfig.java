@@ -15,7 +15,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  *
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
 

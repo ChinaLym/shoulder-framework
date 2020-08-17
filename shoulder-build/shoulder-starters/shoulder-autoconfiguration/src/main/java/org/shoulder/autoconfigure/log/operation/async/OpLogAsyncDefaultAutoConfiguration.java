@@ -22,7 +22,9 @@ import java.util.concurrent.Executor;
  * 用于支持操作日志线程池中执行时自动跨线程 和 @Async
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnClass(OperationLog.class)
 public class OpLogAsyncDefaultAutoConfiguration {
 

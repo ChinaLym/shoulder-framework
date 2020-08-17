@@ -39,7 +39,9 @@ import java.sql.SQLException;
  */
 @SLog
 @Order
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @RestControllerAdvice
 @ConditionalOnWebApplication
 @ConditionalOnProperty(name = "shoulder.web.handleGlobalException", havingValue = "on", matchIfMissing = true)

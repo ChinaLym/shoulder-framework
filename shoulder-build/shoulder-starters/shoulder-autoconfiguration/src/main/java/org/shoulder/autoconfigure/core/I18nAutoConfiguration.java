@@ -16,7 +16,9 @@ import java.time.Duration;
  *
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 public class I18nAutoConfiguration {
 
     @Bean

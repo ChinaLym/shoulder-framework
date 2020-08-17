@@ -30,7 +30,9 @@ import org.springframework.web.client.RestTemplate;
  * @author lym
  */
 @Slf4j
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnClass(TransportNegotiationService.class)
 @AutoConfigureAfter(LocalCryptoAutoConfiguration.class)
 @ConditionalOnProperty(value = "shoulder.crypto.transport.enable", havingValue = "true", matchIfMissing = true)

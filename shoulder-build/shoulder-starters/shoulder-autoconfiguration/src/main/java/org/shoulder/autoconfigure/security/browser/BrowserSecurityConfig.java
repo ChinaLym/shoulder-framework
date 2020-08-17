@@ -21,7 +21,9 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
  *
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnClass(SecurityConst.class)
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 

@@ -18,7 +18,9 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
  *
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnClass(OperationLog.class)
 @ConditionalOnBean(AsyncConfigurer.class)
 @AutoConfigureBefore(OpLogAsyncDefaultAutoConfiguration.class)

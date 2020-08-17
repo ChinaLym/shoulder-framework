@@ -19,7 +19,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  *
  * @author lym
  * */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @AutoConfigureBefore(ValidateCodeBeanConfig.class)
 @EnableConfigurationProperties(SmsCodeProperties.class)
 public class SmsCodeBeanConfig {

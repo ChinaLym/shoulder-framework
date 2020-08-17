@@ -19,7 +19,9 @@ import java.util.Collection;
  *
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnClass(OperationLogDTO.class)
 @EnableConfigurationProperties(OperationLogProperties.class)
 public class OperationLogParamConverterAutoConfiguration implements ApplicationContextAware {

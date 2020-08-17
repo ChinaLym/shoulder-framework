@@ -16,7 +16,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 操作日志-当前用户信息
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnClass(OperationLogDTO.class)
 @AutoConfigureAfter(OperationLogAspect.class)
 public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {

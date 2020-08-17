@@ -40,7 +40,9 @@ import java.util.Map;
  * @since 5.1
  */
 @EnableAuthorizationServer
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
     private final Logger log = LoggerFactory.getLogger(getClass());

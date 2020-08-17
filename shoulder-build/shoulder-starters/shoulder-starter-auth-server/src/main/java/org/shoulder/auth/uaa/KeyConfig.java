@@ -17,7 +17,9 @@ import java.security.spec.RSAPublicKeySpec;
  *
  * 但为简单起见，本 demo 不演示 key 交换
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 class KeyConfig {
 
 	@Bean

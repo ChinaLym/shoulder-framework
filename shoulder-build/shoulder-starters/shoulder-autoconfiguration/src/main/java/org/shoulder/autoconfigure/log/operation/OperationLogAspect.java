@@ -45,7 +45,9 @@ import java.util.Objects;
  */
 @SLog
 @Aspect
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnClass(OperationLogDTO.class)
 @AutoConfigureAfter(value = {
         OperationLoggerAutoConfiguration.class,

@@ -16,7 +16,9 @@ import java.util.Properties;
  * 填充 shoulder 框架定义的基础信息
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @EnableConfigurationProperties(BaseAppProperties.class)
 public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcessor, Ordered {
 

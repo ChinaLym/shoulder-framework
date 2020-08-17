@@ -11,7 +11,9 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
  * 装配验证码过滤器
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 public class ValidateCodeSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
 	private ValidateCodeFilter validateCodeFilter;

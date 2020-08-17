@@ -23,11 +23,13 @@ import java.util.List;
 
 /**
  * 授权服务器配置
- * 
+ *
  * @author lym
  *
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @EnableAuthorizationServer
 @EnableConfigurationProperties(OAuth2Properties.class)
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {

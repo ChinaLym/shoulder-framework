@@ -16,7 +16,9 @@ import org.springframework.context.annotation.Configuration;
  * @author lym
  */
 @Slf4j
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnClass(MybatisPlusVersion.class)
 public class MybatisPlusAutoConfiguration {
 

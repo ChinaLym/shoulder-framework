@@ -15,11 +15,13 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 /**
  * 资源服务器配置
- * 
+ *
  * @author lym
  *
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @EnableResourceServer
 @EnableConfigurationProperties(OAuth2Properties.class)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
@@ -43,18 +45,18 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	//@Autowired
 	//private SpringSocialConfigurer socialSecurityConfig;
-	
+
 	//@Autowired
 	//private AuthorizeConfigManager authorizeConfigManager;
-	
+
 	@Autowired
 	private FormAuthenticationSecurityConfig formAuthenticationConfig;
-	
+
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		
+
 		formAuthenticationConfig.configure(http);
-		
+
 		http.apply(validateCodeSecurityConfig)
 				.and()
 			.apply(smsCodeAuthenticationSecurityConfig)
@@ -64,8 +66,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .apply(openIdAuthenticationSecurityConfig)
                     .and()*/
 			.csrf().disable();
-		
+
 		//authorizeConfigManager.config(http.authorizeRequests());
 	}
-	
+
 }

@@ -10,7 +10,9 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnWebApplication
 public class MvcConverterAutoConfiguration {
 

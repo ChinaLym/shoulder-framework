@@ -20,11 +20,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  *
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 @ConditionalOnWebApplication
 public class WebMvcAutoConfiguration {
 
-    @Configuration
+    @Configuration(
+    proxyBeanMethods = false
+)
     @ConditionalOnClass(HttpLocaleInterceptor.class)
     protected static class LocaleInterceptorWebConfig implements WebMvcConfigurer {
         @Override
@@ -34,7 +38,9 @@ public class WebMvcAutoConfiguration {
         }
     }
 
-    @Configuration
+    @Configuration(
+    proxyBeanMethods = false
+)
     @ConditionalOnClass(SessionTokenRepeatSubmitInterceptor.class)
     @ConditionalOnProperty(name = "shoulder.web.repeatSubmit.enable", havingValue = "true", matchIfMissing = true)
     protected static class RejectRepeatSubmitWebConfig implements WebMvcConfigurer {

@@ -23,7 +23,9 @@ import java.util.List;
  * @author lym
  */
 @ConditionalOnBean(value = {ValidateCodeProcessor.class})
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 public class ValidateCodeBeanConfig {
 
     /**
@@ -60,7 +62,9 @@ public class ValidateCodeBeanConfig {
     // ----------------- ValidateCodeStore 默认实现 --------------------
 
     @ConditionalOnMissingBean(ValidateCodeStore.class)
-    @Configuration
+    @Configuration(
+    proxyBeanMethods = false
+)
     public static class ValidateCodeStoreConfig {
         /*@ConditionalOnMissingBean(RedisTemplate.class)
         @ConditionalOnClass(RedisTemplate.class)

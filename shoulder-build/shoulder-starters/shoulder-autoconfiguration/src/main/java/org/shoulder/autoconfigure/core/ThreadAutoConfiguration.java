@@ -12,7 +12,9 @@ import java.util.concurrent.Executors;
  * 线程相关的配置
  * @author lym
  */
-@Configuration
+@Configuration(
+    proxyBeanMethods = false
+)
 public class ThreadAutoConfiguration {
 
     @Bean(Threads.DEFAULT_THREAD_POOL_NAME)
