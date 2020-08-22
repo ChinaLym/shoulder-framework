@@ -11,6 +11,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 
 import java.util.Properties;
+import java.util.TimeZone;
 
 /**
  * 填充 shoulder 框架定义的基础信息
@@ -54,6 +55,7 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
         ApplicationInfo.initCharset(environment.getProperty("shoulder.application.charset"));
         ApplicationInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
         ApplicationInfo.initDefaultLocale(StringUtils.parseLocale(environment.getProperty("shoulder.application.defaultLocale")));
+        ApplicationInfo.initTimezone(TimeZone.getTimeZone(environment.getProperty("shoulder.application.timeZone")));
     }
 
 

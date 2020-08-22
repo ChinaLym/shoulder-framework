@@ -6,10 +6,11 @@ import org.shoulder.core.util.StringUtils;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * 应用信息
- * 需要保证该类的赋值实际要足够早
+ * 需要保证该类的赋值实际要足够早，shoulder 会在应用启动时初始化该类配置
  *
  * @author lym
  */
@@ -34,6 +35,12 @@ public class ApplicationInfo {
     private static String version = "v1";
 
     /**
+     * 是否支持集群、多实例部署，默认不支持
+     * 开启后一些缓存将使用外部缓存，如 redis
+     */
+    private static boolean cluster = false;
+
+    /**
      * 全局统一日期格式，默认世界标准时间格式
      */
     private static String dateFormat = UTC_DATE_FORMAT;
@@ -44,26 +51,29 @@ public class ApplicationInfo {
     private static Charset charset = StandardCharsets.UTF_8;
 
     /**
-     * 支持集群、多实例部署
-     * 开启后一些缓存将使用外部缓存，默认使用 redis
+     * 默认语言环境，从用户中获取不到地区/语言信息时，将采用该值，若不设置则从系统中获取
      */
-    private static boolean cluster = false;
+    private static Locale defaultLocale = Locale.getDefault();
 
     /**
-     * 默认语言环境
+     * 时区，若不设置则从系统中获取
      */
-    private static Locale defaultLocale = Locale.CHINA;
+    private static TimeZone timezone = TimeZone.getDefault();
 
     public static String appId() {
         return appId;
+    }
+
+    public static String errorCodePrefix() {
+        return errorCodePrefix;
     }
 
     public static String version() {
         return version;
     }
 
-    public static String errorCodePrefix() {
-        return errorCodePrefix;
+    public static boolean cluster() {
+        return cluster;
     }
 
     public static String dateFormat() {
@@ -74,8 +84,17 @@ public class ApplicationInfo {
         return charset;
     }
 
-    public static boolean cluster() {
-        return cluster;
+    /**
+     * 获取默认地区/语言标识
+     *
+     * @return 地区/语言标识
+     */
+    public static Locale defaultLocale() {
+        return defaultLocale;
+    }
+
+    public static TimeZone timezone() {
+        return timezone;
     }
 
     public static void initAppId(String appId) {
@@ -90,6 +109,11 @@ public class ApplicationInfo {
         ApplicationInfo.version = version;
     }
 
+    public static void initCluster(boolean cluster) {
+        ApplicationInfo.cluster = cluster;
+    }
+
+
     public static void initDateFormat(String dateFormat) {
         ApplicationInfo.dateFormat = dateFormat;
     }
@@ -97,19 +121,6 @@ public class ApplicationInfo {
     public static void initCharset(String charset) {
         ApplicationInfo.charset = StringUtils.isNotEmpty(charset) && Charset.isSupported(charset) ?
             Charset.forName(charset) : StandardCharsets.UTF_8;
-    }
-
-    public static void initCluster(boolean cluster) {
-        ApplicationInfo.cluster = cluster;
-    }
-
-    /**
-     * 获取语言标识
-     *
-     * @return 语言标识
-     */
-    public static Locale defaultLocale() {
-        return defaultLocale;
     }
 
     /**
@@ -121,4 +132,8 @@ public class ApplicationInfo {
         ApplicationInfo.defaultLocale = locale;
     }
 
+
+    public static void initTimezone(TimeZone timezone) {
+        ApplicationInfo.timezone = timezone;
+    }
 }

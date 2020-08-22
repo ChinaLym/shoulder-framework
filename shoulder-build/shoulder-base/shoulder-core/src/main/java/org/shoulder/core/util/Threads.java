@@ -128,7 +128,7 @@ public class Threads {
     }
 
     /**
-     * 类比jdk的：{@link ThreadPoolExecutor.AbortPolicy}，jdk的默认策略，这里将其转为框架异常
+     * 类比jdk的默认策略，{@link ThreadPoolExecutor.AbortPolicy}，这里将其转为框架的运行时异常，
      *
      * @deprecated use {@link ThreadPoolExecutor.AbortPolicy}
      */
