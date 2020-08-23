@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.web;
 
 import org.shoulder.core.converter.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ public class MvcConverterAutoConfiguration {
      * @return DateConverter
      */
     @Bean
+    @ConditionalOnMissingBean
     public DateConverter dateConverter() {
         return new DateConverter();
     }
@@ -33,6 +35,7 @@ public class MvcConverterAutoConfiguration {
      * @return LocalDateConverter
      */
     @Bean
+    @ConditionalOnMissingBean
     public LocalDateConverter localDateConverter() {
         return new LocalDateConverter();
     }
@@ -43,6 +46,7 @@ public class MvcConverterAutoConfiguration {
      * @return LocalDateTimeConverter
      */
     @Bean
+    @ConditionalOnMissingBean
     public LocalDateTimeConverter localDateTimeConverter() {
         return new LocalDateTimeConverter();
     }
@@ -53,15 +57,18 @@ public class MvcConverterAutoConfiguration {
      * @return LocalTimeConverter
      */
     @Bean
+    @ConditionalOnMissingBean
     public LocalTimeConverter localTimeConverter() {
         return new LocalTimeConverter();
     }
 
     /**
-     * 字符串参数自动转枚举
+     * 字符串参数自动转枚举-默认实现
+     *
      * @return EnumConverterFactory
      */
     @Bean
+    @ConditionalOnMissingBean
     public EnumConverterFactory enumConverterFactory() {
         return new EnumConverterFactory();
     }

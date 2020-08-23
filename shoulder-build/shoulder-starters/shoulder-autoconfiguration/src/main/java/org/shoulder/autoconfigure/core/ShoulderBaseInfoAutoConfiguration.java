@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 /**
  * 填充 shoulder 框架定义的基础信息
+ *
  * @author lym
  */
 @Configuration(
@@ -27,13 +28,6 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        String appIdKey = "shoulder.application.id";
-        if(StringUtils.isEmpty(environment.getProperty(appIdKey))){
-            // appId 如果为空则采用 spring.application.name
-            Properties properties = new Properties();
-            properties.setProperty(appIdKey, environment.getProperty("spring.application.name"));
-            environment.getPropertySources().addFirst(new PropertiesPropertySource(SHOULDER_PROPERTIES, properties));
-        }
         initApplicationInfo(environment);
     }
 
@@ -45,9 +39,17 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
 
     /**
      * 初始化应用信息
+     *
      * @param environment 环境与配置
      */
-    private void initApplicationInfo(ConfigurableEnvironment environment){
+    private void initApplicationInfo(ConfigurableEnvironment environment) {
+        String appIdKey = "shoulder.application.id";
+        if (StringUtils.isEmpty(environment.getProperty(appIdKey))) {
+            // appId 如果为空则采用 spring.application.name
+            Properties properties = new Properties();
+            properties.setProperty(appIdKey, environment.getProperty("spring.application.name"));
+            environment.getPropertySources().addFirst(new PropertiesPropertySource(SHOULDER_PROPERTIES, properties));
+        }
         ApplicationInfo.initAppId(environment.getProperty("shoulder.application.id"));
         ApplicationInfo.initErrorCodePrefix(environment.getProperty("shoulder.application.errorCodePrefix"));
         ApplicationInfo.initVersion(environment.getProperty("shoulder.application.version"));
@@ -55,7 +57,7 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
         ApplicationInfo.initCharset(environment.getProperty("shoulder.application.charset"));
         ApplicationInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
         ApplicationInfo.initDefaultLocale(StringUtils.parseLocale(environment.getProperty("shoulder.application.defaultLocale")));
-        ApplicationInfo.initTimezone(TimeZone.getTimeZone(environment.getProperty("shoulder.application.timeZone")));
+        ApplicationInfo.initTimeZone(TimeZone.getTimeZone(environment.getProperty("shoulder.application.timeZone")));
     }
 
 

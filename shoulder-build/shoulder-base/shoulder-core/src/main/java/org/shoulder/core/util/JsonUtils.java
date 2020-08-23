@@ -146,7 +146,7 @@ public class JsonUtils {
         // 设置为配置的时间格式
         objectMapper.setDateFormat(new SimpleDateFormat(ApplicationInfo.dateFormat()));
         // 设置为配置的时区
-        objectMapper.setTimeZone(ApplicationInfo.timezone());
+        objectMapper.setTimeZone(ApplicationInfo.timeZone());
         // 排序key
         objectMapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
         // 忽略空bean转json错误

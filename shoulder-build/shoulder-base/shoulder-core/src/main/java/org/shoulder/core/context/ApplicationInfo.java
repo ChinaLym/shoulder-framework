@@ -58,7 +58,7 @@ public class ApplicationInfo {
     /**
      * 时区，若不设置则从系统中获取
      */
-    private static TimeZone timezone = TimeZone.getDefault();
+    private static TimeZone timeZone = TimeZone.getDefault();
 
     public static String appId() {
         return appId;
@@ -93,8 +93,8 @@ public class ApplicationInfo {
         return defaultLocale;
     }
 
-    public static TimeZone timezone() {
-        return timezone;
+    public static TimeZone timeZone() {
+        return timeZone;
     }
 
     public static void initAppId(String appId) {
@@ -133,7 +133,7 @@ public class ApplicationInfo {
     }
 
 
-    public static void initTimezone(TimeZone timezone) {
-        ApplicationInfo.timezone = timezone;
+    public static void initTimeZone(TimeZone timezone) {
+        ApplicationInfo.timeZone = timezone;
     }
 }
