@@ -99,28 +99,34 @@ public class ApplicationInfo {
 
     public static void initAppId(String appId) {
         ApplicationInfo.appId = appId;
+        log.info("initAppId: " + appId);
     }
 
     public static void initErrorCodePrefix(String errorCodePrefix) {
         ApplicationInfo.errorCodePrefix = errorCodePrefix;
+        log.info("initErrorCodePrefix: " + errorCodePrefix);
     }
 
     public static void initVersion(String version) {
         ApplicationInfo.version = version;
+        log.info("initVersion: " + version);
     }
 
     public static void initCluster(boolean cluster) {
         ApplicationInfo.cluster = cluster;
+        log.info("initCluster: " + cluster);
     }
 
 
     public static void initDateFormat(String dateFormat) {
         ApplicationInfo.dateFormat = dateFormat;
+        log.info("initDateFormat: " + dateFormat);
     }
 
     public static void initCharset(String charset) {
         ApplicationInfo.charset = StringUtils.isNotEmpty(charset) && Charset.isSupported(charset) ?
             Charset.forName(charset) : StandardCharsets.UTF_8;
+        log.info("initCharset: " + charset);
     }
 
     /**
@@ -130,10 +136,12 @@ public class ApplicationInfo {
      */
     public static void initDefaultLocale(Locale locale) {
         ApplicationInfo.defaultLocale = locale;
+        log.info("initDefaultLocale: " + locale);
     }
 
 
     public static void initTimeZone(TimeZone timezone) {
         ApplicationInfo.timeZone = timezone;
+        log.info("initTimeZone: " + timezone);
     }
 }

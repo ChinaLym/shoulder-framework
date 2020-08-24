@@ -1,7 +1,9 @@
 package org.shoulder.autoconfigure.core;
 
 import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.env.EnvironmentPostProcessor;
@@ -43,12 +45,22 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
      * @param environment 环境与配置
      */
     private void initApplicationInfo(ConfigurableEnvironment environment) {
+        Logger log = LoggerFactory.getLogger(getClass());
         String appIdKey = "shoulder.application.id";
         if (StringUtils.isEmpty(environment.getProperty(appIdKey))) {
             // appId 如果为空则采用 spring.application.name
-            Properties properties = new Properties();
-            properties.setProperty(appIdKey, environment.getProperty("spring.application.name"));
-            environment.getPropertySources().addFirst(new PropertiesPropertySource(SHOULDER_PROPERTIES, properties));
+            String springAppNameKey = "spring.application.name";
+            log.debug( appIdKey + " is empty, fallback to use " + springAppNameKey);
+
+            String appName = environment.getProperty(springAppNameKey);
+            if(StringUtils.isNotEmpty(appName)){
+                Properties properties = new Properties();
+                properties.setProperty(appIdKey, appName);
+                environment.getPropertySources().addFirst(new PropertiesPropertySource(SHOULDER_PROPERTIES, properties));
+            }else {
+                log.error("both of '" + appIdKey + "' and '" + springAppNameKey +
+                    "' are empty! set value please");
+            }
         }
         ApplicationInfo.initAppId(environment.getProperty("shoulder.application.id"));
         ApplicationInfo.initErrorCodePrefix(environment.getProperty("shoulder.application.errorCodePrefix"));
