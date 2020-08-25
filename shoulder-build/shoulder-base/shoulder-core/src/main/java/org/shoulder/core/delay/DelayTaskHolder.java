@@ -12,7 +12,7 @@ import org.springframework.lang.NonNull;
 public interface DelayTaskHolder {
 
     /**
-     * 存储任务
+     * 存储任务，供使用者使用
      *
      * @param delayTask 已被封装的延时任务
      */

@@ -1,6 +1,8 @@
 package org.shoulder.core.util;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
@@ -143,21 +145,35 @@ public class JsonUtils {
 
     public static ObjectMapper createObjectMapper(BeanSerializerModifier modifier) {
         ObjectMapper objectMapper = new ObjectMapper();
-        // 设置为配置的时间格式
-        objectMapper.setDateFormat(new SimpleDateFormat(ApplicationInfo.dateFormat()));
-        // 设置为配置的时区
+
+        // 设置为配置中的统一 地区、时区、
+        objectMapper.setLocale(ApplicationInfo.defaultLocale());
         objectMapper.setTimeZone(ApplicationInfo.timeZone());
-        // 排序key
-        objectMapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+
+        // 设置序列化日期为配置的统一时间格式
+        objectMapper.setDateFormat(new SimpleDateFormat(ApplicationInfo.dateFormat(), ApplicationInfo.defaultLocale()));
+        // 反序列化时，允许存在 tab、换行符、结束语符、注释符等控制字符
+        objectMapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
+        // 反序列化时，可解析反斜杠引用的所有字符
+        objectMapper.configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true);
+
         // 忽略空bean转json错误
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         // 忽略在json字符串中存在，在java类中不存在字段
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        // 允许使用单引号代替双引号（更好的兼容性）
+        objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        // 将 key 排序（更好的体验）
+        objectMapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+
         if (modifier != null) {
-            objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(modifier));
+            objectMapper.setSerializerFactory(
+                objectMapper.getSerializerFactory().withSerializerModifier(modifier)
+            );
         }
         // 添加 jdk8 新增的时间序列化处理模块
         objectMapper.registerModule(new DateEnhancerJacksonModule());
+        objectMapper.findAndRegisterModules();
         return objectMapper;
     }
 
@@ -172,9 +188,9 @@ public class JsonUtils {
     }
 
     /**
-     * 解决常见序列化失败问题
-     * java 8 时间
-     * Long 序列化
+     * 解决常见序列化失败问题：java 8 时间、Long 序列化，如果不加入，则可能需要这么写：
+     *  @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+     * 	LocalDateTime time;
      *
      * @author lym
      */
@@ -184,17 +200,20 @@ public class JsonUtils {
             super(PackageVersion.VERSION);
 
             // 解决 jdk8 日期序列化失败
-            String dateFormat = "yyyy-MM-dd";
-            this.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)));
-            this.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(dateFormat)));
+            String dateFormatStr = "yyyy-MM-dd";
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(dateFormatStr);
+            this.addSerializer(LocalDate.class, new LocalDateSerializer(dateFormatter));
+            this.addDeserializer(LocalDate.class, new LocalDateDeserializer(dateFormatter));
 
-            String timeFormat = "HH:mm:ss";
-            this.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(timeFormat)));
-            this.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(timeFormat)));
+            String timeFormatStr = "HH:mm:ss";
+            DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(timeFormatStr);
+            this.addSerializer(LocalTime.class, new LocalTimeSerializer(timeFormat));
+            this.addDeserializer(LocalTime.class, new LocalTimeDeserializer(timeFormat));
 
-            String datetimeFormat = dateFormat + " " + timeFormat;
-            this.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(datetimeFormat)));
-            this.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(datetimeFormat)));
+            String datetimeFormatStr = dateFormatStr + " " + timeFormatStr;
+            DateTimeFormatter datetimeFormat = DateTimeFormatter.ofPattern(datetimeFormatStr);
+            this.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(datetimeFormat));
+            this.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(datetimeFormat));
 
             // 解决 17位+的 Long 给前端导致精度丢失问题，前端将以 str 接收（序列换成json时,将所有的long变成string）
             //this.addSerializer(Long.class, ToStringSerializer.instance);

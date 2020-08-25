@@ -6,7 +6,8 @@ import org.springframework.lang.NonNull;
 import java.util.concurrent.DelayQueue;
 
 /**
- * 内部封装一个延迟队列
+ * 内部封装一个延迟队列，基于阻塞式，适合延迟任务较少的场景
+ * 若延迟任务量特别大，推荐通过时间轮方式做
  *
  * @author lym
  */
