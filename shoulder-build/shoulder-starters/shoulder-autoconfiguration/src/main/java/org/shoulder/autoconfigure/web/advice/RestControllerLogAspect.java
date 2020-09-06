@@ -169,7 +169,7 @@ public class RestControllerLogAspect {
         // 是否处理 ModelAndView
         long cost = System.currentTimeMillis() - requestTimeLocal.get();
         String returnStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
-        log.debug("{} cost [{}]ms, Result: {}", codeLocation, cost, returnStr);
+        log.debug(NEW_LINE_SEPARATOR + "{} [cost {}ms], Result: {}", codeLocation, cost, returnStr);
         cleanLocal();
     }
 
@@ -214,7 +214,7 @@ public class RestControllerLogAspect {
     public void exception(Exception exception) {
         long cost = System.currentTimeMillis() - requestTimeLocal.get();
         // 是否在这里记录异常？会否重复记录？
-        loggerLocal.get().error("cost [" + cost + "]ms and EXCEPTION.", exception);
+        loggerLocal.get().error("[cost " + cost + "ms] and EXCEPTION.", exception);
         cleanLocal();
     }
 
