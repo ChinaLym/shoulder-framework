@@ -1,4 +1,4 @@
-package demo1.ex.code;
+package com.example.demo2.ex.code;
 
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;

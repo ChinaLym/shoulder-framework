@@ -1,4 +1,4 @@
-package demo1.ex;
+package com.example.demo2.ex;
 
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.slf4j.event.Level;

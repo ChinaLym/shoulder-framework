@@ -4,9 +4,97 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>cn.itlym</groupId>
+        <artifactId>shoulder-parent</artifactId>
+        <version>0.2-SNAPSHOT</version><!-- shoulder-version -->
+    </parent>
+
     <groupId>com.example</groupId>
     <artifactId>demo2</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>demo1</name>
+    <description>Demo project for Shoulder Framework</description>
 
+    <properties>
+        <java.version>11</java.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- 包含了 spring-boot-starter-web，在其之上额外提供了更棒的能力 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-web</artifactId>
+        </dependency>
+
+        <!-- shoulder 改写的 lombok，额外提供 @SLog -->
+        <dependency>
+            <groupId>cn.itlym.shoulder</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-beanmap</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-crypto</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-data-db</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- shoulder 继承了 spring boot 的所有特性，引入 spring boot 的jar 一样不需要写版本号 -->
+
+        <!-- 热更新插件，修改代码无需重启 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 测试 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <!-- spring boot 打包 -->
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

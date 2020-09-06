@@ -1,7 +1,7 @@
-package demo1.bo.map;
+package com.example.demo2.bo.map;
 
-import com.example.demo1.bo.ShopBO;
-import com.example.demo1.dto.ShopDTO;
+import com.example.demo2.bo.ShopBO;
+import com.example.demo2.dto.ShopDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -40,9 +40,6 @@ public interface DemoBeanMapping {
     @Mapping(expression = "java(\"this shop owned is in \" + bo.getAddr() + \", and boss is \" + bo.getBoss().getName() + \".\")", target = "description")
     @Mapping(source = "createTime", target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
     ShopDTO toComposeDTO(ShopBO bo);
-
-
-
 
 
 }

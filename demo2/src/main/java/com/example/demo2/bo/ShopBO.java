@@ -1,6 +1,6 @@
-package demo1.bo;
+package com.example.demo2.bo;
 
-import com.example.demo1.enums.MyColorEnum;
+import com.example.demo2.enums.MyColorEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

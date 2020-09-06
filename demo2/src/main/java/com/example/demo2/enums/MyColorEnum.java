@@ -1,4 +1,4 @@
-package demo1.enums;
+package com.example.demo2.enums;
 
 /**
  * 自定义枚举

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- TODO 这里设置 Mapper -->
+<mapper namespace="com.example.demo2.repository.ProjectMapper">
+
+    <!-- 通用查询映射结果 TODO 这里设置 Entity -->
+    <resultMap id="BaseResultMap" type="com.example.demo2.entity.ProjectEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="creator" jdbcType="BIGINT" property="creator"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modifier" jdbcType="BIGINT" property="modifier"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, creator, create_time, modifier, update_time
+    </sql>
+
+</mapper>

@@ -5,12 +5,21 @@ spring:
     name: demo2
 
   datasource:
+    type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_ADDR}/demo_shoulder?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
+    username: root
     password: ${MYSQL_PWD} # 这里使用了系统的环境变量，参见 spring boot 的特性
-    url: jdbc:mysql://${MYSQL_ADDR}/beta?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
-    username: cicd
 
 shoulder:
   application:
     errorCodePrefix: '0x000b'
     id: ${spring.application.name}
+
+
+logging:
+  level:
+    org:
+      springframework: warn
+
+debug: false
