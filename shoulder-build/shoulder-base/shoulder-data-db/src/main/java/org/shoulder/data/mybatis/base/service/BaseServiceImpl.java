@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class BaseServiceImpl<M extends IBaseRepository<T>, T> extends ServiceImpl<M, T> {
 
+    /**
+     * T 实体的存储层接口
+     */
     @Autowired
-    private IBaseRepository<T> baseRepository;
+    private IBaseRepository<T> repository;
 
 }

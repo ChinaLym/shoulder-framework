@@ -12,7 +12,7 @@ import javax.validation.groups.Default;
 import java.time.LocalDateTime;
 
 /**
- * 不可变的实体，对应数据库中不可变或只删不改的记录。如日志，多对多关联表(角色权限)
+ * 记录型实体: 带有 id、创建时间、创建者。
  *
  * @author lym
  */
@@ -22,10 +22,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class ImmutableEntity<ID> {
+public class RecordEntity<ID> {
 
     @TableId(value = "id", type = IdType.INPUT)
-    @NotNull(message = "id can't be null", groups = ImmutableEntity.Update.class)
+    @NotNull(message = "id can't be null", groups = RecordEntity.Update.class)
     protected ID id;
 
     @TableField(value = "create_time", fill = FieldFill.INSERT)

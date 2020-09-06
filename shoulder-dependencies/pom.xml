@@ -64,6 +64,8 @@
         <jna.version>5.5.0</jna.version>
         <!-- useful tools -->
         <hutool.version>5.3.8</hutool.version>
+        <javassist.version>3.27.0-GA</javassist.version>
+
         <guava.version>29.0-jre</guava.version>
         <findbugs-annotations.version>3.0.0</findbugs-annotations.version>
         <alibaba.transmittable.version>2.11.5</alibaba.transmittable.version>
@@ -401,6 +403,12 @@
                 <version>${commons-daemon.version}</version>
             </dependency>
             <!--Commons end -->
+
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>cn.hutool</groupId>

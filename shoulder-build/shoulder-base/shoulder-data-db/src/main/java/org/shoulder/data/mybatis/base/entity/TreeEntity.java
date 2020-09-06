@@ -22,7 +22,7 @@ import static com.baomidou.mybatisplus.annotation.SqlCondition.LIKE;
 @Setter
 @Accessors(chain = true)
 @ToString(callSuper = true)
-public class TreeEntity<E, T> extends BaseEntity<T> {
+public class TreeEntity<E, T> extends RecordEntity<T> {
 
     /**
      * 名称

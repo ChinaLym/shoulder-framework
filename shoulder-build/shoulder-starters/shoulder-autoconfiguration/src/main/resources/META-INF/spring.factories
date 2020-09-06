@@ -1,26 +1,34 @@
 # Auto Configuration
-org.springframework.context.ApplicationListener=org.shoulder.autoconfigure.core.DefaultPropertiesStartingListener
-
-org.springframework.boot.env.EnvironmentPostProcessor=org.shoulder.autoconfigure.core.ShoulderBaseInfoAutoConfiguration
+org.springframework.context.ApplicationListener=\
+  org.shoulder.autoconfigure.core.DefaultPropertiesStartingListener
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  org.shoulder.autoconfigure.core.ShoulderBaseInfoAutoConfiguration
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.core.ThreadAutoConfiguration, \
   org.shoulder.autoconfigure.core.DelayTaskAutoConfiguration, \
   org.shoulder.autoconfigure.core.I18nAutoConfiguration, \
+  \
+  org.shoulder.autoconfigure.web.advice.RestControllerLogAspect, \
   org.shoulder.autoconfigure.web.advice.RestControllerExceptionAdvice, \
   org.shoulder.autoconfigure.web.advice.RestControllerUnionResponseAdvice, \
   org.shoulder.autoconfigure.web.MvcConverterAutoConfiguration, \
   org.shoulder.autoconfigure.web.WebMvcAutoConfiguration, \
+  \
   org.shoulder.autoconfigure.redis.RedisAutoConfiguration, \
   org.shoulder.autoconfigure.http.HttpAutoConfiguration, \
+  \
   org.shoulder.autoconfigure.crypto.LocalCryptoAutoConfiguration,\
   org.shoulder.autoconfigure.crypto.AsymmetricCryptoAutoConfiguration,\
   org.shoulder.autoconfigure.crypto.TransportCryptoAutoConfiguration, \
+  \
   org.shoulder.autoconfigure.db.mybatis.MybatisPlusAutoConfiguration, \
+  \
   org.shoulder.autoconfigure.log.operation.async.OpLogAsyncCustomAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.async.OpLogAsyncDefaultAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.OperationLogAspect,\
   org.shoulder.autoconfigure.log.operation.OperationLoggerAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.OperationLogParamConverterAutoConfiguration,\
   org.shoulder.autoconfigure.log.operation.OperationLogParamConverterAutoConfiguration,\
+  \
   org.shoulder.autoconfigure.security.AuthenticationBeanConfig

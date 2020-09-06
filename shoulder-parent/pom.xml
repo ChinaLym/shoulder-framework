@@ -26,6 +26,7 @@
         <mapstruct.version>1.3.1.Final</mapstruct.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
+        <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
 
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
         <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
@@ -134,7 +135,7 @@
                     </configuration>
                 </plugin>
 
-                <!-- attach source into jar -->
+                <!-- attach source into jar 打包加入源码 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
@@ -206,7 +207,7 @@
                     </executions>
                 </plugin>
 
-                <!-- GPG  发布插件-->
+                <!-- GPG  maven中央仓库发布插件 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
@@ -222,7 +223,7 @@
                     </executions>
                 </plugin>
 
-                <!-- findbugs -->
+                <!-- findbugs 检查代码问题 -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>findbugs-maven-plugin</artifactId>
@@ -236,7 +237,7 @@
                     </configuration>
                 </plugin>
 
-                <!-- unit test settings when mvn test -->
+                <!-- 单元测试配置 when mvn test -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -249,6 +250,13 @@
                     </configuration>
                 </plugin>
 
+
+                <!-- cobertura 单元测试覆盖率插件 -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>${cobertura-maven-plugin}</version>
+                </plugin>
 
                 <!-- 自动生成文档 支持 JSR-303 Bean Validation -->
                 <plugin>
@@ -271,6 +279,21 @@
                         <!--文档存放的绝对路径–默认为： ${project.build.directory}-->
                         <outputDir>${project.build.directory}</outputDir>
                     </configuration>
+                </plugin>
+
+                <!-- sonar 代码检查插件 -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>3.7.0.1746</version>
+                </plugin>
+
+
+                <!-- 管理版本号 mvn versions:set -DnewVersion=1.1-SNAPSHOT -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.7</version>
                 </plugin>
 
             </plugins>

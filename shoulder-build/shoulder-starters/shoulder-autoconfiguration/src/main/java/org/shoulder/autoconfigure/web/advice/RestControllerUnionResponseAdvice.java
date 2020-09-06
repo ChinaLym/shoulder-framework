@@ -30,6 +30,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  *      如果希望使用自己项目中的返回值类，返回值继承 {@link BaseResponse} 类即可。
  *
  * todo 统一加密，签名？
+ *  记录debug日志
  *
  * @author lym
  */

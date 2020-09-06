@@ -34,6 +34,8 @@
 
         <!-- 对第三方框架日志打印频率特别高的部分进行限制 -->
         <logger name="org.apache.zookeeper.ClientCnxn" level="ERROR" />
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="org.springframework.web" level="INFO"/>
         <logger name="org.springframework.boot" level="WARN" />
         <logger name="org.springframework.boot.web.filter" level="ERROR" />
 

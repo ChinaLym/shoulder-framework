@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.PackageVersion;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -172,7 +174,10 @@ public class JsonUtils {
             );
         }
         // 添加 jdk8 新增的时间序列化处理模块
-        objectMapper.registerModule(new DateEnhancerJacksonModule());
+        objectMapper.registerModule(new DateEnhancerJacksonModule())
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule());
+
         objectMapper.findAndRegisterModules();
         return objectMapper;
     }

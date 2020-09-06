@@ -37,6 +37,9 @@ public class DefaultPropertiesStartingListener implements ApplicationListener<Ap
         properties.put("shoulder.application.defaultLocale", "zh_CN");
         properties.put("shoulder.application.timeZone", "GMT+8:00");
 
+        // 默认关闭 banner
+        properties.put("mybatis-plus.global-config.banner=false", "false");
+
         return properties;
     }
 

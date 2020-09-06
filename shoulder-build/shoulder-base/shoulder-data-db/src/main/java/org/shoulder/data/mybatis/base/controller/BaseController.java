@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class BaseController<Biz extends IBaseService<T>, T> {
 
+    /**
+     * T 实体的业务层接口
+     */
     @Autowired
     protected Biz bizService;
 

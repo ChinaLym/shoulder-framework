@@ -21,6 +21,7 @@ public class EnumConverter implements Converter<String, Enum> {
 
     @Override
     public Enum convert(@NonNull String source) {
+        // 处理空字符串
         if (source.isBlank()) {
             return missMatchHandler.handleNullSource(enumType);
         }
@@ -31,6 +32,7 @@ public class EnumConverter implements Converter<String, Enum> {
                 return e;
             }
         }
+        // 名称匹配失败时触发 MissMatch
         return missMatchHandler.handleMissMatch(enumType, source);
     }
 
