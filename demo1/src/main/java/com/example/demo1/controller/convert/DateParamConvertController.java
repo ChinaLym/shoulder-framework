@@ -1,5 +1,6 @@
 package com.example.demo1.controller.convert;
 
+import org.shoulder.core.converter.BaseDateConverter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,8 @@ import java.util.Date;
 
 /**
  * 可以自动将日期转为对应的类
+ *
+ * @see BaseDateConverter 看其子类查看支持的类型与格式
  *
  * @author lym
  */

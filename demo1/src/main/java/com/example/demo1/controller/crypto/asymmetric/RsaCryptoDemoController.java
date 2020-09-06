@@ -5,6 +5,7 @@ import com.example.demo1.dto.CryptoTestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
+import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * RSA 非对称加解密  若需测试 rsa 需要打开 {@link CryptoConfig#rsa2048} 的 @Bean
  * 否则 shoulder 默认使用性能更好，安全系数更高的 ECC 算法，{@link EccCryptoDemoController}
+ *
+ * @see DefaultAsymmetricCryptoProcessor#ecc256
  *
  * @author lym
  */

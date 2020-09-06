@@ -1,17 +1,17 @@
 package com.example.demo1.controller.convert;
 
 import com.example.demo1.enums.MyColorEnum;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.shoulder.core.converter.EnumConverter;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 /**
  * 可以自动将字符串转为对应的枚举
+ *
+ * 实现与扩展：
+ * @see org.shoulder.core.converter.EnumConverter#convert 默认使用名称匹配，可以自行继承来扩展 shoulder 提供的匹配方式
+ * 注入 spring boot 的 EnumConverterFactory 可替换 shoulder 的实现
  *
  * @author lym
  */

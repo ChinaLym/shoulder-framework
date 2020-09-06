@@ -7,12 +7,11 @@ import org.shoulder.crypto.local.repository.impl.FileLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.JdbcLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.RedisLocalCryptoInfoRepository;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * CryptoConfig
+ * CryptoConfig 加密相关配置
  *
  * @author lym
  */
@@ -20,7 +19,8 @@ import org.springframework.context.annotation.Configuration;
 public class CryptoConfig {
 
     /**
-     * 这里使用了用于demo测试的 HashMapCryptoInfoRepository（每次运行将重置），生产环境需要配置为可持久化的，如依赖数据库或redis
+     * fixme 这里使用了用于demo测试的 HashMapCryptoInfoRepository（每次运行将重置！）
+     *  生产环境需要配置为可持久化的，如使用 mysql 作为持久化！！！！！
      *
      * @see JdbcLocalCryptoInfoRepository
      * @see RedisLocalCryptoInfoRepository

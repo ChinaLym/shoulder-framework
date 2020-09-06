@@ -1,6 +1,7 @@
 package com.example.demo1.controller.delay;
 
 import lombok.extern.shoulder.SLog;
+import org.shoulder.core.delay.DelayTasDispatcher;
 import org.shoulder.core.delay.DelayTask;
 import org.shoulder.core.delay.DelayTaskHolder;
 import org.shoulder.core.log.Logger;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 延迟任务使用示例
  *
+ * @see DelayTasDispatcher 阻塞式实现类
  *
  * @author lym
  */

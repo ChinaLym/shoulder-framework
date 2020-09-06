@@ -4,6 +4,9 @@ import lombok.Data;
 
 /**
  * 测试 bean 转换（DTO、BO等之间转换）
+ *
+ * 引入了 Lombok，get/set方法不再需要写
+ *
  * @author lym
  */
 @Data

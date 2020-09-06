@@ -4,6 +4,9 @@ import org.shoulder.core.exception.BaseRuntimeException;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
+/**
+ * @author lym
+ */
 public class MyEx2 extends BaseRuntimeException {
 
     public MyEx2(String code, String message) {

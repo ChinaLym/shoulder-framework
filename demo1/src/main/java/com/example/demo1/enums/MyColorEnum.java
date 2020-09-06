@@ -2,6 +2,8 @@ package com.example.demo1.enums;
 
 /**
  * 自定义枚举
+ *
+ * @author lym
  */
 public enum MyColorEnum {
 

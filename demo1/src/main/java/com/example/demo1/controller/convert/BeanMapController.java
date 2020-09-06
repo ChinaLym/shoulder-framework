@@ -1,8 +1,8 @@
 package com.example.demo1.controller.convert;
 
 import com.example.demo1.bo.ShopBO;
-import com.example.demo1.dto.ShopDTO;
 import com.example.demo1.bo.map.DemoBeanMapping;
+import com.example.demo1.dto.ShopDTO;
 import com.example.demo1.enums.MyColorEnum;
 import org.shoulder.core.converter.EnumConverter;
 import org.shoulder.core.util.StringUtils;
@@ -16,6 +16,11 @@ import java.util.Date;
 
 
 /**
+ * 原生 MapStruct， shoulder 未做任何修改
+ *
+ * 介绍 https://gitee.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-starters/shoulder-starter-beanmap
+ * 介绍 https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-starters/shoulder-starter-beanmap
+ *
  * @author lym
  */
 @SkipResponseWrap

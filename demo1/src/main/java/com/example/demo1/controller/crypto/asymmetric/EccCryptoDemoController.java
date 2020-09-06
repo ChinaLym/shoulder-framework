@@ -4,6 +4,7 @@ import com.example.demo1.dto.CryptoTestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
+import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
  * 非对称加解密 shoulder 默认使用 ECC 256 算法，椭圆曲线采取美国安全局公布的标准椭圆曲线 NIST SPS800-57
  * 美国国家标准与技术研究院 Special Publications 800 https://csrc.nist.gov/publications/sp
  * 加解密技术指南：http://doc.itlym.cn/specs/security/crypto.html#%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%89%E6%8B%A9
+ *
+ * @see DefaultAsymmetricCryptoProcessor#ecc256
  *
  * @author lym
  */
