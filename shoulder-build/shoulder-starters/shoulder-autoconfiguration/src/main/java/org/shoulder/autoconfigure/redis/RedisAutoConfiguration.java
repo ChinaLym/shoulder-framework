@@ -15,8 +15,8 @@ import org.springframework.util.StringUtils;
 
 /**
  * redis相关配置，提供以下 Bean
- *  redisTemplate<String, Object>
- *  StringRedisTemplate
+ * redisTemplate<String, Object>
+ * StringRedisTemplate
  *
  * @author lym
  */

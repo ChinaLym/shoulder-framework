@@ -14,8 +14,8 @@
     <description>
         默认的认证服务器
         （提供基础认证 账号密码认证、手机号认证、手机号密码认证；
-            作为认证服务器 Oauth2、OIDC、SAML2；
-            作为Oauth2客户端，如 GitHub、QQ、WeChat、Gitee）
+        作为认证服务器 Oauth2、OIDC、SAML2；
+        作为Oauth2客户端，如 GitHub、QQ、WeChat、Gitee）
     </description>
 
     <dependencies>
@@ -45,7 +45,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
-
 
 
         </plugins>

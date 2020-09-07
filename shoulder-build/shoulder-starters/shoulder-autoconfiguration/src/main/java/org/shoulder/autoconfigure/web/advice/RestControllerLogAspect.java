@@ -200,7 +200,8 @@ public class RestControllerLogAspect {
     }
 
     /**
-     * 记录发生异常，异常不应该这里记录
+     * 记录发生异常
+     * 异常不推荐这里记录，默认注释。推荐在全局异常拦截中记录
      *
      * @param exception 异常
      */

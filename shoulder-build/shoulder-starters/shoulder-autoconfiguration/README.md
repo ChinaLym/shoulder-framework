@@ -2,7 +2,7 @@
 
 类似 `spring-boot-autoconfiguration`
 
-包含了对框架核心功能的自动装配，框架设计参考 spring-cloud，除了核心之外的自动装配代码放置于 `shoulder-starter-xxx` 中
+包含了对框架核心功能的自动装配，框架设计参考 `spring-cloud`，除了核心之外的自动装配代码放置于 `shoulder-starter-xxx` 中
 
 ## 应用基本信息
 

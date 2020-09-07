@@ -145,7 +145,7 @@ public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
         ProxyFactoryBean factory = new ProxyFactoryBean();
         factory.setProxyTargetClass(cglibProxy);
         factory.addAdvice(
-            new ExecutorMethodInterceptor<Executor>(executor) {
+            new ExecutorMethodInterceptor<>(executor) {
                 @SuppressWarnings("unchecked")
                 @Override
                 <T extends Executor> T executor(T executor) {
