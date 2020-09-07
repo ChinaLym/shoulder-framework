@@ -71,11 +71,11 @@ public class AesUtil {
     /**
      * AES256 加密或解密
      *
-     * @param aesType aes 算法类型，如 AES/CBC/PKCS5Padding
-     * @param key            密钥
-     * @param iv             向量
-     * @param decryptMode    加密/解密
-     * @param content 密文/明文
+     * @param aesType     aes 算法类型，如 AES/CBC/PKCS5Padding
+     * @param key         密钥
+     * @param iv          向量
+     * @param decryptMode 加密/解密
+     * @param content     密文/明文
      * @return 明文
      */
     public static byte[] doCipher(String aesType, byte[] key, byte[] iv, int decryptMode, byte[] content) throws AesCryptoException {

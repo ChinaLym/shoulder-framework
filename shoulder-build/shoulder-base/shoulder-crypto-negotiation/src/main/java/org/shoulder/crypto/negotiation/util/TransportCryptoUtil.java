@@ -27,31 +27,6 @@ public class TransportCryptoUtil {
     }
 
     /**
-     * 创建一个请求
-     */
-    public KeyExchangeRequest createRequest() throws AsymmetricCryptoException {
-        return adapter.createRequest();
-    }
-
-    /**
-     * 创建一个响应
-     */
-    public KeyExchangeResponse createResponse(KeyExchangeRequest keyExchangeRequest) throws Exception {
-        return adapter.createResponse(keyExchangeRequest);
-    }
-
-    /**
-     * 协商密钥与 iv
-     */
-    public KeyExchangeResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
-        return adapter.negotiation(keyExchangeResponse);
-    }
-
-    public KeyExchangeResponse negotiation(KeyExchangeRequest keyExchangeRequest) throws NegotiationException, AsymmetricCryptoException {
-        return adapter.negotiation(keyExchangeRequest);
-    }
-
-    /**
      * 生成数据密钥
      */
     public static byte[] generateDataKey(int size) {
@@ -88,6 +63,31 @@ public class TransportCryptoUtil {
      */
     public static String decrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, String cipherText) throws AesCryptoException {
         return new String(TransportCryptoByteUtil.decrypt(keyExchangeResult, dataKey, ByteSpecification.decodeToBytes(cipherText)), ByteSpecification.STD_CHAR_SET);
+    }
+
+    /**
+     * 创建一个请求
+     */
+    public KeyExchangeRequest createRequest() throws AsymmetricCryptoException {
+        return adapter.createRequest();
+    }
+
+    /**
+     * 创建一个响应
+     */
+    public KeyExchangeResponse createResponse(KeyExchangeRequest keyExchangeRequest) throws Exception {
+        return adapter.createResponse(keyExchangeRequest);
+    }
+
+    /**
+     * 协商密钥与 iv
+     */
+    public KeyExchangeResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
+        return adapter.negotiation(keyExchangeResponse);
+    }
+
+    public KeyExchangeResponse negotiation(KeyExchangeRequest keyExchangeRequest) throws NegotiationException, AsymmetricCryptoException {
+        return adapter.negotiation(keyExchangeRequest);
     }
 
 

@@ -17,7 +17,7 @@ public abstract class OperationLogOperatorInfoInterceptor implements HandlerInte
 
     /**
      * 通过 request 解析当前操作者信息
-     *      用该方法的返回值作为 OperationLogBuilder 创建操作日志实体时操作者信息的默认值
+     * 用该方法的返回值作为 OperationLogBuilder 创建操作日志实体时操作者信息的默认值
      *
      * @param request 当前请求
      * @return 作为创建日志实体的默认值

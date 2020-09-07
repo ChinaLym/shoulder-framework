@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * minio 配置项
  * minio 使用教程参见官网 https://docs.min.io/cn/java-client-quickstart-guide.html
+ *
  * @author lym
  */
 @ConfigurationProperties("shoulder.minio")

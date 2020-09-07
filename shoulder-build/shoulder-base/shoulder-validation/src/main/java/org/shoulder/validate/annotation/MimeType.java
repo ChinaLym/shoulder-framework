@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 
 /**
  * 校验上传文件的 mimeType
- *
+ * <p>
  * 使用：加在 {@link MultipartFile} 类型的字段上
  *
  * @author lym
@@ -22,7 +22,9 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = MimeTypeValidator.class)
 public @interface MimeType {
 
-    /** 允许的 mimeType 类型 */
+    /**
+     * 允许的 mimeType 类型
+     */
     MIMEEnum[] allowList();
 
     /**

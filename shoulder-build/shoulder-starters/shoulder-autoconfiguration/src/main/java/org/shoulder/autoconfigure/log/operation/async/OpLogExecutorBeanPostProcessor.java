@@ -31,34 +31,34 @@ import java.util.function.Supplier;
  */
 public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
 
-	private static final Logger log = LoggerFactory.getLogger(OpLogExecutorBeanPostProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(OpLogExecutorBeanPostProcessor.class);
 
-	@Override
-	public Object postProcessBeforeInitialization(@NonNull Object bean, String beanName)
-			throws BeansException {
-	    // do nothing
-		return bean;
-	}
+    @Override
+    public Object postProcessBeforeInitialization(@NonNull Object bean, String beanName)
+        throws BeansException {
+        // do nothing
+        return bean;
+    }
 
-	@Override
-	public Object postProcessAfterInitialization(@NonNull Object bean, String beanName)
-			throws BeansException {
-	    // 只处理 Executor
-        if(bean instanceof Executor){
+    @Override
+    public Object postProcessAfterInitialization(@NonNull Object bean, String beanName)
+        throws BeansException {
+        // 只处理 Executor
+        if (bean instanceof Executor) {
             log.info("OperationLogExecutorSupport: Wrapped Executor " + beanName);
             // spring 的可监听的异步线程池
             if (bean instanceof AsyncListenableTaskExecutor
-                    && !(bean instanceof OpLogAsyncListenableTaskExecutor)) {
+                && !(bean instanceof OpLogAsyncListenableTaskExecutor)) {
                 return wrapAsyncListenableTaskExecutor(bean);
             }
             // spring 的可监听的异步线程池
             else if (bean instanceof AsyncTaskExecutor
-                    && !(bean instanceof OpLogAsyncTaskExecutor)) {
+                && !(bean instanceof OpLogAsyncTaskExecutor)) {
                 return wrapAsyncTaskExecutor(bean);
             }
             // jdk 的线程池
             else if (bean instanceof ExecutorService
-                    && !(bean instanceof OpLogExecutorService)) {
+                && !(bean instanceof OpLogExecutorService)) {
                 return wrapExecutorService(bean);
             }
             // jdk 的执行器
@@ -66,15 +66,15 @@ public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
                 return wrapExecutor(bean);
             }
         }
-		return bean;
-	}
+        return bean;
+    }
 
 
-	// =========================== 包装 =====================================
+    // =========================== 包装 =====================================
 
     private Object wrapExecutor(Object bean) {
         Method execute = ReflectionUtils.findMethod(bean.getClass(), "execute",
-                Runnable.class);
+            Runnable.class);
         Assert.notNull(execute, () -> "not a executor bean:" + bean.getClass());
         boolean methodFinal = Modifier.isFinal(execute.getModifiers());
         boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
@@ -82,17 +82,16 @@ public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
         Executor executor = (Executor) bean;
         try {
             return createProxy(bean, cglibProxy,
-                    new ExecutorMethodInterceptor<>(executor));
-        }
-        catch (AopConfigException ex) {
+                new ExecutorMethodInterceptor<>(executor));
+        } catch (AopConfigException ex) {
             if (cglibProxy) {
                 if (log.isDebugEnabled()) {
                     log.debug(
-                            "Exception occurred while trying to create a proxy, falling back to JDK proxy",
-                            ex);
+                        "Exception occurred while trying to create a proxy, falling back to JDK proxy",
+                        ex);
                 }
                 return createProxy(bean, false,
-                        new ExecutorMethodInterceptor<>(executor));
+                    new ExecutorMethodInterceptor<>(executor));
             }
             throw ex;
         }
@@ -126,19 +125,19 @@ public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
     Object createAsyncListenableTaskExecutorProxy(Object bean, boolean cglibProxy,
                                                   AsyncListenableTaskExecutor executor) {
         return getProxiedObject(bean, cglibProxy, executor,
-                () -> new OpLogAsyncListenableTaskExecutor(executor));
+            () -> new OpLogAsyncListenableTaskExecutor(executor));
     }
 
     Object createAsyncTaskExecutorProxy(Object bean, boolean cglibProxy,
                                         AsyncTaskExecutor executor) {
         return getProxiedObject(bean, cglibProxy, executor,
-                () -> new OpLogAsyncTaskExecutor(executor));
+            () -> new OpLogAsyncTaskExecutor(executor));
     }
 
     Object createExecutorServiceProxy(Object bean, boolean cglibProxy,
                                       ExecutorService executor) {
         return getProxiedObject(bean, cglibProxy, executor,
-                () -> new OpLogExecutorService(executor));
+            () -> new OpLogExecutorService(executor));
     }
 
     private Object getProxiedObject(Object bean, boolean cglibProxy, Executor executor,
@@ -146,22 +145,21 @@ public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
         ProxyFactoryBean factory = new ProxyFactoryBean();
         factory.setProxyTargetClass(cglibProxy);
         factory.addAdvice(
-                new ExecutorMethodInterceptor<Executor>(executor) {
-                    @SuppressWarnings("unchecked")
-                    @Override
-                    <T extends Executor> T executor(T executor) {
-                        return (T) supplier.get();
-                    }
-                });
+            new ExecutorMethodInterceptor<Executor>(executor) {
+                @SuppressWarnings("unchecked")
+                @Override
+                <T extends Executor> T executor(T executor) {
+                    return (T) supplier.get();
+                }
+            });
         factory.setTarget(bean);
         try {
             return getObject(factory);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (log.isDebugEnabled()) {
                 log.debug(
-                        "Exception occurred while trying to get a proxy. Will fallback to a different implementation",
-                        e);
+                    "Exception occurred while trying to get a proxy. Will fallback to a different implementation",
+                    e);
             }
             return supplier.get();
         }

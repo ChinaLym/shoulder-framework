@@ -9,6 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 
 /**
  * {@link Enum} 注解校验处理
+ *
  * @author lym
  */
 public class EnumValidator implements ConstraintValidator<Enum, CharSequence> {
@@ -33,11 +34,11 @@ public class EnumValidator implements ConstraintValidator<Enum, CharSequence> {
 
     @Override
     public boolean isValid(CharSequence value, ConstraintValidatorContext context) {
-        if(value == null){
+        if (value == null) {
             return canBeNull;
         }
-        for (String allowValue : allowValues){
-            if(value.equals(allowValue)){
+        for (String allowValue : allowValues) {
+            if (value.equals(allowValue)) {
                 return true;
             }
         }

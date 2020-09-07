@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 以 Sl4j 的接口记录操作日志记录，并以 {@link OperationLogFormatter} 作为日志格式
- *
+ * <p>
  * 注意：使用前需要保证 loggerName 对应的日志记录器存在。
  *
  * @author lym
@@ -49,7 +49,7 @@ public class Sl4jOperationLogger extends AbstractOperationLogger implements Oper
             return logger;
         }
         throw new RuntimeException("No OperationLogger named " + loggerName + " in LoggerFactory! " +
-                "Please check if there were any logger that name='" + loggerName + "' in your " +
-                "logback.xml.");
+            "Please check if there were any logger that name='" + loggerName + "' in your " +
+            "logback.xml.");
     }
 }

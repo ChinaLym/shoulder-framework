@@ -18,9 +18,8 @@ import java.util.List;
  */
 public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
-    private RedisTemplate<String, Object> redisTemplate;
-
     private static final String KEY_PREFIX = "aesInfo";
+    private RedisTemplate<String, Object> redisTemplate;
 
     public RedisLocalCryptoInfoRepository(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;

@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Xss 配置项
+ *
  * @author lym
  */
 @ConfigurationProperties(prefix = "shoulder.web.waf.xss")

@@ -15,17 +15,15 @@ import java.util.concurrent.Executors;
 @SLog
 public class DelayTasDispatcher implements Runnable {
 
+    private static volatile boolean running = false;
     /**
      * 执行任务的默认线程池
      */
     private Executor defaultExecutor;
-
     /**
      * 延迟任务从哪里取
      */
     private DelayTaskHolder delayTaskHolder;
-
-    private static volatile boolean running = false;
 
     public DelayTasDispatcher(Executor defaultExecutor, DelayTaskHolder delayTaskHolder) {
         this.defaultExecutor = defaultExecutor;

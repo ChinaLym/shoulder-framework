@@ -12,35 +12,36 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * RSA 秘钥存储-本地存储，适合单机部署场景
+ *
  * @author lym
  */
 public class HashMapKeyPairCache implements KeyPairCache {
 
-	protected ConcurrentMap<String, KeyPairDto> store = new ConcurrentHashMap<>();
+    protected ConcurrentMap<String, KeyPairDto> store = new ConcurrentHashMap<>();
 
-	@PostConstruct
-	public void init() {
-		LoggerFactory.getLogger(HashMapKeyPairCache.class).debug("LocalKeyPairCache init.");
-	}
+    @PostConstruct
+    public void init() {
+        LoggerFactory.getLogger(HashMapKeyPairCache.class).debug("LocalKeyPairCache init.");
+    }
 
-	@Override
-	public void set(String id, @NonNull KeyPairDto keyPair) {
-		store.put(id, keyPair);
-	}
+    @Override
+    public void set(String id, @NonNull KeyPairDto keyPair) {
+        store.put(id, keyPair);
+    }
 
-	@Override
-	public KeyPairDto get(String id) throws NoSuchKeyPairException {
-		KeyPairDto keyPair = store.get(id);
-		if(keyPair != null){
-			return keyPair;
-		}else {
-			throw new NoSuchKeyPairException("can't found keyPair id=" + id);
-		}
-	}
+    @Override
+    public KeyPairDto get(String id) throws NoSuchKeyPairException {
+        KeyPairDto keyPair = store.get(id);
+        if (keyPair != null) {
+            return keyPair;
+        } else {
+            throw new NoSuchKeyPairException("can't found keyPair id=" + id);
+        }
+    }
 
-	@Override
-	public void destroy() {
-		store.clear();
-	}
+    @Override
+    public void destroy() {
+        store.clear();
+    }
 
 }

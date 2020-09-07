@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 /**
  * 操作日志注解
- *  该注解仅可以加在类上，为目标类的所有加 @OperationLog 的方法提供字段默认值，所有字段均为选填
+ * 该注解仅可以加在类上，为目标类的所有加 @OperationLog 的方法提供字段默认值，所有字段均为选填
  *
  * @author lym
  */

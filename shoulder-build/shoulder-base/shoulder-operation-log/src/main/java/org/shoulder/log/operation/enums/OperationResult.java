@@ -9,8 +9,9 @@ import java.util.Collection;
  * 业务操作结果：
  * 成功或失败：1表示成功，0表示失败，2表示部分成功；
  * 正确或不正确：1表示正确，0表示不正确；
- *
+ * <p>
  * 操作结果在一个业务中哪怕输入相同结果也可能不确定，常用作函数参数，不在注解中出现，因此通过枚举类使用
+ *
  * @author lym
  */
 public enum OperationResult {
@@ -36,10 +37,6 @@ public enum OperationResult {
         this.code = code;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public static OperationResult of(boolean success) {
         return success ? SUCCESS : FAIL;
     }
@@ -49,16 +46,16 @@ public enum OperationResult {
      */
     public static OperationResult of(boolean hasSuccess, boolean hasFail) {
         return hasSuccess && hasFail ?
-                    OperationResult.PARTIAL :
-                hasFail ?
-                        OperationResult.FAIL : OperationResult.SUCCESS;
+            OperationResult.PARTIAL :
+            hasFail ?
+                OperationResult.FAIL : OperationResult.SUCCESS;
     }
 
     /**
      * 如果操作结果为空默认为成功
      */
     public static OperationResult of(Collection<? extends OperateResult> results) {
-        if(CollectionUtils.isEmpty(results)) {
+        if (CollectionUtils.isEmpty(results)) {
             return OperationResult.SUCCESS;
         }
 
@@ -75,6 +72,10 @@ public enum OperationResult {
             }
         }
         return of(hasSuccess, hasFail);
+    }
+
+    public int getCode() {
+        return code;
     }
 
 

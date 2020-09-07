@@ -27,8 +27,8 @@ public final class CryptoUtil {
      * 本地存储加密
      *
      * @param text 待加密数据，不能为null，否则 NPE
-     * @throws SymmetricCryptoException 加密异常
      * @return 参数 text 加密后的密文
+     * @throws SymmetricCryptoException 加密异常
      */
     public static String encryptAes(String text) throws SymmetricCryptoException {
         return crypto.encryptLocal(text);
@@ -38,8 +38,8 @@ public final class CryptoUtil {
      * 本地存储加密解密
      *
      * @param cipherText 密文，不能为null，否则 NPE
-     * @throws SymmetricCryptoException 加密异常
      * @return 参数 cipherText 解密后的明文
+     * @throws SymmetricCryptoException 加密异常
      */
     public static String decryptAes(String cipherText) throws SymmetricCryptoException {
         return crypto.decryptLocal(cipherText);

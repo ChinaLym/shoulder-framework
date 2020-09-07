@@ -16,19 +16,16 @@ import java.util.UUID;
 
 /**
  * 文件上传工具类
+ *
  * @author lym
  */
 public class FileUploadUtils {
 
-    private final static Logger logger = LoggerFactory.getLogger(FileUploadUtils.class);
-
     public static final String UPLOAD_FILE_ROOT_PATH = "upload";
-
-    private static final String TEMP_DIR_NAME = "temp";
-
-    private static final String FILE_SEPARATOR = File.separator;
-
     public static final String COMMA_SEPARATOR = ",";
+    private final static Logger logger = LoggerFactory.getLogger(FileUploadUtils.class);
+    private static final String TEMP_DIR_NAME = "temp";
+    private static final String FILE_SEPARATOR = File.separator;
 
     /**
      * 检查/创建文件在所的文件夹
@@ -98,7 +95,7 @@ public class FileUploadUtils {
      */
     public static List<String> importDataFromCsv(File file) {
         List<String> dataList = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))){
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
                 dataList.add(line);

@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  * 资源服务器配置
  *
  * @author lym
- *
  */
 @Configuration(
     proxyBeanMethods = false
@@ -26,48 +25,58 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @EnableConfigurationProperties(OAuth2Properties.class)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-	/** 认证成功处理器 */
-	@Autowired
-	protected AuthenticationSuccessHandler authenticationSuccessHandler;
-	/** 认证失败处理器 */
-	@Autowired
-	protected AuthenticationFailureHandler authenticationFailureHandler;
-	/** 验证码功能 */
-	@Autowired
-	private ValidateCodeSecurityConfig validateCodeSecurityConfig;
-	/** 短信验证码认证方式 */
-	@Autowired
-	private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
-	/** openId 认证方式 */
-	//@Autowired
-	//private OpenIdAuthenticationSecurityConfig openIdAuthenticationSecurityConfig;
+    /**
+     * 认证成功处理器
+     */
+    @Autowired
+    protected AuthenticationSuccessHandler authenticationSuccessHandler;
+    /**
+     * 认证失败处理器
+     */
+    @Autowired
+    protected AuthenticationFailureHandler authenticationFailureHandler;
+    /**
+     * 验证码功能
+     */
+    @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
+    /**
+     * 短信验证码认证方式
+     */
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+    /**
+     * openId 认证方式
+     */
+    //@Autowired
+    //private OpenIdAuthenticationSecurityConfig openIdAuthenticationSecurityConfig;
 
 
-	//@Autowired
-	//private SpringSocialConfigurer socialSecurityConfig;
+    //@Autowired
+    //private SpringSocialConfigurer socialSecurityConfig;
 
-	//@Autowired
-	//private AuthorizeConfigManager authorizeConfigManager;
+    //@Autowired
+    //private AuthorizeConfigManager authorizeConfigManager;
 
-	@Autowired
-	private FormAuthenticationSecurityConfig formAuthenticationConfig;
+    @Autowired
+    private FormAuthenticationSecurityConfig formAuthenticationConfig;
 
-	@Override
-	public void configure(HttpSecurity http) throws Exception {
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
 
-		formAuthenticationConfig.configure(http);
+        formAuthenticationConfig.configure(http);
 
-		http.apply(validateCodeSecurityConfig)
-				.and()
-			.apply(smsCodeAuthenticationSecurityConfig)
-				.and()
-				/*.apply(socialSecurityConfig)
-                    .and()
-                .apply(openIdAuthenticationSecurityConfig)
-                    .and()*/
-			.csrf().disable();
+        http.apply(validateCodeSecurityConfig)
+            .and()
+            .apply(smsCodeAuthenticationSecurityConfig)
+            .and()
+            /*.apply(socialSecurityConfig)
+                .and()
+            .apply(openIdAuthenticationSecurityConfig)
+                .and()*/
+            .csrf().disable();
 
-		//authorizeConfigManager.config(http.authorizeRequests());
-	}
+        //authorizeConfigManager.config(http.authorizeRequests());
+    }
 
 }

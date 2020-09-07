@@ -19,106 +19,108 @@ import java.util.Objects;
 
 /**
  * 基础的验证码处理器
+ *
  * @param <C> 验证码 code
  */
 public abstract class AbstractValidateCodeProcessor<C extends ValidateCodeDTO> implements ValidateCodeProcessor {
 
-	protected BaseValidateCodeProperties validateCodeProperties;
+    protected BaseValidateCodeProperties validateCodeProperties;
 
-	protected ValidateCodeGenerator validateCodeGenerator;
+    protected ValidateCodeGenerator validateCodeGenerator;
 
-	protected ValidateCodeStore validateCodeStore;
-
-
-	public AbstractValidateCodeProcessor(@Nullable BaseValidateCodeProperties validateCodeProperties,
-										 ValidateCodeGenerator validateCodeGenerator,
-										 ValidateCodeStore validateCodeStore){
-		this.validateCodeProperties = validateCodeProperties;
-		this.validateCodeGenerator = validateCodeGenerator;
-		this.validateCodeStore = validateCodeStore;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void create(ServletWebRequest request) throws ValidateCodeException {
-		if(isPostOnly() && HttpMethod.POST != request.getHttpMethod()){
-			final String errorMsg = "such type of validateCode only support POST.";
-			try{
-				Objects.requireNonNull(request.getResponse()).sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, errorMsg);
-			}catch(Exception e){
-				throw new ValidateCodeException(errorMsg, e);
-			}
-		}
-		// 生成校验码
-		C validateCode = (C) validateCodeGenerator.generate(request);
-		save(request, validateCode);
-		send(request, validateCode);
-	}
-
-	/**
-	 * 保存校验码
-	 */
-	private void save(ServletWebRequest request, C validateCode) {
-		ValidateCodeDTO code = new ValidateCodeDTO(validateCode.getCode(), validateCode.getExpireTime());
-		validateCodeStore.save(request, code, getType());
-	}
-
-	/**
-	 * 发送校验码
-	 * @param request 本次请求和响应
-	 * @param validateCode 生成好的验证码
-	 */
-	public abstract void send(ServletWebRequest request, C validateCode) throws ValidateCodeException;
-
-	/**
-	 * 是否只允许 post 请求才能获取验证码
-	 */
-	protected boolean isPostOnly(){
-		return false;
-	}
+    protected ValidateCodeStore validateCodeStore;
 
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void validate(ServletWebRequest request) {
+    public AbstractValidateCodeProcessor(@Nullable BaseValidateCodeProperties validateCodeProperties,
+                                         ValidateCodeGenerator validateCodeGenerator,
+                                         ValidateCodeStore validateCodeStore) {
+        this.validateCodeProperties = validateCodeProperties;
+        this.validateCodeGenerator = validateCodeGenerator;
+        this.validateCodeStore = validateCodeStore;
+    }
 
-		String codeType = getType();
+    @SuppressWarnings("unchecked")
+    @Override
+    public void create(ServletWebRequest request) throws ValidateCodeException {
+        if (isPostOnly() && HttpMethod.POST != request.getHttpMethod()) {
+            final String errorMsg = "such type of validateCode only support POST.";
+            try {
+                Objects.requireNonNull(request.getResponse()).sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, errorMsg);
+            } catch (Exception e) {
+                throw new ValidateCodeException(errorMsg, e);
+            }
+        }
+        // 生成校验码
+        C validateCode = (C) validateCodeGenerator.generate(request);
+        save(request, validateCode);
+        send(request, validateCode);
+    }
 
-		String codeInRequest;
-		try {
-			codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(),
-					validateCodeProperties.getParameterName());
-		} catch (ServletRequestBindingException e) {
-			// 未能正确从请求中获取验证码
-			throw new ValidateCodeAuthenticationException("cant get validate-code(" + codeType + ") from request.", e);
-		}
+    /**
+     * 保存校验码
+     */
+    private void save(ServletWebRequest request, C validateCode) {
+        ValidateCodeDTO code = new ValidateCodeDTO(validateCode.getCode(), validateCode.getExpireTime());
+        validateCodeStore.save(request, code, getType());
+    }
 
-		// 验证码的值不能为空
-		if (StringUtils.isBlank(codeInRequest)) {
-			throw new ValidateCodeAuthenticationException(codeType + "validate-code is empty(" + codeType + ")");
-		}
+    /**
+     * 发送校验码
+     *
+     * @param request      本次请求和响应
+     * @param validateCode 生成好的验证码
+     */
+    public abstract void send(ServletWebRequest request, C validateCode) throws ValidateCodeException;
 
-		// 期望的值
-		C exceptCode = (C) validateCodeStore.get(request, codeType);
+    /**
+     * 是否只允许 post 请求才能获取验证码
+     */
+    protected boolean isPostOnly() {
+        return false;
+    }
 
-		// 验证码不存在 或 已过期
-		if (exceptCode == null || exceptCode.isExpire()) {
-			validateCodeStore.remove(request, codeType);
-			throw new ValidateCodeAuthenticationException(codeType + "validate-code is expire, please retry!");
-		}
 
-		// 验证码不匹配（验证码不正确）
-		if (!StringUtils.equalsIgnoreCase(exceptCode.getCode(), codeInRequest)) {
-			throw new ValidateCodeAuthenticationException(codeType + "validate-code not correct!");
-		}
+    @SuppressWarnings("unchecked")
+    @Override
+    public void validate(ServletWebRequest request) {
 
-		validateCodeStore.remove(request, codeType);
+        String codeType = getType();
 
-	}
+        String codeInRequest;
+        try {
+            codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(),
+                validateCodeProperties.getParameterName());
+        } catch (ServletRequestBindingException e) {
+            // 未能正确从请求中获取验证码
+            throw new ValidateCodeAuthenticationException("cant get validate-code(" + codeType + ") from request.", e);
+        }
 
-	@Override
-	public List<String> processedUrls() {
-		return validateCodeProperties.getUrls();
-	}
+        // 验证码的值不能为空
+        if (StringUtils.isBlank(codeInRequest)) {
+            throw new ValidateCodeAuthenticationException(codeType + "validate-code is empty(" + codeType + ")");
+        }
+
+        // 期望的值
+        C exceptCode = (C) validateCodeStore.get(request, codeType);
+
+        // 验证码不存在 或 已过期
+        if (exceptCode == null || exceptCode.isExpire()) {
+            validateCodeStore.remove(request, codeType);
+            throw new ValidateCodeAuthenticationException(codeType + "validate-code is expire, please retry!");
+        }
+
+        // 验证码不匹配（验证码不正确）
+        if (!StringUtils.equalsIgnoreCase(exceptCode.getCode(), codeInRequest)) {
+            throw new ValidateCodeAuthenticationException(codeType + "validate-code not correct!");
+        }
+
+        validateCodeStore.remove(request, codeType);
+
+    }
+
+    @Override
+    public List<String> processedUrls() {
+        return validateCodeProperties.getUrls();
+    }
 
 }

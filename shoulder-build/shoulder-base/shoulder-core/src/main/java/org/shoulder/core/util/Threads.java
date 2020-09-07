@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 
 /**
  * 线程工具类
- *  提供延时任务和常用线程池拒绝策略的封装
+ * 提供延时任务和常用线程池拒绝策略的封装
  * 注意！该类必须设置线程池之后使用，否则 IllegalStateException！
  *
  * @author lym
@@ -19,18 +19,16 @@ import java.util.concurrent.*;
 @SLog
 public class Threads {
 
+    public final static String DEFAULT_THREAD_POOL_NAME = "shoulderThreadPool";
     private static ExecutorService DEFAULT_THREAD_POOL;
-
     private static DelayTaskHolder DELAY_TASK_HOLDER;
 
-    public final static String DEFAULT_THREAD_POOL_NAME = "shoulderThreadPool";
-
-    public static void setExecutorService(ExecutorService executorService){
+    public static void setExecutorService(ExecutorService executorService) {
         Threads.DEFAULT_THREAD_POOL = executorService;
         log.info("Threads' DEFAULT_THREAD_POOL has changed to " + executorService);
     }
 
-    public static void setDelayTaskHolder(DelayTaskHolder delayTaskHolder){
+    public static void setDelayTaskHolder(DelayTaskHolder delayTaskHolder) {
         Threads.DELAY_TASK_HOLDER = delayTaskHolder;
         log.info("Threads' DELAY_TASK_HOLDER has changed to " + delayTaskHolder);
     }
@@ -38,9 +36,9 @@ public class Threads {
     /**
      * 使用该方法包装线程类，将自动将线程放入延迟队列并延时执行
      *
-     * @param runnable    要延时执行的事情
-     * @param time 延时时间
-     * @param unit time 的单位
+     * @param runnable 要延时执行的事情
+     * @param time     延时时间
+     * @param unit     time 的单位
      */
     public static void delay(Runnable runnable, long time, TimeUnit unit) {
         DelayTask task = new DelayTask(runnable, time, unit);
@@ -53,7 +51,7 @@ public class Threads {
      * @param delayTask 要延时执行的任务
      */
     public static void delay(DelayTask delayTask) {
-        if(DELAY_TASK_HOLDER == null){
+        if (DELAY_TASK_HOLDER == null) {
             throw new IllegalStateException("You must setDelayTaskHolder first.");
         }
         DELAY_TASK_HOLDER.put(delayTask);
@@ -65,7 +63,7 @@ public class Threads {
      * @param runnable 要执行的任务
      */
     public static void execute(Runnable runnable) {
-        if(DEFAULT_THREAD_POOL == null){
+        if (DEFAULT_THREAD_POOL == null) {
             throw new IllegalStateException("You must setExecutorService first.");
         }
         DEFAULT_THREAD_POOL.execute(runnable);
@@ -78,12 +76,11 @@ public class Threads {
      * @return 当前任务执行的 Future
      */
     public static <T> Future<T> submit(Callable<T> callable) {
-        if(DEFAULT_THREAD_POOL == null){
+        if (DEFAULT_THREAD_POOL == null) {
             throw new IllegalStateException("You must setExecutorService first.");
         }
         return DEFAULT_THREAD_POOL.submit(callable);
     }
-
 
 
     // ------------------------ Shoulder 的线程池拒绝策略 ------------------------
@@ -177,10 +174,10 @@ public class Threads {
             }
             try {
                 BlockingQueue<Runnable> queue = executor.getQueue();
-                if(maxWait == null){
+                if (maxWait == null) {
                     log.debug("Attempting to queue task execution till success, blocking...");
                     queue.put(r);
-                }else {
+                } else {
                     log.debug("Attempting to queue task execution, maxWait: {}", this.maxWait);
                     if (!queue.offer(r, this.maxWait.toNanos(), TimeUnit.NANOSECONDS)) {
                         throw new RejectedExecutionException("Max wait time expired to queue task");

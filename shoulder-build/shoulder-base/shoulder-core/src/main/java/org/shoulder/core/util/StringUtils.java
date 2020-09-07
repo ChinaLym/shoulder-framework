@@ -22,6 +22,45 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     private static final char SEPARATOR = '_';
     private static final Charset CHARSET = ApplicationInfo.charset();
+    /**
+     * xss脚本正则
+     */
+    private static final List<Pattern> XSS_SCRIPT_PATTERNS = Arrays.asList(
+        // Avoid anything between script tags
+        Pattern.compile("<(no)?script>(.*?)</(no)?script>", Pattern.CASE_INSENSITIVE),
+        // Avoid anything in a src='...' type of expression
+        Pattern.compile("src[\\s]*=[\\s]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("src[\\s]*=[\\s]*\\\"(.*?)\\\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        // Remove any lonesome </script> tag
+        Pattern.compile("</script>", Pattern.CASE_INSENSITIVE),
+        // Remove any lonesome <script ...> tag
+        Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        // Avoid eval(...) expressions
+        Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        // Avoid expression(...) expressions
+        Pattern.compile("expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        // Avoid javascript:vbscript:view-source:xxx expressions
+        Pattern.compile("(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE),
+        // Avoid onload= expressions
+        Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("<(\"[^\"]*\"|\'[^\']*\'|[^\'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
+    );
+    /**
+     * html 转义符
+     */
+    private static final Map<String, String> HTML_ESCAPE_CHARACTER_MAP = new HashMap<>();
+
+    static {
+        HTML_ESCAPE_CHARACTER_MAP.put("<", "&lt;");
+        HTML_ESCAPE_CHARACTER_MAP.put(">", "&gt;");
+        HTML_ESCAPE_CHARACTER_MAP.put("\\(", "&#x28;");
+        HTML_ESCAPE_CHARACTER_MAP.put("\\)", "&#x29;");
+        HTML_ESCAPE_CHARACTER_MAP.put("'", "&#x27;");
+        HTML_ESCAPE_CHARACTER_MAP.put("\"", "&quot;");
+        HTML_ESCAPE_CHARACTER_MAP.put("/", "&#x2f;");
+    }
 
     /**
      * 转换为字节数组
@@ -50,7 +89,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
         return BooleanUtils.toBoolean(val.toString()) || "1".equals(val.toString());
     }
-
 
     /**
      * 如果对象为空，则使用defaultVal值
@@ -108,10 +146,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static Locale parseLocale(String locale) {
         return parseLocale(locale, Locale.getDefault());
     }
+
     /**
      * 将字符串转换为语言和时区
      *
-     * @param locale 语言地区字符串
+     * @param locale        语言地区字符串
      * @param defaultLocale 如果转换失败使用该值
      * @return 对应的语言和地区
      */
@@ -265,6 +304,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return url;
     }
 
+    // ---------- 常用正则处理 ------------
 
     /**
      * 驼峰转下划线
@@ -336,7 +376,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
     }
 
-    // ---------- 常用正则处理 ------------
+    // ---------- 常用正则匹配 ------------
 
     /**
      * 匿名手机号
@@ -379,8 +419,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return idCard.replaceAll("(\\d{4})\\d{10}(\\w{4})", "$1*****$2");
     }
 
-    // ---------- 常用正则匹配 ------------
-
     /**
      * 检测是否未手机号
      * 中国电信号段
@@ -420,7 +458,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         String regex = "\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?";
         return Pattern.matches(regex, email);
     }
-
 
     /**
      * 检测域名
@@ -510,33 +547,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return (luhmSum % 10 == 0) ? '0' : (char) ((10 - luhmSum % 10) + '0');
     }
 
-
-    /**
-     * xss脚本正则
-     */
-    private static final List<Pattern> XSS_SCRIPT_PATTERNS = Arrays.asList(
-        // Avoid anything between script tags
-        Pattern.compile("<(no)?script>(.*?)</(no)?script>", Pattern.CASE_INSENSITIVE),
-        // Avoid anything in a src='...' type of expression
-        Pattern.compile("src[\\s]*=[\\s]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("src[\\s]*=[\\s]*\\\"(.*?)\\\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Remove any lonesome </script> tag
-        Pattern.compile("</script>", Pattern.CASE_INSENSITIVE),
-        // Remove any lonesome <script ...> tag
-        Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Avoid eval(...) expressions
-        Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Avoid expression(...) expressions
-        Pattern.compile("expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Avoid javascript:vbscript:view-source:xxx expressions
-        Pattern.compile("(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE),
-        // Avoid onload= expressions
-        Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("<(\"[^\"]*\"|\'[^\']*\'|[^\'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
-    );
-
     /**
      * 处理非法字符
      */
@@ -551,21 +561,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         ret.add(new Object[]{"(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
         ret.add(new Object[]{"<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
         return ret;
-    }
-
-    /**
-     * html 转义符
-     */
-    private static final Map<String, String> HTML_ESCAPE_CHARACTER_MAP = new HashMap<>();
-
-    static {
-        HTML_ESCAPE_CHARACTER_MAP.put("<", "&lt;");
-        HTML_ESCAPE_CHARACTER_MAP.put(">", "&gt;");
-        HTML_ESCAPE_CHARACTER_MAP.put("\\(", "&#x28;");
-        HTML_ESCAPE_CHARACTER_MAP.put("\\)", "&#x29;");
-        HTML_ESCAPE_CHARACTER_MAP.put("'", "&#x27;");
-        HTML_ESCAPE_CHARACTER_MAP.put("\"", "&quot;");
-        HTML_ESCAPE_CHARACTER_MAP.put("/", "&#x2f;");
     }
 
     public static List<Pattern> getXssPatterns() {

@@ -17,8 +17,8 @@ public interface LocalTextCipher extends TextCipher {
      * 加密
      *
      * @param text 待加密数据，不能为null，否则 NPE
-     * @throws SymmetricCryptoException aes异常
      * @return 参数 text 加密后的密文
+     * @throws SymmetricCryptoException aes异常
      */
     @Override
     String encrypt(@NonNull String text) throws SymmetricCryptoException;
@@ -27,8 +27,8 @@ public interface LocalTextCipher extends TextCipher {
      * 以Aes256解密
      *
      * @param cipherText aes256 加密过的密文，不能为null，否则 NPE
-     * @throws SymmetricCryptoException aes异常
      * @return 参数 cipherText 解密后的明文
+     * @throws SymmetricCryptoException aes异常
      */
     @Override
     String decrypt(@NonNull String cipherText) throws SymmetricCryptoException;

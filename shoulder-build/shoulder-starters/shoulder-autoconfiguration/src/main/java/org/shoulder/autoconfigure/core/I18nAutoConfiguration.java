@@ -35,7 +35,7 @@ public class I18nAutoConfiguration {
      * @return messageSource
      */
     @Bean(name = AbstractApplicationContext.MESSAGE_SOURCE_BEAN_NAME)
-    public ShoulderMessageSource shoulderMessageSource(MessageSourceProperties properties){
+    public ShoulderMessageSource shoulderMessageSource(MessageSourceProperties properties) {
         ShoulderMessageSource messageSource = new ShoulderMessageSource();
         messageSource.setDefaultEncoding(ApplicationInfo.charset().name());
         messageSource.setDefaultLocale(ApplicationInfo.defaultLocale());
@@ -47,7 +47,7 @@ public class I18nAutoConfiguration {
         // -1 means never reload cache (spring default)
         long cacheMillis = -1;
         Duration cacheDuration = properties.getCacheDuration();
-        if(cacheDuration != null){
+        if (cacheDuration != null) {
             cacheMillis = cacheDuration.toMillis();
         }
         messageSource.setCacheMillis(cacheMillis);

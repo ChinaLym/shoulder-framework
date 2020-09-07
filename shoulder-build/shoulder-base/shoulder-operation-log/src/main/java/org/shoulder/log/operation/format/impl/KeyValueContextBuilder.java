@@ -4,6 +4,7 @@ import org.shoulder.core.util.StringUtils;
 
 /**
  * 键值对文本构建器
+ *
  * @author lym
  */
 public class KeyValueContextBuilder {

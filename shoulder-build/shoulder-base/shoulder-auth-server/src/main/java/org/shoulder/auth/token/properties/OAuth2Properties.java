@@ -12,75 +12,75 @@ import java.time.temporal.ChronoUnit;
  */
 @ConfigurationProperties(prefix = SecurityConst.CONFIG_PREFIX + ".app")
 public class OAuth2Properties {
-	
-	/**
-	 * 使用jwt时为token签名的秘钥，重要！
-	 */
-	private String jwtSigningKey = "lym";
 
-	/**
-	 * 客户端配置
-	 */
-	private OAuth2ClientProperties[] clients = {};
+    /**
+     * 使用jwt时为token签名的秘钥，重要！
+     */
+    private String jwtSigningKey = "lym";
 
-	public OAuth2ClientProperties[] getClients() {
-		return clients;
-	}
+    /**
+     * 客户端配置
+     */
+    private OAuth2ClientProperties[] clients = {};
 
-	public void setClients(OAuth2ClientProperties[] clients) {
-		this.clients = clients;
-	}
+    public OAuth2ClientProperties[] getClients() {
+        return clients;
+    }
 
-	public String getJwtSigningKey() {
-		return jwtSigningKey;
-	}
+    public void setClients(OAuth2ClientProperties[] clients) {
+        this.clients = clients;
+    }
 
-	public void setJwtSigningKey(String jwtSigningKey) {
-		this.jwtSigningKey = jwtSigningKey;
-	}
+    public String getJwtSigningKey() {
+        return jwtSigningKey;
+    }
 
-	/**
-	 * 作为客户端时的配置
-	 */
-	public class OAuth2ClientProperties {
+    public void setJwtSigningKey(String jwtSigningKey) {
+        this.jwtSigningKey = jwtSigningKey;
+    }
 
-		/**
-		 * 第三方应用appId
-		 */
-		private String clientId;
-		/**
-		 * 第三方应用appSecret
-		 */
-		private String clientSecret;
-		/**
-		 * 针对此应用发出的 token 的有效时间，默认 2 小时
-		 */
-		private int accessTokenValidateSeconds = 2 * (int) ChronoUnit.HOURS.getDuration().getSeconds();
+    /**
+     * 作为客户端时的配置
+     */
+    public class OAuth2ClientProperties {
+
+        /**
+         * 第三方应用appId
+         */
+        private String clientId;
+        /**
+         * 第三方应用appSecret
+         */
+        private String clientSecret;
+        /**
+         * 针对此应用发出的 token 的有效时间，默认 2 小时
+         */
+        private int accessTokenValidateSeconds = 2 * (int) ChronoUnit.HOURS.getDuration().getSeconds();
 
 
-		public String getClientId() {
-			return clientId;
-		}
+        public String getClientId() {
+            return clientId;
+        }
 
-		public void setClientId(String clientId) {
-			this.clientId = clientId;
-		}
+        public void setClientId(String clientId) {
+            this.clientId = clientId;
+        }
 
-		public String getClientSecret() {
-			return clientSecret;
-		}
+        public String getClientSecret() {
+            return clientSecret;
+        }
 
-		public void setClientSecret(String clientSecret) {
-			this.clientSecret = clientSecret;
-		}
+        public void setClientSecret(String clientSecret) {
+            this.clientSecret = clientSecret;
+        }
 
-		public int getAccessTokenValidateSeconds() {
-			return accessTokenValidateSeconds;
-		}
+        public int getAccessTokenValidateSeconds() {
+            return accessTokenValidateSeconds;
+        }
 
-		public void setAccessTokenValidateSeconds(int accessTokenValidateSeconds) {
-			this.accessTokenValidateSeconds = accessTokenValidateSeconds;
-		}
+        public void setAccessTokenValidateSeconds(int accessTokenValidateSeconds) {
+            this.accessTokenValidateSeconds = accessTokenValidateSeconds;
+        }
 
-	}
+    }
 }

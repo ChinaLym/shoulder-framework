@@ -19,14 +19,13 @@ import java.time.Duration;
 
 /**
  * 缓存管理器默认配置方案（推荐使用者自行创建）
- *
+ * <p>
  * 单机缓存：Caffeine、ConcurrentLinkedHashMap、ConcurrentSkipListMap、Guava、Ehcache
  * 分布式缓存：Redis、Hazelcast、Ignite
  * 分布式缓存 + 事务 + SQL：Hazelcast、Ignite
  *
- * @see org.springframework.boot.autoconfigure.cache.CacheConfigurations
- *
  * @author lym
+ * @see org.springframework.boot.autoconfigure.cache.CacheConfigurations
  */
 @EnableCaching
 @Configuration
@@ -54,7 +53,7 @@ public class ShoulderCacheManagerAutoConfiguration {
     @ConditionalOnMissingBean
     @ConditionalOnClass(RedisTemplate.class)
     @AutoConfigureAfter(name = {"org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
-    "org.shoulder.autoconfigure.redis.RedisAutoConfiguration"})
+        "org.shoulder.autoconfigure.redis.RedisAutoConfiguration"})
     public static class RedisCacheManagerAutoConfiguration {
 
         @Bean

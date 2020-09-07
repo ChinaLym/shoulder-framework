@@ -23,9 +23,13 @@ public class SmsCodeAuthenticationFilter extends AbstractAuthenticationProcessin
     // ~ Static fields/initializers
     // =====================================================================================
 
-    /** 手机号登录时，手机号参数名 */
+    /**
+     * 手机号登录时，手机号参数名
+     */
     private String phoneNumberParameter = SecurityConst.AUTHENTICATION_SMS_PARAMETER_NAME;
-    /** 是否只支持 post 请求 */
+    /**
+     * 是否只支持 post 请求
+     */
     private boolean postOnly = true;
 
     // ~ Constructors
@@ -39,7 +43,7 @@ public class SmsCodeAuthenticationFilter extends AbstractAuthenticationProcessin
     // ========================================================================================================
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
+        throws AuthenticationException {
         if (postOnly && !request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
@@ -80,18 +84,6 @@ public class SmsCodeAuthenticationFilter extends AbstractAuthenticationProcessin
     }
 
     /**
-     * Sets the parameter name which will be used to obtain the phoneNumber from
-     * the login request.
-     *
-     * @param usernameParameter the parameter name. Defaults to "phoneNumber".
-     */
-    public void setPhoneNumberParameter(String usernameParameter) {
-        Assert.hasText(usernameParameter, "phoneNumber parameter must not be empty or null");
-        this.phoneNumberParameter = usernameParameter;
-    }
-
-
-    /**
      * Defines whether only HTTP POST requests will be allowed by this filter.
      * If set to true, and an authentication request is received which is not a
      * POST request, an exception will be raised immediately and authentication
@@ -106,6 +98,17 @@ public class SmsCodeAuthenticationFilter extends AbstractAuthenticationProcessin
 
     public final String getPhoneNumberParameter() {
         return phoneNumberParameter;
+    }
+
+    /**
+     * Sets the parameter name which will be used to obtain the phoneNumber from
+     * the login request.
+     *
+     * @param usernameParameter the parameter name. Defaults to "phoneNumber".
+     */
+    public void setPhoneNumberParameter(String usernameParameter) {
+        Assert.hasText(usernameParameter, "phoneNumber parameter must not be empty or null");
+        this.phoneNumberParameter = usernameParameter;
     }
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * 被操作对象
  * 【推荐】被操作对象实现该接口（如：业务类、数据库模型，只给前端提供接口时的入参）
+ *
  * @author lym
  */
 public interface Operable {
@@ -13,6 +14,7 @@ public interface Operable {
 
     /**
      * 被操作对象唯一标识
+     *
      * @return 返回业日志操作实体的唯一标识
      */
     @JsonIgnore
@@ -20,6 +22,7 @@ public interface Operable {
 
     /**
      * 被操作对象名称
+     *
      * @return 返回业日志操作实体的名称
      */
     @JsonIgnore
@@ -27,10 +30,11 @@ public interface Operable {
 
     /**
      * 被操作对象类型多语言key
+     *
      * @return 返回业日志操作实体的对象类型
      */
     @JsonIgnore
-    default String getObjectType(){
+    default String getObjectType() {
         return null;
     }
 

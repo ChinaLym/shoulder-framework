@@ -12,7 +12,7 @@ import org.shoulder.log.operation.format.OperationLogFormatter;
 public class JsonOperationLogFormatter implements OperationLogFormatter {
 
     @Override
-    public String format(OperationLogDTO opLog){
+    public String format(OperationLogDTO opLog) {
         return JsonUtils.toJson(opLog);
 
     }

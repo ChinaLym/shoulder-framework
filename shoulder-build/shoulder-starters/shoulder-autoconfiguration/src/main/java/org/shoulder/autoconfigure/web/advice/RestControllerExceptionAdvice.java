@@ -34,7 +34,7 @@ import java.sql.SQLException;
  * RestController 全局异常处理器 - 请求方错误，提供默认统一场景错误返回值
  * 默认情况下该类优先用户自定义的全局处理器，如果使用者指定@Order(? < 0)，则优先于本框架处理
  * todo 根据异常返回值状态码
- *  是否应在这里记录异常日志？
+ * 是否应在这里记录异常日志？
  *
  * @author lym
  */
@@ -120,10 +120,11 @@ public class RestControllerExceptionAdvice {
 
     /**
      * 获取绑定结果错误中第一个引发错误的描述信息
+     *
      * @param bindingResult 绑定结果
      * @return 第一个引发错误的描述信息
      */
-    private String getFirstErrorDescription(BindingResult bindingResult){
+    private String getFirstErrorDescription(BindingResult bindingResult) {
         ObjectError error = bindingResult.getAllErrors().get(0);
         String msg = error.getDefaultMessage();
         String objectName = StringUtils.trim(error.getObjectName());
@@ -173,7 +174,7 @@ public class RestControllerExceptionAdvice {
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public BaseResponse httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
-        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.CONTENT_TYPE_INVALID,  e, String.valueOf(e.getContentType()));
+        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.CONTENT_TYPE_INVALID, e, String.valueOf(e.getContentType()));
         log.error(ex);
         return ex.toResponse();
     }
@@ -189,7 +190,7 @@ public class RestControllerExceptionAdvice {
      */
     @ExceptionHandler(MultipartException.class)
     public BaseResponse multipartException(MultipartException e) {
-        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.MULTIPART_INVALID,  e);
+        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.MULTIPART_INVALID, e);
         log.error(ex);
         return ex.toResponse();
     }
@@ -209,13 +210,10 @@ public class RestControllerExceptionAdvice {
      *
      * 多发于 mapper 和接口不匹配（参数）
      * PersistenceException
-
      * 开发者 mybatis 用法错误
      * MyBatisSystemException
-
      * 数据库连不上、开发者用法导致 sql问题
      * SQLException
-
      * 开发者配置信息不全，完整性（必填为空），唯一性约束（主键不完整）
      * DataIntegrityViolationException
      */

@@ -64,6 +64,17 @@ public class PageQuery implements Serializable {
         map.remove(PARAM_ORDER);
     }
 
+    public PageQuery(int pageNo, int pageSize) {
+        this(pageNo, pageSize, "", "");
+    }
+
+    public PageQuery(int pageNo, int pageSize, String sortBy, String order) {
+        this.pageNo = pageNo;
+        this.pageSize = pageSize;
+        this.sortBy = sortBy;
+        this.order = order;
+    }
+
     /**
      * 从当前请求中获取与分页相关信息
      *
@@ -95,17 +106,6 @@ public class PageQuery implements Serializable {
         result.sortBy = request.getParameter(PARAM_SORT_BY);
         result.order = request.getParameter(PARAM_ORDER);
         return result;
-    }
-
-    public PageQuery(int pageNo, int pageSize) {
-        this(pageNo, pageSize, "", "");
-    }
-
-    public PageQuery(int pageNo, int pageSize, String sortBy, String order) {
-        this.pageNo = pageNo;
-        this.pageSize = pageSize;
-        this.sortBy = sortBy;
-        this.order = order;
     }
 
     public int getPageNo() {

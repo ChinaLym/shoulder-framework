@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * 操作对应业务方法/接口的入参
+ *
  * @author lym
  */
 public class OpLogParam {
@@ -52,7 +53,7 @@ public class OpLogParam {
     }
 
     public void addValue(String value) {
-        if(this.value == null){
+        if (this.value == null) {
             this.value = new LinkedList<>();
         }
         this.value.add(value);

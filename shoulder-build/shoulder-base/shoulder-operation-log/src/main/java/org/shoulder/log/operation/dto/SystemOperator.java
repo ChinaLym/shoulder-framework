@@ -5,6 +5,7 @@ import org.shoulder.core.util.IpUtils;
 
 /**
  * 有些操作（如定时任务）是非用户操作的，那么操作者就是系统了
+ *
  * @author lym
  */
 public class SystemOperator implements Operator {
@@ -12,6 +13,16 @@ public class SystemOperator implements Operator {
     private final String userId;
     private final String ip;
     private final String mac;
+
+    private SystemOperator(String userId, String ip, String mac) {
+        this.userId = userId;
+        this.ip = ip;
+        this.mac = mac;
+    }
+
+    public static SystemOperator getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
 
     @Override
     public String getUserId() {
@@ -38,20 +49,10 @@ public class SystemOperator implements Operator {
         return null;
     }
 
-    public static SystemOperator getInstance(){
-        return SingletonHolder.INSTANCE;
-    }
-
-    private SystemOperator(String userId, String ip, String mac){
-        this.userId = userId;
-        this.ip = ip;
-        this.mac = mac;
-    }
-
-    private static class SingletonHolder{
+    private static class SingletonHolder {
         private static final SystemOperator INSTANCE =
-                new SystemOperator("system." + ApplicationInfo.appId(),
-                        IpUtils.getIPFromCache(), IpUtils.getMACFromCache());
+            new SystemOperator("system." + ApplicationInfo.appId(),
+                IpUtils.getIPFromCache(), IpUtils.getMACFromCache());
     }
 
 

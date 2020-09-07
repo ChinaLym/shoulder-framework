@@ -33,38 +33,27 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
     private final AsymmetricKeyPairFactory keyPairFactory;
 
     private final KeyPairCache keyPairCache;
-
-    protected Lock lock = new ReentrantLock();
-
     /**
      * 算法名称
      */
     private final String algorithm;
-
     /**
      * 算法实现提供商
      */
     private final String provider;
-
     /**
      * 秘钥位数
      */
     private final int keyLength;
-
     /**
      * 算法实现
      */
     private final String transformation;
-
     /**
      * 签名算法
      */
     private final String signatureAlgorithm;
-
-    @PreDestroy
-    public void destroy() {
-        keyPairCache.destroy();
-    }
+    protected Lock lock = new ReentrantLock();
 
     public DefaultAsymmetricCryptoProcessor(String algorithm, int keyLength, String transformation, String signatureAlgorithm,
                                             String provider, KeyPairCache keyPairCache) {
@@ -75,6 +64,34 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
         this.transformation = transformation;
         this.keyPairCache = keyPairCache;
         this.keyPairFactory = new AsymmetricKeyPairFactory(algorithm, keyLength, provider);
+    }
+
+    public static DefaultAsymmetricCryptoProcessor ecc256(KeyPairCache keyPairCache) {
+        return new DefaultAsymmetricCryptoProcessor(
+            "EC",
+            256,
+            "ECIES",
+            "SHA256withECDSA",
+            BouncyCastleProvider.PROVIDER_NAME,
+            keyPairCache
+        );
+
+    }
+
+    public static DefaultAsymmetricCryptoProcessor rsa2048(KeyPairCache keyPairCache) {
+        return new DefaultAsymmetricCryptoProcessor(
+            "RSA",
+            2048,
+            "RSA/ECB/PKCS1Padding",
+            "SHA256WithRSA",
+            BouncyCastleProvider.PROVIDER_NAME,
+            keyPairCache
+        );
+    }
+
+    @PreDestroy
+    public void destroy() {
+        keyPairCache.destroy();
     }
 
     @Override
@@ -172,6 +189,8 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
         return getKeyPairFromDto(keyPairCache.get(id)).getPublic();
     }
 
+    // ------------------ 提供两个常用的加密方案 ------------------
+
     @Override
     public String getPublicKeyString(String id) throws KeyPairException {
         return ByteSpecification.encodeToString(getPublicKey(id).getEncoded());
@@ -180,31 +199,6 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
     @Override
     public PrivateKey getPrivateKey(String id) throws KeyPairException {
         return getKeyPairFromDto(keyPairCache.get(id)).getPrivate();
-    }
-
-    // ------------------ 提供两个常用的加密方案 ------------------
-
-    public static DefaultAsymmetricCryptoProcessor ecc256(KeyPairCache keyPairCache) {
-        return new DefaultAsymmetricCryptoProcessor(
-            "EC",
-            256,
-            "ECIES",
-            "SHA256withECDSA",
-            BouncyCastleProvider.PROVIDER_NAME,
-            keyPairCache
-        );
-
-    }
-
-    public static DefaultAsymmetricCryptoProcessor rsa2048(KeyPairCache keyPairCache) {
-        return new DefaultAsymmetricCryptoProcessor(
-            "RSA",
-            2048,
-            "RSA/ECB/PKCS1Padding",
-            "SHA256WithRSA",
-            BouncyCastleProvider.PROVIDER_NAME,
-            keyPairCache
-        );
     }
 
 }

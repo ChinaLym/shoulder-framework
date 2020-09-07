@@ -15,7 +15,7 @@ import org.springframework.lang.NonNull;
  */
 public class JacksonObjectMapperPostProcessor implements BeanPostProcessor {
 
-	private static final Logger log = LoggerFactory.getLogger(JacksonObjectMapperPostProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(JacksonObjectMapperPostProcessor.class);
 
     /**
      * 初始化前
@@ -30,20 +30,20 @@ public class JacksonObjectMapperPostProcessor implements BeanPostProcessor {
     /**
      * 覆盖 JsonUtils 中的默认 ObjectMapper
      *
-     * @param bean bean
+     * @param bean     bean
      * @param beanName beanName
      * @return bean
      * @throws BeansException never throw
      */
-	@Override
-	public Object postProcessAfterInitialization(@NonNull Object bean, String beanName)
-			throws BeansException {
-	    // 只处理 Executor
-        if(bean instanceof ObjectMapper){
+    @Override
+    public Object postProcessAfterInitialization(@NonNull Object bean, String beanName)
+        throws BeansException {
+        // 只处理 Executor
+        if (bean instanceof ObjectMapper) {
             JsonUtils.setJsonMapper((ObjectMapper) bean);
         }
-		return bean;
-	}
+        return bean;
+    }
 
 }
 

@@ -18,7 +18,9 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 )
 public class UserConfig extends WebSecurityConfigurerAdapter {
 
-    /** user 的 password，clientSecret 都是用 */
+    /**
+     * user 的 password，clientSecret 都是用
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
@@ -27,25 +29,25 @@ public class UserConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .mvcMatchers("/.well-known/jwks.json").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic()
-                .and()
-                .csrf().ignoringRequestMatchers(request -> "/introspect".equals(request.getRequestURI()));
+            .authorizeRequests()
+            .mvcMatchers("/.well-known/jwks.json").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .httpBasic()
+            .and()
+            .csrf().ignoringRequestMatchers(request -> "/introspect".equals(request.getRequestURI()));
     }
 
     @Bean
     @Override
     public UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager(
-                // 模拟在数据库的一条用户记录
-                User.builder()
-                        .username("user")
-                        .password("password")
-                        .roles("USER")
-                        .build());
+            // 模拟在数据库的一条用户记录
+            User.builder()
+                .username("user")
+                .password("password")
+                .roles("USER")
+                .build());
     }
 
 }

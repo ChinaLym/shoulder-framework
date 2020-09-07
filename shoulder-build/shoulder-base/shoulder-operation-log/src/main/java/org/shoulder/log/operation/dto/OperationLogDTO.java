@@ -166,7 +166,7 @@ public class OperationLogDTO implements Cloneable {
     /**
      * 与本次操作所关联其他业务操作的业务号 ，用于多个请求完共同完成一个业务功能时（选填）
      * 例   上传csv进行数据的批量导入场景：上传导入文件、校验导入数据、点击确认导入、导入成功业务相关可以填同一个标识符
-     *      上传新头像、确定修改个人信息也可以有相同的业务标识
+     * 上传新头像、确定修改个人信息也可以有相同的业务标识
      */
     protected String businessId;
 
@@ -180,7 +180,9 @@ public class OperationLogDTO implements Cloneable {
      */
     protected String traceId;
 
-    /** 扩展字段 （选填） key 不能为 null */
+    /**
+     * 扩展字段 （选填） key 不能为 null
+     */
     protected Map<String, String> extFields;
 
     // ***********************************  构造函数  ***********************************
@@ -227,11 +229,11 @@ public class OperationLogDTO implements Cloneable {
             this.objectType = operable.getObjectType();
 
             if (operable instanceof OperationDetailAble) {
-                OperationDetailAble operationDetailAble = (OperationDetailAble)operable;
-                if(CollectionUtils.isNotEmpty(operationDetailAble.getDetailItems())){
+                OperationDetailAble operationDetailAble = (OperationDetailAble) operable;
+                if (CollectionUtils.isNotEmpty(operationDetailAble.getDetailItems())) {
                     this.detailItems = operationDetailAble.getDetailItems();
                 }
-                if(StringUtils.isNotEmpty(operationDetailAble.getDetail())){
+                if (StringUtils.isNotEmpty(operationDetailAble.getDetail())) {
                     this.detail = operationDetailAble.getDetail();
                 }
             }
@@ -255,7 +257,7 @@ public class OperationLogDTO implements Cloneable {
         if (extKey == null) {
             return this;
         }
-        if(this.extFields == null){
+        if (this.extFields == null) {
             this.extFields = new LinkedHashMap<>();
         }
         this.extFields.put(extKey, value);

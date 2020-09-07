@@ -90,7 +90,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
 
         String type;
         boolean debug = logger.isDebugEnabled();
@@ -103,14 +103,15 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
             }
             try {
                 validateCodeProcessorHolder.getProcessor(type)
-                        .validate(new ServletWebRequest(request, response));
+                    .validate(new ServletWebRequest(request, response));
                 if (debug) {
                     logger.debug("validateCode success " + request.getRequestURI());
                 }
             } catch (Exception e) {
-                if(authenticationFailureHandler != null){
+                if (authenticationFailureHandler != null) {
                     authenticationFailureHandler.onAuthenticationFailure(request, response,
-                            new AuthenticationException(e.getMessage() + type, e) {});
+                        new AuthenticationException(e.getMessage() + type, e) {
+                        });
                 }
                 throw e;
             }

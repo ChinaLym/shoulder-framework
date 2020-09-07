@@ -43,7 +43,7 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
     private Method getMethod(MethodInvocation invocation, Object object) {
         Method method = invocation.getMethod();
         return ReflectionUtils.findMethod(object.getClass(), method.getName(),
-                method.getParameterTypes());
+            method.getParameterTypes());
     }
 
     <E extends Executor> E executor(E executor) {

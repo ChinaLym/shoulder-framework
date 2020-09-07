@@ -17,25 +17,22 @@ import java.util.Random;
  */
 public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateCodeType {
 
+    private final String[] FONT_NAMES;
+    /**
+     * 生成的字符，只允许 0-9，与大写字母，除去容易与数字产生混淆的I、O
+     */
+    private final String[] CHARS = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H",
+        "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
     /**
      * 系统配置
      */
     private ImageCodeProperties imageCodeProperties;
-
     private Random random = new SecureRandom();
 
     public ImageCodeGenerator(ImageCodeProperties imageCodeProperties) {
         FONT_NAMES = imageCodeProperties.getFonts().toArray(new String[0]);
         this.imageCodeProperties = imageCodeProperties;
     }
-
-    private final String[] FONT_NAMES;
-
-    /**
-     * 生成的字符，只允许 0-9，与大写字母，除去容易与数字产生混淆的I、O
-     */
-    private final String[] CHARS = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H",
-            "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
     /**
      * 生成验证码图片
@@ -44,9 +41,9 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
     public ImageCode generate(ServletWebRequest request) {
         // 1. 确定参数（图片宽、高，验证码长度）
         int width = ServletRequestUtils.getIntParameter(request.getRequest(), "width",
-                imageCodeProperties.getWidth());
+            imageCodeProperties.getWidth());
         int height = ServletRequestUtils.getIntParameter(request.getRequest(), "height",
-                imageCodeProperties.getHeight());
+            imageCodeProperties.getHeight());
         int codeLength = imageCodeProperties.getLength();
 
         // 生成随机验证码

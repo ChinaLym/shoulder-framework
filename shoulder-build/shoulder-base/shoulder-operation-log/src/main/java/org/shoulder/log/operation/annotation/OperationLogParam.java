@@ -9,9 +9,9 @@ import java.lang.annotation.*;
 /**
  * 操作日志参数注解
  * 将该注解加在带 {@link OperationLog} 的方法上，
- *
+ * <p>
  * 如果参数值为 null 则默认不在日志输出该参数，如需输出，参见 OperationLogProperties
- *
+ * <p>
  * 若将参数中的大对象标记为记录，且使用默认的参数解析方式（展平，类似json），容易造成解析后的字符串较长
  *
  * @author lym
@@ -49,14 +49,14 @@ public @interface OperationLogParam {
 
     /**
      * 以该值，作为 value。支持 SPEL
-     *
+     * <p>
      * 举例：参数为 user，需要记录是否为 admin 则使用 function(@OperationLogParam(value = "#user.role") User user)
      */
     String value() default "";
 
     /**
      * 值转换器的实现类
-     *
+     * <p>
      * 注意！值转换器的实现类需要注入在 spring 容器内。若 value() 有值则以 value 为准。
      */
     Class<? extends OperationLogParamValueConverter> converter() default DefaultOperationLogParamValueConverter.class;

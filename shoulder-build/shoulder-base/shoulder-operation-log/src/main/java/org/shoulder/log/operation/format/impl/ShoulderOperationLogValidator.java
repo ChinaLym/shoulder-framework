@@ -12,11 +12,13 @@ import java.util.StringJoiner;
  * 操作日志格式默认校验类
  *
  * @author lym
- * @implNote  该类是 shoulder 规范中推荐的格式，可能并不是所有系统都希望的
+ * @implNote 该类是 shoulder 规范中推荐的格式，可能并不是所有系统都希望的
  */
 public class ShoulderOperationLogValidator implements OperationLogValidator {
 
-    /**校验失败将抛出 runtimeException */
+    /**
+     * 校验失败将抛出 runtimeException
+     */
     @Override
     public void validate(OperationLogDTO log) {
         Assert.notNull(log, "log is null.");
@@ -26,8 +28,8 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
         validateLengthLimit(log);
 
         // 由于该字段校验较浪费资源，运行时不校验（因为即便校验也无默认补救措施）
-        if(CollectionUtils.isNotEmpty(log.getParams())
-                && "true".equals(System.getProperty("intellij.debug.agent"))){
+        if (CollectionUtils.isNotEmpty(log.getParams())
+            && "true".equals(System.getProperty("intellij.debug.agent"))) {
             // 必填项校验
             log.getParams().forEach(this::validate);
             // 校验参数拼接后的长度小于 maxParamLength
@@ -41,10 +43,11 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
 
     /**
      * 必填项校验
-     *  供使用者填写的优先校验
+     * 供使用者填写的优先校验
+     *
      * @param log 待校验日志实体
      */
-    protected void validateRequiredFields(OperationLogDTO log){
+    protected void validateRequiredFields(OperationLogDTO log) {
         Assert.hasText(log.getUserId(), "userId is blank.");
         Assert.notNull(log.getTerminalType(), "terminalType is null.");
         Assert.hasText(log.getOperation(), "operation is blank.");
@@ -55,6 +58,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
 
     /**
      * 字段长度校验
+     *
      * @param log 日志实体
      */
     protected void validateLengthLimit(OperationLogDTO log) {
@@ -70,7 +74,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
         assertLengthLimit(log.getObjectName(), 255, "objectName");
         assertLengthLimit(log.getOperation(), 255, "operation");
         assertLengthLimit(log.getDetailKey(), 128, "detailKey");
-        if(log.getDetailItems() != null && log.getDetailItems().isEmpty()){
+        if (log.getDetailItems() != null && log.getDetailItems().isEmpty()) {
             assertSmallerLimit(log.getDetailItems().stream().map(String::length).reduce(Integer::sum).orElse(0), 4096, "detail");
         }
     }
@@ -79,7 +83,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
      * 校验参数
      */
     protected void validate(OpLogParam param) {
-        if(param != null){
+        if (param != null) {
             // 校验必填项
             Assert.hasText(param.getName(), "opLogParam.name is blank.");
         }
@@ -87,18 +91,22 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
 
     // ---------------------- base validate ----------------------
 
-    /** 长度不超过 */
+    /**
+     * 长度不超过
+     */
     protected void assertLengthLimit(String str, int limit, String name) {
         if (str != null) {
             assertSmallerLimit(str.length(), limit, name);
         }
     }
 
-    /** 长度不超过 */
+    /**
+     * 长度不超过
+     */
     protected void assertSmallerLimit(int num, int limit, String name) {
-        if (num  > limit) {
+        if (num > limit) {
             throw new IllegalArgumentException(name + " over maximum size. yours length: " + num +
-                    ". It should shorter than " + limit);
+                ". It should shorter than " + limit);
         }
     }
 

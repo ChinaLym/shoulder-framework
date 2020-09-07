@@ -48,42 +48,34 @@ import java.util.*;
  */
 public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
-    private final static Logger log = LoggerFactory.getLogger(Aes256LocalTextCipher.class);
-
-    private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
-
-    private String appId;
-
     /**
      * 长度为6的加密标记，与加密版本挂钩，该字段的存在支持升级版本。AES256 2^8
      */
     public static final String ALGORITHM_HEADER = "${a8} ";
-
-    /**
-     * 秘钥持久化依赖：用于获取持久化的加密信息
-     */
-    private final LocalCryptoInfoRepository aesInfoDao;
-
+    private final static Logger log = LoggerFactory.getLogger(Aes256LocalTextCipher.class);
+    private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
     /**
      * 保护数据密钥的 iv
      */
     private static final byte[] DATA_KEY_IV = "shoulder:Cn-Lym!".getBytes(CHAR_SET);
-
     /**
      * 根秘钥固定部分
      * todo 实际应用中最好保证每个系统的该值不同，以达到更好的随机性
      */
     private static final byte[] ROOT_KEY_FINAL_PART = "shoulderFramework:CN-Lym".getBytes(CHAR_SET);
-
     /**
      * Aes 秘钥长度
      */
     private static final int AES_KEY_LENGTH = 256;
-
     /**
      * 根秘钥随机部分长度
      */
     private static final int ROOT_KEY_RANDOM_LENGTH = AES_KEY_LENGTH - ROOT_KEY_FINAL_PART.length;
+    /**
+     * 秘钥持久化依赖：用于获取持久化的加密信息
+     */
+    private final LocalCryptoInfoRepository aesInfoDao;
+    private String appId;
 
 
     public Aes256LocalTextCipher(LocalCryptoInfoRepository aesInfoRepository, String appId) {
@@ -93,6 +85,40 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
     // ======================================== 对外接口 ============================================
 
+    /**
+     * 生成 rootKey ： SHA256(rootKeyParts)
+     * 根密钥总长度为 256 位，其中一部分写死在代码中。另一部分启动时随机生成，以确保每个应用中不出现重复。
+     * 因为 AES256算法 要求秘钥部件为总长度等于256位( Java 中一个 byte 为 8位)
+     * 这里需要 64 位
+     *
+     * @param randomPart rootKey 的随机部分
+     * @return rootKey
+     */
+    private static byte[] generateRootKey(byte[] randomPart) {
+        assert randomPart.length == ROOT_KEY_RANDOM_LENGTH;
+
+        byte[] rootKey = new byte[256];
+        ByteUtils.copy(ROOT_KEY_FINAL_PART, 0, rootKey, 0, ROOT_KEY_FINAL_PART.length);
+        ByteUtils.copy(randomPart, 0, rootKey, ROOT_KEY_FINAL_PART.length, ROOT_KEY_RANDOM_LENGTH);
+
+        return Sha256Utils.digest(rootKey);
+    }
+
+    /**
+     * 生成加密 数据密钥 的aes向量 dataIv
+     */
+    private static byte[] generateDataKeyIv() {
+        return ByteUtils.randomBytes(16);
+    }
+
+    /**
+     * 生成数据密钥
+     *
+     * @return 数据秘钥
+     */
+    private static byte[] generateDataKey() {
+        return ByteUtils.randomBytes(32);
+    }
 
     @Override
     public String encrypt(@NonNull String text) throws AesCryptoException {
@@ -129,6 +155,9 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         return new String[]{header, realCipher};
     }
 
+
+    // =============================== 初始化流程 ====================================
+
     @Override
     public boolean support(String cipherText) {
         String header = cipherText.substring(0, 6);
@@ -142,6 +171,8 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     public int getOrder() {
         return 0;
     }
+
+    // ============================ 初始化所需的数据生成算法 =====================================
 
     /**
      * 确保加密前所需的变量已经初始化：检查加密配件缓存是否已经初始化
@@ -170,9 +201,6 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
             }
         }
     }
-
-
-    // =============================== 初始化流程 ====================================
 
     /**
      * 加载持久化的加密所需信息（目前从数据库），会将解密秘钥，缓存至内存
@@ -218,8 +246,6 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         }
     }
 
-    // ============================ 初始化所需的数据生成算法 =====================================
-
     /**
      * 初始化 db 加密信息表
      * <p>
@@ -245,41 +271,6 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         );
     }
 
-    /**
-     * 生成 rootKey ： SHA256(rootKeyParts)
-     * 根密钥总长度为 256 位，其中一部分写死在代码中。另一部分启动时随机生成，以确保每个应用中不出现重复。
-     * 因为 AES256算法 要求秘钥部件为总长度等于256位( Java 中一个 byte 为 8位)
-     * 这里需要 64 位
-     *
-     * @param randomPart rootKey 的随机部分
-     * @return rootKey
-     */
-    private static byte[] generateRootKey(byte[] randomPart) {
-        assert randomPart.length == ROOT_KEY_RANDOM_LENGTH;
-
-        byte[] rootKey = new byte[256];
-        ByteUtils.copy(ROOT_KEY_FINAL_PART, 0, rootKey, 0, ROOT_KEY_FINAL_PART.length);
-        ByteUtils.copy(randomPart, 0, rootKey, ROOT_KEY_FINAL_PART.length, ROOT_KEY_RANDOM_LENGTH);
-
-        return Sha256Utils.digest(rootKey);
-    }
-
-    /**
-     * 生成加密 数据密钥 的aes向量 dataIv
-     */
-    private static byte[] generateDataKeyIv() {
-        return ByteUtils.randomBytes(16);
-    }
-
-    /**
-     * 生成数据密钥
-     *
-     * @return 数据秘钥
-     */
-    private static byte[] generateDataKey() {
-        return ByteUtils.randomBytes(32);
-    }
-
 
     // ======================================== 缓存 =============================================
 
@@ -300,6 +291,9 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
          */
         private static Map<String, AesInfoCache> cacheMap;
 
+
+        private CacheManager() {
+        }
 
         private static AesInfoCache getAesInfoCache(String markHeader) {
             return cacheMap.get(markHeader);
@@ -331,6 +325,8 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
             initialized = true;
         }
 
+        // keep singleTon ------------------------
+
         private static AesInfoCache convertToCache(LocalCryptoInfoEntity entity) throws AesCryptoException {
             String rootKeyRandomPartStr = entity.getRootKeyPart();
             byte[] rootKeyRandomPart = ByteSpecification.decodeToBytes(rootKeyRandomPartStr);
@@ -342,11 +338,6 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
             byte[] dataIv = ByteSpecification.decodeToBytes(entity.getIv());
 
             return new AesInfoCache(dataKey, dataIv);
-        }
-
-        // keep singleTon ------------------------
-
-        private CacheManager() {
         }
     }
 

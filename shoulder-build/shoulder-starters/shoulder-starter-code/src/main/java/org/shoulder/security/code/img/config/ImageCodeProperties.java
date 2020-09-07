@@ -38,10 +38,10 @@ public class ImageCodeProperties extends BaseValidateCodeProperties {
      */
     @NotEmpty
     private List<String> fonts = Arrays.asList("方正舒体", "华文彩云", "华文琥珀", "华文新魏", "幼圆",
-            "微软雅黑", "楷体", "Agency FB", "Bradley Hand ITC", "Copperplate Gothic Light");
+        "微软雅黑", "楷体", "Agency FB", "Bradley Hand ITC", "Copperplate Gothic Light");
 
 
-    ImageCodeProperties(){
+    ImageCodeProperties() {
         // 默认长度为 4 个字符
         setLength(4);
         setParameterName(ValidateCodeConsts.IMAGE);

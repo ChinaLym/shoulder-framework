@@ -7,7 +7,7 @@ import java.util.List;
  * 验证码基础配置项
  *
  * @author lym
- * */
+ */
 public abstract class BaseValidateCodeProperties {
 
     /**
@@ -21,7 +21,9 @@ public abstract class BaseValidateCodeProperties {
      */
     private int effectiveSeconds = 60 * 10;
 
-    /** 请求中的参数名 */
+    /**
+     * 请求中的参数名
+     */
     private String parameterName;
 
     /**

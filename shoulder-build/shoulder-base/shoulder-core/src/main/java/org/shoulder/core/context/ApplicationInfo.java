@@ -132,7 +132,7 @@ public class ApplicationInfo {
     /**
      * 设置语言标识
      *
-     * @param  locale 语言标识
+     * @param locale 语言标识
      */
     public static void initDefaultLocale(Locale locale) {
         ApplicationInfo.defaultLocale = locale;

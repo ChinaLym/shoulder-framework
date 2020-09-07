@@ -52,16 +52,16 @@ public class AsyncOperationLogger implements OperationLogger {
         return this;
     }
 
-    public AsyncOperationLogger setExecutor(@NonNull Executor executor) {
-        this.executor = executor;
-        return this;
-    }
-
     public OperationLogger getDelegate() {
         return delegate;
     }
 
     public Executor getExecutor() {
         return executor;
+    }
+
+    public AsyncOperationLogger setExecutor(@NonNull Executor executor) {
+        this.executor = executor;
+        return this;
     }
 }

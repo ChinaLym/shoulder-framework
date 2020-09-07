@@ -66,6 +66,7 @@ public class JsonUtils {
     public static String toJson(Object object, String... ignoreProperties) {
         return toJson(object, null, ignoreProperties);
     }
+
     /**
      * 序列化Object为 JSON 字符串
      *
@@ -194,10 +195,10 @@ public class JsonUtils {
 
     /**
      * 解决常见序列化失败问题：java 8 时间、Long 序列化，如果不加入，则可能需要这么写：
-     *  @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
-     * 	LocalDateTime time;
      *
      * @author lym
+     * @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+     * LocalDateTime time;
      */
     public static class DateEnhancerJacksonModule extends SimpleModule {
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 通用过滤器
- *  实现了是否需要过滤当前路径的判断
+ * 实现了是否需要过滤当前路径的判断
  *
  * @author lym
  */
@@ -38,7 +38,7 @@ public class BasePathFilter implements Filter {
      */
     private Boolean enable;
 
-    public BasePathFilter(AbstractPathFilterProperties pathFilterProperties){
+    public BasePathFilter(AbstractPathFilterProperties pathFilterProperties) {
         this.filterPaths = new LinkedList<>();
         this.excludePaths = new LinkedList<>();
         initProperties(pathFilterProperties);
@@ -47,6 +47,7 @@ public class BasePathFilter implements Filter {
 
     /**
      * filter 过滤方法
+     *
      * @implSpec @implSpec 子类必须至少实现 {@link #doFilter} 或 {@link #doPathFilter} 两个方法中的一个
      */
     @Override
@@ -62,12 +63,12 @@ public class BasePathFilter implements Filter {
 
     /**
      * 筛选过路径的过滤器
-     * @param request  request
-     * @param response response
-     * @param filterChain    chain
+     *
+     * @param request     request
+     * @param response    response
+     * @param filterChain chain
      * @throws IOException      IOException
      * @throws ServletException ServletException
-     *
      * @implSpec 子类必须至少实现 {@link #doFilter} 或 {@link #doPathFilter} 两个方法中的一个
      */
     protected void doPathFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
@@ -78,7 +79,7 @@ public class BasePathFilter implements Filter {
      * 子类可以覆盖该方法实现脱离全局开关的控制
      */
     private void initProperties(AbstractPathFilterProperties properties) {
-        if(properties != null){
+        if (properties != null) {
             addFilterPathPattern(properties.getPathPatterns());
             addExcludePathPattern(properties.getExcludePathPatterns());
             this.enable = properties.getEnable();
@@ -88,39 +89,39 @@ public class BasePathFilter implements Filter {
     /**
      * 通过该方法添加需要过滤的路径
      */
-    protected void addFilterPathPattern(List<String> filterPathPattern){
+    protected void addFilterPathPattern(List<String> filterPathPattern) {
         this.filterPaths.addAll(filterPathPattern);
     }
 
     /**
      * 通过该方法添加不需要过滤的路径
      */
-    protected void addExcludePathPattern(List<String> excludePathPattern){
+    protected void addExcludePathPattern(List<String> excludePathPattern) {
         this.excludePaths.addAll(excludePathPattern);
     }
 
     /**
      * 是否关闭该过滤器
      */
-    protected boolean ignore(){
+    protected boolean ignore() {
         return !this.enable;
     }
 
     /**
      * 判断 url 是否需要进行过滤，需要同时满足三个条件
-     *  开启过滤器
-     *  在校验路径中
-     *  不在排除路径中
+     * 开启过滤器
+     * 在校验路径中
+     * 不在排除路径中
      */
-    protected boolean needFilter(String uri){
-        if(ignore()){
+    protected boolean needFilter(String uri) {
+        if (ignore()) {
             return false;
         }
         for (String filterPath : filterPaths) {
             if (matcher.match(filterPath, uri)) {
                 // 满足需要校验路径的条件
-                for (String excludePath : excludePaths){
-                    if(matcher.match(excludePath, uri)){
+                for (String excludePath : excludePaths) {
+                    if (matcher.match(excludePath, uri)) {
                         // 需要排除/跳过/忽略
                         return false;
                     }

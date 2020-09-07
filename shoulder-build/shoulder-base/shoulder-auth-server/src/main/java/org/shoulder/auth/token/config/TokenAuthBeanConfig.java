@@ -25,7 +25,7 @@ public class TokenAuthBeanConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public ValidateCodeStore redisValidateCodeRepository(RedisTemplate redisTemplate){
+    public ValidateCodeStore redisValidateCodeRepository(RedisTemplate redisTemplate) {
         return new RedisValidateCodeRepository(redisTemplate);
     }
 
@@ -70,8 +70,8 @@ public class TokenAuthBeanConfig {
     public static class TokenStoreConfig {
 
         *//**
-         * 使用 redis 作为 token 存储
-         *//*
+     * 使用 redis 作为 token 存储
+     *//*
         @Configuration(
     proxyBeanMethods = false
 )
@@ -86,8 +86,8 @@ public class TokenAuthBeanConfig {
         }
 
         *//**
-         * 使用 jwt 时的配置，默认生效
-         *//*
+     * 使用 jwt 时的配置，默认生效
+     *//*
         @Configuration(
     proxyBeanMethods = false
 )

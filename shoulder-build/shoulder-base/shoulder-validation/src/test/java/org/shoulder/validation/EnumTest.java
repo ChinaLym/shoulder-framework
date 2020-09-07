@@ -16,7 +16,7 @@ public class EnumTest {
 
     }
 
-    public String acceptEnumNameDemo(@Validated DemoDTO demoDTO){
+    public String acceptEnumNameDemo(@Validated DemoDTO demoDTO) {
         return demoDTO.getName();
     }
 
@@ -24,7 +24,7 @@ public class EnumTest {
     @Data
     public class DemoDTO {
 
-        @Enum(enums={"foo", "bar"})
+        @Enum(enums = {"foo", "bar"})
         private String name;
 
     }

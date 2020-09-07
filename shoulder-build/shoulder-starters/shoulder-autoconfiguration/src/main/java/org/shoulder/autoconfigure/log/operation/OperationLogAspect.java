@@ -50,28 +50,25 @@ import java.util.Objects;
 )
 @ConditionalOnClass(OperationLogDTO.class)
 @AutoConfigureAfter(value = {
-        OperationLoggerAutoConfiguration.class,
-        OperationLogParamConverterAutoConfiguration.class
+    OperationLoggerAutoConfiguration.class,
+    OperationLogParamConverterAutoConfiguration.class
 })
 @EnableConfigurationProperties(OperationLogProperties.class)
 public class OperationLogAspect {
-
-    @Autowired
-    private OperationLogProperties operationLogProperties;
-
-    /**
-     * 用于SpEL表达式解析.
-     */
-    private SpelExpressionParser parser = new SpelExpressionParser();
-
-    //用于获取方法参数定义名字.
-    //private DefaultParameterNameDiscoverer nameDiscoverer = new DefaultParameterNameDiscoverer();
-
 
     /**
      * 保存操作日志上次的上下文
      */
     private static ThreadLocal<OpLogContext> lastOpLogContext = new ThreadLocal<>();
+    @Autowired
+    private OperationLogProperties operationLogProperties;
+
+    //用于获取方法参数定义名字.
+    //private DefaultParameterNameDiscoverer nameDiscoverer = new DefaultParameterNameDiscoverer();
+    /**
+     * 用于SpEL表达式解析.
+     */
+    private SpelExpressionParser parser = new SpelExpressionParser();
 
     // ********************************* annotation AOP *********************************************
 
@@ -128,11 +125,11 @@ public class OperationLogAspect {
     /**
      * 进方法前存储的之前的日志上下文
      */
-    private void stashLastContext(){
+    private void stashLastContext() {
         lastOpLogContext.set(OpLogContextHolder.getContext());
     }
 
-    private void creatNewContext(ProceedingJoinPoint joinPoint){
+    private void creatNewContext(ProceedingJoinPoint joinPoint) {
         // 解析注解
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
@@ -158,13 +155,12 @@ public class OperationLogAspect {
     }
 
 
-
     /**
      * 执行方法后，清理本方法的上下文，恢复上次的上下文
      */
-    private void popLastContext(){
+    private void popLastContext() {
         OpLogContext lastContext = lastOpLogContext.get();
-        if(lastContext != null) {
+        if (lastContext != null) {
             OpLogContextHolder.setContext(lastContext);
         } else {
             OpLogContextHolder.clean();
@@ -179,7 +175,7 @@ public class OperationLogAspect {
     private OperationLogDTO createLog(ProceedingJoinPoint joinPoint, OperationLog methodAnnotation, OperationLogConfig classAnnotation) {
         // 创建日志实体
         OperationLogDTO entity =
-                OperationLogBuilder.newLog(methodAnnotation.operation());
+            OperationLogBuilder.newLog(methodAnnotation.operation());
 
         // objectType
         if (StringUtils.isNotEmpty(methodAnnotation.objectType())) {
@@ -214,7 +210,7 @@ public class OperationLogAspect {
     /**
      * 解析操作参数
      *
-     * @param entity 解析过的日志实体
+     * @param entity    解析过的日志实体
      * @param joinPoint 连接点
      * @return 本方法中要记录的参数
      */
@@ -240,7 +236,7 @@ public class OperationLogAspect {
             // Spring Expression Language
             String valueSpEL = "";
             Class<? extends OperationLogParamValueConverter> converterClazz =
-                    DefaultOperationLogParamValueConverter.class;
+                DefaultOperationLogParamValueConverter.class;
 
             if (paramAnnotation != null) {
                 if (StringUtils.isNotBlank(paramAnnotation.name())) {
@@ -259,13 +255,13 @@ public class OperationLogAspect {
                     // 使用 spel -> value
                     Expression expression = parser.parseExpression(valueSpEL);
                     EvaluationContext context = new StandardEvaluationContext();
-                    if(args[i] == null){
+                    if (args[i] == null) {
                         opLogParam.setValue(Collections.singletonList(operationLogProperties.getNullParamOutput()));
                     } else {
                         context.setVariable(parameterNames[i], args[i]);
                         //for (int i = 0; i < args.length; i++) { }
                         opLogParam.setValue(Collections.singletonList(Objects.requireNonNull(
-                                expression.getValue(context)).toString()));
+                            expression.getValue(context)).toString()));
                     }
 
                 } else {
@@ -277,9 +273,9 @@ public class OperationLogAspect {
                 }
             } catch (Exception e) {
                 log.info("try convert FAIL, but ignored by replace with default value(null). class:'" +
-                        method.getDeclaringClass().getName() +
-                        "', method:'" + method.getName() +
-                        "', paramName=" + parameterNames[i], e);
+                    method.getDeclaringClass().getName() +
+                    "', method:'" + method.getName() +
+                    "', paramName=" + parameterNames[i], e);
                 // 忽略该参数
                 continue;
             }

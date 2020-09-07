@@ -485,10 +485,6 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
         return result;
     }
 
-    public interface Filter<T> {
-        boolean accept(T o);
-    }
-
     /**
      * 从可枚举对象中选出需要的目标组成新的List
      *
@@ -768,6 +764,10 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
         // 取差
         setAll.removeAll(setInter);
         return setAll.toArray();
+    }
+
+    public interface Filter<T> {
+        boolean accept(T o);
     }
 
 

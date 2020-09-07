@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * 图片验证码自动配置
  *
  * @author lym
- * */
+ */
 @Configuration(
     proxyBeanMethods = false
 )

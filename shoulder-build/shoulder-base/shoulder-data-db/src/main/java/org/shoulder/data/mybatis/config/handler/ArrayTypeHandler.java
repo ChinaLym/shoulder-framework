@@ -2,7 +2,6 @@ package org.shoulder.data.mybatis.config.handler;
 
 /**
  * 注： 泛型一定要是Object[]，例如 int[]是 Object, 不是Object[]，所以传入int[] 会报错的
- *
  */
 /*
 @MappedTypes(Object[].class)

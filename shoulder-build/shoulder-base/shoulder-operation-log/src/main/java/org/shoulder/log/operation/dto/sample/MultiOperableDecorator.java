@@ -13,11 +13,13 @@ import java.util.Collection;
  */
 class MultiOperableDecorator extends OperableObject {
 
-    /** 省略符 */
+    /**
+     * 省略符
+     */
     private static final String ELLIPSIS = "...";
 
-    public MultiOperableDecorator(Collection<? extends Operable> logObjects){
-        if(logObjects == null || logObjects.isEmpty()) {
+    public MultiOperableDecorator(Collection<? extends Operable> logObjects) {
+        if (logObjects == null || logObjects.isEmpty()) {
             // 返回空对象
             return;
         }
@@ -31,29 +33,29 @@ class MultiOperableDecorator extends OperableObject {
             StringBuilder objectsName = new StringBuilder();
             StringBuilder objectsId = new StringBuilder();
             for (Operable object : logObjects) {
-                if(StringUtils.isNotEmpty(object.getObjectId())){
+                if (StringUtils.isNotEmpty(object.getObjectId())) {
                     objectsId.append(object.getObjectId()).append(",");
                 }
-                if(StringUtils.isNotEmpty(object.getObjectName())){
+                if (StringUtils.isNotEmpty(object.getObjectName())) {
                     objectsName.append(object.getObjectName()).append(",");
                 }
             }
-            if(StringUtils.isNotEmpty(objectsId)){
+            if (StringUtils.isNotEmpty(objectsId)) {
                 objectsId.deleteCharAt(objectsId.length() - 1);
             }
-            if(StringUtils.isNotEmpty(objectsName)){
+            if (StringUtils.isNotEmpty(objectsName)) {
                 objectsName.deleteCharAt(objectsName.length() - 1);
             }
 
-			// 日志规范不允许id或名称过长
+            // 日志规范不允许id或名称过长
             int idMaxLength = 127;
             int nameMaxLength = 255;
-            if(objectsId.length() > idMaxLength){
-            	objectsId.delete(idMaxLength - 3, objectsId.length()).append(ELLIPSIS);
-			}
-            if(objectsName.length() > nameMaxLength){
-				objectsName.delete(nameMaxLength - 3, objectsName.length()).append(ELLIPSIS);
-			}
+            if (objectsId.length() > idMaxLength) {
+                objectsId.delete(idMaxLength - 3, objectsId.length()).append(ELLIPSIS);
+            }
+            if (objectsName.length() > nameMaxLength) {
+                objectsName.delete(nameMaxLength - 3, objectsName.length()).append(ELLIPSIS);
+            }
             super.objectId = objectsId.toString();
             super.objectName = objectsName.toString();
             super.objectType = logObject.getObjectType();

@@ -35,6 +35,45 @@ public class TransportCryptoByteUtil {
     }
 
     /**
+     * 生成数据密钥的密文（用于协商完毕，每次请求中）
+     *
+     * @return xDk
+     */
+    public static byte[] generateDataKey(int size) {
+        return ByteUtils.randomBytes(size);
+    }
+
+    /**
+     * 生成数据密钥的密文（DK）
+     */
+    public static byte[] encryptDk(KeyExchangeResult keyExchangeResult, byte[] dataKey) throws AesCryptoException {
+        return AesUtil.encrypt(dataKey, keyExchangeResult.getLocalKey(), keyExchangeResult.getLocalIv());
+    }
+
+    /**
+     * 解密 xDk（用于协商完毕，每次请求中）
+     *
+     * @return dataKey
+     */
+    public static byte[] decryptDk(KeyExchangeResult keyExchangeResult, byte[] xDk) throws SymmetricCryptoException {
+        return AesUtil.decrypt(xDk, keyExchangeResult.getLocalKey(), keyExchangeResult.getLocalIv());
+    }
+
+    /**
+     * 加密数据
+     */
+    public static byte[] encrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, byte[] toCipher) throws AesCryptoException {
+        return AesUtil.encrypt(toCipher, dataKey, keyExchangeResult.getLocalIv());
+    }
+
+    /**
+     * 解密数据
+     */
+    public static byte[] decrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, byte[] cipherText) throws AesCryptoException {
+        return AesUtil.decrypt(cipherText, dataKey, keyExchangeResult.getLocalIv());
+    }
+
+    /**
      * 创建一个请求
      */
     public KeyExchangeRequest createRequest() throws AsymmetricCryptoException {
@@ -118,48 +157,8 @@ public class TransportCryptoByteUtil {
         return response;
     }
 
-    /**
-     * 生成数据密钥的密文（用于协商完毕，每次请求中）
-     *
-     * @return xDk
-     */
-    public static byte[] generateDataKey(int size) {
-        return ByteUtils.randomBytes(size);
-    }
-
-    /**
-     * 生成数据密钥的密文（DK）
-     */
-    public static byte[] encryptDk(KeyExchangeResult keyExchangeResult, byte[] dataKey) throws AesCryptoException {
-        return AesUtil.encrypt(dataKey, keyExchangeResult.getLocalKey(), keyExchangeResult.getLocalIv());
-    }
-
-    /**
-     * 解密 xDk（用于协商完毕，每次请求中）
-     *
-     * @return dataKey
-     */
-    public static byte[] decryptDk(KeyExchangeResult keyExchangeResult, byte[] xDk) throws SymmetricCryptoException {
-        return AesUtil.decrypt(xDk, keyExchangeResult.getLocalKey(), keyExchangeResult.getLocalIv());
-    }
-
-    /**
-     * 加密数据
-     */
-    public static byte[] encrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, byte[] toCipher) throws AesCryptoException {
-        return AesUtil.encrypt(toCipher, dataKey, keyExchangeResult.getLocalIv());
-    }
-
-    /**
-     * 解密数据
-     */
-    public static byte[] decrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, byte[] cipherText) throws AesCryptoException {
-        return AesUtil.decrypt(cipherText, dataKey, keyExchangeResult.getLocalIv());
-    }
-
 
     // =========================== 防篡改 ==================================
-
 
     /**
      * 发起协商请求时需要签名的数据

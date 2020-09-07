@@ -8,23 +8,24 @@ import java.util.List;
 
 /**
  * 验证码处理器
+ *
  * @author lym
  */
 public interface ValidateCodeProcessor extends ValidateCodeType {
 
-	/**
-	 * 创建
-	 */
-	void create(ServletWebRequest request) throws ValidateCodeException;
+    /**
+     * 创建
+     */
+    void create(ServletWebRequest request) throws ValidateCodeException;
 
-	/**
-	 * 校验
-	 */
-	void validate(ServletWebRequest servletWebRequest);
+    /**
+     * 校验
+     */
+    void validate(ServletWebRequest servletWebRequest);
 
 
-	/**
-	 * 负责处理的 url，推荐通过配置文件获取
-	 */
-	List<String> processedUrls();
+    /**
+     * 负责处理的 url，推荐通过配置文件获取
+     */
+    List<String> processedUrls();
 }

@@ -46,43 +46,6 @@ public class LocalCryptoAutoConfiguration {
         }
     }
 
-    @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
-    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "file", matchIfMissing = true)
-    public static class TempFileLocalCryptoInfoRepositoryAutoConfiguration {
-
-        /**
-         * 默认使用启动路径下的文件作为密钥部件存储
-         *
-         * @see LocalCryptoInfoRepository
-         */
-        @Bean
-        public LocalCryptoInfoRepository fileLocalCryptoInfoRepository() throws FileNotFoundException {
-            log.warn("No LocalCryptoInfoRepository available,  fallback to FileLocalCryptoInfoRepository, " +
-                "storage in your project path, file named {}. " +
-                "Consider create a bean(JdbcLocalCryptoInfoRepository.class) for better security.",
-                FileLocalCryptoInfoRepository.DEFAULT_FILE_NAME);
-
-            return new FileLocalCryptoInfoRepository();
-        }
-    }
-
-    @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
-    @AutoConfigureAfter(TempFileLocalCryptoInfoRepositoryAutoConfiguration.class)
-    public static class HashMapLocalCryptoInfoRepositoryAutoConfiguration {
-        /**
-         * 使用了 hashMap，仅供演示。重启后，密钥对将丢失，加密过的数据无法解密！
-         * 警告用户必须更换
-         */
-        @Bean
-        public LocalCryptoInfoRepository hashMapCryptoInfoRepository(){
-            log.warn("You are using memory as LocalCryptoInfoRepository! " +
-                "Shoulder strongly recommend that you replace it with other implements " +
-                "that can save the IMPORT DATA(root crypto meta data) for a long time");
-            return new HashMapCryptoInfoRepository();
-        }
-
-    }
-
     /**
      * 本地加解密默认实现 Bean 注入
      *
@@ -106,6 +69,43 @@ public class LocalCryptoAutoConfiguration {
     @Bean
     public LocalTextCipher localTextCipherManager(@Nullable List<JudgeAbleLocalTextCipher> judgeAbleLocalTextCiphers) {
         return new LocalTextCipherManager(judgeAbleLocalTextCiphers);
+    }
+
+    @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
+    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "file", matchIfMissing = true)
+    public static class TempFileLocalCryptoInfoRepositoryAutoConfiguration {
+
+        /**
+         * 默认使用启动路径下的文件作为密钥部件存储
+         *
+         * @see LocalCryptoInfoRepository
+         */
+        @Bean
+        public LocalCryptoInfoRepository fileLocalCryptoInfoRepository() throws FileNotFoundException {
+            log.warn("No LocalCryptoInfoRepository available,  fallback to FileLocalCryptoInfoRepository, " +
+                    "storage in your project path, file named {}. " +
+                    "Consider create a bean(JdbcLocalCryptoInfoRepository.class) for better security.",
+                FileLocalCryptoInfoRepository.DEFAULT_FILE_NAME);
+
+            return new FileLocalCryptoInfoRepository();
+        }
+    }
+
+    @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
+    @AutoConfigureAfter(TempFileLocalCryptoInfoRepositoryAutoConfiguration.class)
+    public static class HashMapLocalCryptoInfoRepositoryAutoConfiguration {
+        /**
+         * 使用了 hashMap，仅供演示。重启后，密钥对将丢失，加密过的数据无法解密！
+         * 警告用户必须更换
+         */
+        @Bean
+        public LocalCryptoInfoRepository hashMapCryptoInfoRepository() {
+            log.warn("You are using memory as LocalCryptoInfoRepository! " +
+                "Shoulder strongly recommend that you replace it with other implements " +
+                "that can save the IMPORT DATA(root crypto meta data) for a long time");
+            return new HashMapCryptoInfoRepository();
+        }
+
     }
 
 

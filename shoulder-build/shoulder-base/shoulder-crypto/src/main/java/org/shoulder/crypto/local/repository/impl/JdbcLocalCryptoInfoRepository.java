@@ -20,10 +20,6 @@ import java.util.List;
  */
 public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
-    private JdbcTemplate jdbcTemplate;
-
-    private RowMapper<LocalCryptoInfoEntity> rowMapper = new AesInfoRowMapper();
-
     private static final String CREATE_STATEMENT =
         "create table tb_security_info " +
             "( " +
@@ -42,25 +38,17 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
             "); " +
             " " +
             "comment on table tb_security_info is 'support local crypto';";
-
     private static final String FIELDS = "id, app_id, data_key, root_key_part, iv, header, create_time";
-
     private static final String TABLE_NAME = "tb_security_info";
-
-    private static final String WHERE = " WHERE app_id = ? ";
-
-    private static final String WHERE_UNIQUE = WHERE + " AND header = ? ";
-
     protected static final String SELECT_STATEMENT = "SELECT " + FIELDS + " FROM " + TABLE_NAME;
-
-    protected static final String SELECT_SINGLE_STATEMENT = SELECT_STATEMENT + WHERE_UNIQUE;
-
-    protected static final String SELECT_BATCH_STATEMENT = SELECT_STATEMENT + WHERE;
-
     protected static final String DEFAULT_INSERT_STATEMENT = "INSERT INTO " + TABLE_NAME + " (" + FIELDS
         + ") values (?,?,?,?,?,?,?)";
-
-
+    private static final String WHERE = " WHERE app_id = ? ";
+    protected static final String SELECT_BATCH_STATEMENT = SELECT_STATEMENT + WHERE;
+    private static final String WHERE_UNIQUE = WHERE + " AND header = ? ";
+    protected static final String SELECT_SINGLE_STATEMENT = SELECT_STATEMENT + WHERE_UNIQUE;
+    private JdbcTemplate jdbcTemplate;
+    private RowMapper<LocalCryptoInfoEntity> rowMapper = new AesInfoRowMapper();
     private String selectBatchSql = SELECT_BATCH_STATEMENT;
 
     private String selectSingleSql = SELECT_SINGLE_STATEMENT;

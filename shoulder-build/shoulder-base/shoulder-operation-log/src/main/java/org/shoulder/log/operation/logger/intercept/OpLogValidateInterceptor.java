@@ -17,7 +17,7 @@ public class OpLogValidateInterceptor implements OperationLoggerInterceptor {
     }
 
     @Override
-    public void beforeLog(OperationLogDTO opLog){
+    public void beforeLog(OperationLogDTO opLog) {
         operationLogValidator.validate(opLog);
     }
 

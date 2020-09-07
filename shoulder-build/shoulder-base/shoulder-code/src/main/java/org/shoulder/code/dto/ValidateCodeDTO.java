@@ -14,22 +14,22 @@ import java.time.LocalDateTime;
 @ToString
 public class ValidateCodeDTO implements Serializable {
 
-	//private String type;
+    //private String type;
 
-	private String code;
-	
-	private LocalDateTime expireTime;
-	
+    private String code;
 
-	public ValidateCodeDTO(String code, long expireSeconds){
-		this.code = code;
-		this.expireTime = LocalDateTime.now().plusSeconds(expireSeconds);
-	}
+    private LocalDateTime expireTime;
 
-	public ValidateCodeDTO(String code, LocalDateTime expireTime){
-		this.code = code;
-		this.expireTime = expireTime;
-	}
+
+    public ValidateCodeDTO(String code, long expireSeconds) {
+        this.code = code;
+        this.expireTime = LocalDateTime.now().plusSeconds(expireSeconds);
+    }
+
+    public ValidateCodeDTO(String code, LocalDateTime expireTime) {
+        this.code = code;
+        this.expireTime = expireTime;
+    }
 
 	/*public ValidateCodeDTO(String type, String code, long expireSeconds){
 		this.type = type;
@@ -43,28 +43,28 @@ public class ValidateCodeDTO implements Serializable {
 		this.expireTime = expireTime;
 	}*/
 
-	public boolean isExpire() {
-		return LocalDateTime.now().isAfter(expireTime);
-	}
+    public boolean isExpire() {
+        return LocalDateTime.now().isAfter(expireTime);
+    }
 
 
-	// ----------- getter | setter --------------
+    // ----------- getter | setter --------------
 
-	public String getCode() {
-		return code;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	public LocalDateTime getExpireTime() {
-		return expireTime;
-	}
+    public LocalDateTime getExpireTime() {
+        return expireTime;
+    }
 
-	public void setExpireTime(LocalDateTime expireTime) {
-		this.expireTime = expireTime;
-	}
+    public void setExpireTime(LocalDateTime expireTime) {
+        this.expireTime = expireTime;
+    }
 
 	/*@Override
 	public String getType() {

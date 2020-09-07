@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * http 相关配置
+ *
  * @author lym
  */
 @Configuration(
@@ -20,13 +21,13 @@ public class HttpAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public AppIdExtractor appIdExtractor(){
+    public AppIdExtractor appIdExtractor() {
         return new ShoulderDslAppIdExtractor();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 

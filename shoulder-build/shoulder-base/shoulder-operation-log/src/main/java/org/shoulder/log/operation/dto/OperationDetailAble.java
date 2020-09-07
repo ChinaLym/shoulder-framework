@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *  可以获取操作详情的对象
+ * 可以获取操作详情的对象
  *
  * @author lym
  */
@@ -18,7 +18,7 @@ public interface OperationDetailAble {
      * @return 对应 {@link OperationLogDTO#detailItems} 字段
      */
     @JsonIgnore
-    default List<String> getDetailItems(){
+    default List<String> getDetailItems() {
         return Collections.emptyList();
     }
 
@@ -28,7 +28,7 @@ public interface OperationDetailAble {
      * @return 对应 {@link OperationLogDTO#detail} 字段
      */
     @JsonIgnore
-    default String getDetail(){
+    default String getDetail() {
         return null;
     }
 

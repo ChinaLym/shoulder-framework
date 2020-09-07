@@ -25,10 +25,11 @@ public interface KeyPairCache {
 
     /**
      * 存储多个秘钥对
+     *
      * @param keyPairDtoMap 秘钥对 map。key: id; value: keyPairDto
      */
-    default void set(Map<String, KeyPairDto> keyPairDtoMap){
-        if(MapUtils.isNotEmpty(keyPairDtoMap)){
+    default void set(Map<String, KeyPairDto> keyPairDtoMap) {
+        if (MapUtils.isNotEmpty(keyPairDtoMap)) {
             keyPairDtoMap.forEach(this::set);
         }
     }

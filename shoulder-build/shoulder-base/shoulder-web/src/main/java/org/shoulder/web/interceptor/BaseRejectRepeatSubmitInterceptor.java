@@ -26,6 +26,7 @@ public abstract class BaseRejectRepeatSubmitInterceptor extends HandlerIntercept
 
     /**
      * 是否为重复提交
+     *
      * @param request 请求
      * @return 是否为重复提交
      */
@@ -37,6 +38,7 @@ public abstract class BaseRejectRepeatSubmitInterceptor extends HandlerIntercept
 
     /**
      * 是否需要拦截该处理器
+     *
      * @param request 请求
      * @param handler 处理器
      * @return 是否需要拦截
@@ -45,6 +47,7 @@ public abstract class BaseRejectRepeatSubmitInterceptor extends HandlerIntercept
 
     /**
      * 服务端 token
+     *
      * @param request 请求
      * @return token
      */
@@ -52,18 +55,20 @@ public abstract class BaseRejectRepeatSubmitInterceptor extends HandlerIntercept
 
     /**
      * 清理服务端 token
+     *
      * @param request 请求
      */
     protected abstract void cleanServerToken(HttpServletRequest request);
 
     /**
      * 客户端 token
+     *
      * @param request 请求
      * @return token
      */
     protected abstract Object getClientToken(HttpServletRequest request);
 
-    protected void handleReject(HttpServletRequest request, HttpServletResponse response){
+    protected void handleReject(HttpServletRequest request, HttpServletResponse response) {
 
     }
 

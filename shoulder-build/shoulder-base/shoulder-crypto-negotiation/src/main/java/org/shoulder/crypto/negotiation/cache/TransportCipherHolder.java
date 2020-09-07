@@ -23,10 +23,16 @@ public class TransportCipherHolder {
         return request.get();
     }
 
+    /**
+     * 用于解密收到的请求 or 加密发送请求
+     */
+    private static void setRequestCipher(TransportCipher transportCipher) {
+        request.set(transportCipher);
+    }
+
     public static TransportCipher getResponseHandler() {
         return response.get();
     }
-
 
     /**
      * 用于请求发起端 加密
@@ -42,14 +48,6 @@ public class TransportCipherHolder {
     public static void setRequestDecryptor(TransportCipher transportCipher) {
         setRequestCipher(transportCipher);
     }
-
-    /**
-     * 用于解密收到的请求 or 加密发送请求
-     */
-    private static void setRequestCipher(TransportCipher transportCipher) {
-        request.set(transportCipher);
-    }
-
 
     /**
      * 用于服务提供端 加密响应

@@ -34,14 +34,6 @@ public enum AesAlgorithmEnum {
 
     private int keyLength;
 
-    public String getAlgorithmName() {
-        return algorithmName;
-    }
-
-    public int getKeyLength() {
-        return keyLength;
-    }
-
     AesAlgorithmEnum(String algorithmName, int keyLength) {
         this.algorithmName = algorithmName;
         this.keyLength = keyLength;
@@ -53,6 +45,14 @@ public enum AesAlgorithmEnum {
             algorithms.add(algorithmEnum.algorithmName);
         }
         return algorithms;
+    }
+
+    public String getAlgorithmName() {
+        return algorithmName;
+    }
+
+    public int getKeyLength() {
+        return keyLength;
     }
 
     @Override

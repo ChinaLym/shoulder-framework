@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 
 /**
  * 集群条件
+ *
  * @author lym
  */
 @Slf4j
@@ -19,7 +20,7 @@ public class ClusterCondition implements Condition {
     public boolean matches(@NonNull ConditionContext conditionContext, @NonNull AnnotatedTypeMetadata annotatedTypeMetadata) {
         MergedAnnotation<ConditionalOnCluster> mergedAnnotation =
             annotatedTypeMetadata.getAnnotations().get(ConditionalOnCluster.class);
-        if(!mergedAnnotation.isPresent()){
+        if (!mergedAnnotation.isPresent()) {
             return true;
         }
         ConditionalOnCluster condition = mergedAnnotation.synthesize();

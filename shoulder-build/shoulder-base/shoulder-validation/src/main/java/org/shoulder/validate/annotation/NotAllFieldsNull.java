@@ -14,6 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * 多个字段不能同时为空，至少一个字段不能为空
  * 使用：加在需要校验的类上，填写 {@link #fields}
+ *
  * @author lym
  */
 @Target({ElementType.TYPE})
@@ -32,9 +33,13 @@ public @interface NotAllFieldsNull {
      */
     String message() default "shoulder.validate.input.allEmpty";
 
-    /** 分组 */
+    /**
+     * 分组
+     */
     Class<?>[] groups() default {};
 
-    /** 负载 */
+    /**
+     * 负载
+     */
     Class<? extends Payload>[] payload() default {};
 }

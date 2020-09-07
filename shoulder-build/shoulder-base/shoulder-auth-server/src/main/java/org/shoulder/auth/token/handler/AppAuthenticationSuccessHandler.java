@@ -22,50 +22,49 @@ import java.util.Collections;
 
 /**
  * APP环境下认证成功处理器
- * 
- * @author lym
  *
+ * @author lym
  */
 public class AppAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private ClientDetailsService clientDetailsService;
-	
-	private AuthorizationServerTokenServices authorizationServerTokenServices;
+    private ClientDetailsService clientDetailsService;
 
-	public AppAuthenticationSuccessHandler(ClientDetailsService clientDetailsService, AuthorizationServerTokenServices authorizationServerTokenServices) {
-		this.clientDetailsService = clientDetailsService;
-		this.authorizationServerTokenServices = authorizationServerTokenServices;
-	}
+    private AuthorizationServerTokenServices authorizationServerTokenServices;
+
+    public AppAuthenticationSuccessHandler(ClientDetailsService clientDetailsService, AuthorizationServerTokenServices authorizationServerTokenServices) {
+        this.clientDetailsService = clientDetailsService;
+        this.authorizationServerTokenServices = authorizationServerTokenServices;
+    }
 
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-		logger.info("登录成功");
+        logger.info("登录成功");
 
-		String header = request.getHeader("Authorization");
+        String header = request.getHeader("Authorization");
 
-		if (header == null || !header.startsWith("Basic ")) {
-			// 请求头中无client信息
-			throw new UnapprovedClientAuthenticationException("Missing client info in request headers.");
-		}
+        if (header == null || !header.startsWith("Basic ")) {
+            // 请求头中无client信息
+            throw new UnapprovedClientAuthenticationException("Missing client info in request headers.");
+        }
 
-		//解码
-		String[] tokens = extractAndDecodeHeader(header, request);
-		assert tokens.length == 2;
+        //解码
+        String[] tokens = extractAndDecodeHeader(header, request);
+        assert tokens.length == 2;
 
-		String clientId = tokens[0];
-		String clientSecret = tokens[1];
+        String clientId = tokens[0];
+        String clientSecret = tokens[1];
 
 
-		BaseClientDetails mockDetail = new BaseClientDetails();
-		mockDetail.setScope(Collections.singleton("all"));
-		mockDetail.setRegisteredRedirectUri(Collections.singleton("http://example.com"));
-		ClientDetails clientDetails = mockDetail;//clientDetailsService.loadClientByClientId(clientId);
+        BaseClientDetails mockDetail = new BaseClientDetails();
+        mockDetail.setScope(Collections.singleton("all"));
+        mockDetail.setRegisteredRedirectUri(Collections.singleton("http://example.com"));
+        ClientDetails clientDetails = mockDetail;//clientDetailsService.loadClientByClientId(clientId);
 
 		/*if (clientDetails == null) {
 			// 对应的配置信息不存在
@@ -74,38 +73,38 @@ public class AppAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 			// clientSecret 错误
 			throw new UnapprovedClientAuthenticationException("ClientId or clientSecret incorrect." + clientId);
 		}*/
-		
-		TokenRequest tokenRequest = new TokenRequest(Collections.emptyMap(), clientId, clientDetails.getScope(), "custom");
-		
-		OAuth2Request oAuth2Request = tokenRequest.createOAuth2Request(clientDetails);
-		
-		OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(oAuth2Request, authentication);
-		
-		OAuth2AccessToken token = authorizationServerTokenServices.createAccessToken(oAuth2Authentication);
 
-		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-		response.getWriter().write(ResponseUtil.jsonMsg(token));
+        TokenRequest tokenRequest = new TokenRequest(Collections.emptyMap(), clientId, clientDetails.getScope(), "custom");
 
-	}
+        OAuth2Request oAuth2Request = tokenRequest.createOAuth2Request(clientDetails);
 
-	private String[] extractAndDecodeHeader(String header, HttpServletRequest request) throws IOException {
+        OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(oAuth2Request, authentication);
 
-		byte[] base64Token = header.substring(6).getBytes("UTF-8");
-		byte[] decoded;
-		try {
-			decoded = Base64.decode(base64Token);
-		} catch (IllegalArgumentException e) {
-			throw new BadCredentialsException("Failed to decode basic authentication token");
-		}
+        OAuth2AccessToken token = authorizationServerTokenServices.createAccessToken(oAuth2Authentication);
 
-		String token = new String(decoded, "UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.getWriter().write(ResponseUtil.jsonMsg(token));
 
-		int delim = token.indexOf(":");
+    }
 
-		if (delim == -1) {
-			throw new BadCredentialsException("Invalid basic authentication token");
-		}
-		return new String[] { token.substring(0, delim), token.substring(delim + 1) };
-	}
+    private String[] extractAndDecodeHeader(String header, HttpServletRequest request) throws IOException {
+
+        byte[] base64Token = header.substring(6).getBytes("UTF-8");
+        byte[] decoded;
+        try {
+            decoded = Base64.decode(base64Token);
+        } catch (IllegalArgumentException e) {
+            throw new BadCredentialsException("Failed to decode basic authentication token");
+        }
+
+        String token = new String(decoded, "UTF-8");
+
+        int delim = token.indexOf(":");
+
+        if (delim == -1) {
+            throw new BadCredentialsException("Invalid basic authentication token");
+        }
+        return new String[]{token.substring(0, delim), token.substring(delim + 1)};
+    }
 
 }

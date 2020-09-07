@@ -64,16 +64,16 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
 
         log.info("OperationLogger-async=true,threadNum=" + threadNum + ",threadName=" + threadName);
         return new AsyncOperationLogger()
-                .setExecutor(Executors.newFixedThreadPool(threadNum,
-                        r -> {
-                            Thread loggingThread = new Thread(
-                                    new OpLogRunnable(r), threadName
-                            );
-                            loggingThread.setDaemon(true);
-                            return loggingThread;
-                        }
-                ))
-                .setLogger(new Sl4jOperationLogger(operationLogFormatter));
+            .setExecutor(Executors.newFixedThreadPool(threadNum,
+                r -> {
+                    Thread loggingThread = new Thread(
+                        new OpLogRunnable(r), threadName
+                    );
+                    loggingThread.setDaemon(true);
+                    return loggingThread;
+                }
+            ))
+            .setLogger(new Sl4jOperationLogger(operationLogFormatter));
     }
 
 
@@ -108,14 +108,14 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
     public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
         ApplicationContext applicationContext = event.getApplicationContext();
         OperationLogger operationLogger =
-                applicationContext.getBean(OperationLogger.class);
+            applicationContext.getBean(OperationLogger.class);
 
         // set cross thread logger
         OpLogContextHolder.setOperationLogger(operationLogger);
 
         // register all logInterceptors.
         Collection<OperationLoggerInterceptor> loggerInterceptors =
-                event.getApplicationContext().getBeansOfType(OperationLoggerInterceptor.class).values();
+            event.getApplicationContext().getBeansOfType(OperationLoggerInterceptor.class).values();
         if (CollectionUtils.isNotEmpty(loggerInterceptors)) {
             loggerInterceptors.forEach(operationLogger::addInterceptor);
         }

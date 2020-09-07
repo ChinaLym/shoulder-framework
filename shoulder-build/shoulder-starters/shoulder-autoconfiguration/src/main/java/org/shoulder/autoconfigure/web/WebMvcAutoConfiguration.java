@@ -27,8 +27,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcAutoConfiguration {
 
     @Configuration(
-    proxyBeanMethods = false
-)
+        proxyBeanMethods = false
+    )
     @ConditionalOnClass(HttpLocaleInterceptor.class)
     protected static class LocaleInterceptorWebConfig implements WebMvcConfigurer {
         @Override
@@ -39,8 +39,8 @@ public class WebMvcAutoConfiguration {
     }
 
     @Configuration(
-    proxyBeanMethods = false
-)
+        proxyBeanMethods = false
+    )
     @ConditionalOnClass(SessionTokenRepeatSubmitInterceptor.class)
     @ConditionalOnProperty(name = "shoulder.web.repeatSubmit.enable", havingValue = "true", matchIfMissing = true)
     protected static class RejectRepeatSubmitWebConfig implements WebMvcConfigurer {
@@ -53,7 +53,7 @@ public class WebMvcAutoConfiguration {
         public SessionTokenRepeatSubmitInterceptor rejectRepeatSubmitInterceptor(
             @Value("${shoulder.web.waf.repeatSubmit.requestTokenName:__repeat_token}") String requestTokenName,
             @Value("${shoulder.web.waf.repeatSubmit.sessionTokenName:__repeat_token}") String sessionTokenName
-        ){
+        ) {
             return new SessionTokenRepeatSubmitInterceptor(requestTokenName, sessionTokenName);
         }
 

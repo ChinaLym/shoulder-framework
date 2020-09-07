@@ -29,19 +29,29 @@ public class CryptoProperties {
 
     @Data
     public static class AsymmetricCryptoProperties {
-        /** 算法实现提供商 */
+        /**
+         * 算法实现提供商
+         */
         private String provider = "BC";
 
-        /** 算法名称 */
+        /**
+         * 算法名称
+         */
         private String algorithm = "EC";
 
-        /** 秘钥位数 */
+        /**
+         * 秘钥位数
+         */
         private int keyLength = 256;
 
-        /** 算法实现 */
+        /**
+         * 算法实现
+         */
         private String transformation = "ECIES";
 
-        /** 签名算法名称 */
+        /**
+         * 签名算法名称
+         */
         private String signatureAlgorithm = "SHA256withECDSA";
     }
 

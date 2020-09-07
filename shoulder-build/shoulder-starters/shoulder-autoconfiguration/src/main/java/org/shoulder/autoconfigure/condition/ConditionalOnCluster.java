@@ -7,6 +7,7 @@ import java.lang.annotation.*;
 
 /**
  * 集群模式时激活
+ *
  * @author lym
  */
 @Retention(RetentionPolicy.RUNTIME)

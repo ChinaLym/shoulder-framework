@@ -14,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * 操作日志-当前用户信息
+ *
  * @author lym
  */
 @Configuration(
@@ -40,11 +41,13 @@ public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 
-    /** 激活对用户信息的 AOP 解析 */
+    /**
+     * 激活对用户信息的 AOP 解析
+     */
     @Bean
     //@ConditionalOnClass(Assertion.class)
     @ConditionalOnMissingBean(OperationLogOperatorInfoInterceptor.class)
-    public OperationLogOperatorInfoInterceptor operationLogSsoOperatorInfoInterceptor(){
+    public OperationLogOperatorInfoInterceptor operationLogSsoOperatorInfoInterceptor() {
         return new OperationLogSsoOperatorInfoInterceptor();
     }
 }

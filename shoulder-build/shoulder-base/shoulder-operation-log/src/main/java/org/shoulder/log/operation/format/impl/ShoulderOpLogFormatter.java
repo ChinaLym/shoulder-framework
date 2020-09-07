@@ -44,6 +44,25 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
         // 包含 String、枚举、List、Map、OpLogParam
     }
 
+    /**
+     * @param operation 操作标识
+     * @param param     参数
+     */
+    public static String formatParam(String operation, OpLogParam param) {
+        if (CollectionUtils.isEmpty(param.getValue())) {
+            throw new IllegalStateException("operationParam.values is empty!");
+        }
+
+        String name = operation + "." + param.getName();
+        StringJoiner valueJoiner = new StringJoiner(",");
+        param.getValue().stream()
+            .filter(StringUtils::isEmpty)
+            .map(v -> name + v)
+            .forEach(valueJoiner::add);
+
+        return "{\"name\"=\"" + name + '\"' + ", \"value\"=\"" + valueJoiner.toString() + "\"}";
+    }
+
     @Override
     public String format(OperationLogDTO opLog) {
 
@@ -52,7 +71,7 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
         opLogStrFields.forEach(field -> {
             try {
                 Object value = field.get(opLog);
-                if(value == null){
+                if (value == null) {
                     return;
                 }
                 builder.add(field.getName(), (String) value);
@@ -91,25 +110,6 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
 
         return builder.formatResult();
 
-    }
-
-    /**
-     * @param operation 操作标识
-     * @param param 参数
-     */
-    public static String formatParam(String operation, OpLogParam param) {
-        if(CollectionUtils.isEmpty(param.getValue())){
-            throw new IllegalStateException("operationParam.values is empty!");
-        }
-
-        String name = operation + "." + param.getName();
-        StringJoiner valueJoiner = new StringJoiner(",");
-        param.getValue().stream()
-            .filter(StringUtils::isEmpty)
-            .map( v -> name + v)
-            .forEach(valueJoiner::add);
-
-        return "{\"name\"=\"" + name + '\"' + ", \"value\"=\"" + valueJoiner.toString() + "\"}";
     }
 
 }

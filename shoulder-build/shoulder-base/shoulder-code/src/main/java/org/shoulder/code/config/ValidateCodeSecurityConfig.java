@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 
 /**
  * 装配验证码过滤器
+ *
  * @author lym
  */
 @Configuration(
@@ -16,16 +17,16 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 )
 public class ValidateCodeSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-	private ValidateCodeFilter validateCodeFilter;
+    private ValidateCodeFilter validateCodeFilter;
 
     public ValidateCodeSecurityConfig(ValidateCodeFilter validateCodeFilter) {
         this.validateCodeFilter = validateCodeFilter;
     }
 
     @Override
-	public void configure(HttpSecurity http) {
+    public void configure(HttpSecurity http) {
         // 验证码过滤器加在认证处理器之前，以支持登录认证请求也可以校验验证码
-		http.addFilterBefore(validateCodeFilter, AbstractPreAuthenticatedProcessingFilter.class);
-	}
+        http.addFilterBefore(validateCodeFilter, AbstractPreAuthenticatedProcessingFilter.class);
+    }
 
 }

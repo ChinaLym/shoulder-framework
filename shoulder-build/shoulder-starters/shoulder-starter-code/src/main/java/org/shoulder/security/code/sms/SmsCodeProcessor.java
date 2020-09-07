@@ -24,16 +24,18 @@ public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode
      */
     private SmsCodeSender smsCodeSender;
 
-    /** 短信验证码只有 POST 请求才能获取（避免直接在浏览器地址栏上直接访问调用） */
-    @Override
-    protected boolean isPostOnly(){
-        return true;
-    }
-
     public SmsCodeProcessor(BaseValidateCodeProperties baseValidateCodeProperties, ValidateCodeGenerator validateCodeGenerator,
                             ValidateCodeStore validateCodeStore, SmsCodeSender smsCodeSender) {
         super(baseValidateCodeProperties, validateCodeGenerator, validateCodeStore);
         this.smsCodeSender = smsCodeSender;
+    }
+
+    /**
+     * 短信验证码只有 POST 请求才能获取（避免直接在浏览器地址栏上直接访问调用）
+     */
+    @Override
+    protected boolean isPostOnly() {
+        return true;
     }
 
     @Override

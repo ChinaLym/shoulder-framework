@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * 传输加密自动配置
+ *
  * @author lym
  */
 @Slf4j
@@ -38,6 +39,22 @@ import org.springframework.web.client.RestTemplate;
 @ConditionalOnProperty(value = "shoulder.crypto.transport.enable", havingValue = "true", matchIfMissing = true)
 public class TransportCryptoAutoConfiguration {
 
+    @Bean
+    @ConditionalOnMissingBean
+    public TransportCryptoUtil transportCryptoUtilAdapter(@Nullable @Ecc AsymmetricCryptoProcessor eccAsymmetricProcessor, KeyPairCache keyPairCache) {
+        AsymmetricCryptoProcessor eccCryptoProcessor = eccAsymmetricProcessor;
+        if (eccAsymmetricProcessor == null) {
+            eccCryptoProcessor = DefaultAsymmetricCryptoProcessor.ecc256(keyPairCache);
+        }
+        TransportCryptoByteUtil util = new TransportCryptoByteUtil(eccCryptoProcessor);
+        return new TransportCryptoUtil(util);
+    }
+
+    @Bean
+    public TransportNegotiationService transportNegotiationService(TransportCryptoUtil transportCryptoUtil, RestTemplate restTemplate, KeyNegotiationCache keyNegotiationCache) {
+        return new TransportNegotiationServiceImpl(transportCryptoUtil, restTemplate, keyNegotiationCache);
+    }
+
     @ConditionalOnMissingBean(value = KeyNegotiationCache.class)
     @AutoConfigureAfter(RedisAutoConfiguration.class)
     public static class KeyNegotiationCacheAutoConfiguration {
@@ -45,7 +62,7 @@ public class TransportCryptoAutoConfiguration {
         @Bean
         @ConditionalOnCluster
         public KeyNegotiationCache redisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate,
-                                                            @Value("${spring.application.name}") String applicationName){
+                                                            @Value("${spring.application.name}") String applicationName) {
 
             RedisKeyNegotiationCache keyNegotiationCache = new RedisKeyNegotiationCache(redisTemplate, applicationName);
             log.info("KeyNegotiationCache-redis init.");
@@ -54,30 +71,10 @@ public class TransportCryptoAutoConfiguration {
 
         @Bean
         @ConditionalOnCluster(cluster = false)
-        public KeyNegotiationCache localKeyNegotiationCache(){
+        public KeyNegotiationCache localKeyNegotiationCache() {
             return new LocalKeyNegotiationCache();
         }
     }
-
-
-    @Bean
-    @ConditionalOnMissingBean
-    public TransportCryptoUtil transportCryptoUtilAdapter(@Nullable @Ecc AsymmetricCryptoProcessor eccAsymmetricProcessor, KeyPairCache keyPairCache){
-        AsymmetricCryptoProcessor eccCryptoProcessor = eccAsymmetricProcessor;
-        if(eccAsymmetricProcessor == null){
-            eccCryptoProcessor = DefaultAsymmetricCryptoProcessor.ecc256(keyPairCache);
-        }
-        TransportCryptoByteUtil util = new TransportCryptoByteUtil(eccCryptoProcessor);
-        return new TransportCryptoUtil(util);
-    }
-
-
-    @Bean
-    public TransportNegotiationService transportNegotiationService(TransportCryptoUtil transportCryptoUtil, RestTemplate restTemplate, KeyNegotiationCache keyNegotiationCache){
-        return new TransportNegotiationServiceImpl(transportCryptoUtil, restTemplate, keyNegotiationCache);
-    }
-
-
 
 
 }

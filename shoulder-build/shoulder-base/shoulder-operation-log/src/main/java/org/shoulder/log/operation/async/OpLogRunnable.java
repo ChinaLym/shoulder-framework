@@ -4,6 +4,7 @@ import org.shoulder.log.operation.util.OpLogContextHolder;
 
 /**
  * 继承日志相关线程变量的 Runnable
+ *
  * @author lym
  */
 public class OpLogRunnable extends AbstractOpLogAsyncRunner implements Runnable {
@@ -24,11 +25,11 @@ public class OpLogRunnable extends AbstractOpLogAsyncRunner implements Runnable 
             // 2. 执行任务
             this.delegate.run();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             // 如果异常则记录失败
             OpLogContextHolder.getLog().setResultFail();
             throw e;
-        }finally {
+        } finally {
 
             // 3. 清理持有者的变量信息
             after();

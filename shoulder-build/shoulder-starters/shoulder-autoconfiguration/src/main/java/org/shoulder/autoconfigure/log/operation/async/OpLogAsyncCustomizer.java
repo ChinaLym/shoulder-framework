@@ -9,6 +9,7 @@ import java.util.concurrent.Executor;
 
 /**
  * 允许使用者自定义 带有日志装饰的异步线程池 的自动装配
+ *
  * @author lym
  */
 public class OpLogAsyncCustomizer extends AsyncConfigurerSupport {
@@ -21,8 +22,8 @@ public class OpLogAsyncCustomizer extends AsyncConfigurerSupport {
     @Override
     public Executor getAsyncExecutor() {
         return this.delegate.getAsyncExecutor() instanceof OpLogExecutor ?
-                this.delegate.getAsyncExecutor() :
-                new OpLogExecutor(this.delegate.getAsyncExecutor());
+            this.delegate.getAsyncExecutor() :
+            new OpLogExecutor(this.delegate.getAsyncExecutor());
     }
 
     @Override

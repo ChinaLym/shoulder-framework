@@ -6,6 +6,7 @@ import java.util.concurrent.Callable;
 
 /**
  * 继承日志相关线程变量的 callable
+ *
  * @author lym
  */
 public class OpLogCallable<V> extends AbstractOpLogAsyncRunner implements Callable<V> {
@@ -27,12 +28,12 @@ public class OpLogCallable<V> extends AbstractOpLogAsyncRunner implements Callab
             // 2. 执行任务
             return this.delegate.call();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             // 如果异常则记录失败
             OpLogContextHolder.getLog().setResultFail();
             throw e;
-        }finally {
-           // 3. 清理持有者的变量信息
+        } finally {
+            // 3. 清理持有者的变量信息
             after();
         }
     }

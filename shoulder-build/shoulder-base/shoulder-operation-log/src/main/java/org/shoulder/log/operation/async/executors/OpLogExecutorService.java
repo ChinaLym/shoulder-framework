@@ -12,6 +12,7 @@ import java.util.concurrent.*;
 /**
  * 包装 ExecutorService
  * 如常用的 ThreadPoolExecutor
+ *
  * @author lym
  */
 public class OpLogExecutorService implements ExecutorService {
@@ -44,31 +45,31 @@ public class OpLogExecutorService implements ExecutorService {
     }
 
     @Override
-    public boolean awaitTermination(long timeout, @NonNull  TimeUnit unit) throws InterruptedException {
+    public boolean awaitTermination(long timeout, @NonNull TimeUnit unit) throws InterruptedException {
         return this.delegate.awaitTermination(timeout, unit);
     }
 
     @NonNull
     @Override
-    public <T> Future<T> submit(@NonNull  Callable<T> task) {
+    public <T> Future<T> submit(@NonNull Callable<T> task) {
         return this.delegate.submit(new OpLogCallable<>(task));
     }
 
     @NonNull
     @Override
-    public <T> Future<T> submit(@NonNull  Runnable task, T result) {
+    public <T> Future<T> submit(@NonNull Runnable task, T result) {
         return this.delegate.submit(new OpLogRunnable(task), result);
     }
 
     @NonNull
     @Override
-    public Future<?> submit(@NonNull  Runnable task) {
+    public Future<?> submit(@NonNull Runnable task) {
         return this.delegate.submit(new OpLogRunnable(task));
     }
 
     @NonNull
     @Override
-    public <T> List<Future<T>> invokeAll(@NonNull  Collection<? extends Callable<T>> tasks) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll(@NonNull Collection<? extends Callable<T>> tasks) throws InterruptedException {
         return this.delegate.invokeAll(this.wrapCallableCollection(tasks));
     }
 
@@ -84,24 +85,24 @@ public class OpLogExecutorService implements ExecutorService {
 
     @NonNull
     @Override
-    public <T> List<Future<T>> invokeAll(@NonNull  Collection<? extends Callable<T>> tasks, long timeout, @NonNull  TimeUnit unit) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll(@NonNull Collection<? extends Callable<T>> tasks, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
         return this.delegate.invokeAll(this.wrapCallableCollection(tasks), timeout, unit);
     }
 
     @NonNull
     @Override
-    public <T> T invokeAny(@NonNull  Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
+    public <T> T invokeAny(@NonNull Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
         return this.delegate.invokeAny(this.wrapCallableCollection(tasks));
     }
 
-    
+
     @Override
-    public <T> T invokeAny(@NonNull  Collection<? extends Callable<T>> tasks, long timeout, @NonNull  TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public <T> T invokeAny(@NonNull Collection<? extends Callable<T>> tasks, long timeout, @NonNull TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return this.delegate.invokeAny(this.wrapCallableCollection(tasks), timeout, unit);
     }
 
     @Override
-    public void execute(@NonNull  Runnable command) {
+    public void execute(@NonNull Runnable command) {
         this.delegate.execute(new OpLogRunnable(command));
     }
 }

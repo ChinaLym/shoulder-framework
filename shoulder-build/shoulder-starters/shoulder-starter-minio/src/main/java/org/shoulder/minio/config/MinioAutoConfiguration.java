@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * minio 自动配置
+ *
  * @author lym
  */
 @Configuration(
@@ -27,15 +28,16 @@ public class MinioAutoConfiguration {
 
     /**
      * MinioClient Bean
+     *
      * @return MinioClient
      * @throws InvalidEndpointException endpoint 错误
-     * @throws InvalidPortException port 错误
+     * @throws InvalidPortException     port 错误
      */
     @Bean
     public MinioClient minioClient() throws InvalidPortException, InvalidEndpointException {
         return new MinioClient(minioProperties.getEndpoint(), minioProperties.getPort(),
-                minioProperties.getAccessKey(), minioProperties.getSecretKey(),
-                minioProperties.getRegion(), minioProperties.isSecure()
+            minioProperties.getAccessKey(), minioProperties.getSecretKey(),
+            minioProperties.getRegion(), minioProperties.isSecure()
         );
     }
 }

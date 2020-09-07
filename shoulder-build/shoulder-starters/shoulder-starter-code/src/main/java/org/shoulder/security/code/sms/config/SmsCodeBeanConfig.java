@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  * 短信验证码自动配置
  *
  * @author lym
- * */
+ */
 @Configuration(
     proxyBeanMethods = false
 )

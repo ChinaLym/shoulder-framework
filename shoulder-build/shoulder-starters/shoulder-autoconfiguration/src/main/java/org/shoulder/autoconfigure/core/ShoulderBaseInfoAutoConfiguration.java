@@ -50,14 +50,14 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
         if (StringUtils.isEmpty(environment.getProperty(appIdKey))) {
             // appId 如果为空则采用 spring.application.name
             String springAppNameKey = "spring.application.name";
-            log.debug( appIdKey + " is empty, fallback to use " + springAppNameKey);
+            log.debug(appIdKey + " is empty, fallback to use " + springAppNameKey);
 
             String appName = environment.getProperty(springAppNameKey);
-            if(StringUtils.isNotEmpty(appName)){
+            if (StringUtils.isNotEmpty(appName)) {
                 Properties properties = new Properties();
                 properties.setProperty(appIdKey, appName);
                 environment.getPropertySources().addFirst(new PropertiesPropertySource(SHOULDER_PROPERTIES, properties));
-            }else {
+            } else {
                 log.error("both of '" + appIdKey + "' and '" + springAppNameKey +
                     "' are empty! set value please");
             }

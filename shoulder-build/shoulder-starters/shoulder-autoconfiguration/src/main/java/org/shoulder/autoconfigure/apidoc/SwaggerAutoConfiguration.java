@@ -3,8 +3,9 @@ package org.shoulder.autoconfigure.apidoc;
 /**
  * 访问
  * 在浏览器输入地址：http://host:port/doc.html
- *
+ * <p>
  * ApiDoc 相关配置
+ *
  * @author lym
  */
 /*@EnableSwagger2

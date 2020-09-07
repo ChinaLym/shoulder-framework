@@ -16,6 +16,10 @@ public class ShoulderLoggerSl4jFactory implements ILoggerFactory {
      */
     private static final ConcurrentMap<String, Logger> LOGGERS = new ConcurrentHashMap<>();
 
+    public static ShoulderLoggerSl4jFactory getInstance() {
+        return SingleTonHolder.instance;
+    }
+
     /**
      * 获取 logger
      *
@@ -48,10 +52,6 @@ public class ShoulderLoggerSl4jFactory implements ILoggerFactory {
             logger = LOGGERS.get(loggerName);
         }
         return logger;
-    }
-
-    public static ShoulderLoggerSl4jFactory getInstance() {
-        return SingleTonHolder.instance;
     }
 
     private static class SingleTonHolder {

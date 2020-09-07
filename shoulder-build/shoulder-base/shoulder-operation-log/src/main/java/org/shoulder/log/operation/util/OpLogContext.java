@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * 操作日志上下文
+ *
  * @author lym
  */
 @Getter
@@ -20,40 +21,50 @@ import java.util.List;
 @Accessors(chain = true)
 public class OpLogContext {
 
-    /** 保存当前线程用户信息 */
+    /**
+     * 保存当前线程用户信息
+     */
     private static ThreadLocal<Operator> currentOperatorThreadLocal = new ThreadLocal<>();
 
     private OperationLogDTO operationLog;
 
-    /** 当被操作对象为多个时，保存在这里 */
+    /**
+     * 当被操作对象为多个时，保存在这里
+     */
     private List<Operable> operableObjects;
 
-    /** 触发当前业务的用户信息 */
+    /**
+     * 触发当前业务的用户信息
+     */
     private Operator currentOperator;
 
-    /** 是否在方法正常结束后自动记录日志 */
+    /**
+     * 是否在方法正常结束后自动记录日志
+     */
     private boolean autoLog = true;
 
-    /** 注解所在方法抛异常后是否继续记录日志 */
+    /**
+     * 注解所在方法抛异常后是否继续记录日志
+     */
     private boolean logWhenThrow = true;
 
     OpLogContext() {
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
 
-    public static OpLogContext create(OpLogContext lastOpLogContext){
-        if(lastOpLogContext != null){
+    public static OpLogContext create(OpLogContext lastOpLogContext) {
+        if (lastOpLogContext != null) {
             return new OpLogContext()
-                    .setCurrentOperator(lastOpLogContext.getCurrentOperator())
-                    .setAutoLog(lastOpLogContext.isAutoLog())
-                    .setLogWhenThrow(lastOpLogContext.isLogWhenThrow());
+                .setCurrentOperator(lastOpLogContext.getCurrentOperator())
+                .setAutoLog(lastOpLogContext.isAutoLog())
+                .setLogWhenThrow(lastOpLogContext.isLogWhenThrow());
         } else {
             Operator operator = currentOperatorThreadLocal.get();
             return new OpLogContext()
-                    .setCurrentOperator(operator != null ? operator : SystemOperator.getInstance());
+                .setCurrentOperator(operator != null ? operator : SystemOperator.getInstance());
         }
     }
 

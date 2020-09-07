@@ -71,16 +71,18 @@ public abstract class AbstractOperationLogger implements OperationLogger {
 
     /**
      * 子类需要实现具体如何记录日志
+     *
      * @param opLog 需要记录日志的实体
      */
     protected abstract void doLog(OperationLogDTO opLog);
 
     /**
      * 默认记录一条warn日志，但子类可以覆盖当记录日志时出现异常如何处理
-     * @param e 具体是什么异常
+     *
+     * @param e     具体是什么异常
      * @param opLog 需要记录日志的实体
      */
-    protected void handleLogException(Exception e, OperationLogDTO opLog){
+    protected void handleLogException(Exception e, OperationLogDTO opLog) {
         log.warn("Log is not qualified! -- " + e.getMessage() + opLog, e);
     }
 

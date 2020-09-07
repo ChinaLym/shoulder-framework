@@ -7,6 +7,7 @@ import javax.validation.ConstraintValidatorContext;
 
 /**
  * 判断多个字段不能同时为空
+ *
  * @author lym
  */
 public class NotAllFieldsNullValidator implements ConstraintValidator<NotAllFieldsNull, Object> {
@@ -37,8 +38,8 @@ public class NotAllFieldsNullValidator implements ConstraintValidator<NotAllFiel
             } catch (ReflectiveOperationException e) {
                 context.disableDefaultConstraintViolation();
                 context.buildConstraintViolationWithTemplate(
-                        "@NotAllFieldsNull annotation parameter fields.[" + field + "] is illegal").addPropertyNode(field)
-                        .addConstraintViolation();
+                    "@NotAllFieldsNull annotation parameter fields.[" + field + "] is illegal").addPropertyNode(field)
+                    .addConstraintViolation();
                 return false;
             }
         }
@@ -46,7 +47,7 @@ public class NotAllFieldsNullValidator implements ConstraintValidator<NotAllFiel
         if (i == 0) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("at least one fields should be not null")
-                    .addPropertyNode(fields[0]).addConstraintViolation();
+                .addPropertyNode(fields[0]).addConstraintViolation();
             return false;
         }
 

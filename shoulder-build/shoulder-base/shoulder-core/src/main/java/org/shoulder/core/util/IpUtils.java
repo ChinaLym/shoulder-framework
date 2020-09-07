@@ -15,14 +15,13 @@ import java.util.regex.Pattern;
  */
 public class IpUtils {
 
-    private static String LOCAL_IP = getIP();
-    private static String LOCAL_MAC = getMAC();
-
     /**
      * (250~255 | 200~249 | 100~199 | 0~99 + .) * 3 + (250~255 | 200~249 | 100~199 | 0~99)
      * https://www.safaribooksonline.com/library/view/regular-expressions-cookbook/9781449327453/ch08s16.html
      */
     private static final Pattern IPV4_PATTERN = Pattern.compile("^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$");
+    private static String LOCAL_IP = getIP();
+    private static String LOCAL_MAC = getMAC();
 
     public static boolean validateIpv4(String ip) {
         if (StringUtils.isEmpty(ip)) {

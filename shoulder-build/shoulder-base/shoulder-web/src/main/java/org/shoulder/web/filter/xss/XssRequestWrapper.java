@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  * xss 安全保护
+ *
  * @author lym
  */
 public class XssRequestWrapper extends HttpServletRequestWrapper {
@@ -47,6 +48,8 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
      * html 转义符
      */
     private static final Map<String, String> HTML_ESCAPE_CHARACTER_MAP = new HashMap<>();
+    private static String charset;
+
     static {
         HTML_ESCAPE_CHARACTER_MAP.put("<", "&lt;");
         HTML_ESCAPE_CHARACTER_MAP.put(">", "&gt;");
@@ -56,8 +59,6 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
         HTML_ESCAPE_CHARACTER_MAP.put("\"", "&quot;");
         HTML_ESCAPE_CHARACTER_MAP.put("/", "&#x2f;");
     }
-
-    private static String charset;
 
     public XssRequestWrapper(HttpServletRequest servletRequest) {
         super(servletRequest);
@@ -151,7 +152,7 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
      * 去掉 script 脚本关键字
      */
     private String stripXss(String context) {
-        if(StringUtils.isEmpty(context)){
+        if (StringUtils.isEmpty(context)) {
             return context;
         }
         try {
@@ -177,7 +178,7 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
      * 对 html 进行转换
      */
     private String filterHtmlEscape(String context) {
-        for(Map.Entry<String, String> entry : HTML_ESCAPE_CHARACTER_MAP.entrySet()){
+        for (Map.Entry<String, String> entry : HTML_ESCAPE_CHARACTER_MAP.entrySet()) {
             String escapeChar = entry.getKey();
             String convertChar = entry.getValue();
             context = context.replace(escapeChar, convertChar);

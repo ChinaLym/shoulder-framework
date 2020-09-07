@@ -18,18 +18,18 @@ public class DataSourceContextHolder {
     private static final ThreadLocal<String> LOCAL_DATA_SOURCE_TYPE = new ThreadLocal<>();
 
     /**
+     * 获得数据源的变量
+     */
+    public static String getDataSourceType() {
+        return LOCAL_DATA_SOURCE_TYPE.get();
+    }
+
+    /**
      * 设置数据源的变量
      */
     public static void setDataSourceType(String dataSourceType) {
         log.debug("check out dataSource to {}", dataSourceType);
         LOCAL_DATA_SOURCE_TYPE.set(dataSourceType);
-    }
-
-    /**
-     * 获得数据源的变量
-     */
-    public static String getDataSourceType() {
-        return LOCAL_DATA_SOURCE_TYPE.get();
     }
 
     /**

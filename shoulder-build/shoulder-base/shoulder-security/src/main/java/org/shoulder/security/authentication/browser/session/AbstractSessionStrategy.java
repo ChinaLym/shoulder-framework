@@ -65,7 +65,7 @@ public class AbstractSessionStrategy {
 
         if (StringUtils.endsWithIgnoreCase(sourceUrl, ".html")) {
             if (StringUtils.equals(sourceUrl, signInPage)
-                    || StringUtils.equals(sourceUrl, signOutUrl)) {
+                || StringUtils.equals(sourceUrl, signOutUrl)) {
                 targetUrl = sourceUrl;
             } else {
                 targetUrl = sessionInvalidUrl;

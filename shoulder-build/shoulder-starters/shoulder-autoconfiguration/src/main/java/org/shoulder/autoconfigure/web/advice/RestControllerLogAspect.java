@@ -47,24 +47,31 @@ import java.util.Enumeration;
 public class RestControllerLogAspect {
 
     /**
+     * 换行符
+     */
+    private static final String NEW_LINE_SEPARATOR = System.getProperty("line.separator");
+    /**
      * 记录请求消耗时间
      */
     private ThreadLocal<Long> requestTimeLocal = new ThreadLocal<>();
-
     /**
      * 代码位置
      */
     private ThreadLocal<String> codeLocationLocal = new ThreadLocal<>();
-
     /**
      * 日志记录器
      */
     private ThreadLocal<Logger> loggerLocal = new ThreadLocal<>();
 
-    /**
-     * 换行符
-     */
-    private static final String NEW_LINE_SEPARATOR = System.getProperty("line.separator");
+    private static String getClassFileName(Class clazz) {
+        String classFileName = clazz.getName();
+        if (classFileName.contains("$")) {
+            int indexOf = classFileName.contains(".") ? classFileName.lastIndexOf(".") + 1 : 0;
+            return classFileName.substring(indexOf, classFileName.indexOf("$"));
+        } else {
+            return clazz.getSimpleName();
+        }
+    }
 
     /**
      * 要记录日志的位置：Controller 和 RestController
@@ -151,7 +158,6 @@ public class RestControllerLogAspect {
         requestTimeLocal.set(System.currentTimeMillis());
     }
 
-
     /**
      * 记录出参
      *
@@ -192,18 +198,6 @@ public class RestControllerLogAspect {
         return clazz.getSimpleName() + "." + method.getName() +
             "(" + getClassFileName(clazz) + ".java:" + lineNum + ")";
     }
-
-
-    private static String getClassFileName(Class clazz) {
-        String classFileName = clazz.getName();
-        if (classFileName.contains("$")) {
-            int indexOf = classFileName.contains(".") ? classFileName.lastIndexOf(".") + 1 : 0;
-            return classFileName.substring(indexOf, classFileName.indexOf("$"));
-        } else {
-            return clazz.getSimpleName();
-        }
-    }
-
 
     /**
      * 记录发生异常，异常不应该这里记录

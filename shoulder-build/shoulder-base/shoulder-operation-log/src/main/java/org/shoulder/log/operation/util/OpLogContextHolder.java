@@ -38,9 +38,9 @@ public class OpLogContextHolder {
     /**
      * 记录日志
      */
-    public static void log(){
+    public static void log() {
         OpLogContext context = currentOpLogContext.get();
-        if(context != null){
+        if (context != null) {
             OperationLogDTO opLog = OpLogContextHolder.getLog();
             List<? extends Operable> operableCollection = OpLogContextHolder.getOperableObjects();
 
@@ -62,9 +62,9 @@ public class OpLogContextHolder {
         OpLogContext context = currentOpLogContext.get();
         if (context == null) {
             throw new IllegalThreadStateException(
-                    // Helpful Tip: Add a breakpoint here and debug your code
-                    "No OpLogContext in concurrentThread! Maybe your method miss @OperationLog " +
-                            "or used [SpringAop] incorrectly! Thread - [" + Thread.currentThread().getName() + "]. ");
+                // Helpful Tip: Add a breakpoint here and debug your code
+                "No OpLogContext in concurrentThread! Maybe your method miss @OperationLog " +
+                    "or used [SpringAop] incorrectly! Thread - [" + Thread.currentThread().getName() + "]. ");
         }
         return context;
     }

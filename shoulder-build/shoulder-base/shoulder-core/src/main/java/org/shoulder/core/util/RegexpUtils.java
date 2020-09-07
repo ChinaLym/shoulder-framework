@@ -17,15 +17,7 @@ public class RegexpUtils {
      * 用于匹配任意字符串的非贪婪表达式
      */
     public static final String MATCH_ANY_STRING = ".*?";
-
-    /**
-     * 正则表达式编译缓存池(pattern是线程安全的，Matcher不是)
-     */
-    private static final int COMPILE_CACHE_SIZE = 64;
-    private static final Map<String, Pattern> CACHE = new ConcurrentHashMap<>(COMPILE_CACHE_SIZE);
-
     public static final char[] STAR_QUESTION = new char[]{'*', '?', '+'};
-
     //常见匹配预定义
     public static final String MATCH_ANY = ".";
     public static final String MATCH_NUMBER = "\\d";
@@ -36,7 +28,6 @@ public class RegexpUtils {
     public static final String MATCH_NON_WORD_CHAR = "\\W";
     public static final String MATCH_START = "^";
     public static final String MATCH_END = "$";
-
     //常见数量词预定义
     public static final String COUNT_0_N = "*";
     public static final String COUNT_1_N = "+";
@@ -44,7 +35,6 @@ public class RegexpUtils {
     public static final String COUNT_0_N_RELUCTANT = "*?";
     public static final String COUNT_1_N_RELUCTANT = "+?";
     public static final String COUNT_0_1_RELUCTANT = "??";
-
     /**
      * 字母开头包含数字或下划线，常用于账号
      */
@@ -73,7 +63,6 @@ public class RegexpUtils {
      * base64 格式字符串
      */
     public static final Pattern BASE_64 = Pattern.compile("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$");
-
     /**
      * 中国大陆手机号
      */
@@ -98,7 +87,6 @@ public class RegexpUtils {
         "|([A-HJ-Z][A-D0-9][0-9]{3}警)))|([0-9]{6}使)|((([沪粤川云桂鄂陕蒙藏黑辽渝]A)|鲁B|闽D|蒙E|蒙H)[0-9]{4}领)" +
         "|(WJ[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼·•][0-9]{4}[TDSHBXJ0-9])" +
         "|([VKHBSLJNGCE][A-DJ-PR-TVY][0-9]{5})");
-
     /**
      * QQ
      */
@@ -127,7 +115,6 @@ public class RegexpUtils {
      * MAC 地址
      */
     public static final Pattern MAC = Pattern.compile("([A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}");
-
     /**
      * Java 预定义的字符，凡是字符串中出现这些字符的话，都需要转义
      * 注 Java使用\b来表示单词边界而非使用尖括号
@@ -147,6 +134,11 @@ public class RegexpUtils {
         '^',    //有两种含义，匹配行首。在[]中时表示对字符集合求非
         '|'        //用于分隔若干项匹配，表示其中之一
     };
+    /**
+     * 正则表达式编译缓存池(pattern是线程安全的，Matcher不是)
+     */
+    private static final int COMPILE_CACHE_SIZE = 64;
+    private static final Map<String, Pattern> CACHE = new ConcurrentHashMap<>(COMPILE_CACHE_SIZE);
 
     /**
      * 将使用简易匹配语法的关键字修改为标准正则表达式

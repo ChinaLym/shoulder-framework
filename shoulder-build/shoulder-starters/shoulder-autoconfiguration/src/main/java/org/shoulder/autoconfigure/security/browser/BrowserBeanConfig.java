@@ -30,7 +30,7 @@ import javax.sql.DataSource;
  * 浏览器相关 bean 配置：几个默认处理器、session 策略
  *
  * @author lym
- * */
+ */
 @Configuration(
     proxyBeanMethods = false
 )
@@ -104,9 +104,9 @@ public class BrowserBeanConfig {
     @ConditionalOnMissingBean(InvalidSessionStrategy.class)
     public InvalidSessionStrategy invalidSessionStrategy() {
         return new DefaultInvalidSessionStrategy(
-                browserProperties.getSession().getSessionInvalidUrl(),
-                browserProperties.getSignInPage(),
-                browserProperties.getSignOutUrl()
+            browserProperties.getSession().getSessionInvalidUrl(),
+            browserProperties.getSignInPage(),
+            browserProperties.getSignOutUrl()
         );
     }
 
@@ -117,9 +117,9 @@ public class BrowserBeanConfig {
     @ConditionalOnMissingBean(SessionInformationExpiredStrategy.class)
     public SessionInformationExpiredStrategy sessionInformationExpiredStrategy() {
         return new ConcurrentLogInExpiredSessionStrategy(
-                browserProperties.getSession().getSessionInvalidUrl(),
-                browserProperties.getSignInPage(),
-                browserProperties.getSignOutUrl()
+            browserProperties.getSession().getSessionInvalidUrl(),
+            browserProperties.getSignInPage(),
+            browserProperties.getSignOutUrl()
         );
     }
 

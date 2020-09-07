@@ -20,13 +20,14 @@ import java.util.List;
 
 /**
  * ECDH 密钥谈判工具
+ *
  * @author lym
  */
 public class ECDHUtils {
 
-    private static Logger logger = LoggerFactory.getLogger(ECDHUtils.class);
     private final static String PROVIDER = "BC";
     private final static String ECDH = "ECDH";
+    private static Logger logger = LoggerFactory.getLogger(ECDHUtils.class);
 
     static {
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
@@ -35,11 +36,9 @@ public class ECDHUtils {
     }
 
     /**
-     *
-     * @param selfPrivateKey    己方的私钥
-     * @param otherPublicKey    对方的公钥
-     * @param keyLength         aes密钥长度除8：16/24/32
-     *
+     * @param selfPrivateKey 己方的私钥
+     * @param otherPublicKey 对方的公钥
+     * @param keyLength      aes密钥长度除8：16/24/32
      * @return keyAndIv                 sessionAesKey, sessionAesIv
      * @throws NegotiationException 密钥协商出错
      */
@@ -86,6 +85,7 @@ public class ECDHUtils {
 
     /**
      * 生成一次请求使用的数据密钥
+     *
      * @param length 16/24/32
      * @return 数据秘钥
      */

@@ -15,13 +15,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public final class SpringUtils implements BeanFactoryPostProcessor {
-    /** Spring应用上下文环境 */
+    /**
+     * Spring应用上下文环境
+     */
     private static ConfigurableListableBeanFactory beanFactory;
-
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        SpringUtils.beanFactory = beanFactory;
-    }
 
     /**
      * 根据 bean 名称获取对象
@@ -33,7 +30,6 @@ public final class SpringUtils implements BeanFactoryPostProcessor {
 
     /**
      * 获取类型为requiredType的对象
-     *
      */
     public static <T> T getBean(Class<T> clz) throws BeansException {
         return (T) beanFactory.getBean(clz);
@@ -41,6 +37,7 @@ public final class SpringUtils implements BeanFactoryPostProcessor {
 
     /**
      * 如果BeanFactory包含一个与所给名称匹配的bean定义，则返回true
+     *
      * @param name beanName
      * @return 是否有名称为 beanName 的 Bean
      */
@@ -76,5 +73,10 @@ public final class SpringUtils implements BeanFactoryPostProcessor {
     @SuppressWarnings("unchecked")
     public static <T> T getAopProxy(T invoker) {
         return (T) AopContext.currentProxy();
+    }
+
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        SpringUtils.beanFactory = beanFactory;
     }
 }

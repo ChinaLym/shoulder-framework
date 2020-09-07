@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 
 /**
  * 线程相关的配置
+ *
  * @author lym
  */
 @Configuration(
@@ -22,13 +23,13 @@ public class ThreadAutoConfiguration {
     public ExecutorService shoulderThreadPool() {
         // 默认使用 5 个线程
         ExecutorService executorService = Executors.newFixedThreadPool(5,
-                r -> {
-                    Thread thread = Executors.defaultThreadFactory().newThread(r);
-                    thread.setDaemon(true);
-                    thread.setName("shoulder");
-                    return thread;
-                }
-            );
+            r -> {
+                Thread thread = Executors.defaultThreadFactory().newThread(r);
+                thread.setDaemon(true);
+                thread.setName("shoulder");
+                return thread;
+            }
+        );
         Threads.setExecutorService(executorService);
         return executorService;
     }

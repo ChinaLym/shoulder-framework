@@ -42,32 +42,32 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
         //apply 方法：<C extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>> C apply(C configurer)
 
         http.apply(validateCodeSecurityConfig).and()
-                .apply(smsCodeAuthenticationSecurityConfig).and()
+            .apply(smsCodeAuthenticationSecurityConfig).and()
 
-                // 配置校验规则（哪些请求要过滤）
-                .authorizeRequests()
-                    .antMatchers(
-                        // 未认证的跳转
-                        SecurityConst.URL_REQUIRE_AUTHENTICATION,
+            // 配置校验规则（哪些请求要过滤）
+            .authorizeRequests()
+            .antMatchers(
+                // 未认证的跳转
+                SecurityConst.URL_REQUIRE_AUTHENTICATION,
 
-                        // 获取验证码请求
-                        SecurityConst.URL_VALIDATE_CODE,
+                // 获取验证码请求
+                SecurityConst.URL_VALIDATE_CODE,
 
-                        // 登录请求
-                            // 用户名、密码登录请求
-                            SecurityConst.URL_AUTHENTICATION_FORM,
-                            // 手机验证码登录请求
-                        SecurityConst.URL_AUTHENTICATION_SMS
+                // 登录请求
+                // 用户名、密码登录请求
+                SecurityConst.URL_AUTHENTICATION_FORM,
+                // 手机验证码登录请求
+                SecurityConst.URL_AUTHENTICATION_SMS
 
-                        )
-                    .permitAll()
+            )
+            .permitAll()
 
-                    // 其余请求全部开启认证（需要登录）
-                    .anyRequest().authenticated()
-                    .and()
+            // 其余请求全部开启认证（需要登录）
+            .anyRequest().authenticated()
+            .and()
 
-                // 关闭 csrf
-                .csrf().disable();
+            // 关闭 csrf
+            .csrf().disable();
 
         //authorizeConfigManager.config(http.authorizeRequests());
 

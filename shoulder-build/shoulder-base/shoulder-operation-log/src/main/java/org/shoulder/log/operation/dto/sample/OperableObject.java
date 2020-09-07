@@ -25,21 +25,29 @@ public class OperableObject implements Operable, OperationDetailAble {
 
     protected String detail;
 
-    public OperableObject(){}
+    public OperableObject() {
+    }
 
-    public OperableObject(Operable operable){
+    public OperableObject(Operable operable) {
         this.objectId = operable.getObjectId();
         this.objectName = operable.getObjectName();
         this.objectType = operable.getObjectType();
         if (operable instanceof OperationDetailAble) {
-            OperationDetailAble operationDetailAble = (OperationDetailAble)operable;
-            if(CollectionUtils.isNotEmpty(operationDetailAble.getDetailItems())){
+            OperationDetailAble operationDetailAble = (OperationDetailAble) operable;
+            if (CollectionUtils.isNotEmpty(operationDetailAble.getDetailItems())) {
                 this.detailItems = operationDetailAble.getDetailItems();
             }
-            if(StringUtils.isNotEmpty(operationDetailAble.getDetail())){
+            if (StringUtils.isNotEmpty(operationDetailAble.getDetail())) {
                 this.detail = operationDetailAble.getDetail();
             }
         }
+    }
+
+    public static List<OperableObject> of(Collection<? extends Operable> operables) {
+        if (operables == null || operables.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return operables.stream().map(OperableObject::new).collect(Collectors.toList());
     }
 
     @Override
@@ -47,29 +55,14 @@ public class OperableObject implements Operable, OperationDetailAble {
         return objectId;
     }
 
-    @Override
-    public String getObjectName() {
-        return objectName;
-    }
-
-    @Override
-    public String getObjectType() {
-        return objectType;
-    }
-
-    @Override
-    public List<String> getDetailItems() {
-        return detailItems;
-    }
-
-    @Override
-    public String getDetail() {
-        return detail;
-    }
-
     public OperableObject setObjectId(String objectId) {
         this.objectId = objectId;
         return this;
+    }
+
+    @Override
+    public String getObjectName() {
+        return objectName;
     }
 
     public OperableObject setObjectName(String objectName) {
@@ -77,9 +70,19 @@ public class OperableObject implements Operable, OperationDetailAble {
         return this;
     }
 
+    @Override
+    public String getObjectType() {
+        return objectType;
+    }
+
     public OperableObject setObjectType(String objectType) {
         this.objectType = objectType;
         return this;
+    }
+
+    @Override
+    public List<String> getDetailItems() {
+        return detailItems;
     }
 
     public OperableObject setDetailItems(List<String> detailItems) {
@@ -87,23 +90,21 @@ public class OperableObject implements Operable, OperationDetailAble {
         return this;
     }
 
-    public OperableObject addDetailItem(String... item){
-        if (this.detailItems == null){
-            this.detailItems = new LinkedList<>();
-        }
-        this.detailItems.addAll(Arrays.asList(item));
-        return this;
+    @Override
+    public String getDetail() {
+        return detail;
     }
 
     public void setDetail(String detail) {
         this.detail = detail;
     }
 
-    public static List<OperableObject> of(Collection<? extends Operable> operables){
-        if(operables == null || operables.isEmpty()){
-            return Collections.emptyList();
+    public OperableObject addDetailItem(String... item) {
+        if (this.detailItems == null) {
+            this.detailItems = new LinkedList<>();
         }
-        return operables.stream().map(OperableObject::new).collect(Collectors.toList());
+        this.detailItems.addAll(Arrays.asList(item));
+        return this;
     }
 
 }

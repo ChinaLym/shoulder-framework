@@ -555,14 +555,6 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
         cleanErrorCodeInfo();
     }
 
-
-    /**
-     * 一般为第三方的日志记录器，如 logback 等
-     */
-    interface GeneralLogger {
-        void log();
-    }
-
     /**
      * 统一打印错误码格式
      *
@@ -604,5 +596,12 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
      */
     void cleanErrorCodeInfo() {
         MDC.remove(MDC_ERROR_CODE_NAME);
+    }
+
+    /**
+     * 一般为第三方的日志记录器，如 logback 等
+     */
+    interface GeneralLogger {
+        void log();
     }
 }

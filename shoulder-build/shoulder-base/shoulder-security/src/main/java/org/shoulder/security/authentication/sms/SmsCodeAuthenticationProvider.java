@@ -35,7 +35,7 @@ public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
 
         // 认证通过
         SmsCodeAuthenticationToken authenticationResult =
-                new SmsCodeAuthenticationToken(user, user.getAuthorities());
+            new SmsCodeAuthenticationToken(user, user.getAuthorities());
 
         authenticationResult.setDetails(authentication.getDetails());
 

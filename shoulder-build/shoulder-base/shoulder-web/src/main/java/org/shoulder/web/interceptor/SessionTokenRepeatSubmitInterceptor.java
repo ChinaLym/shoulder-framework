@@ -45,11 +45,12 @@ public class SessionTokenRepeatSubmitInterceptor extends BaseRejectRepeatSubmitI
 
     /**
      * 服务端 token
+     *
      * @param request 请求
      * @return token
      */
     @Override
-    protected Object getServerToken(HttpServletRequest request){
+    protected Object getServerToken(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
             // 没有 session
@@ -59,25 +60,26 @@ public class SessionTokenRepeatSubmitInterceptor extends BaseRejectRepeatSubmitI
     }
 
     @Override
-    protected void cleanServerToken(HttpServletRequest request){
+    protected void cleanServerToken(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if(session != null){
+        if (session != null) {
             session.removeAttribute(sessionTokenName);
         }
     }
 
     /**
      * 客户端 token
+     *
      * @param request 请求
      * @return token
      */
     @Override
-    protected Object getClientToken(HttpServletRequest request){
+    protected Object getClientToken(HttpServletRequest request) {
         return request.getParameter(requestTokenName);
     }
 
     @Override
-    protected void handleReject(HttpServletRequest request, HttpServletResponse response){
+    protected void handleReject(HttpServletRequest request, HttpServletResponse response) {
 
     }
 

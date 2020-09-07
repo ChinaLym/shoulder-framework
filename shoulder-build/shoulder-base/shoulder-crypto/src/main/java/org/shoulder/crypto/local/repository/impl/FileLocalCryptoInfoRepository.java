@@ -23,21 +23,18 @@ import java.util.stream.Collectors;
 public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
     public static final String DEFAULT_FILE_NAME = "_shoulder_aesInfo.json";
-
-    /**
-     * 文件存储路径
-     */
-    private String aesInfoPath;
-
     /**
      * 存储文件名称
      */
     private final String fileName;
-
     /**
      * 存储文件字符集
      */
     private final Charset charset;
+    /**
+     * 文件存储路径
+     */
+    private String aesInfoPath;
 
     public FileLocalCryptoInfoRepository() {
         this(

@@ -29,49 +29,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
     proxyBeanMethods = false
 )
 @ConditionalOnClass(AsymmetricTextCipher.class)
-@AutoConfigureAfter(value={AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class,
+@AutoConfigureAfter(value = {AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class,
     AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class})
 @ConditionalOnProperty(value = "shoulder.crypto.asymmetric.enable", havingValue = "true", matchIfMissing = true)
 public class AsymmetricCryptoAutoConfiguration {
-
-    /**
-     * 默认使用 Hash Map 作为非对称秘钥对存储
-     */
-    @Configuration(
-    proxyBeanMethods = false
-)
-    @ConditionalOnCluster(cluster = false)
-    @EnableConfigurationProperties(CryptoProperties.class)
-    public static class AsymmetricKeyNonClusterPairCacheConfig {
-        @Bean
-        public KeyPairCache hashMapKeyPairCache(CryptoProperties cryptoProperties) {
-            KeyPairCache keyPairCache = new HashMapKeyPairCache();
-            // 将配置文件中的预置密钥对加入临时存储
-            keyPairCache.set(cryptoProperties.getKeyPair());
-            return keyPairCache;
-        }
-    }
-
-    /**
-     * 如果支持集群，则默认使用 redis 作为非对称秘钥对存储
-     */
-    @Configuration(
-    proxyBeanMethods = false
-)
-    @ConditionalOnCluster
-    @ConditionalOnClass(StringRedisTemplate.class)
-    @EnableConfigurationProperties(CryptoProperties.class)
-    public static class AsymmetricKeyClusterPairCacheConfig {
-
-        @Bean("keyPairCache")
-        public KeyPairCache redisKeyPairCache(@ApplicationExclusive StringRedisTemplate redisTemplate,
-                                              LocalTextCipher localTextCipher, CryptoProperties cryptoProperties) {
-            KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate, localTextCipher);
-            keyPairCache.set(cryptoProperties.getKeyPair());
-            return keyPairCache;
-        }
-
-    }
 
     /**
      * 默认使用 ECC256 完成非对称加密
@@ -95,6 +56,44 @@ public class AsymmetricCryptoAutoConfiguration {
         return new DefaultAsymmetricTextCipher(asymmetricCryptoProcessor);
     }
 
+    /**
+     * 默认使用 Hash Map 作为非对称秘钥对存储
+     */
+    @Configuration(
+        proxyBeanMethods = false
+    )
+    @ConditionalOnCluster(cluster = false)
+    @EnableConfigurationProperties(CryptoProperties.class)
+    public static class AsymmetricKeyNonClusterPairCacheConfig {
+        @Bean
+        public KeyPairCache hashMapKeyPairCache(CryptoProperties cryptoProperties) {
+            KeyPairCache keyPairCache = new HashMapKeyPairCache();
+            // 将配置文件中的预置密钥对加入临时存储
+            keyPairCache.set(cryptoProperties.getKeyPair());
+            return keyPairCache;
+        }
+    }
+
+    /**
+     * 如果支持集群，则默认使用 redis 作为非对称秘钥对存储
+     */
+    @Configuration(
+        proxyBeanMethods = false
+    )
+    @ConditionalOnCluster
+    @ConditionalOnClass(StringRedisTemplate.class)
+    @EnableConfigurationProperties(CryptoProperties.class)
+    public static class AsymmetricKeyClusterPairCacheConfig {
+
+        @Bean("keyPairCache")
+        public KeyPairCache redisKeyPairCache(@ApplicationExclusive StringRedisTemplate redisTemplate,
+                                              LocalTextCipher localTextCipher, CryptoProperties cryptoProperties) {
+            KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate, localTextCipher);
+            keyPairCache.set(cryptoProperties.getKeyPair());
+            return keyPairCache;
+        }
+
+    }
 
 
 }
