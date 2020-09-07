@@ -14,9 +14,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
- * redis相关配置，提供一下 Bean
- *      redisTemplate<String, Object>
- *      StringRedisTemplate
+ * redis相关配置，提供以下 Bean
+ *  redisTemplate<String, Object>
+ *  StringRedisTemplate
  *
  * @author lym
  */
@@ -86,7 +86,9 @@ public class RedisAutoConfiguration {
      */
     static class KeyStringRedisSerializer extends StringRedisSerializer {
 
-        /** key 前缀 */
+        /**
+         * key 前缀
+         */
         private String keyPrefix;
 
         KeyStringRedisSerializer(String keyPrefix) {
