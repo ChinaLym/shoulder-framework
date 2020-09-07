@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.enums.SqlKeyword;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
-import org.shoulder.core.util.StringUtils;
 import org.shoulder.core.dto.request.PageQuery;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.data.annotation.TableAlias;
 import org.springframework.core.annotation.AnnotationUtils;
 

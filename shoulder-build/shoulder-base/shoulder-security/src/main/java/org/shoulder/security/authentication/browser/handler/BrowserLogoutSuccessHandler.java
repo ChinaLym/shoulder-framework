@@ -1,8 +1,8 @@
 package org.shoulder.security.authentication.browser.handler;
 
 import org.apache.commons.lang3.StringUtils;
-import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.util.JsonUtils;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;

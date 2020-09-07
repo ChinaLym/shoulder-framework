@@ -2,10 +2,6 @@ package org.shoulder.log.operation.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * 被操作对象
  * 【推荐】被操作对象实现该接口（如：业务类、数据库模型，只给前端提供接口时的入参）

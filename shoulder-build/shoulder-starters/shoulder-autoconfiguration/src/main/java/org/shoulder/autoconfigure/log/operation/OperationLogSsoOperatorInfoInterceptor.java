@@ -4,7 +4,6 @@ import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.dto.SystemOperator;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * 操作日志的拦截器：将当前单点登录的用户作为操作日志的默认操作者

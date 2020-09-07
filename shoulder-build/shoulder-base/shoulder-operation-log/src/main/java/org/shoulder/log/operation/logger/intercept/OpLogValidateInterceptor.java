@@ -1,7 +1,6 @@
 package org.shoulder.log.operation.logger.intercept;
 
 import org.shoulder.log.operation.dto.OperationLogDTO;
-import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.format.OperationLogValidator;
 
 /**

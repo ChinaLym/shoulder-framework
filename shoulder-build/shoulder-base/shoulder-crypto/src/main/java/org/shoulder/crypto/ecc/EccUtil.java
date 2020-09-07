@@ -1,7 +1,7 @@
 package org.shoulder.crypto.ecc;
 
-import org.shoulder.core.constant.ByteSpecification;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.shoulder.core.constant.ByteSpecification;
 
 import javax.crypto.Cipher;
 import java.security.*;
@@ -31,15 +31,15 @@ public class EccUtil implements ByteSpecification {
 		keyPairGenerator.initialize(KEY_LENGTH, new SecureRandom());
 		return keyPairGenerator.generateKeyPair();
 	}
-	
-	//获取公钥(Base64编码)
+
+    //获取公钥(Base64编码)
 	public static String getPublicKey(KeyPair keyPair){
 		PublicKey publicKey = keyPair.getPublic();
 		byte[] bytes = publicKey.getEncoded();
 		return ByteSpecification.encodeToString(bytes);
 	}
-	
-	//获取私钥(Base64编码)
+
+    //获取私钥(Base64编码)
 	public static String getPrivateKey(KeyPair keyPair){
 		PrivateKey privateKey = keyPair.getPrivate();
 		byte[] bytes = privateKey.getEncoded();
@@ -53,23 +53,23 @@ public class EccUtil implements ByteSpecification {
 		KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM, PROVIDER);
 		return keyFactory.generatePublic(keySpec);
 	}
-	
-	//将Base64编码后的私钥转换成PrivateKey对象
+
+    //将Base64编码后的私钥转换成PrivateKey对象
 	public static PrivateKey string2PrivateKey(String priStr) throws Exception{
 		byte[] keyBytes = ByteSpecification.decodeToBytes(priStr);
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
 		KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM, PROVIDER);
 		return keyFactory.generatePrivate(keySpec);
 	}
-	
-	//公钥加密
+
+    //公钥加密
 	public static byte[] publicEncrypt(byte[] content, PublicKey publicKey) throws Exception{
 		Cipher cipher = Cipher.getInstance(TRANSFORMATION, PROVIDER);
 		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 		return cipher.doFinal(content);
 	}
-	
-	//私钥解密
+
+    //私钥解密
 	public static byte[] privateDecrypt(byte[] content, PrivateKey privateKey) throws Exception{
 		Cipher cipher = Cipher.getInstance(TRANSFORMATION, PROVIDER);
 		cipher.init(Cipher.DECRYPT_MODE, privateKey);

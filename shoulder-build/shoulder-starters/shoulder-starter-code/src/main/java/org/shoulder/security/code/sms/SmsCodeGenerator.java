@@ -1,9 +1,9 @@
 package org.shoulder.security.code.sms;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.shoulder.code.dto.ValidateCodeDTO;
 import org.shoulder.code.generator.ValidateCodeGenerator;
 import org.shoulder.security.code.sms.config.SmsCodeProperties;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**

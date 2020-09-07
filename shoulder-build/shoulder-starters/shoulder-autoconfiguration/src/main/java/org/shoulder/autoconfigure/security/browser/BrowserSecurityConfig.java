@@ -1,10 +1,10 @@
 package org.shoulder.autoconfigure.security.browser;
 
 import org.shoulder.code.config.ValidateCodeSecurityConfig;
-import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
-import org.shoulder.security.authentication.sms.SmsCodeAuthenticationSecurityConfig;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.SecurityConst.BrowserConsts;
+import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
+import org.shoulder.security.authentication.sms.SmsCodeAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;

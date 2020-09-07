@@ -1,7 +1,7 @@
 package org.shoulder.auth.token.config;
 
-import org.shoulder.auth.token.properties.OAuth2Properties;
 import org.apache.commons.lang3.ArrayUtils;
+import org.shoulder.auth.token.properties.OAuth2Properties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

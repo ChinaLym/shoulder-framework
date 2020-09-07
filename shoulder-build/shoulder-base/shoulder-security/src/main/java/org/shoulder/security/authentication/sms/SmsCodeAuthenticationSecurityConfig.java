@@ -1,7 +1,5 @@
 package org.shoulder.security.authentication.sms;
 
-import org.shoulder.security.authentication.sms.SmsCodeAuthenticationFilter;
-import org.shoulder.security.authentication.sms.SmsCodeAuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

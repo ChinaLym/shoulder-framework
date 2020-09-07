@@ -1,7 +1,7 @@
 package org.shoulder.auth.token.config;
 
-import org.shoulder.auth.token.handler.AppAuthenticationSuccessHandler;
 import org.shoulder.auth.token.handler.AppAuthenticationFailureHandler;
+import org.shoulder.auth.token.handler.AppAuthenticationSuccessHandler;
 import org.shoulder.code.store.ValidateCodeStore;
 import org.shoulder.code.store.impl.RedisValidateCodeRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

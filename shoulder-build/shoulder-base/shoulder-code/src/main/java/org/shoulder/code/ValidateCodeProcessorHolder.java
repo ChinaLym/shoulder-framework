@@ -1,8 +1,8 @@
 package org.shoulder.code;
 
-import org.shoulder.code.processor.ValidateCodeProcessor;
 import org.shoulder.code.exception.NoSuchValidateCodeProcessorException;
 import org.shoulder.code.exception.ValidateCodeAuthenticationException;
+import org.shoulder.code.processor.ValidateCodeProcessor;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.HashMap;

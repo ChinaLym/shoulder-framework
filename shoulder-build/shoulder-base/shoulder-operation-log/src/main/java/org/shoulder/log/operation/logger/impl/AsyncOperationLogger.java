@@ -2,8 +2,8 @@ package org.shoulder.log.operation.logger.impl;
 
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperationLogDTO;
-import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.logger.OperationLogger;
+import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.springframework.lang.NonNull;
 
 import java.util.Collection;

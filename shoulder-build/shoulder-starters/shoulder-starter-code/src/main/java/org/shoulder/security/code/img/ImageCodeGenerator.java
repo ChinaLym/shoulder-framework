@@ -5,7 +5,6 @@ import org.shoulder.security.code.img.config.ImageCodeProperties;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.security.SecureRandom;
 import java.util.Random;

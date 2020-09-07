@@ -1,9 +1,9 @@
 package org.shoulder.code;
 
+import org.apache.commons.lang3.StringUtils;
+import org.shoulder.code.consts.ValidateCodeConsts;
 import org.shoulder.code.processor.ValidateCodeProcessor;
 import org.shoulder.security.SecurityConst;
-import org.shoulder.code.consts.ValidateCodeConsts;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;

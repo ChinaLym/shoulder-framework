@@ -1,15 +1,18 @@
 package org.shoulder.crypto.negotiation;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.core.util.ByteUtils;
 import org.shoulder.crypto.digest.Sha256Utils;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import javax.crypto.KeyAgreement;
-import java.security.*;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;

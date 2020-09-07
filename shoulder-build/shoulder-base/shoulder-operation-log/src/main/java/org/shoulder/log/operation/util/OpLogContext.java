@@ -4,9 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.shoulder.log.operation.dto.Operable;
+import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.dto.SystemOperator;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.springframework.util.Assert;
 
 import java.util.List;

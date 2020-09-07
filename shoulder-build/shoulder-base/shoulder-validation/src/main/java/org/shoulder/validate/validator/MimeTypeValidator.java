@@ -1,8 +1,8 @@
 package org.shoulder.validate.validator;
 
 import org.apache.tika.Tika;
-import org.shoulder.validate.consant.MIMEEnum;
 import org.shoulder.validate.annotation.MimeType;
+import org.shoulder.validate.consant.MIMEEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
