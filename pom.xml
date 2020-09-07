@@ -119,94 +119,94 @@
     <!--<profiles>
         <profile>
             <id>release</id>-->
-            <build>
-                <plugins>
-                    <!-- UTF8 coding -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.8.1</version>
-                        <configuration>
-                            <encoding>${project.build.sourceEncoding}</encoding>
-                            <source>${maven.compiler.source}</source>
-                            <target>${maven.compiler.target}</target>
-                        </configuration>
-                    </plugin>
+    <build>
+        <plugins>
+            <!-- UTF8 coding -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
 
-                    <!-- jar包 包含源码 -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>${maven-source-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- Javadoc -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${maven-javadoc-plugin.version}</version>
-                    </plugin>
-                    <!-- 测试覆盖率统计工具 -->
-                    <!-- <plugin>
-                         <groupId>org.codehaus.mojo</groupId>
-                         <artifactId>cobertura-maven-plugin</artifactId>
-                         <configuration>
-                             <format>html</format>
-                             <encoding>utf-8</encoding>
-                             <instrumentation>
-                             </instrumentation>
-                         </configuration>
-                     </plugin>-->
+            <!-- jar包 包含源码 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+            </plugin>
+            <!-- 测试覆盖率统计工具 -->
+            <!-- <plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>cobertura-maven-plugin</artifactId>
+                 <configuration>
+                     <format>html</format>
+                     <encoding>utf-8</encoding>
+                     <instrumentation>
+                     </instrumentation>
+                 </configuration>
+             </plugin>-->
 
-                    <!-- maven 发布插件 -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>deploy</phase><!-- gpg phase verify deploy -->
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
+            <!-- maven 发布插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>deploy</phase><!-- gpg phase verify deploy -->
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-                    <!-- 修改父模块的版本之后，进入父模块的pom所在路径执行mvn命令：mvn -N versions:update-child-modules,即可自动修改所有子模块中的版本号 -->
-                    <!--<plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>versions-maven-plugin</artifactId>
-                        <version>${versions-maven-plugin.version}</version>
-                        <configuration>
-                            <generateBackupPoms>false</generateBackupPoms>
-                        </configuration>
-                    </plugin>-->
+            <!-- 修改父模块的版本之后，进入父模块的pom所在路径执行mvn命令：mvn -N versions:update-child-modules,即可自动修改所有子模块中的版本号 -->
+            <!--<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${versions-maven-plugin.version}</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>-->
 
-                </plugins>
-            </build>
+        </plugins>
+    </build>
 
-            <!-- 发布仓库 -->
-            <!--<distributionManagement>
-                <snapshotRepository>
-                    <id>nexus</id>
-                    <url>http://mvn.itlym.cn/repository/maven-snapshots/</url>
-                </snapshotRepository>
-                <repository>
-                    <id>nexus</id>
-                    <url>http://mvn.itlym.cn/repository/maven-releases/</url>
-                </repository>
-            </distributionManagement>-->
-        <!--</profile>
+    <!-- 发布仓库 -->
+    <!--<distributionManagement>
+        <snapshotRepository>
+            <id>nexus</id>
+            <url>http://mvn.itlym.cn/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>nexus</id>
+            <url>http://mvn.itlym.cn/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>-->
+    <!--</profile>
 
-    </profiles>-->
+</profiles>-->
 
 </project>
