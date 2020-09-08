@@ -129,15 +129,21 @@ public class OperationLogAspect {
         lastOpLogContext.set(OpLogContextHolder.getContext());
     }
 
-    private void creatNewContext(ProceedingJoinPoint joinPoint) {
+    private void creatNewContext(ProceedingJoinPoint joinPoint) throws NoSuchMethodException {
         // 解析注解
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         OperationLog methodAnnotation = method.getAnnotation(OperationLog.class);
         OperationLogConfig classAnnotation = method.getDeclaringClass().getAnnotation(OperationLogConfig.class);
         if (methodAnnotation == null) {
-            // 不可能的情况，因为日志 AOP 就是以该注解为切点
-            throw new IllegalStateException("@OperationLog can't be null.");
+            // spring aop使用cglib生成的代理是不会加上父类的方法上的注解的，也就是这边生成的代理类上的方法上没有 OperationLog 注解
+            method = joinPoint.getTarget().getClass().getMethod(method.getName(), method.getParameterTypes());
+            methodAnnotation = method.getAnnotation(OperationLog.class);
+            if(methodAnnotation == null){
+                // 不可能的情况，因为日志 AOP 就是以该注解为切点，需要检查 aspect 表达式
+                throw new IllegalStateException("@OperationLog can't be null.");
+            }
+
         }
 
         // 创建日志
