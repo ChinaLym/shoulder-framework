@@ -510,7 +510,7 @@
 
 
             <!-- log-trace begin -->
-            <!--<dependency>
+            <dependency>
                 <groupId>io.zipkin.brave</groupId>
                 <artifactId>brave</artifactId>
                 <version>${brave.version}</version>
@@ -533,22 +533,22 @@
                 <artifactId>brave-context-slf4j</artifactId>
                 <version>${brave.version}</version>
             </dependency>
-            &lt;!&ndash; log-trace end &ndash;&gt;
+            <!-- log-trace end -->
 
 
-            &lt;!&ndash; monitor &ndash;&gt;
+            <!-- monitor -->
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-prometheus</artifactId>
                 <version>${micrometer.version}</version>
             </dependency>
-            &lt;!&ndash; monitor end &ndash;&gt;
+            <!-- monitor end -->
 
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
-            </dependency>-->
+            </dependency>
 
 
             <!-- spring basepackage start -->

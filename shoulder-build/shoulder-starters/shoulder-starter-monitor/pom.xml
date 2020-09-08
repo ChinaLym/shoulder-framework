@@ -22,10 +22,21 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
+
+        <!--短任务需要，推送到 push-gateway-->
+        <!--<dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_pushgateway</artifactId>
+        </dependency>-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-core</artifactId>
         </dependency>
 
     </dependencies>

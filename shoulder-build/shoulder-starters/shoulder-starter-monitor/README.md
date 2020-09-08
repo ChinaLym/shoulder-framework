@@ -2,14 +2,204 @@
 
 仅仅提供了两个依赖，也可以直接引入这两个依赖替代这个jar
 
-## 使用参考：
+`spring boot` 的 `org.springframework.boot.actuate.autoconfigure.metrics` 包下已经提供了很多可以用的监控，无特殊需求可直接使用其提供的。
+如：`org.springframework.boot.actuate.autoconfigure.metrics.web.client.HttpClientMetricsAutoConfiguration`
+
+spring boot 2.x 支持的是 `io.micrometer` 
+
+`EnableSpringBootMetricsCollector` 等 `prometheus` 下的不再支持
+
+## 配置
+
+#### `application.properties` 添加配置
+
+- Actuator
+management.endpoints.web.exposure.include=*
+- Prometheus
+无需 ~~management.metrics.tags.application=${spring.application.name}~~ 已经自动配置
+
+#### `propemtheus.yml` 添加配置
+- job_name: 'spring-prometheus'
+  metrics_path: '/actuator/prometheus'
+  scrape_interval: 10s
+  static_configs:
+    - targets:
+      - host.docker.internal:8081
+      
+#### Grafana Dashboard 配置
+
+如 [6756](https://grafana.com/grafana/dashboards/6756)
+
+需要修改变量的值：
+
+Dashboard Setting -> Variables，选择相应的变量进行修改，这里修改两个：applicaiton 和 instance
+
+- label_values(application)
+- label_values(jvm_memory_used_bytes{application="$application"},instance) 
+
+
+---
+
+代码中使用
+
+## 原生使用
+
+### Counter
+Counter(计数器)简单理解就是一种只增不减的计数器。它通常用于记录服务的请求数量、完成的任务数量、错误的发生数量等等，它只具备增量计数能力。举个例子：
+```java
+
+        //tag必须成对出现，也就是偶数个
+		Counter counter = Counter.builder("counter")
+				.tag("counter", "counter")
+				.description("counter")
+				.register(new SimpleMeterRegistry());
+		counter.increment();
+		counter.increment(2D);
+		System.out.println(counter.count());
+		System.out.println(counter.measure());
+		//全局静态方法
+		Metrics.addRegistry(new SimpleMeterRegistry());
+		counter = Metrics.counter("counter", "counter", "counter");
+		counter.increment(10086D);
+		counter.increment(10087D);
+		System.out.println(counter.count());
+		System.out.println(counter.measure());
+```
+
+### Gauge
+
+Gauge(仪表)是一个表示单个数值的度量，它可以表示任意地上下移动的数值测量。Gauge通常用于变动的测量值，如当前的内存使用情况、队列中的消息数量、线程池中线程个数、可使用的资源/锁数量、已经占用的资源数量等
+
+Gauge 关注的度量统计角度是VALUE(值)，它的构建方法中依赖于函数式接口ToDoubleFunction的实例(如例子中的实例方法引用AtomicInteger::get)
+和一个依赖于ToDoubleFunction改变自身值的实例(如例子中的AtomicInteger实例)
+```java
+
+        AtomicInteger atomicInteger = new AtomicInteger();
+		Gauge gauge = Gauge.builder("gauge", atomicInteger, AtomicInteger::get)
+				.tag("gauge", "gauge")
+				.description("gauge")
+				.register(new SimpleMeterRegistry());
+		atomicInteger.addAndGet(5);
+		System.out.println(gauge.value());
+		System.out.println(gauge.measure());
+		atomicInteger.decrementAndGet();
+		System.out.println(gauge.value());
+		System.out.println(gauge.measure());
+		//全局静态方法，返回值竟然是依赖值，有点奇怪，暂时不选用
+		Metrics.addRegistry(new SimpleMeterRegistry());
+		AtomicInteger other = Metrics.gauge("gauge", atomicInteger, AtomicInteger::get);
+		
+```
+###Timer
+Timer(计时器)同时测量一个特定的代码逻辑块的调用(执行)速度和它的时间分布。简单来说，就是在调用结束的时间点记录整个调用块执行的总时间，适用于测量短时间执行的事件的耗时分布，例如消息队列消息的消费速率。
+
+Timer的度量统计角度主要包括记录执行的`最大时间`、`总时间`、`平均时间`、`执行完成的总任务数`
+
+```java
+    public Timer testTimer() {
+    	//我们一般通过建造者模式构建Timer，builder方法的入参用于定义Timer埋点Name
+        return Timer.builder("test_timer_point_1")
+                //tags用于定义埋点的标签，入参为一个数组。每2个组成一个key-value对
+                //这里实际定义了2个tag：disc=test;status=success
+                //Builder类中还有一个tag()方法，用于定义单个key-value
+                .tags("disc", "test", "status", "success"))
+                //用于定义埋点的描述，对统计没有实际意义
+                .description("用于Timer埋点测试")
+                //用于管理所有类型Point的registry实例
+                .register(registry);
+    }
+
+
+```
+
+### Summary
+Summary(汇总)用于跟踪事件的分布。它类似于一个计时器，但更一般的情况是，它的大小并不一定是一段时间的测量值。在micrometer中，对应的类是DistributionSummary，它的用法有点像Timer
+，**但是记录的值是需要直接指定**，而不是通过测量一个任务的执行时间。举个例子：
+
+Summary的度量统计角度主要包括记录过的数据中的`最大值`、`总数值`、`平均值`和`总次数`。另外，一些度量属性(如`下限`和`上限`)或者`单位`可以自行配置，具体属性的相关内容可以查看`DistributionStatisticConfig`
+
+```java
+        DistributionSummary summary = DistributionSummary.builder("summary")
+				.tag("summary", "summary")
+				.description("summary")
+				.register(new SimpleMeterRegistry());
+		summary.record(2D);
+		summary.record(3D);
+		summary.record(4D);
+		System.out.println(summary.measure());
+		System.out.println(summary.count());
+		System.out.println(summary.max());
+		System.out.println(summary.mean());
+		System.out.println(summary.totalAmount());
+```
+
+### DistributionSummary
+`DistributionSummary` 是用于跟踪事件的分布情况，有多个指标组成：
+
+- count，事件的个数，聚合指标，如响应的个数
+- sum，综合，聚合指标，如响应大小的综合
+- histogram，分布，聚合指标，包含le标签用于区分bucket，例如web.response.size.historgram{le=512} = 99,表示响应大小不超过512（Byte)的响应个数是99个。一般有多个bucket，如le=128，le=256，le=512，le=1024,le=+Inf等。 
+
+每个bucket展示为一条时间序列，会得到类似下面的图。
+
+更多：`micrometer-spring-legacy`
+
+---
+
+## 注解使用
+
+
+```java
+// 注入切面
+@EnableAspectJAutoProxy
+@Configuration
+public class PrometheusAspectConfig {
+
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry registry) {
+        return new TimedAspect(registry);
+    }
+
+    @Bean
+    public CountedAspect countedAspect(MeterRegistry registry) {
+        return new CountedAspect(registry);
+    }
+}
+```
+
+`io.micrometer:micrometer-core` 中的注解
+- `@Timed`
+    - 标注在方法上，记录执行耗时
+- `@Counted`
+    - 标准在方法上，统计一定时间内次数
+- `@MethodMetric`
+    - 标注在
+```java
+ @Timed(value = "custom_scheduled_sync_user", extraTags = {"name", "自定义同步用户信息任务"}, description = "自定义定时任务监控")
+```
+
+## 自定义监控指标
+
+
+
+----
+
+参考：
+
+- [micrometer.io 官网](http://micrometer.io/docs/concepts#_the_timed_annotation)
+
+- [使用 Prometheus 和 Grafana 监控 Spring Boot 应用](https://blog.csdn.net/u013360850/article/details/106159086)
 
 - [Spring Boot 2.x监控数据可视化(Actuator + Prometheus + Grafana手把手](https://blog.csdn.net/xudc0521/article/details/89916714)
-- [实战：micrometer+prometheus+grafana搭建Java程序的监控系统](https://blog.csdn.net/weixin_38569499/article/details/85344317)
-- [Spring Boot Metrics监控之Prometheus](http://www.pianshen.com/article/6974270533/)
-- [使用 Micrometer 记录 Java 应用性能指标](https://www.ibm.com/developerworks/cn/java/j-using-micrometer-to-record-java-metric/index.html)
-- [JVM应用度量框架Micrometer实战](http://www.throwable.club/2018/11/17/jvm-micrometer-prometheus/#)
- 
-TODO
 
-默认提供框架信息？
+- [实战：micrometer+prometheus+grafana搭建Java程序的监控系统](https://blog.csdn.net/weixin_38569499/article/details/85344317)
+
+- [Spring Boot Metrics监控之Prometheus](http://www.pianshen.com/article/6974270533/)
+
+- [使用 Micrometer 记录 Java 应用性能指标](https://www.ibm.com/developerworks/cn/java/j-using-micrometer-to-record-java-metric/index.html)
+
+- [JVM应用度量框架Micrometer实战](http://www.throwable.club/2018/11/17/jvm-micrometer-prometheus/#)
+
+- [Prometheus+Springboot2.x实用实战——Timer（一）之@Timed初探](https://blog.csdn.net/weixin_42182797/article/details/102614969)
+
+- [基于Prometheus搭建SpringCloud全方位立体监控体系](https://www.cnblogs.com/throwable/p/9346547.html)
