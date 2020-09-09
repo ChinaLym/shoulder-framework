@@ -12,6 +12,7 @@ import java.util.Random;
 /**
  * 默认的图片验证码生成器
  * 数字与字母
+ * todo ThreadLocalRandom
  *
  * @author lym
  */
@@ -52,6 +53,7 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
             int index = random.nextInt(CHARS.length);
             validateCode.append(CHARS[index]);
         }
+        String validateCodeStr = validateCode.toString();
 
         // 获得一个画笔、图片
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -78,13 +80,13 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
             final int offset = 5;
             int fontSize = height - 20 + random.nextInt(10);
             graphics.setFont(new Font(FONT_NAMES[random.nextInt(FONT_NAMES.length)], random.nextInt(3), fontSize));
-            graphics.drawString(String.valueOf(validateCode.charAt(i)), i * fontSize + offset, fontSize + random.nextInt(fontSize >> 1));
+            graphics.drawString(String.valueOf(validateCodeStr.charAt(i)), i * fontSize + offset, fontSize + random.nextInt(fontSize >> 1));
         }
 
         graphics.dispose();
 
         // 将图片返回
-        return new ImageCode(image, validateCode.toString(), imageCodeProperties.getEffectiveSeconds());
+        return new ImageCode(image, validateCodeStr, imageCodeProperties.getEffectiveSeconds());
     }
 
     /**

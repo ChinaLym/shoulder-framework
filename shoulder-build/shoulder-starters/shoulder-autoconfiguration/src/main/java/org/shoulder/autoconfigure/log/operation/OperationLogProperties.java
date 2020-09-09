@@ -1,6 +1,5 @@
 package org.shoulder.autoconfigure.log.operation;
 
-import org.shoulder.core.constant.ShoulderFramework;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -8,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author lym
  */
-@ConfigurationProperties(prefix = ShoulderFramework.CONFIG_PREFIX + "log.operation")
+@ConfigurationProperties(prefix = "shoulder.log.operation")
 public class OperationLogProperties {
 
     /**

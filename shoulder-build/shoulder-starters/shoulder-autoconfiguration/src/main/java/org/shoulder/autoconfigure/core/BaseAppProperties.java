@@ -1,7 +1,6 @@
 package org.shoulder.autoconfigure.core;
 
 import lombok.Data;
-import org.shoulder.core.constant.ShoulderFramework;
 import org.shoulder.core.context.ApplicationInfo;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -14,7 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = BaseAppProperties.APPLICATION_CONFIG_PREFIX)
 public class BaseAppProperties {
 
-    public static final String APPLICATION_CONFIG_PREFIX = ShoulderFramework.CONFIG_PREFIX + "application";
+    public static final String APPLICATION_CONFIG_PREFIX = "shoulder.application";
 
     /**
      * 应用标识 appId/identify，推荐为 maven 的 artifactId。若不填写则取 spring.application.name

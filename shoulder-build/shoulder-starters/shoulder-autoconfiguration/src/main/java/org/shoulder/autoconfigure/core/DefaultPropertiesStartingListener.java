@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.core;
 
+import org.shoulder.core.constant.ShoulderFramework;
 import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.ApplicationListener;
 
@@ -27,6 +28,9 @@ public class DefaultPropertiesStartingListener implements ApplicationListener<Ap
      */
     private Properties defaultConfigurationProperties() {
         Properties properties = new Properties();
+        // =================== shoulder 框架信息 ========================
+        properties.put("shoulder.version", ShoulderFramework.VERSION);
+
         // =================== 应用信息默认值 ========================
         // 默认不使用前缀
         properties.put("shoulder.application.errorCodePrefix", "0");
