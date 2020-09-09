@@ -180,7 +180,21 @@ public class PrometheusAspectConfig {
 
 ## 自定义监控指标
 
+prometheus.集的指标由`指标名称 metric name`、`标签 label name` 两部分构成,格式:
+`<metric name>{<label name>=<lable value>,<label name>=<lable value>....}`
+- 指标名称( metric name):
+    - 指标名称用于说明指标的含义
+    - 由字母、数值、下划线或冒号(分隔符)组成,其中冒号不能用于 exporter
+- 标签( label):
+    - 标签体现指标的维度特征,用于过滤和聚标签名和标签值,形成多种维度的表达。
 
+`abc_efg{n1="xx",n2="xxx",n3="xxx"}`
+
+`abc_efg`是指标名;n1 n2 n3是三个标签(label),也就是三个维度查询语句可以基于这些标签维度进行过滤和聚合。
+
+指标名称( metric name)首先需满足 `prometheus` 指标规苑要求,其次需满足唯一性、反应功能/业务含义
+
+指标格式: `应用标识_业务/功能名称`。业务/功能名称由大小写字母开头包含字母或者数字的字符串构成（小驼峰命名）
 
 ----
 
