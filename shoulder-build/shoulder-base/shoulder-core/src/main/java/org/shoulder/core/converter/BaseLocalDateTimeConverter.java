@@ -27,6 +27,10 @@ public abstract class BaseLocalDateTimeConverter<T> extends BaseDateConverter<T>
         return sourceDateString;
     }
 
+    /**
+     * 解析时间的方式
+     * @return LocalDate/LocalDateTime parse
+     */
     protected abstract BiFunction<String, DateTimeFormatter, T> parseFunction();
 
     /**
@@ -35,6 +39,7 @@ public abstract class BaseLocalDateTimeConverter<T> extends BaseDateConverter<T>
      * @param yyyyMMdd 非严格 yyyy-MM-dd 或 yyyy/MM/dd 格式的日期字符串
      * @return 严格格式
      */
+    @SuppressWarnings("PMD.LowerCamelCaseVariableNamingRule")
     protected String toStandYearMonthDay(@NotEmpty String yyyyMMdd) {
         final int stdFormatLength = 10;
         if (yyyyMMdd.length() == stdFormatLength) {
@@ -65,6 +70,7 @@ public abstract class BaseLocalDateTimeConverter<T> extends BaseDateConverter<T>
      * 转为标准的 HH:mm:ss
      * @param HHmmss 非严格格式的时间字符串
      * @return 严格格式
+     * @deprecated JDK 支持非严格格式，无需此方法
      */
     /*protected String toStandHourMinuteSecond(@NotEmpty String HHmmss) {
         final int stdFormatLength = 8;

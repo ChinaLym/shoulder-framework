@@ -175,6 +175,18 @@
             </plugin>-->
 
         </plugins>
+
+        <!-- 构建时自动添加 shoulder 版本号 -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>shoulder-version.txt</include>
+                </includes>
+            </resource>
+        </resources>
+
     </build>
 
 
