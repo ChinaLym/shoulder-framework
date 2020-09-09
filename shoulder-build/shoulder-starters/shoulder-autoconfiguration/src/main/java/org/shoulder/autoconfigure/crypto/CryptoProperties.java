@@ -1,7 +1,6 @@
 package org.shoulder.autoconfigure.crypto;
 
 import lombok.Data;
-import org.shoulder.core.constant.ShoulderFramework;
 import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -12,7 +11,7 @@ import java.util.Map;
  * @author lym
  */
 @Data
-@ConfigurationProperties(prefix = ShoulderFramework.CONFIG_PREFIX + "crypto")
+@ConfigurationProperties(prefix = "shoulder.crypto")
 public class CryptoProperties {
 
     /**

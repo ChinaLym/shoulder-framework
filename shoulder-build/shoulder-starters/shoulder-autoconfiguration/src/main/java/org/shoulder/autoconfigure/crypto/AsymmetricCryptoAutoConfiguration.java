@@ -1,7 +1,8 @@
 package org.shoulder.autoconfigure.crypto;
 
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
-import org.shoulder.cluster.redis.annotation.ApplicationExclusive;
+import org.shoulder.cluster.redis.annotation.AppExclusive;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.annotation.Ecc;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricTextCipher;
@@ -40,7 +41,7 @@ public class AsymmetricCryptoAutoConfiguration {
     @Ecc
     @Bean
     @ConditionalOnMissingBean
-    public DefaultAsymmetricCryptoProcessor eccAsymmetricProcessor(KeyPairCache keyPairCache) {
+    public AsymmetricCryptoProcessor eccAsymmetricProcessor(KeyPairCache keyPairCache) {
         return DefaultAsymmetricCryptoProcessor.ecc256(keyPairCache);
     }
 
@@ -86,10 +87,12 @@ public class AsymmetricCryptoAutoConfiguration {
     public static class AsymmetricKeyClusterPairCacheConfig {
 
         @Bean("keyPairCache")
-        public KeyPairCache redisKeyPairCache(@ApplicationExclusive StringRedisTemplate redisTemplate,
+        public KeyPairCache redisKeyPairCache(@AppExclusive StringRedisTemplate redisTemplate,
                                               LocalTextCipher localTextCipher, CryptoProperties cryptoProperties) {
             KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate, localTextCipher);
             keyPairCache.set(cryptoProperties.getKeyPair());
+            LoggerFactory.getLogger(getClass()).debug("redisKeyPairCache provide RedisKeyPairCache.");
+
             return keyPairCache;
         }
 

@@ -53,6 +53,7 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
      * 签名算法
      */
     private final String signatureAlgorithm;
+
     protected Lock lock = new ReentrantLock();
 
     public DefaultAsymmetricCryptoProcessor(String algorithm, int keyLength, String transformation, String signatureAlgorithm,
@@ -65,6 +66,8 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
         this.keyPairCache = keyPairCache;
         this.keyPairFactory = new AsymmetricKeyPairFactory(algorithm, keyLength, provider);
     }
+
+    // ------------------ 提供两个推荐使用的安全加密方案 ------------------
 
     public static DefaultAsymmetricCryptoProcessor ecc256(KeyPairCache keyPairCache) {
         return new DefaultAsymmetricCryptoProcessor(
@@ -99,10 +102,12 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
         KeyPair kp = null;
         lock.lock();
         try {
-            kp = getKeyPairFromDto(keyPairCache.get(id));
-            keyPairCache.set(id, new KeyPairDto(kp));
+            // 如果能成功将缓存中的值拿出来构建密钥对，则说明已经构建过，无需再次构建
+            getKeyPairFromDto(keyPairCache.get(id));
         } catch (NoSuchKeyPairException e) {
+            // 未拿到或构建出错，则重新生成并保存
             kp = keyPairFactory.build();
+            // 此时若构建密钥对失败则将异常抛出，表示不支持使用者设置的加密算法，需要使用者检查
             keyPairCache.set(id, new KeyPairDto(kp));
         } finally {
             lock.unlock();
@@ -110,10 +115,18 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
     }
 
     private KeyPair getKeyPairFromDto(KeyPairDto dto) throws KeyPairException {
-        return keyPairFactory.buildFrom(
+        KeyPair keyPair = null;
+        if((keyPair = dto.getOriginKeyPair()) != null){
+            // 内存存储，无需反序列化
+            return keyPair;
+        }
+        keyPair = keyPairFactory.buildFrom(
             ByteSpecification.decodeToBytes(dto.getPk()),
             ByteSpecification.decodeToBytes(dto.getVk())
         );
+        // 兼容非直接存储的本地缓存，是否存在这种？
+        //dto.setOriginKeyPair(keyPair);
+        return keyPair;
     }
 
     @Override
@@ -189,11 +202,10 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
         return getKeyPairFromDto(keyPairCache.get(id)).getPublic();
     }
 
-    // ------------------ 提供两个常用的加密方案 ------------------
 
     @Override
     public String getPublicKeyString(String id) throws KeyPairException {
-        return ByteSpecification.encodeToString(getPublicKey(id).getEncoded());
+        return keyPairCache.get(id).getPk();
     }
 
     @Override

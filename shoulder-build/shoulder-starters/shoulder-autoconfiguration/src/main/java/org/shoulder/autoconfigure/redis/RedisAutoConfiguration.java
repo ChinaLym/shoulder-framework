@@ -1,11 +1,11 @@
 package org.shoulder.autoconfigure.redis;
 
-import org.shoulder.cluster.redis.annotation.ApplicationExclusive;
+import org.shoulder.cluster.redis.annotation.AppExclusive;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -15,8 +15,8 @@ import org.springframework.util.StringUtils;
 
 /**
  * redis相关配置，提供以下 Bean
- * redisTemplate<String, Object>
- * StringRedisTemplate
+ * redisTemplate<String, Object>、StringRedisTemplate
+ * 其中 redis 是否为集群是由 RedisConnectionFactory 决定的，spring boot 已经自动支持
  *
  * @author lym
  */
@@ -46,8 +46,8 @@ public class RedisAutoConfiguration {
      * 应用专属
      */
     @Bean
-    @ApplicationExclusive
-    public RedisTemplate<String, Object> serviceExclusiveRedisTemplate(LettuceConnectionFactory redisConnectionFactory) {
+    @AppExclusive
+    public RedisTemplate<String, Object> serviceExclusiveRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         //new StringRedisSerializer(ApplicationInfo.charset())
         RedisSerializer<String> redisKeySerializer = new KeyStringRedisSerializer(getKeyPrefix());
@@ -64,8 +64,8 @@ public class RedisAutoConfiguration {
      * 应用专属
      */
     @Bean
-    @ApplicationExclusive
-    public StringRedisTemplate stringRedisTemplate(LettuceConnectionFactory redisConnectionFactory) {
+    @AppExclusive
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         StringRedisTemplate redisTemplate = new StringRedisTemplate();
         RedisSerializer<String> redisKeySerializer = new KeyStringRedisSerializer(getKeyPrefix());
         redisTemplate.setConnectionFactory(redisConnectionFactory);
@@ -101,7 +101,7 @@ public class RedisAutoConfiguration {
         @Override
         public byte[] serialize(@Nullable String string) {
             if (!StringUtils.isEmpty(this.keyPrefix)) {
-                string = this.keyPrefix + "-" + string;
+                string = this.keyPrefix + string;
             }
             return super.serialize(string);
         }

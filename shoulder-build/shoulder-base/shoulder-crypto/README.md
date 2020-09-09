@@ -33,13 +33,4 @@
     - AsymmetricCrypto：适合前后传输加密少量数据
     - AsymmetricCrypto + AES：适合前后传输加密较多数据
 - 传输加解密
-    - ECDH    
-    
- ## 安全传输（ECDH）
- 
- 使用方式：在传输的参数或返回值DTO上添加 `@Secret` 注解，即可自动实现安全传输，可以通过抓包工具校验。
-  支持 RestTemplate、Feign（未完成） 两种
- ```java
-// todo 添加传输加密代码示范
-
-```
+    - ECDH

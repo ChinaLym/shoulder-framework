@@ -16,9 +16,10 @@ import java.security.PublicKey;
 public interface AsymmetricCryptoProcessor {
 
     /**
-     * 构建密钥对
+     * 构建密钥对（具有幂等性，已经存在的则不会重复构建）
      *
-     * @param id 密钥对标识
+     * @param id 密钥对标识，可以是写死的固定值（一般场景，性能更高），也可以是用户 id（高安全需求），也可以是用户标识+hash（兼顾性能与安全）
+     * @throws KeyPairException 构建失败
      */
     void buildKeyPair(String id) throws KeyPairException;
 
@@ -74,7 +75,8 @@ public interface AsymmetricCryptoProcessor {
      * 获取公钥
      *
      * @param id 密钥对标识
-     * @return 公钥字符串，Base64编码。
+     * @return 公钥字符串，Base64编码
+     * @throws KeyPairException 密钥对标识 不存在
      */
     String getPublicKeyString(String id) throws KeyPairException;
 
@@ -83,6 +85,7 @@ public interface AsymmetricCryptoProcessor {
      *
      * @param id 密钥对标识
      * @return 公钥
+     * @throws KeyPairException 密钥对标识 不存在
      */
     PublicKey getPublicKey(String id) throws KeyPairException;
 
@@ -91,6 +94,7 @@ public interface AsymmetricCryptoProcessor {
      *
      * @param id 密钥对标识
      * @return 私钥
+     * @throws KeyPairException 密钥对标识 不存在
      */
     PrivateKey getPrivateKey(String id) throws KeyPairException;
 

@@ -100,8 +100,10 @@ public class AesUtil {
     private static void validParam(byte[] key, byte[] iv) {
         Assert.notNull(key, "the parameter 'key' can't be null!");
         Assert.notNull(iv, "the parameter 'iv' can't be null!");
-        Assert.isTrue(key.length == KEY_LENGTH_SUPPORT[0] || key.length == KEY_LENGTH_SUPPORT[1] || key.length == KEY_LENGTH_SUPPORT[2],
-            "the length of parameter 'key' must be " + KEY_LENGTH_SUPPORT[0] + " or " + KEY_LENGTH_SUPPORT[1] + " or " + KEY_LENGTH_SUPPORT[2] + ", your keyLength: " + key.length);
+        Assert.isTrue(key.length == KEY_LENGTH_SUPPORT[0]
+                || key.length == KEY_LENGTH_SUPPORT[1] || key.length == KEY_LENGTH_SUPPORT[2],
+            "the length of parameter 'key' must be " + KEY_LENGTH_SUPPORT[0] +
+                " or " + KEY_LENGTH_SUPPORT[1] + " or " + KEY_LENGTH_SUPPORT[2] + ", your keyLength: " + key.length);
 
         Assert.isTrue(iv.length == IV_LENGTH, "the length of parameter 'iv' must be " + IV_LENGTH);
     }

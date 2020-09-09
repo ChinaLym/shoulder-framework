@@ -45,7 +45,7 @@ public interface KeyPairCache {
     KeyPairDto get(String id) throws NoSuchKeyPairException;
 
     /**
-     * 销毁
+     * 销毁，退出时将密钥对清空
      */
     void destroy();
 }

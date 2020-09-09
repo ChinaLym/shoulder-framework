@@ -30,7 +30,7 @@ import java.util.*;
  * Aes256算法。
  * rootKey、rootKeyIv 的保存一样由 {@link LocalCryptoInfoRepository} 和 {@link LocalCryptoInfoEntity}负责实现。
  * rootKey 的保护：持久化的值为 SHA256(rootKey, random) 而不是 rootKey 本身
- * rootKey 的生成：32个字符即 256位，详见 {@link Aes256LocalTextCipher#generateRootKey}
+ * rootKey 的生成：32个字符即 256位，详见 {@link Aes256LocalTextCipher#generateDataKeyProtectKey}
  *
  * <ul>
  * <li> 敏感数据（data）：需要被加密的数据
@@ -41,8 +41,7 @@ import java.util.*;
  *
  * <li>密钥向量：用于加密数据秘钥、加密敏感数据
  *
- * </ul>
- * todo 改成 abstract
+ * 改成 abstract 以更好的扩展？无需求，暂不
  *
  * @author lym
  */
@@ -55,12 +54,11 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     private final static Logger log = LoggerFactory.getLogger(Aes256LocalTextCipher.class);
     private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
     /**
-     * 保护数据密钥的 iv
+     * 保护数据密钥的 iv 16 * 8
      */
     private static final byte[] DATA_KEY_IV = "shoulder:Cn-Lym!".getBytes(CHAR_SET);
     /**
      * 根秘钥固定部分
-     * todo 实际应用中最好保证每个系统的该值不同，以达到更好的随机性
      */
     private static final byte[] ROOT_KEY_FINAL_PART = "shoulderFramework:CN-Lym".getBytes(CHAR_SET);
     /**
@@ -86,20 +84,19 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     // ======================================== 对外接口 ============================================
 
     /**
-     * 生成 rootKey ： SHA256(rootKeyParts)
-     * 根密钥总长度为 256 位，其中一部分写死在代码中。另一部分启动时随机生成，以确保每个应用中不出现重复。
-     * 因为 AES256算法 要求秘钥部件为总长度等于256位( Java 中一个 byte 为 8位)
-     * 这里需要 64 位
+     * 根据 rootKey 生成数据密钥的加密密钥 ： SHA256(rootKeyParts)
+     * - 根密钥总长度为 256 位，其中一部分写死在代码中。另一部分启动时随机生成，由随机部分保证每个项目的根密钥不同，即保证了即使不同项目中随机出相同数据密钥（极端情况/小概率事件），密文仍然不同！
+     * - 使用 SHA256 获取 rootKey 的摘要信息，临时随机生成 rootKey 用完即回收，结合 Sha256单向摘要算法，保证后续无法通过任何手段还原 rootKey 明文
      *
-     * @param randomPart rootKey 的随机部分
-     * @return rootKey
+     * @param randomBytes rootKey 的随机部分
+     * @return 数据密钥的加密密钥，用于保护真正的数据密钥明文，长度为 16 位 / 256 bit。
      */
-    private static byte[] generateRootKey(byte[] randomPart) {
-        assert randomPart.length == ROOT_KEY_RANDOM_LENGTH;
+    private static byte[] generateDataKeyProtectKey(byte[] randomBytes) {
+        assert randomBytes.length == ROOT_KEY_RANDOM_LENGTH;
 
         byte[] rootKey = new byte[256];
         ByteUtils.copy(ROOT_KEY_FINAL_PART, 0, rootKey, 0, ROOT_KEY_FINAL_PART.length);
-        ByteUtils.copy(randomPart, 0, rootKey, ROOT_KEY_FINAL_PART.length, ROOT_KEY_RANDOM_LENGTH);
+        ByteUtils.copy(randomBytes, 0, rootKey, ROOT_KEY_FINAL_PART.length, ROOT_KEY_RANDOM_LENGTH);
 
         return Sha256Utils.digest(rootKey);
     }
@@ -257,7 +254,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     private LocalCryptoInfoEntity generateSecurity() throws AesCryptoException {
         byte[] rootKeyRandomPart = ByteUtils.randomBytes(ROOT_KEY_RANDOM_LENGTH);
         String rootKeyRandomPartStr = ByteSpecification.encodeToString(rootKeyRandomPart);
-        byte[] rootKey = generateRootKey(rootKeyRandomPart);
+        byte[] rootKey = generateDataKeyProtectKey(rootKeyRandomPart);
         // 用于加密数据秘钥的 iv 向量，写死
         byte[] dataKey = generateDataKey();
         byte[] dataKeyIv = generateDataKeyIv();
@@ -276,6 +273,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
     /**
      * 数据秘钥缓存
+     * 考虑是否默认去除缓存，以达到更好的安全性
      *
      * @author lym
      */
@@ -331,7 +329,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
             String rootKeyRandomPartStr = entity.getRootKeyPart();
             byte[] rootKeyRandomPart = ByteSpecification.decodeToBytes(rootKeyRandomPartStr);
 
-            byte[] rootKey = generateRootKey(rootKeyRandomPart);
+            byte[] rootKey = generateDataKeyProtectKey(rootKeyRandomPart);
             byte[] cipherDataKey = ByteSpecification.decodeToBytes(entity.getDataKey());
 
             byte[] dataKey = AesUtil.decrypt(cipherDataKey, rootKey, DATA_KEY_IV);
