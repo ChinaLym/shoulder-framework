@@ -19,9 +19,15 @@ import org.springframework.util.StringUtils;
  */
 public class RedisKeyPairCache implements KeyPairCache {
 
+    /**
+     * 注意维护应用隔离
+     */
     private RedisTemplate<String, String> redisTemplate;
 
-    private String keyPrefix;
+    /**
+     * 密钥对缓存前缀
+     */
+    private final String keyPrefix;
 
     /**
      * 局部加密器，保证即使多个应用共享一个 redis，也无法获得其他应用的私钥信息
@@ -29,7 +35,7 @@ public class RedisKeyPairCache implements KeyPairCache {
      * - 加密整个密钥对：性能差、可能导致已知明文攻击（需要localTextCipher的算法能避免该攻击）
      * - 极端情况无法检测密钥对被外界篡改（破坏者能直接或间接使用localTextCipher时）
      */
-    private LocalTextCipher localTextCipher;
+    private final LocalTextCipher localTextCipher;
 
     public RedisKeyPairCache(StringRedisTemplate redisTemplate, LocalTextCipher localTextCipher) {
         this(redisTemplate, localTextCipher, "crypto-asymmetric:");
@@ -46,10 +52,11 @@ public class RedisKeyPairCache implements KeyPairCache {
         String key = addRedisPrefix(id);
         try {
             // 为了安全和性能，仅将私钥加密，避免已知明文攻击
+            encryptKeyPair(keyPairDto);
             String kpJson = JsonUtils.toJson(keyPairDto);
-            String encryptKp = localTextCipher.encrypt(kpJson);
+            //String encryptKp = localTextCipher.encrypt(kpJson);
 
-            redisTemplate.opsForValue().setIfAbsent(key, encryptKp);
+            redisTemplate.opsForValue().setIfAbsent(key, kpJson);
         } catch (SymmetricCryptoException e) {
             throw new RuntimeException(e);
         }
@@ -60,36 +67,37 @@ public class RedisKeyPairCache implements KeyPairCache {
     public KeyPairDto get(String id) throws NoSuchKeyPairException {
         String key = addRedisPrefix(id);
         String cipherKp = redisTemplate.opsForValue().get(key);
-        if (cipherKp != null) {
-            try {
-                String kp = localTextCipher.decrypt(cipherKp);
-                KeyPairDto keyPairDto = JsonUtils.toObject(kp, KeyPairDto.class);
-                if (StringUtils.isEmpty(keyPairDto.getVk())) {
-                    // 数据完整性遭到外界恶意破坏，不应继续使用
-                    throw new NoSuchKeyPairException("KeyPair.privateKey is empty, id= " + id);
-                }
-                return keyPairDto;
-            } catch (SymmetricCryptoException e) {
-                throw new NoSuchKeyPairException("can't decrypt keyPair id= " + id);
-            }
-        } else {
+        if (cipherKp == null) {
             throw new NoSuchKeyPairException("can't found keyPair id= " + id);
         }
+        try {
+            //String kp = localTextCipher.decrypt(cipherKp);
+            KeyPairDto keyPairDto = JsonUtils.toObject(cipherKp, KeyPairDto.class);
+            decryptKeyPair(keyPairDto);
+            if (StringUtils.isEmpty(keyPairDto.getVk())) {
+                // 数据完整性遭到外界恶意破坏，不应继续使用
+                throw new NoSuchKeyPairException("KeyPair.privateKey is empty, id= " + id);
+            }
+            return keyPairDto;
+        } catch (SymmetricCryptoException e) {
+            throw new NoSuchKeyPairException("can't decrypt keyPair id= " + id);
+        }
     }
+
 
     private String addRedisPrefix(String id) {
         return keyPrefix + id;
     }
 
-	private void encryptKeyPair(KeyPairDto keyPairDto) throws SymmetricCryptoException {
-		String cipherVk = localTextCipher.encrypt(keyPairDto.getVk());
-		keyPairDto.setVk(cipherVk);
-	}
+    private void encryptKeyPair(KeyPairDto keyPairDto) throws SymmetricCryptoException {
+        String cipherVk = localTextCipher.encrypt(keyPairDto.getVk());
+        keyPairDto.setVk(cipherVk);
+    }
 
-	private void decryptKeyPair(KeyPairDto keyPairDto) throws SymmetricCryptoException {
-		String cipherVk = localTextCipher.decrypt(keyPairDto.getVk());
-		keyPairDto.setVk(cipherVk);
-	}
+    private void decryptKeyPair(KeyPairDto keyPairDto) throws SymmetricCryptoException {
+        String cipherVk = localTextCipher.decrypt(keyPairDto.getVk());
+        keyPairDto.setVk(cipherVk);
+    }
 
     @Override
     public void destroy() {

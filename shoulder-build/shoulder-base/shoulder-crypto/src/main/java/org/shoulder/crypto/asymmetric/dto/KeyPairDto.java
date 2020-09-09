@@ -54,7 +54,7 @@ public class KeyPairDto {
 
     public String getVk() {
         return StringUtils.isNotEmpty(vk) ? vk
-            : originKeyPair != null ? (vk = ByteSpecification.encodeToString(originKeyPair.getPublic().getEncoded()))
+            : originKeyPair != null ? (vk = ByteSpecification.encodeToString(originKeyPair.getPrivate().getEncoded()))
             : null;
     }
 

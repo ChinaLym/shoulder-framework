@@ -285,9 +285,9 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         private static boolean initialized = false;
 
         /**
-         * 用于数据加密的轻量级缓存
+         * 用于数据加密的轻量级缓存，一般场景只有1个加密密钥
          */
-        private static Map<String, AesInfoCache> cacheMap;
+        private static Map<String, AesInfoCache> cacheMap = new HashMap<>(1);
 
 
         private CacheManager() {
@@ -314,9 +314,6 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
          * @throws AesCryptoException 转化失败
          */
         private static void addToCacheMap(List<LocalCryptoInfoEntity> aesInfoList) throws AesCryptoException {
-            if (cacheMap == null) {
-                cacheMap = new HashMap<>(aesInfoList.size());
-            }
             for (LocalCryptoInfoEntity aesInfo : aesInfoList) {
                 cacheMap.put(aesInfo.getHeader(), convertToCache(aesInfo));
             }
