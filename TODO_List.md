@@ -9,8 +9,12 @@ shoulder-core 中未使用，但常用的工具类考虑抽至新的 util 包
 
 ## 数据库增强
 
-mybatis-plus 日志输出美化（）
-JPA 类型转换
+- mybatis-plus 日志输出美化（）
+- JPA 类型转换
+- 通用简单业务代码
+    - 简单增删改接口
+    - 批量增删改
+    - 异步导入与导出（基于csv/excel）
 
 ## WEB
 - 考虑使用自定义的 ObjectMapper 替代，MappingJackson2HttpMessageConverter 中的，获取更好的接口兼容性？
@@ -39,7 +43,14 @@ JPA 类型转换
 
 #### api 文档
 - open-api 2/3 ?
-
+- 接口上报到网关？
+    - 自动推送
+    - 插件生成网关可解析的格式
+    - 推到系统中心/字典组件
+    
+#### 枚举与字典集成
+扫描特定枚举类，生成字典信息到统一目录，字典服务
+    
 ## spring-cache
 使用 ConversionService 代替 StringRedisSerializer 获得更好的编码体验
 

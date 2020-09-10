@@ -16,7 +16,7 @@ spring boot 2.x 支持的是 `io.micrometer`
 - Actuator
 management.endpoints.web.exposure.include=*
 - Prometheus
-无需 ~~management.metrics.tags.application=${spring.application.name}~~ 已经自动配置
+~~management.metrics.tags.application=${spring.application.name}~~ 无需添加 已经自动配置
 
 #### `propemtheus.yml` 添加配置
 - job_name: 'spring-prometheus'
@@ -201,6 +201,8 @@ prometheus.集的指标由`指标名称 metric name`、`标签 label name` 两�
 参考：
 
 - [micrometer.io 官网](http://micrometer.io/docs/concepts#_the_timed_annotation)
+
+- [Prometheus 中文文档](http://www.coderdocument.com/docs/prometheus/v2.14/best_practices/metric_and_label_naming.htm)
 
 - [使用 Prometheus 和 Grafana 监控 Spring Boot 应用](https://blog.csdn.net/u013360850/article/details/106159086)
 

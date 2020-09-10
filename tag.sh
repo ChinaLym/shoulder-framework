@@ -1,2 +1,2 @@
-git tag -a v0.1 -m "对应 `0.1` 版本，第一个预览发布版"
+git tag -a v0.2 -m "对应 `0.2` 版本，第2个预览发布版，内容见 CHANGELOG.md"
 git push origin --tags
