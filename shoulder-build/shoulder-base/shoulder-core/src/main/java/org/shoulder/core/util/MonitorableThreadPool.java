@@ -14,7 +14,7 @@ import java.util.concurrent.*;
  * todo JDK 中实现的当且仅当任务队列满了时才会创建新线程，但如果这时候突发来多个任务，则导致任务很可能被拒绝
  * 实际中应根据队列容量自动扩容线程数，如，当队列中任务数达到上限的 70%、80%、90%，则自动扩容线程，而不是满了之后才扩容
  * 动态设置参数实现： 对接配置中心
- * 监控 & 告警实现： 对接 prometheus，过载告警
+ * 监控、告警实现： 对接 prometheus，过载告警
  * 操作记录与审计： 对接日志中心，变更通知
  * https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html
  *

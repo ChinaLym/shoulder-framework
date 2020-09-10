@@ -10,7 +10,7 @@
     <artifactId>shoulder-framework</artifactId>
     <packaging>pom</packaging>
 
-    <version>0.2-SNAPSHOT</version><!-- shoulder-version -->
+    <version>0.2</version><!-- shoulder-version -->
     <!-- mvn versions:set -DnewVersion=1.0.1-RELEASE、mvn versions:commit、mvn versions:revert -->
 
     <!-- 简介 -->

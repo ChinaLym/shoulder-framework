@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * 翻译场景推荐 注：Thymeleaf、FreeMark 等动态页面由后端翻译，html静态页面或前后分离时推荐由前端翻译
  * 若有大量重复 message 映射时，如多租户，每个租户可以定制自己的界面和提示信息，可采用继承方式简化多语言管理
  * <p>
- * 清空多语言缓存 {@link super#clearCacheIncludingAncestors}
+ * 清空多语言缓存，通过父类方法 {@link ReloadableResourceBundleMessageSource#clearCacheIncludingAncestors}
  * todo 目前仅支持文件加载，需要支持Spring中Resource允许的加载方式
  *
  * @author lym
