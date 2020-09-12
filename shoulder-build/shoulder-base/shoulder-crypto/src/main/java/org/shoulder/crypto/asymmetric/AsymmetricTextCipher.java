@@ -13,7 +13,7 @@ import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 public interface AsymmetricTextCipher extends TextCipher {
 
     /**
-     * 生成公钥
+     * 获取默认的公钥
      *
      * @return 公钥
      * @throws KeyPairException RsaKeyPairException
@@ -31,7 +31,7 @@ public interface AsymmetricTextCipher extends TextCipher {
     String decrypt(String cipher) throws AsymmetricCryptoException;
 
     /**
-     * 加密
+     * 加密（使用自己的默认公钥）
      *
      * @param text 待加密数据
      * @return 加密后的
@@ -41,10 +41,10 @@ public interface AsymmetricTextCipher extends TextCipher {
     String encrypt(String text) throws AsymmetricCryptoException;
 
     /**
-     * RSA加密（公钥加密）
+     * 使用指定公钥加密，常用于使用对方公钥加密
      *
      * @param text      需加密的数据
-     * @param publicKey 对方的公钥(base64过的)
+     * @param publicKey 对方的公钥(base64编码过的)
      * @return 密文
      * @throws AsymmetricCryptoException 加解密出错
      */
@@ -54,18 +54,18 @@ public interface AsymmetricTextCipher extends TextCipher {
     /**
      * 签名
      *
-     * @param content 签名内容
+     * @param content 原始内容，待签名数据
      * @return 签名结果
      * @throws AsymmetricCryptoException 加解密出错
      */
     String sign(String content) throws AsymmetricCryptoException;
 
     /**
-     * 签名验证
+     * 签名验证，常用于校验 content 是否未被篡改
      *
-     * @param content   内容
+     * @param content   原始内容，待签名数据
      * @param signature 签名
-     * @return 是否合法
+     * @return signature 是否为 content 的签名
      * @throws AsymmetricCryptoException 加解密出错
      */
     boolean verify(String content, String signature) throws AsymmetricCryptoException;

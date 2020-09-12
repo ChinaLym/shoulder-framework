@@ -6,12 +6,12 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-build</artifactId>
-        <version>0.2</version><!-- shoulder-version -->
+        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>shoulder-base</artifactId>
-    <version>0.2</version><!-- shoulder-version -->
+    <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
     <packaging>pom</packaging>
 
     <modules>
@@ -21,13 +21,12 @@
         <module>shoulder-data-db</module>
         <module>shoulder-crypto</module>
         <module>shoulder-operation-log</module>
-        <!--<module>shoulder-http</module>
-        <module>shoulder-crypto-negotiation</module>-->
+        <module>shoulder-http</module>
+        <module>shoulder-crypto-negotiation</module>
 
         <module>shoulder-cluster</module>
-        <!--<module>shoulder-security</module>
-        <module>shoulder-code</module>
-        <module>shoulder-auth-server</module>-->
+        <module>shoulder-security</module>
+        <module>shoulder-security-code</module>
         <!--<module>shoulder-aopx</module>-->
         <!--<module>shoulder-api-doc-swagger2</module>-->
     </modules>

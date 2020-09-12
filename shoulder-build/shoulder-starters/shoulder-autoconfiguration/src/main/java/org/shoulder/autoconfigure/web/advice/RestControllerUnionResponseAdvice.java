@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -37,6 +38,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @Configuration(
     proxyBeanMethods = false
 )
+@Order(value = 0)
 @RestControllerAdvice
 @ConditionalOnWebApplication
 @ConditionalOnProperty(name = "shoulder.web.unionResponse", havingValue = "true", matchIfMissing = true)

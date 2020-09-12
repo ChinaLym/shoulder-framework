@@ -20,7 +20,8 @@ import java.util.Map;
  */
 @FrameworkEndpoint
 public class IntrospectEndpoint {
-    TokenStore tokenStore;
+
+    private TokenStore tokenStore;
 
     IntrospectEndpoint(TokenStore tokenStore) {
         this.tokenStore = tokenStore;

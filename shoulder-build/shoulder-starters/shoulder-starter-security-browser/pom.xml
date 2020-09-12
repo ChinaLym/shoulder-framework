@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>cn.itlym</groupId>
+        <artifactId>shoulder-parent</artifactId>
+        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
+        <relativePath>../../../shoulder-parent/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>shoulder-starter-security-browser</artifactId>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-security</artifactId>
+        </dependency>
+
+
+        <!-- 生成 META-INF/spring-autoconfigure-metadata.properties，加快 spring boot 启动时排除不匹配的自动装配信息，用于缩短启动时间 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 根据 java doc 生成 additional-spring-configuration-metadata.json，这样 IDE 中配置项会有提示。但不支持 Enum 和 Collections -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <!-- compiler settings -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <!-- attach source -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

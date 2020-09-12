@@ -5,7 +5,7 @@ package org.shoulder.security;
  */
 public interface SecurityConst {
 
-    String CONFIG_PREFIX = "lym.security";
+    String CONFIG_PREFIX = "shoulder.security";
 
     /**
      * 表单方式认证（用户名密码登录）
@@ -46,9 +46,7 @@ public interface SecurityConst {
      *
      * @author lym
      */
-    public interface BrowserConsts {
-
-        String CONFIG_PREFIX = SecurityConst.CONFIG_PREFIX + ".browser";
+    interface BrowserConsts {
 
         /**
          * session失效默认的跳转地址

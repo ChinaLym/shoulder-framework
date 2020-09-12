@@ -2,6 +2,9 @@ package org.shoulder.autoconfigure.security;
 
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
+import org.shoulder.security.authentication.PhoneNumAuthenticateService;
+import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityConfig;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +17,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /**
- * 认证相关的扩展点配置。配置在这里的bean，业务系统都可以通过声明同类型或同名的bean来覆盖安全
- * 模块默认的配置。
+ * 认证相关基本 bean 配置（用户名密码登录、手机号登录）
  *
  * @author lym
  */
@@ -26,7 +28,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class AuthenticationBeanConfig {
 
     /**
-     * 默认密码处理器
+     * 密码处理器，默认使用 spring security 推荐的 BCryptPasswordEncoder
+     * 若需替换，推荐使用单向加密，如 SHA256
      */
     @Bean
     @ConditionalOnMissingBean(PasswordEncoder.class)
@@ -35,21 +38,26 @@ public class AuthenticationBeanConfig {
     }
 
     /**
-     * 提醒实现默认认证器
-     */
-    @Bean
-    @ConditionalOnMissingBean(UserDetailsService.class)
-    public UserDetailsService userDetailsService() {
-        throw new RuntimeException("Please implements a UserDetailsService for spring security！");
-    }
-
-    /**
      * 用户名、密码认证(表单登录)配置
      */
     @Bean
+    @ConditionalOnBean(UserDetailsService.class)
     public FormAuthenticationSecurityConfig formAuthenticationConfig(@Nullable AuthenticationSuccessHandler authenticationSuccessHandler,
                                                                      @Nullable AuthenticationFailureHandler authenticationFailureHandler) {
         return new FormAuthenticationSecurityConfig(authenticationSuccessHandler, authenticationFailureHandler);
+    }
+
+    /**
+     * 手机短信验证码认证(短信验证码登录)配置
+     * 要激活必须先存在 PhoneNumAuthenticateService 类
+     */
+    @Bean
+    @ConditionalOnBean(PhoneNumAuthenticateService.class)
+    public PhoneNumAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig(@Nullable AuthenticationSuccessHandler authenticationSuccessHandler,
+                                                                                    @Nullable AuthenticationFailureHandler authenticationFailureHandler,
+                                                                                    PhoneNumAuthenticateService userDetailsService) {
+
+        return new PhoneNumAuthenticationSecurityConfig(authenticationSuccessHandler, authenticationFailureHandler, userDetailsService);
     }
 
 }

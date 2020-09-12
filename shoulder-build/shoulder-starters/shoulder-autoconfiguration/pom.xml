@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.2</version><!-- shoulder-version -->
+        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
 
@@ -41,12 +41,6 @@
 
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-operation-log</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-http</artifactId>
             <optional>true</optional>
         </dependency>
@@ -58,20 +52,8 @@
         </dependency>
 
         <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-security</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-code</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-auth-server</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -88,8 +70,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-operation-log</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -105,6 +87,19 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- ============================= security ============================= -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-security</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-security-code</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- ======================================================================================= -->
 
         <!-- 生成 META-INF/spring-autoconfigure-metadata.properties，加快 spring boot 启动时排除不匹配的自动装配信息，用于缩短启动时间 -->
         <dependency>

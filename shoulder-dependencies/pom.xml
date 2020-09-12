@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.2</version><!-- shoulder-version -->
+        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
         <!--<relativePath>../pom.xml</relativePath>-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
     <properties>
         <!-- shoulder framework bom -->
         <shoulder-lombok.version>0.1</shoulder-lombok.version>
-        <shoulder.version>0.2-SNAPSHOT</shoulder.version><!-- shoulder-version -->
+        <shoulder.version>0.3-SNAPSHOT</shoulder.version><!-- shoulder-version -->
 
         <!-- dependencies bom -->
         <!--<spring.version>5.2.4.RELEASE</spring.version>-->
@@ -203,13 +203,7 @@
 
             <dependency>
                 <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-code</artifactId>
-                <version>${shoulder.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-auth-server</artifactId>
+                <artifactId>shoulder-security-code</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
@@ -256,7 +250,25 @@
 
             <dependency>
                 <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-starter-web</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-starter-operation-log</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-beanmap</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-starter-security-browser</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
@@ -268,7 +280,7 @@
 
             <dependency>
                 <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-starter-code</artifactId>
+                <artifactId>shoulder-starter-security-code</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
@@ -289,13 +301,6 @@
                 <artifactId>shoulder-starter-trace</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-starter-web</artifactId>
-                <version>${shoulder.version}</version>
-            </dependency>
-
 
             <!--shoulder-starters end -->
 

@@ -85,12 +85,14 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
 
     @Override
     public String sign(String content) throws AsymmetricCryptoException {
-        return new String(processor.sign(defaultKeyPairId, content.getBytes(CHAR_SET)), CHAR_SET);
+        byte[] signBytes = processor.sign(defaultKeyPairId, content.getBytes(CHAR_SET));
+        return ByteSpecification.encodeToString(signBytes);
     }
 
     @Override
     public boolean verify(String content, String signature) throws AsymmetricCryptoException {
-        return processor.verify(defaultKeyPairId, content.getBytes(CHAR_SET), signature.getBytes(CHAR_SET));
+        byte[] signatureBytes = ByteSpecification.decodeToBytes(signature);
+        return processor.verify(defaultKeyPairId, content.getBytes(CHAR_SET), signatureBytes);
     }
 
 }

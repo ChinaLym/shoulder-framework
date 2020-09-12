@@ -21,7 +21,7 @@ import java.util.Map;
 @FrameworkEndpoint
 public class JwkSetEndpoint {
 
-    KeyPair keyPair;
+    private KeyPair keyPair;
 
     JwkSetEndpoint(KeyPair keyPair) {
         this.keyPair = keyPair;

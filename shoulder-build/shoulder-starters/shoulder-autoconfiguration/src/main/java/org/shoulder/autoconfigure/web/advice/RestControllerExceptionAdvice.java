@@ -32,17 +32,17 @@ import java.sql.SQLException;
 
 /**
  * RestController 全局异常处理器 - 请求方错误，提供默认统一场景错误返回值
- * 默认情况下该类优先用户自定义的全局处理器，如果使用者指定@Order(? < 0)，则优先于本框架处理
+ * 默认情况下该类优先用户自定义的全局处理器，如果使用者指定@Order且小于0，则优先于本框架处理
  * todo 根据异常返回值状态码
  * 是否应在这里记录异常日志？
  *
  * @author lym
  */
 @SLog
-@Order
 @Configuration(
     proxyBeanMethods = false
 )
+@Order(value = 0)
 @RestControllerAdvice
 @ConditionalOnWebApplication
 @ConditionalOnProperty(name = "shoulder.web.handleGlobalException", havingValue = "true", matchIfMissing = true)

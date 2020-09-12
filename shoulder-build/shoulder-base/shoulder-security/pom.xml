@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.2</version><!-- shoulder-version -->
+        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
 
@@ -48,17 +48,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
-        </dependency>
-
-        <!-- commons 工具包 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
         </dependency>
 
     </dependencies>

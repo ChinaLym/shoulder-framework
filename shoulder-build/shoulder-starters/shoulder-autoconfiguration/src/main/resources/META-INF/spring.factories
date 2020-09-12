@@ -25,11 +25,17 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   \
   org.shoulder.autoconfigure.db.mybatis.MybatisPlusAutoConfiguration, \
   \
-  org.shoulder.autoconfigure.log.operation.async.OpLogAsyncCustomAutoConfiguration,\
-  org.shoulder.autoconfigure.log.operation.async.OpLogAsyncDefaultAutoConfiguration,\
-  org.shoulder.autoconfigure.log.operation.OperationLogAspect,\
-  org.shoulder.autoconfigure.log.operation.OperationLoggerAutoConfiguration,\
-  org.shoulder.autoconfigure.log.operation.OperationLogParamConverterAutoConfiguration,\
-  org.shoulder.autoconfigure.log.operation.OperationLogParamConverterAutoConfiguration,\
+  org.shoulder.autoconfigure.operation.async.OpLogAsyncCustomAutoConfiguration,\
+  org.shoulder.autoconfigure.operation.async.OpLogAsyncDefaultAutoConfiguration,\
+  org.shoulder.autoconfigure.operation.OperationLogAspect,\
+  org.shoulder.autoconfigure.operation.OperationLoggerAutoConfiguration,\
+  org.shoulder.autoconfigure.operation.OperationLogParamConverterAutoConfiguration,\
+  org.shoulder.autoconfigure.operation.OperationLogParamConverterAutoConfiguration,\
   \
-  org.shoulder.autoconfigure.security.AuthenticationBeanConfig
+  org.shoulder.autoconfigure.security.AuthenticationBeanConfig, \
+  org.shoulder.autoconfigure.security.browser.BrowserSessionAuthBeanConfiguration, \
+  org.shoulder.autoconfigure.security.browser.BrowserSecurityConfiguration, \
+  org.shoulder.autoconfigure.security.token.TokenAuthBeanConfig, \
+  org.shoulder.autoconfigure.security.token.TokenSecurityConfig, \
+  org.shoulder.autoconfigure.security.code.ValidateCodeBeanConfig, \
+  org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig
