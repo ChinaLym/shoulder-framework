@@ -3,7 +3,7 @@ package org.shoulder.autoconfigure.security.browser;
 import org.shoulder.autoconfigure.security.AuthenticationBeanConfig;
 import org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig;
 import org.shoulder.security.SecurityConst;
-import org.shoulder.security.SecurityConst.BrowserConsts;
+import org.shoulder.security.SecurityConst.DefaultPage;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,9 +88,12 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
             // 记住我配置，采用 spring security 的默认实现
             // 如果想在'记住我'登录时记录日志，可以注册一个InteractiveAuthenticationSuccessEvent事件的监听器
             .rememberMe()
-            .tokenRepository(persistentTokenRepository)//用token拿到用户名
-            .tokenValiditySeconds(browserSessionAuthProperties.getRememberMeSeconds())//token有效时间
-            .userDetailsService(userDetailsService)//认证类
+            //用token拿到用户名
+            .tokenRepository(persistentTokenRepository)
+            //token有效时间
+            .tokenValiditySeconds((int) browserSessionAuthProperties.getRememberMeSeconds().toSeconds())
+            //认证类
+            .userDetailsService(userDetailsService)
             .and()
 
             // 会话管理器
@@ -132,7 +135,7 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 SecurityConst.URL_AUTHENTICATION_SMS,
 
                 // 注册页面
-                BrowserConsts.PAGE_URL_SIGN_UP,
+                DefaultPage.SIGN_UP,
                 // 注册请求
                 SecurityConst.URL_REGISTER,
 

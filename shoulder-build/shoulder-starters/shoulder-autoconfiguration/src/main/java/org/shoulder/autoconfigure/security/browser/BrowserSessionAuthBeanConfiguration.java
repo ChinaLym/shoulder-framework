@@ -1,9 +1,6 @@
 package org.shoulder.autoconfigure.security.browser;
 
 import org.shoulder.autoconfigure.security.AuthenticationBeanConfig;
-import org.shoulder.code.ValidateCodeProcessorHolder;
-import org.shoulder.code.consts.ValidateCodeConsts;
-import org.shoulder.code.controller.ValidateCodEndpoint;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.browser.BrowserAuthEndpoint;
 import org.shoulder.security.authentication.browser.handler.BrowserAuthenticationFailureHandler;
@@ -13,7 +10,6 @@ import org.shoulder.security.authentication.browser.session.ConcurrentLogInExpir
 import org.shoulder.security.authentication.browser.session.DefaultInvalidSessionStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -69,7 +65,7 @@ public class BrowserSessionAuthBeanConfiguration {
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSource);
 
-        // 启动的时候创建表 persistent_logins (MySQL 语法)
+        // 启动的时候创建表 persistent_logins (MySQL 语法) fixme 数据库连接账号可能没有建表权限，因此推荐用户手动创建
         String tableName = JdbcTokenRepositoryImpl.CREATE_TABLE_SQL.split(" ")[2];
         String testTableExitsSql = "SELECT table_name FROM information_schema.TABLES WHERE table_name ='" + tableName + "';";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(testTableExitsSql);
@@ -86,30 +82,32 @@ public class BrowserSessionAuthBeanConfiguration {
     }
 
     /**
-     * 认证成功处理器
+     * 认证成功逻辑
      */
     @Bean
     @ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
     public AuthenticationSuccessHandler browserAuthenticationSuccessHandler() {
-        return new BrowserAuthenticationSuccessHandler(browserSessionAuthProperties.getSingInSuccessUrl());
+        return new BrowserAuthenticationSuccessHandler(
+            browserSessionAuthProperties.getResponseType(), browserSessionAuthProperties.getSignInSuccessUrl());
     }
 
     /**
-     * 认证失败处理器
+     * 默认认证失败逻辑
      */
     @Bean
     @ConditionalOnMissingBean(AuthenticationFailureHandler.class)
     public AuthenticationFailureHandler browserAuthenticationFailureHandler() {
-        return new BrowserAuthenticationFailureHandler();
+        return new BrowserAuthenticationFailureHandler(browserSessionAuthProperties.getResponseType());
     }
 
     /**
-     * 退出登录处理器
+     * 默认退出登录逻辑
      */
     @Bean
     @ConditionalOnMissingBean(LogoutSuccessHandler.class)
     public LogoutSuccessHandler browserLogoutSuccessHandler() {
-        return new BrowserLogoutSuccessHandler(browserSessionAuthProperties.getSignOutUrl());
+        return new BrowserLogoutSuccessHandler(browserSessionAuthProperties.getResponseType(),
+            browserSessionAuthProperties.getSignOutSuccessUrl());
     }
 
 
@@ -122,7 +120,7 @@ public class BrowserSessionAuthBeanConfiguration {
         return new DefaultInvalidSessionStrategy(
             browserSessionAuthProperties.getSession().getSessionInvalidUrl(),
             browserSessionAuthProperties.getSignInPage(),
-            browserSessionAuthProperties.getSignOutUrl()
+            browserSessionAuthProperties.getSignOutSuccessUrl()
         );
     }
 
@@ -135,7 +133,7 @@ public class BrowserSessionAuthBeanConfiguration {
         return new ConcurrentLogInExpiredSessionStrategy(
             browserSessionAuthProperties.getSession().getSessionInvalidUrl(),
             browserSessionAuthProperties.getSignInPage(),
-            browserSessionAuthProperties.getSignOutUrl()
+            browserSessionAuthProperties.getSignOutSuccessUrl()
         );
     }
 
@@ -145,7 +143,6 @@ public class BrowserSessionAuthBeanConfiguration {
      * @return 待认证请求处理器
      */
     @Bean
-    @ConditionalOnBean(ValidateCodeProcessorHolder.class)
     @ConditionalOnProperty(value ="shoulder.security.auth.browser.default-endpoint.enable", havingValue = "true", matchIfMissing = true)
     public BrowserAuthEndpoint browserAuthEndpoint() {
         return new BrowserAuthEndpoint(browserSessionAuthProperties.getSignInPage());

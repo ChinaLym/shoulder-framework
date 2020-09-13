@@ -1,12 +1,14 @@
 package org.shoulder.autoconfigure.security.browser;
 
-import org.shoulder.security.SecurityConst.BrowserConsts;
+import org.shoulder.security.SecurityConst.DefaultPage;
+import org.shoulder.security.authentication.browser.handler.ResponseType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.time.temporal.ChronoUnit;
+import java.time.Duration;
 
 /**
- * 浏览器环境配置项 todo 配置项名称
+ * 浏览器环境配置项
+ * 如果使用者自行实现登录成功、退出成功处理器，则这些配置将失效，使用者实现的优先生效
  *
  * @author lym
  */
@@ -21,29 +23,29 @@ public class BrowserSessionAuthProperties {
     /**
      * 登录页面，当引发登录行为的url以html结尾时，会跳到这里配置的url上
      */
-    private String signInPage = BrowserConsts.PAGE_URL_SIGN_IN;
+    private String signInPage = DefaultPage.SIGN_IN;
+    /**
+     * 注册页面 url。社交登录，若需要用户注册，跳转的页面（使用第三方授权后，先检查系统中是否已经存在对应的用户，若不存在则引导至注册补全信息页面）
+     */
+    private String signUpUrl = DefaultPage.SIGN_UP;
+
     /**
      * '记住我'功能的有效时间，默认一个月
      */
-    private int rememberMeSeconds = (int) ChronoUnit.MONTHS.getDuration().getSeconds();
+    private Duration rememberMeSeconds = Duration.ofDays(30);
     /**
-     * 退出成功时跳转的url，如果配置了，则跳到指定的url，如果没配置，则返回json数据。
+     * 登录/退出响应的方式，默认是跳转，可设置为 JSON，以适配 ajax 等由前端决定路由方式
      */
-    private String signOutUrl;
-    /**
-     * 社交登录，如果需要用户注册，跳转的页面
-     */
-    private String signUpUrl = BrowserConsts.PAGE_URL_SIGN_UP;
-    /**
-     * 登录响应的方式，默认是json
-     */
-    //private LoginResponseType signInResponseType = LoginResponseType.JSON;
+    private ResponseType responseType = ResponseType.REDIRECT;
     /**
      * 登录成功后跳转的地址，如果设置了此属性，则登录成功后总是会跳到这个地址上。
-     * 只在signInResponseType为REDIRECT时生效
+     * 只在 signInResponseType 为REDIRECT时生效
      */
-    private String singInSuccessUrl;
-
+    private String signInSuccessUrl;
+    /**
+     * 退出成功时跳转的url，如果配置了，则总是跳到指定的url，如果没配置，则跳到主页
+     */
+    private String signOutSuccessUrl;
 
     public String getSignInPage() {
         return signInPage;
@@ -53,11 +55,11 @@ public class BrowserSessionAuthProperties {
         this.signInPage = loginPage;
     }
 
-    public int getRememberMeSeconds() {
+    public Duration getRememberMeSeconds() {
         return rememberMeSeconds;
     }
 
-    public void setRememberMeSeconds(int rememberMeSeconds) {
+    public void setRememberMeSeconds(Duration rememberMeSeconds) {
         this.rememberMeSeconds = rememberMeSeconds;
     }
 
@@ -77,20 +79,28 @@ public class BrowserSessionAuthProperties {
         this.session = session;
     }
 
-    public String getSignOutUrl() {
-        return signOutUrl;
+    public String getSignOutSuccessUrl() {
+        return signOutSuccessUrl;
     }
 
-    public void setSignOutUrl(String signOutUrl) {
-        this.signOutUrl = signOutUrl;
+    public void setSignOutSuccessUrl(String signOutSuccessUrl) {
+        this.signOutSuccessUrl = signOutSuccessUrl;
     }
 
-    public String getSingInSuccessUrl() {
-        return singInSuccessUrl;
+    public String getSignInSuccessUrl() {
+        return signInSuccessUrl;
     }
 
-    public void setSingInSuccessUrl(String singInSuccessUrl) {
-        this.singInSuccessUrl = singInSuccessUrl;
+    public void setSignInSuccessUrl(String signInSuccessUrl) {
+        this.signInSuccessUrl = signInSuccessUrl;
+    }
+
+    public ResponseType getResponseType() {
+        return responseType;
+    }
+
+    public void setResponseType(ResponseType responseType) {
+        this.responseType = responseType;
     }
 
     /**
@@ -107,9 +117,9 @@ public class BrowserSessionAuthProperties {
          */
         private boolean maxSessionsPreventsLogin = false;
         /**
-         * session失效时跳转的地址
+         * session失效时跳转的地址，为空则跳转到登录页面
          */
-        private String sessionInvalidUrl = BrowserConsts.PAGE_URL_SESSION_INVALID;
+        private String sessionInvalidUrl;
 
         public int getMaximumSessions() {
             return maximumSessions;

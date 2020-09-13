@@ -25,7 +25,10 @@ public class I18nAutoConfiguration {
     @ConditionalOnMissingBean(MessageSourceProperties.class)
     @ConfigurationProperties(prefix = "spring.messages")
     public MessageSourceProperties messageSourceProperties() {
-        return new MessageSourceProperties();
+        // 修改默认多语言资源路径
+        MessageSourceProperties messageSourceProperties = new MessageSourceProperties();
+        messageSourceProperties.setBasename("classpath:language");
+        return messageSourceProperties;
     }
 
     /**

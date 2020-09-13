@@ -1,6 +1,7 @@
 package org.shoulder.security.authentication.browser.session;
 
 import org.apache.commons.lang3.StringUtils;
+import org.shoulder.core.util.ServletUtil;
 import org.shoulder.security.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,8 @@ public class AbstractSessionStrategy {
         String sourceUrl = request.getRequestURI();
         String targetUrl;
 
-        if (StringUtils.endsWithIgnoreCase(sourceUrl, ".html")) {
+        // 如果请求页面。则跳转至登录
+        if (isPageRequest(request)) {
             if (StringUtils.equals(sourceUrl, signInPage)
                 || StringUtils.equals(sourceUrl, signOutUrl)) {
                 targetUrl = sourceUrl;
@@ -73,12 +75,20 @@ public class AbstractSessionStrategy {
             logger.debug("redirectTo:" + targetUrl);
             redirectStrategy.sendRedirect(request, response, targetUrl);
         } else {
+            // todo 返回 json 格式、特定错误码 + msg
             String result = buildResponseContent(request);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             response.getWriter().write(ResponseUtil.jsonMsg(result));
         }
 
+    }
+
+    /**
+     * 请求的是否为页面，暂且认为非ajax就是页面请求。若前后分离则总是返回 false
+     */
+    protected boolean isPageRequest(HttpServletRequest request) {
+        return !ServletUtil.isAjax(request);
     }
 
     protected String buildResponseContent(HttpServletRequest request) {

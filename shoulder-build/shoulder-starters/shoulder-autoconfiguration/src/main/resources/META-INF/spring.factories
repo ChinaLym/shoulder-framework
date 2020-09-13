@@ -7,6 +7,7 @@ org.springframework.boot.env.EnvironmentPostProcessor=\
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.core.ThreadAutoConfiguration, \
+  org.shoulder.autoconfigure.core.SpringUtilAutoConfiguration, \
   org.shoulder.autoconfigure.core.DelayTaskAutoConfiguration, \
   org.shoulder.autoconfigure.core.I18nAutoConfiguration, \
   \

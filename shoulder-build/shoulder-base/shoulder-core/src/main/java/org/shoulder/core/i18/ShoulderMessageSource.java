@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +50,8 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
     private final ConcurrentMap<String, List<String>> cachedFilenamesMap = new ConcurrentHashMap<>();
 
     private ResourceLoader resourceLoader = new DefaultResourceLoader();
+
+    private static final String[] supportFile = new String[]{".properties", "set"};
 
     public ShoulderMessageSource() {
         super.addBasenames("classpath:language");
@@ -154,15 +158,19 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
      * @return 加载这些文件对应的 spring resource 表达式，如 file:///d:/language/zh_CN
      */
     private List<String> getLocaleFilePatterns(File specialLanguageDir) {
+        if(!specialLanguageDir.isDirectory()){
+            // 必须为文件夹
+            return Collections.emptyList();
+        }
         File[] specialLanguageResources = specialLanguageDir.listFiles();
         if (specialLanguageResources == null) {
-            // 不应该出现的
+            // 空文件夹
             return Collections.emptyList();
         }
         // 加载该文件下的所有 properties 和 xml 文件（同名不同类型可能导致重复加载，最好不要多个格式混用）
         return Arrays.stream(specialLanguageResources)
             .map(File::getAbsolutePath)
-            .filter(name -> name.endsWith(".properties") || name.endsWith(".xml"))
+            .filter(this::canResolve)
             .map(name -> name.replace(".properties", ""))
             .map(name -> name.replace(".xml", ""))
             .map(name -> "file:///" + name)
@@ -172,7 +180,7 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
     /**
      * 列出资源目录下所有多语言文件
      *
-     * @param resourceDir 多语言路径
+     * @param resourceDir 多语言路径，如 language
      * @return 举例 language/zh_CN、language/en_US
      */
     @NonNull
@@ -181,17 +189,63 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
         if (!resource.exists()) {
             log.debug("i18n resourceDir(" + resource.getDescription() + ") not found");
             return Collections.emptyList();
+        }
+        String fileUrlName = resource.getURL().getFile();
+        if(fileUrlName.contains(".jar")){
+            // jar 内资源
+            String[] parts = fileUrlName.split(".jar");
+            String realPath = parts[0].replace("file:", "") + ".jar";
+            List<String> relativeJarPath = getJarFileResource(realPath, resourceDir);
         } else if (!resource.getFile().isDirectory()) {
+            // 否则必须为本地的文件夹，不然不支持
             log.debug("i18n resource(" + resource.getDescription() + ") not a directory");
             return Collections.emptyList();
         }
-        // 路径举例 language/zh_CN
+
         File[] languageDirs = resource.getFile().listFiles();
+        // languageDirs item 举例 "language/zh_CN"
         if (languageDirs == null) {
+            // 目录为空
             log.debug("resource(" + resource.getDescription() + ") contains 0 file named like '<translate>.properties'.");
             return Collections.emptyList();
         }
         return Arrays.asList(languageDirs);
     }
 
+    /**
+     * 列出 jarFilePath 对应 jar 的 resourceDirName 目录中的 properties、xml 文件
+     *
+     * @param jarFilePath jar 文件路径，如 "/F:/files/mavenRepository/cn/itlym/shoulder-core/1.0/shoulder-core-1.0.jar"
+     * @param resourceDirName 资源文件夹名称，如 language
+     * @return 相对于该 jar 的resource path
+     * @throws IOException 读取jar文件失败
+     */
+    private List<String> getJarFileResource(String jarFilePath, String resourceDirName) throws IOException {
+        JarFile jarFile = new JarFile(jarFilePath);
+        Enumeration<JarEntry> entries = jarFile.entries();
+        List<String> resourcePaths = new LinkedList<>();
+        while (entries.hasMoreElements()){
+            JarEntry jarEntry = entries.nextElement();
+            String entryName = jarEntry.getRealName();
+            if(entryName.startsWith(resourceDirName) && canResolve(entryName)){
+                // 如 language/zh_CN/messages.properties
+                resourcePaths.add(entryName);
+            }
+        }
+        return resourcePaths;
+    }
+
+    /**
+     * 是否支持该文件
+     * @param fileName 文件名 如 xxx.properties
+     * @return 是否可以解析（properties、xml）
+     */
+    private boolean canResolve(String fileName){
+        for (String fileNameSub : supportFile) {
+            if(fileName.endsWith(fileNameSub)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

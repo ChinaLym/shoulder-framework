@@ -46,20 +46,20 @@ public interface SecurityConst {
      *
      * @author lym
      */
-    interface BrowserConsts {
+    interface DefaultPage {
 
-        /**
-         * session失效默认的跳转地址
-         */
-        String PAGE_URL_SESSION_INVALID = "/facade-session-invalid.html";
         /**
          * 登录门户
          */
-        String PAGE_URL_SIGN_IN = "/facade-signIn.html";
+        String SIGN_IN = "/signIn.html";
         /**
          * 注册门户
          */
-        String PAGE_URL_SIGN_UP = "/facade-signUp.html";
+        String SIGN_UP = "/signUp.html";
+        /**
+         *
+         */
+        String SESSION_INVALID = SIGN_IN;
     }
 
 

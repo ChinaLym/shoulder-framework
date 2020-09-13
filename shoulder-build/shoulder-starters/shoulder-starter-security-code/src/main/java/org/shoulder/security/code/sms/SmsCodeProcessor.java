@@ -16,7 +16,6 @@ import org.springframework.web.context.request.ServletWebRequest;
  *
  * @author lym
  */
-@Component("smsValidateCodeProcessor")
 public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCodeDTO> implements SmsValidateCodeType {
 
     /**
