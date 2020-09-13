@@ -45,3 +45,6 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 且实现了自动完成 spring security 相关的配置、依赖的 bean 注入等，达到开箱即用的效果
 
 以上部分均支持使用者自行替换，如自定义各种页面（如登录、注册、退出等）、各类请求url、请求页面参数、会话过期时间等
+
+
+TODO 添加验证码使用、扩展教程

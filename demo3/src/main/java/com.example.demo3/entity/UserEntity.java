@@ -31,6 +31,9 @@ public class UserEntity {
     @TableField(value = "username", fill = FieldFill.INSERT)
     private String username;
 
+    @TableField(value = "phone_num", fill = FieldFill.INSERT)
+    private String phoneNum;
+
     @TableField(value = "password", fill = FieldFill.INSERT)
     private String password;
 

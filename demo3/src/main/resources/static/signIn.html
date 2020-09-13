@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <title>统一认证页面</title>
@@ -9,7 +9,7 @@
 <small>
     未登录时，访问任何地址（登录/注册/退出登录等页面除外）均会自动跳转到本页面，<a href="index.html">访问主页 index.html 试试</a><br>
     如何自定义登录页面？<br>
-    方式1： 在项目目录工程的静态资源路径中添加名称为 facade-signIn.html 的 html；<br>
+    方式1： 在项目目录工程的静态资源路径中添加名称为 signIn.html 的 html；<br>
     方式2： 修改 shoulder.security.browser.signInPage=xxx.html，然后在资源路径中添加 xxx.html<br>
 </small>
 
@@ -33,7 +33,7 @@
             <td>图形验证码:</td>
             <td>
                 <input name="imageCode" type="text">
-                <img src="/code?type=imageCode">
+                <img src="/code?type=imageCode" onclick="this.src=this.src+'&k='+Math.random();">
                 <small>(默认可空，pom.xml 引入 `learn-security-starter-code`
                     后，则表单登录必须填正确的验证码才能成功登录。支持短信验证码登录)
                 </small>
@@ -67,7 +67,7 @@
             <td>短信验证码:</td>
             <td>
                 <input name="smsCode" type="text">
-                <button onclick="down()" type="button">发送验证码</button>
+                <button onclick="sendSmsCode()" type="button">发送验证码</button>
             </td>
         </tr>
         <tr>
@@ -87,7 +87,8 @@
 <a href="/auth/weixin">微信登录</a>
 </body>
 <script>
-    function down() {
+    // 发送短信验证码
+    function sendSmsCode() {
         var url = "http://locahost:8080"
         var request = new XMLHttpRequest();
         request.open("POST", "/code?type=smsCode&phoneNumber=13012345678");

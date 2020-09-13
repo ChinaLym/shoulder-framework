@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.example.demo3.entity.UserEntity">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="phone_num" jdbcType="VARCHAR" property="phoneNum"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="age" jdbcType="INTEGER" property="age"/>
@@ -14,7 +15,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, username, password, name, age, email
+        id, username, phone_num, password, name, age, email
     </sql>
 
 </mapper>

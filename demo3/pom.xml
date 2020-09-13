@@ -46,6 +46,13 @@
             <artifactId>shoulder-starter-security-browser</artifactId>
         </dependency>
 
+        <!-- 验证码框架，开启后可测试验证码，关闭后验证码功能将无效 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-security-code</artifactId>
+        </dependency>
+
+
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-data-db</artifactId>

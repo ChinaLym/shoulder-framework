@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo3.entity.UserEntity;
 import com.example.demo3.repository.UserMapper;
 import org.shoulder.data.mybatis.base.service.BaseServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +17,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserEntity> implements IUserService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -30,10 +32,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserEntity> imp
         if (user == null) {
             throw new UsernameNotFoundException("userName(" + username + ") not exist");
         }
-        //根据查找到的用户信息判断用户是否被冻结，这里直接设置为可用
-        return new User(user.getUsername(), user.getPassword(),
-                true, true, true, true,
-                AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+        return toUserDetail(user);
     }
 
     /**
@@ -45,4 +44,28 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserEntity> imp
         return super.save(entity);
     }
 
+    @Override
+    public UserDetails loadUserByPhoneNum(String phoneNum) throws UsernameNotFoundException {
+        // 已经自动注入 bizService，即 IUserService
+        LambdaQueryWrapper<UserEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(UserEntity::getPhoneNum, phoneNum);
+        UserEntity user = this.getOne(queryWrapper);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("phoneNum(" + phoneNum + ") not exist");
+        }
+        return toUserDetail(user);
+    }
+
+
+    /**
+     * 转为 spring security 默认认证器定义的 user 类型
+     */
+    private UserDetails toUserDetail(UserEntity user) {
+
+        //根据查找到的用户信息判断用户是否被冻结，这里直接设置为可用
+        return new User(user.getUsername(), user.getPassword(),
+                true, true, true, true,
+                AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+    }
 }

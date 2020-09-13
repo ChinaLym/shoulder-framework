@@ -22,6 +22,19 @@ shoulder:
     errorCodePrefix: '0x000b'
     id: ${spring.application.name}
 
+  security:
+    auth: # 如果使用者自行实现登录成功、退出成功处理器，则这些配置将失效，使用者实现的优先生效
+      type: session # 默认为 session，可设置为 token，设置后认为所有的登录请求为 ajax session 相关逻辑改为 token 处理
+      responseType: REDIRECT # 认证请求响应方式，默认为跳转，可设置为 JSON 形式，适合前后分离等前端路由的场景，默认 REDIRECT
+      signInPage: /signIn.html # 登录页面地址，默认 /signIn.html
+      # singInSuccessUrl: about.html # 登陆成功时时跳转到哪。为空/不配置则尝试跳转到网站根路径，默认为空
+      signOutSuccessUrl: /signOut.html # 退出登陆时跳转到哪。为空/不配置则尝试跳转到网站根路径，默认 /signOut.html
+      rememberMeSeconds: 30d # 记住我，免登录有效时间，默认 30 天
+      session:
+        maximumSessions: 1 # 同一个用户在系统中的最大session数，默认1
+        sessionInvalidUrl: /sessionInvalid.html # session失效时跳转的地址，为空/不配置则跳转到登录页面，默认为空
+        maxSessionsPreventsLogin: false # 达到最大session时是否阻止用户登录登录请求，默认为false，不阻止：新的登录会使得旧的登录失效掉
+
 
 logging:
   level:
