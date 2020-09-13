@@ -2,19 +2,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.2-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
     </parent>
 
+    <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.example</groupId>
-    <artifactId>demo2</artifactId>
+    <artifactId>demo3</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo2</name>
+    <name>demo3</name>
     <description>Demo project for Shoulder Framework</description>
+
 
     <properties>
         <java.version>11</java.version>
@@ -42,7 +43,7 @@
 
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-crypto</artifactId>
+            <artifactId>shoulder-starter-security-browser</artifactId>
         </dependency>
 
         <dependency>
@@ -53,10 +54,10 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-        </dependency>
+        <!--        <dependency>
+                    <groupId>com.zaxxer</groupId>
+                    <artifactId>HikariCP</artifactId>
+                </dependency>-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
@@ -86,14 +87,5 @@
 
     </dependencies>
 
-    <build>
-        <!-- spring boot 打包 -->
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

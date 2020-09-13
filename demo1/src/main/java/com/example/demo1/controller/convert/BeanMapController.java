@@ -55,10 +55,10 @@ public class BeanMapController {
     private ShopBO demoBO(){
         ShopBO bo = new ShopBO();
         bo.setId(StringUtils.uuid32());
-        bo.setName("解忧杂货铺");
+        bo.setName("shoulder 杂货铺");
         bo.setColor(MyColorEnum.BLUE);
         bo.setAddr("Beijing");
-        ShopBO.Owner owner = new ShopBO.Owner("xiaoming", 20);
+        ShopBO.Owner owner = new ShopBO.Owner("shoulder", 20);
         bo.setBoss(owner);
         bo.setCreateTime(new Date(System.currentTimeMillis()));
         return bo;

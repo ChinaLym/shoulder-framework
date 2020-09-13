@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>统一认证页面</title>
+</head>
+<body>
+<h2>demo3 的统一认证页面</h2>
+<small>
+    未登录时，访问任何地址（登录/注册/退出登录等页面除外）均会自动跳转到本页面，<a href="index.html">访问主页 index.html 试试</a><br>
+    如何自定义登录页面？<br>
+    方式1： 在项目目录工程的静态资源路径中添加名称为 facade-signIn.html 的 html；<br>
+    方式2： 修改 shoulder.security.browser.signInPage=xxx.html，然后在资源路径中添加 xxx.html<br>
+</small>
+
+<h3>用户名密码登录示例</h3>
+<small>
+    （该认证方式框架为 spring-security 中提供的，即默认从 UserDetailService#loadUserByUsername 中取用户信息。<br>
+    demo3中的实现是通过查数据库 tb_user 表。见 UserServiceImpl）<br>
+    注：tb_user.ddl 中默认插入的数据的密码均为 shoulder
+</small>
+<form action="/authentication/form" method="post">
+    <table>
+        <tr>
+            <td>用户名:</td>
+            <td><input name="username" type="text" value="shoulder"></td>
+        </tr>
+        <tr>
+            <td>密码（默认为 shoulder）:</td>
+            <td><input name="password" type="password" value="shoulder"></td>
+        </tr>
+        <tr>
+            <td>图形验证码:</td>
+            <td>
+                <input name="imageCode" type="text">
+                <img src="/code?type=imageCode">
+                <small>(默认可空，pom.xml 引入 `learn-security-starter-code`
+                    后，则表单登录必须填正确的验证码才能成功登录。支持短信验证码登录)
+                </small>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2'>
+                <!-- name 固定，spring-security 定义 -->
+                <input name="remember-me" type="checkbox" value="true"/>记住我
+                <small>（勾选该项后，即使关闭浏览器，在1个月内，不必认证也可以直接访问，即自动登录）</small>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button type="submit">登录</button>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<h3>短信登录</h3>
+<small>(pom.xml 引入 `learn-security-starter-code` 后，支持短信验证码登录)
+</small>
+<form action="/authentication/sms" method="post">
+    <table>
+        <tr>
+            <td>手机号:</td>
+            <td><input name="phoneNumber" type="text" value="13012345678"></td>
+        </tr>
+        <tr>
+            <td>短信验证码:</td>
+            <td>
+                <input name="smsCode" type="text">
+                <button onclick="down()" type="button">发送验证码</button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2'><input name="remember-me" type="checkbox" value="true"/>记住我</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button type="submit">登录</button>
+            </td>
+        </tr>
+    </table>
+</form>
+<br>
+<h3>社交登录</h3>
+<a href="/auth/qq">QQ登录</a>
+
+<a href="/auth/weixin">微信登录</a>
+</body>
+<script>
+    function down() {
+        var url = "http://locahost:8080"
+        var request = new XMLHttpRequest();
+        request.open("POST", "/code?type=smsCode&phoneNumber=13012345678");
+        request.send("F")
+    }
+</script>
+</html>

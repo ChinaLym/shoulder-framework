@@ -43,5 +43,17 @@ public class CryptoConfig {
         return DefaultAsymmetricCryptoProcessor.rsa2048(keyPairCache);
     }
 
+    /**
+     * 使用 redis 作为存储
+     */
+    /*@Bean("keyPairCache")
+    public KeyPairCache redisKeyPairCache(StringRedisTemplate redisTemplate,
+                                          LocalTextCipher localTextCipher, CryptoProperties cryptoProperties) {
+        KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate, localTextCipher);
+        keyPairCache.set(cryptoProperties.getKeyPair());
+        LoggerFactory.getLogger(getClass()).debug("redisKeyPairCache provide RedisKeyPairCache.");
+
+        return keyPairCache;
+    }*/
 
 }

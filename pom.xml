@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.itlym.demo</groupId>
+    <artifactId>shoulder-demos</artifactId>
+    <packaging>pom</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Shoulder-Demo</name>
+    <description>Demo projects for Shoulder Framework</description>
+
+    <modules>
+        <module>demo1</module>
+        <module>demo2</module>
+        <module>demo3</module>
+    </modules>
+
+</project>
