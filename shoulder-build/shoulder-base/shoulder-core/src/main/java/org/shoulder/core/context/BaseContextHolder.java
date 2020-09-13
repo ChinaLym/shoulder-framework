@@ -92,7 +92,7 @@ public class BaseContextHolder {
     }
 
     /**
-     * 设置语言标识 todo 默认以 HTTP header 的 Accept-Language 作为标记语言。
+     * 设置语言标识
      *
      * @param locale 语言标识
      */

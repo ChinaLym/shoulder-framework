@@ -120,7 +120,6 @@ public class RestControllerLogAspect {
         String[] parameterNames = methodSignature.getParameterNames();
         Object[] args = jp.getArgs();
 
-        // todo 记录请求头信息
         requestInfo.append("-- Headers --");
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {

@@ -6,7 +6,7 @@ import ch.qos.logback.core.pattern.PatternLayoutEncoderBase;
 import org.shoulder.core.log.logback.pattern.ShoulderPatternLayout;
 
 /**
- * 与 logback 默认的 {@link PatternLayoutEncoder} 相比，提高了性能和增加了感知时区变化的能力 fixme 暂时不能输出日志
+ * 与 logback 默认的 {@link PatternLayoutEncoder} 相比，提高了性能和增加了感知时区变化的能力
  *
  * @author lym
  * @see PatternLayoutEncoder

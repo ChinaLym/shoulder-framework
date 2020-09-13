@@ -3,11 +3,11 @@ package org.shoulder.code.dto;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
  * 验证码
- * todo refactor expireIn 改为 duration
  *
  * @author lym
  */
@@ -21,9 +21,9 @@ public class ValidateCodeDTO implements Serializable {
     private LocalDateTime expireTime;
 
 
-    public ValidateCodeDTO(String code, long expireSeconds) {
+    public ValidateCodeDTO(String code, Duration effectiveDuration) {
         this.code = code;
-        this.expireTime = LocalDateTime.now().plusSeconds(expireSeconds);
+        this.expireTime = LocalDateTime.now().plus(effectiveDuration);
     }
 
     public ValidateCodeDTO(String code, LocalDateTime expireTime) {

@@ -45,10 +45,12 @@ public class BrowserAuthenticationSuccessHandler extends SavedRequestAwareAuthen
         log.debug("authentication SUCCESS.");
 
         if (ResponseType.JSON.equals(responseType)) {
+            log.debug("json response for {}", request.getRequestURI());
             // 为了支持旧版本的浏览器
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             response.getWriter().write(ResponseUtil.success());
 		} else if(ResponseType.REDIRECT.equals(responseType)){
+            log.debug("redirect for {}", request.getRequestURI());
 			super.onAuthenticationSuccess(request, response, authentication);
 		} else {
             throw new IllegalStateException("");

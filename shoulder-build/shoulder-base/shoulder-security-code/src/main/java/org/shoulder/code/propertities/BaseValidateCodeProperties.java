@@ -1,6 +1,7 @@
 package org.shoulder.code.propertities;
 
 import javax.validation.constraints.Min;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ public abstract class BaseValidateCodeProperties {
     /**
      * 验证码有效秒数，默认 10 分钟
      */
-    private int effectiveSeconds = 60 * 10;
+    private Duration effectiveSeconds = Duration.ofMinutes(10);
 
     /**
      * 请求中的参数名
@@ -39,11 +40,11 @@ public abstract class BaseValidateCodeProperties {
         this.length = length;
     }
 
-    public int getEffectiveSeconds() {
+    public Duration getEffectiveSeconds() {
         return effectiveSeconds;
     }
 
-    public void setEffectiveSeconds(int effectiveSeconds) {
+    public void setEffectiveSeconds(Duration effectiveSeconds) {
         this.effectiveSeconds = effectiveSeconds;
     }
 

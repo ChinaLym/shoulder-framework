@@ -7,11 +7,11 @@ package org.shoulder.security.code.sms;
  *
  * @author lym
  */
-public class DefaultSmsCodeSender implements SmsCodeSender {
+public class MockSmsCodeSender implements SmsCodeSender {
 
     @Override
     public void send(String mobile, String code) {
-        System.out.println("向手机" + mobile + "发送短信验证码" + code);
+        System.out.println("假装向手机 " + mobile + " 发送短信验证码 " + code);
     }
 
 }

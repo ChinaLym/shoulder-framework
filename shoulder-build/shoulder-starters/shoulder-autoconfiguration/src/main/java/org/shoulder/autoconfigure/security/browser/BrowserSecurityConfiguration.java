@@ -20,7 +20,7 @@ import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
 /**
- * 浏览器环境下安全配置主类
+ * 浏览器环境下安全配置主类。若希望深度定制，可参考该类实现自己的 WebSecurityConfigurerAdapter
  *
  * @author lym
  */
@@ -85,8 +85,9 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
         }
 
         http
+            //.exceptionHandling()
             // 记住我配置，采用 spring security 的默认实现
-            // 如果想在'记住我'登录时记录日志，可以注册一个InteractiveAuthenticationSuccessEvent事件的监听器
+            // 如果想在'记住我'登录时记录日志，可以注册一个 InteractiveAuthenticationSuccessEvent 事件的监听器
             .rememberMe()
             //用token拿到用户名
             .tokenRepository(persistentTokenRepository)
@@ -113,6 +114,7 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .logout()
             .logoutUrl(SecurityConst.URL_AUTHENTICATION_CANCEL)
             .logoutSuccessHandler(logoutSuccessHandler)
+            .logoutSuccessUrl(browserSessionAuthProperties.getSignOutSuccessUrl())
             .deleteCookies("JSESSIONID")
             .and()
 
@@ -134,16 +136,16 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // 手机验证码登录请求
                 SecurityConst.URL_AUTHENTICATION_SMS,
 
+                // 退出登录跳转的请求
+                browserSessionAuthProperties.getSignOutSuccessUrl(),
+
                 // 注册页面
                 DefaultPage.SIGN_UP,
                 // 注册请求
                 SecurityConst.URL_REGISTER,
 
                 // session失效默认的跳转地址
-                // json 响应
-                browserSessionAuthProperties.getSession().getSessionInvalidUrl() + ".json",
-                // 页面响应
-                browserSessionAuthProperties.getSession().getSessionInvalidUrl() + ".html"
+                browserSessionAuthProperties.getSession().getSessionInvalidUrl()
             )
             .permitAll()
 

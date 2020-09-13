@@ -44,11 +44,10 @@ public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
     }
 
     /**
-     * 激活对用户信息的 AOP 解析
+     * web 上下文中对用户信息的 AOP 解析
      */
     @Bean
-    //@ConditionalOnClass(Assertion.class)
-    @ConditionalOnMissingBean(OperationLogOperatorInfoInterceptor.class)
+    @ConditionalOnMissingBean
     public OperationLogOperatorInfoInterceptor operationLogSsoOperatorInfoInterceptor() {
         return new OperationLogSsoOperatorInfoInterceptor();
     }

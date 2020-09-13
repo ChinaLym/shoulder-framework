@@ -5,6 +5,7 @@ import org.shoulder.code.consts.ValidateCodeConsts;
 import org.shoulder.code.processor.ValidateCodeProcessor;
 import org.shoulder.security.SecurityConst;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.util.AntPathMatcher;
@@ -64,8 +65,8 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         addUrlToMap(SecurityConst.URL_AUTHENTICATION_SMS, ValidateCodeConsts.SMS);
 
         List<ValidateCodeProcessor> allProcessors = validateCodeProcessorHolder.getAllProcessors();
-        for (int i = 0; i < allProcessors.size(); i++) {
-            addUrlToMap(allProcessors.get(i).processedUrls(), allProcessors.get(i).getType());
+        for (ValidateCodeProcessor allProcessor : allProcessors) {
+            addUrlToMap(allProcessor.processedUrls(), allProcessor.getType());
         }
     }
 
@@ -73,8 +74,9 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
      * 系统中配置的需要校验验证码的URL根据校验的类型放入map
      */
     protected void addUrlToMap(List<String> urls, String type) {
-        if (CollectionUtils.isEmpty(urls) || StringUtils.isBlank(type))
+        if (CollectionUtils.isEmpty(urls) || StringUtils.isBlank(type)) {
             return;
+        }
         urls.forEach(url -> addUrlToMap(url, type));
     }
 
@@ -82,14 +84,16 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
      * 系统中配置的需要校验验证码的URL根据校验的类型放入map
      */
     protected void addUrlToMap(String url, String type) {
-        if (StringUtils.isBlank(url) || StringUtils.isBlank(type))
+        if (StringUtils.isBlank(url) || StringUtils.isBlank(type)) {
             return;
+        }
         needValidateUrlAndTypeMap.put(url, type);
     }
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain chain)
         throws ServletException, IOException {
 
         String type;

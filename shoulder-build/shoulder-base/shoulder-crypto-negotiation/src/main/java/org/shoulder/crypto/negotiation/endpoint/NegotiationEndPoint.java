@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 密钥协商默认 endPoint
- * todo 考虑 @FrameworkEndPoint ? api-doc
  *
  * @author lym
  */

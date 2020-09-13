@@ -13,21 +13,26 @@ public enum CommonErrorCodeEnum implements ErrorCode {
 
     // ------------------------------- 认证 -----------------------------
     /**
+     * 未认证，需要认证后才能访问
+     */
+    AUTH_401_NEED_AUTH(1, "Need Authentication.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    /**
      * 认证失败：如用户名或密码凭据无效、由于白名单等被拒绝、未开启匿名访问等
      */
-    AUTH_401_UNAUTHORIZED(1, "Authentication failed.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    AUTH_401_UNAUTHORIZED(2, "Authentication failed.", Level.INFO, HttpStatus.UNAUTHORIZED),
     /**
      * 认证过期，需要重新认证
      */
-    AUTH_401_EXPIRED(2, "Certification expired. Re-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    AUTH_401_EXPIRED(3, "Certification expired. Re-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
+
     /**
      * 主动拒绝请求：权限不够
      */
-    AUTH_403_FORBIDDEN(3, "Permission deny.", Level.INFO, HttpStatus.FORBIDDEN),
+    AUTH_403_FORBIDDEN(8, "Permission deny.", Level.INFO, HttpStatus.FORBIDDEN),
     /**
      * 主动拒绝请求：令牌无效
      */
-    AUTH_403_TOKEN_INVALID(4, "Invalid token.", Level.INFO, HttpStatus.FORBIDDEN),
+    AUTH_403_TOKEN_INVALID(9, "Invalid token.", Level.INFO, HttpStatus.FORBIDDEN),
 
 
     // ------------------------------- 文件 -----------------------------

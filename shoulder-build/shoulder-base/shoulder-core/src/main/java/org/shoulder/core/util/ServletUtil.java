@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 public class ServletUtil {
 
     private static final String XML_HTTP_REQ_VALUE = "XMLHttpRequest";
+
     private static Logger logger = LoggerFactory.getLogger(ServletUtil.class);
 
     public static String getCookie(String cookieName) {

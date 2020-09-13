@@ -1,10 +1,14 @@
 package org.shoulder.security.authentication.browser.session;
 
 import org.apache.commons.lang3.StringUtils;
+import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
 import org.shoulder.security.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -75,11 +79,11 @@ public class AbstractSessionStrategy {
             logger.debug("redirectTo:" + targetUrl);
             redirectStrategy.sendRedirect(request, response, targetUrl);
         } else {
-            // todo 返回 json 格式、特定错误码 + msg
-            String result = buildResponseContent(request);
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            BaseResponse needAuthResponse = new BaseResponse(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
+            String resultMsg = buildResponseContent(request);
+            needAuthResponse.setMsg(resultMsg);
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            response.getWriter().write(ResponseUtil.jsonMsg(result));
+            response.getWriter().write(JsonUtils.toJson(needAuthResponse));
         }
 
     }
@@ -88,7 +92,7 @@ public class AbstractSessionStrategy {
      * 请求的是否为页面，暂且认为非ajax就是页面请求。若前后分离则总是返回 false
      */
     protected boolean isPageRequest(HttpServletRequest request) {
-        return !ServletUtil.isAjax(request);
+        return !ServletUtil.isAjax(request) && request.getHeader(HttpHeaders.ACCEPT).contains(MediaType.TEXT_HTML_VALUE);
     }
 
     protected String buildResponseContent(HttpServletRequest request) {

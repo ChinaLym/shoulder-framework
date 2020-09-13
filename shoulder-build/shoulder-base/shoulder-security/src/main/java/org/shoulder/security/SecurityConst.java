@@ -34,11 +34,14 @@ public interface SecurityConst {
     String URL_VALIDATE_CODE = "/code";
 
     /**
-     * 当请求需要身份认证时，默认跳转的url
+     * 当请求需要身份认证时，默认跳转的url，该路由必须允许访问，否则将导致重定向次数过多
      */
     String URL_REQUIRE_AUTHENTICATION = "/authentication/require";
 
     String AUTHENTICATION_SMS_PARAMETER_NAME = "phoneNumber";
+
+
+    String AUTH_FAIL_PARAM_NAME = "_auth_fail_reason";
 
 
     /**

@@ -55,13 +55,14 @@ public class BrowserSessionAuthBeanConfiguration {
     /**
      * 记住我功能的 token 存储类
      * 负责将token写入数据库并且查询出来的bean，用于记住我功能
-     * 需要存在 persistent_logins 表，spring security 不支持修改表名 todo shoulder 未来支持表名修改
+     * 需要存在 persistent_logins 表
      */
     @Bean
     @ConditionalOnClass(JdbcTemplate.class)
     @ConditionalOnBean(DataSource.class)
     @ConditionalOnMissingBean
     public PersistentTokenRepository persistentTokenRepository(DataSource dataSource, JdbcTemplate jdbcTemplate) {
+        // tokenRepository todo spring security 不支持修改表名 shoulder 未来支持表名修改
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSource);
 
@@ -93,11 +94,13 @@ public class BrowserSessionAuthBeanConfiguration {
 
     /**
      * 默认认证失败逻辑
+     * 登录失败后跳转到登录页面
      */
     @Bean
     @ConditionalOnMissingBean(AuthenticationFailureHandler.class)
     public AuthenticationFailureHandler browserAuthenticationFailureHandler() {
-        return new BrowserAuthenticationFailureHandler(browserSessionAuthProperties.getResponseType());
+        return new BrowserAuthenticationFailureHandler(browserSessionAuthProperties.getResponseType(),
+            SecurityConst.URL_REQUIRE_AUTHENTICATION);
     }
 
     /**
@@ -140,10 +143,11 @@ public class BrowserSessionAuthBeanConfiguration {
 
     /**
      * 待认证请求处理器，负责将请求跳转至登陆界面
+     *
      * @return 待认证请求处理器
      */
     @Bean
-    @ConditionalOnProperty(value ="shoulder.security.auth.browser.default-endpoint.enable", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "shoulder.security.auth.browser.default-endpoint.enable", havingValue = "true", matchIfMissing = true)
     public BrowserAuthEndpoint browserAuthEndpoint() {
         return new BrowserAuthEndpoint(browserSessionAuthProperties.getSignInPage());
     }

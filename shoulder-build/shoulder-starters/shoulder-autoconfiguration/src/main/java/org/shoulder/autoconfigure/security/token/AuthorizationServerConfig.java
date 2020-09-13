@@ -45,7 +45,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private UserDetailsService userDetailsService;
 
     /**
-     * fixme lack spring security 提供
+     * spring security 提供
      */
     @Autowired
     private AuthenticationManager authenticationManager;
