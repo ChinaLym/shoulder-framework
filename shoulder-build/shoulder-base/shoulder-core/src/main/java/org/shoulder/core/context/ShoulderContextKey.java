@@ -1,7 +1,7 @@
 package org.shoulder.core.context;
 
 /**
- * shoulder 框架中上下文缓存 key
+ * shoulder 框架上下文中的 key
  *
  * @author lym
  */

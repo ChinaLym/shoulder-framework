@@ -9,14 +9,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-
 /**
- * 当前上下文中的值
+ * 当前应用（请求）上下文中的值，作为 Holder 的角色，维护当前请求中一些常用的数据。
  *
  * @author lym
  */
 @SLog
-public class BaseContextHolder {
+public class AppContext {
 
     private static final ThreadLocal<Map<String, String>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(ShoulderContextKey.KEY_NUM));
 

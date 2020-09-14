@@ -1,6 +1,6 @@
 package org.shoulder.core.constant;
 
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 
 import java.nio.charset.Charset;
 import java.util.Base64;
@@ -14,7 +14,7 @@ public interface ByteSpecification {
     /**
      * 统一字符编码
      */
-    Charset STD_CHAR_SET = ApplicationInfo.charset();
+    Charset STD_CHAR_SET = AppInfo.charset();
 
     /**
      * 统一比特编码

@@ -1,6 +1,6 @@
 package org.shoulder.core.i18;
 
-import org.shoulder.core.context.BaseContextHolder;
+import org.shoulder.core.context.AppContext;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
@@ -93,7 +93,7 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
      */
     private Locale currentLocale() {
         // 尝试从上下（当前用户）中获取
-        Locale currentLocale = BaseContextHolder.getLocale();
+        Locale currentLocale = AppContext.getLocale();
         return currentLocale == null ? getDefaultLocale() : currentLocale;
     }
 

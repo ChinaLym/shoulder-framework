@@ -56,7 +56,7 @@ public interface ErrorCode {
      * @return 用于填充错误信息的数据
      */
     default Object[] getArgs() {
-        return null;
+        return new Object[0];
     }
 
     /**

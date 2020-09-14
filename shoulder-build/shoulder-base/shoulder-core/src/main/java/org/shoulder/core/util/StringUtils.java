@@ -3,7 +3,7 @@ package org.shoulder.core.util;
 import cn.hutool.core.util.StrUtil;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     private static final char SEPARATOR = '_';
-    private static final Charset CHARSET = ApplicationInfo.charset();
+    private static final Charset CHARSET = AppInfo.charset();
     /**
      * xss脚本正则
      */

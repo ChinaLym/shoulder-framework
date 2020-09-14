@@ -2,7 +2,7 @@ package org.shoulder.core.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -69,7 +69,7 @@ public class ExceptionUtil {
         if ("0".equals(errorCode)) {
             return "0";
         }
-        return ApplicationInfo.errorCodePrefix() + errorCode;
+        return AppInfo.errorCodePrefix() + errorCode;
     }
 
     public static String formatErrorCode(Long errorCode) {

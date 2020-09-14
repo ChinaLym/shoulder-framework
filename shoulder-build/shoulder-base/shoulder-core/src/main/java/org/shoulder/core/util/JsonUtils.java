@@ -21,7 +21,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.JsonRuntimeException;
 import org.slf4j.LoggerFactory;
 
@@ -150,11 +150,11 @@ public class JsonUtils {
         ObjectMapper objectMapper = new ObjectMapper();
 
         // 设置为配置中的统一 地区、时区、
-        objectMapper.setLocale(ApplicationInfo.defaultLocale());
-        objectMapper.setTimeZone(ApplicationInfo.timeZone());
+        objectMapper.setLocale(AppInfo.defaultLocale());
+        objectMapper.setTimeZone(AppInfo.timeZone());
 
         // 设置序列化日期为配置的统一时间格式
-        objectMapper.setDateFormat(new SimpleDateFormat(ApplicationInfo.dateFormat(), ApplicationInfo.defaultLocale()));
+        objectMapper.setDateFormat(new SimpleDateFormat(AppInfo.dateFormat(), AppInfo.defaultLocale()));
         // 反序列化时，允许存在 tab、换行符、结束语符、注释符等控制字符
         objectMapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
         // 反序列化时，可解析反斜杠引用的所有字符

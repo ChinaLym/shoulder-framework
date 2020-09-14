@@ -15,7 +15,7 @@ import java.util.TimeZone;
  * @author lym
  */
 @SLog
-public class ApplicationInfo {
+public class AppInfo {
 
     public static final String UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
 
@@ -98,33 +98,33 @@ public class ApplicationInfo {
     }
 
     public static void initAppId(String appId) {
-        ApplicationInfo.appId = appId;
+        AppInfo.appId = appId;
         log.info("initAppId: " + appId);
     }
 
     public static void initErrorCodePrefix(String errorCodePrefix) {
-        ApplicationInfo.errorCodePrefix = errorCodePrefix;
+        AppInfo.errorCodePrefix = errorCodePrefix;
         log.info("initErrorCodePrefix: " + errorCodePrefix);
     }
 
     public static void initVersion(String version) {
-        ApplicationInfo.version = version;
+        AppInfo.version = version;
         log.info("initVersion: " + version);
     }
 
     public static void initCluster(boolean cluster) {
-        ApplicationInfo.cluster = cluster;
+        AppInfo.cluster = cluster;
         log.info("initCluster: " + cluster);
     }
 
 
     public static void initDateFormat(String dateFormat) {
-        ApplicationInfo.dateFormat = dateFormat;
+        AppInfo.dateFormat = dateFormat;
         log.info("initDateFormat: " + dateFormat);
     }
 
     public static void initCharset(String charset) {
-        ApplicationInfo.charset = StringUtils.isNotEmpty(charset) && Charset.isSupported(charset) ?
+        AppInfo.charset = StringUtils.isNotEmpty(charset) && Charset.isSupported(charset) ?
             Charset.forName(charset) : StandardCharsets.UTF_8;
         log.info("initCharset: " + charset);
     }
@@ -135,13 +135,13 @@ public class ApplicationInfo {
      * @param locale 语言标识
      */
     public static void initDefaultLocale(Locale locale) {
-        ApplicationInfo.defaultLocale = locale;
+        AppInfo.defaultLocale = locale;
         log.info("initDefaultLocale: " + locale);
     }
 
 
     public static void initTimeZone(TimeZone timezone) {
-        ApplicationInfo.timeZone = timezone;
+        AppInfo.timeZone = timezone;
         log.info("initTimeZone: " + timezone);
     }
 }
