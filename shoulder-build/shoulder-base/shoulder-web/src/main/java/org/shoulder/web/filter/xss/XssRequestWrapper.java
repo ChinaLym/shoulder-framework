@@ -1,6 +1,6 @@
 package org.shoulder.web.filter.xss;
 
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -158,7 +158,7 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
         try {
             if (charset == null) {
                 // 支持修改?
-                charset = ApplicationInfo.charset().name();
+                charset = AppInfo.charset().name();
             }
             context = URLDecoder.decode(context, charset);
         } catch (UnsupportedEncodingException e) {

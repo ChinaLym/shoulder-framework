@@ -1,13 +1,14 @@
 package org.shoulder.autoconfigure.security.token;
 
+import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig;
 import org.shoulder.security.SecurityConst;
+import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -23,7 +24,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 )
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(value = TokenAuthBeanConfig.class)
-@ConditionalOnProperty(value = "shoulder.security.auth.type", havingValue = "token", matchIfMissing = false)
+@ConditionalOnAuthType(type = AuthenticationType.TOKEN)
 public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

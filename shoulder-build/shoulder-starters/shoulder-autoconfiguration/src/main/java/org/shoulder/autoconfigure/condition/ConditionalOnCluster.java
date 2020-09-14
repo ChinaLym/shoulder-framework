@@ -6,14 +6,14 @@ import java.lang.annotation.*;
 
 
 /**
- * 集群模式时激活
+ * 自动装配条件: 根据是否开启集群模式决定是否激活 Bean
  *
  * @author lym
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
-@Conditional(ClusterCondition.class)
+@Conditional(OnClusterCondition.class)
 public @interface ConditionalOnCluster {
 
     /**

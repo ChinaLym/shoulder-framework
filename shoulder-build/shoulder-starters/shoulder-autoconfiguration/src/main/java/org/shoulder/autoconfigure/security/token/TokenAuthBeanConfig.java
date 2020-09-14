@@ -1,8 +1,10 @@
 package org.shoulder.autoconfigure.security.token;
 
+import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationBeanConfig;
 import org.shoulder.autoconfigure.security.browser.BrowserSessionAuthProperties;
 import org.shoulder.security.SecurityConst;
+import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.token.handler.AppAuthenticationFailureHandler;
 import org.shoulder.security.authentication.token.handler.AppAuthenticationSuccessHandler;
 import org.shoulder.code.store.ValidateCodeStore;
@@ -15,6 +17,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -31,14 +34,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(AuthenticationBeanConfig.class)
 @EnableConfigurationProperties(OAuth2Properties.class)
-@ConditionalOnProperty(value = "shoulder.security.auth.type", havingValue = "token", matchIfMissing = false)
+@ConditionalOnAuthType(type = AuthenticationType.TOKEN)
 public class TokenAuthBeanConfig {
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ValidateCodeStore redisValidateCodeRepository(RedisTemplate redisTemplate) {
-        return new RedisValidateCodeRepository(redisTemplate);
-    }
 
     /**
      * ClientDetailsService
@@ -52,7 +49,7 @@ public class TokenAuthBeanConfig {
 
     /**
      * 认证成功处理器
-     * ClientDetailsService、AuthorizationServerTokenServices 由 @EnableAuthenticationServer 提供
+     * ClientDetailsService、AuthorizationServerTokenServices 由 {@link EnableAuthorizationServer} 提供
      */
     @Bean
     @ConditionalOnMissingBean(AuthenticationSuccessHandler.class)

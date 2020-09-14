@@ -1,6 +1,6 @@
 package org.shoulder.crypto.local.repository.impl;
 
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
@@ -40,7 +40,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         this(
             ClassUtils.getDefaultClassLoader().getResource("").getPath(),
             DEFAULT_FILE_NAME,
-            ApplicationInfo.charset()
+            AppInfo.charset()
         );
     }
 

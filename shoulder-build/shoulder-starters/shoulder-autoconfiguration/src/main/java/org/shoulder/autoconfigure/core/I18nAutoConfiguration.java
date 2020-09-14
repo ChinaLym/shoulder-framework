@@ -1,6 +1,6 @@
 package org.shoulder.autoconfigure.core;
 
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.i18.ShoulderMessageSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.context.MessageSourceProperties;
@@ -40,8 +40,8 @@ public class I18nAutoConfiguration {
     @Bean(name = AbstractApplicationContext.MESSAGE_SOURCE_BEAN_NAME)
     public ShoulderMessageSource shoulderMessageSource(MessageSourceProperties properties) {
         ShoulderMessageSource messageSource = new ShoulderMessageSource();
-        messageSource.setDefaultEncoding(ApplicationInfo.charset().name());
-        messageSource.setDefaultLocale(ApplicationInfo.defaultLocale());
+        messageSource.setDefaultEncoding(AppInfo.charset().name());
+        messageSource.setDefaultLocale(AppInfo.defaultLocale());
         messageSource.addBasenames(properties.getBasename());
         messageSource.setFallbackToSystemLocale(properties.isFallbackToSystemLocale());
         messageSource.setUseCodeAsDefaultMessage(properties.isUseCodeAsDefaultMessage());

@@ -2,7 +2,7 @@ package org.shoulder.log.operation.util;
 
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.dto.Operator;
@@ -32,7 +32,7 @@ public class OperationLogBuilder {
         Operator currentOperator = OpLogContextHolder.getCurrentOperator();
         return new OperationLogDTO(operation)
             .setOperator(currentOperator)
-            .setAppId(ApplicationInfo.appId());
+            .setAppId(AppInfo.appId());
     }
 
     /**

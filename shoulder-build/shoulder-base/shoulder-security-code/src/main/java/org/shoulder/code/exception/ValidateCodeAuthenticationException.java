@@ -1,6 +1,7 @@
 package org.shoulder.code.exception;
 
 
+import org.shoulder.security.exception.ShoulderAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 
 /**
@@ -8,7 +9,7 @@ import org.springframework.security.core.AuthenticationException;
  *
  * @author lym
  */
-public class ValidateCodeAuthenticationException extends AuthenticationException {
+public class ValidateCodeAuthenticationException extends ShoulderAuthenticationException {
 
     public ValidateCodeAuthenticationException(String msg) {
         super(msg);

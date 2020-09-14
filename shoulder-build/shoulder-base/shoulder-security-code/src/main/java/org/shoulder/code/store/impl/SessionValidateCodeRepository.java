@@ -18,24 +18,24 @@ public class SessionValidateCodeRepository implements ValidateCodeStore {
 
     @Override
     public void save(ServletWebRequest request, ValidateCodeDTO code, String validateCodeType) {
-        request.getRequest().getSession().setAttribute(builderSessionKey(validateCodeType), code);
+        request.getRequest().getSession().setAttribute(buildSessionKey(validateCodeType), code);
     }
 
 
     @Override
     public ValidateCodeDTO get(ServletWebRequest request, String validateCodeType) {
-        return (ValidateCodeDTO) request.getRequest().getSession().getAttribute(builderSessionKey(validateCodeType));
+        return (ValidateCodeDTO) request.getRequest().getSession().getAttribute(buildSessionKey(validateCodeType));
     }
 
     @Override
     public void remove(ServletWebRequest request, String codeType) {
-        request.getRequest().getSession().removeAttribute(builderSessionKey(codeType));
+        request.getRequest().getSession().removeAttribute(buildSessionKey(codeType));
     }
 
     /**
      * 验证码放入 session 的 key
      */
-    protected String builderSessionKey(String validateCodeType) {
+    protected String buildSessionKey(String validateCodeType) {
         return DEFAULT_KEY_PREFIX + validateCodeType.toUpperCase();
     }
 

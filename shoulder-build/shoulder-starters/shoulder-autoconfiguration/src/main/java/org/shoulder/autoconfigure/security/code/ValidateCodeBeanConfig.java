@@ -1,18 +1,23 @@
 package org.shoulder.autoconfigure.security.code;
 
+import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
+import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.code.ValidateCodeFilter;
 import org.shoulder.code.ValidateCodeProcessorHolder;
 import org.shoulder.code.consts.ValidateCodeConsts;
 import org.shoulder.code.controller.ValidateCodEndpoint;
 import org.shoulder.code.processor.ValidateCodeProcessor;
 import org.shoulder.code.store.ValidateCodeStore;
+import org.shoulder.code.store.impl.MemoryValidateCodeRepository;
+import org.shoulder.code.store.impl.RedisValidateCodeRepository;
 import org.shoulder.code.store.impl.SessionValidateCodeRepository;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.security.authentication.AuthenticationType;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -68,29 +73,40 @@ public class ValidateCodeBeanConfig {
 
     // ----------------- ValidateCodeStore 默认实现 --------------------
 
-    @ConditionalOnMissingBean(ValidateCodeStore.class)
-    @Configuration(
-        proxyBeanMethods = false
-    )
-    public static class ValidateCodeStoreConfig {
-        /*@ConditionalOnMissingBean(RedisTemplate.class)
-        @ConditionalOnClass(RedisTemplate.class)
-        @Bean
-        public RedisTemplate redisTemplate(){
-            return new RedisTemplate();
-        }
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnAuthType(type = AuthenticationType.SESSION)
+    public ValidateCodeStore sessionValidateCodeRepository() {
+        return new SessionValidateCodeRepository();
+    }
+
+
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnMissingBean(value = ValidateCodeStore.class)
+    @ConditionalOnClass(RedisTemplate.class)
+    @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
+    public static class RedisValidateCodeStoreConfiguration {
 
         @Bean
-        @ConditionalOnClass(RedisTemplate.class)
-        public ValidateCodeStore RedisValidateCodeRepository(RedisTemplate redisTemplate){
+        public ValidateCodeStore redisValidateCodeRepository(RedisTemplate redisTemplate) {
             return new RedisValidateCodeRepository(redisTemplate);
-        }*/
-
-        @Bean
-        @ConditionalOnMissingBean(ValidateCodeStore.class)
-        public ValidateCodeStore sessionValidateCodeRepository() {
-            return new SessionValidateCodeRepository();
         }
     }
+
+    @Deprecated
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnMissingBean(value = ValidateCodeStore.class)
+    @ConditionalOnMissingClass(value = "org.springframework.data.redis.core.RedisTemplate")
+    @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
+    public static class MemoryValidateCodeStoreConfiguration {
+
+        @Bean
+        public ValidateCodeStore memoryValidateCodeRepository() {
+            LoggerFactory.getLogger(getClass()).warn("MemoryValidateCodeRepository is a ValidateCodeStore just for test, not a production level implement.");
+            return new MemoryValidateCodeRepository();
+        }
+    }
+
+
 
 }

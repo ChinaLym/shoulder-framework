@@ -25,6 +25,11 @@
             <artifactId>shoulder-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-security</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

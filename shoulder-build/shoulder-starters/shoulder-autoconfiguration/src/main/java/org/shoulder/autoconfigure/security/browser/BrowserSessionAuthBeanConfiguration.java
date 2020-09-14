@@ -1,7 +1,9 @@
 package org.shoulder.autoconfigure.security.browser;
 
+import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationBeanConfig;
 import org.shoulder.security.SecurityConst;
+import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.browser.BrowserAuthEndpoint;
 import org.shoulder.security.authentication.browser.handler.BrowserAuthenticationFailureHandler;
 import org.shoulder.security.authentication.browser.handler.BrowserAuthenticationSuccessHandler;
@@ -41,7 +43,7 @@ import javax.sql.DataSource;
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(AuthenticationBeanConfig.class)
 @EnableConfigurationProperties(BrowserSessionAuthProperties.class)
-@ConditionalOnProperty(value = "shoulder.security.auth.type", havingValue = "session", matchIfMissing = true)
+@ConditionalOnAuthType(type = AuthenticationType.SESSION)
 public class BrowserSessionAuthBeanConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(BrowserSessionAuthBeanConfiguration.class);

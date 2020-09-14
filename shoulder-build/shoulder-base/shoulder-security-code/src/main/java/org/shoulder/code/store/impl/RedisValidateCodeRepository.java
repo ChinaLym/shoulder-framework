@@ -47,7 +47,7 @@ public class RedisValidateCodeRepository implements ValidateCodeStore {
     }
 
     /**
-     * 返回在 redis 中存储验证码的 key
+     * todo 必须使用deviceId。 返回在 redis 中存储验证码的 key
      *
      * @param request request response
      * @param type    类型

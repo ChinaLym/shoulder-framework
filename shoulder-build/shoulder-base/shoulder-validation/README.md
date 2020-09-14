@@ -44,3 +44,8 @@
 
 
 常用正则表达式参见开源的 `any-rule`。
+
+
+## 推荐阅读：
+
+- [Spring Validation最佳实践与实现原理](https://zhuanlan.zhihu.com/p/205151764)

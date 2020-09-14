@@ -1,6 +1,6 @@
 package org.shoulder.autoconfigure.core;
 
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
 import org.slf4j.Logger;
@@ -62,14 +62,14 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
                     "' are empty! set value please");
             }
         }
-        ApplicationInfo.initAppId(environment.getProperty("shoulder.application.id"));
-        ApplicationInfo.initErrorCodePrefix(environment.getProperty("shoulder.application.errorCodePrefix"));
-        ApplicationInfo.initVersion(environment.getProperty("shoulder.application.version"));
-        ApplicationInfo.initDateFormat(environment.getProperty("shoulder.application.dateFormat"));
-        ApplicationInfo.initCharset(environment.getProperty("shoulder.application.charset"));
-        ApplicationInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
-        ApplicationInfo.initDefaultLocale(StringUtils.parseLocale(environment.getProperty("shoulder.application.defaultLocale")));
-        ApplicationInfo.initTimeZone(TimeZone.getTimeZone(environment.getProperty("shoulder.application.timeZone")));
+        AppInfo.initAppId(environment.getProperty("shoulder.application.id"));
+        AppInfo.initErrorCodePrefix(environment.getProperty("shoulder.application.errorCodePrefix"));
+        AppInfo.initVersion(environment.getProperty("shoulder.application.version"));
+        AppInfo.initDateFormat(environment.getProperty("shoulder.application.dateFormat"));
+        AppInfo.initCharset(environment.getProperty("shoulder.application.charset"));
+        AppInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
+        AppInfo.initDefaultLocale(StringUtils.parseLocale(environment.getProperty("shoulder.application.defaultLocale")));
+        AppInfo.initTimeZone(TimeZone.getTimeZone(environment.getProperty("shoulder.application.timeZone")));
     }
 
 

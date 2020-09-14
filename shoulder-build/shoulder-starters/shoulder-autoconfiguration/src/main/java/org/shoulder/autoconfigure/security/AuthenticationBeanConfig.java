@@ -7,6 +7,7 @@ import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityCo
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Configuration(
     proxyBeanMethods = false
 )
+@EnableConfigurationProperties(AuthenticationProperties.class)
 @ConditionalOnClass(SecurityConst.class)
 public class AuthenticationBeanConfig {
 

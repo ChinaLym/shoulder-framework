@@ -1,11 +1,13 @@
 package org.shoulder.code.exception;
 
+import org.shoulder.core.exception.BaseRuntimeException;
+
 /**
- * 验证码相关异常
+ * 验证码相关异常 todo interface Enum
  *
  * @author lym
  */
-public class ValidateCodeException extends RuntimeException {
+public class ValidateCodeException extends BaseRuntimeException {
 
     public ValidateCodeException(String msg) {
         super(msg);

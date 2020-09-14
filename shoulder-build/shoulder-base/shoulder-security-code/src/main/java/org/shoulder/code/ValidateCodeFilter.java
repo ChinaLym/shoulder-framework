@@ -60,9 +60,6 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     @Override
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
-        // 两个默认的处理：表单登录默认需要验证码，手机短信验证码登录默认需要校验短信验证码
-        addUrlToMap(SecurityConst.URL_AUTHENTICATION_FORM, ValidateCodeConsts.IMAGE);
-        addUrlToMap(SecurityConst.URL_AUTHENTICATION_SMS, ValidateCodeConsts.SMS);
 
         List<ValidateCodeProcessor> allProcessors = validateCodeProcessorHolder.getAllProcessors();
         for (ValidateCodeProcessor allProcessor : allProcessors) {

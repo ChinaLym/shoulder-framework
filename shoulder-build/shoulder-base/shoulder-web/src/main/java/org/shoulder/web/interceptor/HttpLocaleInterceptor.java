@@ -1,6 +1,6 @@
 package org.shoulder.web.interceptor;
 
-import org.shoulder.core.context.BaseContextHolder;
+import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.ShoulderContextKey;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,18 +24,18 @@ public class HttpLocaleInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        BaseContextHolder.setLocale(request.getLocale());
+        AppContext.setLocale(request.getLocale());
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
-        BaseContextHolder.remove(ShoulderContextKey.Locale);
+        AppContext.remove(ShoulderContextKey.Locale);
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
-        BaseContextHolder.remove(ShoulderContextKey.Locale);
+        AppContext.remove(ShoulderContextKey.Locale);
     }
 
 }

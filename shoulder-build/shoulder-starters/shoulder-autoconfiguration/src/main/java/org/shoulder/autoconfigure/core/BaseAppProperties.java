@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.core;
 
 import lombok.Data;
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -33,7 +33,7 @@ public class BaseAppProperties {
     /**
      * 全局统一日期格式，默认为UTC时间格式: yyyy-MM-dd'T'HH:mm:ss.SSS Z
      */
-    private String dateFormat = ApplicationInfo.UTC_DATE_FORMAT;
+    private String dateFormat = AppInfo.UTC_DATE_FORMAT;
 
     /**
      * 全局统一字符集，默认为 UTF-8

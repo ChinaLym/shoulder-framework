@@ -1,9 +1,11 @@
 package org.shoulder.autoconfigure.security.browser;
 
+import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationBeanConfig;
 import org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.SecurityConst.DefaultPage;
+import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 )
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(value = {AuthenticationBeanConfig.class, BrowserSessionAuthBeanConfiguration.class})
-@ConditionalOnProperty(value = "shoulder.security.auth.type", havingValue = "session", matchIfMissing = true)
+@ConditionalOnAuthType(type = AuthenticationType.SESSION)
 public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired

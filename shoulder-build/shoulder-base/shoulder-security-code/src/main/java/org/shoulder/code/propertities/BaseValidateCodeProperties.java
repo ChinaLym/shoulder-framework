@@ -29,6 +29,7 @@ public abstract class BaseValidateCodeProperties {
 
     /**
      * 需要校验验证码的 url 路径，支持通配符
+     * 由于验证码本身就是一个少量业务使用，暂未支持路径排除
      */
     private List<String> urls;
 

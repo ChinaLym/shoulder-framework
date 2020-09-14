@@ -3,7 +3,7 @@ package org.shoulder.autoconfigure.monitor;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.config.MeterFilter;
-import org.shoulder.core.context.ApplicationInfo;
+import org.shoulder.core.context.AppInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,7 @@ public class PrometheusAutoConfiguration {
      */
     @Bean
     public MeterRegistryCustomizer<MeterRegistry> configurer() {
-        return (registry) -> registry.config().commonTags("application", ApplicationInfo.appId());
+        return (registry) -> registry.config().commonTags("application", AppInfo.appId());
     }
 
     @Bean

@@ -1,5 +1,6 @@
 package org.shoulder.security.authentication.token.handler;
 
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.security.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +90,7 @@ public class AppAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 
     private String[] extractAndDecodeHeader(String header, HttpServletRequest request) throws IOException {
 
-        byte[] base64Token = header.substring(6).getBytes("UTF-8");
+        byte[] base64Token = header.substring(6).getBytes(AppInfo.charset());
         byte[] decoded;
         try {
             decoded = Base64.decode(base64Token);
@@ -97,7 +98,7 @@ public class AppAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
             throw new BadCredentialsException("Failed to decode basic authentication token");
         }
 
-        String token = new String(decoded, "UTF-8");
+        String token = new String(decoded, AppInfo.charset());
 
         int delim = token.indexOf(":");
 
