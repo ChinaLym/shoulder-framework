@@ -78,3 +78,5 @@ IDEA 自动提示需要安装 `shoulder-lombok-plugins`
         - 不需要填充参数
         - 需要填充 data（上层异常的msg）
 
+
+[spring boot 注解解释](https://www.cnblogs.com/lovecindywang/p/9846846.html)

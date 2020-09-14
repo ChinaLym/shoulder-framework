@@ -44,8 +44,14 @@ Dashboard Setting -> Variables，选择相应的变量进行修改，这里修�
 
 ## 原生使用
 
+- Gauges（度量）
+- Counters（计数器）
+- Histograms（直方图数据）
+- Meters（TPS计算器）
+- Timers（计时器）
+
 ### Counter
-Counter(计数器)简单理解就是一种只增不减的计数器。它通常用于记录服务的请求数量、完成的任务数量、错误的发生数量等等，它只具备增量计数能力。举个例子：
+Counter(计数器)简单64位的计数器，他可以增加和减少。它通常用于记录服务的请求数量、完成的任务数量、错误的发生数量等等，它只具备增量计数能力。举个例子：
 ```java
 
         //tag必须成对出现，也就是偶数个
@@ -68,7 +74,8 @@ Counter(计数器)简单理解就是一种只增不减的计数器。它通常�
 
 ### Gauge
 
-Gauge(仪表)是一个表示单个数值的度量，它可以表示任意地上下移动的数值测量。Gauge通常用于变动的测量值，如当前的内存使用情况、队列中的消息数量、线程池中线程个数、可使用的资源/锁数量、已经占用的资源数量等
+Gauge(仪表)是一个表示单个数值的度量，最简单的度量类型，只有一个简单的返回值，他用来记录一些对象或者事物的瞬时值。它可以表示任意地上下移动的数值测量。Gauge
+通常用于变动的测量值，如当前的内存使用情况、队列中的消息数量、线程池中线程个数、可使用的资源/锁数量、已经占用的资源数量等
 
 Gauge 关注的度量统计角度是VALUE(值)，它的构建方法中依赖于函数式接口ToDoubleFunction的实例(如例子中的实例方法引用AtomicInteger::get)
 和一个依赖于ToDoubleFunction改变自身值的实例(如例子中的AtomicInteger实例)
@@ -182,9 +189,13 @@ public class PrometheusAspectConfig {
 
 prometheus.集的指标由`指标名称 metric name`、`标签 label name` 两部分构成,格式:
 `<metric name>{<label name>=<lable value>,<label name>=<lable value>....}`
+
+每一个时间序列数据由metric度量指标名称和它的标签labels键值对集合唯一确定。
+
 - 指标名称( metric name):
     - 指标名称用于说明指标的含义
-    - 由字母、数值、下划线或冒号(分隔符)组成,其中冒号不能用于 exporter
+    - 由字母、数值、下划线或冒号(分隔符)组成
+    - 注意：冒号保留用于用户定义的录制规则。 它们不应被exporter或直接仪表使用。
 - 标签( label):
     - 标签体现指标的维度特征,用于过滤和聚标签名和标签值,形成多种维度的表达。
 
@@ -219,3 +230,5 @@ prometheus.集的指标由`指标名称 metric name`、`标签 label name` 两�
 - [Prometheus+Springboot2.x实用实战——Timer（一）之@Timed初探](https://blog.csdn.net/weixin_42182797/article/details/102614969)
 
 - [基于Prometheus搭建SpringCloud全方位立体监控体系](https://www.cnblogs.com/throwable/p/9346547.html)
+
+- [Prometheus 概念：数据模型、metric类型、任务、实例](https://www.cnblogs.com/zhoujinyi/p/11936865.html)

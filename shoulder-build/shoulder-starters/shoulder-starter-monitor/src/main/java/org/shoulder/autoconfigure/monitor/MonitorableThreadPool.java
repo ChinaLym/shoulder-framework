@@ -1,4 +1,4 @@
-package org.shoulder.core.util;
+package org.shoulder.autoconfigure.monitor;
 
 import lombok.Data;
 import org.shoulder.core.log.Logger;
@@ -10,13 +10,14 @@ import java.util.List;
 import java.util.concurrent.*;
 
 /**
- * 增加了监控的线程池
+ * 带指标可监控的线程池，推荐需要稳定执行、重要的业务使用，以更好的掌握系统运行状态
  * todo JDK 中实现的当且仅当任务队列满了时才会创建新线程，但如果这时候突发来多个任务，则导致任务很可能被拒绝
  * 实际中应根据队列容量自动扩容线程数，如，当队列中任务数达到上限的 70%、80%、90%，则自动扩容线程，而不是满了之后才扩容
  * 动态设置参数实现： 对接配置中心
  * 监控、告警实现： 对接 prometheus，过载告警
  * 操作记录与审计： 对接日志中心，变更通知
  * https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html
+ * todo 任务可以有标签（任务名/类名）；拆为参数可动态调整；可监控两个类
  *
  * @author lym
  */
@@ -43,6 +44,11 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
      * 默认为 30s，可动态调整
      */
     private long slowTaskThreshold = Duration.ofSeconds(30).toMillis();
+
+    /**
+     * 当前参数，供监控访问，而非每次都访问线程池的属性
+     */
+    private ThreadPoolMetrics metrics;
 
     /**
      * 调用父类的构造方法，并初始化HashMap和线程池名称
@@ -128,6 +134,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
             // 异常执行完毕
         }
 
+        //this.metrics.taskCount().set(getTaskCount());
     }
 
     /**
@@ -191,11 +198,11 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
          */
         private String poolName;
         /**
-         * 核心线程大小 不可修改
+         * 核心线程大小
          */
         private Integer corePoolSize;
         /**
-         * 最大线程大小 不可修改
+         * 最大线程大小
          */
         private Integer maxPoolSize;
         /**
