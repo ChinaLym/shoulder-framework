@@ -1,23 +1,24 @@
 package org.shoulder.autoconfigure.monitor;
 
-import lombok.Data;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.springframework.lang.NonNull;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.*;
 
 /**
  * 带指标可监控的线程池，推荐需要稳定执行、重要的业务使用，以更好的掌握系统运行状态
+ *
  * todo JDK 中实现的当且仅当任务队列满了时才会创建新线程，但如果这时候突发来多个任务，则导致任务很可能被拒绝
  * 实际中应根据队列容量自动扩容线程数，如，当队列中任务数达到上限的 70%、80%、90%，则自动扩容线程，而不是满了之后才扩容
+ *
  * 动态设置参数实现： 对接配置中心
  * 监控、告警实现： 对接 prometheus，过载告警
  * 操作记录与审计： 对接日志中心，变更通知
  * https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html
- * todo 任务可以有标签（任务名/类名）；拆为参数可动态调整；可监控两个类
+ *
+ * @see MonitorableRunnable 任务（Runnable）可以有标签（任务名/类名）
  *
  * @author lym
  */
@@ -40,15 +41,16 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
     private ThreadLocal<Long> workerStartTimeStamp = new ThreadLocal<>();
 
     /**
-     * 慢任务执行阈值，超过这个时间，则需要记录并发出告警。
-     * 默认为 30s，可动态调整
-     */
-    private long slowTaskThreshold = Duration.ofSeconds(30).toMillis();
-
-    /**
      * 当前参数，供监控访问，而非每次都访问线程池的属性
      */
     private ThreadPoolMetrics metrics;
+
+
+    /**
+     * 线程池满的拒绝策略
+     */
+    private static final RejectedExecutionHandler DEFAULT_HANDLER = new AbortPolicy();
+
 
     /**
      * 调用父类的构造方法，并初始化HashMap和线程池名称
@@ -61,8 +63,8 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
      * @param poolName        线程池名称
      */
     public MonitorableThreadPool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, String poolName) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
-        this.poolName = poolName;
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, Executors.defaultThreadFactory(),
+            DEFAULT_HANDLER, poolName);
     }
 
     /**
@@ -76,8 +78,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
      * @param poolName        线程池名称
      */
     public MonitorableThreadPool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, String poolName) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
-        this.poolName = poolName;
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, DEFAULT_HANDLER, poolName);
     }
 
     /**
@@ -91,8 +92,8 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
      * @param poolName        线程池名称
      */
     public MonitorableThreadPool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler, String poolName) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
-        this.poolName = poolName;
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, Executors.defaultThreadFactory(), handler
+            , poolName);
     }
 
     /**
@@ -108,13 +109,40 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
      */
     public MonitorableThreadPool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler, String poolName) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
+
+        // 初始化指标
         this.poolName = poolName;
+        initMetrics();
+        setRejectedExecutionHandler(new MonitorableRejectHandler(handler, metrics));
+    }
+
+    private void initMetrics() {
+        // todo 指标名称
+        metrics = new ThreadPoolMetrics("appId_thread_pool", poolName);
+        this.metrics.corePoolSize().set(getCorePoolSize());
+        this.metrics.activeCount().set(getActiveCount());
+        this.metrics.maximumPoolSize().set(getMaximumPoolSize());
+        this.metrics.largestPoolSize().set(getCorePoolSize());
+        this.metrics.queueCapacity().set(getQueue().remainingCapacity());
+        //this.getKeepAliveTime(TimeUnit.MILLISECONDS)
+
     }
 
     @Override
     protected void beforeExecute(Thread t, Runnable r) {
-        workerStartTimeStamp.set(System.currentTimeMillis());
         super.beforeExecute(t, r);
+
+        //metrics.corePoolSize().set(getCorePoolSize());
+        //metrics.maximumPoolSize().set(getMaximumPoolSize());
+
+        metrics.activeCount().set(getActiveCount());
+        metrics.poolSize().set(getPoolSize());
+        metrics.largestPoolSize().set(getLargestPoolSize());
+
+        metrics.queueSize().set(getQueue().size());
+
+        workerStartTimeStamp.set(System.currentTimeMillis());
+
     }
 
     @Override
@@ -122,6 +150,8 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
         long finishStamp = System.currentTimeMillis();
         long consuming = workerStartTimeStamp.get() - finishStamp;
         workerStartTimeStamp.remove();
+        // 默认使用 ms 记录执行时间
+        this.metrics.taskExecuteTime(r).record(consuming, TimeUnit.MILLISECONDS);
 
         super.afterExecute(r, t);
 
@@ -132,9 +162,12 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
 
         } else {
             // 异常执行完毕
+            metrics.exceptionCount(r).increment();
         }
 
-        //this.metrics.taskCount().set(getTaskCount());
+        // 可通过完成数 + 队列数计算，不精确，但可以避免锁竞争
+        this.metrics.taskCount().set(getTaskCount());
+        this.metrics.completedTaskCount().set(getCompletedTaskCount());
     }
 
     /**
@@ -148,6 +181,9 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
         // 统计已执行任务、正在执行任务、未执行任务数量
         log.info("{} Going to immediately shutdown. Executed tasks: {}, Running tasks: {}, Pending tasks: {}",
             this.poolName, this.getCompletedTaskCount(), this.getActiveCount(), this.getQueue().size());
+        metrics.completedTaskCount().set(getCompletedTaskCount());
+        metrics.activeCount().set(getActiveCount());
+        metrics.queueSize().set(getQueue().size());
         return super.shutdownNow();
     }
 
@@ -159,8 +195,34 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
         // 统计已执行任务、正在执行任务、未执行任务数量
         log.info("{} Going to shutdown. Executed tasks: {}, Running tasks: {}, Pending tasks: {}",
             this.poolName, this.getCompletedTaskCount(), this.getActiveCount(), this.getQueue().size());
+        metrics.completedTaskCount().set(getCompletedTaskCount());
+        metrics.activeCount().set(getActiveCount());
+        metrics.queueSize().set(getQueue().size());
         super.shutdown();
     }
+
+
+    /**
+     * 修改核心线程数
+     * @param newCorePoolSize 0 <= corePoolSize <= maximumPoolSize
+     */
+    @Override
+    public void setCorePoolSize(int newCorePoolSize) {
+        super.setCorePoolSize(newCorePoolSize);
+        this.metrics.corePoolSize().set(newCorePoolSize);
+    }
+
+
+    /**
+     * 修改最大线程数
+     * @param newMaximumPoolSize corePoolSize <= maximumPoolSize && 0 < maximumPoolSize
+     */
+    @Override
+    public void setMaximumPoolSize(int newMaximumPoolSize) {
+        super.setMaximumPoolSize(newMaximumPoolSize);
+        this.metrics.maximumPoolSize().set(newMaximumPoolSize);
+    }
+
 
 
     /* 注意，若希望获取某一时刻的状态，必须加锁获取。仅依次获取可能不准（因为不同的get不在同一时刻执行）。
@@ -181,64 +243,6 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
      */
     public String getPoolName() {
         return poolName;
-    }
-
-    public long getSlowTaskThreshold() {
-        return slowTaskThreshold;
-    }
-
-    public void setSlowTaskThreshold(long slowTaskThreshold) {
-        this.slowTaskThreshold = slowTaskThreshold;
-    }
-
-    @Data
-    public static class ThreadPoolInfoDTO {
-        /**
-         * 线程池名称（标识） 不可修改
-         */
-        private String poolName;
-        /**
-         * 核心线程大小
-         */
-        private Integer corePoolSize;
-        /**
-         * 最大线程大小
-         */
-        private Integer maxPoolSize;
-        /**
-         * 当前线程个数
-         */
-        private Integer currentThreadNum;
-        /**
-         * 当前活跃线程个数
-         */
-        private Integer currentActiveCount;
-        /**
-         * 历史最大线程大小
-         */
-        private Integer largestPoolSize;
-
-        /**
-         * 队列类型
-         */
-        private String queueType;
-        /**
-         * 队列最大大小
-         */
-        private Integer queueCapacity;
-        /**
-         * 队列中任务数量
-         */
-        private Integer queueSize;
-        // 剩余容量
-        //private Integer queueRemainingCapacity;
-
-        private Integer rejectCount;
-
-        /**
-         * 任务执行耗时，根据此值，统计最大、平均、90% 95% 99%  fixme Map
-         */
-        private Integer executeTime;
     }
 
 }
