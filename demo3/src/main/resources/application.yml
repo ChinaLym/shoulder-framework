@@ -2,7 +2,7 @@
 
 spring:
   application:
-    name: demo2
+    name: demo3
 
   datasource:
     type: com.zaxxer.hikari.HikariDataSource

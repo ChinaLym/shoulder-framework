@@ -1,0 +1,32 @@
+# demo2 使用 yaml 格式配置作为示例，properties转yaml: https://www.toyaml.com/index.html
+
+spring:
+  application:
+    name: demo4
+
+management:
+  server:
+    port: 8080
+    address: 127.0.0.1
+
+  endpoints:
+    web:
+      #base-path: '/springManage'   # url 前缀
+      exposure:
+        include: '*'                # 开放所有 端点
+  #metrics:
+  #  tags:
+  #    application: ${spring.application.name}
+
+shoulder:
+  application:
+    errorCodePrefix: '0x000b'
+    id: ${spring.application.name}
+
+logging:
+  level:
+    org:
+      springframework: warn
+
+
+debug: false

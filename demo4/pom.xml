@@ -11,9 +11,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
-    <artifactId>demo3</artifactId>
+    <artifactId>demo4</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo3</name>
+    <name>demo4</name>
     <description>Demo project for Shoulder Framework</description>
 
 
@@ -22,6 +22,11 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-monitor</artifactId>
+        </dependency>
 
         <!-- 包含了 spring-boot-starter-web，在其之上额外提供了更棒的能力 -->
         <dependency>
@@ -36,46 +41,6 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-beanmap</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-security-browser</artifactId>
-        </dependency>
-
-        <!-- 验证码框架，开启后可测试验证码，关闭后验证码功能将无效 -->
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-security-code</artifactId>
-        </dependency>
-
-        <!--认证服务器，使用 token 认证，在 test 里测试 -->
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-auth-server</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-data-db</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <!--        <dependency>
-                    <groupId>com.zaxxer</groupId>
-                    <artifactId>HikariCP</artifactId>
-                </dependency>-->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-        </dependency>
         <!-- shoulder 继承了 spring boot 的所有特性，引入 spring boot 的jar 一样不需要写版本号 -->
 
         <!-- 热更新插件，修改代码无需重启 -->

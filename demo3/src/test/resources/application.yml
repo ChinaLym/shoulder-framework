@@ -1,0 +1,34 @@
+# demo2 使用 yaml 格式配置作为示例，properties转yaml: https://www.toyaml.com/index.html
+
+spring:
+  application:
+    name: demo2
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_ADDR}/demo_shoulder?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
+    username: root
+    password: ${MYSQL_PWD} # 这里使用了系统的环境变量，参见 spring boot 的特性
+
+  resources:
+    cache:
+      period: 1
+    chain:
+      cache: true # 关闭 html 缓存，以修改后实时查看
+
+shoulder:
+  application:
+    errorCodePrefix: '0x000b'
+    id: ${spring.application.name}
+
+  security:
+    auth: # 如果使用者自行实现登录成功、退出成功处理器，则这些配置将失效，使用者实现的优先生效
+      type: token # 测试环境这里设置为 token。session 方式已经在页面上可以测过了！！！！！！！
+
+logging:
+  level:
+    org:
+      springframework: warn
+
+debug: false

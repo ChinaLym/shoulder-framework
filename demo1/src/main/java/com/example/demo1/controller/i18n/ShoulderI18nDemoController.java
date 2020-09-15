@@ -1,6 +1,6 @@
 package com.example.demo1.controller.i18n;
 
-import org.shoulder.core.context.BaseContextHolder;
+import org.shoulder.core.context.AppContext;
 import org.shoulder.core.i18.ShoulderMessageSource;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.StringUtils;
@@ -82,7 +82,7 @@ public class ShoulderI18nDemoController {
     @GetMapping("1")
     public String case1(){
         // spring:
-        messageSource.getMessage("shoulder.test.hi", null, BaseContextHolder.getLocale());
+        messageSource.getMessage("shoulder.test.hi", null, AppContext.getLocale());
 
         // shoulder
         return translator.getMessage("shoulder.test.hi");
@@ -97,7 +97,7 @@ public class ShoulderI18nDemoController {
         // spring:
         Object[] args = new Object[1];
         args[0] = "shoulder";
-        messageSource.getMessage("shoulder.test.hi", args, BaseContextHolder.getLocale());
+        messageSource.getMessage("shoulder.test.hi", args, AppContext.getLocale());
 
         // shoulder
         return translator.getMessage("shoulder.test.hello", "shoulder");

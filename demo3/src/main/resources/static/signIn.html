@@ -34,8 +34,8 @@
             <td>
                 <input name="imageCode" type="text">
                 <img src="/code?type=imageCode" onclick="this.src=this.src+'&k='+Math.random();">
-                <small>(默认可空，pom.xml 引入 `learn-security-starter-code`
-                    后，则表单登录必须填正确的验证码才能成功登录。支持短信验证码登录)
+                <small>(引入 `learn-security-starter-code` 后，默认情况下，表单登录必须填正确的验证码才能成功登录。不引入则无校验规则)<br>
+                    默认情况下，仅表单登录请求需要图片验证码，可通过修改 "shoulder.security.validate-code.image.urls" 来修改/新增需要校验的路径
                 </small>
             </td>
         </tr>
