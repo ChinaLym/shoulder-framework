@@ -13,14 +13,31 @@
     <artifactId>shoulder-starter-monitor</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.micrometer</groupId>
+                    <artifactId>micrometer-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--短任务需要，推送到 push-gateway-->
@@ -34,10 +51,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-core</artifactId>
-        </dependency>
+
+        <!-- <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-aop</artifactId>
+     </dependency>-->
 
     </dependencies>
 

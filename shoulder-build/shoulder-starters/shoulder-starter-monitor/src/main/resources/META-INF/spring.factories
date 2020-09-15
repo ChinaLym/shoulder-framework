@@ -1,4 +1,4 @@
 # Auto Configuration
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.shoulder.autoconfigure.monitor.PrometheusAutoConfiguration
+  org.shoulder.autoconfigure.monitor.config.PrometheusAutoConfiguration

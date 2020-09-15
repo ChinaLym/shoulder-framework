@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.monitor;
+package org.shoulder.autoconfigure.monitor.util;
 
 /**
  * 可监控的任务

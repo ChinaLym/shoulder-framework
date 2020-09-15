@@ -5,8 +5,8 @@ package org.shoulder.autoconfigure.monitor;
  *
  * @author lym
  */
-public class MetricsConst {
+public interface MetricsConst {
 
-
+    String TAG_APP_ID = "appId";
 
 }

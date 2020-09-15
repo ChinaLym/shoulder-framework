@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.shoulder.autoconfigure.monitor;
+package org.shoulder.autoconfigure.monitor.util;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.ImmutableTag;
@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ThreadPoolMetrics {
 
+    private static String DEFAULT_METRICS_NAME_PREFIX = "appId_thread_pool_";
 
     /**
      * 指标所属模块 标签名
@@ -50,9 +51,9 @@ public class ThreadPoolMetrics {
     private static final String TAG_TASK = "task";
 
     /**
-     * 线程池指标名称
+     * 指标名称前缀（应用对于线程池监控名称的定义），一般格式为 <aapId>_<moduleId>，如 storage_sync_threads
      */
-    private final String metricsNamePrefix;
+    private final String metricsNamePrefix = DEFAULT_METRICS_NAME_PREFIX;
 
     /**
      * 模块名称，默认标签
@@ -108,14 +109,23 @@ public class ThreadPoolMetrics {
      */
     private AtomicInteger largestPoolSize = new AtomicInteger();
 
+    public static String getDefaultMetricsNamePrefix() {
+        return DEFAULT_METRICS_NAME_PREFIX;
+    }
+
+    public static void setDefaultMetricsNamePrefix(String defaultMetricsNamePrefix) {
+        if(!defaultMetricsNamePrefix.endsWith("_")){
+            defaultMetricsNamePrefix = defaultMetricsNamePrefix + "_";
+        }
+        DEFAULT_METRICS_NAME_PREFIX = defaultMetricsNamePrefix;
+    }
 
     /**
+     * 构造器
      *
-     * @param metricsNamePrefix 指标名称前缀（应用对于线程池监控名称的定义），一般格式为 <aapId>_<moduleId>，如 storage_sync_threads
      * @param moduleName 线程池属于哪个模块，为了对比多个模块，shoulder 默认把模块名放在标签上。（若不比较，也推荐放在指标名中）
      */
-    public ThreadPoolMetrics(String metricsNamePrefix, String moduleName){
-        this.metricsNamePrefix = metricsNamePrefix;
+    public ThreadPoolMetrics(String moduleName){
         this.moduleName = moduleName;
         registerMetrics();
     }
@@ -123,7 +133,7 @@ public class ThreadPoolMetrics {
     private void registerMetrics() {
 
         // 任务数（执行数）
-        String taskMetricsName = metricsNamePrefix + "_thread_pool_tasks";
+        String taskMetricsName = metricsNamePrefix + "tasks";
 
         Metrics.gauge(taskMetricsName, List.of(
             new ImmutableTag(TAG_MODULE, moduleName),
@@ -137,7 +147,7 @@ public class ThreadPoolMetrics {
 
 
         // 队列中的任务数
-        String queueSizeMetricsName = metricsNamePrefix + "_thread_pool_queue_tasks";
+        String queueSizeMetricsName = metricsNamePrefix + "queue_tasks";
 
         Metrics.gauge(queueSizeMetricsName, List.of(
             new ImmutableTag(TAG_MODULE, moduleName),
@@ -151,8 +161,8 @@ public class ThreadPoolMetrics {
 
 
         // 线程池中线程数
-        String threadMetricsName = metricsNamePrefix + "_thread_pool_threads";
-        
+        String threadMetricsName = metricsNamePrefix + "threads";
+
         Metrics.gauge(threadMetricsName, List.of(
             new ImmutableTag(TAG_MODULE, moduleName),
             new ImmutableTag(TAG_NAME, "active")
@@ -162,7 +172,7 @@ public class ThreadPoolMetrics {
             new ImmutableTag(TAG_MODULE, moduleName),
             new ImmutableTag(TAG_NAME, "current")
         ), poolSize);
-        
+
         Metrics.gauge(threadMetricsName, List.of(
             new ImmutableTag(TAG_MODULE, moduleName),
             new ImmutableTag(TAG_NAME, "core")
@@ -225,7 +235,7 @@ public class ThreadPoolMetrics {
      * 可根据此值，统计最大、平均、90% 95% 99%、慢任务报警
      */
     public Timer taskExecuteTime() {
-        return Metrics.timer(metricsNamePrefix + "_thread_pool_timer",
+        return Metrics.timer(metricsNamePrefix + "timer",
             TAG_MODULE, moduleName,
             TAG_NAME, "execute");
     }
@@ -234,7 +244,7 @@ public class ThreadPoolMetrics {
         if(StringUtils.isEmpty(taskName)){
             return taskExecuteTime();
         }
-        return Metrics.timer(metricsNamePrefix + "_thread_pool_timer",
+        return Metrics.timer(metricsNamePrefix + "timer",
             TAG_MODULE, moduleName,
             TAG_NAME, "execute",
             TAG_TASK, moduleName);
@@ -248,7 +258,7 @@ public class ThreadPoolMetrics {
     }
 
     public Counter exceptionCount() {
-        return Metrics.counter(metricsNamePrefix + "thread_pool_exceptions",
+        return Metrics.counter(metricsNamePrefix + "exceptions",
             TAG_MODULE, moduleName,
             TAG_NAME, "exception");
     }
@@ -256,7 +266,7 @@ public class ThreadPoolMetrics {
         if(StringUtils.isEmpty(taskName)){
             return exceptionCount();
         }
-        return Metrics.counter(metricsNamePrefix + "thread_pool_exceptions",
+        return Metrics.counter(metricsNamePrefix + "exceptions",
             TAG_MODULE, moduleName,
             TAG_NAME, "exception",
             TAG_TASK, moduleName);
@@ -271,7 +281,7 @@ public class ThreadPoolMetrics {
 
 
     public Counter rejectCount() {
-        return Metrics.counter(metricsNamePrefix + "thread_pool_reject_nums",
+        return Metrics.counter(metricsNamePrefix + "reject_nums",
             TAG_MODULE, moduleName,
             TAG_NAME, "rejectCount");
     }
@@ -280,7 +290,7 @@ public class ThreadPoolMetrics {
         if(StringUtils.isEmpty(taskName)){
             return rejectCount();
         }
-        return Metrics.counter(metricsNamePrefix + "thread_pool_reject_nums",
+        return Metrics.counter(metricsNamePrefix + "reject_nums",
             TAG_MODULE, moduleName,
             TAG_NAME, "rejectCount",
             TAG_TASK, moduleName);

@@ -292,6 +292,12 @@
 
             <dependency>
                 <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-starter-monitor</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-minio</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
