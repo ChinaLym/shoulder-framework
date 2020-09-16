@@ -9,4 +9,6 @@ public interface MetricsConst {
 
     String TAG_APP_ID = "appId";
 
+    String SPLIT = "_";
+
 }

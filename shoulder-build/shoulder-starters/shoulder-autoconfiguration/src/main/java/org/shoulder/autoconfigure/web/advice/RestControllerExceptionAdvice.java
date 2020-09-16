@@ -4,6 +4,7 @@ import lombok.extern.shoulder.SLog;
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -56,7 +57,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler({MissingServletRequestParameterException.class})
     public BaseResponse<Object[]> paramsMissingHandler(MissingServletRequestParameterException e) {
         BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_BLANK, e, e.getParameterName());
-        log.error(stdEx);
+        log.info(stdEx);
         return stdEx.toResponse();
     }
 
@@ -74,7 +75,7 @@ public class RestControllerExceptionAdvice {
             String errorInfo = StringUtils.subBetween(message, springErrorTipHeader, errorStackSplit);
             stdEx.setArgs(errorInfo);
         }
-        log.error(stdEx);
+        log.info(stdEx);
         return stdEx.toResponse();
     }
 
@@ -88,7 +89,7 @@ public class RestControllerExceptionAdvice {
     public BaseResponse<Object[]> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
         BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_NOT_VALID, e, firstErrorInfo);
-        log.error(stdEx);
+        log.info(stdEx);
         return stdEx.toResponse();
     }
 
@@ -100,20 +101,20 @@ public class RestControllerExceptionAdvice {
     public BaseResponse<Object[]> bindExceptionHandler(BindException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
         BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_NOT_VALID, e, firstErrorInfo);
-        log.error(stdEx);
+        log.info(stdEx);
         return stdEx.toResponse();
     }
 
 
     /**
-     * jsr 验证不通过
+     * jsr303 验证不通过
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public BaseResponse<Object[]> constraintViolationExceptionHandler(ConstraintViolationException e) {
         String firstErrorInfo = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).findFirst().orElse("");
         BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_NOT_VALID, e, firstErrorInfo);
-        log.error(stdEx);
+        log.info(stdEx);
         return stdEx.toResponse();
     }
 
@@ -164,7 +165,7 @@ public class RestControllerExceptionAdvice {
         BaseRuntimeException ex =
             new BaseRuntimeException(CommonErrorCodeEnum.PARAM_TYPE_NOT_MATCH, e,
                 e.getName(), e.getValue(), e.getRequiredType() == null ? null : e.getRequiredType().getName());
-        log.error(ex);
+        log.info(ex);
         return ex.toResponse();
     }
 
@@ -175,7 +176,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public BaseResponse httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.CONTENT_TYPE_INVALID, e, String.valueOf(e.getContentType()));
-        log.error(ex);
+        log.info(ex);
         return ex.toResponse();
     }
 
@@ -191,7 +192,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler(MultipartException.class)
     public BaseResponse multipartException(MultipartException e) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.MULTIPART_INVALID, e);
-        log.error(ex);
+        log.warn(ex);
         return ex.toResponse();
     }
 
@@ -200,8 +201,16 @@ public class RestControllerExceptionAdvice {
      */
     @ExceptionHandler(Exception.class)
     public BaseResponse otherExceptionHandler(Exception e, HttpServletRequest request) {
-        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.UNKNOWN, e);
-        log.error(ex);
+        BaseRuntimeException ex;
+        if (e instanceof ErrorCode) {
+            // 符合规范定义的错误码，按照错误码日志级别记录
+            log.log((ErrorCode) e);
+            ex = new BaseRuntimeException(e);
+        } else {
+            // 未知异常
+            ex = new BaseRuntimeException(CommonErrorCodeEnum.UNKNOWN, e);
+            log.error(CommonErrorCodeEnum.UNKNOWN.getCode(), e.getMessage(), e);
+        }
         return ex.toResponse();
     }
 

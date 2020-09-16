@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.monitor.util;
+package org.shoulder.autoconfigure.monitor.thread;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;

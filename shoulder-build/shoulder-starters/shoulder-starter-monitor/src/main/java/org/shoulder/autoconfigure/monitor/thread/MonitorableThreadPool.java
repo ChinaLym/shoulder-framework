@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.monitor.util;
+package org.shoulder.autoconfigure.monitor.thread;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -109,7 +109,6 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
     }
 
     private void initMetrics() {
-        // todo 指标名称
         metrics = new ThreadPoolMetrics(poolName);
         this.metrics.corePoolSize().set(getCorePoolSize());
         this.metrics.activeCount().set(getActiveCount());

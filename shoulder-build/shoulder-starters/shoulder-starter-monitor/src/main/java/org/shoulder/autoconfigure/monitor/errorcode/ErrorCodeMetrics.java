@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.shoulder.autoconfigure.monitor.util;
+package org.shoulder.autoconfigure.monitor.errorcode;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.ImmutableTag;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
+import org.shoulder.autoconfigure.monitor.thread.MonitorableRunnable;
 import org.shoulder.core.util.StringUtils;
 
 import java.util.List;
@@ -27,13 +28,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * ThreadPool Metrics Monitor.
+ * 错误码监控指标
  *
  * @author lym
  */
-public class ThreadPoolMetrics {
+public class ErrorCodeMetrics {
 
-    private static String DEFAULT_METRICS_NAME_PREFIX = "appId_thread_pool_";
+    private static String DEFAULT_METRICS_NAME_PREFIX = "appId_error_code_";
 
     /**
      * 指标所属模块 标签名
@@ -46,12 +47,12 @@ public class ThreadPoolMetrics {
     private static final String TAG_NAME = "name";
 
     /**
-     * 任务名 标签名
+     * 具体错误码 标签名
      */
-    private static final String TAG_TASK = "task";
+    private static final String CODE_TASK = "code";
 
     /**
-     * 指标名称前缀（应用对于线程池监控名称的定义），一般格式为 <aapId>_<moduleId>，如 storage_sync_threads
+     * 指标名称前缀（应用对于错误码监控名称的定义），一般格式为 <aapId>_<moduleId>，如 storage_sync_error_
      */
     private final String metricsNamePrefix = DEFAULT_METRICS_NAME_PREFIX;
 
@@ -125,7 +126,7 @@ public class ThreadPoolMetrics {
      *
      * @param moduleName 线程池属于哪个模块，为了对比多个模块，shoulder 默认把模块名放在标签上。（若不比较，也推荐放在指标名中）
      */
-    public ThreadPoolMetrics(String moduleName){
+    public ErrorCodeMetrics(String moduleName){
         this.moduleName = moduleName;
         registerMetrics();
     }
@@ -231,32 +232,6 @@ public class ThreadPoolMetrics {
         return queueSize;
     }
 
-    /**
-     * 可根据此值，统计最大、平均、90% 95% 99%、慢任务报警
-     */
-    public Timer taskExecuteTime() {
-        return Metrics.timer(metricsNamePrefix + "timer",
-            TAG_MODULE, moduleName,
-            TAG_NAME, "execute");
-    }
-
-    public Timer taskExecuteTime(String taskName) {
-        if(StringUtils.isEmpty(taskName)){
-            return taskExecuteTime();
-        }
-        return Metrics.timer(metricsNamePrefix + "timer",
-            TAG_MODULE, moduleName,
-            TAG_NAME, "execute",
-            TAG_TASK, moduleName);
-    }
-
-    public Timer taskExecuteTime(Runnable runnable) {
-        if(runnable instanceof MonitorableRunnable){
-            return taskExecuteTime(((MonitorableRunnable) runnable).getTaskName());
-        }
-        return taskExecuteTime();
-    }
-
     public Counter exceptionCount() {
         return Metrics.counter(metricsNamePrefix + "exceptions",
             TAG_MODULE, moduleName,
@@ -269,7 +244,7 @@ public class ThreadPoolMetrics {
         return Metrics.counter(metricsNamePrefix + "exceptions",
             TAG_MODULE, moduleName,
             TAG_NAME, "exception",
-            TAG_TASK, moduleName);
+            CODE_TASK, moduleName);
     }
 
     public Counter exceptionCount(Runnable runnable) {
@@ -293,7 +268,7 @@ public class ThreadPoolMetrics {
         return Metrics.counter(metricsNamePrefix + "reject_nums",
             TAG_MODULE, moduleName,
             TAG_NAME, "rejectCount",
-            TAG_TASK, moduleName);
+            CODE_TASK, moduleName);
     }
 
     public Counter rejectCount(Runnable runnable) {

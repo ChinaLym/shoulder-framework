@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.monitor.util;
+package org.shoulder.autoconfigure.monitor.thread;
 
 /**
  * 可监控的任务

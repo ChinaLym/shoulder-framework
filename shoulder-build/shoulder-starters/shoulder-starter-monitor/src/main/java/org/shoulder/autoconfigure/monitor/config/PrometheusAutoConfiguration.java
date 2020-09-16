@@ -4,7 +4,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.config.MeterFilter;
 import org.shoulder.autoconfigure.monitor.MetricsConst;
-import org.shoulder.autoconfigure.monitor.util.ThreadPoolMetrics;
+import org.shoulder.autoconfigure.monitor.thread.ThreadPoolMetrics;
 import org.shoulder.core.context.AppInfo;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;

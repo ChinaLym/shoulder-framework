@@ -17,6 +17,7 @@ import org.shoulder.core.util.ServletUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -35,6 +36,8 @@ import java.util.Enumeration;
  * <p>
  * todo 0.3 为开发、生产提供不同的打印格式？（生产环境可能需要日志采集、统一日志格式）
  * 允许可选的打印信息，如太多请求头不想全部打印、
+ *
+ * @see CommonsRequestLoggingFilter spring 中提供的日志过滤器
  *
  * @author lym
  */
