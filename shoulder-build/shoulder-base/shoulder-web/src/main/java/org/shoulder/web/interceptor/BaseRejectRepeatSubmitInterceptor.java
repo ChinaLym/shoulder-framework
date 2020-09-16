@@ -1,5 +1,6 @@
 package org.shoulder.web.interceptor;
 
+import lombok.extern.shoulder.SLog;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author lym
  */
+@SLog
 public abstract class BaseRejectRepeatSubmitInterceptor extends HandlerInterceptorAdapter {
 
     @Override
@@ -68,8 +70,14 @@ public abstract class BaseRejectRepeatSubmitInterceptor extends HandlerIntercept
      */
     protected abstract Object getClientToken(HttpServletRequest request);
 
+    /**
+     * 处理被拒绝的请求：默认只记录一条debug日志
+     *
+     * @param request   请求
+     * @param response  响应
+     */
     protected void handleReject(HttpServletRequest request, HttpServletResponse response) {
-
+        log.debug("reject repeatSubmit request({})", request.getRequestURI());
     }
 
 }

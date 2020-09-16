@@ -4,7 +4,6 @@ import org.shoulder.web.annotation.RejectRepeatSubmit;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 
@@ -34,7 +33,7 @@ public class SessionTokenRepeatSubmitInterceptor extends BaseRejectRepeatSubmitI
     @Override
     protected boolean needIntercept(HttpServletRequest request, Object handler) {
         if (handler instanceof HandlerMethod) {
-            // 当前仅当开启校验，且为 HandlerMethod 才拦截
+            // 当前仅当开启校验的 HandlerMethod 才拦截
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Method method = handlerMethod.getMethod();
             // 且目标方法上必须有 RejectRepeatSubmit 注解才拦截
@@ -76,11 +75,6 @@ public class SessionTokenRepeatSubmitInterceptor extends BaseRejectRepeatSubmitI
     @Override
     protected Object getClientToken(HttpServletRequest request) {
         return request.getParameter(requestTokenName);
-    }
-
-    @Override
-    protected void handleReject(HttpServletRequest request, HttpServletResponse response) {
-
     }
 
 }

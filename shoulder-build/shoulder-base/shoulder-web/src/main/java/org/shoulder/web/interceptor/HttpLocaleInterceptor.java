@@ -1,6 +1,8 @@
 package org.shoulder.web.interceptor;
 
+import lombok.extern.shoulder.SLog;
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.context.ShoulderContextKey;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.ModelAndView;
@@ -8,6 +10,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 /**
  * 默认将 http header 中的 Accept-Language 中权重最高的作为当前的 locale
@@ -20,13 +23,27 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author lym
  */
+@SLog
 public class HttpLocaleInterceptor extends HandlerInterceptorAdapter {
 
+    /**
+     * request.getLocale() 与具体实现有关
+     * spring、tomcat的实现都是，若无法从请求中获取，则返回系统默认语言
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        AppContext.setLocale(request.getLocale());
+        Locale locale = request.getLocale();
+        if (locale == null) {
+            locale = AppInfo.defaultLocale();
+            log.debug("request.locale is null, use AppInfo.defaultLocale({})", locale);
+        }
+        AppContext.setLocale(locale);
         return true;
     }
+
+
+    // =============== 清理线程变量缓存 ===================
+
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
