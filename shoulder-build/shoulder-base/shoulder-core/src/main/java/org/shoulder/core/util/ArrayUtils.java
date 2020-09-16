@@ -603,10 +603,11 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     /**
      * 判断两个数组的元素和顺序是否相等。
-     * 由于java.util.Arrays中提供的数组元素比较都是在已知数组类型的前提下的，而数组可以归结为9种类型，当不确定数组类型时，可以用此方法。
+     * 由于 {@link Arrays} 中提供的数组元素比较都是在已知数组类型的前提下的，而数组可以归结为9种类型，当不确定数组类型时，可以用此方法。
      *
      * @param a1 Object，必须是数组
      * @param a2 Object,必须是数组
+     *
      * @throws IllegalArgumentException 如果输入对象不是数组，抛出
      * @see Arrays#equals(boolean[], boolean[])
      * @see Arrays#equals(byte[], byte[])

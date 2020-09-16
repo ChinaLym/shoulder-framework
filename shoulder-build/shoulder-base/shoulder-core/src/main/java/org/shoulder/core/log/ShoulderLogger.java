@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
+import org.slf4j.event.Level;
 import org.springframework.util.StringUtils;
 
 /**
@@ -356,12 +357,60 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     // --------- 带错误码的 WARN ---------
 
     @Override
-    public void warn(ErrorCode error) {
-        uniformLog(error.getCode(), () -> {
-            if (error instanceof Throwable) {
-                log.warn(error.generateDetail(), (Throwable) error);
+    public void log(ErrorCode errorCode) {
+        Level level = errorCode.getLogLevel();
+        // switch 没有分支预测，因此按照使用频率排序（注意并不是错误码定义的级别越多越频繁）
+        switch (level){
+            case WARN:
+                warn(errorCode);
+                break;
+            case INFO:
+                info(errorCode);
+                break;
+            case ERROR:
+                error(errorCode);
+                break;
+            case DEBUG:
+                debug(errorCode);
+                break;
+            // shoulder 的默认实现中忽略了 trace 级别日志
+            //case TRACE:
+
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void info(ErrorCode errorCode) {
+        uniformLog(errorCode.getCode(), () -> {
+            if (errorCode instanceof Throwable) {
+                log.info(errorCode.generateDetail(), (Throwable) errorCode);
             } else {
-                log.warn(error.generateDetail());
+                log.info(errorCode.generateDetail());
+            }
+        });
+    }
+
+    @Override
+    public void debug(ErrorCode errorCode) {
+        uniformLog(errorCode.getCode(), () -> {
+            if (errorCode instanceof Throwable) {
+                log.debug(errorCode.generateDetail(), (Throwable) errorCode);
+            } else {
+                log.debug(errorCode.generateDetail());
+            }
+        });
+    }
+
+
+    @Override
+    public void warn(ErrorCode errorCode) {
+        uniformLog(errorCode.getCode(), () -> {
+            if (errorCode instanceof Throwable) {
+                log.warn(errorCode.generateDetail(), (Throwable) errorCode);
+            } else {
+                log.warn(errorCode.generateDetail());
             }
         });
     }
@@ -477,12 +526,12 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     // --------- 带错误码的 ERROR ---------
 
     @Override
-    public void error(ErrorCode error) {
-        uniformLog(error.getCode(), () -> {
-            if (error instanceof Throwable) {
-                log.error(error.generateDetail(), (Throwable) error);
+    public void error(ErrorCode errorCode) {
+        uniformLog(errorCode.getCode(), () -> {
+            if (errorCode instanceof Throwable) {
+                log.error(errorCode.generateDetail(), (Throwable) errorCode);
             } else {
-                log.error(error.generateDetail());
+                log.error(errorCode.generateDetail());
             }
         });
     }

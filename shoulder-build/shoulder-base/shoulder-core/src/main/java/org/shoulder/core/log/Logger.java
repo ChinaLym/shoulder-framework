@@ -12,11 +12,24 @@ public interface Logger extends org.slf4j.Logger {
     // 定义带错误码的日志打印方法
 
     /**
-     * 推荐的 warn 日志
+     * 自动识别日志级别的记录方式，语法糖
      *
-     * @param error 带错误码和默认提示信息的异常
+     * @param error 错误码
      */
-    void warn(ErrorCode error);
+    void log(ErrorCode error);
+
+    // info/debug 级别日志一般不采集，这类日志带错误码对分析意义较小，但又消耗额外的资源（存储/计算/人力编码）可不带错误码
+
+    void info(ErrorCode errorCode);
+
+    void debug(ErrorCode errorCode);
+
+    /**
+     * 推荐的 warn 日志，带错误码
+     *
+     * @param errorCode 带错误码和默认提示信息的异常
+     */
+    void warn(ErrorCode errorCode);
 
     void warnWithErrorCode(String errorCode, String msg);
 
@@ -33,7 +46,11 @@ public interface Logger extends org.slf4j.Logger {
     void warnWithErrorCode(String errorCode, String msg, Throwable t);
 
 
-    void error(ErrorCode error);
+    /**
+     * error 级别带错误码
+     * @param errorCode 错误码
+     */
+    void error(ErrorCode errorCode);
 
     void errorWithErrorCode(String errorCode, String msg);
 
@@ -48,6 +65,5 @@ public interface Logger extends org.slf4j.Logger {
 
 
     void errorWithErrorCode(String errorCode, String msg, Throwable t);
-
 
 }
