@@ -3,6 +3,7 @@ package org.shoulder.core.context;
 import lombok.extern.shoulder.SLog;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.util.StringUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 /**
  * 当前应用（请求）上下文中的值，作为 Holder 的角色，维护当前请求中一些常用的数据。
+ * 推荐在调用的地方记录 debug 日志
  *
  * @author lym
  */
@@ -33,6 +35,7 @@ public class AppContext {
      * @param userId 用户标识
      */
     public static void setUserId(Long userId) {
+        log.trace("setUserId ({})", userId);
         set(ShoulderContextKey.JWT_KEY_USER_ID, String.valueOf(userId));
     }
 
@@ -60,11 +63,12 @@ public class AppContext {
      * @param account 设用户账户
      */
     public static void setAccount(String account) {
+        log.trace("setAccount ({})", account);
         set(ShoulderContextKey.JWT_KEY_ACCOUNT, account);
     }
 
     /**
-     * 登录用户的名称
+     * 当前用户名称
      *
      * @return 账户信息
      */
@@ -73,12 +77,13 @@ public class AppContext {
     }
 
     /**
-     * 设用户账户
+     * 当前用户名称
      *
-     * @param account 设用户账户
+     * @param name 用户名称
      */
-    public static void setName(String account) {
-        set(ShoulderContextKey.JWT_KEY_NAME, account);
+    public static void setName(String name) {
+        log.trace("setName ({})", name);
+        set(ShoulderContextKey.JWT_KEY_NAME, name);
     }
 
     /**
@@ -95,7 +100,8 @@ public class AppContext {
      *
      * @param locale 语言标识
      */
-    public static void setLocale(Locale locale) {
+    public static void setLocale(@NonNull Locale locale) {
+        log.trace("set Locale ({})", locale);
         set(ShoulderContextKey.Locale, locale.toString());
     }
 
@@ -114,6 +120,7 @@ public class AppContext {
      * @param token 认证 token
      */
     public static void setToken(String token) {
+        log.trace("setToken ({})", token);
         set(ShoulderContextKey.HEADER_TOKEN, token);
     }
 
@@ -132,6 +139,7 @@ public class AppContext {
      * @param tenantId 租户标识
      */
     public static void setTenant(String tenantId) {
+        log.trace("setTenant ({})", tenantId);
         set(ShoulderContextKey.TENANT, tenantId);
     }
 
