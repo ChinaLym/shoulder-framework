@@ -142,7 +142,6 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
 
     /**
      * 过滤脚本攻击，将html字符转义
-     * todo 低优先功能：开启是否转义等
      */
     private String securityContext(String context) {
         return filterHtmlEscape(stripXss(context));

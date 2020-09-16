@@ -27,6 +27,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MultipartException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
@@ -34,8 +35,6 @@ import java.sql.SQLException;
 /**
  * RestController 全局异常处理器 - 请求方错误，提供默认统一场景错误返回值
  * 默认情况下该类优先用户自定义的全局处理器，如果使用者指定@Order且小于0，则优先于本框架处理
- * todo 根据异常返回值状态码
- * 是否应在这里记录异常日志？
  *
  * @author lym
  */
@@ -148,18 +147,21 @@ public class RestControllerExceptionAdvice {
 
 
     /**
-     * 请求方法不允许 fixme
+     * 请求方法不允许
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
     public BaseResponse methodNotSupportedHandler(HttpRequestMethodNotSupportedException e) {
-        return CommonErrorCodeEnum.REQUEST_METHOD_MISMATCH.toResponse();
+        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.REQUEST_METHOD_MISMATCH, e);
+        log.warn(ex);
+        return ex.toResponse();
     }
 
 
     /**
      * 参数类型不匹配，如希望 int 传来 String
      */
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public BaseResponse methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
         BaseRuntimeException ex =
@@ -173,6 +175,7 @@ public class RestControllerExceptionAdvice {
     /**
      * Content-Type 不正确
      */
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public BaseResponse httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.CONTENT_TYPE_INVALID, e, String.valueOf(e.getContentType()));
@@ -189,6 +192,7 @@ public class RestControllerExceptionAdvice {
     /**
      * 上传文件解析错误，请求未携带文件、上传文件过大等
      */
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(MultipartException.class)
     public BaseResponse multipartException(MultipartException e) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.MULTIPART_INVALID, e);
@@ -200,12 +204,14 @@ public class RestControllerExceptionAdvice {
      * 其他异常
      */
     @ExceptionHandler(Exception.class)
-    public BaseResponse otherExceptionHandler(Exception e, HttpServletRequest request) {
+    public BaseResponse otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) {
         BaseRuntimeException ex;
         if (e instanceof ErrorCode) {
             // 符合规范定义的错误码，按照错误码日志级别记录
-            log.log((ErrorCode) e);
+            ErrorCode errorCode = (ErrorCode) e;
+            log.log(errorCode);
             ex = new BaseRuntimeException(e);
+            response.setStatus(errorCode.getHttpStatusCode().value());
         } else {
             // 未知异常
             ex = new BaseRuntimeException(CommonErrorCodeEnum.UNKNOWN, e);
@@ -229,6 +235,7 @@ public class RestControllerExceptionAdvice {
     /**
      * 数据库保存失败
      */
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(SQLException.class)
     public BaseResponse sqlExceptionHandler(SQLException e) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL, e);

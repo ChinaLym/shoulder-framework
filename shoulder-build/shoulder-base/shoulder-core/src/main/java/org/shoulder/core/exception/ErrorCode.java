@@ -6,6 +6,7 @@ import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * 表示错误的接口
@@ -73,6 +74,7 @@ public interface ErrorCode {
      *
      * @return 日志级别
      */
+    @NotNull
     default Level getLogLevel() {
         return DEFAULT_LOG_LEVEL;
     }
@@ -82,6 +84,7 @@ public interface ErrorCode {
      *
      * @return httpStatusCode
      */
+    @NotNull
     default HttpStatus getHttpStatusCode() {
         return DEFAULT_HTTP_STATUS_CODE;
     }

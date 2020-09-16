@@ -39,42 +39,42 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 文件系统错误：创建文件失败
      */
-    FILE_CREATE_FAIL(10, "Failed to create the file.", Level.ERROR),
+    FILE_CREATE_FAIL(100, "Failed to create the file.", Level.ERROR),
     /**
      * 文件系统错误：读文件失败
      */
-    FILE_READ_FAIL(11, "Failed to write the file.", Level.ERROR),
+    FILE_READ_FAIL(101, "Failed to write the file.", Level.ERROR),
     /**
      * 文件系统错误：写文件失败
      */
-    FILE_WRITE_FAIL(12, "Failed to write the file.", Level.ERROR),
+    FILE_WRITE_FAIL(102, "Failed to write the file.", Level.ERROR),
     /**
      * 文件系统错误：删除文件失败
      */
-    FILE_DELETE_FAIL(13, "Failed to delete the file."),
+    FILE_DELETE_FAIL(103, "Failed to delete the file.", Level.ERROR),
 
-    // ------------------------------- 发起网络请求时（作为服务消费者） -----------------------------
+    // ------------- 发起网络请求时（作为服务消费者）该类错误一般不会直接抛出去，通常会再次捕获，包装后抛出业务异常 -------------
 
     /**
-     * 未知异常，对方未遵循标准格式，未返回错误码与信息，且响应不是 200
+     * 未知异常，对方未遵循标准格式，未返回错误码与信息，且响应不是 200。
      */
-    RPC_UNKNOWN(100, "RPC error with none error code or msg."),
+    RPC_UNKNOWN(200, "RPC error with none error code or msg.", Level.ERROR),
     /**
      * 请求错误：请求超时
      */
-    REQUEST_TIMEOUT(101, "Request timeout."),
+    REQUEST_TIMEOUT(201, "Request timeout."),
     /**
      * 请求错误：指定的请求方法不能被服务器处理
      */
-    REQUEST_METHOD_MISMATCH(102, "The request method can't be processed by the server."),
+    REQUEST_METHOD_MISMATCH(202, "The request method can't be processed by the server.", Level.ERROR),
     /**
      * 返回了错误码:xxx
      */
-    RPC_COMMON(103, "RPC error with error code '%s'."),
+    RPC_COMMON(203, "RPC error with error code '%s'."),
     /**
      * 请求错误：实体格式不支持
      */
-    REQUEST_BODY_INCORRECT(104, "Entity format not supported。"),
+    REQUEST_BODY_INCORRECT(204, "Entity format not supported。", Level.ERROR),
 
     // ----------------------- 作为服务提供者（要处理的HTTP请求参数校验未通过） ----------------------
 

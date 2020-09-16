@@ -1,7 +1,6 @@
 package org.shoulder.autoconfigure.security.code;
 
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
-import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.code.ValidateCodeFilter;
 import org.shoulder.code.ValidateCodeProcessorHolder;
 import org.shoulder.code.consts.ValidateCodeConsts;
@@ -13,13 +12,12 @@ import org.shoulder.code.store.impl.RedisValidateCodeRepository;
 import org.shoulder.code.store.impl.SessionValidateCodeRepository;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.security.authentication.AuthenticationType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
-import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import java.util.List;
@@ -88,8 +86,9 @@ public class ValidateCodeBeanConfig {
     public static class RedisValidateCodeStoreConfiguration {
 
         @Bean
-        public ValidateCodeStore redisValidateCodeRepository(RedisTemplate redisTemplate) {
-            return new RedisValidateCodeRepository(redisTemplate);
+        public ValidateCodeStore redisValidateCodeRepository(RedisTemplate redisTemplate,
+               @Value("${shoulder.security.auth.code.unionCodePramName:deviceId}") String unionCodePramName) {
+            return new RedisValidateCodeRepository(redisTemplate, unionCodePramName);
         }
     }
 

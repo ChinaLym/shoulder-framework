@@ -34,7 +34,7 @@ import java.util.Enumeration;
  * 但其记录日志的目的是为了便于排查spring框架的错误，而不是方便使用者查看，shoulder 的 logback.xml 默认屏蔽他们的 debug 日志
  * shoulder 这里的记录 Logger 是取的对应 Controller 的 Logger，且信息更多，如请求头、请求参数
  * <p>
- * todo 0.3 为开发、生产提供不同的打印格式？（生产环境可能需要日志采集、统一日志格式）
+ * todo 为开发、生产提供不同的打印格式？（生产环境可能需要日志采集、统一日志格式）
  * 允许可选的打印信息，如太多请求头不想全部打印、
  *
  * @see CommonsRequestLoggingFilter spring 中提供的日志过滤器

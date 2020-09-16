@@ -20,9 +20,16 @@ public class RedisValidateCodeRepository implements ValidateCodeStore {
 
     private RedisTemplate<Object, Object> redisTemplate;
 
+    /**
+     * 请求中终端唯一码名称，默认为 deviceId
+     * 在安卓中通常使用 IMEI 码值作为其值
+     */
+    private final String unionCodePramName;
+
     @SuppressWarnings("unchecked")
-    public RedisValidateCodeRepository(RedisTemplate redisTemplate) {
+    public RedisValidateCodeRepository(RedisTemplate redisTemplate, String unionCodePramName) {
         this.redisTemplate = redisTemplate;
+        this.unionCodePramName = unionCodePramName;
     }
 
     @Override
@@ -47,18 +54,18 @@ public class RedisValidateCodeRepository implements ValidateCodeStore {
     }
 
     /**
-     * todo 必须使用deviceId。 返回在 redis 中存储验证码的 key
+     * 构造在 redis 中存储验证码的 key
      *
-     * @param request request response
-     * @param type    类型
+     * @param request request + response
+     * @param type    验证码类型
      * @return 在 redis 中存储验证码的 key
      */
     protected String buildKey(ServletWebRequest request, String type) {
-        String deviceId = request.getHeader("deviceId");
-        if (StringUtils.isBlank(deviceId)) {
-            throw new ValidateCodeException("please add the parameter deviceId in your requests!");
+        String unionCode = request.getHeader(unionCodePramName);
+        if (StringUtils.isBlank(unionCode)) {
+            throw new ValidateCodeException("please add the parameter(" + unionCodePramName + ") in your requests!");
         }
-        return DEFAULT_KEY_PREFIX + deviceId + ":" + type;
+        return DEFAULT_KEY_PREFIX + unionCode + ":" + type;
     }
 
 }

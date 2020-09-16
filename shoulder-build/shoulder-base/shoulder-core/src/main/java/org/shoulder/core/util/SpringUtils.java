@@ -93,9 +93,9 @@ public final class SpringUtils {
         try {
             return Objects.requireNonNull(WebApplicationContextUtils.getWebApplicationContext(sc)).getBeansOfType(cls);
         } catch (BeansException e) {
-            // TODO: handle exception
+            // 这里直接返回空
+            return Collections.emptyMap();
         }
-        return Collections.emptyMap();
     }
 
     /**
