@@ -8,13 +8,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.JsonUtils;
-import org.shoulder.core.util.ServletUtil;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.Enumeration;
 
 /**
  * 生产环境接口入参默认，以 Json 形式记录接口出入参数
@@ -25,6 +20,14 @@ import java.util.Enumeration;
  */
 @Aspect
 public abstract class BaseRestControllerLogAspect {
+
+    protected static final Logger logger = LoggerFactory.getLogger(BaseRestControllerLogAspect.class);
+
+    protected final boolean useControllerLogger;
+
+    public BaseRestControllerLogAspect(boolean useControllerLogger) {
+        this.useControllerLogger = useControllerLogger;
+    }
 
     /**
      * 要记录日志的位置：Controller 和 RestController
@@ -45,7 +48,7 @@ public abstract class BaseRestControllerLogAspect {
     public Object around(ProceedingJoinPoint jp) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
         Method method = methodSignature.getMethod();
-        Logger log = LoggerFactory.getLogger(method.getDeclaringClass());
+        Logger log = useControllerLogger ? LoggerFactory.getLogger(method.getDeclaringClass()) : logger;
         if (!log.isDebugEnabled()) {
             // 直接执行什么都不做
             return jp.proceed();

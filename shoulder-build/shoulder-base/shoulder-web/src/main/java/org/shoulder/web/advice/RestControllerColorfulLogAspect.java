@@ -9,6 +9,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.shoulder.core.log.Logger;
+import org.shoulder.core.util.ColorString;
+import org.shoulder.core.util.ColorStringBuilder;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
@@ -49,6 +51,9 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
      */
     private ThreadLocal<String> codeLocationLocal = new ThreadLocal<>();
 
+    public RestControllerColorfulLogAspect(boolean useControllerLogger) {
+        super(useControllerLogger);
+    }
 
     /**
      * 记录入参
@@ -67,31 +72,33 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         codeLocationLocal.set(codeLocation);
         // 记录请求方法、路径，Controller 信息与代码位置
         HttpServletRequest request = ServletUtil.getRequest();
-        StringBuilder requestInfo = new StringBuilder(NEW_LINE_SEPARATOR)
-            .append("Shoulder API Report: ")
+        ColorStringBuilder requestInfo = new ColorStringBuilder()
+            .newLine()
+            .yellow("Shoulder API Report: ", ColorString.Style.BOLD, true)
             .append("[")
-            .append(request.getMethod()).append("] ")
-            .append(request.getRequestURL().toString())
+            .blue(request.getMethod().toUpperCase())
+            .append("] ")
+            .blue(request.getRequestURL().toString())
             .append(" —— ")
             .append(codeLocation)
-            .append(NEW_LINE_SEPARATOR);
+            .newLine();
 
         Parameter[] parameters = method.getParameters();
         String[] parameterNames = methodSignature.getParameterNames();
         Object[] args = jp.getArgs();
 
         // todo remoteAddress
-        requestInfo.append("RemoteAddress:")
+        requestInfo.green("RemoteAddress:")
             .append(request.getRemoteAddr())
-            .append(NEW_LINE_SEPARATOR);
+            .newLine();
 
-        requestInfo.append("-- Headers --");
+        requestInfo.green("-- Headers --");
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             String headerValue = request.getHeader(headerName);
             requestInfo
-                .append(NEW_LINE_SEPARATOR).append("\t")
+                .newLine().tab()
                 .append(headerName)
                 .append(": ")
                 .append(headerValue);
@@ -99,7 +106,7 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
 
         // 记录 Controller 入参
         if (parameters.length > 0) {
-            requestInfo.append(NEW_LINE_SEPARATOR).append("-- Params --");
+            requestInfo.newLine().green("-- Params --");
         }
         for (int i = 0; i < parameters.length; i++) {
             Class<?> argType = parameters[i].getType();
@@ -107,10 +114,10 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
             String argValue = JsonUtils.toJson(args[i]);
 
             requestInfo
-                .append(NEW_LINE_SEPARATOR).append("\t")
-                .append(argType.getSimpleName())
+                .newLine().tab()
+                .cyan(argType.getSimpleName())
                 .append(" ")
-                .append(argName)
+                .blue(argName)
                 .append(": ")
                 .append(argValue);
         }
@@ -127,6 +134,8 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         // 是否处理 ModelAndView
         long cost = System.currentTimeMillis() - requestTimeLocal.get();
         String returnStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
+        // todo 彩色打印
+        ColorStringBuilder requestInfo = new ColorStringBuilder();
         log.debug(NEW_LINE_SEPARATOR + "{} [cost {}ms], Result: {}", codeLocation, cost, returnStr);
         cleanLocal();
     }

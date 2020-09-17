@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 /**
  * 控制台颜色
@@ -19,9 +18,11 @@ import java.util.stream.IntStream;
  *
  * @author lym
  */
-public class ColorString implements CharSequence {
+public class ColorString {
 
-    // 是颜色转义符，在 UTF-8 中
+    /**
+     * 颜色转义符前缀
+     */
     private static final String COLOR_PREFIX;
 
     static {
@@ -30,27 +31,13 @@ public class ColorString implements CharSequence {
         //'0x1B'、'\033'、'00011011'
         charsetMap.put(StandardCharsets.UTF_8, '\033');
         charsetMap.put(StandardCharsets.UTF_16, '\27');
-        COLOR_PREFIX = String.valueOf(charsetMap.getOrDefault(AppInfo.charset(), '\033')) + "[";
+        COLOR_PREFIX = charsetMap.getOrDefault(AppInfo.charset(), '\033') + "[";
     }
 
-    private static final String RESET = COLOR_PREFIX + "[0m";
-
     /**
-     * 关闭格式
+     * 颜色重置字符串，一般作为后缀
      */
-    public static final int NORMAL = 0;
-    /**
-     * 粗体
-     */
-    public static final int BLOD = 1;
-    /**
-     * 斜体
-     */
-    //public static final int BLOD = 3;
-    /**
-     * 下划线
-     */
-    public static final int UNDERLINE = 1;
+    private static final String RESET = COLOR_PREFIX + "0m";
 
     /**
      * 字体色起始
@@ -59,7 +46,7 @@ public class ColorString implements CharSequence {
     /**
      * 背景色起始
      */
-    public static final int BACK_GROUD_COLOR = 40;
+    public static final int BG_COLOR = 40;
 
     /**
      * 字体色起始（非标准）
@@ -68,8 +55,9 @@ public class ColorString implements CharSequence {
     /**
      * 背景色起始（非标准）
      */
-    public static final int BACK_GROUD_COLOR_LIGHT = 100;
+    public static final int BG_COLOR_LIGHT = 100;
 
+    /* ============= 颜色偏移 =========== */
     public static final int BLACK = 0;
     public static final int RED = 1;
     public static final int GREEN = 2;
@@ -80,12 +68,77 @@ public class ColorString implements CharSequence {
     public static final int WHITE = 7;
 
 
-    private int style = 0;
+    /* ============================= 变量 =========================== */
 
-    private int color = FONT_COLOR;
-
+    /**
+     * 字符内容
+     */
     private CharSequence content;
 
+    /**
+     * 样式
+     */
+    private int style = 0;
+
+    /**
+     * 字符颜色
+     */
+    private int color = FONT_COLOR;
+
+    public ColorString() {
+    }
+
+    public ColorString(CharSequence content) {
+        this.content = content;
+    }
+
+    public ColorString(CharSequence content, Style style, int color) {
+        this.content = content;
+        style(style);
+        color(color);
+    }
+
+    public int getStyle() {
+        return style;
+    }
+
+    public ColorString style(Style style) {
+        this.style = style.getCode();
+        return this;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public ColorString color(int color) {
+        this.color = color + FONT_COLOR;
+        return this;
+    }
+
+    public ColorString lColor(int color) {
+        this.color = color + FONT_COLOR_LIGHT;
+        return this;
+    }
+
+    public ColorString bgColor(int color) {
+        this.color = color + BG_COLOR;
+        return this;
+    }
+
+    public ColorString lbgColor(int color) {
+        this.color = color + BG_COLOR_LIGHT;
+        return this;
+    }
+
+    public CharSequence getContent() {
+        return content;
+    }
+
+    public ColorString setContent(CharSequence content) {
+        this.content = content;
+        return this;
+    }
 
     @NonNull
     @Override
@@ -99,7 +152,7 @@ public class ColorString implements CharSequence {
             return true;
         }
         if (!(o instanceof ColorString)) {
-            return false;
+            return o instanceof CharSequence && this.content.equals(o);
         }
         ColorString that = (ColorString) o;
         return style == that.style &&
@@ -112,28 +165,72 @@ public class ColorString implements CharSequence {
         return Objects.hash(style, color, content);
     }
 
-    @Override
-    public int length() {
-        return this.content.length();
-    }
+    /**
+     * 0 – Reset / Normal
+     * 1 – Bold: treated as intensity under Windows console, user option in this plugin)
+     * 2 – Intensity faint: “kind of” supported :-) It resets the intensity to normal.
+     * 3 – Italic: on (treated as inverse under Windows console, user option in this plugin)
+     * 4 – Underline
+     * 7 – Negative
+     * 8 – Conceal
+     * 9 – Crossed-out
+     * 21 – Double underline
+     * 22 – Bold off (normal intensity)
+     * 23 – Italic off
+     * 24 – Underline off
+     * 27 – Negative off
+     * 28 – Conceal off
+     * 29 – Crossed-out off
+     * 30-37 – Set text color
+     * 38 – Set xterm-256 text color
+     * 39 – Default text color
+     * 40 – 47 – Set background color
+     * 48 – Set xterm-256 background color
+     * 49 – Default background color
+     * 51 – Framed
+     * 54 – Framed off
+     * 90-97 – Set foreground color, high intensity
+     * 100-107 – Set background color, high intensity
+     *
+     * @author lym
+     */
+    public enum Style {
 
-    @Override
-    public char charAt(int index) {
-        return this.content.charAt(index);
-    }
+        /**
+         * 设置为正常格式
+         */
+        NORMAL(0),
+        /**
+         * 粗体
+         */
+        BOLD(1),
+        /**
+         * 斜体
+         */
+        ITALIC(3),
+        /**
+         * 闪烁
+         */
+        TWINKLE(6),
+        /**
+         * 划掉。删除线
+         */
+        DELETE(9),
+        /**
+         * 下划线
+         */
+        UNDERLINE(24),
+        ;
 
-    @Override
-    public CharSequence subSequence(int start, int end) {
-        return this.content.subSequence(start, end);
-    }
+        private final int code;
 
-    @Override
-    public IntStream chars() {
-        return this.content.chars();
-    }
+        Style(int code) {
+            this.code = code;
+        }
 
-    @Override
-    public IntStream codePoints() {
-        return this.content.codePoints();
+        public int getCode() {
+            return code;
+        }
+
     }
 }

@@ -5,7 +5,6 @@ import org.shoulder.web.advice.RestControllerExceptionAdvice;
 import org.shoulder.web.advice.RestControllerJsonLogAspect;
 import org.shoulder.web.advice.RestControllerUnionResponseAdvice;
 import org.shoulder.web.annotation.SkipResponseWrap;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -54,7 +53,7 @@ public class WebAdvanceAutoConfiguration {
     @Order(value = 0)
     @ConditionalOnProperty(name = "shoulder.web.logRequest", havingValue = "colorful", matchIfMissing = true)
     public RestControllerColorfulLogAspect restControllerColorfulLogAspect(){
-        return new RestControllerColorfulLogAspect();
+        return new RestControllerColorfulLogAspect(true);
     }
 
     /**
@@ -65,7 +64,7 @@ public class WebAdvanceAutoConfiguration {
     @Order(value = 0)
     @ConditionalOnProperty(name = "shoulder.web.logRequest", havingValue = "json")
     public RestControllerJsonLogAspect restControllerJsonLogAspect(){
-        return new RestControllerJsonLogAspect();
+        return new RestControllerJsonLogAspect(true);
     }
 
 }

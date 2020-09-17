@@ -23,6 +23,10 @@ import java.util.Map;
  */
 public class RestControllerJsonLogAspect extends BaseRestControllerLogAspect {
 
+    public RestControllerJsonLogAspect(boolean useControllerLogger) {
+        super(useControllerLogger);
+    }
+
     /**
      * 前置方法较长，单独抽出以保证 JIT 优化
      *
