@@ -74,7 +74,9 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         HttpServletRequest request = ServletUtil.getRequest();
         ColorStringBuilder requestInfo = new ColorStringBuilder()
             .newLine()
-            .yellow("Shoulder API Report: ", ColorString.Style.BOLD, true)
+            .cyan("===================== ")
+            .yellow("Shoulder HTTP Report", ColorString.Style.BOLD, true)
+            .cyan(" =====================")
             .append("[")
             .blue(request.getMethod().toUpperCase())
             .append("] ")
@@ -88,25 +90,25 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         Object[] args = jp.getArgs();
 
         // todo remoteAddress
-        requestInfo.green("RemoteAddress:")
+        requestInfo.green("RemoteAddress: ")
             .append(request.getRemoteAddr())
             .newLine();
 
-        requestInfo.green("-- Headers --");
+        requestInfo.green("Headers:");
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             String headerValue = request.getHeader(headerName);
             requestInfo
                 .newLine().tab()
-                .append(headerName)
+                .lGreen(headerName)
                 .append(": ")
-                .append(headerValue);
+                .cyan(headerValue);
         }
 
         // 记录 Controller 入参
         if (parameters.length > 0) {
-            requestInfo.newLine().green("-- Params --");
+            requestInfo.newLine().green("Params");
         }
         for (int i = 0; i < parameters.length; i++) {
             Class<?> argType = parameters[i].getType();
@@ -117,10 +119,12 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
                 .newLine().tab()
                 .cyan(argType.getSimpleName())
                 .append(" ")
-                .blue(argName)
+                .lBlue(argName)
                 .append(": ")
-                .append(argValue);
+                .cyan(argValue);
         }
+
+        requestInfo.cyan(". . . . . . . . . . . . . . . . . . . . . . . .");
 
         log.debug(requestInfo.toString());
 

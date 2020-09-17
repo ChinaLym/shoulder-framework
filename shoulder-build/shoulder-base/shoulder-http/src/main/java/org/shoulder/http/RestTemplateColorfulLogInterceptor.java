@@ -19,7 +19,7 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
         builder
             .newLine()
             .cyan("--------------------- ")
-            .yellow("Shoulder HTTP Report: ", ColorString.Style.BOLD, true)
+            .yellow("Shoulder HTTP Report ", ColorString.Style.BOLD, true)
             .cyan(" ---------------------")
             .newLine()
             .lBlue("Aim            : ")
