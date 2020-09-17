@@ -74,14 +74,22 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         HttpServletRequest request = ServletUtil.getRequest();
         ColorStringBuilder requestInfo = new ColorStringBuilder()
             .newLine()
-            .cyan("===================== ")
+            .cyan("========================================== ")
             .yellow("Shoulder HTTP Report", ColorString.Style.BOLD, true)
-            .cyan(" =====================")
+            .cyan(" ==========================================")
+            .newLine();
+
+        // 请求地址
+        requestInfo
+            .green("Request   : ")
             .append("[")
-            .blue(request.getMethod().toUpperCase())
+            .lBlue(request.getMethod().toUpperCase())
             .append("] ")
-            .blue(request.getRequestURL().toString())
-            .append(" —— ")
+            .lBlue(request.getRequestURL().toString())
+            .newLine();
+        // 处理的 Controller
+        requestInfo
+            .green("Controller: ")
             .append(codeLocation)
             .newLine();
 
@@ -89,12 +97,14 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         String[] parameterNames = methodSignature.getParameterNames();
         Object[] args = jp.getArgs();
 
-        // todo remoteAddress
-        requestInfo.green("RemoteAddress: ")
+        requestInfo
+            .green("From      : ")
             .append(request.getRemoteAddr())
             .newLine();
 
-        requestInfo.green("Headers:");
+        requestInfo
+            .green("Headers   :");
+
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
@@ -108,7 +118,8 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
 
         // 记录 Controller 入参
         if (parameters.length > 0) {
-            requestInfo.newLine().green("Params");
+            requestInfo.newLine()
+                .green("Params    :");
         }
         for (int i = 0; i < parameters.length; i++) {
             Class<?> argType = parameters[i].getType();
@@ -117,14 +128,14 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
 
             requestInfo
                 .newLine().tab()
-                .cyan(argType.getSimpleName())
+                .lBlue(argType.getSimpleName())
                 .append(" ")
-                .lBlue(argName)
+                .cyan(argName)
                 .append(": ")
-                .cyan(argValue);
+                .lMagenta(argValue);
         }
 
-        requestInfo.cyan(". . . . . . . . . . . . . . . . . . . . . . . .");
+        requestInfo.newLine().cyan(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .");
 
         log.debug(requestInfo.toString());
 

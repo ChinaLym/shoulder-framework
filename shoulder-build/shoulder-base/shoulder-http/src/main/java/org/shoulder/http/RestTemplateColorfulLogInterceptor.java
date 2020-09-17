@@ -12,16 +12,17 @@ import org.shoulder.core.util.ColorStringBuilder;
  */
 public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInterceptor {
 
+    private static final String LEFT_TABLE_CHAR = "|";
 
     @Override
     protected String buildHttpLog(RestRequestRecord record) {
         ColorStringBuilder builder = new ColorStringBuilder();
         builder
-            .newLine()
+            .newLine(LEFT_TABLE_CHAR)
             .cyan("--------------------- ")
             .yellow("Shoulder HTTP Report ", ColorString.Style.BOLD, true)
             .cyan(" ---------------------")
-            .newLine()
+            .newLine(LEFT_TABLE_CHAR)
             .lBlue("Aim            : ")
             .append("[").blue(record.getMethod()).append("] ")
             .blue(record.getUrl())
@@ -33,11 +34,11 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
         int color = cost < 200 ? ColorString.GREEN : cost < 1000 ? ColorString.YELLOW : ColorString.RED;
         builder
             .append("(").color(costStr, color).color("ms", color).append(")")
-            .newLine();
+            .newLine(LEFT_TABLE_CHAR);
 
         builder
-            .lBlue("requestHeaders : ").append("xxx").newLine()
-            .lBlue("requestBody    : ").append("xxx").newLine();
+            .lBlue("requestHeaders : ").append("xxx").newLine(LEFT_TABLE_CHAR)
+            .lBlue("requestBody    : ").append("xxx").newLine(LEFT_TABLE_CHAR);
 
         // ================ response ================
 
@@ -60,15 +61,17 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
                     // 客户端出错
                     codeStr.startsWith("4") ? "X" : "";
         builder
+            .color(tip, color)
+            .append(" ")
             .color(codeStr, color)
             .append(" [").color(codeDesc, color).append("]")
-            .newLine();
+            .newLine(LEFT_TABLE_CHAR);
 
         builder
-            .lBlue("responseHeaders: ").append("xxx").newLine()
-            .lBlue("responseBody   : ").append("xxx").newLine();
+            .lBlue("responseHeaders: ").append("xxx").newLine(LEFT_TABLE_CHAR)
+            .lBlue("responseBody   : ").append("xxx").newLine(LEFT_TABLE_CHAR);
 
-        builder.cyan("----------------------------------------");
+        builder.cyan("-----------------------------------------------------------------");
 
         return builder.toString();
     }
