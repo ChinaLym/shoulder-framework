@@ -2,7 +2,6 @@ package com.example.demo1.controller.ex;
 
 import com.example.demo1.ex.MyEx1;
 import com.example.demo1.ex.MyEx2;
-import org.shoulder.autoconfigure.web.advice.RestControllerExceptionAdvice;
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.log.Logger;

@@ -1,6 +1,6 @@
 package com.example.demo3.config;
 
-import org.shoulder.autoconfigure.monitor.util.MonitorableThreadPool;
+import org.shoulder.autoconfigure.monitor.thread.MonitorableThreadPool;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

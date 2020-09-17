@@ -20,7 +20,10 @@
 	</properties>
 
 	<dependencies>
-
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-http</artifactId>
+        </dependency>
 		<!-- 包含了 spring-boot-starter-web，在其之上额外提供了更棒的能力 -->
 		<dependency>
 			<groupId>cn.itlym</groupId>

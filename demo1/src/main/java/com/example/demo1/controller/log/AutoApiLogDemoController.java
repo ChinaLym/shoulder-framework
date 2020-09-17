@@ -1,6 +1,5 @@
 package com.example.demo1.controller.log;
 
-import org.shoulder.autoconfigure.web.advice.RestControllerLogAspect;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
  * 自动打印入参出参，不需要手动打印。
  *
  * @author lym
- * @see RestControllerLogAspect
  */
 @RestController
 @RequestMapping("apilog")

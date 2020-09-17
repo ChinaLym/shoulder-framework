@@ -3,7 +3,6 @@ package com.example.demo1.controller.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.shoulder.autoconfigure.web.advice.RestControllerUnionResponseAdvice;
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +17,6 @@ import java.util.*;
  *      可以通过 {@link SkipResponseWrap} 或返回值继承 {@link BaseResponse} 跳过包装
  *
  * @see SkipResponseWrap 跳过包装
- * @see RestControllerUnionResponseAdvice 框架实现方式
  *
  * @author lym
  */
