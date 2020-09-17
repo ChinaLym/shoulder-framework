@@ -1,7 +1,7 @@
 package org.shoulder.crypto.exception;
 
 /**
- * 加密解密根异常
+ * 加密解密根异常，加密类型异常通常需要捕获并抛出，故不带错误码
  *
  * @author lym
  */

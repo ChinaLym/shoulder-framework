@@ -2,7 +2,6 @@ package org.shoulder.code.exception;
 
 
 import org.shoulder.security.exception.ShoulderAuthenticationException;
-import org.springframework.security.core.AuthenticationException;
 
 /**
  * 验证码认证不通过

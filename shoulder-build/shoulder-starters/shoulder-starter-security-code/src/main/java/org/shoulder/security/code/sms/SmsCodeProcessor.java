@@ -7,7 +7,6 @@ import org.shoulder.code.processor.AbstractValidateCodeProcessor;
 import org.shoulder.code.propertities.BaseValidateCodeProperties;
 import org.shoulder.code.store.ValidateCodeStore;
 import org.shoulder.security.SecurityConst;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 

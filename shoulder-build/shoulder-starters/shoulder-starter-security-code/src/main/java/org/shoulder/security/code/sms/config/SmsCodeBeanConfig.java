@@ -2,7 +2,10 @@ package org.shoulder.security.code.sms.config;
 
 import org.shoulder.autoconfigure.security.code.ValidateCodeBeanConfig;
 import org.shoulder.code.store.ValidateCodeStore;
-import org.shoulder.security.code.sms.*;
+import org.shoulder.security.code.sms.MockSmsCodeSender;
+import org.shoulder.security.code.sms.SmsCodeGenerator;
+import org.shoulder.security.code.sms.SmsCodeProcessor;
+import org.shoulder.security.code.sms.SmsCodeSender;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

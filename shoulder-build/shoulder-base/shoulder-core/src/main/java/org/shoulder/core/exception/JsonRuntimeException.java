@@ -2,6 +2,7 @@ package org.shoulder.core.exception;
 
 /**
  * json 序列化异常，非强制捕获
+ * 由于这类异常及其可能为编码导致，故不应该报给前端暴露代码漏洞，应由开发排查
  *
  * @author lym
  */

@@ -90,12 +90,10 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      * 服务不可用
      */
     SERVICE_UNAVAILABLE(302, "Service unavailable.", Level.ERROR, HttpStatus.SERVICE_UNAVAILABLE),
+
+
     /**
-     * 无效的安全会话 xSessionId 不正确 xSessionId in valid.
-     */
-    SECURITY_SESSION_INVALID(303, "Security session invalid.", Level.INFO, HttpStatus.UNAUTHORIZED),
-    /**
-     * 参数校验未通过，参数非法，通过第三方校验框架抛出
+     * 参数校验未通过，参数非法，校验框架抛出
      */
     PARAM_NOT_VALID(304, "Parameter not valid. for %s", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
@@ -140,9 +138,19 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     MULTIPART_INVALID(314, "Request is not a validate multipart request, please check request or file size.", HttpStatus.BAD_REQUEST),
 
+    /**
+     * 无效的安全会话， xSessionId 不正确
+     */
+    SECURITY_SESSION_INVALID(303, "Security session invalid.", Level.INFO, HttpStatus.BAD_REQUEST),
+    /**
+     * 无效的签名
+     */
+    SIGN_INVALID(303, "Security session invalid.", Level.INFO, HttpStatus.BAD_REQUEST),
+
     // ----------------------- 与中间件操作异常，代码正确时，常发于中间件宕机 ----------------------
     // 一般要包含连接什么异常、什么操作时失败 error 级别 返回 500
     MID_WARE_CONNECT_FAIL(400, "Connect ", Level.ERROR),
+
     PERSISTENCE_TO_DB_FAIL(401, "Persistent fail!", Level.ERROR),
 
     ;

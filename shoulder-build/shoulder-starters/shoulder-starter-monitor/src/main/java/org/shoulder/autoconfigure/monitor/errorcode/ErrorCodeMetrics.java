@@ -19,7 +19,6 @@ package org.shoulder.autoconfigure.monitor.errorcode;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.ImmutableTag;
 import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Timer;
 import org.shoulder.autoconfigure.monitor.thread.MonitorableRunnable;
 import org.shoulder.core.util.StringUtils;
 

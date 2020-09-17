@@ -11,7 +11,6 @@ import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProc
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.RedisKeyPairCache;
-import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
