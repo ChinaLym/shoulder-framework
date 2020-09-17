@@ -135,7 +135,8 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
                 .lMagenta(argValue);
         }
 
-        requestInfo.newLine().cyan(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .");
+        requestInfo.newLine()
+            .cyan(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ");
 
         log.debug(requestInfo.toString());
 

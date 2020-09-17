@@ -12,15 +12,15 @@ import org.shoulder.core.util.ColorStringBuilder;
  */
 public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInterceptor {
 
-    private static final String LEFT_TABLE_CHAR = "|";
+    private static final String LEFT_TABLE_CHAR = "| ";
 
     @Override
     protected String buildHttpLog(RestRequestRecord record) {
         ColorStringBuilder builder = new ColorStringBuilder();
         builder
-            .newLine(LEFT_TABLE_CHAR)
+            .newLine("+-")
             .cyan("--------------------- ")
-            .yellow("Shoulder HTTP Report ", ColorString.Style.BOLD, true)
+            .yellow("Shoulder HTTP Report ", ColorString.Style.NORMAL, true)
             .cyan(" ---------------------")
             .newLine(LEFT_TABLE_CHAR)
             .lBlue("Aim            : ")
@@ -69,9 +69,10 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
 
         builder
             .lBlue("responseHeaders: ").append("xxx").newLine(LEFT_TABLE_CHAR)
-            .lBlue("responseBody   : ").append("xxx").newLine(LEFT_TABLE_CHAR);
+            .lBlue("responseBody   : ").append("xxx");
 
-        builder.cyan("-----------------------------------------------------------------");
+        builder.newLine("+-")
+            .cyan("-----------------------------------------------------------------");
 
         return builder.toString();
     }

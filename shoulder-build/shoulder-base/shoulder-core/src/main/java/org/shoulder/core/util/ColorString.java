@@ -210,6 +210,7 @@ public class ColorString {
         ITALIC(3),
         /**
          * 闪烁
+         * IDEA 不支持
          */
         TWINKLE(6),
         /**
@@ -218,6 +219,7 @@ public class ColorString {
         DELETE(9),
         /**
          * 下划线
+         * IDEA 不支持
          */
         UNDERLINE(24),
         ;

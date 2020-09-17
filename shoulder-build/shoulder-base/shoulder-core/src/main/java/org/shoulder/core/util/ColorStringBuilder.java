@@ -207,13 +207,11 @@ public class ColorStringBuilder implements CharSequence {
     }
 
     public ColorStringBuilder newLine(String s) {
-        this.delegateBuilder.append(s).append(NEW_LINE_SEPARATOR);
-        return this;
+        return newLine().append(s);
     }
 
     public ColorStringBuilder newLine(CharSequence s) {
-        this.delegateBuilder.append(s).append(NEW_LINE_SEPARATOR);
-        return this;
+        return newLine().append(s);
     }
 
     public ColorStringBuilder tab() {
