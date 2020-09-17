@@ -24,7 +24,7 @@ import java.util.Enumeration;
  * @author lym
  */
 @Aspect
-public class BaseRestControllerLogAspect {
+public abstract class BaseRestControllerLogAspect {
 
     /**
      * 要记录日志的位置：Controller 和 RestController
@@ -64,15 +64,19 @@ public class BaseRestControllerLogAspect {
 
     /**
      * 前置
-     *  @param jp 连接点
+     *
+     * @param jp 连接点
      * @param log logger
      */
-    protected void before(JoinPoint jp, Logger log) {
+    protected abstract void before(JoinPoint jp, Logger log);
 
-    }
-
-    protected void after(ProceedingJoinPoint jp, Logger log, Object returnObject) {
-
-    }
+    /**
+     * 后置置
+     *
+     * @param jp 连接点
+     * @param log logger
+     * @param returnObject 返回值
+     */
+    protected abstract void after(ProceedingJoinPoint jp, Logger log, Object returnObject);
 
 }

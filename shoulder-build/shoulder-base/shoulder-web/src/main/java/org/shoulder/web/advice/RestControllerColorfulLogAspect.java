@@ -6,15 +6,14 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -23,21 +22,19 @@ import java.util.Enumeration;
 
 /**
  * 彩色形式记录接口出入参数
- * <p>
- * todo remoteAddress 允许可选的打印信息，如太多请求头不想全部打印
- * <p>
- * Spring 的 RequestResponseBodyMethodProcessor
- * RequestMappingHandlerMapping
- * RequestResponseBodyMethodProcessor 也会记录 debug 日志
+ *
+ * Spring 的 RequestMappingHandlerMapping RequestResponseBodyMethodProcessor 也会记录 debug 日志
  * 但其记录日志的目的是为了便于排查spring框架的错误，而不是方便使用者查看，shoulder 的 logback.xml 默认屏蔽他们的 debug 日志
- * shoulder 这里的记录 Logger 是取的对应 Controller 的 Logger，且信息更多，如请求头、请求参数
- * <p>
+ * shoulder 这里的记录 Logger 是取的对应 Controller 的 Logger，且信息更多，如请求方、请求方法、请求路径、请求头、请求参数
  *
  * @author lym
  * @see CommonsRequestLoggingFilter spring 中提供的日志过滤器
+ * @see RequestResponseBodyMethodProcessor
+ * @see RequestMappingHandlerMapping
+ * @see RequestResponseBodyMethodProcessor
  */
 @Aspect
-public class RestControllerColorfulLogAspect {
+public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect {
 
     /**
      * 换行符
@@ -51,55 +48,6 @@ public class RestControllerColorfulLogAspect {
      * 代码位置
      */
     private ThreadLocal<String> codeLocationLocal = new ThreadLocal<>();
-    /**
-     * 日志记录器
-     */
-    private ThreadLocal<Logger> loggerLocal = new ThreadLocal<>();
-
-    /**
-     * 要记录日志的位置：Controller 和 RestController
-     * within 不支持继承，不能增强带有某个特定注解的子类的方法
-     * 其中 @target 可以，但 spring boot 中 StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[] failed to start
-     */
-    @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
-    // +" || @within(org.springframework.stereotype.Controller) && @annotation(org.springframework.web.bind.annotation.ResponseBody)")
-    public void httpApiMethod() {
-    }
-
-
-    /**
-     * 记录出入参
-     *
-     * @param jp 日志记录切点
-     */
-    @Around("httpApiMethod()")
-    public Object around(ProceedingJoinPoint jp) throws Throwable {
-        MethodSignature methodSignature = (MethodSignature) jp.getSignature();
-        Method method = methodSignature.getMethod();
-        Logger log = LoggerFactory.getLogger(method.getDeclaringClass());
-        if (!log.isDebugEnabled()) {
-            // 直接执行什么都不做
-            jp.proceed();
-        }
-
-        // 前置记录
-        before(jp);
-        long requestTime = System.currentTimeMillis();
-
-        // 执行目标方法
-        Object returnObject = jp.proceed();
-
-        // 异常后则不记录返回值，由全局异常处理器记录
-        if (!log.isDebugEnabled()) {
-            return returnObject;
-        }
-        long cost = System.currentTimeMillis() - requestTime;
-        String requestUrl = ServletUtil.getRequest().getRequestURI();
-        String returnStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
-        log.debug("{} [cost {}ms], Result: {}", requestUrl, cost, returnStr);
-        return returnObject;
-    }
-
 
 
     /**
@@ -107,11 +55,10 @@ public class RestControllerColorfulLogAspect {
      *
      * @param jp 日志记录切点
      */
-    public void before(JoinPoint jp) {
+    @Override
+    public void before(JoinPoint jp, Logger log) {
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
         Method method = methodSignature.getMethod();
-        Logger log = LoggerFactory.getLogger(method.getDeclaringClass());
-        loggerLocal.set(log);
         if (!log.isDebugEnabled()) {
             return;
         }
@@ -132,6 +79,11 @@ public class RestControllerColorfulLogAspect {
         Parameter[] parameters = method.getParameters();
         String[] parameterNames = methodSignature.getParameterNames();
         Object[] args = jp.getArgs();
+
+        // todo remoteAddress
+        requestInfo.append("RemoteAddress:")
+            .append(request.getRemoteAddr())
+            .append(NEW_LINE_SEPARATOR);
 
         requestInfo.append("-- Headers --");
         Enumeration<String> headerNames = request.getHeaderNames();
@@ -168,18 +120,10 @@ public class RestControllerColorfulLogAspect {
         requestTimeLocal.set(System.currentTimeMillis());
     }
 
-    /**
-     * 记录出参
-     *
-     * @param returnObject 返回值（返回的数据）
-     */
-    public void afterReturn(Object returnObject) {
-        Logger log = loggerLocal.get();
+
+    @Override
+    public void after(ProceedingJoinPoint jp, Logger log, Object returnObject) {
         String codeLocation = codeLocationLocal.get();
-        // 是否存在并发问题：如突然动态改变日志级别？这时获得的 log 为 null 应什么都不做
-        if (log == null || !log.isDebugEnabled()) {
-            return;
-        }
         // 是否处理 ModelAndView
         long cost = System.currentTimeMillis() - requestTimeLocal.get();
         String returnStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
@@ -214,7 +158,8 @@ public class RestControllerColorfulLogAspect {
 
     private static String getClassFileName(Class clazz) {
         String classFileName = clazz.getName();
-        if (classFileName.contains("$")) {
+        final String split = "$";
+        if (classFileName.contains(split)) {
             int indexOf = classFileName.contains(".") ? classFileName.lastIndexOf(".") + 1 : 0;
             return classFileName.substring(indexOf, classFileName.indexOf("$"));
         } else {
@@ -223,24 +168,10 @@ public class RestControllerColorfulLogAspect {
     }
 
     /**
-     * 记录发生异常
-     * 在这里记录异常会导致和异常处理器重复，故忽略异常情况
-     *
-     * @param exception 异常
-     */
-    //@AfterThrowing(value = "httpApiMethod()", throwing = "exception")
-    public void exception(Exception exception) {
-        long cost = System.currentTimeMillis() - requestTimeLocal.get();
-        loggerLocal.get().error("[cost " + cost + "ms] and EXCEPTION.", exception);
-        cleanLocal();
-    }
-
-    /**
      * 清理线程变量
      */
     private void cleanLocal() {
         requestTimeLocal.remove();
-        loggerLocal.remove();
         codeLocationLocal.remove();
     }
 

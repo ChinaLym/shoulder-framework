@@ -1,10 +1,11 @@
 package org.shoulder.web.advice;
 
-import lombok.extern.shoulder.SLog;
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -33,9 +34,10 @@ import java.sql.SQLException;
  *
  * @author lym
  */
-@SLog
 @RestControllerAdvice
 public class RestControllerExceptionAdvice {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * 缺少参数
