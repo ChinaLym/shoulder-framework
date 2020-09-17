@@ -14,16 +14,10 @@ public class LoggerFactory {
     /**
      * 真正的 loggerFactory
      */
-    private static ILoggerFactory delegate = null;
+    private static final ILoggerFactory DELEGATE;
 
+    // 绑定日志工厂
     static {
-        initLoggerFactoryImpl();
-    }
-
-    /**
-     * 绑定日志工厂
-     */
-    private static void initLoggerFactoryImpl() {
         ServiceLoader<ILoggerFactory> loads = ServiceLoader.load(ILoggerFactory.class);
         List<ILoggerFactory> loggerFactoryList = new LinkedList<>();
         for (ILoggerFactory loggerFactory : loads) {
@@ -33,14 +27,14 @@ public class LoggerFactory {
         // 唯一绑定
         if (loggerFactoryImplNum == 0) {
             // 未扩展，则使用默认的 LoggerFactory
-            //System.out.println("Shoulder LoggerFactory: use default LoggerFactory[" + ShoulderLoggerSl4jFactory.class.getName() + "]");
-            delegate = ShoulderLoggerSl4jFactory.getInstance();
+            DELEGATE = ShoulderLoggerSl4jFactory.getInstance();
         } else {
-            // 否则取第一个
+            // 若扩展则取读到的第一个。注：可以通过扩展修改 logger 缓存大小，减少扩容，增加启动速度
             ILoggerFactory firstLoggerFactory = loggerFactoryList.get(0);
-            System.err.println("Shoulder LoggerFactory is not unique. Found impl.size = " + loggerFactoryList.size() +
+            int implNum = loggerFactoryList.size();
+            DELEGATE = firstLoggerFactory;
+            System.err.println("Shoulder.LoggerFactory is not unique. Found impl.size = " + implNum +
                 ", use the first:" + firstLoggerFactory.getClass().getName());
-            delegate = firstLoggerFactory;
         }
     }
 
@@ -51,7 +45,7 @@ public class LoggerFactory {
      * @return logger
      */
     public static Logger getLogger(Class<?> key) {
-        return delegate.getLogger(key);
+        return DELEGATE.getLogger(key);
     }
 
     /**
@@ -61,7 +55,7 @@ public class LoggerFactory {
      * @return logger
      */
     public static Logger getLogger(String key) {
-        return delegate.getLogger(key);
+        return DELEGATE.getLogger(key);
     }
 
 }

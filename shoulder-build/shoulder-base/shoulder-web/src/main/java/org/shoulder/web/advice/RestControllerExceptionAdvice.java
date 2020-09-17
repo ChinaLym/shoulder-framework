@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.web.advice;
+package org.shoulder.web.advice;
 
 import lombok.extern.shoulder.SLog;
 import org.shoulder.core.dto.response.BaseResponse;
@@ -6,10 +6,6 @@ import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.util.StringUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -34,20 +30,12 @@ import java.sql.SQLException;
 
 /**
  * RestController 全局异常处理器 - 请求方错误，提供默认统一场景错误返回值
- * 默认情况下该类优先用户自定义的全局处理器，如果使用者指定@Order且小于0，则优先于本框架处理
  *
  * @author lym
  */
 @SLog
-@Configuration(
-    proxyBeanMethods = false
-)
-@Order(value = 0)
 @RestControllerAdvice
-@ConditionalOnWebApplication
-@ConditionalOnProperty(name = "shoulder.web.handleGlobalException", havingValue = "true", matchIfMissing = true)
 public class RestControllerExceptionAdvice {
-
 
     /**
      * 缺少参数

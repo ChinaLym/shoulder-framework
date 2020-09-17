@@ -1,14 +1,12 @@
-package org.shoulder.autoconfigure.web.advice;
+package org.shoulder.web.advice;
 
 import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.web.annotation.SkipResponseWrap;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -30,24 +28,41 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  * <p>
  * 如果希望使用自己项目中的返回值类，返回值继承 {@link BaseResponse} 类即可。
  * <p>
- * todo 统一加密，签名？
- * 记录debug日志
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
-@Order(value = 0)
 @RestControllerAdvice
-@ConditionalOnWebApplication
-@ConditionalOnProperty(name = "shoulder.web.unionResponse", havingValue = "true", matchIfMissing = true)
 public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Object> {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    /**
+     * 是否需要包装返回值，自动包装必须符合以下条件
+     * 接口返回值格式化类型为 Json，且不是 Spring 的标准返回值类型 {@link ResponseEntity}
+     * 方法或类上未添加 {@link SkipResponseWrap}
+     */
     @Override
     public boolean supports(@NonNull MethodParameter returnType,
                             @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
-        return needWrapResponse(returnType, converterType);
+
+        boolean jsonType = MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
+        boolean stringType = StringHttpMessageConverter.class.isAssignableFrom(converterType);
+        boolean notSupportResponseType = !jsonType && !stringType;
+        if(notSupportResponseType){
+            // 返回值不是 json对象 且不是字符串类型
+            return false;
+        }
+        boolean springStdResponseType = ResponseEntity.class.isAssignableFrom(returnType.getParameterType());
+        if (springStdResponseType) {
+            // Spring 框架的返回值
+            return false;
+        }
+
+        // 方法、或类上不能有 SkipResponseWrap 注解
+        boolean withoutMethodAnnotation = returnType.getMethodAnnotation(SkipResponseWrap.class) == null;
+        boolean withoutClassAnnotation = AnnotatedElementUtils.findMergedAnnotation(returnType.getContainingClass(),
+            SkipResponseWrap.class) == null;
+        return withoutMethodAnnotation && withoutClassAnnotation;
     }
 
     @Override
@@ -56,46 +71,26 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
                                   @NonNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   @NonNull ServerHttpRequest request,
                                   @NonNull ServerHttpResponse response) {
+
         if (MappingJackson2HttpMessageConverter.class.isAssignableFrom(selectedConverterType)) {
-            // json
             if (body == null) {
+                log.debug("body is null");
                 return BaseResponse.success();
             }
+            // json
             if (BaseResponse.class.isAssignableFrom(body.getClass())) {
                 return body;
             }
             return BaseResponse.success().setData(body);
         } else {
-            // string
-            if (StringUtils.isEmpty((CharSequence) body)) {
+            // string 类型单独处理
+            if (body == null || StringUtils.isEmpty((CharSequence) body)) {
                 return "{\"code\":\"0\",\"msg\":\"success\",\"data\":\"\"}";
             } else {
                 return "{\"code\":\"0\",\"msg\":\"success\",\"data\":\"" + body + "\"}";
             }
 
         }
-
-    }
-
-    /**
-     * 是否需要包装返回值，自动包装必须符合以下条件
-     * 接口返回值格式化类型为 Json
-     * 不是 Spring 的标准返回值类型 {@link ResponseEntity}
-     * 方法或类上未添加 {@link SkipResponseWrap}
-     */
-    private boolean needWrapResponse(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        boolean jsonType = MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
-        boolean stringType = StringHttpMessageConverter.class.isAssignableFrom(converterType);
-        boolean supportToJson = jsonType || stringType;
-        boolean springStdResponseType = ResponseEntity.class.isAssignableFrom(returnType.getParameterType());
-        if (!supportToJson || springStdResponseType) {
-            return false;
-        }
-
-        boolean withoutMethodAnnotation = returnType.getMethodAnnotation(SkipResponseWrap.class) == null;
-        boolean withoutClassAnnotation = AnnotatedElementUtils.findMergedAnnotation(returnType.getContainingClass(),
-            SkipResponseWrap.class) == null;
-        return withoutMethodAnnotation && withoutClassAnnotation;
 
     }
 

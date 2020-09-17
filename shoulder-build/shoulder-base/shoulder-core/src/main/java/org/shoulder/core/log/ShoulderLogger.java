@@ -51,81 +51,81 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     /**
      * Slf4j 的 logger
      */
-    protected final Logger log;
+    protected final Logger delegateLogger;
 
     public ShoulderLogger(Class<?> clazz) {
-        log = LoggerFactory.getLogger(clazz);
+        delegateLogger = LoggerFactory.getLogger(clazz);
     }
 
     public ShoulderLogger(String name) {
-        log = LoggerFactory.getLogger(name);
+        delegateLogger = LoggerFactory.getLogger(name);
     }
 
     @Override
     public String getName() {
-        return log.getName();
+        return delegateLogger.getName();
     }
 
     // -------------------------------------- TRACE 级别日志 -------------------------------------------
 
     @Override
     public boolean isTraceEnabled() {
-        return log.isTraceEnabled();
+        return delegateLogger.isTraceEnabled();
     }
 
     @Override
     public void trace(String msg) {
-        uniformLog(() -> log.trace(msg));
+        uniformLog(() -> delegateLogger.trace(msg));
     }
 
     @Override
     public void trace(String format, Object arg) {
-        uniformLog(() -> log.trace(format, arg));
+        uniformLog(() -> delegateLogger.trace(format, arg));
     }
 
     @Override
     public void trace(String format, Object arg1, Object arg2) {
-        uniformLog(() -> log.trace(format, arg1, arg2));
+        uniformLog(() -> delegateLogger.trace(format, arg1, arg2));
     }
 
     @Override
     public void trace(String format, Object... arguments) {
-        uniformLog(() -> log.trace(format, arguments));
+        uniformLog(() -> delegateLogger.trace(format, arguments));
     }
 
     @Override
     public void trace(String msg, Throwable t) {
-        uniformLog(() -> log.trace(msg, t));
+        uniformLog(() -> delegateLogger.trace(msg, t));
     }
 
     @Override
     public boolean isTraceEnabled(Marker marker) {
-        return log.isTraceEnabled(marker);
+        return delegateLogger.isTraceEnabled(marker);
     }
 
     @Override
     public void trace(Marker marker, String msg) {
-        uniformLog(() -> log.trace(marker, msg));
+        uniformLog(() -> delegateLogger.trace(marker, msg));
     }
 
     @Override
     public void trace(Marker marker, String format, Object arg) {
-        uniformLog(() -> log.trace(marker, format, arg));
+        uniformLog(() -> delegateLogger.trace(marker, format, arg));
     }
 
     @Override
     public void trace(Marker marker, String format, Object arg1, Object arg2) {
-        uniformLog(() -> log.trace(marker, format, arg1, arg2));
+        uniformLog(() -> delegateLogger.trace(marker, format, arg1, arg2));
     }
 
     @Override
     public void trace(Marker marker, String format, Object... argArray) {
-        uniformLog(() -> log.trace(marker, format, argArray));
+        uniformLog(() -> delegateLogger.trace(marker, format, argArray));
     }
 
     @Override
     public void trace(Marker marker, String msg, Throwable t) {
-        uniformLog(() -> log.trace(marker, msg, t));
+        uniformLog(() -> delegateLogger.trace(marker, msg, t));
     }
 
 
@@ -134,71 +134,71 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public boolean isDebugEnabled() {
-        return log.isDebugEnabled();
+        return delegateLogger.isDebugEnabled();
     }
 
     @Override
     public void debug(String msg) {
-        uniformLog(() -> log.debug(msg));
+        uniformLog(() -> delegateLogger.debug(msg));
     }
 
     @Override
     public void debug(String format, Object arg) {
-        uniformLog(() -> log.debug(format, arg));
+        uniformLog(() -> delegateLogger.debug(format, arg));
     }
 
 
     @Override
     public void debug(String format, Object arg1, Object arg2) {
-        uniformLog(() -> log.debug(format, arg1, arg2));
+        uniformLog(() -> delegateLogger.debug(format, arg1, arg2));
     }
 
 
     @Override
     public void debug(String format, Object... arguments) {
-        uniformLog(() -> log.debug(format, arguments));
+        uniformLog(() -> delegateLogger.debug(format, arguments));
     }
 
 
     @Override
     public void debug(String msg, Throwable t) {
-        uniformLog(() -> log.debug(msg, t));
+        uniformLog(() -> delegateLogger.debug(msg, t));
     }
 
 
     @Override
     public boolean isDebugEnabled(Marker marker) {
-        return log.isDebugEnabled(marker);
+        return delegateLogger.isDebugEnabled(marker);
     }
 
 
     @Override
     public void debug(Marker marker, String msg) {
-        uniformLog(() -> log.debug(marker, msg));
+        uniformLog(() -> delegateLogger.debug(marker, msg));
     }
 
 
     @Override
     public void debug(Marker marker, String format, Object arg) {
-        uniformLog(() -> log.debug(marker, format, arg));
+        uniformLog(() -> delegateLogger.debug(marker, format, arg));
     }
 
 
     @Override
     public void debug(Marker marker, String format, Object arg1, Object arg2) {
-        uniformLog(() -> log.debug(marker, format, arg1, arg2));
+        uniformLog(() -> delegateLogger.debug(marker, format, arg1, arg2));
     }
 
 
     @Override
     public void debug(Marker marker, String format, Object... arguments) {
-        uniformLog(() -> log.debug(marker, format, arguments));
+        uniformLog(() -> delegateLogger.debug(marker, format, arguments));
     }
 
 
     @Override
     public void debug(Marker marker, String msg, Throwable t) {
-        uniformLog(() -> log.debug(marker, msg, t));
+        uniformLog(() -> delegateLogger.debug(marker, msg, t));
     }
 
     // -------------------------------------- INFO 级别日志 -----------------------------------------
@@ -206,73 +206,73 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public boolean isInfoEnabled() {
-        return log.isInfoEnabled();
+        return delegateLogger.isInfoEnabled();
     }
 
 
     @Override
     public void info(String msg) {
-        uniformLog(() -> log.info(msg));
+        uniformLog(() -> delegateLogger.info(msg));
     }
 
 
     @Override
     public void info(String format, Object arg) {
-        uniformLog(() -> log.info(format, arg));
+        uniformLog(() -> delegateLogger.info(format, arg));
     }
 
 
     @Override
     public void info(String format, Object arg1, Object arg2) {
-        uniformLog(() -> log.info(format, arg1, arg2));
+        uniformLog(() -> delegateLogger.info(format, arg1, arg2));
     }
 
 
     @Override
     public void info(String format, Object... arguments) {
-        uniformLog(() -> log.info(format, arguments));
+        uniformLog(() -> delegateLogger.info(format, arguments));
     }
 
 
     @Override
     public void info(String msg, Throwable t) {
-        uniformLog(() -> log.info(msg, t));
+        uniformLog(() -> delegateLogger.info(msg, t));
     }
 
 
     @Override
     public boolean isInfoEnabled(Marker marker) {
-        return log.isInfoEnabled(marker);
+        return delegateLogger.isInfoEnabled(marker);
     }
 
 
     @Override
     public void info(Marker marker, String msg) {
-        uniformLog(() -> log.info(marker, msg));
+        uniformLog(() -> delegateLogger.info(marker, msg));
     }
 
 
     @Override
     public void info(Marker marker, String format, Object arg) {
-        uniformLog(() -> log.info(marker, format, arg));
+        uniformLog(() -> delegateLogger.info(marker, format, arg));
     }
 
 
     @Override
     public void info(Marker marker, String format, Object arg1, Object arg2) {
-        uniformLog(() -> log.info(marker, format, arg1, arg2));
+        uniformLog(() -> delegateLogger.info(marker, format, arg1, arg2));
     }
 
 
     @Override
     public void info(Marker marker, String format, Object... arguments) {
-        uniformLog(() -> log.info(marker, format, arguments));
+        uniformLog(() -> delegateLogger.info(marker, format, arguments));
     }
 
 
     @Override
     public void info(Marker marker, String msg, Throwable t) {
-        uniformLog(() -> log.info(marker, msg, t));
+        uniformLog(() -> delegateLogger.info(marker, msg, t));
     }
 
 
@@ -281,31 +281,31 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public boolean isWarnEnabled() {
-        return log.isWarnEnabled();
+        return delegateLogger.isWarnEnabled();
     }
 
 
     @Override
     public void warn(String msg) {
-        uniformLog(() -> log.warn(msg));
+        uniformLog(() -> delegateLogger.warn(msg));
     }
 
 
     @Override
     public void warn(String format, Object arg) {
-        uniformLog(() -> log.warn(format, arg));
+        uniformLog(() -> delegateLogger.warn(format, arg));
     }
 
 
     @Override
     public void warn(String format, Object... arguments) {
-        uniformLog(() -> log.warn(format, arguments));
+        uniformLog(() -> delegateLogger.warn(format, arguments));
     }
 
 
     @Override
     public void warn(String format, Object arg1, Object arg2) {
-        uniformLog(() -> log.warn(format, arg1, arg2));
+        uniformLog(() -> delegateLogger.warn(format, arg1, arg2));
     }
 
 
@@ -315,43 +315,43 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
             warnWithErrorCode(((ErrorCode) t).getCode(), ((ErrorCode) t).generateDetail(), t);
             return;
         }
-        uniformLog(() -> log.warn(msg, t));
+        uniformLog(() -> delegateLogger.warn(msg, t));
     }
 
 
     @Override
     public boolean isWarnEnabled(Marker marker) {
-        return log.isWarnEnabled(marker);
+        return delegateLogger.isWarnEnabled(marker);
     }
 
 
     @Override
     public void warn(Marker marker, String msg) {
-        uniformLog(() -> log.warn(marker, msg));
+        uniformLog(() -> delegateLogger.warn(marker, msg));
     }
 
 
     @Override
     public void warn(Marker marker, String format, Object arg) {
-        uniformLog(() -> log.warn(marker, format, arg));
+        uniformLog(() -> delegateLogger.warn(marker, format, arg));
     }
 
 
     @Override
     public void warn(Marker marker, String format, Object arg1, Object arg2) {
-        uniformLog(() -> log.warn(marker, format, arg1, arg2));
+        uniformLog(() -> delegateLogger.warn(marker, format, arg1, arg2));
     }
 
 
     @Override
     public void warn(Marker marker, String format, Object... arguments) {
-        uniformLog(() -> log.warn(marker, format, arguments));
+        uniformLog(() -> delegateLogger.warn(marker, format, arguments));
     }
 
 
     @Override
     public void warn(Marker marker, String msg, Throwable t) {
-        uniformLog(() -> log.warn(marker, msg, t));
+        uniformLog(() -> delegateLogger.warn(marker, msg, t));
     }
 
     // --------- 带错误码的 WARN ---------
@@ -385,9 +385,9 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public void info(ErrorCode errorCode) {
         uniformLog(errorCode.getCode(), () -> {
             if (errorCode instanceof Throwable) {
-                log.info(errorCode.generateDetail(), (Throwable) errorCode);
+                delegateLogger.info(errorCode.generateDetail(), (Throwable) errorCode);
             } else {
-                log.info(errorCode.generateDetail());
+                delegateLogger.info(errorCode.generateDetail());
             }
         });
     }
@@ -396,9 +396,9 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public void debug(ErrorCode errorCode) {
         uniformLog(errorCode.getCode(), () -> {
             if (errorCode instanceof Throwable) {
-                log.debug(errorCode.generateDetail(), (Throwable) errorCode);
+                delegateLogger.debug(errorCode.generateDetail(), (Throwable) errorCode);
             } else {
-                log.debug(errorCode.generateDetail());
+                delegateLogger.debug(errorCode.generateDetail());
             }
         });
     }
@@ -408,9 +408,9 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public void warn(ErrorCode errorCode) {
         uniformLog(errorCode.getCode(), () -> {
             if (errorCode instanceof Throwable) {
-                log.warn(errorCode.generateDetail(), (Throwable) errorCode);
+                delegateLogger.warn(errorCode.generateDetail(), (Throwable) errorCode);
             } else {
-                log.warn(errorCode.generateDetail());
+                delegateLogger.warn(errorCode.generateDetail());
             }
         });
     }
@@ -418,63 +418,63 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void warnWithErrorCode(String errorCode, String msg) {
-        uniformLog(errorCode, () -> log.warn(msg));
+        uniformLog(errorCode, () -> delegateLogger.warn(msg));
     }
 
 
     @Override
     public void warnWithErrorCode(String errorCode, String format, Object arg) {
-        uniformLog(errorCode, () -> log.warn(format, arg));
+        uniformLog(errorCode, () -> delegateLogger.warn(format, arg));
     }
 
 
     @Override
     public void warnWithErrorCode(String errorCode, String format, Object... arguments) {
-        uniformLog(errorCode, () -> log.warn(format, arguments));
+        uniformLog(errorCode, () -> delegateLogger.warn(format, arguments));
 
     }
 
 
     @Override
     public void warnWithErrorCode(String errorCode, String format, Object arg1, Object arg2) {
-        uniformLog(errorCode, () -> log.warn(format, arg1, arg2));
+        uniformLog(errorCode, () -> delegateLogger.warn(format, arg1, arg2));
     }
 
 
     @Override
     public void warnWithErrorCode(String errorCode, String msg, Throwable t) {
-        uniformLog(errorCode, () -> log.warn(msg, t));
+        uniformLog(errorCode, () -> delegateLogger.warn(msg, t));
     }
 
     // ---------------------------------------- ERROR 级别日志 ---------------------------------------------------
 
     @Override
     public boolean isErrorEnabled() {
-        return log.isErrorEnabled();
+        return delegateLogger.isErrorEnabled();
     }
 
 
     @Override
     public void error(String msg) {
-        uniformLog(() -> log.error(msg));
+        uniformLog(() -> delegateLogger.error(msg));
     }
 
 
     @Override
     public void error(String format, Object arg) {
-        uniformLog(() -> log.error(format, arg));
+        uniformLog(() -> delegateLogger.error(format, arg));
     }
 
 
     @Override
     public void error(String format, Object arg1, Object arg2) {
-        uniformLog(() -> log.error(format, arg1, arg2));
+        uniformLog(() -> delegateLogger.error(format, arg1, arg2));
     }
 
 
     @Override
     public void error(String format, Object... arguments) {
-        uniformLog(() -> log.error(format, arguments));
+        uniformLog(() -> delegateLogger.error(format, arguments));
     }
 
 
@@ -484,43 +484,43 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
             errorWithErrorCode(((ErrorCode) t).getCode(), ((ErrorCode) t).generateDetail(), t);
             return;
         }
-        uniformLog(() -> log.error(msg, t));
+        uniformLog(() -> delegateLogger.error(msg, t));
     }
 
 
     @Override
     public boolean isErrorEnabled(Marker marker) {
-        return log.isErrorEnabled(marker);
+        return delegateLogger.isErrorEnabled(marker);
     }
 
 
     @Override
     public void error(Marker marker, String msg) {
-        uniformLog(() -> log.error(marker, msg));
+        uniformLog(() -> delegateLogger.error(marker, msg));
     }
 
 
     @Override
     public void error(Marker marker, String format, Object arg) {
-        uniformLog(() -> log.error(marker, format, arg));
+        uniformLog(() -> delegateLogger.error(marker, format, arg));
     }
 
 
     @Override
     public void error(Marker marker, String format, Object arg1, Object arg2) {
-        uniformLog(() -> log.error(marker, format, arg1, arg2));
+        uniformLog(() -> delegateLogger.error(marker, format, arg1, arg2));
     }
 
 
     @Override
     public void error(Marker marker, String format, Object... arguments) {
-        uniformLog(() -> log.error(marker, format, arguments));
+        uniformLog(() -> delegateLogger.error(marker, format, arguments));
     }
 
 
     @Override
     public void error(Marker marker, String msg, Throwable t) {
-        uniformLog(() -> log.error(marker, msg, t));
+        uniformLog(() -> delegateLogger.error(marker, msg, t));
     }
 
     // --------- 带错误码的 ERROR ---------
@@ -529,40 +529,40 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public void error(ErrorCode errorCode) {
         uniformLog(errorCode.getCode(), () -> {
             if (errorCode instanceof Throwable) {
-                log.error(errorCode.generateDetail(), (Throwable) errorCode);
+                delegateLogger.error(errorCode.generateDetail(), (Throwable) errorCode);
             } else {
-                log.error(errorCode.generateDetail());
+                delegateLogger.error(errorCode.generateDetail());
             }
         });
     }
 
     @Override
     public void errorWithErrorCode(String errorCode, String msg) {
-        uniformLog(errorCode, () -> log.error(msg));
+        uniformLog(errorCode, () -> delegateLogger.error(msg));
     }
 
 
     @Override
     public void errorWithErrorCode(String errorCode, String format, Object arg) {
-        uniformLog(errorCode, () -> log.error(format, arg));
+        uniformLog(errorCode, () -> delegateLogger.error(format, arg));
     }
 
 
     @Override
     public void errorWithErrorCode(String errorCode, String format, Object arg1, Object arg2) {
-        uniformLog(errorCode, () -> log.error(format, arg1, arg2));
+        uniformLog(errorCode, () -> delegateLogger.error(format, arg1, arg2));
     }
 
 
     @Override
     public void errorWithErrorCode(String errorCode, String format, Object... arguments) {
-        uniformLog(errorCode, () -> log.error(format, arguments));
+        uniformLog(errorCode, () -> delegateLogger.error(format, arguments));
     }
 
 
     @Override
     public void errorWithErrorCode(String errorCode, String msg, Throwable t) {
-        uniformLog(errorCode, () -> log.error(msg, t));
+        uniformLog(errorCode, () -> delegateLogger.error(msg, t));
     }
 
 

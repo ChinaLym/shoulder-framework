@@ -1,22 +1,19 @@
-package org.shoulder.autoconfigure.web.advice;
+package org.shoulder.web.advice;
 
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +22,9 @@ import java.lang.reflect.Parameter;
 import java.util.Enumeration;
 
 /**
- * 自动记录接口出入参数和异常
- * 入参出参分开打印，可以通过traceId来确定完整的链路，不在这里记录异常
+ * 彩色形式记录接口出入参数
+ * <p>
+ * todo remoteAddress 允许可选的打印信息，如太多请求头不想全部打印
  * <p>
  * Spring 的 RequestResponseBodyMethodProcessor
  * RequestMappingHandlerMapping
@@ -34,20 +32,12 @@ import java.util.Enumeration;
  * 但其记录日志的目的是为了便于排查spring框架的错误，而不是方便使用者查看，shoulder 的 logback.xml 默认屏蔽他们的 debug 日志
  * shoulder 这里的记录 Logger 是取的对应 Controller 的 Logger，且信息更多，如请求头、请求参数
  * <p>
- * todo 为开发、生产提供不同的打印格式？（生产环境可能需要日志采集、统一日志格式）
- * 允许可选的打印信息，如太多请求头不想全部打印、
- *
- * @see CommonsRequestLoggingFilter spring 中提供的日志过滤器
  *
  * @author lym
+ * @see CommonsRequestLoggingFilter spring 中提供的日志过滤器
  */
 @Aspect
-@Configuration(
-    proxyBeanMethods = false
-)
-@ConditionalOnWebApplication
-@ConditionalOnProperty(name = "shoulder.web.logHttpRequest", havingValue = "true", matchIfMissing = true)
-public class RestControllerLogAspect {
+public class RestControllerColorfulLogAspect {
 
     /**
      * 换行符
@@ -66,16 +56,6 @@ public class RestControllerLogAspect {
      */
     private ThreadLocal<Logger> loggerLocal = new ThreadLocal<>();
 
-    private static String getClassFileName(Class clazz) {
-        String classFileName = clazz.getName();
-        if (classFileName.contains("$")) {
-            int indexOf = classFileName.contains(".") ? classFileName.lastIndexOf(".") + 1 : 0;
-            return classFileName.substring(indexOf, classFileName.indexOf("$"));
-        } else {
-            return clazz.getSimpleName();
-        }
-    }
-
     /**
      * 要记录日志的位置：Controller 和 RestController
      * within 不支持继承，不能增强带有某个特定注解的子类的方法
@@ -86,12 +66,47 @@ public class RestControllerLogAspect {
     public void httpApiMethod() {
     }
 
+
+    /**
+     * 记录出入参
+     *
+     * @param jp 日志记录切点
+     */
+    @Around("httpApiMethod()")
+    public Object around(ProceedingJoinPoint jp) throws Throwable {
+        MethodSignature methodSignature = (MethodSignature) jp.getSignature();
+        Method method = methodSignature.getMethod();
+        Logger log = LoggerFactory.getLogger(method.getDeclaringClass());
+        if (!log.isDebugEnabled()) {
+            // 直接执行什么都不做
+            jp.proceed();
+        }
+
+        // 前置记录
+        before(jp);
+        long requestTime = System.currentTimeMillis();
+
+        // 执行目标方法
+        Object returnObject = jp.proceed();
+
+        // 异常后则不记录返回值，由全局异常处理器记录
+        if (!log.isDebugEnabled()) {
+            return returnObject;
+        }
+        long cost = System.currentTimeMillis() - requestTime;
+        String requestUrl = ServletUtil.getRequest().getRequestURI();
+        String returnStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
+        log.debug("{} [cost {}ms], Result: {}", requestUrl, cost, returnStr);
+        return returnObject;
+    }
+
+
+
     /**
      * 记录入参
      *
      * @param jp 日志记录切点
      */
-    @Before("httpApiMethod()")
     public void before(JoinPoint jp) {
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
         Method method = methodSignature.getMethod();
@@ -101,12 +116,7 @@ public class RestControllerLogAspect {
             return;
         }
 
-        String codeLocation;
-        try {
-            codeLocation = genCodeLocationLink(method);
-        } catch (NotFoundException e) {
-            codeLocation = jp.getSignature().toShortString();
-        }
+        String codeLocation = genCodeLocationLink(method);
         codeLocationLocal.set(codeLocation);
         // 记录请求方法、路径，Controller 信息与代码位置
         HttpServletRequest request = ServletUtil.getRequest();
@@ -128,7 +138,6 @@ public class RestControllerLogAspect {
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             String headerValue = request.getHeader(headerName);
-            // 是否也记录过长的参数？
             requestInfo
                 .append(NEW_LINE_SEPARATOR).append("\t")
                 .append(headerName)
@@ -145,7 +154,6 @@ public class RestControllerLogAspect {
             String argName = parameterNames[i];
             String argValue = JsonUtils.toJson(args[i]);
 
-            // 是否也记录过长的参数？
             requestInfo
                 .append(NEW_LINE_SEPARATOR).append("\t")
                 .append(argType.getSimpleName())
@@ -163,11 +171,9 @@ public class RestControllerLogAspect {
     /**
      * 记录出参
      *
-     * @param joinPoint    切入点
      * @param returnObject 返回值（返回的数据）
      */
-    @AfterReturning(value = "httpApiMethod()", returning = "returnObject")
-    public void afterReturn(JoinPoint joinPoint, Object returnObject) {
+    public void afterReturn(Object returnObject) {
         Logger log = loggerLocal.get();
         String codeLocation = codeLocationLocal.get();
         // 是否存在并发问题：如突然动态改变日志级别？这时获得的 log 为 null 应什么都不做
@@ -188,29 +194,43 @@ public class RestControllerLogAspect {
      *
      * @param method 方法
      * @return IDE 支持的跳转格式
-     * @throws NotFoundException 代码位置找不到
      */
-    private String genCodeLocationLink(Method method) throws NotFoundException {
+    private String genCodeLocationLink(Method method) {
         Class<?> clazz = method.getDeclaringClass();
 
-        CtClass ctClass = ClassPool.getDefault().get(clazz.getName());
-        CtMethod ctMethod = ctClass.getDeclaredMethod(method.getName());
-        int lineNum = ctMethod.getMethodInfo().getLineNumber(0);
-
+        int lineNum;
+        try {
+            CtClass ctClass = ClassPool.getDefault().get(clazz.getName());
+            CtMethod ctMethod = ctClass.getDeclaredMethod(method.getName());
+            lineNum = ctMethod.getMethodInfo().getLineNumber(0);
+        } catch (NotFoundException e) {
+            // 未找到，无法跳到具体行数，使用第一行，以便于跳到目标类
+            lineNum = 1;
+        }
         return clazz.getSimpleName() + "." + method.getName() +
             "(" + getClassFileName(clazz) + ".java:" + lineNum + ")";
+
+    }
+
+    private static String getClassFileName(Class clazz) {
+        String classFileName = clazz.getName();
+        if (classFileName.contains("$")) {
+            int indexOf = classFileName.contains(".") ? classFileName.lastIndexOf(".") + 1 : 0;
+            return classFileName.substring(indexOf, classFileName.indexOf("$"));
+        } else {
+            return clazz.getSimpleName();
+        }
     }
 
     /**
      * 记录发生异常
-     * 异常不推荐这里记录，默认注释。推荐在全局异常拦截中记录
+     * 在这里记录异常会导致和异常处理器重复，故忽略异常情况
      *
      * @param exception 异常
      */
     //@AfterThrowing(value = "httpApiMethod()", throwing = "exception")
     public void exception(Exception exception) {
         long cost = System.currentTimeMillis() - requestTimeLocal.get();
-        // 是否在这里记录异常？会否重复记录？
         loggerLocal.get().error("[cost " + cost + "ms] and EXCEPTION.", exception);
         cleanLocal();
     }

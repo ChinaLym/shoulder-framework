@@ -158,7 +158,7 @@
 
         <!-- shoulder 框架中日志的默认输出级别 WARN additivity="false" 可以修改日志文件 -->
         <logger name="org.shoulder" level="WARN"/>
-        <!-- shoulder 框架配置模块日志的打印级别为 INFO -->
+        <!-- shoulder 框架配置模块日志只在启动时输出，故的打印级别为 INFO -->
         <logger name="org.shoulder.autoconfigure" level="INFO"/>
 
         <!-- 默认为 WARN -->

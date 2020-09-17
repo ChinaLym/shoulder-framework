@@ -1,6 +1,5 @@
 package org.shoulder.core.log;
 
-import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -12,30 +11,25 @@ import java.util.concurrent.ConcurrentMap;
 public class ShoulderLoggerSl4jFactory implements ILoggerFactory {
 
     /**
-     * 缓存
+     * Logger 缓存。不同项目，必然有不同初始值，势必引起多次扩容，但由于最终会达到一个稳定状态，故可容忍
      */
-    private static final ConcurrentMap<String, Logger> LOGGERS = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, Logger> LOGGER_CACHE = new ConcurrentHashMap<>(256);
 
     public static ShoulderLoggerSl4jFactory getInstance() {
         return SingleTonHolder.instance;
     }
 
+    private ShoulderLoggerSl4jFactory(){}
+
     /**
      * 获取 logger
      *
-     * @param loggerName logger 标识
+     * @param loggerClazz logger 标识
      * @return logger
      */
     @Override
-    public Logger getLogger(Class<?> loggerName) {
-        ServiceLoader<Logger> loggerImpl = ServiceLoader.load(Logger.class);
-
-        Logger logger = LOGGERS.get(loggerName.getName());
-        if (logger == null) {
-            LOGGERS.putIfAbsent(loggerName.getName(), new ShoulderLogger(loggerName));
-            logger = LOGGERS.get(loggerName.getName());
-        }
-        return logger;
+    public Logger getLogger(Class<?> loggerClazz) {
+        return getLogger(loggerClazz.getName());
     }
 
     /**
@@ -46,12 +40,7 @@ public class ShoulderLoggerSl4jFactory implements ILoggerFactory {
      */
     @Override
     public Logger getLogger(String loggerName) {
-        Logger logger = LOGGERS.get(loggerName);
-        if (logger == null) {
-            LOGGERS.putIfAbsent(loggerName, new ShoulderLogger(loggerName));
-            logger = LOGGERS.get(loggerName);
-        }
-        return logger;
+        return LOGGER_CACHE.computeIfAbsent(loggerName, ShoulderLogger::new);
     }
 
     private static class SingleTonHolder {

@@ -11,9 +11,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.core.DelayTaskAutoConfiguration, \
   org.shoulder.autoconfigure.core.I18nAutoConfiguration, \
   \
-  org.shoulder.autoconfigure.web.advice.RestControllerLogAspect, \
-  org.shoulder.autoconfigure.web.advice.RestControllerExceptionAdvice, \
-  org.shoulder.autoconfigure.web.advice.RestControllerUnionResponseAdvice, \
+  org.shoulder.autoconfigure.web.WebAdvanceAutoConfiguration, \
   org.shoulder.autoconfigure.web.MvcConverterAutoConfiguration, \
   org.shoulder.autoconfigure.web.WebMvcAutoConfiguration, \
   \
