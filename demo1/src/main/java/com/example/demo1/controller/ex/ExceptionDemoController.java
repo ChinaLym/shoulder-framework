@@ -2,6 +2,7 @@ package com.example.demo1.controller.ex;
 
 import com.example.demo1.ex.MyEx1;
 import com.example.demo1.ex.MyEx2;
+import org.shoulder.autoconfigure.web.WebAdvanceAutoConfiguration;
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.log.Logger;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 异常示例
  *      自动全局捕获抛出的 {@link BaseRuntimeException}异常，会自动记录日志，并返回对应的返回值
  *
- * @see RestControllerExceptionAdvice 框架实现
+ * @see WebAdvanceAutoConfiguration#restControllerExceptionAdvice 框架实现
  *
  * @author lym
  */
