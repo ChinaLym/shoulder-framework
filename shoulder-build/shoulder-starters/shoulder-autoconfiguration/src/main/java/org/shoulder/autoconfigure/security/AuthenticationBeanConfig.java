@@ -22,9 +22,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(AuthenticationProperties.class)
 @ConditionalOnClass(SecurityConst.class)
 public class AuthenticationBeanConfig {

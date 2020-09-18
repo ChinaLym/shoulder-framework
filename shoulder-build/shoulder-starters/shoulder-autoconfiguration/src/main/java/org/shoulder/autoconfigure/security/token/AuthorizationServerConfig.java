@@ -25,9 +25,7 @@ import java.util.List;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @EnableAuthorizationServer
 @EnableConfigurationProperties(OAuth2Properties.class)
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {

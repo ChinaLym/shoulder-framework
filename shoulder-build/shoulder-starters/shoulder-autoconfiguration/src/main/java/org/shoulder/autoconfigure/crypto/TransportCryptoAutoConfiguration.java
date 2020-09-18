@@ -31,9 +31,7 @@ import org.springframework.web.client.RestTemplate;
  * @author lym
  */
 @Slf4j
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(TransportNegotiationService.class)
 @AutoConfigureAfter(LocalCryptoAutoConfiguration.class)
 @ConditionalOnProperty(value = "shoulder.crypto.transport.enable", havingValue = "true", matchIfMissing = true)
@@ -57,10 +55,11 @@ public class TransportCryptoAutoConfiguration {
 
     @ConditionalOnMissingBean(value = KeyNegotiationCache.class)
     @AutoConfigureAfter(RedisAutoConfiguration.class)
-    public static class KeyNegotiationCacheAutoConfiguration {
+    @ConditionalOnCluster
+    @ConditionalOnClass(RestTemplate.class)
+    public static class KeyNegotiationCacheClusterAutoConfiguration {
 
         @Bean
-        @ConditionalOnCluster
         public KeyNegotiationCache redisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate,
                                                             @Value("${spring.application.name}") String applicationName) {
 
@@ -69,8 +68,14 @@ public class TransportCryptoAutoConfiguration {
             return keyNegotiationCache;
         }
 
+    }
+
+    @ConditionalOnMissingBean(value = KeyNegotiationCache.class)
+    @AutoConfigureAfter(RedisAutoConfiguration.class)
+    @ConditionalOnCluster(cluster = false)
+    public static class KeyNegotiationCacheLocalAutoConfiguration {
+
         @Bean
-        @ConditionalOnCluster(cluster = false)
         public KeyNegotiationCache localKeyNegotiationCache() {
             return new LocalKeyNegotiationCache();
         }

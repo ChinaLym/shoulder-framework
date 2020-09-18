@@ -34,9 +34,7 @@ import java.util.concurrent.Executors;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(OperationLogDTO.class)
 @EnableConfigurationProperties(OperationLogProperties.class)
 public class OperationLoggerAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {

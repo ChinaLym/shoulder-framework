@@ -26,9 +26,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(AsymmetricTextCipher.class)
 @AutoConfigureAfter(value = {AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class,
     AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class})
@@ -60,9 +58,7 @@ public class AsymmetricCryptoAutoConfiguration {
     /**
      * 默认使用 Hash Map 作为非对称秘钥对存储
      */
-    @Configuration(
-        proxyBeanMethods = false
-    )
+    @Configuration(proxyBeanMethods = false)
     @ConditionalOnCluster(cluster = false)
     @EnableConfigurationProperties(CryptoProperties.class)
     @ConditionalOnMissingBean(KeyPairCache.class)
@@ -79,9 +75,7 @@ public class AsymmetricCryptoAutoConfiguration {
     /**
      * 如果支持集群，则默认使用 redis 作为非对称秘钥对存储
      */
-    @Configuration(
-        proxyBeanMethods = false
-    )
+    @Configuration(proxyBeanMethods = false)
     @ConditionalOnCluster
     @ConditionalOnClass(StringRedisTemplate.class)
     @EnableConfigurationProperties(CryptoProperties.class)

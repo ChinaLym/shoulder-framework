@@ -17,9 +17,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(ValidateCodeBeanConfig.class)
 @EnableConfigurationProperties(SmsCodeProperties.class)
 public class SmsCodeBeanConfig {

@@ -31,9 +31,7 @@ import java.util.List;
  */
 @ConditionalOnClass(ValidateCodeConsts.class)
 @ConditionalOnBean(value = {ValidateCodeProcessor.class})
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 public class ValidateCodeBeanConfig {
 
     /**

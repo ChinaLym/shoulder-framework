@@ -18,9 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(OperationLogDTO.class)
 @AutoConfigureAfter(OperationLogAspect.class)
 @ConditionalOnNotWebApplication

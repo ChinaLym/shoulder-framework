@@ -17,9 +17,7 @@ import org.springframework.lang.NonNull;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 public class SpringUtilAutoConfiguration implements BeanFactoryAware, BeanFactoryPostProcessor, ApplicationContextAware {
 
     /**

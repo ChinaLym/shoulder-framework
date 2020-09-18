@@ -20,9 +20,7 @@ import org.springframework.util.StringUtils;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RedisTemplate.class)
 public class RedisAutoConfiguration {
 

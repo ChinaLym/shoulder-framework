@@ -37,9 +37,7 @@ import javax.sql.DataSource;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(AuthenticationBeanConfig.class)
 @EnableConfigurationProperties(BrowserSessionAuthProperties.class)

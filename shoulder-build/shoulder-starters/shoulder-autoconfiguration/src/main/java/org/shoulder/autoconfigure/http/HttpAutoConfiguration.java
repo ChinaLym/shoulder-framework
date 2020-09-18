@@ -9,10 +9,10 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -20,34 +20,20 @@ import java.util.List;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RestTemplate.class)
 @AutoConfigureAfter(value = {RestTemplateAutoConfiguration.class, RestTemplateLogAutoConfiguration.class})
+//@NotReactiveWebApplicationCondition
 public class HttpAutoConfiguration {
 
 
     @Bean
     @ConditionalOnMissingBean
-    public RestTemplate restTemplate(@Nullable RestTemplateBuilder builder, @Nullable List<ClientHttpRequestInterceptor> interceptors) {
-        RestTemplate restTemplate;
-        if (builder == null) {
-            restTemplate = new RestTemplate();
-        } else {
-            restTemplate = builder.build();
-        }
+    public RestTemplate restTemplate(@NonNull RestTemplateBuilder builder, @Nullable List<ClientHttpRequestInterceptor> interceptors) {
         if (CollectionUtils.isNotEmpty(interceptors)) {
-            // 若非空则尝试注册
-            List<ClientHttpRequestInterceptor> registeredInterceptors = restTemplate.getInterceptors();
-            Collection<ClientHttpRequestInterceptor> shouldRegister = interceptors;
-            if (CollectionUtils.isEmpty(registeredInterceptors)) {
-                // 当且仅当非空则取差值，避免重复注册，同时避免无效去重
-                shouldRegister = CollectionUtils.subtract(interceptors, registeredInterceptors);
-            }
-            registeredInterceptors.addAll(shouldRegister);
+            builder.additionalInterceptors(interceptors);
         }
-        return restTemplate;
+        return builder.build();
     }
 
 }

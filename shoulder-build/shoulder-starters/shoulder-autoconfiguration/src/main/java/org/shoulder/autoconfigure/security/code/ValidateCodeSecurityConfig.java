@@ -18,9 +18,7 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
  * @author lym
  */
 @ConditionalOnClass(ValidateCodeConsts.class)
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(ValidateCodeBeanConfig.class)
 @ConditionalOnBean(value = {ValidateCodeProcessor.class})
 public class ValidateCodeSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {

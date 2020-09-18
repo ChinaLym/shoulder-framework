@@ -13,9 +13,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MinioProperties.class)
 @ConditionalOnProperty(prefix = "shoulder.minio", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class MinioAutoConfiguration {

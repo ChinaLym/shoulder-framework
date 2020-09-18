@@ -30,9 +30,7 @@ import java.util.List;
  * @author lym
  */
 @SLog
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(LocalTextCipher.class)
 @ConditionalOnProperty(value = "shoulder.crypto.local.enable", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(CryptoProperties.class)

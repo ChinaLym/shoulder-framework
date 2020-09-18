@@ -11,9 +11,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication
 public class MvcConverterAutoConfiguration {
 

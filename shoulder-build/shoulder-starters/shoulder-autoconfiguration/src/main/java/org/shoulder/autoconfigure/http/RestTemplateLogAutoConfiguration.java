@@ -17,9 +17,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(BaseRestTemplateLogInterceptor.class)
 @ConditionalOnMissingBean(BaseRestTemplateLogInterceptor.class)
 public class RestTemplateLogAutoConfiguration {

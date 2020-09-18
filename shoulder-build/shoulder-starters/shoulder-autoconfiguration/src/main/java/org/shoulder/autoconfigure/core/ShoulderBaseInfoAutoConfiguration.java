@@ -20,9 +20,7 @@ import java.util.TimeZone;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BaseAppProperties.class)
 public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcessor, Ordered {
 

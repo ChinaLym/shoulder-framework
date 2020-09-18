@@ -23,9 +23,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(AuthenticationBeanConfig.class)
 @EnableConfigurationProperties(OAuth2Properties.class)
@@ -66,18 +64,14 @@ public class TokenAuthBeanConfig {
     /**
      * TokenStore 相关配置
      */
-    /*@Configuration(
-    proxyBeanMethods = false
-)
+    /*@Configuration(proxyBeanMethods = false)
     @ConditionalOnMissingBean(TokenStore.class)
     public static class TokenStoreConfig {
 
         *//**
      * 使用 redis 作为 token 存储
      *//*
-        @Configuration(
-    proxyBeanMethods = false
-)
+        @Configuration(proxyBeanMethods = false)
         @ConditionalOnProperty(prefix = "lym.security.oauth2", name = "tokenStore", havingValue = "redis")
         public static class RedisConfig {
 
@@ -91,9 +85,7 @@ public class TokenAuthBeanConfig {
         *//**
      * 使用 jwt 时的配置，默认生效
      *//*
-        @Configuration(
-    proxyBeanMethods = false
-)
+        @Configuration(proxyBeanMethods = false)
         @ConditionalOnProperty(prefix = "lym.security.oauth2", name = "tokenStore", havingValue = "jwt", matchIfMissing = true)
         public static class JwtConfig {
 

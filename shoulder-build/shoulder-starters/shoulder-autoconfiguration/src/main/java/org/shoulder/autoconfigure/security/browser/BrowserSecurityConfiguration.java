@@ -25,9 +25,7 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(value = {AuthenticationBeanConfig.class, BrowserSessionAuthBeanConfiguration.class})
 @ConditionalOnAuthType(type = AuthenticationType.SESSION)

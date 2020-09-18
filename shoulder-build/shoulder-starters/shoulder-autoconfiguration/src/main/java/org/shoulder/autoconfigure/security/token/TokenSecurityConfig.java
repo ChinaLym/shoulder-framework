@@ -19,9 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(value = TokenAuthBeanConfig.class)
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)

@@ -17,9 +17,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @EnableResourceServer
 @EnableConfigurationProperties(OAuth2Properties.class)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {

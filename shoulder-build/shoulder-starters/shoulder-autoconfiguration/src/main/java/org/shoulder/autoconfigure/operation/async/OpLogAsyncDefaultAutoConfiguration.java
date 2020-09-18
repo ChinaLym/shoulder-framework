@@ -11,9 +11,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author lym
  */
-@Configuration(
-    proxyBeanMethods = false
-)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(OperationLog.class)
 public class OpLogAsyncDefaultAutoConfiguration {
 
