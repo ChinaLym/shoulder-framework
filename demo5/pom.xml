@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>cn.itlym</groupId>
+        <artifactId>shoulder-parent</artifactId>
+        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>demo5</artifactId>
+
+    <dependencies>
+
+        <!-- 包含了 spring-boot-starter-web，在其之上额外提供了更棒的能力 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-web</artifactId>
+        </dependency>
+
+        <!-- 加密传输 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-crypto-negotiation</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>
