@@ -65,7 +65,8 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
         stopWatch.stop();
 
         boolean needLogBody = needLogBody(request);
-        String bodyStr = needLogBody ? readBody(response) : "contentType not readable";
+        String bodyStr = needLogBody ? readBody(response) : "response.Content-Type not readable, " +
+            "default support 'json/xml/plain' only";
 
         record.setCostTime(stopWatch.getLastTaskTimeMillis())
             .setStatusCode(response.getRawStatusCode())

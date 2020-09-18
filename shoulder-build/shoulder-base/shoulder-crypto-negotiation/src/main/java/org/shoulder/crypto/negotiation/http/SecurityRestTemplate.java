@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 
 /**
  * 安全的 restTemplate，用于安全传输带私密字段的请求
- * 不适配 spring 的支持 kotlin 调不带 RequestCallback 参数的 execute 方法
+ * 未适配 kotlin （不带 RequestCallback 参数的 execute 方法）
  * Java 代码使用 rest Template 最终都会经过 3个带 RequestCallback 参数的 execute 方法(General execution)去调 doExecute
  * 创建请求头的部分涉及 {@link RestTemplate#acceptHeaderRequestCallback} 两个方法，因此在 acceptHeaderRequestCallback 进行拦截而不是 doExecute
  *
@@ -70,6 +70,7 @@ public class SecurityRestTemplate extends RestTemplate {
      * type, cross-checked against the configured message converters.
      * <li>Writes the given object to the request stream.
      * </ol>
+     * @see HttpEntityRequestCallback
      */
     @Override
     public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody, Type responseType) {
@@ -79,6 +80,10 @@ public class SecurityRestTemplate extends RestTemplate {
 
     // ******************************* RequestCallback *******************************
 
+    /**
+     *
+     * 继承 spring 的{@link HttpEntityRequestCallback}，在其基础上
+     */
     protected class SecuritySessionRequestCallback extends SecurityRestTemplate.HttpEntityRequestCallback {
 
         public SecuritySessionRequestCallback(Object requestBody, Type responseType) {
@@ -88,6 +93,7 @@ public class SecurityRestTemplate extends RestTemplate {
         @Override
         public void doWithRequest(ClientHttpRequest httpRequest) throws IOException {
             super.doWithRequest(httpRequest);
+            // todo 是否带或可能接收敏感信息？如果不带直接返回
             URI uri = httpRequest.getURI();
             try {
                 // 协商密钥并添加需要的请求头
@@ -113,7 +119,7 @@ public class SecurityRestTemplate extends RestTemplate {
                 time++;
             }
 
-            // 创建加密器 todo 小优化，如果请求不带参数，则无需生成数据密钥
+            // 创建本次请求的加密器 todo 小优化，如果请求不带（敏感）参数，则无需生成数据密钥
             byte[] requestDk = TransportCryptoUtil.generateDataKey(keyExchangeResult.getKeyLength());
             TransportCipher requestEncrypt = TransportCipher.encryptor(keyExchangeResult, requestDk);
             TransportCipherHolder.setRequestEncryptor(requestEncrypt);
@@ -124,11 +130,8 @@ public class SecurityRestTemplate extends RestTemplate {
 
         private KeyExchangeResult negotiate(String appId, int time) {
 
-            // 限制协商尝试次数。超过重试次数，抛异常，
-            /**
-             * 协商最大重试次数
-             */
-            int negotiationMaxTimes = 2;
+            // 限制协商尝试次数（2）。超过抛异常
+            final int negotiationMaxTimes = 2;
             if (time >= negotiationMaxTimes) {
                 log.error("check secure session exceed the max time(" + negotiationMaxTimes + "), FAIL! serverId={}", appId);
                 throw new IllegalStateException("check secure session exceed the max time(" + negotiationMaxTimes + "), FAIL! serverId=" + appId);
@@ -144,7 +147,10 @@ public class SecurityRestTemplate extends RestTemplate {
         }
 
     }
-    // copy from springframework ：RestTemplate 设计的还不够灵活，但 spring5 表示不再为 RestTemplate 做功能支持，既然不接 issue，只能手动复制出来了 =。=
+
+
+    // ============================== 以下内容拷贝自 spring RestTemplate ==============================
+    // 其设计的还不够灵活，但 spring5 表示不再为 RestTemplate 做功能支持，既然不接 issue，只能手动复制出来了
 
     /**
      * Request callback implementation that writes the given object to the request stream.

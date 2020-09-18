@@ -40,6 +40,16 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
     String decrypt(String keyPairId, String cipher) throws AsymmetricCryptoException;
 
     /**
+     * 解密
+     *
+     * @param keyPairId 秘钥对标识
+     * @param cipher 待解密的数据，密文
+     * @return 解密后的
+     * @throws AsymmetricCryptoException RsaCryptoException
+     */
+    byte[] decryptAsBytes(String keyPairId, String cipher) throws AsymmetricCryptoException;
+
+    /**
      * 使用 keyPairId 对应秘钥对的私钥【签名】
      *
      * @param keyPairId 秘钥对标识
@@ -59,5 +69,16 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
      * @throws AsymmetricCryptoException 加解密出错
      */
     boolean verify(String keyPairId, String content, String signature) throws AsymmetricCryptoException;
+
+    /**
+     * 使用 keyPairId 对应秘钥对的私钥【验证签名】，常用于校验 content 是否未被篡改
+     *
+     * @param keyPairId 秘钥对标识
+     * @param content   原始内容，待签名数据
+     * @param signature 签名
+     * @return signature 是否为 content 的签名
+     * @throws AsymmetricCryptoException 加解密出错
+     */
+    boolean verify(String keyPairId, byte[] content, byte[] signature) throws AsymmetricCryptoException;
 
 }

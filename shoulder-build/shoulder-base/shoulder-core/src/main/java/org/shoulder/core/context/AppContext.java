@@ -1,7 +1,8 @@
 package org.shoulder.core.context;
 
-import lombok.extern.shoulder.SLog;
 import org.apache.commons.collections4.MapUtils;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -16,17 +17,17 @@ import java.util.Map;
  *
  * @author lym
  */
-@SLog
 public class AppContext {
+
+    private static final Logger log = LoggerFactory.getLogger(AppContext.class);
 
     private static final ThreadLocal<Map<String, String>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(ShoulderContextKey.KEY_NUM));
 
     /**
      * userId
      */
-    public static Long getUserId() {
-        String uid = get(ShoulderContextKey.JWT_KEY_USER_ID);
-        return StringUtils.isEmpty(uid) ? null : Long.valueOf(uid);
+    public static String getUserId() {
+        return get(ShoulderContextKey.JWT_KEY_USER_ID);
     }
 
     /**
@@ -34,7 +35,7 @@ public class AppContext {
      *
      * @param userId 用户标识
      */
-    public static void setUserId(Long userId) {
+    public static void setUserId(Object userId) {
         log.trace("setUserId ({})", userId);
         set(ShoulderContextKey.JWT_KEY_USER_ID, String.valueOf(userId));
     }

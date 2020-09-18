@@ -3,6 +3,7 @@ package org.shoulder.data.mybatis.config.handler;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.util.StringUtils;
 
 import java.util.Date;
 
@@ -25,8 +26,9 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
         if (createTime == null) {
             this.setFieldValByName("createTime", now, metaObject);
         }
-        Long currentUserId = AppContext.getUserId();
-        if(currentUserId != null){
+        String currentUserIdStr = AppContext.getUserId();
+        if(StringUtils.isNotEmpty(currentUserIdStr)){
+            Long currentUserId =  Long.valueOf(currentUserIdStr);
             Object creator = this.getFieldValByName("creator", metaObject);
             if (creator == null) {
                 this.setFieldValByName("creator", currentUserId, metaObject);
@@ -46,11 +48,12 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
         if (updateTime == null) {
             this.setFieldValByName("updateTime", now, metaObject);
         }
-        Long currentUserId = AppContext.getUserId();
-        if(currentUserId != null){
+        String currentUserIdStr = AppContext.getUserId();
+        if(StringUtils.isNotEmpty(currentUserIdStr)){
+            Long currentUserId =  Long.valueOf(currentUserIdStr);
             Object modifer = this.getFieldValByName("modifer", metaObject);
             if (modifer == null) {
-                this.setFieldValByName("modifer", AppContext.getUserId(), metaObject);
+                this.setFieldValByName("modifer", currentUserId, metaObject);
             }
         }
     }

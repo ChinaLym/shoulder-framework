@@ -1,6 +1,7 @@
 package org.shoulder.crypto.negotiation.cache;
 
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.springframework.web.client.ResponseExtractor;
 
 /**
  * 保存线程变量 —— 传输加解密处理器
@@ -16,6 +17,7 @@ public class TransportCipherHolder {
 
     /**
      * 接收响应 和 响应对方时，用这个
+     * @see ResponseExtractor
      */
     private static ThreadLocal<TransportCipher> response = new ThreadLocal<>();
 
@@ -70,6 +72,9 @@ public class TransportCipherHolder {
         response.set(transportCipher);
     }
 
+    /**
+     * todo 请求完成后应该清理
+     */
     public static void cleanRequestDecryptHandler() {
         request.remove();
     }

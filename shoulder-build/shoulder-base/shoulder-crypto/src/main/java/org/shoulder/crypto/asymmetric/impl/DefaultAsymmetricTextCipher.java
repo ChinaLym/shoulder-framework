@@ -62,6 +62,11 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     }
 
     @Override
+    public byte[] decryptAsBytes(String cipher) throws AsymmetricCryptoException {
+        return this.decryptAsBytes(defaultKeyPairId, cipher);
+    }
+
+    @Override
     public String encrypt(String text) throws AsymmetricCryptoException {
         return this.encrypt(defaultKeyPairId, text);
     }
@@ -76,6 +81,11 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
         return this.verify(defaultKeyPairId, content, signature);
     }
 
+    @Override
+    public boolean verify(byte[] content, byte[] signature) throws AsymmetricCryptoException {
+        return this.verify(defaultKeyPairId, content, signature);
+    }
+
     // ================== 多 keyPair =====================
 
     @Override
@@ -87,10 +97,17 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     @Override
     public String decrypt(String keyPairId, String cipher) throws AsymmetricCryptoException {
         if (StringUtils.isNotBlank(cipher)) {
-            byte[] text = processor.decrypt(keyPairId, ByteSpecification.decodeToBytes(cipher));
-            return new String(text, CHAR_SET);
+            return new String(decryptAsBytes(keyPairId, cipher), CHAR_SET);
         }
-        return cipher;
+        return "";
+    }
+
+    @Override
+    public byte[] decryptAsBytes(String keyPairId, String cipher) throws AsymmetricCryptoException {
+        if (StringUtils.isNotBlank(cipher)) {
+            return processor.decrypt(keyPairId, ByteSpecification.decodeToBytes(cipher));
+        }
+        return new byte[0];
     }
 
     @Override
@@ -112,6 +129,11 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     public boolean verify(String keyPairId, String content, String signature) throws AsymmetricCryptoException {
         byte[] signatureBytes = ByteSpecification.decodeToBytes(signature);
         return processor.verify(keyPairId, content.getBytes(CHAR_SET), signatureBytes);
+    }
+
+    @Override
+    public boolean verify(String keyPairId, byte[] content, byte[] signature) throws AsymmetricCryptoException {
+        return processor.verify(keyPairId, content, signature);
     }
 
 }

@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Enumeration;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 彩色形式记录接口出入参数
@@ -81,7 +83,7 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
 
         // 请求地址
         requestInfo
-            .green("Request   : ")
+            .green("Request   : ", ColorString.Style.BOLD)
             .append("[")
             .lBlue(request.getMethod().toUpperCase())
             .append("] ")
@@ -89,7 +91,7 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
             .newLine();
         // 处理的 Controller
         requestInfo
-            .green("Controller: ")
+            .green("Controller: ", ColorString.Style.BOLD)
             .append(codeLocation)
             .newLine();
 
@@ -98,28 +100,34 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         Object[] args = jp.getArgs();
 
         requestInfo
-            .green("From      : ")
+            .green("From      : ", ColorString.Style.BOLD)
             .append(request.getRemoteAddr())
             .newLine();
 
         requestInfo
-            .green("Headers   :");
+            .green("Headers   :", ColorString.Style.BOLD);
 
+        Map<String, String> headers = new TreeMap<>();
         Enumeration<String> headerNames = request.getHeaderNames();
+        // header 按照字母排序，方便查看
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             String headerValue = request.getHeader(headerName);
-            requestInfo
-                .newLine().tab()
-                .lGreen(headerName)
-                .append(": ")
-                .cyan(headerValue);
+            headers.put(headerName, headerValue);
         }
+
+        headers.forEach((headerName,headerValue) -> requestInfo
+            .newLine().tab()
+            .lGreen(headerName)
+            .tab()
+            .blue(": ")
+            .cyan(headerValue));
+
 
         // 记录 Controller 入参
         if (parameters.length > 0) {
             requestInfo.newLine()
-                .green("Params    :");
+                .green("Params    :", ColorString.Style.BOLD);
         }
         for (int i = 0; i < parameters.length; i++) {
             Class<?> argType = parameters[i].getType();
@@ -129,14 +137,15 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
             requestInfo
                 .newLine().tab()
                 .lBlue(argType.getSimpleName())
+                .tab()
                 .append(" ")
                 .cyan(argName)
-                .append(": ")
+                .tab()
+                .blue(": ")
                 .lMagenta(argValue);
         }
 
-        requestInfo.newLine()
-            .cyan(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ");
+        requestInfo.newLine();
 
         log.debug(requestInfo.toString());
 

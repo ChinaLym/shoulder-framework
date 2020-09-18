@@ -4,9 +4,8 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ColorString;
 import org.shoulder.core.util.ColorStringBuilder;
-import org.shoulder.core.util.StringUtils;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
+import org.shoulder.core.util.JsonUtils;
+import org.shoulder.core.util.PrintUtils;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -43,13 +42,18 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
     protected void logResponse(RestRequestRecord record) {
         ColorStringBuilder builder = new ColorStringBuilder();
         builder
-            .newLine("+-")
-            .cyan("--------------------- ")
-            .yellow("Shoulder HTTP Report ", ColorString.Style.NORMAL, true);
+            .newLine()
+            .cyan("+---------------------- ")
+            .yellow("Shoulder HTTP Report ", ColorString.Style.NORMAL, true)
+            .cyan("--------------------- ");
 
-        StackTraceElement stack = findStackTraceElement(RestTemplate.class.getName(), "");
+        StackTraceElement stack = PrintUtils.findStackTraceElement(RestTemplate.class.getName(), "");
+        // 肯定会有一个，否则不应该触发该方法 null
+        if(stack == null){
+            throw new IllegalCallerException("Current StackTrack not contains any RestTemplate's method call!");
+        }
         Logger logger = useCallerLogger ? LoggerFactory.getLogger(stack.getClassName()) : log;
-        String codeLocation = fetchCodeLocation(stack);
+        String codeLocation = PrintUtils.fetchCodeLocation(stack);
 
         builder
             .newLine(BOUNDARY_LEFT)
@@ -68,12 +72,13 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
         String costStr = String.valueOf(cost);
         int color = cost < 200 ? ColorString.GREEN : cost < 1000 ? ColorString.YELLOW : ColorString.RED;
         builder
-            .append("(").color(costStr, color).color("ms", color).append(")")
-            .newLine(BOUNDARY_LEFT);
+            .append("(").color(costStr, color).color("ms", color).append(")");
 
         builder
-            .lBlue("requestHeaders : ").append("xxx").newLine(BOUNDARY_LEFT)
-            .lBlue("requestBody    : ").append("xxx").newLine(BOUNDARY_LEFT);
+            .newLine(BOUNDARY_LEFT)
+            .lBlue("requestHeaders : ").append(JsonUtils.toJson(record.getRequestHeaders()))
+            .newLine(BOUNDARY_LEFT)
+            .lBlue("requestBody    : ").append(JsonUtils.toJson(record.getRequestBody()));
 
         // ================ response ================
 
@@ -96,71 +101,22 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
                     // 客户端出错
                     codeStr.startsWith("4") ? "X" : "";
         builder
+            .newLine(BOUNDARY_LEFT)
             .color(tip, color)
             .append(" ")
             .color(codeStr, color)
-            .append(" [").color(codeDesc, color).append("]")
-            .newLine(BOUNDARY_LEFT);
+            .append(" [").color(codeDesc, color).append("]");
 
         builder
-            .lBlue("responseHeaders: ").append("xxx").newLine(BOUNDARY_LEFT)
-            .lBlue("responseBody   : ").append("xxx");
+            .newLine(BOUNDARY_LEFT)
+            .lBlue("responseHeaders: ").append(JsonUtils.toJson(record.getResponseHeaders()))
+            .newLine(BOUNDARY_LEFT)
+            .lBlue("responseBody   : ").append(JsonUtils.toJson(record.getResponseBody()));
 
-        builder.newLine("+-")
-            .cyan("-----------------------------------------------------------------");
+        builder.newLine()
+            .cyan("+------------------------------------------------------------------");
 
         logger.debug(builder.toString());
-    }
-
-    /**
-     * 获取当前方法堆栈中调用目标类、方法的代码位置
-     *
-     * @param stackTraceElement 方法调用栈
-     * @return 可跳转的代码位置
-     */
-    public String fetchCodeLocation(@NonNull StackTraceElement stackTraceElement) {
-        // 肯定会有一个，否则不应该触发该方法 null
-        if(stackTraceElement == null){
-            throw new IllegalCallerException(this.getClass().getSimpleName() + " called by non-RestTemplateClass!");
-        }
-        // DemoController.method(DemoControllerFileName.java:66)
-        int lineNum = stackTraceElement.getLineNumber();
-        String classFullName = stackTraceElement.getClassName();
-        String classSimpleName = classFullName.substring(classFullName.lastIndexOf(".") + 1);
-        String methodName = stackTraceElement.getMethodName();
-        String fileName = stackTraceElement.getFileName();
-        return classSimpleName + "." + methodName + "(" + fileName + ":" + lineNum + ")";
-    }
-
-    /**
-     * 获取当前方法堆栈中调用目标类、方法的堆栈
-     *
-     * @param aimClassName  目标类
-     * @param aimMethodName 目标类方法，若 null 则忽略方法校验
-     * @return 未找到返回 null
-     */
-    public StackTraceElement findStackTraceElement(@NonNull String aimClassName, @Nullable String aimMethodName) {
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        boolean foundAimClassFlag = false;
-        boolean skipCheckMethod = StringUtils.isEmpty(aimMethodName);
-        // 找到一个不是 aimClassName.aimMethodName() 的调用栈
-        for (StackTraceElement stackTraceElement : stackTraceElements) {
-            // 顺序遍历，层次越来越深
-            boolean isAimClass = aimClassName.equals(stackTraceElement.getClassName());
-            boolean isAimMethod = aimClassName.equals(stackTraceElement.getMethodName());
-            if(!foundAimClassFlag){
-                if(isAimClass){
-                    foundAimClassFlag = skipCheckMethod || isAimMethod;
-                }
-                continue;
-            }
-            // 加个不能是 c/c++ 的代码（这个条件一般情况下永远为 true）
-            boolean filterNot = !isAimClass && (skipCheckMethod || !isAimMethod);
-            if(filterNot && !stackTraceElement.isNativeMethod()){
-                return stackTraceElement;
-            }
-        }
-        return null;
     }
 
 }

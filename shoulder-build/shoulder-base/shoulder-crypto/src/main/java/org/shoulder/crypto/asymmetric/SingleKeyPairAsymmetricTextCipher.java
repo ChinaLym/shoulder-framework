@@ -37,6 +37,15 @@ public interface SingleKeyPairAsymmetricTextCipher extends TextCipher {
     String decrypt(String cipher) throws AsymmetricCryptoException;
 
     /**
+     * 解密
+     *
+     * @param cipher 待解密的数据，密文
+     * @return 解密后的
+     * @throws AsymmetricCryptoException RsaCryptoException
+     */
+    byte[] decryptAsBytes(String cipher) throws AsymmetricCryptoException;
+
+    /**
      * 加密（使用自己的默认公钥）
      *
      * @param text 待加密数据
@@ -64,4 +73,14 @@ public interface SingleKeyPairAsymmetricTextCipher extends TextCipher {
      * @throws AsymmetricCryptoException 加解密出错
      */
     boolean verify(String content, String signature) throws AsymmetricCryptoException;
+
+    /**
+     * 使用 keyPairId 对应秘钥对的私钥【验证签名】，常用于校验 content 是否未被篡改
+     *
+     * @param content   原始内容，待签名数据
+     * @param signature 签名
+     * @return signature 是否为 content 的签名
+     * @throws AsymmetricCryptoException 加解密出错
+     */
+    boolean verify(byte[] content, byte[] signature) throws AsymmetricCryptoException;
 }
