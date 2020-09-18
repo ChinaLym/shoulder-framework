@@ -1,4 +1,4 @@
-# 开始学习 Shoulder ！
+# 开始学习 Shoulder - 数据库访问！
 
 下载本项目
 
@@ -17,7 +17,9 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 
 建议根据以下的顺序了解 `Shoulder` 的使用
 
-**demo2** 工程包含数据库快捷开发，该部分提供了对数据库的简单封装
+## 功能介绍
+
+**demo2** 工程包含数据库快捷开发，该部分提供了Mybatis、JPA的简单增强
 
 - Mybatis 方式：
     - 引入了 `Mybatis Plus`，具体使用方法可以查看 mybatis-plus 官网

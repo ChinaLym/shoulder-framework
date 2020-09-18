@@ -16,7 +16,7 @@ public class DemoThreadPoolConfig {
     /**
      * 打开 http://localhost:8080/actuator/prometheus，搜 demo4_thread_pool 可以看到其指标
      *
-     * @return
+     * @return 可监控的线程池
      */
     @Bean
     public MonitorableThreadPool monitorableThreadPool() {

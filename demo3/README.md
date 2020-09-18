@@ -1,4 +1,4 @@
-# 开始学习 Shoulder ！
+# 开始学习 Shoulder - 安全与认证 ！
 
 下载本项目
 
@@ -16,6 +16,8 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 打开 [http://localhost:8080/](http://localhost:8080) 
 
 ---
+
+## 功能介绍
 
 建议根据以下的顺序了解 `Shoulder` 的使用，Shoulder-Security 主要包含了 Spring-Security 的基本装配，若需要自定义可以参照框架的方式替换。
 

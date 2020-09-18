@@ -1,4 +1,4 @@
-# 开始学习 Shoulder ！
+# 开始学习 Shoulder - 应用监控 ！
 
 下载本项目
 
@@ -12,4 +12,8 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 
 ---
 
+## 模块功能
+
 建议根据以下的顺序了解 `Shoulder` 的使用
+
+- 开箱即用的 `MonitorableThreadPool` 自动监控

@@ -1,4 +1,4 @@
-# 开始学习 Shoulder ！
+# 开始学习 Shoulder - 核心能力！
 
 下载本项目
 
@@ -18,6 +18,7 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 - convert   自动参数转
 - i18n      多语言翻译
 
+## 功能介绍
 
 **demo1** 工程仅包含最基本功能的使用，更多优雅的设计期待被探索...
 
