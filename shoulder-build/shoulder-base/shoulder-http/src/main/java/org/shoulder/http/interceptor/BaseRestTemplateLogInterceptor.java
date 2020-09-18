@@ -1,8 +1,8 @@
-package org.shoulder.http;
+package org.shoulder.http.interceptor;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.extern.shoulder.SLog;
+import lombok.experimental.Accessors;
 import org.shoulder.core.context.AppInfo;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
@@ -23,15 +23,42 @@ import java.io.InputStreamReader;
  *
  * @author lym
  */
-@SLog
 public abstract class BaseRestTemplateLogInterceptor implements ClientHttpRequestInterceptor {
+
+    protected static final boolean LOG_TILL_RESPONSE_DEFAULT = true;
+
+    /**
+     * 等待响应返回后再进行统一记录（避免请求日志和响应日志不在一起，难找）。
+     * tip:若请求过慢可能导致日志迟迟不打印
+     */
+    private final boolean logTillResponse;
+
+    public BaseRestTemplateLogInterceptor(){
+        this(LOG_TILL_RESPONSE_DEFAULT);
+    }
+
+    public BaseRestTemplateLogInterceptor(boolean logTillResponse){
+        this.logTillResponse = logTillResponse;
+    }
 
     @Override
     @NonNull
     public ClientHttpResponse intercept(@NonNull HttpRequest request, @NonNull byte[] body,
-                                        ClientHttpRequestExecution execution) throws IOException {
+                                        @NonNull ClientHttpRequestExecution execution) throws IOException {
 
         StopWatch stopWatch = new StopWatch();
+        RestRequestRecord record = RestRequestRecord.builder()
+            // request
+            .method(request.getMethodValue())
+            .url(request.getURI().toString())
+            .requestHeaders(request.getHeaders())
+            .requestBody(new String(body, AppInfo.charset()))
+            .build();
+
+        if(!logTillResponse){
+            logRequest(record);
+        }
+
         stopWatch.start();
         ClientHttpResponse response = execution.execute(request, body);
 
@@ -40,23 +67,13 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
         boolean needLogBody = needLogBody(request);
         String bodyStr = needLogBody ? readBody(response) : "contentType not readable";
 
-        RestRequestRecord record = RestRequestRecord.builder()
-            .costTime(stopWatch.getLastTaskTimeMillis())
-            // request
-            .method(request.getMethodValue())
-            .url(request.getURI().toString())
-            .requestHeaders(request.getHeaders())
-            .requestBody(new String(body, AppInfo.charset()))
-            // response
-            .statusCode(response.getRawStatusCode())
-            .statusText(response.getStatusText())
-            .responseBody(bodyStr)
-            //.responseHeaders()
+        record.setCostTime(stopWatch.getLastTaskTimeMillis())
+            .setStatusCode(response.getRawStatusCode())
+            .setStatusText(response.getStatusText())
+            .setResponseHeaders(response.getHeaders())
+            .setResponseBody(bodyStr);
 
-
-            .build();
-
-        log.debug(buildHttpLog(record));
+        logResponse(record);
 
         return response;
     }
@@ -77,13 +94,22 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
         return needLogBody;
     }
 
+
     /**
-     * 组装日志
+     * 记录请求日志
      *
      * @param record 本次请求详情
-     * @return 带记录的日志
      */
-    protected abstract String buildHttpLog(RestRequestRecord record);
+    protected void logRequest(RestRequestRecord record) {
+        // 一般接口调用都是打在一起的，故不需要实现
+    }
+
+    /**
+     * 记录响应日志
+     *
+     * @param record 本次请求详情
+     */
+    protected abstract void logResponse(RestRequestRecord record);
 
     private String readBody(ClientHttpResponse response) throws IOException {
         StringBuilder resBody = new StringBuilder();
@@ -101,6 +127,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
 
     @Data
     @Builder
+    @Accessors(chain = true)
     @SuppressWarnings("rawtypes")
     protected static class RestRequestRecord {
         private String method;

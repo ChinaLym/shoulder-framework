@@ -1,47 +1,17 @@
 package org.shoulder.crypto.asymmetric;
 
 
-import org.shoulder.crypto.TextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 
 /**
- * 非对称加解密：主要用于与前端交互
+ * 非对称加解密门面接口
  *
  * @author lym
  */
-public interface AsymmetricTextCipher extends TextCipher {
+public interface AsymmetricTextCipher extends SingleKeyPairAsymmetricTextCipher, MultiKeyPairAsymmetricTextCipher {
 
     /**
-     * 获取默认的公钥
-     *
-     * @return 公钥
-     * @throws KeyPairException RsaKeyPairException
-     */
-    String getPublicKey() throws KeyPairException;
-
-    /**
-     * 解密
-     *
-     * @param cipher 待解密的数据，密文
-     * @return 解密后的
-     * @throws AsymmetricCryptoException RsaCryptoException
-     */
-    @Override
-    String decrypt(String cipher) throws AsymmetricCryptoException;
-
-    /**
-     * 加密（使用自己的默认公钥）
-     *
-     * @param text 待加密数据
-     * @return 加密后的
-     * @throws AsymmetricCryptoException RsaCryptoException
-     */
-    @Override
-    String encrypt(String text) throws AsymmetricCryptoException;
-
-    /**
-     * 使用指定公钥加密，常用于使用对方公钥加密
+     * 使用指定公钥加密，常用于【使用对方公钥加密】
      *
      * @param text      需加密的数据
      * @param publicKey 对方的公钥(base64编码过的)
@@ -49,24 +19,4 @@ public interface AsymmetricTextCipher extends TextCipher {
      * @throws AsymmetricCryptoException 加解密出错
      */
     String encrypt(String text, String publicKey) throws AsymmetricCryptoException;
-
-
-    /**
-     * 签名
-     *
-     * @param content 原始内容，待签名数据
-     * @return 签名结果
-     * @throws AsymmetricCryptoException 加解密出错
-     */
-    String sign(String content) throws AsymmetricCryptoException;
-
-    /**
-     * 签名验证，常用于校验 content 是否未被篡改
-     *
-     * @param content   原始内容，待签名数据
-     * @param signature 签名
-     * @return signature 是否为 content 的签名
-     * @throws AsymmetricCryptoException 加解密出错
-     */
-    boolean verify(String content, String signature) throws AsymmetricCryptoException;
 }

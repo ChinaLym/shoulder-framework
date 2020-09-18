@@ -30,6 +30,7 @@ public class HashMapKeyPairCache implements KeyPairCache {
     }
 
     @Override
+    @NonNull
     public KeyPairDto get(String id) throws NoSuchKeyPairException {
         KeyPairDto keyPair = store.get(id);
         if (keyPair != null) {

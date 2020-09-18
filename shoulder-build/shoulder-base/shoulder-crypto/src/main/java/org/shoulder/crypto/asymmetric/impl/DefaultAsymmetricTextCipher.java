@@ -8,12 +8,14 @@ import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 
 import java.nio.charset.Charset;
 
 /**
- * 非对称的加解密以及签名工具实现：用于与前端交互。
+ * 非对称的加解密以及签名工具实现。
  * 加解密实现为 AsymmetricCryptoProcessor，本类做字符串与 byte[] 的转换。
+ * 同时支持默认秘钥，与多秘钥对
  *
  * @author lym
  */
@@ -49,50 +51,67 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     }
 
     @Override
+    @NonNull
     public String getPublicKey() throws KeyPairException {
-        return processor.getPublicKeyString(defaultKeyPairId);
+        return getPublicKey(defaultKeyPairId);
     }
 
     @Override
     public String decrypt(String cipher) throws AsymmetricCryptoException {
+        return this.decrypt(defaultKeyPairId, cipher);
+    }
+
+    @Override
+    public String encrypt(String text) throws AsymmetricCryptoException {
+        return this.encrypt(defaultKeyPairId, text);
+    }
+
+    @Override
+    public String sign(String content) throws AsymmetricCryptoException {
+        return this.sign(defaultKeyPairId, content);
+    }
+
+    @Override
+    public boolean verify(String content, String signature) throws AsymmetricCryptoException {
+        return this.verify(defaultKeyPairId, content, signature);
+    }
+
+    // ================== 多 keyPair =====================
+
+    @Override
+    @NonNull
+    public String getPublicKey(String keyPairId) throws KeyPairException {
+        return processor.getPublicKeyString(this.defaultKeyPairId);
+    }
+
+    @Override
+    public String decrypt(String keyPairId, String cipher) throws AsymmetricCryptoException {
         if (StringUtils.isNotBlank(cipher)) {
-            byte[] text = processor.decrypt(defaultKeyPairId, ByteSpecification.decodeToBytes(cipher));
+            byte[] text = processor.decrypt(keyPairId, ByteSpecification.decodeToBytes(cipher));
             return new String(text, CHAR_SET);
         }
         return cipher;
     }
 
     @Override
-    public String encrypt(String text) throws AsymmetricCryptoException {
+    public String encrypt(String keyPairId, String text) throws AsymmetricCryptoException {
         if (StringUtils.isNotBlank(text)) {
-            byte[] cipher = processor.encrypt(defaultKeyPairId, text.getBytes(CHAR_SET));
+            byte[] cipher = processor.encrypt(keyPairId, text.getBytes(CHAR_SET));
             return ByteSpecification.encodeToString(cipher);
         }
         return text;
     }
 
     @Override
-    public String encrypt(String text, String publicKey) throws AsymmetricCryptoException {
-        if (StringUtils.isEmpty(publicKey)) {
-            throw new NullPointerException("asymmetricEncrypt: publicKey is null!");
-        }
-        if (StringUtils.isEmpty(text)) {
-            return text;
-        }
-        byte[] cipher = processor.encrypt(text.getBytes(CHAR_SET), ByteSpecification.decodeToBytes(publicKey));
-        return ByteSpecification.encodeToString(cipher);
-    }
-
-    @Override
-    public String sign(String content) throws AsymmetricCryptoException {
-        byte[] signBytes = processor.sign(defaultKeyPairId, content.getBytes(CHAR_SET));
+    public String sign(String keyPairId, String content) throws AsymmetricCryptoException {
+        byte[] signBytes = processor.sign(keyPairId, content.getBytes(CHAR_SET));
         return ByteSpecification.encodeToString(signBytes);
     }
 
     @Override
-    public boolean verify(String content, String signature) throws AsymmetricCryptoException {
+    public boolean verify(String keyPairId, String content, String signature) throws AsymmetricCryptoException {
         byte[] signatureBytes = ByteSpecification.decodeToBytes(signature);
-        return processor.verify(defaultKeyPairId, content.getBytes(CHAR_SET), signatureBytes);
+        return processor.verify(keyPairId, content.getBytes(CHAR_SET), signatureBytes);
     }
 
 }

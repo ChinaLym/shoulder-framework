@@ -1,8 +1,6 @@
 package org.shoulder.autoconfigure.http;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.http.AppIdExtractor;
-import org.shoulder.http.ShoulderDslAppIdExtractor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -29,12 +27,6 @@ import java.util.List;
 @AutoConfigureAfter(value = {RestTemplateAutoConfiguration.class, RestTemplateLogAutoConfiguration.class})
 public class HttpAutoConfiguration {
 
-    @Bean
-    @ConditionalOnClass(name = "org.shoulder.http.AppIdExtractor")
-    @ConditionalOnMissingBean
-    public AppIdExtractor appIdExtractor() {
-        return new ShoulderDslAppIdExtractor();
-    }
 
     @Bean
     @ConditionalOnMissingBean

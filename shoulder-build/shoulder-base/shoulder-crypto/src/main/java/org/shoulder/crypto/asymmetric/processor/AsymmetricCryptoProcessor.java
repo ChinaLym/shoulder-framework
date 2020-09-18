@@ -29,6 +29,7 @@ public interface AsymmetricCryptoProcessor {
      * @param id      密钥对标识
      * @param content 密文
      * @return 明文
+     * @throws AsymmetricCryptoException 解密失败
      */
     byte[] decrypt(String id, byte[] content) throws AsymmetricCryptoException;
 
@@ -38,6 +39,7 @@ public interface AsymmetricCryptoProcessor {
      * @param id      密钥对标识
      * @param content 明文
      * @return 密文
+     * @throws AsymmetricCryptoException 加密失败
      */
     byte[] encrypt(String id, byte[] content) throws AsymmetricCryptoException;
 
@@ -47,21 +49,24 @@ public interface AsymmetricCryptoProcessor {
      * @param content   需加密的数据
      * @param publicKey 对方的公钥
      * @return 密文
+     * @throws AsymmetricCryptoException 加密失败
      */
     byte[] encrypt(byte[] content, byte[] publicKey) throws AsymmetricCryptoException;
 
     /**
      * 签名
      *
+     * @param id keyPairId
      * @param content 签名内容
      * @return 签名结果
+     * @throws AsymmetricCryptoException 签名失败
      */
     byte[] sign(String id, byte[] content) throws AsymmetricCryptoException;
 
     /**
      * 签名验证
      *
-     * @param id        密钥对标识
+     * @param id 秘钥对标识
      * @param content   内容
      * @param signature 签名
      * @return 是否正确
@@ -69,6 +74,15 @@ public interface AsymmetricCryptoProcessor {
      */
     boolean verify(String id, byte[] content, byte[] signature) throws AsymmetricCryptoException;
 
+    /**
+     * 签名验证
+     *
+     * @param publicKey 秘钥对标识
+     * @param content   内容
+     * @param signature 签名
+     * @return 是否正确
+     * @throws AsymmetricCryptoException 验签异常
+     */
     boolean verify(byte[] publicKey, byte[] content, byte[] signature) throws AsymmetricCryptoException;
 
     /**

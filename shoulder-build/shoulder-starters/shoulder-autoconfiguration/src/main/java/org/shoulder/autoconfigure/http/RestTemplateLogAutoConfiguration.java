@@ -1,8 +1,10 @@
 package org.shoulder.autoconfigure.http;
 
-import org.shoulder.http.BaseRestTemplateLogInterceptor;
-import org.shoulder.http.RestTemplateColorfulLogInterceptor;
-import org.shoulder.http.RestTemplateJsonLogInterceptor;
+import org.shoulder.http.interceptor.BaseRestTemplateLogInterceptor;
+import org.shoulder.http.interceptor.RestTemplateColorfulLogInterceptor;
+import org.shoulder.http.interceptor.RestTemplateJsonLogInterceptor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +20,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 @Configuration(
     proxyBeanMethods = false
 )
+@ConditionalOnClass(BaseRestTemplateLogInterceptor.class)
 @ConditionalOnMissingBean(BaseRestTemplateLogInterceptor.class)
 public class RestTemplateLogAutoConfiguration {
     /**
@@ -26,8 +29,11 @@ public class RestTemplateLogAutoConfiguration {
     @Bean
     @Order(value = 0)
     @ConditionalOnProperty(name = "shoulder.http.logRequest", havingValue = "colorful", matchIfMissing = true)
-    public ClientHttpRequestInterceptor restTemplateColorfulLogInterceptor() {
-        return new RestTemplateColorfulLogInterceptor();
+    public ClientHttpRequestInterceptor restTemplateColorfulLogInterceptor(
+        @Value("${shoulder.http.log.useCallerLogger:true}") boolean useCallerLogger,
+        @Value("${shoulder.http.log.logTillResponse:true}") boolean logTillResponse
+    ) {
+        return new RestTemplateColorfulLogInterceptor(useCallerLogger, logTillResponse);
     }
 
     /**
@@ -36,7 +42,9 @@ public class RestTemplateLogAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(name = "shoulder.http.logRequest", havingValue = "json")
-    public ClientHttpRequestInterceptor restTemplateJsonLogInterceptor() {
-        return new RestTemplateJsonLogInterceptor();
+    public ClientHttpRequestInterceptor restTemplateJsonLogInterceptor(
+        @Value("${shoulder.http.log.logTillResponse:true}") boolean logTillResponse
+    ) {
+        return new RestTemplateJsonLogInterceptor(logTillResponse);
     }
 }
