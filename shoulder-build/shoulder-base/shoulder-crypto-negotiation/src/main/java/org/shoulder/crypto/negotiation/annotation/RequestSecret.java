@@ -1,10 +1,5 @@
 package org.shoulder.crypto.negotiation.annotation;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.shoulder.crypto.negotiation.annotation.support.RequestDecryptStdDeserializer;
-import org.shoulder.crypto.negotiation.annotation.support.RequestEncryptStdSerializer;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.lang.annotation.*;
@@ -19,9 +14,9 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@JacksonAnnotationsInside
-@JsonSerialize(using = RequestEncryptStdSerializer.class)
-@JsonDeserialize(using = RequestDecryptStdDeserializer.class)
+//@JacksonAnnotationsInside
+//@JsonSerialize(using = RequestEncryptStdSerializer.class)
+//@JsonDeserialize(using = RequestDecryptStdDeserializer.class)
 public @interface RequestSecret {
 
 }

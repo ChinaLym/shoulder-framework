@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,9 +49,17 @@ public class SecurityRestTemplate extends RestTemplate {
     private final AppIdExtractor appIdExtractor;
 
     public SecurityRestTemplate(TransportNegotiationService transportNegotiationService, TransportCryptoUtil cryptoUtil, AppIdExtractor appIdExtractor) {
+        super(Collections.singletonList(new SensitiveDateEncryptMessageConverter()));
         this.transportNegotiationService = transportNegotiationService;
         this.cryptoUtil = cryptoUtil;
         this.appIdExtractor = appIdExtractor;
+    }
+
+    public SecurityRestTemplate() {
+        super(Collections.singletonList(new SensitiveDateEncryptMessageConverter()));
+        this.transportNegotiationService = null;
+        this.cryptoUtil = null;
+        this.appIdExtractor = null;
     }
 
 
@@ -58,10 +67,10 @@ public class SecurityRestTemplate extends RestTemplate {
      * Return a {@code RequestCallback} implementation that writes the given
      * object to the request stream.
      */
-    @Override
+    /*@Override
     public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody) {
         return this.httpEntityCallback(requestBody, null);
-    }
+    }*/
 
     /**
      * Return a {@code RequestCallback} implementation that:
@@ -72,10 +81,10 @@ public class SecurityRestTemplate extends RestTemplate {
      * </ol>
      * @see HttpEntityRequestCallback
      */
-    @Override
+    /*@Override
     public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody, Type responseType) {
         return new SecuritySessionRequestCallback(requestBody, responseType);
-    }
+    }*/
 
 
     // ******************************* RequestCallback *******************************
@@ -92,6 +101,7 @@ public class SecurityRestTemplate extends RestTemplate {
 
         @Override
         public void doWithRequest(ClientHttpRequest httpRequest) throws IOException {
+            // 父类中，在这里会进行参数序列化
             super.doWithRequest(httpRequest);
             // todo 是否带或可能接收敏感信息？如果不带直接返回
             URI uri = httpRequest.getURI();
