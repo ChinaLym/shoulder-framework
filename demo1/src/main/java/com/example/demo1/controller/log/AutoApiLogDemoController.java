@@ -1,5 +1,6 @@
 package com.example.demo1.controller.log;
 
+import org.shoulder.autoconfigure.web.WebAdvanceAutoConfiguration;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
  * 自动打印入参出参，不需要手动打印。
  *
  * @author lym
+ * @see WebAdvanceAutoConfiguration#restControllerColorfulLogAspect
+ * @see WebAdvanceAutoConfiguration#restControllerJsonLogAspect
  */
 @RestController
 @RequestMapping("apilog")
