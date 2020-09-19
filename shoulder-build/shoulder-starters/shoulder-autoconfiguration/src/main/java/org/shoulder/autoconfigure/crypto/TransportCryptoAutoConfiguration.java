@@ -2,6 +2,7 @@ package org.shoulder.autoconfigure.crypto;
 
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
+import org.shoulder.autoconfigure.http.HttpAutoConfiguration;
 import org.shoulder.autoconfigure.redis.RedisAutoConfiguration;
 import org.shoulder.crypto.asymmetric.annotation.Ecc;
 import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
@@ -10,6 +11,7 @@ import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.LocalKeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.RedisKeyNegotiationCache;
+import org.shoulder.crypto.negotiation.endpoint.NegotiationEndPoint;
 import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.service.impl.TransportNegotiationServiceImpl;
 import org.shoulder.crypto.negotiation.util.TransportCryptoByteUtil;
@@ -34,7 +36,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(TransportNegotiationService.class)
-@AutoConfigureAfter(LocalCryptoAutoConfiguration.class)
+@AutoConfigureAfter(value = {LocalCryptoAutoConfiguration.class, HttpAutoConfiguration.class})
 @ConditionalOnProperty(value = "shoulder.crypto.transport.enable", havingValue = "true", matchIfMissing = true)
 public class TransportCryptoAutoConfiguration {
 
@@ -83,5 +85,10 @@ public class TransportCryptoAutoConfiguration {
         }
     }
 
+    @Bean
+    @ConditionalOnProperty(value = "shoulder.crypto.negotiation.default-endpoint.enable", matchIfMissing = true)
+    public NegotiationEndPoint negotiationEndPoint(TransportNegotiationService negotiationService) {
+        return new NegotiationEndPoint(negotiationService);
+    }
 
 }

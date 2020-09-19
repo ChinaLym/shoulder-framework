@@ -33,7 +33,7 @@ public class KeyPairDto {
     private String vk;
 
     /**
-     * 过期时间点，null不过期
+     * 过期时间点，null代表不过期
      */
     private Instant expireTime;
 
@@ -46,7 +46,7 @@ public class KeyPairDto {
 
     public KeyPairDto(KeyPair keyPair, Duration ttl) {
         this.originKeyPair = keyPair;
-        this.expireTime = Instant.now().plus(ttl);
+        this.expireTime = ttl == null ? null : Instant.now().plus(ttl);
     }
 
     public KeyPairDto(String pk, String vk) {

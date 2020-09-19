@@ -1,7 +1,10 @@
 package org.shoulder.crypto.negotiation.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.core.constant.ByteSpecification;
+import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
@@ -15,6 +18,7 @@ import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.http.AppIdExtractor;
 import org.springframework.http.*;
 import org.springframework.lang.NonNull;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -88,9 +92,9 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             String negotiationUrl = getNegotiationUrl(appId);
             // 通过应用标识组装 http 地址
             String dslAimUrl = "http://" + appId + negotiationUrl;
-            log.info("negotiate with {}, url is {}", appId, dslAimUrl);
-            ResponseEntity<KeyExchangeResponse> httpResponse =
-                restTemplate.postForEntity(negotiationUrl, createKeyNegotiationHttpEntity(), KeyExchangeResponse.class);
+            log.debug("negotiate with {}, url is {}", appId, dslAimUrl);
+            ResponseEntity<BaseResponse> httpResponse =
+                restTemplate.postForEntity(dslAimUrl, createKeyNegotiationHttpEntity(), BaseResponse.class);
 
             // 3. 校验密钥协商的结果
             KeyExchangeResponse keyExchangeResponse = validateAndFill(httpResponse);
@@ -101,7 +105,10 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             // 5. 放缓存
             keyNegotiationCache.putAsClient(appId, result);
             return result;
-        } catch (Exception e) {
+        } catch (RestClientException restClientEx) {
+            // 接口都没调通，应该检查是否写错了
+            throw new NegotiationException("Try negotiate FAIL with " + appId + ", please check other service's healthy", restClientEx);
+        } catch (AsymmetricCryptoException e) {
             throw new NegotiationException("Negotiate FAIL with " + appId, e);
         }
     }
@@ -129,28 +136,34 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
     }
 
     /**
-     * 校验响应是否合法，token 部分
+     * 校验密钥协商响应是否合法，token 部分
      * 并将 xSessionId、token 从请求头中放到返回值中
      *
-     * @param httpResponse 握手响应
+     * @param httpResponse 密钥协商响应
      * @return 合法的响应
      */
-    private KeyExchangeResponse validateAndFill(ResponseEntity<KeyExchangeResponse> httpResponse) throws AsymmetricCryptoException, NegotiationException {
-        KeyExchangeResponse response = httpResponse.getBody();
+    private KeyExchangeResponse validateAndFill(ResponseEntity<BaseResponse> httpResponse) throws AsymmetricCryptoException, NegotiationException {
+        BaseResponse response = httpResponse.getBody();
         if (HttpStatus.OK != httpResponse.getStatusCode() || response == null) {
-            throw new NegotiationException("response error! response = " + (response == null ? "null" : response.toString()));
+            throw new NegotiationException("response error! response = " + JsonUtils.toJson(response));
         }
+        KeyExchangeResponse keyExchangeResponse = (KeyExchangeResponse) response.getData();
         String token = httpResponse.getHeaders().getFirst(KeyExchangeConstants.TOKEN);
         String xSessionId = httpResponse.getHeaders().getFirst(KeyExchangeConstants.SECURITY_SESSION_ID);
+        String publicKey = keyExchangeResponse.getPublicKey();
+        String aes = keyExchangeResponse.getAes();
 
-        response.setxSessionId(xSessionId);
-        response.setToken(token);
+        Assert.notEmpty(publicKey, "response.publicKey can't be empty");
+        Assert.notEmpty(aes, "response.aes can't be empty");
 
-        if (!transportCryptoUtil.verifyResponseToken(response)) {
+        keyExchangeResponse.setxSessionId(xSessionId);
+        keyExchangeResponse.setToken(token);
+
+        if (!transportCryptoUtil.verifyResponseToken(keyExchangeResponse)) {
             throw new NegotiationException("token not validate!");
         }
 
-        return response;
+        return keyExchangeResponse;
     }
 
 
@@ -180,8 +193,10 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             // 交换密钥
             KeyExchangeResponse response = transportCryptoUtil.negotiation(keyExchangeRequest);
 
-            // 放缓存
             KeyExchangeResult result = transportCryptoUtil.negotiation(response);
+            long expireTime = result.getExpireTime();
+            // 放缓存 (作为响应方 协商缓存失效时间加1分钟，以尽量保证比对方提前过期，避免临界时大量请求失败)
+            result.setExpireTime(expireTime + 60 * 1000);
             keyNegotiationCache.putAsServer(response.getxSessionId(), result);
 
             // processHeaders
@@ -244,7 +259,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
     @NonNull
     private String getNegotiationUrl(String appId) {
         return this.negotiationUrls.computeIfAbsent(appId, serviceIndex -> {
-            log.warn("Not config [{}]'s negotiationUrl, will use default" +
+            log.warn("Not config [{}]'s negotiationUrl, will use default: " +
                 KeyExchangeConstants.DEFAULT_NEGOTIATION_URL, appId);
             return KeyExchangeConstants.DEFAULT_NEGOTIATION_URL;
         });

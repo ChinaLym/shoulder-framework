@@ -1,5 +1,6 @@
 package org.shoulder.crypto.negotiation.endpoint;
 
+import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeRequest;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResponse;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lym
  */
-@RestController("security/v1")
+@RestController
 public class NegotiationEndPoint {
 
     private final TransportNegotiationService negotiationService;
@@ -23,7 +24,7 @@ public class NegotiationEndPoint {
     }
 
 
-    @PostMapping("negotiation")
+    @PostMapping(KeyExchangeConstants.DEFAULT_NEGOTIATION_URL)
     public KeyExchangeResponse handleNegotiate(@RequestBody KeyExchangeRequest keyExchangeRequest) throws NegotiationException {
         return negotiationService.handleNegotiate(keyExchangeRequest);
     }

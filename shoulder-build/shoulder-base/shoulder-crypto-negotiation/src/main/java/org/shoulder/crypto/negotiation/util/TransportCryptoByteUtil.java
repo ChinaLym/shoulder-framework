@@ -125,7 +125,6 @@ public class TransportCryptoByteUtil {
         result.setPublicKey(publicKey);
         result.setxSessionId(keyExchangeResponse.getxSessionId());
         result.setKeyLength(keyExchangeResponse.getKeyLength());
-        // 协商缓存失效时间 取对方过期时间90%，尽量保证比对方提前过期
         long expireTimePoint = System.currentTimeMillis() + keyExchangeResponse.getExpireTime() * 9 / 10;
         result.setExpireTime(expireTimePoint);
         return result;
