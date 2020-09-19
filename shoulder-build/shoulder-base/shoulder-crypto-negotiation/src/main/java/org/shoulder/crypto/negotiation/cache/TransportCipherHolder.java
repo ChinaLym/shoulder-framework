@@ -16,6 +16,11 @@ public class TransportCipherHolder {
     private static ThreadLocal<TransportCipher> request = new ThreadLocal<>();
 
     /**
+     * 本次请求是否为加密接口
+     */
+    private static ThreadLocal<Boolean> negotiationApi = new ThreadLocal<>();
+
+    /**
      * 接收响应 和 响应对方时，用这个
      * @see ResponseExtractor
      */
@@ -83,10 +88,15 @@ public class TransportCipherHolder {
         response.remove();
     }
 
-    /*
+    public static boolean isNegotiationApi() {
+        return negotiationApi.get();
+    }
 
-     */
-/**
+    public static void setNegotiationApi(boolean isNegotiationApi) {
+        TransportCipherHolder.negotiationApi.set(isNegotiationApi);
+    }
+
+    /**
  * 请求状态，用于合成两个注解
  *//*
 

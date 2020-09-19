@@ -7,6 +7,7 @@ import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.annotation.RequestSecret;
 import org.shoulder.crypto.negotiation.annotation.ResponseSecret;
+import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -27,6 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ * 秘密传输转换器（已经进行过密钥交换，{@link SecurityRestTemplate#httpEntityCallback}）
+ *
  * @author lym
  */
 public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMessageConverter {
@@ -44,9 +47,7 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
     }
 
     /**
-     * getFields()	获取所有public字段,包括父类字段
-     * getDeclaredFields()	获取所有字段,public和protected和private,但是不包括父类字段
-     * 递归Model的父类去getDeclaredFields()
+     * 发送前，序列化前加密
      *
      * @param object
      * @param type
@@ -57,22 +58,22 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
     @Override
     protected void writeInternal(@NonNull Object object, @Nullable Type type, HttpOutputMessage outputMessage)
         throws IOException, HttpMessageNotWritableException {
-        // 先加密
+        // 获取参数类型，
         Object param = object;
         if (object instanceof MappingJacksonValue) {
             MappingJacksonValue container = (MappingJacksonValue) object;
             param = container.getValue();
         }
-        Class<?> paramClazz = object.getClass();
-        List<Field> securityParamField = getRequestFields(paramClazz);
-        // todo 确保已经进行过密钥交换
+        Class<?> objectClass = object.getClass();
+        List<Field> securityParamField = getRequestFields(objectClass);
+
         if (!CollectionUtils.isEmpty(securityParamField)) {
             // 参数需要加密
             // todo 深克隆所有属性
             Object cloned = ObjectUtil.clone(object);
             if (cloned == null) {
                 //使用 json 方式（性能差一点，备选）
-                cloned = JsonUtils.toObject(JsonUtils.toJson(object), paramClazz);
+                cloned = JsonUtils.toObject(JsonUtils.toJson(object), objectClass);
             }
             object = cloned;
 
@@ -106,8 +107,8 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
                 filed.setAccessible(true);
                 // todo 支持 String/byte[] 类型
                 String origin = (String) filed.get(object);
-                // todo encrypt
-                String handled = encrypt ? "xxx" : "000";
+                String handled = encrypt ? TransportCipherHolder.getRequestCipher().encrypt(origin) :
+                    TransportCipherHolder.getRequestCipher().decrypt(origin);
                 filed.set(object, handled);
             }
         } catch (Exception e) {
@@ -153,8 +154,9 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
     }
 
     private void findSensitiveFields(Class<?> aimClazz, List<Field> requestSecretFields, List<Field> responseSecretFields) {
-// 反射找该类的所有敏感字段，包括父类
+        // 反射找该类的所有敏感字段，包括父类，注意 getFields getDeclaredFields 都不行，需要递归父类
 
+        // 如果是复杂变量还需要递归，加类注解减少递归复杂度
         Field[] fields = ReflectUtil.getFieldsDirectly(aimClazz, true);
         // 寻找敏感字段
         for (Field field : fields) {

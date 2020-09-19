@@ -16,6 +16,7 @@ import org.shoulder.crypto.negotiation.dto.KeyExchangeRequest;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResponse;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +30,8 @@ import java.util.UUID;
 public class TransportCryptoByteUtil {
 
     private final AsymmetricCryptoProcessor eccProcessor;
+
+    private final Duration negotiationDuration = Duration.ofHours(1);
 
     public TransportCryptoByteUtil(@Ecc AsymmetricCryptoProcessor eccProcessor) {
         this.eccProcessor = eccProcessor;
@@ -81,8 +84,7 @@ public class TransportCryptoByteUtil {
         // 1. 生成会话唯一标识
         String clientSessionId = UUID.randomUUID().toString().replaceAll("-", "");
         request.setxSessionId(clientSessionId);
-        // 2. 构建密钥对
-        eccProcessor.buildKeyPair(clientSessionId);
+        eccProcessor.buildKeyPair(clientSessionId, negotiationDuration);
         request.setPublicKey(ByteSpecification.encodeToString(eccProcessor.getPublicKey(clientSessionId).getEncoded()));
         request.setRefresh(false);
         request.setToken(ByteSpecification.encodeToString(generateRequestToken(request)));
@@ -101,7 +103,7 @@ public class TransportCryptoByteUtil {
         // 4. 协商密钥，生成 shareKey （临时）
         // 5. 根据 shareKey 生成 localKey，localIv
         String xSessionId = keyExchangeRequest.getxSessionId();
-        eccProcessor.buildKeyPair(xSessionId);
+        eccProcessor.buildKeyPair(xSessionId, negotiationDuration);
 
         response.setxSessionId(xSessionId);
         response.setPublicKey(eccProcessor.getPublicKeyString(xSessionId));
@@ -123,8 +125,8 @@ public class TransportCryptoByteUtil {
         result.setPublicKey(publicKey);
         result.setxSessionId(keyExchangeResponse.getxSessionId());
         result.setKeyLength(keyExchangeResponse.getKeyLength());
-        // 协商缓存失效时间 取对方过期时间一半，保证比对方提前过期
-        long expireTimePoint = System.currentTimeMillis() + keyExchangeResponse.getExpireTime() >> 1;
+        // 协商缓存失效时间 取对方过期时间90%，尽量保证比对方提前过期
+        long expireTimePoint = System.currentTimeMillis() + keyExchangeResponse.getExpireTime() * 9 / 10;
         result.setExpireTime(expireTimePoint);
         return result;
     }
@@ -136,7 +138,7 @@ public class TransportCryptoByteUtil {
     public KeyExchangeResponse negotiation(KeyExchangeRequest keyExchangeRequest) throws AsymmetricCryptoException, NegotiationException {
         // 这时候还没有缓存，因此需要生成
         String xSessionId = keyExchangeRequest.getxSessionId();
-        eccProcessor.buildKeyPair(xSessionId);
+        eccProcessor.buildKeyPair(xSessionId, negotiationDuration);
         byte[] selfPrivateKey = eccProcessor.getPrivateKey(xSessionId).getEncoded();
         byte[] selfPublicKey = eccProcessor.getPublicKey(xSessionId).getEncoded();
         byte[] otherPublicKey = ByteSpecification.decodeToBytes(keyExchangeRequest.getPublicKey());

@@ -4,11 +4,16 @@ import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeRequest;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResponse;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
+import org.springframework.lang.NonNull;
+
+import java.net.URI;
 
 /**
  * @author lym
  */
 public interface TransportNegotiationService {
+
+    KeyExchangeResult requestForNegotiate(URI uri) throws NegotiationException;
 
     /**
      * 与服务方进行密钥协商请求
@@ -29,4 +34,5 @@ public interface TransportNegotiationService {
      */
     KeyExchangeResponse handleNegotiate(KeyExchangeRequest keyExchangeRequest) throws NegotiationException;
 
+    boolean isNegotiationUrl(@NonNull URI uri);
 }

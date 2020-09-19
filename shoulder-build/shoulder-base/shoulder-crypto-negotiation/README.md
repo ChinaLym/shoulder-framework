@@ -5,10 +5,20 @@
 密钥协商可以采用 DH（基于DSA）、ECDH（基于ECC）
 
     
- ## 安全传输（ECDH）
+## 安全传输（ECDH）
  
  使用方式：在传输的参数或返回值DTO上添加 `@Secret` 注解，即可自动实现安全传输，可以通过抓包工具校验。
   支持 RestTemplate、Feign（未完成） 两种
+  
+### 实现流程（协商流程）
+
+A 服务调用 B 前：
+
+A 向 B 发送自己的公钥（publicKeyA）和本次谈判的规则，见 `KeyExchangeRequest`
+  
+  
+## 使用介绍
+  
  ```java
 // todo 添加传输加密代码示范
 
@@ -16,7 +26,7 @@
 
 ----
 
-## 设计思路
+## 类关系设计思路
 
 希望使用者不改变原有习惯仍然通过 `RestTemplate` 发起请求调用，带特定注解的（如 `@Secret`）字段自动加解密
 
@@ -30,6 +40,8 @@
 
 ### 加密扩展点探索
 
+#### 方式一 【采用】
+
 跟随 restTemplate 源码，发现可以在 `RestTemplate.HttpEntityRequestCallback.doWithRequest` 代码中，
 有一步 `for (HttpMessageConverter<?> messageConverter : getMessageConverters())` 的代码，以责任链的形式
 尝试序列化参数，可以在这个 HttpMessageConverter 中获取实际参数，这里修改其加了 `@Secret`注解的字段并覆盖原有。
@@ -38,12 +50,30 @@
 这种思路需要改造的点有：
 - 在注入 RestTemplate 时替换原有 MessageConverters，改为支持加密的
 
-改动较小，但需要这时候已经完成加解密的协商才行
+改动较小，但需要这时候已经完成加解密的协商才行，且该扩展点或之前可在 `doExecute` 中拿到请求的url，来识别目标服务
 
+流程：
+
+- doExecute
+    - 是密钥交换接口（放线程变量）
+        - 取消所有增强
+    - 否则请求前交换密钥
+        - 尝试调用交换密钥接口协商密钥
+        - 若请求中带有敏感数据
+            - 生成请求加密器
+            - SensitiveDateEncryptMessageConverter 负责加密数据，并将原始数据缓存（于线程变量），防止密钥过期
+            - 添加加密相关请求头
+    - 【发送请求】
+    - todo 响应密钥交换失败错误（http 状态码 401，错误码为对方的密钥过期错误码），则尝试重新发起密钥交换，并再次调用 doExecute()
+    - 请求正确返回（200）则需要解析响应，并对其进行解密
+    
+    
 ---
 
 从上面的结论中，可以看到，基本都是由 `MappingJackson2HttpMessageConverter` 来触发的，因此可以通过 jackson 的扩展点来间接解决。
 通过改变其序列化实现来支持
+
+#### 方式二
 
 ```
 @JacksonAnnotationsInside

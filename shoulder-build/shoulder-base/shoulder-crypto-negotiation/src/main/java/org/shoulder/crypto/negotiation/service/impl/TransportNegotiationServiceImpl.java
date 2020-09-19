@@ -12,6 +12,7 @@ import org.shoulder.crypto.negotiation.dto.TransportNegotiationInfo;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
+import org.shoulder.http.AppIdExtractor;
 import org.springframework.http.*;
 import org.springframework.lang.NonNull;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
 import java.util.*;
 
 /**
@@ -39,16 +41,32 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
     private final KeyNegotiationCache keyNegotiationCache;
 
+    private final AppIdExtractor appIdExtractor;
+
     private Map<String, String> negotiationUrls = new HashMap<>();
 
-    public TransportNegotiationServiceImpl(TransportCryptoUtil transportCryptoUtil, RestTemplate restTemplate, KeyNegotiationCache keyNegotiationCache) {
+    public TransportNegotiationServiceImpl(TransportCryptoUtil transportCryptoUtil, RestTemplate restTemplate,
+                                           KeyNegotiationCache keyNegotiationCache, AppIdExtractor appIdExtractor) {
         this.transportCryptoUtil = transportCryptoUtil;
         this.restTemplate = restTemplate;
         this.keyNegotiationCache = keyNegotiationCache;
+        this.appIdExtractor = appIdExtractor;
     }
 
     // ===============================  请求协商密钥  ==============================
 
+
+    /**
+     * 发起密钥协商请求
+     *
+     * @param uri 目标接口
+     * @return 密钥协商结果
+     * @throws NegotiationException 协商失败
+     */
+    @Override
+    public KeyExchangeResult requestForNegotiate(URI uri) throws NegotiationException {
+        return requestForNegotiate(appIdExtractor.extract(uri));
+    }
 
     /**
      * 发起密钥协商请求
@@ -71,7 +89,8 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             // 通过应用标识组装 http 地址
             String dslAimUrl = "http://" + appId + negotiationUrl;
             log.info("negotiate with {}, url is {}", appId, dslAimUrl);
-            ResponseEntity<KeyExchangeResponse> httpResponse = restTemplate.postForEntity(negotiationUrl, createKeyNegotiationHttpEntity(), KeyExchangeResponse.class);
+            ResponseEntity<KeyExchangeResponse> httpResponse =
+                restTemplate.postForEntity(negotiationUrl, createKeyNegotiationHttpEntity(), KeyExchangeResponse.class);
 
             // 3. 校验密钥协商的结果
             KeyExchangeResponse keyExchangeResponse = validateAndFill(httpResponse);
@@ -222,9 +241,11 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
      * @param appId 应用标识
      * @return negotiationUrl
      */
+    @NonNull
     private String getNegotiationUrl(String appId) {
         return this.negotiationUrls.computeIfAbsent(appId, serviceIndex -> {
-            log.warn("Not config [{}]'s negotiationUrl, will use default" + KeyExchangeConstants.DEFAULT_NEGOTIATION_URL, appId);
+            log.warn("Not config [{}]'s negotiationUrl, will use default" +
+                KeyExchangeConstants.DEFAULT_NEGOTIATION_URL, appId);
             return KeyExchangeConstants.DEFAULT_NEGOTIATION_URL;
         });
     }
@@ -238,5 +259,10 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         this.negotiationUrls.put(negotiationInfo.getAppId(), negotiationInfo.getNegotiationUrl());
     }
 
+    @Override
+    public boolean isNegotiationUrl(@NonNull URI uri) {
+        String appId = appIdExtractor.extract(uri);
+        return uri.getPath().equalsIgnoreCase(negotiationUrls.get(appId));
+    }
 
 }

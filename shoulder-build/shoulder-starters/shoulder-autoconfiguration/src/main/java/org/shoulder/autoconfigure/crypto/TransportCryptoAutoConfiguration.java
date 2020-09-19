@@ -14,6 +14,7 @@ import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.service.impl.TransportNegotiationServiceImpl;
 import org.shoulder.crypto.negotiation.util.TransportCryptoByteUtil;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
+import org.shoulder.http.AppIdExtractor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -49,8 +50,9 @@ public class TransportCryptoAutoConfiguration {
     }
 
     @Bean
-    public TransportNegotiationService transportNegotiationService(TransportCryptoUtil transportCryptoUtil, RestTemplate restTemplate, KeyNegotiationCache keyNegotiationCache) {
-        return new TransportNegotiationServiceImpl(transportCryptoUtil, restTemplate, keyNegotiationCache);
+    public TransportNegotiationService transportNegotiationService(TransportCryptoUtil transportCryptoUtil,
+                                                                   RestTemplate restTemplate, KeyNegotiationCache keyNegotiationCache, AppIdExtractor appIdExtractor) {
+        return new TransportNegotiationServiceImpl(transportCryptoUtil, restTemplate, keyNegotiationCache, appIdExtractor);
     }
 
     @ConditionalOnMissingBean(value = KeyNegotiationCache.class)
