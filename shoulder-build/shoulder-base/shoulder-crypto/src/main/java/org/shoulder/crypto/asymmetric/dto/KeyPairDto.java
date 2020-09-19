@@ -5,6 +5,8 @@ import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.StringUtils;
 
 import java.security.KeyPair;
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * 非对称加密的 密钥对
@@ -30,11 +32,21 @@ public class KeyPairDto {
      */
     private String vk;
 
+    /**
+     * 过期时间点，null不过期
+     */
+    private Instant expireTime;
+
     public KeyPairDto() {
     }
 
     public KeyPairDto(KeyPair keyPair) {
         this.originKeyPair = keyPair;
+    }
+
+    public KeyPairDto(KeyPair keyPair, Duration ttl) {
+        this.originKeyPair = keyPair;
+        this.expireTime = Instant.now().plus(ttl);
     }
 
     public KeyPairDto(String pk, String vk) {
@@ -60,6 +72,15 @@ public class KeyPairDto {
 
     public void setVk(String vk) {
         this.vk = vk;
+    }
+
+    public Instant getExpireTime() {
+        return expireTime;
+    }
+
+    public KeyPairDto setExpireTime(Instant expireTime) {
+        this.expireTime = expireTime;
+        return this;
     }
 
     @JsonIgnore

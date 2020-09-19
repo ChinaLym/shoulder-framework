@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 
 import javax.annotation.PostConstruct;
+import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -34,9 +35,13 @@ public class HashMapKeyPairCache implements KeyPairCache {
     public KeyPairDto get(String id) throws NoSuchKeyPairException {
         KeyPairDto keyPair = store.get(id);
         if (keyPair != null) {
+            if (keyPair.getExpireTime() != null && Instant.now().isAfter(keyPair.getExpireTime())) {
+                store.remove(id);
+                throw new NoSuchKeyPairException("keyPair expired, id=" + id);
+            }
             return keyPair;
         } else {
-            throw new NoSuchKeyPairException("can't found keyPair id=" + id);
+            throw new NoSuchKeyPairException("not such keyPair id=" + id);
         }
     }
 

@@ -11,6 +11,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
+
 /**
  * RSA 秘钥存储-Redis 存储，适合应用支持集群部署的场景
  * 如果不使用过期时间等redis特有操作，可以通过双层缓存优化访问速度
@@ -55,8 +59,13 @@ public class RedisKeyPairCache implements KeyPairCache {
             encryptKeyPair(keyPairDto);
             String kpJson = JsonUtils.toJson(keyPairDto);
             //String encryptKp = localTextCipher.encrypt(kpJson);
+            if (keyPairDto.getExpireTime() != null) {
+                long duration = ChronoUnit.MILLIS.between(Instant.now(), keyPairDto.getExpireTime());
+                redisTemplate.opsForValue().setIfAbsent(key, kpJson, duration, TimeUnit.MILLISECONDS);
+            } else {
+                redisTemplate.opsForValue().setIfAbsent(key, kpJson);
+            }
 
-            redisTemplate.opsForValue().setIfAbsent(key, kpJson);
         } catch (SymmetricCryptoException e) {
             throw new RuntimeException(e);
         }
@@ -68,7 +77,7 @@ public class RedisKeyPairCache implements KeyPairCache {
         String key = addRedisPrefix(id);
         String cipherKp = redisTemplate.opsForValue().get(key);
         if (cipherKp == null) {
-            throw new NoSuchKeyPairException("can't found keyPair id= " + id);
+            throw new NoSuchKeyPairException("not such keyPair id= " + id);
         }
         try {
             //String kp = localTextCipher.decrypt(cipherKp);

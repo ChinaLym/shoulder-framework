@@ -18,6 +18,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.security.*;
+import java.time.Duration;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -97,8 +98,9 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
         keyPairCache.destroy();
     }
 
+
     @Override
-    public void buildKeyPair(String id) throws KeyPairException {
+    public void buildKeyPair(String id, Duration ttl) throws KeyPairException {
         KeyPair kp = null;
         lock.lock();
         try {
@@ -108,10 +110,15 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
             // 未拿到或构建出错，则重新生成并保存
             kp = keyPairFactory.build();
             // 此时若构建密钥对失败则将异常抛出，表示不支持使用者设置的加密算法，需要使用者检查
-            keyPairCache.set(id, new KeyPairDto(kp));
+            keyPairCache.set(id, new KeyPairDto(kp, ttl));
         } finally {
             lock.unlock();
         }
+    }
+
+    @Override
+    public void buildKeyPair(String id) throws KeyPairException {
+        this.buildKeyPair(id, null);
     }
 
     private KeyPair getKeyPairFromDto(KeyPairDto dto) throws KeyPairException {

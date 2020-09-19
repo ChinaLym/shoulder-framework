@@ -6,6 +6,7 @@ import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.Duration;
 
 /**
  * 执行非对称算法的处理工具。
@@ -22,6 +23,15 @@ public interface AsymmetricCryptoProcessor {
      * @throws KeyPairException 构建失败
      */
     void buildKeyPair(String id) throws KeyPairException;
+
+    /**
+     * 构建密钥对，带过期时间
+     *
+     * @param id  密钥对标识，可以是写死的固定值（一般场景，性能更高），也可以是用户 id（高安全需求），也可以是用户标识+hash（兼顾性能与安全）
+     * @param ttl 有效时间
+     * @throws KeyPairException 构建失败
+     */
+    void buildKeyPair(String id, Duration ttl) throws KeyPairException;
 
     /**
      * 解密（私钥解密）
