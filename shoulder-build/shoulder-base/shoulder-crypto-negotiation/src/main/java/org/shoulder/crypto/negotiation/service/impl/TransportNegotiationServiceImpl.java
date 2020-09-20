@@ -16,6 +16,7 @@ import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.http.AppIdExtractor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.lang.NonNull;
 import org.springframework.web.client.RestClientException;
@@ -69,18 +70,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
      */
     @Override
     public KeyExchangeResult requestForNegotiate(URI uri) throws NegotiationException {
-        return requestForNegotiate(appIdExtractor.extract(uri));
-    }
-
-    /**
-     * 发起密钥协商请求
-     *
-     * @param appId 目标应用标识
-     * @return 密钥协商结果
-     * @throws NegotiationException 协商失败
-     */
-    @Override
-    public KeyExchangeResult requestForNegotiate(String appId) throws NegotiationException {
+        String appId = appIdExtractor.extract(uri);
         try {
             // 1. 先尝试走缓存
             KeyExchangeResult cacheResult = keyNegotiationCache.getAsClient(appId);
@@ -90,11 +80,14 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
             // 2. 缓存不存在，发协商请求
             String negotiationUrl = getNegotiationUrl(appId);
-            // 通过应用标识组装 http 地址
-            String dslAimUrl = "http://" + appId + negotiationUrl;
+            // 组装密钥交换请求地址
+            String dslAimUrl = uri.toString().replace(uri.getPath(), negotiationUrl);
             log.debug("negotiate with {}, url is {}", appId, dslAimUrl);
-            ResponseEntity<BaseResponse> httpResponse =
-                restTemplate.postForEntity(dslAimUrl, createKeyNegotiationHttpEntity(), BaseResponse.class);
+
+            ParameterizedTypeReference<BaseResponse<KeyExchangeResponse>> responseType = new ParameterizedTypeReference<>() {
+            };
+            ResponseEntity<BaseResponse<KeyExchangeResponse>> httpResponse =
+                restTemplate.exchange(dslAimUrl, HttpMethod.POST, createKeyNegotiationHttpEntity(), responseType);
 
             // 3. 校验密钥协商的结果
             KeyExchangeResponse keyExchangeResponse = validateAndFill(httpResponse);
@@ -142,12 +135,12 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
      * @param httpResponse 密钥协商响应
      * @return 合法的响应
      */
-    private KeyExchangeResponse validateAndFill(ResponseEntity<BaseResponse> httpResponse) throws AsymmetricCryptoException, NegotiationException {
-        BaseResponse response = httpResponse.getBody();
+    private KeyExchangeResponse validateAndFill(ResponseEntity<BaseResponse<KeyExchangeResponse>> httpResponse) throws AsymmetricCryptoException, NegotiationException {
+        BaseResponse<KeyExchangeResponse> response = httpResponse.getBody();
         if (HttpStatus.OK != httpResponse.getStatusCode() || response == null) {
             throw new NegotiationException("response error! response = " + JsonUtils.toJson(response));
         }
-        KeyExchangeResponse keyExchangeResponse = (KeyExchangeResponse) response.getData();
+        KeyExchangeResponse keyExchangeResponse = response.getData();
         String token = httpResponse.getHeaders().getFirst(KeyExchangeConstants.TOKEN);
         String xSessionId = httpResponse.getHeaders().getFirst(KeyExchangeConstants.SECURITY_SESSION_ID);
         String publicKey = keyExchangeResponse.getPublicKey();
@@ -207,6 +200,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
             return response;
         } catch (Exception e) {
+            // todo 抛出带错误码的异常
             throw new NegotiationException("Receive request, negotiate Fail!", e);
         }
     }

@@ -5,6 +5,9 @@ import org.springframework.web.client.ResponseExtractor;
 
 /**
  * 保存线程变量 —— 传输加解密处理器
+ * <p>
+ * 两种思路，按照加解密/请求响应分
+ * - 具体分
  *
  * @author lym
  */
@@ -22,6 +25,7 @@ public class TransportCipherHolder {
 
     /**
      * 接收响应 和 响应对方时，用这个
+     *
      * @see ResponseExtractor
      */
     private static ThreadLocal<TransportCipher> response = new ThreadLocal<>();
@@ -97,8 +101,8 @@ public class TransportCipherHolder {
     }
 
     /**
- * 请求状态，用于合成两个注解
- *//*
+     * 请求状态，用于合成两个注解
+     *//*
 
     private static ThreadLocal<Boolean> status = ThreadLocal.withInitial(() -> null);
 

@@ -108,7 +108,7 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
                 // todo 支持 String/byte[] 类型
                 String origin = (String) filed.get(object);
                 String handled = encrypt ? TransportCipherHolder.getRequestCipher().encrypt(origin) :
-                    TransportCipherHolder.getRequestCipher().decrypt(origin);
+                    TransportCipherHolder.getResponseHandler().decrypt(origin);
                 filed.set(object, handled);
             }
         } catch (Exception e) {
@@ -123,7 +123,7 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
 
         Object result = super.read(type, contextClass, inputMessage);
         Class<?> resultClazz = result.getClass();
-        List<Field> securityResultField = getRequestFields(resultClazz);
+        List<Field> securityResultField = getResponseFields(resultClazz);
         if (!CollectionUtils.isEmpty(securityResultField)) {
             // 解密
             decryptSensitiveData(result, securityResultField);

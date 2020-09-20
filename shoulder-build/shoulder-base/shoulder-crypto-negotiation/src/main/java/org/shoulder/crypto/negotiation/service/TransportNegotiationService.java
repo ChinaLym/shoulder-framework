@@ -13,16 +13,14 @@ import java.net.URI;
  */
 public interface TransportNegotiationService {
 
-    KeyExchangeResult requestForNegotiate(URI uri) throws NegotiationException;
-
     /**
      * 与服务方进行密钥协商请求
      *
-     * @param appId 目标应用标识
+     * @param uri 要请求的地址
      * @return 是否协商成功
      * @throws NegotiationException 密钥协商异常
      */
-    KeyExchangeResult requestForNegotiate(String appId) throws NegotiationException;
+    KeyExchangeResult requestForNegotiate(URI uri) throws NegotiationException;
 
 
     /**
@@ -34,5 +32,11 @@ public interface TransportNegotiationService {
      */
     KeyExchangeResponse handleNegotiate(KeyExchangeRequest keyExchangeRequest) throws NegotiationException;
 
+    /**
+     * 判断一个 url 是否为密钥交换的地址
+     *
+     * @param uri uri
+     * @return 是否为已经标识为密钥交换的地址
+     */
     boolean isNegotiationUrl(@NonNull URI uri);
 }

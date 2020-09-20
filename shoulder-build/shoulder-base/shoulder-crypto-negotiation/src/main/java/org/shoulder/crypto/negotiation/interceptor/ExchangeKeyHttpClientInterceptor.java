@@ -7,6 +7,7 @@ import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
 import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
+import org.shoulder.crypto.negotiation.http.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,21 +17,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 
 /**
  * RestTemplate拦截器。
- * client 向 server 发出安全请求，响应自动解密
- * 用于 client 端解密目标服务返回的加密信息。
+ * client 向 server 发出安全请求，响应自动解密_将解密器放置于县城变量中
  * <p>
- * todo 由于仅处理响应后，依赖发送上下文，处理强制握手返回错误码，考虑塞进 SecurityRestTemplate？
  *
  * @author lym
+ * @see SecurityRestTemplate
  */
-@Component
 public class ExchangeKeyHttpClientInterceptor implements ClientHttpRequestInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(ExchangeKeyHttpClientInterceptor.class);
@@ -53,7 +51,7 @@ public class ExchangeKeyHttpClientInterceptor implements ClientHttpRequestInterc
 
         // *************************** afterRequest ***************************
         if (response.getStatusCode() != HttpStatus.OK) {
-            // todo 校验错误码，是否为强制重新进行密钥协商
+            // todo 校验错误码，是否为强制重新进行密钥协商，并伴随次数限制
         }
 
         HttpHeaders headers = response.getHeaders();

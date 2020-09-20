@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -26,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author lym
  */
-@Component
 public class ExchangeKeyInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(ExchangeKeyInterceptor.class);
@@ -42,14 +40,15 @@ public class ExchangeKeyInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader(KeyExchangeConstants.TOKEN);
         String xSessionId = request.getHeader(KeyExchangeConstants.SECURITY_SESSION_ID);
         String xDk = request.getHeader(KeyExchangeConstants.SECURITY_DATA_KEY);
+        String token = request.getHeader(KeyExchangeConstants.TOKEN);
         if (StringUtils.isEmpty(xSessionId) || StringUtils.isEmpty(xDk) || StringUtils.isEmpty(token)) {
+            // xSessionId 没有说明不是一个 ecdh 请求，没有 xDk 说明还在密钥协商阶段
             return true;
         }
 
-        // 一、处理请求：解密发送方的会话密钥
+        // 一、处理请求：解密发送方的会话密钥 todo null
         KeyExchangeResult cacheKeyExchangeResult = keyNegotiationCache.getAsServer(xSessionId);
 
         if (cacheKeyExchangeResult == null) {

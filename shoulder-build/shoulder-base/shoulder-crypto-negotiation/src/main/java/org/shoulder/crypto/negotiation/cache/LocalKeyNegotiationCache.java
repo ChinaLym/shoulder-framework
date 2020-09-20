@@ -42,11 +42,10 @@ public class LocalKeyNegotiationCache implements KeyNegotiationCache {
             // 不存在
             return null;
         }
-        if (cacheResult.getExpireTime() > now) {
+        if (now > cacheResult.getExpireTime()) {
             // 过期，清理，并返回 null
             keyExchangeResultMap.remove(cacheKey);
             return null;
-
         } else {
             // 存在且未过期
             return cacheResult;
