@@ -12,7 +12,6 @@ import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.LocalKeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.RedisKeyNegotiationCache;
 import org.shoulder.crypto.negotiation.endpoint.NegotiationEndPoint;
-import org.shoulder.crypto.negotiation.interceptor.SecurityResponseDecrypterClientInterceptor;
 import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.service.impl.TransportNegotiationServiceImpl;
 import org.shoulder.crypto.negotiation.util.TransportCryptoByteUtil;
@@ -90,17 +89,6 @@ public class TransportCryptoAutoConfiguration {
     @ConditionalOnProperty(value = "shoulder.crypto.negotiation.default-endpoint.enable", matchIfMissing = true)
     public NegotiationEndPoint negotiationEndPoint(TransportNegotiationService negotiationService) {
         return new NegotiationEndPoint(negotiationService);
-    }
-
-    /**
-     * Json 形式【用于生产态】日志打在一行中
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public SecurityResponseDecrypterClientInterceptor securityResponseDecrypterClientInterceptor(
-        KeyNegotiationCache keyNegotiationCache, TransportCryptoUtil transportCryptoUtil
-    ) {
-        return new SecurityResponseDecrypterClientInterceptor(keyNegotiationCache, transportCryptoUtil);
     }
 
 }

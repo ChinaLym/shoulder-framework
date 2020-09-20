@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -41,9 +41,8 @@ public class RestTemplateCustomAutoConfiguration implements InitializingBean {
 
     private void customRestTemplate(RestTemplate restTemplate) {
         // 由于自动记录响应日志。故需要缓存响应体
-        ClientHttpRequestFactory factory;
-        if (!((factory = restTemplate.getRequestFactory()) instanceof BufferingClientHttpRequestFactory)) {
-            restTemplate.setRequestFactory(new BufferingClientHttpRequestFactory(factory));
+        if (!(restTemplate.getRequestFactory() instanceof BufferingClientHttpRequestFactory)) {
+            restTemplate.setRequestFactory(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
         }
         // 自定义拦截器注入
         List<ClientHttpRequestInterceptor> existingInterceptors = restTemplate.getInterceptors();
