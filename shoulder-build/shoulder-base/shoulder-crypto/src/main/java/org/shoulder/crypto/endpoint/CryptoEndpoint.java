@@ -39,7 +39,7 @@ public class CryptoEndpoint {
         return asymmetricTextCipher.getPublicKey(getCurrentKeyPairId());
     }
 
-    public byte[] decryptContent(String xDataKey, String xiv, byte[] content){
+    public byte[] decryptContent(String xDataKey, String xiv, byte[] content) {
         try {
             byte[] dk = asymmetricTextCipher.decryptAsBytes(getCurrentKeyPairId(), xDataKey);
             byte[] iv = ByteSpecification.decodeToBytes(xiv);
@@ -53,8 +53,8 @@ public class CryptoEndpoint {
     protected String getCurrentKeyPairId() {
         String currentUserId = AppContext.getUserId();
         return StringUtils.isEmpty(currentUserId) ? "" :
-        Md5Crypt.md5Crypt(currentUserId.getBytes(AppInfo.charset()))
-            .substring(0, 3);
+            Md5Crypt.md5Crypt(currentUserId.getBytes(AppInfo.charset()))
+                .substring(0, 3);
     }
 
 }

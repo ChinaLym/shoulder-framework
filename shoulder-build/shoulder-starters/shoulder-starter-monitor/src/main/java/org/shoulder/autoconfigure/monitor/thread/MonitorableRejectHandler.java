@@ -17,7 +17,7 @@ public class MonitorableRejectHandler implements RejectedExecutionHandler {
 
     private ThreadPoolMetrics threadPoolMetrics;
 
-    public MonitorableRejectHandler(RejectedExecutionHandler delegate, ThreadPoolMetrics threadPoolMetrics){
+    public MonitorableRejectHandler(RejectedExecutionHandler delegate, ThreadPoolMetrics threadPoolMetrics) {
         this.delegate = delegate;
         this.threadPoolMetrics = threadPoolMetrics;
     }

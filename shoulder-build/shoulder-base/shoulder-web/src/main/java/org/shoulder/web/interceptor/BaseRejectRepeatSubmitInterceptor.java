@@ -73,8 +73,8 @@ public abstract class BaseRejectRepeatSubmitInterceptor extends HandlerIntercept
     /**
      * 处理被拒绝的请求：默认只记录一条debug日志
      *
-     * @param request   请求
-     * @param response  响应
+     * @param request  请求
+     * @param response 响应
      */
     protected void handleReject(HttpServletRequest request, HttpServletResponse response) {
         log.debug("reject repeatSubmit request({})", request.getRequestURI());

@@ -29,6 +29,7 @@ public abstract class BaseLocalDateTimeConverter<T> extends BaseDateConverter<T>
 
     /**
      * 解析时间的方式
+     *
      * @return LocalDate/LocalDateTime parse
      */
     protected abstract BiFunction<String, DateTimeFormatter, T> parseFunction();

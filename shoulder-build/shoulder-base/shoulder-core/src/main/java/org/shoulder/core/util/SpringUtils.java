@@ -123,7 +123,7 @@ public final class SpringUtils {
 
     public static ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException {
         ConfigurableListableBeanFactory tmp = SpringUtils.beanFactory;
-        if(tmp == null){
+        if (tmp == null) {
             throw new IllegalStateException("beanFactory has not set!");
         }
         return tmp;
@@ -135,7 +135,7 @@ public final class SpringUtils {
 
     public static ApplicationContext getApplicationContext() throws IllegalStateException {
         ApplicationContext tmp = SpringUtils.applicationContext;
-        if(tmp == null){
+        if (tmp == null) {
             throw new IllegalStateException("applicationContext has not set!");
         }
         return tmp;

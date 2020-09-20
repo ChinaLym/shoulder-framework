@@ -15,14 +15,14 @@ public class RestTemplateJsonLogInterceptor extends BaseRestTemplateLogIntercept
     private static final Logger log = LoggerFactory.getLogger(RestTemplateJsonLogInterceptor.class);
 
 
-    public RestTemplateJsonLogInterceptor(){
+    public RestTemplateJsonLogInterceptor() {
         super();
     }
 
-    public RestTemplateJsonLogInterceptor(boolean logTillResponse){
+    public RestTemplateJsonLogInterceptor(boolean logTillResponse) {
         super(logTillResponse);
     }
-    
+
     @Override
     protected void logResponse(RestRequestRecord record) {
         log.debug(JsonUtils.toJson(record));

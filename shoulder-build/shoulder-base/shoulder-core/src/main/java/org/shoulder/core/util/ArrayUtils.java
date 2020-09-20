@@ -607,7 +607,6 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      *
      * @param a1 Object，必须是数组
      * @param a2 Object,必须是数组
-     *
      * @throws IllegalArgumentException 如果输入对象不是数组，抛出
      * @see Arrays#equals(boolean[], boolean[])
      * @see Arrays#equals(byte[], byte[])

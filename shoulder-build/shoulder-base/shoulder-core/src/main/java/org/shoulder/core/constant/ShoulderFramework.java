@@ -7,7 +7,7 @@ import java.util.Properties;
 /**
  * 框架的定义
  *
- * @author  <a href="mailto:cnlym@foxmail.com">lym</a>
+ * @author <a href="mailto:cnlym@foxmail.com">lym</a>
  */
 public class ShoulderFramework {
 
@@ -16,7 +16,7 @@ public class ShoulderFramework {
     public static String VERSION;
 
     static {
-        try(InputStream in = ShoulderFramework.class.getClassLoader().getResourceAsStream("shoulder-version.txt")) {
+        try (InputStream in = ShoulderFramework.class.getClassLoader().getResourceAsStream("shoulder-version.txt")) {
             Properties props = new Properties();
             Objects.requireNonNull(in, "inputStream parameter is null -- shoulder-version.txt read fail!");
             props.load(in);

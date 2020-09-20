@@ -30,7 +30,7 @@ public class PrintUtils {
     public static String fetchCodeLocation(@NonNull String aimClassName, @Nullable String aimMethodName) {
         StackTraceElement stack = findStackTraceElement(RestTemplate.class.getName(), "");
         // 肯定会有一个，否则不应该触发该方法 null
-        if(stack == null){
+        if (stack == null) {
             String tip = StringUtils.isNotBlank(aimMethodName) ?
                 "Current StackTrack not contains '" + aimClassName + "." + aimMethodName + "()' call!" :
                 "Current StackTrack not contains any " + aimClassName + "'s method call!";
@@ -57,15 +57,15 @@ public class PrintUtils {
             // 顺序遍历，层次越来越深
             boolean isAimClass = aimClassName.equals(stackTraceElement.getClassName());
             boolean isAimMethod = aimClassName.equals(stackTraceElement.getMethodName());
-            if(!foundAimClassFlag){
-                if(isAimClass){
+            if (!foundAimClassFlag) {
+                if (isAimClass) {
                     foundAimClassFlag = skipCheckMethod || isAimMethod;
                 }
                 continue;
             }
             // 加个不能是 c/c++ 的代码（这个条件一般情况下永远为 true）
             boolean filterNot = !isAimClass && (skipCheckMethod || !isAimMethod);
-            if(filterNot && !stackTraceElement.isNativeMethod()){
+            if (filterNot && !stackTraceElement.isNativeMethod()) {
                 return stackTraceElement;
             }
         }

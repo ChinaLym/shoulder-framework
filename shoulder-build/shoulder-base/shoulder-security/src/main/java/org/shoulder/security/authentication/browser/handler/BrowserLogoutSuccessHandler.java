@@ -29,12 +29,13 @@ public class BrowserLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler i
 
     /**
      * 构造
-     * @param responseType 响应类型
+     *
+     * @param responseType      响应类型
      * @param signOutSuccessUrl 退出成功后跳转到哪
      */
     public BrowserLogoutSuccessHandler(ResponseType responseType, String signOutSuccessUrl) {
         this.responseType = responseType;
-        if(StrUtil.isNotBlank(signOutSuccessUrl)){
+        if (StrUtil.isNotBlank(signOutSuccessUrl)) {
             setAlwaysUseDefaultTargetUrl(true);
             setDefaultTargetUrl(signOutSuccessUrl);
         }
@@ -51,7 +52,7 @@ public class BrowserLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler i
             // 为了支持旧版本的浏览器
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             response.getWriter().write(ResponseUtil.success());
-        } else if(ResponseType.REDIRECT.equals(responseType)){
+        } else if (ResponseType.REDIRECT.equals(responseType)) {
             log.debug("redirect for {}", request.getRequestURI());
             super.onLogoutSuccess(request, response, authentication);
         } else {

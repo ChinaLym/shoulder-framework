@@ -1,5 +1,8 @@
 package org.shoulder.autoconfigure.web;
 
+import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
+import org.shoulder.crypto.negotiation.interceptor.ExchangeKeyInterceptor;
+import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.web.interceptor.BaseRejectRepeatSubmitInterceptor;
 import org.shoulder.web.interceptor.HttpLocaleInterceptor;
 import org.shoulder.web.interceptor.SessionTokenRepeatSubmitInterceptor;
@@ -11,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -30,6 +34,25 @@ public class WebMvcAutoConfiguration {
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
             registry.addInterceptor(new HttpLocaleInterceptor()).order(Ordered.HIGHEST_PRECEDENCE);
+            WebMvcConfigurer.super.addInterceptors(registry);
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(ExchangeKeyInterceptor.class)
+    protected static class ExchangeKeyInterceptorWebConfig implements WebMvcConfigurer {
+
+        @Lazy
+        @Autowired
+        private KeyNegotiationCache keyNegotiationCache;
+
+        @Lazy
+        @Autowired
+        private TransportCryptoUtil transportCryptoUtil;
+
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            registry.addInterceptor(new ExchangeKeyInterceptor(keyNegotiationCache, transportCryptoUtil)).order(Ordered.HIGHEST_PRECEDENCE);
             WebMvcConfigurer.super.addInterceptors(registry);
         }
     }

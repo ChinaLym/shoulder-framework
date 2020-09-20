@@ -48,7 +48,7 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
         boolean jsonType = MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
         boolean stringType = StringHttpMessageConverter.class.isAssignableFrom(converterType);
         boolean notSupportResponseType = !jsonType && !stringType;
-        if(notSupportResponseType){
+        if (notSupportResponseType) {
             // 返回值不是 json对象 且不是字符串类型
             return false;
         }

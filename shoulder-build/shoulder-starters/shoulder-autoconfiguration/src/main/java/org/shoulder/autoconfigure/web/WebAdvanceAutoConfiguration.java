@@ -30,7 +30,7 @@ public class WebAdvanceAutoConfiguration {
     @Bean
     @Order(value = 0)
     @ConditionalOnProperty(name = "shoulder.web.handleGlobalException", havingValue = "true", matchIfMissing = true)
-    public RestControllerExceptionAdvice restControllerExceptionAdvice(){
+    public RestControllerExceptionAdvice restControllerExceptionAdvice() {
         return new RestControllerExceptionAdvice();
     }
 
@@ -41,7 +41,7 @@ public class WebAdvanceAutoConfiguration {
     @Bean
     @Order(value = 0)
     @ConditionalOnProperty(name = "shoulder.web.unionResponse", havingValue = "true", matchIfMissing = true)
-    public RestControllerUnionResponseAdvice restControllerUnionResponseAdvice(){
+    public RestControllerUnionResponseAdvice restControllerUnionResponseAdvice() {
         return new RestControllerUnionResponseAdvice();
     }
 
@@ -52,8 +52,9 @@ public class WebAdvanceAutoConfiguration {
     @Bean
     @Order(value = 0)
     @ConditionalOnProperty(name = "shoulder.web.logRequest", havingValue = "colorful", matchIfMissing = true)
-    public RestControllerColorfulLogAspect restControllerColorfulLogAspect(){
-        return new RestControllerColorfulLogAspect(true);
+    public RestControllerColorfulLogAspect restControllerColorfulLogAspect() {
+        // todo 改为可配置
+        return new RestControllerColorfulLogAspect(true, true);
     }
 
     /**
@@ -63,7 +64,8 @@ public class WebAdvanceAutoConfiguration {
     @Bean
     @Order(value = 0)
     @ConditionalOnProperty(name = "shoulder.web.logRequest", havingValue = "json")
-    public RestControllerJsonLogAspect restControllerJsonLogAspect(){
+    // todo 改为可配置
+    public RestControllerJsonLogAspect restControllerJsonLogAspect() {
         return new RestControllerJsonLogAspect(true);
     }
 

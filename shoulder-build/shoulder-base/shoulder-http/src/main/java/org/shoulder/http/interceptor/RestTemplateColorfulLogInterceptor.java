@@ -18,17 +18,19 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    private static final String SELF_CLASS_NAME = RestTemplateColorfulLogInterceptor.class.getSimpleName();
+
     /**
      * 使用调用者代码的 logger
      * 以便使用调用者代码的日志输出级别
      */
     private final boolean useCallerLogger;
 
-    public RestTemplateColorfulLogInterceptor(boolean useCallerLogger){
+    public RestTemplateColorfulLogInterceptor(boolean useCallerLogger) {
         this(useCallerLogger, BaseRestTemplateLogInterceptor.LOG_TILL_RESPONSE_DEFAULT);
     }
 
-    public RestTemplateColorfulLogInterceptor(boolean useCallerLogger, boolean logTillResponse){
+    public RestTemplateColorfulLogInterceptor(boolean useCallerLogger, boolean logTillResponse) {
         super(logTillResponse);
         this.useCallerLogger = useCallerLogger;
     }
@@ -44,12 +46,13 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
         builder
             .newLine()
             .cyan("+---------------------- ")
-            .yellow("Shoulder HTTP Report ", ColorString.Style.NORMAL, true)
-            .cyan("--------------------- ");
+            .yellow("Shoulder HTTP Report", ColorString.Style.NORMAL, true)
+            .cyan(" (" + SELF_CLASS_NAME + ")")
+            .cyan(" --------------------- ");
 
         StackTraceElement stack = PrintUtils.findStackTraceElement(RestTemplate.class.getName(), "");
         // 肯定会有一个，否则不应该触发该方法 null
-        if(stack == null){
+        if (stack == null) {
             throw new IllegalCallerException("Current StackTrack not contains any RestTemplate's method call!");
         }
         Logger logger = useCallerLogger ? LoggerFactory.getLogger(stack.getClassName()) : log;

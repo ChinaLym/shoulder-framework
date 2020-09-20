@@ -123,7 +123,7 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
 
     private KeyPair getKeyPairFromDto(KeyPairDto dto) throws KeyPairException {
         KeyPair keyPair = null;
-        if((keyPair = dto.getOriginKeyPair()) != null){
+        if ((keyPair = dto.getOriginKeyPair()) != null) {
             // 内存存储，无需反序列化
             return keyPair;
         }

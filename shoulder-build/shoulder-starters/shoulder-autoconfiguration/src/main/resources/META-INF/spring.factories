@@ -1,10 +1,8 @@
 # Auto Configuration shoulder-autoconfiguration
 org.springframework.context.ApplicationListener=\
   org.shoulder.autoconfigure.core.DefaultPropertiesStartingListener
-
 org.springframework.boot.env.EnvironmentPostProcessor=\
   org.shoulder.autoconfigure.core.ShoulderBaseInfoAutoConfiguration
-
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.core.ThreadAutoConfiguration, \
   org.shoulder.autoconfigure.core.SpringUtilAutoConfiguration, \

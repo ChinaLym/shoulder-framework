@@ -10,8 +10,8 @@ import org.springframework.security.core.AuthenticationException;
 /**
  * 在 spring 的 {@link AuthenticationException} 之上添加了错误码
  *
- * @see ShoulderAuthenticationException
  * @author lym
+ * @see ShoulderAuthenticationException
  */
 @Getter
 @Setter

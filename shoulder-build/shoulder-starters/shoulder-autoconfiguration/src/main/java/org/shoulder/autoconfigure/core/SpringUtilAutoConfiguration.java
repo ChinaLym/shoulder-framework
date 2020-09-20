@@ -27,7 +27,7 @@ public class SpringUtilAutoConfiguration implements BeanFactoryAware, BeanFactor
     public void postProcessBeanFactory(@NonNull ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
         try {
             SpringUtils.getBeanFactory();
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             // BeanFactoryAware 类型转换失败了
             SpringUtils.setBeanFactory(configurableListableBeanFactory);
         }
@@ -40,7 +40,7 @@ public class SpringUtilAutoConfiguration implements BeanFactoryAware, BeanFactor
     public void setBeanFactory(@NonNull BeanFactory beanFactory) throws BeansException {
         try {
             SpringUtils.setBeanFactory((ConfigurableListableBeanFactory) beanFactory);
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             LoggerFactory.getLogger(getClass()).debug("SpringUtils.setBeanFactory fail when BeanFactoryAware.", e);
         }
     }

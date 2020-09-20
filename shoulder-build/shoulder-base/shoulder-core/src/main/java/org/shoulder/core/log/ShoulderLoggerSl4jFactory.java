@@ -19,7 +19,8 @@ public class ShoulderLoggerSl4jFactory implements ILoggerFactory {
         return SingleTonHolder.instance;
     }
 
-    private ShoulderLoggerSl4jFactory(){}
+    private ShoulderLoggerSl4jFactory() {
+    }
 
     /**
      * 获取 logger

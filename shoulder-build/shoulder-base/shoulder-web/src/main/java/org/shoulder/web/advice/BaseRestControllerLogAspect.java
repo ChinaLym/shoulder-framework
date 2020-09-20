@@ -48,6 +48,7 @@ public abstract class BaseRestControllerLogAspect {
     public Object around(ProceedingJoinPoint jp) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
         Method method = methodSignature.getMethod();
+        // 根据配置项选择 logger
         Logger log = useControllerLogger ? LoggerFactory.getLogger(method.getDeclaringClass()) : logger;
         if (!log.isDebugEnabled()) {
             // 直接执行什么都不做
@@ -68,7 +69,7 @@ public abstract class BaseRestControllerLogAspect {
     /**
      * 前置
      *
-     * @param jp 连接点
+     * @param jp  连接点
      * @param log logger
      */
     protected abstract void before(JoinPoint jp, Logger log);
@@ -76,8 +77,8 @@ public abstract class BaseRestControllerLogAspect {
     /**
      * 后置置
      *
-     * @param jp 连接点
-     * @param log logger
+     * @param jp           连接点
+     * @param log          logger
      * @param returnObject 返回值
      */
     protected abstract void after(ProceedingJoinPoint jp, Logger log, Object returnObject);

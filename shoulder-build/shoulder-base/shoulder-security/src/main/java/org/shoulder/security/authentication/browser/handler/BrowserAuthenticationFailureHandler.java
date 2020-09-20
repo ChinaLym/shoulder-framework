@@ -30,7 +30,7 @@ public class BrowserAuthenticationFailureHandler extends SimpleUrlAuthentication
 
     public BrowserAuthenticationFailureHandler(ResponseType responseType, String authFailUrl) {
         this.responseType = responseType;
-        if(StringUtils.isNotBlank(authFailUrl)){
+        if (StringUtils.isNotBlank(authFailUrl)) {
             super.setDefaultFailureUrl(authFailUrl);
             // 使用请求转发替代重定向，减少请求次数
             super.setUseForward(true);

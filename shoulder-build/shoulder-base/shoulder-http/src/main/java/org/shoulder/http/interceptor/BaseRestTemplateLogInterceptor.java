@@ -28,16 +28,16 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
     protected static final boolean LOG_TILL_RESPONSE_DEFAULT = true;
 
     /**
-     * 等待响应返回后再进行统一记录（避免请求日志和响应日志不在一起，难找）。
+     * 等待响应返回后再进行统一记录（分开打印会导致请求日志和响应日志不在一起，推荐在开发阶段打印在一起方便查看）。
      * tip:若请求过慢可能导致日志迟迟不打印
      */
     private final boolean logTillResponse;
 
-    public BaseRestTemplateLogInterceptor(){
+    public BaseRestTemplateLogInterceptor() {
         this(LOG_TILL_RESPONSE_DEFAULT);
     }
 
-    public BaseRestTemplateLogInterceptor(boolean logTillResponse){
+    public BaseRestTemplateLogInterceptor(boolean logTillResponse) {
         this.logTillResponse = logTillResponse;
     }
 
@@ -55,7 +55,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
             .requestBody(new String(body, AppInfo.charset()))
             .build();
 
-        if(!logTillResponse){
+        if (!logTillResponse) {
             logRequest(record);
         }
 

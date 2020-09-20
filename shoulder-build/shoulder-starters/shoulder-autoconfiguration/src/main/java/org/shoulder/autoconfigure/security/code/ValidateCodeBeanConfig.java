@@ -85,7 +85,7 @@ public class ValidateCodeBeanConfig {
 
         @Bean
         public ValidateCodeStore redisValidateCodeRepository(RedisTemplate redisTemplate,
-               @Value("${shoulder.security.auth.code.unionCodePramName:deviceId}") String unionCodePramName) {
+                                                             @Value("${shoulder.security.auth.code.unionCodePramName:deviceId}") String unionCodePramName) {
             return new RedisValidateCodeRepository(redisTemplate, unionCodePramName);
         }
     }
@@ -103,7 +103,6 @@ public class ValidateCodeBeanConfig {
             return new MemoryValidateCodeRepository();
         }
     }
-
 
 
 }

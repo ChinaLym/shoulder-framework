@@ -15,8 +15,6 @@ public enum AuthenticationType {
     /**
      * 通过 token 认证
      */
-    TOKEN
-
-    ;
+    TOKEN;
 
 }

@@ -29,7 +29,7 @@ public class BrowserAuthenticationSuccessHandler extends SavedRequestAwareAuthen
 
     public BrowserAuthenticationSuccessHandler(ResponseType responseType, String singInSuccessUrl) {
         this.responseType = responseType;
-        if(ResponseType.REDIRECT == responseType){
+        if (ResponseType.REDIRECT == responseType) {
             if (StringUtils.isNotBlank(singInSuccessUrl)) {
                 // 如果设置了 shoulder.security.browser.singInSuccessUrl，总是跳到设置的地址上
                 setAlwaysUseDefaultTargetUrl(true);
@@ -49,10 +49,10 @@ public class BrowserAuthenticationSuccessHandler extends SavedRequestAwareAuthen
             // 为了支持旧版本的浏览器
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             response.getWriter().write(ResponseUtil.success());
-		} else if(ResponseType.REDIRECT.equals(responseType)){
+        } else if (ResponseType.REDIRECT.equals(responseType)) {
             log.debug("redirect for {}", request.getRequestURI());
-			super.onAuthenticationSuccess(request, response, authentication);
-		} else {
+            super.onAuthenticationSuccess(request, response, authentication);
+        } else {
             throw new IllegalStateException("");
         }
     }

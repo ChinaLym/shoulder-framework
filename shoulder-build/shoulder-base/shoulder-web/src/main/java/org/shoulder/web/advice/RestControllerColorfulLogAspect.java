@@ -26,7 +26,7 @@ import java.util.TreeMap;
 
 /**
  * 彩色形式记录接口出入参数
- *
+ * <p>
  * Spring 的 RequestMappingHandlerMapping RequestResponseBodyMethodProcessor 也会记录 debug 日志
  * 但其记录日志的目的是为了便于排查spring框架的错误，而不是方便使用者查看，shoulder 的 logback.xml 默认屏蔽他们的 debug 日志
  * shoulder 这里的记录 Logger 是取的对应 Controller 的 Logger，且信息更多，如请求方、请求方法、请求路径、请求头、请求参数
@@ -39,6 +39,16 @@ import java.util.TreeMap;
  */
 @Aspect
 public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect {
+
+    private static final String SELF_CLASS_NAME = RestControllerColorfulLogAspect.class.getSimpleName();
+
+    protected static final boolean LOG_TILL_RESPONSE_DEFAULT = true;
+
+    /**
+     * 等待响应返回后再进行统一记录（分开打印会导致请求日志和响应日志不在一起，推荐在开发阶段打印在一起方便查看）。
+     * tip:若请求过慢可能导致日志迟迟不打印
+     */
+    private final boolean logTillResponse;
 
     /**
      * 换行符
@@ -53,8 +63,9 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
      */
     private ThreadLocal<String> codeLocationLocal = new ThreadLocal<>();
 
-    public RestControllerColorfulLogAspect(boolean useControllerLogger) {
+    public RestControllerColorfulLogAspect(boolean useControllerLogger, boolean logTillResponse) {
         super(useControllerLogger);
+        this.logTillResponse = logTillResponse;
     }
 
     /**
@@ -77,7 +88,8 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         ColorStringBuilder requestInfo = new ColorStringBuilder()
             .newLine()
             .cyan("========================================== ")
-            .yellow("Shoulder HTTP Report", ColorString.Style.BOLD, true)
+            .yellow("Shoulder API Report", ColorString.Style.BOLD, true)
+            .cyan(" (" + SELF_CLASS_NAME + ")")
             .cyan(" ==========================================")
             .newLine();
 
@@ -116,7 +128,7 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
             headers.put(headerName, headerValue);
         }
 
-        headers.forEach((headerName,headerValue) -> requestInfo
+        headers.forEach((headerName, headerValue) -> requestInfo
             .newLine().tab()
             .lGreen(headerName)
             .tab()

@@ -27,8 +27,8 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
             this.setFieldValByName("createTime", now, metaObject);
         }
         String currentUserIdStr = AppContext.getUserId();
-        if(StringUtils.isNotEmpty(currentUserIdStr)){
-            Long currentUserId =  Long.valueOf(currentUserIdStr);
+        if (StringUtils.isNotEmpty(currentUserIdStr)) {
+            Long currentUserId = Long.valueOf(currentUserIdStr);
             Object creator = this.getFieldValByName("creator", metaObject);
             if (creator == null) {
                 this.setFieldValByName("creator", currentUserId, metaObject);
@@ -49,8 +49,8 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
             this.setFieldValByName("updateTime", now, metaObject);
         }
         String currentUserIdStr = AppContext.getUserId();
-        if(StringUtils.isNotEmpty(currentUserIdStr)){
-            Long currentUserId =  Long.valueOf(currentUserIdStr);
+        if (StringUtils.isNotEmpty(currentUserIdStr)) {
+            Long currentUserId = Long.valueOf(currentUserIdStr);
             Object modifer = this.getFieldValByName("modifer", metaObject);
             if (modifer == null) {
                 this.setFieldValByName("modifer", currentUserId, metaObject);

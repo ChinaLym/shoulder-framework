@@ -158,7 +158,7 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
      * @return 加载这些文件对应的 spring resource 表达式，如 file:///d:/language/zh_CN
      */
     private List<String> getLocaleFilePatterns(File specialLanguageDir) {
-        if(!specialLanguageDir.isDirectory()){
+        if (!specialLanguageDir.isDirectory()) {
             // 必须为文件夹
             return Collections.emptyList();
         }
@@ -191,7 +191,7 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
             return Collections.emptyList();
         }
         String fileUrlName = resource.getURL().getFile();
-        if(fileUrlName.contains(".jar")){
+        if (fileUrlName.contains(".jar")) {
             // jar 内资源
             String[] parts = fileUrlName.split(".jar");
             String realPath = parts[0].replace("file:", "") + ".jar";
@@ -215,7 +215,7 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
     /**
      * 列出 jarFilePath 对应 jar 的 resourceDirName 目录中的 properties、xml 文件
      *
-     * @param jarFilePath jar 文件路径，如 "/F:/files/mavenRepository/cn/itlym/shoulder-core/1.0/shoulder-core-1.0.jar"
+     * @param jarFilePath     jar 文件路径，如 "/F:/files/mavenRepository/cn/itlym/shoulder-core/1.0/shoulder-core-1.0.jar"
      * @param resourceDirName 资源文件夹名称，如 language
      * @return 相对于该 jar 的resource path
      * @throws IOException 读取jar文件失败
@@ -224,10 +224,10 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
         JarFile jarFile = new JarFile(jarFilePath);
         Enumeration<JarEntry> entries = jarFile.entries();
         List<String> resourcePaths = new LinkedList<>();
-        while (entries.hasMoreElements()){
+        while (entries.hasMoreElements()) {
             JarEntry jarEntry = entries.nextElement();
             String entryName = jarEntry.getRealName();
-            if(entryName.startsWith(resourceDirName) && canResolve(entryName)){
+            if (entryName.startsWith(resourceDirName) && canResolve(entryName)) {
                 // 如 language/zh_CN/messages.properties
                 resourcePaths.add(entryName);
             }
@@ -237,12 +237,13 @@ public class ShoulderMessageSource extends ReloadableResourceBundleMessageSource
 
     /**
      * 是否支持该文件
+     *
      * @param fileName 文件名 如 xxx.properties
      * @return 是否可以解析（properties、xml）
      */
-    private boolean canResolve(String fileName){
+    private boolean canResolve(String fileName) {
         for (String fileNameSub : supportFile) {
-            if(fileName.endsWith(fileNameSub)){
+            if (fileName.endsWith(fileNameSub)) {
                 return true;
             }
         }

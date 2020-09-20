@@ -30,7 +30,7 @@ public class RestControllerJsonLogAspect extends BaseRestControllerLogAspect {
     /**
      * 前置方法较长，单独抽出以保证 JIT 优化
      *
-     * @param jp 连接点
+     * @param jp  连接点
      * @param log logger
      */
     @Override

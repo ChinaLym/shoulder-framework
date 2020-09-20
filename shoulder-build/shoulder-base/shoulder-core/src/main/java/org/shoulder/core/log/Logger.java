@@ -48,6 +48,7 @@ public interface Logger extends org.slf4j.Logger {
 
     /**
      * error 级别带错误码
+     *
      * @param errorCode 错误码
      */
     void error(ErrorCode errorCode);

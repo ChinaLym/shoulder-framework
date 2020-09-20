@@ -360,7 +360,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public void log(ErrorCode errorCode) {
         Level level = errorCode.getLogLevel();
         // switch 没有分支预测，因此按照使用频率排序（注意并不是错误码定义的级别越多越频繁）
-        switch (level){
+        switch (level) {
             case WARN:
                 warn(errorCode);
                 break;

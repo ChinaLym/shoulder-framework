@@ -10,14 +10,14 @@ import java.util.concurrent.*;
 
 /**
  * 可自动扩容、缩容核心线程数的线程池，（可更合理的利用线程资源、应对突发事件处理）适合平时节能模式处理，突然紧急情况下提前加速处理的场景
- *
+ * <p>
  * JDK 中实现的当且仅当任务队列满了时才会创建新线程，但如果这时候突发来多个任务，则导致任务很可能被拒绝
  * 实际中应根据队列容量自动扩容线程数，如，当队列中任务数达到上限的 70%、80%、90%，则自动扩容线程，而不是满了之后才扩容，缓解大压力场景下触发
- *
+ * <p>
  * 默认参数举例：
  * - 执行前，若队列中任务数 > 75% 队列容量 且 threadSize < maxSize，将线程数加一，默认冷却时间 5s
  * - 执行后，若队列中任务数 < 25% 队列容量 且 threadSize < originCoreSize，将 core 线程数减少一，默认冷却时间 5s
- *
+ * <p>
  * 动态设置参数实现： 对接配置中心
  * 监控、告警实现： 对接 prometheus，过载告警
  * 操作记录与审计： 对接日志中心，变更通知
@@ -84,6 +84,7 @@ public class AutoScaleThreadPool extends ThreadPoolExecutor {
     //private VarHandle varHandle = VarHandle.
 
     private static final RejectedExecutionHandler DEFAULT_HANDLER = new ThreadPoolExecutor.AbortPolicy();
+
     /**
      * 调用父类的构造方法，并初始化HashMap和线程池名称
      *
@@ -160,18 +161,18 @@ public class AutoScaleThreadPool extends ThreadPoolExecutor {
 
         final Instant oldInstant = expansionInstant;
         final Instant now;
-        if(supportScale && (now = Instant.now()).isAfter(oldInstant)) {
+        if (supportScale && (now = Instant.now()).isAfter(oldInstant)) {
             // 必然存在并发问题，DCL
-            synchronized (this){
+            synchronized (this) {
                 // 检测上次修改时间是否变了，版本号，因为最小修改时间间隔可能是0？
-                if(oldInstant != expansionInstant){
+                if (oldInstant != expansionInstant) {
                     return;
                 }
                 // 默认冷却时间 5s
                 int queueTaskNum = getQueue().size();
                 int currentThreadNum;
                 // 若队列中任务数 > 队列扩容阈值（默认75%） 且未达到最大线程数 threadSize < maxSize，将线程数加一，
-                if(queueTaskNum > expansionOnTaskCount && (currentThreadNum = getPoolSize()) < getMaximumPoolSize()){
+                if (queueTaskNum > expansionOnTaskCount && (currentThreadNum = getPoolSize()) < getMaximumPoolSize()) {
                     setCorePoolSize(currentThreadNum + expansionThreadOneTime);
                 }
                 expansionInstant = now.plus(expansionDuration);
@@ -187,18 +188,18 @@ public class AutoScaleThreadPool extends ThreadPoolExecutor {
         final Instant oldInstant = shrinkageInstant;
         final Instant now;
         // 缩容冷却时间
-        if(supportScale && (now = Instant.now()).isAfter(oldInstant)) {
+        if (supportScale && (now = Instant.now()).isAfter(oldInstant)) {
             // 必然存在并发问题，DCL
-            synchronized (this){
+            synchronized (this) {
                 // 检测上次修改时间是否变了，版本号，所以最小修改时间间隔>0？
-                if(oldInstant != shrinkageInstant){
+                if (oldInstant != shrinkageInstant) {
                     return;
                 }
                 // 默认冷却时间 5s
                 int queueTaskNum = getQueue().size();
                 int currentThreadNum;
                 // 若队列中任务数 > 队列扩容阈值（默认75%） 且未达到最大线程数 threadSize < maxSize，将线程数加一，
-                if(queueTaskNum < shrinkageOnTaskCount && (currentThreadNum = getPoolSize()) > getCorePoolSize()){
+                if (queueTaskNum < shrinkageOnTaskCount && (currentThreadNum = getPoolSize()) > getCorePoolSize()) {
                     setCorePoolSize(currentThreadNum - shrinkageThreadOneTime);
                 }
                 shrinkageInstant = now.plus(shrinkageDuration);
@@ -348,8 +349,7 @@ public class AutoScaleThreadPool extends ThreadPoolExecutor {
         }
 
 
-
-        public void check(){
+        public void check() {
             Assert.isTrue(expansionLoadFactor >= shrinkageLoadFactor,
                 "expansionLoadFactor(" + expansionDuration + ") < shrinkageLoadFactor(" + shrinkageLoadFactor + ")");
             Assert.isTrue(expansionLoadFactor >= shrinkageLoadFactor,
@@ -363,7 +363,7 @@ public class AutoScaleThreadPool extends ThreadPoolExecutor {
          * @param maxSize  max
          * @param queueNum queueNum 队列需要有长度限制，若过大则调整的意义就没有了
          */
-        public void adjust(int coreSize, int maxSize, int queueNum){
+        public void adjust(int coreSize, int maxSize, int queueNum) {
             check();
             int difference = maxSize - coreSize;
             expansionThreadOneTime = Math.min(expansionThreadOneTime, difference);

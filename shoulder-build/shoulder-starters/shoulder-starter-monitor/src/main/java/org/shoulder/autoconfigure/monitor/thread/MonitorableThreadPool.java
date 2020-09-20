@@ -10,9 +10,8 @@ import java.util.concurrent.*;
 /**
  * 带指标可监控的线程池，推荐需要稳定执行、重要的业务使用，以更好的掌握系统运行状态
  *
- * @see MonitorableRunnable 任务（Runnable）可以有标签（任务名/类名）
- *
  * @author lym
+ * @see MonitorableRunnable 任务（Runnable）可以有标签（任务名/类名）
  */
 public class MonitorableThreadPool extends ThreadPoolExecutor {
 
@@ -195,6 +194,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
 
     /**
      * 修改核心线程数
+     *
      * @param newCorePoolSize 0 <= corePoolSize <= maximumPoolSize
      */
     @Override
@@ -206,6 +206,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
 
     /**
      * 修改最大线程数
+     *
      * @param newMaximumPoolSize corePoolSize <= maximumPoolSize && 0 < maximumPoolSize
      */
     @Override

@@ -33,7 +33,7 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
      * 使用 keyPairId 对应秘钥对的私钥【解密】cipher
      *
      * @param keyPairId 秘钥对标识
-     * @param cipher 待解密的数据，密文
+     * @param cipher    待解密的数据，密文
      * @return 解密后的
      * @throws AsymmetricCryptoException RsaCryptoException
      */
@@ -43,7 +43,7 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
      * 解密
      *
      * @param keyPairId 秘钥对标识
-     * @param cipher 待解密的数据，密文
+     * @param cipher    待解密的数据，密文
      * @return 解密后的
      * @throws AsymmetricCryptoException RsaCryptoException
      */
@@ -53,7 +53,7 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
      * 使用 keyPairId 对应秘钥对的私钥【签名】
      *
      * @param keyPairId 秘钥对标识
-     * @param content 原始内容，待签名数据
+     * @param content   原始内容，待签名数据
      * @return 签名结果
      * @throws AsymmetricCryptoException 加解密出错
      */
