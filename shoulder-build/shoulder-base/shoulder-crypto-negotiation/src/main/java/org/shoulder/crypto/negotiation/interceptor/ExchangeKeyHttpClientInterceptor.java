@@ -25,9 +25,9 @@ import java.io.IOException;
  * RestTemplate拦截器。
  * client 向 server 发出安全请求，响应自动解密_将解密器放置于县城变量中
  * <p>
+ * @see SecurityRestTemplate
  *
  * @author lym
- * @see SecurityRestTemplate
  */
 public class ExchangeKeyHttpClientInterceptor implements ClientHttpRequestInterceptor {
 

@@ -20,20 +20,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 安全传输拦截器
- * 只拦截握手完毕后的加密接口，即只拦截header中带 xSessionId 和 xDk 的请求。
+ * ecdh 接口拦截器
+ * 只拦截握手完毕后的加密接口，即只拦截header中带 xSessionId 和 xDk 的请求。todo 只拦截带 Sensitive 的接口
  *
  * @author lym
  */
-public class ExchangeKeyInterceptor extends HandlerInterceptorAdapter {
+public class SensitiveApiInterceptor extends HandlerInterceptorAdapter {
 
-    private static final Logger log = LoggerFactory.getLogger(ExchangeKeyInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(SensitiveApiInterceptor.class);
 
     private KeyNegotiationCache keyNegotiationCache;
 
     private TransportCryptoUtil transportCryptoUtil;
 
-    public ExchangeKeyInterceptor(KeyNegotiationCache keyNegotiationCache, TransportCryptoUtil transportCryptoUtil) {
+    public SensitiveApiInterceptor(KeyNegotiationCache keyNegotiationCache, TransportCryptoUtil transportCryptoUtil) {
         this.keyNegotiationCache = keyNegotiationCache;
         this.transportCryptoUtil = transportCryptoUtil;
     }
@@ -48,7 +48,7 @@ public class ExchangeKeyInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
 
-        // 一、处理请求：解密发送方的会话密钥 todo null
+        // 一、处理请求：解密发送方的会话密钥
         KeyExchangeResult cacheKeyExchangeResult = keyNegotiationCache.getAsServer(xSessionId);
 
         if (cacheKeyExchangeResult == null) {
@@ -60,6 +60,7 @@ public class ExchangeKeyInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
 
+        // 校验token是否正确
         transportCryptoUtil.verifyToken(xSessionId, xDk, token);
 
         log.debug("security request. xDk is " + xDk);
@@ -69,7 +70,7 @@ public class ExchangeKeyInterceptor extends HandlerInterceptorAdapter {
         TransportCipher requestDecryptor = TransportCipher.decryptor(cacheKeyExchangeResult, requestDk);
         TransportCipherHolder.setRequestDecryptor(requestDecryptor);
 
-        // 二、预生成返回值加密的数据密钥，以便于加密要返回的敏感数据信息（请求和响应中使用的数据密钥不同）
+        // 二、预生成返回值加密的数据密钥，以便于加密要返回的敏感数据信息（请求和响应中使用的数据密钥不同）todo 加密放到 response rewrite 里
         byte[] responseDk = TransportCryptoUtil.generateDataKey(cacheKeyExchangeResult.getKeyLength());
         // 缓存响应加密处理器
         TransportCipher responseEncrypt = TransportCipher.encryptor(cacheKeyExchangeResult, responseDk);

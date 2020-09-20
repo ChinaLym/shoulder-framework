@@ -3,6 +3,7 @@ package org.shoulder.crypto.negotiation.http;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.annotation.RequestSecret;
@@ -122,6 +123,10 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
         throws IOException, HttpMessageNotReadableException {
 
         Object result = super.read(type, contextClass, inputMessage);
+        // 专门处理 BaseResponse 以及其子类
+        if (result instanceof BaseResponse) {
+            result = ((BaseResponse) result).getData();
+        }
         Class<?> resultClazz = result.getClass();
         List<Field> securityResultField = getResponseFields(resultClazz);
         if (!CollectionUtils.isEmpty(securityResultField)) {
