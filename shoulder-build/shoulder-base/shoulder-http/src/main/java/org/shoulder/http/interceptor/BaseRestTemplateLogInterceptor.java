@@ -64,7 +64,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
 
         stopWatch.stop();
 
-        boolean needLogBody = needLogBody(request);
+        boolean needLogBody = needLogBody(response);
         String bodyStr = needLogBody ? readBody(response) : "response.Content-Type not readable, " +
             "default support 'json/xml/plain' only";
 
@@ -82,9 +82,9 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
     /**
      * 是否要记录响应体
      */
-    protected boolean needLogBody(@NonNull HttpRequest request) {
+    protected boolean needLogBody(@NonNull ClientHttpResponse response) {
         boolean needLogBody = false;
-        MediaType contentType = request.getHeaders().getContentType();
+        MediaType contentType = response.getHeaders().getContentType();
         if (contentType != null) {
             String contentTypeStr = contentType.toString();
             // 只记录 json、xml、plain 类型，跳过图片、文件这些
