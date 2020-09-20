@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
  * 非对称的加解密以及签名工具实现。
  * 加解密实现为 AsymmetricCryptoProcessor，本类做字符串与 byte[] 的转换。
  * 同时支持默认秘钥，与多秘钥对
+ * todo 检查异常在这里转为运行异常
  *
  * @author lym
  */

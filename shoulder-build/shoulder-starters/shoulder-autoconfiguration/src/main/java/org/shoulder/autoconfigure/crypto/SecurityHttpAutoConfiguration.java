@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.lang.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,8 +32,16 @@ public class SecurityHttpAutoConfiguration {
                                                      TransportCryptoUtil cryptoUtil, @Nullable List<ClientHttpRequestInterceptor> interceptors) {
         SecurityRestTemplate securityRestTemplate = new SecurityRestTemplate(transportNegotiationService, cryptoUtil);
         if (CollectionUtils.isNotEmpty(interceptors)) {
-            // todo 不要覆盖
-            securityRestTemplate.setInterceptors(interceptors);
+            List<ClientHttpRequestInterceptor> existConverters = securityRestTemplate.getInterceptors();
+            // 简单做差值去重，这里用的 == 比较
+            Collection<ClientHttpRequestInterceptor> toAdd = CollectionUtils.subtract(interceptors, existConverters);
+
+            if (CollectionUtils.isNotEmpty(toAdd)) {
+                List<ClientHttpRequestInterceptor> newInterceptors = new ArrayList<>(existConverters.size() + toAdd.size());
+                newInterceptors.addAll(existConverters);
+                newInterceptors.addAll(toAdd);
+                securityRestTemplate.setInterceptors(newInterceptors);
+            }
         }
         return securityRestTemplate;
     }

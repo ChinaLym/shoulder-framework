@@ -18,9 +18,62 @@ A 向 B 发送自己的公钥（publicKeyA）和本次谈判的规则，见 `Key
   
   
 ## 使用介绍
-  
+
+见 [demo5](https://gitee.com/ChinaLym/shoulder-framework-demo)
+
  ```java
-// todo 添加传输加密代码示范
+// -------------------- DTO --------------------
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ApiParam {
+
+    String text;
+
+    @RequestSecret
+    String cipher;
+
+}
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ApiResult {
+
+    String text;
+
+    @ResponseSecret
+    String cipher;
+
+}
+
+// ---------------- 发请求 --------
+
+class SendRequest {
+
+    @Autowired
+    private SecurityRestTemplate restTemplate;
+
+    public void sendRequest(){
+        restTemplate....
+    }
+
+}
+
+
+// ---------------- 提供接口 -------------
+
+    /**
+     * 测试直接请求加密接口  <a href="http://localhost:80/cipherapi/receive"/>
+     */
+    @PostMapping("receive")
+    public ApiResult receive(@RequestBody ApiParam param) {
+        System.out.println(param);
+        ApiResult result = new ApiResult();
+        result.setCipher("shoulder");
+        result.setText("666");
+        return result;
+    }
 
 ```
 

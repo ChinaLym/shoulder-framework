@@ -26,7 +26,7 @@ public class ResponseEncryptStdSerializer extends StdSerializer<String> {
 
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        TransportCipher adapter = TransportCipherHolder.getResponseHandler();
+        TransportCipher adapter = TransportCipherHolder.getResponseCipher();
         String cipherText = "";
         try {
             cipherText = adapter.encrypt(value);

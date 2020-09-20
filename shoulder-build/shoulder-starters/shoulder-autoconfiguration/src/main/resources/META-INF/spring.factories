@@ -15,9 +15,10 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   \
   org.shoulder.autoconfigure.redis.RedisAutoConfiguration, \
   \
+  org.shoulder.autoconfigure.http.RestTemplateLogAutoConfiguration, \
+  org.shoulder.autoconfigure.http.RestTemplateCustomAutoConfiguration, \
   org.shoulder.autoconfigure.http.HttpAutoConfiguration, \
   org.shoulder.autoconfigure.http.AppIdExtractorAutoConfiguration, \
-  org.shoulder.autoconfigure.http.RestTemplateLogAutoConfiguration, \
   \
   org.shoulder.autoconfigure.crypto.LocalCryptoAutoConfiguration,\
   org.shoulder.autoconfigure.crypto.AsymmetricCryptoAutoConfiguration,\

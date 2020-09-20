@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * 支持多版本并存的本地存储方案（无感知切换加密方案）
+ * todo 检查异常在这里转为运行异常
  *
  * @author lym
  */

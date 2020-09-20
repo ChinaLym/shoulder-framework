@@ -7,6 +7,7 @@ import org.shoulder.core.context.AppInfo;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
@@ -20,6 +21,8 @@ import java.io.InputStreamReader;
 /**
  * 为 RestTemplate 增加记录日志的能力
  * 记录：方法调用位置、请求方式、地址、请求头、请求参数（默认最多记录2048）、返回值（默认最多记录2048）
+ *
+ * @see BufferingClientHttpRequestFactory 既然要读取记录日志，故 Response Body 必须使用带缓存，而非默认地只读一次
  *
  * @author lym
  */
@@ -86,7 +89,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
         boolean needLogBody = false;
         MediaType contentType = response.getHeaders().getContentType();
         if (contentType != null) {
-            String contentTypeStr = contentType.toString();
+            String contentTypeStr = contentType.getSubtype();
             // 只记录 json、xml、plain 类型，跳过图片、文件这些
             if (contentTypeStr.contains("json") || contentTypeStr.contains("xml") || contentTypeStr.contains("plain")) {
                 needLogBody = true;

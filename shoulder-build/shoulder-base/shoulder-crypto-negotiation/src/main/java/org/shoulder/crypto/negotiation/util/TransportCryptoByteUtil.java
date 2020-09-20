@@ -146,7 +146,7 @@ public class TransportCryptoByteUtil {
         List<byte[]> keyAndIv = ECDHUtils.negotiationToKeyAndIv(selfPrivateKey, otherPublicKey, keyLength);
         KeyExchangeResponse response = new KeyExchangeResponse();
 
-        //todo keyLength暂时写死
+        //todo keyLength暂时写死，若变更则 keyLength 也需要变
         response.setAes("256");
         response.setKeyLength(32);
         response.setExpireTime(KeyExchangeConstants.EXPIRE_TIME);

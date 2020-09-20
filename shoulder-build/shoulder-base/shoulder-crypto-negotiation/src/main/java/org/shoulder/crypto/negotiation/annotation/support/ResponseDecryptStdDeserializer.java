@@ -34,7 +34,7 @@ public class ResponseDecryptStdDeserializer extends StdDeserializer<String> {
             return cipherText;
         }
         log.debug("Client response transport decrypt, cipherText is {}.", cipherText);
-        TransportCipher cipher = TransportCipherHolder.getResponseHandler();
+        TransportCipher cipher = TransportCipherHolder.getResponseCipher();
         String data = "";
         try {
             data = cipher.decrypt(cipherText);

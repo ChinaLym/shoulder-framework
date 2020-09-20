@@ -70,7 +70,7 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
 
         if (!CollectionUtils.isEmpty(securityParamField)) {
             // 参数需要加密
-            // todo 深克隆所有属性
+            // todo 这里深克隆了所有属性，应该只保存需要加密的字段，以提高性能
             Object cloned = ObjectUtil.clone(object);
             if (cloned == null) {
                 //使用 json 方式（性能差一点，备选）
@@ -106,10 +106,10 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
         try {
             for (Field filed : sensitiveFields) {
                 filed.setAccessible(true);
-                // todo 支持 String/byte[] 类型
+                // 暂时只支持 String 类型
                 String origin = (String) filed.get(object);
                 String handled = encrypt ? TransportCipherHolder.getRequestCipher().encrypt(origin) :
-                    TransportCipherHolder.getResponseHandler().decrypt(origin);
+                    TransportCipherHolder.getResponseCipher().decrypt(origin);
                 filed.set(object, handled);
             }
         } catch (Exception e) {
@@ -167,12 +167,18 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
         for (Field field : fields) {
             RequestSecret requestSecret = field.getAnnotation(RequestSecret.class);
             ResponseSecret responseSecret = field.getAnnotation(ResponseSecret.class);
-            if (requestSecret != null) {
-                requestSecretFields.add(field);
+            Class<?> fieldClass;
+            if (String.class.isAssignableFrom(fieldClass = field.getDeclaringClass())) {
+                if (requestSecret != null) {
+                    requestSecretFields.add(field);
+                }
+                if (responseSecret != null) {
+                    responseSecretFields.add(field);
+                }
             }
-            if (responseSecret != null) {
-                responseSecretFields.add(field);
-            }
+            // 说明这个字段应该是复杂类型，否则报错/警告，用法错误
+            // todo 处理复杂类型：递归这个类
+
         }
     }
 

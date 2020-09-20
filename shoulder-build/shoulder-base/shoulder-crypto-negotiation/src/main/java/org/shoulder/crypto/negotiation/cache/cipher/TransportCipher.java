@@ -25,24 +25,24 @@ public class TransportCipher {
     }
 
     /**
-     * 创建加密专用
+     * 创建解密器
      *
      * @param keyExchangeInfo 密钥协商结果信息
      * @param dk              数据密钥明文
      * @return 解密器
      */
-    public static TransportCipher decryptor(KeyExchangeResult keyExchangeInfo, byte[] dk) {
-        return new Decryptor(keyExchangeInfo, dk);
+    public static DecryptCipher buildDecryptCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
+        return new DecryptCipher(keyExchangeInfo, dk);
     }
 
     /**
-     * 创建加密专用
+     * 创建加密器
      *
      * @param keyExchangeInfo 密钥协商结果信息
      * @return 加密器
      */
-    public static Encryptor encryptor(KeyExchangeResult keyExchangeInfo, byte[] dk) {
-        return new Encryptor(keyExchangeInfo, dk);
+    public static EncryptCipher buildEncryptCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
+        return new EncryptCipher(keyExchangeInfo, dk);
     }
 
 
@@ -74,15 +74,15 @@ public class TransportCipher {
     /**
      * 加密器
      */
-    private static class Encryptor extends TransportCipher {
+    private static class EncryptCipher extends TransportCipher {
 
-        private Encryptor(KeyExchangeResult keyExchangeInfo, byte[] dk) {
+        private EncryptCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
             super(keyExchangeInfo, dk);
         }
 
         @Override
         public String decrypt(String toCipher) {
-            throw new UnsupportedOperationException("Can't decrypt with a encryptor!");
+            throw new UnsupportedOperationException("Can't decrypt with a encryptCipher!");
         }
 
     }
@@ -91,15 +91,15 @@ public class TransportCipher {
     /**
      * 解密器
      */
-    private static class Decryptor extends TransportCipher {
+    private static class DecryptCipher extends TransportCipher {
 
-        private Decryptor(KeyExchangeResult keyExchangeInfo, byte[] dk) {
+        private DecryptCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
             super(keyExchangeInfo, dk);
         }
 
         @Override
         public String encrypt(String toCipher) {
-            throw new UnsupportedOperationException("Can't encrypt with a decryptor!");
+            throw new UnsupportedOperationException("Can't encrypt with a decryptCipher!");
         }
 
     }

@@ -23,22 +23,22 @@ import java.io.IOException;
 
 /**
  * RestTemplate拦截器。
- * client 向 server 发出安全请求，响应自动解密_将解密器放置于县城变量中
+ * client 向 server 发出安全请求，在响应后解析响应头，将解密器放置于县城变量中
  * <p>
  * @see SecurityRestTemplate
  *
  * @author lym
  */
-public class ExchangeKeyHttpClientInterceptor implements ClientHttpRequestInterceptor {
+public class SecurityResponseDecrypterClientInterceptor implements ClientHttpRequestInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExchangeKeyHttpClientInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(SecurityResponseDecrypterClientInterceptor.class);
 
 
     private KeyNegotiationCache keyNegotiationCache;
 
     private TransportCryptoUtil transportCryptoUtil;
 
-    public ExchangeKeyHttpClientInterceptor(KeyNegotiationCache keyNegotiationCache, TransportCryptoUtil transportCryptoUtil) {
+    public SecurityResponseDecrypterClientInterceptor(KeyNegotiationCache keyNegotiationCache, TransportCryptoUtil transportCryptoUtil) {
         this.keyNegotiationCache = keyNegotiationCache;
         this.transportCryptoUtil = transportCryptoUtil;
     }
@@ -51,7 +51,7 @@ public class ExchangeKeyHttpClientInterceptor implements ClientHttpRequestInterc
 
         // *************************** afterRequest ***************************
         if (response.getStatusCode() != HttpStatus.OK) {
-            // todo 校验错误码，是否为强制重新进行密钥协商，并伴随次数限制
+            // todo 校验错误码，是否为协商的密钥过期
         }
 
         HttpHeaders headers = response.getHeaders();
@@ -73,16 +73,21 @@ public class ExchangeKeyHttpClientInterceptor implements ClientHttpRequestInterc
 
             // 2. 获取本次请求真正的数据密钥 THREAD_LOCAL
             KeyExchangeResult keyExchangeInfo = KeyNegotiationCache.THREAD_LOCAL.get();
+            if (keyExchangeInfo == null) {
+                throw new IllegalStateException("keyExchangeInfo can't be null!");
+            }
             byte[] realDataKey = TransportCryptoUtil.decryptDk(keyExchangeInfo, xDk);
 
             // 3. 放置于线程变量中供后续解密使用
-            TransportCipher responseDecryptor = TransportCipher.decryptor(keyExchangeInfo, realDataKey);
-            TransportCipherHolder.setResponseDecryptor(responseDecryptor);
+            TransportCipher responseDecryptCipher = TransportCipher.buildDecryptCipher(keyExchangeInfo, realDataKey);
+            TransportCipherHolder.setResponseCipher(responseDecryptCipher);
 
         } catch (AsymmetricCryptoException e) {
-            throw new RuntimeException("security token validate fail!");
+            log.warn("token validate fail!", e);
+            throw new RuntimeException("token validate fail!", e);
         } catch (SymmetricCryptoException e) {
-            logger.warn("Decrypt xDk has a error in ExchangeKeyRPCInterceptor!", e);
+            log.warn("Decrypt xDk fail!", e);
+            throw new RuntimeException("Decrypt xDk fail!", e);
         } finally {
             // 清理线程变量
             KeyNegotiationCache.THREAD_LOCAL.remove();

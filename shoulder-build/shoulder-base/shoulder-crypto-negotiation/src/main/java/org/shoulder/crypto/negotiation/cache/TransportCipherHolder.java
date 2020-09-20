@@ -8,6 +8,9 @@ import org.springframework.web.client.ResponseExtractor;
  * <p>
  * 两种思路，按照加解密/请求响应分
  * - 具体分
+ *  todo 注意清理线程变量
+ *  todo 处理多重请求：A -> B -> C，使用 Stack ？
+ *  - 对于服务端，responseCipher 可能会因为调用其他安全接口时覆盖
  *
  * @author lym
  */
@@ -17,11 +20,6 @@ public class TransportCipherHolder {
      * 发起请求 和 处理请求时，使用这个
      */
     private static ThreadLocal<TransportCipher> request = new ThreadLocal<>();
-
-    /**
-     * 本次请求是否为加密接口
-     */
-    private static ThreadLocal<Boolean> negotiationApi = new ThreadLocal<>();
 
     /**
      * 接收响应 和 响应对方时，用这个
@@ -37,48 +35,33 @@ public class TransportCipherHolder {
     /**
      * 用于解密收到的请求 or 加密发送请求
      */
-    private static void setRequestCipher(TransportCipher transportCipher) {
+    public static void setRequestCipher(TransportCipher transportCipher) {
         request.set(transportCipher);
     }
 
-    public static TransportCipher getResponseHandler() {
+    public static TransportCipher getResponseCipher() {
         return response.get();
     }
 
     /**
-     * 用于请求发起端 加密
-     * todo 需要一个特殊 restTemplate 或者拦截器中重新构造参数
+     * 用于加密响应 or 解密对方响应
      */
-    public static void setRequestEncryptor(TransportCipher transportCipher) {
+    public static void setResponseCipher(TransportCipher transportCipher) {
+        response.set(transportCipher);
+    }
+
+    /**
+     * 用于请求发起端 加密
+     */
+    public static void setRequestEncryptCipher(TransportCipher transportCipher) {
         setRequestCipher(transportCipher);
     }
 
     /**
      * 用于服务提供端 解密
      */
-    public static void setRequestDecryptor(TransportCipher transportCipher) {
+    public static void setRequestDecryptCipher(TransportCipher transportCipher) {
         setRequestCipher(transportCipher);
-    }
-
-    /**
-     * 用于服务提供端 加密响应
-     */
-    public static void setResponseEncryptor(TransportCipher transportCipher) {
-        setResponseCipher(transportCipher);
-    }
-
-    /**
-     * 用于请求发起端 解密收到得响应
-     */
-    public static void setResponseDecryptor(TransportCipher transportCipher) {
-        setResponseCipher(transportCipher);
-    }
-
-    /**
-     * 用于加密响应 or 解密对方响应
-     */
-    private static void setResponseCipher(TransportCipher transportCipher) {
-        response.set(transportCipher);
     }
 
     /**
@@ -90,14 +73,6 @@ public class TransportCipherHolder {
 
     public static void cleanResponseCryptHandler() {
         response.remove();
-    }
-
-    public static boolean isNegotiationApi() {
-        return negotiationApi.get();
-    }
-
-    public static void setNegotiationApi(boolean isNegotiationApi) {
-        TransportCipherHolder.negotiationApi.set(isNegotiationApi);
     }
 
     /**

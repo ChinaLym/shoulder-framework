@@ -3,15 +3,19 @@ package org.shoulder.crypto.negotiation.http;
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
+import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
 import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.RequestCallback;
@@ -22,8 +26,9 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 安全的 restTemplate，用于安全传输带私密字段的请求
@@ -34,7 +39,7 @@ import java.util.LinkedList;
  * @author lym
  */
 @Slf4j
-public class SecurityRestTemplate extends RestTemplate {
+public class SecurityRestTemplate extends RestTemplate implements InitializingBean {
 
     private final TransportNegotiationService transportNegotiationService;
 
@@ -43,7 +48,7 @@ public class SecurityRestTemplate extends RestTemplate {
     private static final ThreadLocal<URI> URI_LOCAL = new ThreadLocal<>();
 
     public SecurityRestTemplate(TransportNegotiationService transportNegotiationService, TransportCryptoUtil cryptoUtil) {
-        super(Collections.singletonList(new SensitiveDateEncryptMessageConverter()));
+        super(new SimpleClientHttpRequestFactory());
         this.transportNegotiationService = transportNegotiationService;
         this.cryptoUtil = cryptoUtil;
     }
@@ -77,6 +82,25 @@ public class SecurityRestTemplate extends RestTemplate {
     public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody, @NonNull Type responseType) {
         return new AddSecurityHeadersRequestCallback(super.httpEntityCallback(requestBody, responseType),
             transportNegotiationService, cryptoUtil);
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        List<HttpMessageConverter<?>> converterList = super.getMessageConverters();
+        boolean containsSecurityConverter = false;
+        for (HttpMessageConverter<?> httpMessageConverter : converterList) {
+            if (httpMessageConverter instanceof SensitiveDateEncryptMessageConverter) {
+                containsSecurityConverter = true;
+                break;
+            }
+        }
+        if (!containsSecurityConverter) {
+            List<HttpMessageConverter<?>> newConverters = new ArrayList<>(converterList.size() + 1);
+            newConverters.add(new SensitiveDateEncryptMessageConverter());
+            newConverters.addAll(converterList);
+            super.setMessageConverters(newConverters);
+        }
+
     }
 
 
@@ -115,13 +139,14 @@ public class SecurityRestTemplate extends RestTemplate {
             KeyExchangeResult keyExchangeResult = null;
             while (keyExchangeResult == null) {
                 keyExchangeResult = negotiate(uri, time);
+                KeyNegotiationCache.THREAD_LOCAL.set(keyExchangeResult);
                 time++;
             }
 
             // 创建本次请求的加密器 todo 小优化，如果请求不带（敏感）参数，则无需生成数据密钥
             byte[] requestDk = TransportCryptoUtil.generateDataKey(keyExchangeResult.getKeyLength());
-            TransportCipher requestEncrypt = TransportCipher.encryptor(keyExchangeResult, requestDk);
-            TransportCipherHolder.setRequestEncryptor(requestEncrypt);
+            TransportCipher requestEncryptCipher = TransportCipher.buildEncryptCipher(keyExchangeResult, requestDk);
+            TransportCipherHolder.setRequestCipher(requestEncryptCipher);
 
             return cryptoUtil.generateHeaders(keyExchangeResult, requestDk);
 

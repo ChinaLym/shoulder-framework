@@ -45,4 +45,5 @@ public class RestTemplateLogAutoConfiguration {
     ) {
         return new RestTemplateJsonLogInterceptor(logTillResponse);
     }
+
 }

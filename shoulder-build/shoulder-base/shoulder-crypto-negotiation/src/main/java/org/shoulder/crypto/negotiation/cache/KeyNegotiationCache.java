@@ -12,8 +12,7 @@ import org.springframework.lang.Nullable;
 public interface KeyNegotiationCache {
 
     /**
-     * todo 请求发送前set，
-     * todo 不要直接使用
+     * todo 不要直接使用，尽管直接使用性能较好
      * 接收响应前getAndRemove
      */
     ThreadLocal<KeyExchangeResult> THREAD_LOCAL = new ThreadLocal<>();
