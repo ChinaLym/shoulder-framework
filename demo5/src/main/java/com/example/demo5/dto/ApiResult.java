@@ -3,7 +3,7 @@ package com.example.demo5.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.shoulder.crypto.negotiation.annotation.ResponseSecret;
+import org.shoulder.crypto.negotiation.annotation.Sensitive;
 
 /**
  * 测试加解密的返回值
@@ -17,6 +17,6 @@ public class ApiResult {
 
     String text;
 
-    @ResponseSecret
+    @Sensitive
     String cipher;
 }

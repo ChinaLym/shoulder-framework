@@ -19,7 +19,11 @@ public class HttpLogDemoController {
 
     private static final String TIP = "去控制台查看日志吧.";
 
-
+    /**
+     * 使用 http
+     *
+     * @see SkipSslVerificationHttpRequestFactory https 需要认证管理器或跳过验证
+     */
     private static final String DEMO_URL = "http://github.com/chinaLym";
 
     @Autowired
@@ -41,8 +45,7 @@ public class HttpLogDemoController {
     @GetMapping("2")
     public String common(String param) {
         // 调用百度的看看响应时间颜色会不会变
-        String response = restTemplate.getForObject("http://www.baidu.com/" + "?wd=" + param, String.class);
-        return TIP;
+        return restTemplate.getForObject("http://www.baidu.com/" + "?wd=" + param, String.class);
     }
 
     /**
