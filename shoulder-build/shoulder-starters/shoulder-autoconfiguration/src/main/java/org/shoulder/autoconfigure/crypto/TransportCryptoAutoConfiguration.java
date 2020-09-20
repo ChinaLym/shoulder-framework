@@ -12,6 +12,7 @@ import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.LocalKeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.RedisKeyNegotiationCache;
 import org.shoulder.crypto.negotiation.endpoint.NegotiationEndPoint;
+import org.shoulder.crypto.negotiation.interceptor.SecurityRestControllerAutoCryptoResponseAdvice;
 import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.service.impl.TransportNegotiationServiceImpl;
 import org.shoulder.crypto.negotiation.util.TransportCryptoByteUtil;
@@ -24,6 +25,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.RestTemplate;
@@ -89,6 +91,14 @@ public class TransportCryptoAutoConfiguration {
     @ConditionalOnProperty(value = "shoulder.crypto.negotiation.default-endpoint.enable", matchIfMissing = true)
     public NegotiationEndPoint negotiationEndPoint(TransportNegotiationService negotiationService) {
         return new NegotiationEndPoint(negotiationService);
+    }
+
+    @Bean
+    @Order(value = 20)
+    @ConditionalOnClass(SecurityRestControllerAutoCryptoResponseAdvice.class)
+    public SecurityRestControllerAutoCryptoResponseAdvice securityRestControllerAutoCryptoResponseAdvice(KeyNegotiationCache keyNegotiationCache,
+                                                                                                         TransportCryptoUtil cryptoUtil) {
+        return new SecurityRestControllerAutoCryptoResponseAdvice(keyNegotiationCache, cryptoUtil);
     }
 
 }

@@ -1,11 +1,15 @@
 package org.shoulder.crypto.negotiation.interceptor;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
-import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
+import org.shoulder.crypto.negotiation.cache.SensitiveFieldCache;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
 import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.cache.dto.SensitiveFieldWrapper;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 import org.shoulder.crypto.negotiation.http.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
@@ -20,6 +24,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * RestTemplate拦截器。
@@ -78,9 +83,19 @@ public class SecurityResponseDecrypterClientInterceptor implements ClientHttpReq
             }
             byte[] realDataKey = TransportCryptoUtil.decryptDk(keyExchangeInfo, xDk);
 
-            // 3. 放置于线程变量中供后续解密使用
             TransportCipher responseDecryptCipher = TransportCipher.buildDecryptCipher(keyExchangeInfo, realDataKey);
-            TransportCipherHolder.setResponseCipher(responseDecryptCipher);
+
+            Object result = JsonUtils.toObject(new String(body), BaseResponse.class);
+            // 专门处理 BaseResponse 以及其子类
+            if (result instanceof BaseResponse) {
+                result = ((BaseResponse) result).getData();
+            }
+            Class<?> resultClazz = result.getClass();
+            List<SensitiveFieldWrapper> securityResultField = SensitiveFieldCache.findSensitiveResponseFieldInfo(resultClazz);
+            if (!CollectionUtils.isEmpty(securityResultField)) {
+                // 解密
+                SensitiveFieldCache.handleSensitiveData(result, securityResultField, responseDecryptCipher);
+            }
 
         } catch (AsymmetricCryptoException e) {
             log.warn("token validate fail!", e);

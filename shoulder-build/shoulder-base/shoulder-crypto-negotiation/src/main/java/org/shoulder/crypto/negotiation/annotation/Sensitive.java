@@ -32,11 +32,11 @@ public @interface Sensitive {
     /**
      * 请求时加密
      */
-    boolean encryptOnRequest() default true;
+    boolean sensitiveRequest() default true;
 
     /**
      * 响应时加密
      */
-    boolean decryptOnResponse() default true;
+    boolean sensitiveResponse() default true;
 
 }

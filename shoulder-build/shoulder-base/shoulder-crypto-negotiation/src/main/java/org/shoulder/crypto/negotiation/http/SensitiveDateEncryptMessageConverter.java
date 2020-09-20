@@ -1,17 +1,12 @@
 package org.shoulder.crypto.negotiation.http;
 
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReflectUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.shoulder.core.dto.response.BaseResponse;
-import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.crypto.negotiation.annotation.RequestSecret;
-import org.shoulder.crypto.negotiation.annotation.ResponseSecret;
+import org.shoulder.crypto.negotiation.cache.SensitiveFieldCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
-import org.springframework.http.HttpInputMessage;
+import org.shoulder.crypto.negotiation.cache.dto.SensitiveFieldWrapper;
 import org.springframework.http.HttpOutputMessage;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -20,13 +15,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * 秘密传输转换器（已经进行过密钥交换，{@link SecurityRestTemplate#httpEntityCallback}）
@@ -34,10 +24,6 @@ import java.util.concurrent.ConcurrentMap;
  * @author lym
  */
 public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMessageConverter {
-
-    private final ConcurrentMap<Class<?>, List<Field>> securityParamFieldCache = new ConcurrentHashMap<>();
-
-    private final ConcurrentMap<Class<?>, List<Field>> securityResponseFieldCache = new ConcurrentHashMap<>();
 
     public SensitiveDateEncryptMessageConverter() {
         super();
@@ -49,12 +35,6 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
 
     /**
      * 发送前，序列化前加密
-     *
-     * @param object
-     * @param type
-     * @param outputMessage
-     * @throws IOException
-     * @throws HttpMessageNotWritableException
      */
     @Override
     protected void writeInternal(@NonNull Object object, @Nullable Type type, HttpOutputMessage outputMessage)
@@ -66,7 +46,7 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
             param = container.getValue();
         }
         Class<?> objectClass = object.getClass();
-        List<Field> securityParamField = getRequestFields(objectClass);
+        List<SensitiveFieldWrapper> securityParamField = SensitiveFieldCache.findSensitiveRequestFieldInfo(objectClass);
 
         if (!CollectionUtils.isEmpty(securityParamField)) {
             // 参数需要加密
@@ -87,37 +67,16 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
     }
 
 
-    private void encryptSensitiveData(Object object, List<Field> sensitiveFields) {
-        dellSensitiveData(object, sensitiveFields, true);
+    private void encryptSensitiveData(Object object, List<SensitiveFieldWrapper> sensitiveFields) {
+        SensitiveFieldCache.handleSensitiveData(object, sensitiveFields, TransportCipherHolder.getRequestCipher());
     }
 
-    private void decryptSensitiveData(Object object, List<Field> sensitiveFields) {
-        dellSensitiveData(object, sensitiveFields, false);
+    private void decryptSensitiveData(Object object, List<SensitiveFieldWrapper> sensitiveFields) {
+        SensitiveFieldCache.handleSensitiveData(object, sensitiveFields, TransportCipherHolder.getResponseCipher());
     }
 
-    /**
-     * 处理敏感字段
-     *
-     * @param object          obj
-     * @param sensitiveFields 所有需要处理的敏感字段信息
-     * @param encrypt         加密/解密
-     */
-    private void dellSensitiveData(Object object, List<Field> sensitiveFields, boolean encrypt) {
-        try {
-            for (Field filed : sensitiveFields) {
-                filed.setAccessible(true);
-                // 暂时只支持 String 类型
-                String origin = (String) filed.get(object);
-                String handled = encrypt ? TransportCipherHolder.getRequestCipher().encrypt(origin) :
-                    TransportCipherHolder.getResponseCipher().decrypt(origin);
-                filed.set(object, handled);
-            }
-        } catch (Exception e) {
-            throw new BaseRuntimeException((encrypt ? "encrypt" : "decrypt") + " fail!", e);
-        }
-    }
 
-    @NonNull
+    /*@NonNull
     @Override
     public Object read(@NonNull Type type, @Nullable Class<?> contextClass, HttpInputMessage inputMessage)
         throws IOException, HttpMessageNotReadableException {
@@ -128,79 +87,12 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
             result = ((BaseResponse) result).getData();
         }
         Class<?> resultClazz = result.getClass();
-        List<Field> securityResultField = getResponseFields(resultClazz);
+        List<SensitiveFieldWrapper> securityResultField = SensitiveFieldCache.findSensitiveResponseFieldInfo(resultClazz);
         if (!CollectionUtils.isEmpty(securityResultField)) {
             // 解密
             decryptSensitiveData(result, securityResultField);
         }
         return result;
-    }
-
-    private List<Field> getRequestFields(Class<?> aimClazz) {
-        return securityParamFieldCache.computeIfAbsent(aimClazz, clazz -> {
-            List<Field> requestSecretFields = new LinkedList<>();
-            List<Field> responseSecretFields = new LinkedList<>();
-            findSensitiveFields(aimClazz, requestSecretFields, responseSecretFields);
-            securityResponseFieldCache.putIfAbsent(clazz, CollectionUtils.isEmpty(responseSecretFields) ?
-                Collections.emptyList() : responseSecretFields);
-            return requestSecretFields;
-        });
-    }
-
-    private List<Field> getResponseFields(Class<?> aimClazz) {
-        return securityResponseFieldCache.computeIfAbsent(aimClazz, clazz -> {
-            List<Field> requestSecretFields = new LinkedList<>();
-            List<Field> responseSecretFields = new LinkedList<>();
-            findSensitiveFields(aimClazz, requestSecretFields, responseSecretFields);
-            securityParamFieldCache.putIfAbsent(clazz, CollectionUtils.isEmpty(requestSecretFields) ?
-                Collections.emptyList() : requestSecretFields);
-            return responseSecretFields;
-        });
-    }
-
-    private void findSensitiveFields(Class<?> aimClazz, List<Field> requestSecretFields, List<Field> responseSecretFields) {
-        // 反射找该类的所有敏感字段，包括父类，注意 getFields getDeclaredFields 都不行，需要递归父类
-
-        // 如果是复杂变量还需要递归，加类注解减少递归复杂度
-        Field[] fields = ReflectUtil.getFieldsDirectly(aimClazz, true);
-        // 寻找敏感字段
-        for (Field field : fields) {
-            RequestSecret requestSecret = field.getAnnotation(RequestSecret.class);
-            ResponseSecret responseSecret = field.getAnnotation(ResponseSecret.class);
-            Class<?> fieldClass;
-            if (String.class.isAssignableFrom(fieldClass = field.getDeclaringClass())) {
-                if (requestSecret != null) {
-                    requestSecretFields.add(field);
-                }
-                if (responseSecret != null) {
-                    responseSecretFields.add(field);
-                }
-            }
-            // 说明这个字段应该是复杂类型，否则报错/警告，用法错误
-            // todo 处理复杂类型：递归这个类
-
-        }
-    }
-
-    /**
-     * java反射bean的get/set方法
-     *
-     * @param objectClass objectClass
-     * @param fieldName   fieldName
-     * @param get         get/set
-     * @return Method
-     */
-   /* public static Method findGetSetMethod(Class<?> objectClass, Field field, boolean get) {
-        // 某些特殊的 非驼峰命名字段可能有问题？
-        String fieldName = field.getName();
-        String methodName = (get ? "get" : "set" ) +
-            fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-        try {
-            return objectClass.getMethod(methodName, field.getType());
-        } catch (Exception e) {
-            throw new RuntimeException("can't find " + fieldName + "'s get/set method(" + methodName + ") for " +
-                objectClass.getName(), e);
-        }
     }*/
 
 

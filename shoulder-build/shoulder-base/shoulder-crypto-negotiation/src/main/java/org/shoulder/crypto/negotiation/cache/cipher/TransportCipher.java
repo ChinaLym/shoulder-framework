@@ -68,6 +68,12 @@ public class TransportCipher {
         return TransportCryptoUtil.decrypt(keyExchangeResult, dk, cipherText);
     }
 
+    /**
+     * 加密或解密，根据实现类具体职责决定
+     */
+    public String doCipher(String input) throws AesCryptoException {
+        throw new UnsupportedOperationException("not support!");
+    }
 
     // ---------------------------------------------------------------------------------------------
 
@@ -85,6 +91,13 @@ public class TransportCipher {
             throw new UnsupportedOperationException("Can't decrypt with a encryptCipher!");
         }
 
+        /**
+         * 加密
+         */
+        @Override
+        public String doCipher(String input) throws AesCryptoException {
+            return super.encrypt(input);
+        }
     }
 
 
@@ -102,6 +115,13 @@ public class TransportCipher {
             throw new UnsupportedOperationException("Can't encrypt with a decryptCipher!");
         }
 
+        /**
+         * 加密
+         */
+        @Override
+        public String doCipher(String input) throws AesCryptoException {
+            return super.decrypt(input);
+        }
     }
 
 

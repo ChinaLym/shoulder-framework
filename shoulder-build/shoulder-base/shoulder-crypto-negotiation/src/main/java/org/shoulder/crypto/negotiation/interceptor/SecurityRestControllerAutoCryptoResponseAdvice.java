@@ -7,9 +7,10 @@ import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
-import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
+import org.shoulder.crypto.negotiation.cache.SensitiveFieldCache;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
 import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.cache.dto.SensitiveFieldWrapper;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.springframework.core.MethodParameter;
@@ -23,8 +24,11 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+
+import java.util.List;
 
 /**
  * 服务端敏感api响应自动加密，注意不要与统一拦截器顺序冲突
@@ -77,9 +81,18 @@ public class SecurityRestControllerAutoCryptoResponseAdvice implements ResponseB
                 return body;
             }
         }
+        List<SensitiveFieldWrapper> sensitiveFieldWrapperList =
+            SensitiveFieldCache.findSensitiveResponseFieldInfo(toEncryptDTO.getClass());
+        if (CollectionUtils.isEmpty(sensitiveFieldWrapperList)) {
+            return body;
+        }
 
         HttpHeaders requestHeaders = request.getHeaders();
         String xSessionId = requestHeaders.getFirst(KeyExchangeConstants.SECURITY_SESSION_ID);
+        if (xSessionId == null) {
+            // 非加密接口
+            return body;
+        }
 
         // 生成返回值加密的数据密钥，以加密要返回的敏感数据信息（请求和响应中使用的数据密钥不同）
         KeyExchangeResult cacheKeyExchangeResult = keyNegotiationCache.getAsServer(xSessionId);
@@ -94,12 +107,12 @@ public class SecurityRestControllerAutoCryptoResponseAdvice implements ResponseB
             byte[] responseDk = TransportCryptoUtil.generateDataKey(cacheKeyExchangeResult.getKeyLength());
             // 缓存响应加密处理器
             TransportCipher responseEncryptCipher = TransportCipher.buildEncryptCipher(cacheKeyExchangeResult, responseDk);
-            TransportCipherHolder.setResponseCipher(responseEncryptCipher);
             String responseX_Dk = TransportCryptoUtil.encryptDk(cacheKeyExchangeResult, responseDk);
             log.debug("security response. xDk is " + responseX_Dk);
-            // todo
+            //  加密 toEncryptDTO
+            SensitiveFieldCache.handleSensitiveData(toEncryptDTO, sensitiveFieldWrapperList, responseEncryptCipher);
 
-            HttpHeaders responseHeaders = request.getHeaders();
+            HttpHeaders responseHeaders = response.getHeaders();
             responseHeaders.add("Token", transportCryptoUtil.generateToken(xSessionId, responseX_Dk));
             responseHeaders.add("xSessionId", cacheKeyExchangeResult.getxSessionId());
             responseHeaders.add("xDk", responseX_Dk);
@@ -113,7 +126,6 @@ public class SecurityRestControllerAutoCryptoResponseAdvice implements ResponseB
             // 清理线程变量
             KeyNegotiationCache.THREAD_LOCAL.remove();
         }
-        // 加密 toEncryptDTO
         return body;
     }
 

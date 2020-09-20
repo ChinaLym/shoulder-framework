@@ -10,12 +10,9 @@ import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.RequestCallback;
@@ -26,9 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * 安全的 restTemplate，用于安全传输带私密字段的请求
@@ -39,7 +34,7 @@ import java.util.List;
  * @author lym
  */
 @Slf4j
-public class SecurityRestTemplate extends RestTemplate implements InitializingBean {
+public class SecurityRestTemplate extends RestTemplate {
 
     private final TransportNegotiationService transportNegotiationService;
 
@@ -48,7 +43,6 @@ public class SecurityRestTemplate extends RestTemplate implements InitializingBe
     private static final ThreadLocal<URI> URI_LOCAL = new ThreadLocal<>();
 
     public SecurityRestTemplate(TransportNegotiationService transportNegotiationService, TransportCryptoUtil cryptoUtil) {
-        super(new SimpleClientHttpRequestFactory());
         this.transportNegotiationService = transportNegotiationService;
         this.cryptoUtil = cryptoUtil;
     }
@@ -82,25 +76,6 @@ public class SecurityRestTemplate extends RestTemplate implements InitializingBe
     public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody, @NonNull Type responseType) {
         return new AddSecurityHeadersRequestCallback(super.httpEntityCallback(requestBody, responseType),
             transportNegotiationService, cryptoUtil);
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        List<HttpMessageConverter<?>> converterList = super.getMessageConverters();
-        boolean containsSecurityConverter = false;
-        for (HttpMessageConverter<?> httpMessageConverter : converterList) {
-            if (httpMessageConverter instanceof SensitiveDateEncryptMessageConverter) {
-                containsSecurityConverter = true;
-                break;
-            }
-        }
-        if (!containsSecurityConverter) {
-            List<HttpMessageConverter<?>> newConverters = new ArrayList<>(converterList.size() + 1);
-            newConverters.add(new SensitiveDateEncryptMessageConverter());
-            newConverters.addAll(converterList);
-            super.setMessageConverters(newConverters);
-        }
-
     }
 
 
