@@ -20,14 +20,19 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 传输加解密相关实现。仅为 byte 提供服务
- * todo Exception 整理
  *
  * @author lym
  */
 public class TransportCryptoByteUtil {
+
+    /**
+     * 128/192/256
+     */
+    private static final int[] supportKeyLength = {16, 24, 32};
 
     private final AsymmetricCryptoProcessor eccProcessor;
 
@@ -142,13 +147,12 @@ public class TransportCryptoByteUtil {
         byte[] selfPublicKey = eccProcessor.getPublicKey(xSessionId).getEncoded();
         byte[] otherPublicKey = ByteSpecification.decodeToBytes(keyExchangeRequest.getPublicKey());
 
-        final int keyLength = 32;
-        List<byte[]> keyAndIv = ECDHUtils.negotiationToKeyAndIv(selfPrivateKey, otherPublicKey, keyLength);
         KeyExchangeResponse response = new KeyExchangeResponse();
 
-        //todo keyLength暂时写死，若变更则 keyLength 也需要变
-        response.setAes("256");
-        response.setKeyLength(32);
+        final int keyBitLength = randomKeyLength();
+        response.setAes(String.valueOf(keyBitLength));
+        // 需要除 8
+        response.setKeyLength(keyBitLength >> 3);
         response.setExpireTime(KeyExchangeConstants.EXPIRE_TIME);
         response.setPublicKey(ByteSpecification.encodeToString(selfPublicKey));
 
@@ -255,4 +259,8 @@ public class TransportCryptoByteUtil {
         return eccProcessor.verify(xSessionId, toSin, signature);
     }
 
+    private static int randomKeyLength() {
+        return (ThreadLocalRandom.current().nextInt(256) & 1) == 0 ? 128 :
+            (ThreadLocalRandom.current().nextInt(256) & 1) == 0 ? 192 : 256;
+    }
 }
