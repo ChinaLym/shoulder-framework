@@ -21,6 +21,12 @@
             <artifactId>shoulder-core</artifactId>
         </dependency>
 
+        <!-- 获取方法行号使用 -->
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

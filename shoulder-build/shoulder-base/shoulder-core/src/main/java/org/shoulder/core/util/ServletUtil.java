@@ -10,6 +10,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /**
  * 请求相关工具类，需要在
@@ -78,6 +79,37 @@ public class ServletUtil {
             throw new IllegalStateException("Not a servlet context!");
         }
         return sa;
+    }
+
+    public static Map<String, String> getRequestHeaders() {
+        return getRequestHeaders(getRequest(), false);
+    }
+
+    public static Map<String, String> getRequestHeaders(HttpServletRequest request, boolean sortByKey) {
+        Map<String, String> headers = sortByKey ? new TreeMap<>() : new HashMap<>();
+        Enumeration<String> headerNames = request.getHeaderNames();
+        // header 按照字母排序，方便查看
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            headers.put(headerName, headerValue);
+        }
+        return headers;
+    }
+
+    public static Map<String, String> getResponseHeaders() {
+        return getResponseHeaders(getResponse(), false);
+    }
+
+    public static Map<String, String> getResponseHeaders(HttpServletResponse response, boolean sortByKey) {
+        Collection<String> headerNames = response.getHeaderNames();
+        Map<String, String> headers = sortByKey ? new TreeMap<>() : new HashMap<>(headerNames.size());
+        // header 按照字母排序，方便查看
+        for (String headerName : headerNames) {
+            String headerValue = response.getHeader(headerName);
+            headers.put(headerName, headerValue);
+        }
+        return headers;
     }
 
     /**

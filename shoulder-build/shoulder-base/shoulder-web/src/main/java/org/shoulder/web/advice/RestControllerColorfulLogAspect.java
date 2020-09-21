@@ -1,9 +1,5 @@
 package org.shoulder.web.advice;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,16 +9,17 @@ import org.shoulder.core.util.ColorString;
 import org.shoulder.core.util.ColorStringBuilder;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
+import org.shoulder.http.util.HttpLogHelper;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Enumeration;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * 彩色形式记录接口出入参数
@@ -81,16 +78,16 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
             return;
         }
 
-        String codeLocation = genCodeLocationLink(method);
+        String codeLocation = HttpLogHelper.genCodeLocationLink(method);
         codeLocationLocal.set(codeLocation);
         // 记录请求方法、路径，Controller 信息与代码位置
         HttpServletRequest request = ServletUtil.getRequest();
         ColorStringBuilder requestInfo = new ColorStringBuilder()
             .newLine()
-            .cyan("========================================== ")
+            .cyan("//========================================== ")
             .yellow("Shoulder API Report", ColorString.Style.BOLD, true)
             .cyan(" (" + SELF_CLASS_NAME + ")")
-            .cyan(" ==========================================")
+            .cyan(" ==========================================\\\\")
             .newLine();
 
         // 请求地址
@@ -119,15 +116,7 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         requestInfo
             .green("Headers   :", ColorString.Style.BOLD);
 
-        Map<String, String> headers = new TreeMap<>();
-        Enumeration<String> headerNames = request.getHeaderNames();
-        // header 按照字母排序，方便查看
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            String headerValue = request.getHeader(headerName);
-            headers.put(headerName, headerValue);
-        }
-
+        Map<String, String> headers = ServletUtil.getRequestHeaders();
         headers.forEach((headerName, headerValue) -> requestInfo
             .newLine().tab()
             .lGreen(headerName)
@@ -135,12 +124,12 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
             .blue(": ")
             .cyan(headerValue));
 
-
         // 记录 Controller 入参
         if (parameters.length > 0) {
             requestInfo.newLine()
                 .green("Params    :", ColorString.Style.BOLD);
         }
+
         for (int i = 0; i < parameters.length; i++) {
             Class<?> argType = parameters[i].getType();
             String argName = parameterNames[i];
@@ -167,51 +156,68 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
 
     @Override
     public void after(ProceedingJoinPoint jp, Logger log, Object returnObject) {
-        String codeLocation = codeLocationLocal.get();
-        // 是否处理 ModelAndView
         long cost = System.currentTimeMillis() - requestTimeLocal.get();
-        String returnStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
-        // todo 彩色打印
-        ColorStringBuilder requestInfo = new ColorStringBuilder();
-        log.debug(NEW_LINE_SEPARATOR + "{} [cost {}ms], Result: {}", codeLocation, cost, returnStr);
+        HttpServletResponse response = ServletUtil.getResponse();
+        ColorStringBuilder responseInfo = new ColorStringBuilder().newLine();
+        responseInfo
+            .magenta("Controller : ", ColorString.Style.BOLD)
+            .append(codeLocationLocal.get())
+            .newLine();
+
+        responseInfo
+            .magenta("Cost:      : ", ColorString.Style.BOLD)
+            .append(HttpLogHelper.cost(cost))
+            .newLine();
+
+        String statusStr = String.valueOf(response.getStatus());
+        responseInfo
+            .magenta("Status     : ", ColorString.Style.BOLD)
+            .color(statusStr, HttpLogHelper.httpStatusColor(statusStr))
+            .newLine();
+
+        responseInfo
+            .magenta("Headers    : ", ColorString.Style.BOLD);
+
+        ServletUtil.getResponseHeaders()
+            .forEach((headerName, headerValue) -> responseInfo
+                .newLine().tab()
+                .lMagenta(headerName)
+                .tab()
+                .green(": ")
+                .cyan(headerValue));
+
+        responseInfo.newLine();
+
+        if (returnObject instanceof ModelAndView) {
+            // 打印 model
+            ModelAndView modelAndView = (ModelAndView) returnObject;
+            Map<String, Object> model = modelAndView.getModel();
+            responseInfo
+                .magenta("Model      : ", ColorString.Style.BOLD);
+
+            model.forEach((k, v) -> responseInfo
+                .newLine().tab()
+                .lMagenta(k)
+                .tab()
+                .green(": ")
+                .cyan(v instanceof CharSequence ? String.valueOf(v) : JsonUtils.toJson(v)));
+        } else {
+            // 打印返回值
+            String responseStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
+            responseInfo
+                .magenta("Result     : ", ColorString.Style.BOLD)
+                .append(responseStr);
+        }
+
+        responseInfo.newLine()
+            .cyan("\\\\========================== ")
+            .lBlue(codeLocationLocal.get())
+            .cyan(" ==========================//");
+
+        log.debug(responseInfo.toString());
         cleanLocal();
     }
 
-    /**
-     * IDE 控制台日志跳转代码原理：https://www.jetbrains.com/help/idea/setting-log-options.html
-     * 输出这种格式则可以识别 <fully-qualified-class-name>.<method-name>(<file-name>:<line-number>)
-     * 但测试发现 IDEA 只要 .(xxx.java:行号) 格式即可
-     *
-     * @param method 方法
-     * @return IDE 支持的跳转格式
-     */
-    private String genCodeLocationLink(Method method) {
-        Class<?> clazz = method.getDeclaringClass();
-
-        int lineNum;
-        try {
-            CtClass ctClass = ClassPool.getDefault().get(clazz.getName());
-            CtMethod ctMethod = ctClass.getDeclaredMethod(method.getName());
-            lineNum = ctMethod.getMethodInfo().getLineNumber(0);
-        } catch (NotFoundException e) {
-            // 未找到，无法跳到具体行数，使用第一行，以便于跳到目标类
-            lineNum = 1;
-        }
-        return clazz.getSimpleName() + "." + method.getName() +
-            "(" + getClassFileName(clazz) + ".java:" + lineNum + ")";
-
-    }
-
-    private static String getClassFileName(Class clazz) {
-        String classFileName = clazz.getName();
-        final String split = "$";
-        if (classFileName.contains(split)) {
-            int indexOf = classFileName.contains(".") ? classFileName.lastIndexOf(".") + 1 : 0;
-            return classFileName.substring(indexOf, classFileName.indexOf("$"));
-        } else {
-            return clazz.getSimpleName();
-        }
-    }
 
     /**
      * 清理线程变量

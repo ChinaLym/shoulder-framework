@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  * 只拦截握手完毕后的加密接口，即只拦截header中带 xSessionId 和 xDk 的请求。
  * order: 安全过滤/拦截器常设置为最早生效，如监控、日志拦截器之后，其他拦截器之前，具体顺序由具体场景决定
  *
- * @see SensitiveRequestDecryptAdvance 实际解密在这里完成
  * @author lym
+ * @see SensitiveRequestDecryptAdvance 实际解密在这里完成
  */
 public class SensitiveRequestDecryptHandlerInterceptor extends HandlerInterceptorAdapter {
 
@@ -53,7 +53,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
         }
         HandlerMethod hMethod = (HandlerMethod) handler;
         Sensitive sensitiveAnnotation = hMethod.getMethod().getAnnotation(Sensitive.class);
-        if(sensitiveAnnotation == null){
+        if (sensitiveAnnotation == null) {
             // 只拦截带 @Sensitive 的接口
             return true;
         }
@@ -61,7 +61,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
         String xSessionId = request.getHeader(KeyExchangeConstants.SECURITY_SESSION_ID);
         String xDk = request.getHeader(KeyExchangeConstants.SECURITY_DATA_KEY);
         String token = request.getHeader(KeyExchangeConstants.TOKEN);
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             // 记录请求中这几个重要地参数，便于排查问题
             log.debug("xSessionId: {}, xDk: {}, token: {}.", xSessionId, xDk, token);
         }

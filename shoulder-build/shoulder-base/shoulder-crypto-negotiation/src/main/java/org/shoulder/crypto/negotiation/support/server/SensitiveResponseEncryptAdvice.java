@@ -53,7 +53,7 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
 
         boolean jsonType = MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
         // 返回值不是 json对象或为 Spring 框架的返回值
-        if( !jsonType || ResponseEntity.class.isAssignableFrom(returnType.getParameterType())){
+        if (!jsonType || ResponseEntity.class.isAssignableFrom(returnType.getParameterType())) {
             return false;
         }
 

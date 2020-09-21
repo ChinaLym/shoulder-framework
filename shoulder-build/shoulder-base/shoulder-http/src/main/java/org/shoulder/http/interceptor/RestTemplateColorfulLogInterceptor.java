@@ -5,7 +5,7 @@ import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ColorString;
 import org.shoulder.core.util.ColorStringBuilder;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.core.util.PrintUtils;
+import org.shoulder.http.util.HttpLogHelper;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -46,13 +46,13 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
             .cyan(" (" + SELF_CLASS_NAME + ")")
             .cyan(" --------------------- ");
 
-        StackTraceElement stack = PrintUtils.findStackTraceElement(RestTemplate.class, "", true);
+        StackTraceElement stack = HttpLogHelper.findStackTraceElement(RestTemplate.class, "", true);
         // 肯定会有一个，否则不应该触发该方法 null
         if (stack == null) {
             throw new IllegalCallerException("Current StackTrack not contains any RestTemplate's method call!");
         }
         Logger logger = useCallerLogger ? LoggerFactory.getLogger(stack.getClassName()) : log;
-        String codeLocation = PrintUtils.findCodeLocation(stack);
+        String codeLocation = HttpLogHelper.genCodeLocationLinkFromStack(stack);
 
         builder
             .newLine(BOUNDARY_LEFT)
@@ -68,49 +68,41 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
 
         // cost
         long cost = record.getCostTime();
-        String costStr = String.valueOf(cost);
-        int color = cost < 200 ? ColorString.GREEN : cost < 1000 ? ColorString.YELLOW : ColorString.RED;
         builder
-            .append("(").color(costStr, color).color("ms", color).append(")");
+            .append("(").append(HttpLogHelper.cost(cost)).append(")");
 
         builder
             .newLine(BOUNDARY_LEFT)
             .lBlue("requestHeaders : ").append(JsonUtils.toJson(record.getRequestHeaders()))
             .newLine(BOUNDARY_LEFT)
-            .lBlue("requestBody    : ").append(JsonUtils.toJson(record.getRequestBody()));
+            .lBlue("requestBody    : ").append(record.getRequestBody());
 
         // ================ response ================
 
         // code
         int code = record.getStatusCode();
-        String codeStr = String.valueOf(code);
-        String codeDesc = record.getStatusText();
-        color =
-            // 成功
-            codeStr.startsWith("2") ? ColorString.GREEN :
-                // 服务器出错
-                codeStr.startsWith("5") ? ColorString.BLUE :
-                    // 客户端出错
-                    codeStr.startsWith("4") ? ColorString.RED : ColorString.YELLOW;
+        String httpStatus = String.valueOf(code);
+        String codeDescription = record.getStatusText();
+        int color = HttpLogHelper.httpStatusColor(httpStatus);
         String tip =
             // 成功
-            codeStr.startsWith("2") ? "√" :
+            httpStatus.startsWith("2") ? "√" :
                 // 服务器出错
-                codeStr.startsWith("5") ? "×" :
+                httpStatus.startsWith("5") ? "×" :
                     // 客户端出错
-                    codeStr.startsWith("4") ? "X" : "";
+                    httpStatus.startsWith("4") ? "X" : "";
         builder
             .newLine(BOUNDARY_LEFT)
             .color(tip, color)
             .append(" ")
-            .color(codeStr, color)
-            .append(" [").color(codeDesc, color).append("]");
+            .color(httpStatus, color)
+            .append(" [").color(codeDescription, color).append("]");
 
         builder
             .newLine(BOUNDARY_LEFT)
             .lBlue("responseHeaders: ").append(JsonUtils.toJson(record.getResponseHeaders()))
             .newLine(BOUNDARY_LEFT)
-            .lBlue("responseBody   : ").append(JsonUtils.toJson(record.getResponseBody()));
+            .lBlue("responseBody   : ").append(record.getResponseBody());
 
         builder.newLine()
             .cyan("+------------------------------------------------------------------");

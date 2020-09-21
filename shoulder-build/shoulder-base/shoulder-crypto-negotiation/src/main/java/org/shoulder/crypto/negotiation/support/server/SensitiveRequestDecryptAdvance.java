@@ -22,8 +22,8 @@ import java.util.List;
  * order 一般在最早生效，如监控、日志拦截器之后，其他拦截器之前，具体顺序由具体场景决定
  * RequestBodyAdvice仅对使用了@RqestBody注解的生效
  *
- * @see SensitiveRequestDecryptHandlerInterceptor 解密器在这里创建
  * @author lym
+ * @see SensitiveRequestDecryptHandlerInterceptor 解密器在这里创建
  */
 @RestControllerAdvice
 public class SensitiveRequestDecryptAdvance extends RequestBodyAdviceAdapter {

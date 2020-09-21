@@ -8,9 +8,9 @@ import org.springframework.web.client.ResponseExtractor;
  * <p>
  * 两种思路，按照加解密/请求响应分
  * - 具体分
- *  todo 注意清理线程变量
- *  todo 处理多重请求：A -> B -> C，使用 Stack ？
- *  - 对于服务端，responseCipher 可能会因为调用其他安全接口时覆盖
+ * todo 注意清理线程变量
+ * todo 处理多重请求：A -> B -> C，使用 Stack ？
+ * - 对于服务端，responseCipher 可能会因为调用其他安全接口时覆盖
  *
  * @author lym
  */

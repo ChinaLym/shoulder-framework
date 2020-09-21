@@ -24,6 +24,11 @@
             <artifactId>shoulder-validation</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-http</artifactId>
+        </dependency>
+
         <!--web项目相关依赖 start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,12 +39,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-
-        <!-- 获取方法行号使用 -->
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
         </dependency>
 
         <!-- spring boot 2.3+ 不在默认引入校验 -->

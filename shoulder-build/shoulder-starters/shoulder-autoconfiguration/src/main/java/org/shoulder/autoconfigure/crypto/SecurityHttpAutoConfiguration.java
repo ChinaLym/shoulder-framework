@@ -52,9 +52,9 @@ public class SecurityHttpAutoConfiguration {
                 newInterceptors.sort((interceptor1, interceptor2) -> {
                     boolean isOrdered1 = interceptor1 instanceof Ordered;
                     boolean isOrdered2 = interceptor2 instanceof Ordered;
-                    if(isOrdered1 && isOrdered2){
-                        return Integer.compare(((Ordered)interceptor1).getOrder(), ((Ordered)interceptor2).getOrder());
-                    }else {
+                    if (isOrdered1 && isOrdered2) {
+                        return Integer.compare(((Ordered) interceptor1).getOrder(), ((Ordered) interceptor2).getOrder());
+                    } else {
                         return isOrdered1 ? -1 : 1;
                     }
                 });
