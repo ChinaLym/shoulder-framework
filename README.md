@@ -25,11 +25,11 @@
     - 完整的客户端与服务端实现，只需要在 `Spring` 的基础上知道一个 `@Sensitive` 注解即可实现整套功能
 
 
-## 运行
+## 下载、部署、运行
 
 - `git clone https://gitee.com/ChinaLym/shoulder-framework-demo` 下载本项目
 - 进入对应的工程，如 `demo1` ，将工程导入 `IDEA`/`ECLIPSE` 将其在本地运行（默认8080端口）
-- 根据其中的 `READE.ME` 或代码注释进行测试
+- 根据其中的 `READE.ME` 或代码注释进行测试，跟着 demo 了解 shoulder 的能力
 
 ## 推荐的学习目标
 

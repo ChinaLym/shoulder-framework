@@ -15,8 +15,10 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 - log   打印日志
 - ex    处理异常与错误码
 - response  统一响应格式
-- convert   自动参数转
+- convert   枚举参数自动转换
 - i18n      多语言翻译
+- crypto    加密
+- delay     延迟任务
 
 ## 功能介绍
 
