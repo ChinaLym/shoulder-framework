@@ -5,6 +5,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -107,6 +108,18 @@ public final class SpringUtils {
 
     public static Resource getResource(String location) {
         return applicationContext.getResource(location);
+    }
+
+    public static Environment getEnvironment() {
+        return applicationContext.getEnvironment();
+    }
+
+    public static String getProperty(String propertyKey) {
+        return getEnvironment().getProperty(propertyKey);
+    }
+
+    public static String getProperty(String propertyKey, String defaultValue) {
+        return getEnvironment().getProperty(propertyKey, defaultValue);
     }
 
     /**

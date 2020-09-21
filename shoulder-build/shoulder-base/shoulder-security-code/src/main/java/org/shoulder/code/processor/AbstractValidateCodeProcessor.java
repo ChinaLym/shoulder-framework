@@ -47,7 +47,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCodeDTO> i
             try {
                 Objects.requireNonNull(request.getResponse()).sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, errorMsg);
             } catch (Exception e) {
-                throw new ValidateCodeException(errorMsg, e);
+                throw new IllegalStateException(errorMsg, e);
             }
         }
         // 生成校验码
@@ -69,6 +69,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCodeDTO> i
      *
      * @param request      本次请求和响应
      * @param validateCode 生成好的验证码
+     * @throws ValidateCodeException 验证码未能发送给客户端
      */
     public abstract void send(ServletWebRequest request, C validateCode) throws ValidateCodeException;
 

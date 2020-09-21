@@ -18,7 +18,7 @@ public interface ValidateCodeProcessor extends ValidateCodeType {
      * 创建验证码
      *
      * @param request 待创建请求
-     * @throws ValidateCodeException 生成验证码失败
+     * @throws ValidateCodeException 创建验证码失败
      */
     void create(ServletWebRequest request) throws ValidateCodeException;
 

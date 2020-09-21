@@ -12,6 +12,7 @@ import org.shoulder.security.authentication.browser.session.ConcurrentLogInExpir
 import org.shoulder.security.authentication.browser.session.DefaultInvalidSessionStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -55,30 +56,31 @@ public class BrowserSessionAuthBeanConfiguration {
     /**
      * 记住我功能的 token 存储类
      * 负责将token写入数据库并且查询出来的bean，用于记住我功能
-     * 需要存在 persistent_logins 表
+     * 需要存在 persistent_logins 表，建表语句：{@link JdbcTokenRepositoryImpl#CREATE_TABLE_SQL}
      */
     @Bean
     @ConditionalOnClass(JdbcTemplate.class)
     @ConditionalOnBean(DataSource.class)
     @ConditionalOnMissingBean
-    public PersistentTokenRepository persistentTokenRepository(DataSource dataSource, JdbcTemplate jdbcTemplate) {
-        // tokenRepository todo spring security 不支持修改表名 shoulder 未来支持表名修改
+    public PersistentTokenRepository persistentTokenRepository(DataSource dataSource, JdbcTemplate jdbcTemplate,
+                                                               @Value("${spring.datasource.driverClassName}:''") String driverType) {
+
+        // tokenRepository spring security 不支持修改表名 shoulder 未来支持表名修改
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSource);
 
-        // 启动的时候创建表 persistent_logins (MySQL 语法) fixme 数据库连接账号可能没有建表权限，因此推荐用户手动创建
-        String tableName = JdbcTokenRepositoryImpl.CREATE_TABLE_SQL.split(" ")[2];
-        String testTableExitsSql = "SELECT table_name FROM information_schema.TABLES WHERE table_name ='" + tableName + "';";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(testTableExitsSql);
-        boolean isTableExits = rowSet.next();
-        if (!isTableExits) {
-            // 只有不存在时才创建表
-            log.info("Table(" + tableName + ") not exists in your database. It will be created by spring security.");
-            tokenRepository.setCreateTableOnStartup(true);
-        } else {
-            log.info("Table(" + tableName + ") already exists in your database.");
+        if (driverType.startsWith("com.mysql.")) {
+            // 启动的时候创建表 persistent_logins (MySQL 语法) 注意：数据库连接账号可能没有建表权限，因此推荐用户手动创建
+            String tableName = JdbcTokenRepositoryImpl.CREATE_TABLE_SQL.split(" ")[2];
+            String testTableExitsSql = "SELECT table_name FROM information_schema.TABLES WHERE table_name ='" + tableName + "';";
+            SqlRowSet rowSet = jdbcTemplate.queryForRowSet(testTableExitsSql);
+            boolean isTableExits = rowSet.next();
+            if (!isTableExits) {
+                // 只有不存在时才创建表
+                log.info("Table(" + tableName + ") not exists in your database. It will be created by spring security.");
+                tokenRepository.setCreateTableOnStartup(true);
+            }
         }
-
         return tokenRepository;
     }
 

@@ -37,8 +37,8 @@ public class ValidateCodeProcessorHolder implements InitializingBean {
     public ValidateCodeProcessor getProcessor(String type) throws NoSuchValidateCodeProcessorException {
         ValidateCodeProcessor processor = processorMap.get(type);
         if (processor == null) {
-            // "ValidateCodeProcessor(type) not exist." 避免 NPE
-            throw new NoSuchValidateCodeProcessorException("not support such validateCode(" + type + ")");
+            // 预检，避免 NPE
+            throw new NoSuchValidateCodeProcessorException("not support such ValidateCodeProcessor(" + type + ")");
         }
         return processor;
     }

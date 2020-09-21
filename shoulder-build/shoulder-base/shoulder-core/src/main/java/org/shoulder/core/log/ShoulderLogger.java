@@ -27,7 +27,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     /**
      * 已经格式化的调用链信息
-     * todo 使用 spring cloud sleuth 中定义的？还是在shoulder中定义？ B3Propagation
+     * 使用 spring cloud sleuth 中定义的 B3Propagation
      */
     private static final String MDC_TRACE_NAME = "S-TRACE";
 

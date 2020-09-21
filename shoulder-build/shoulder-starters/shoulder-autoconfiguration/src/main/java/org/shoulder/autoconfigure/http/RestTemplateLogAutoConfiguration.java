@@ -26,7 +26,7 @@ public class RestTemplateLogAutoConfiguration {
      */
     @Bean
     @Order(value = BaseRestTemplateLogInterceptor.DEFAULT_ORDER)
-    @ConditionalOnProperty(name = "shoulder.http.logRequest", havingValue = "colorful", matchIfMissing = true)
+    @ConditionalOnProperty(name = "shoulder.http.log.type", havingValue = "colorful", matchIfMissing = true)
     public ClientHttpRequestInterceptor restTemplateColorfulLogInterceptor(
         @Value("${shoulder.http.log.logTillResponse:true}") boolean logTillResponse,
         @Value("${shoulder.http.log.useCallerLogger:true}") boolean useCallerLogger
@@ -40,7 +40,7 @@ public class RestTemplateLogAutoConfiguration {
     @Bean
     @Order(value = BaseRestTemplateLogInterceptor.DEFAULT_ORDER)
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(name = "shoulder.http.logRequest", havingValue = "json")
+    @ConditionalOnProperty(name = "shoulder.http.log.type", havingValue = "json")
     public ClientHttpRequestInterceptor restTemplateJsonLogInterceptor(
         @Value("${shoulder.http.log.logTillResponse:true}") boolean logTillResponse
     ) {

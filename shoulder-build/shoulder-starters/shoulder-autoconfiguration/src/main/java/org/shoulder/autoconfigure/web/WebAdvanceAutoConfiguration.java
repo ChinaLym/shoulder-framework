@@ -5,6 +5,7 @@ import org.shoulder.web.advice.RestControllerExceptionAdvice;
 import org.shoulder.web.advice.RestControllerJsonLogAspect;
 import org.shoulder.web.advice.RestControllerUnionResponseAdvice;
 import org.shoulder.web.annotation.SkipResponseWrap;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -51,10 +52,11 @@ public class WebAdvanceAutoConfiguration {
      */
     @Bean
     @Order(value = 0)
-    @ConditionalOnProperty(name = "shoulder.web.logRequest", havingValue = "colorful", matchIfMissing = true)
-    public RestControllerColorfulLogAspect restControllerColorfulLogAspect() {
-        // todo 改为可配置
-        return new RestControllerColorfulLogAspect(true, true);
+    @ConditionalOnProperty(name = "shoulder.web.log.type", havingValue = "colorful", matchIfMissing = true)
+    public RestControllerColorfulLogAspect restControllerColorfulLogAspect(
+        @Value("${shoulder.web.log.logTillResponse:true}") boolean logTillResponse,
+        @Value("${shoulder.web.log.useCallerLogger:true}") boolean useCallerLogger) {
+        return new RestControllerColorfulLogAspect(useCallerLogger, logTillResponse);
     }
 
     /**
@@ -63,10 +65,11 @@ public class WebAdvanceAutoConfiguration {
      */
     @Bean
     @Order(value = 0)
-    @ConditionalOnProperty(name = "shoulder.web.logRequest", havingValue = "json")
-    // todo 改为可配置
-    public RestControllerJsonLogAspect restControllerJsonLogAspect() {
-        return new RestControllerJsonLogAspect(true);
+    @ConditionalOnProperty(name = "shoulder.web.log.type", havingValue = "json")
+    public RestControllerJsonLogAspect restControllerJsonLogAspect(
+        @Value("${shoulder.web.log.useCallerLogger:true}") boolean useCallerLogger
+    ) {
+        return new RestControllerJsonLogAspect(useCallerLogger);
     }
 
 }

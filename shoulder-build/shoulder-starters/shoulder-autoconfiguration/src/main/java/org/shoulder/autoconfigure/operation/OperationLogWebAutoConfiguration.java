@@ -47,6 +47,6 @@ public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
     @Bean
     @ConditionalOnMissingBean
     public OperationLogOperatorInfoInterceptor operationLogSsoOperatorInfoInterceptor() {
-        return new OperationLogSsoOperatorInfoInterceptor();
+        return new CurrentContextOperatorInfoInterceptor();
     }
 }
