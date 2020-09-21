@@ -1,10 +1,10 @@
-package org.shoulder.crypto.negotiation.cache;
+package org.shoulder.crypto.negotiation.util;
 
 import cn.hutool.core.util.ReflectUtil;
 import org.shoulder.core.exception.BaseRuntimeException;
-import org.shoulder.crypto.negotiation.annotation.Sensitive;
+import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
-import org.shoulder.crypto.negotiation.cache.dto.SensitiveFieldWrapper;
+import org.shoulder.crypto.negotiation.dto.SensitiveFieldWrapper;
 import org.springframework.lang.NonNull;
 
 import java.lang.reflect.Field;
@@ -50,7 +50,7 @@ public class SensitiveFieldCache {
             if (requestSecret == null) {
                 if (field.getClass().isAssignableFrom(Object.class)) {
                     // todo 处理特殊类：BaseResponse 这种带泛型的
-                    System.out.println("");//to debug
+                    System.out.println("");
                 }
                 continue;
             }

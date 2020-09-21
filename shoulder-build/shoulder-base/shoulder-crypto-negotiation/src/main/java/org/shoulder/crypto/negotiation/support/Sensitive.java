@@ -1,4 +1,4 @@
-package org.shoulder.crypto.negotiation.annotation;
+package org.shoulder.crypto.negotiation.support;
 
 import java.lang.annotation.*;
 

@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.cache;
 
-import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 

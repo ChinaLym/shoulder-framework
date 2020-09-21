@@ -4,7 +4,7 @@ import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
 import org.springframework.web.client.ResponseExtractor;
 
 /**
- * 保存线程变量 —— 传输加解密处理器
+ * 保存线程变量 —— 传输加解密处理器。这种缓存只是单纯的在不同的拦截器中使用，存在时间非常短暂
  * <p>
  * 两种思路，按照加解密/请求响应分
  * - 具体分
@@ -21,16 +21,6 @@ public class TransportCipherHolder {
      */
     private static ThreadLocal<TransportCipher> request = new ThreadLocal<>();
 
-    /**
-     * 接收响应 和 响应对方时，用这个
-     *
-     * @see ResponseExtractor
-     */
-    private static ThreadLocal<TransportCipher> response = new ThreadLocal<>();
-
-    public static TransportCipher getRequestCipher() {
-        return request.get();
-    }
 
     /**
      * 用于解密收到的请求 or 加密发送请求
@@ -39,8 +29,23 @@ public class TransportCipherHolder {
         request.set(transportCipher);
     }
 
-    public static TransportCipher getResponseCipher() {
-        return response.get();
+    /**
+     * 接收响应 和 响应对方时，用这个
+     *
+     * @see ResponseExtractor
+     */
+    private static ThreadLocal<TransportCipher> response = new ThreadLocal<>();
+
+    public static TransportCipher removeRequestCipher() {
+        TransportCipher cipher = request.get();
+        request.remove();
+        return cipher;
+    }
+
+    public static TransportCipher removeResponseCipher() {
+        TransportCipher cipher = response.get();
+        response.remove();
+        return cipher;
     }
 
     /**
@@ -49,76 +54,5 @@ public class TransportCipherHolder {
     public static void setResponseCipher(TransportCipher transportCipher) {
         response.set(transportCipher);
     }
-
-    /**
-     * 用于请求发起端 加密
-     */
-    public static void setRequestEncryptCipher(TransportCipher transportCipher) {
-        setRequestCipher(transportCipher);
-    }
-
-    /**
-     * 用于服务提供端 解密
-     */
-    public static void setRequestDecryptCipher(TransportCipher transportCipher) {
-        setRequestCipher(transportCipher);
-    }
-
-    /**
-     * todo 请求完成后应该清理
-     */
-    public static void cleanRequestDecryptHandler() {
-        request.remove();
-    }
-
-    public static void cleanResponseCryptHandler() {
-        response.remove();
-    }
-
-    /**
-     * 请求状态，用于合成两个注解
-     *//*
-
-    private static ThreadLocal<Boolean> status = ThreadLocal.withInitial(() -> null);
-
-    public static void cleanStatus() {
-        status.remove();
-    }
-
-    */
-/**
- * 标记为正在进行请求
- *//*
-
-    public static void setRequestStatus() {
-        status.set(true);
-    }
-
-    */
-/**
- * 标记为正在进行处理响应
- *//*
-
-    public static void setResponseStatus() {
-        status.set(false);
-    }
-    */
-/**
- * 现在是否处于请求阶段
- *//*
-
-    public static boolean isRequesting() {
-        return status.get() == null ? false : status.get();
-    }
-    */
-/**
- * 现在是否处于响应阶段
- *//*
-
-    public static boolean isResponsed() {
-        return status.get() != null && !status.get();
-    }
-*/
-
 
 }

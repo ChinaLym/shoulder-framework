@@ -1,4 +1,4 @@
-package org.shoulder.crypto.negotiation.http;
+package org.shoulder.crypto.negotiation.support;
 
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.crypto.aes.exception.AesCryptoException;
@@ -6,9 +6,9 @@ import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
-import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
-import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
+import org.shoulder.crypto.negotiation.support.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -67,27 +67,32 @@ public class SecurityRestTemplate extends RestTemplate {
     @NonNull
     @Override
     public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody) {
-        return new AddSecurityHeadersRequestCallback(super.httpEntityCallback(requestBody),
+        return new EnsureNegotiatedRequestCallback(super.httpEntityCallback(requestBody),
             transportNegotiationService, cryptoUtil);
     }
 
     @NonNull
     @Override
     public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody, @NonNull Type responseType) {
-        return new AddSecurityHeadersRequestCallback(super.httpEntityCallback(requestBody, responseType),
+        return new EnsureNegotiatedRequestCallback(super.httpEntityCallback(requestBody, responseType),
             transportNegotiationService, cryptoUtil);
     }
 
 
-    private static class AddSecurityHeadersRequestCallback implements RequestCallback {
+    /**
+     * 确保完成已经完成秘钥协商，并在请求头中添加秘钥协商所需参数
+     *
+     * @author lym
+     */
+    private static class EnsureNegotiatedRequestCallback implements RequestCallback {
         private RequestCallback delegate;
 
         private final TransportNegotiationService transportNegotiationService;
 
         private final TransportCryptoUtil cryptoUtil;
 
-        public AddSecurityHeadersRequestCallback(RequestCallback delegate, TransportNegotiationService transportNegotiationService,
-                                                 TransportCryptoUtil cryptoUtil) {
+        public EnsureNegotiatedRequestCallback(RequestCallback delegate, TransportNegotiationService transportNegotiationService,
+                                               TransportCryptoUtil cryptoUtil) {
             this.delegate = delegate;
             this.transportNegotiationService = transportNegotiationService;
             this.cryptoUtil = cryptoUtil;

@@ -1,4 +1,4 @@
-package org.shoulder.crypto.negotiation.dto;
+package org.shoulder.crypto.negotiation.support.dto;
 
 /**
  * 协商发起者提供参数

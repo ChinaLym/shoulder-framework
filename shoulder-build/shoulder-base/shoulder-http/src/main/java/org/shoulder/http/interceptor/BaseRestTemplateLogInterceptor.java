@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.shoulder.core.context.AppInfo;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
@@ -26,9 +27,11 @@ import java.io.InputStreamReader;
  *
  * @author lym
  */
-public abstract class BaseRestTemplateLogInterceptor implements ClientHttpRequestInterceptor {
+public abstract class BaseRestTemplateLogInterceptor implements ClientHttpRequestInterceptor, Ordered {
 
     protected static final boolean LOG_TILL_RESPONSE_DEFAULT = true;
+
+    public static final int DEFAULT_ORDER = Ordered.HIGHEST_PRECEDENCE + 10;
 
     /**
      * 等待响应返回后再进行统一记录（分开打印会导致请求日志和响应日志不在一起，由于RestTemplate是阻塞的，故在请求中，
@@ -81,6 +84,15 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
         logResponse(record);
 
         return response;
+    }
+
+    /**
+     * 默认记录日志的优先级最高
+     * 也可能有更高的，如监控
+     */
+    @Override
+    public int getOrder() {
+        return DEFAULT_ORDER;
     }
 
     /**

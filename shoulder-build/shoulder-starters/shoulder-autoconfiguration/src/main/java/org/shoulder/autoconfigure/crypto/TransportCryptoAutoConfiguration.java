@@ -11,10 +11,10 @@ import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.LocalKeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.RedisKeyNegotiationCache;
-import org.shoulder.crypto.negotiation.endpoint.NegotiationEndPoint;
-import org.shoulder.crypto.negotiation.interceptor.SecurityRestControllerAutoCryptoResponseAdvice;
-import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
-import org.shoulder.crypto.negotiation.service.impl.TransportNegotiationServiceImpl;
+import org.shoulder.crypto.negotiation.support.endpoint.NegotiationEndPoint;
+import org.shoulder.crypto.negotiation.support.server.SensitiveResponseEncryptAdvice;
+import org.shoulder.crypto.negotiation.support.service.TransportNegotiationService;
+import org.shoulder.crypto.negotiation.support.service.impl.TransportNegotiationServiceImpl;
 import org.shoulder.crypto.negotiation.util.TransportCryptoByteUtil;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.http.AppIdExtractor;
@@ -95,9 +95,9 @@ public class TransportCryptoAutoConfiguration {
 
     @Bean
     @Order(value = 20)// advance 越大越先执行
-    @ConditionalOnClass(SecurityRestControllerAutoCryptoResponseAdvice.class)
-    public SecurityRestControllerAutoCryptoResponseAdvice securityRestControllerAutoCryptoResponseAdvice(TransportCryptoUtil cryptoUtil) {
-        return new SecurityRestControllerAutoCryptoResponseAdvice(cryptoUtil);
+    @ConditionalOnClass(SensitiveResponseEncryptAdvice.class)
+    public SensitiveResponseEncryptAdvice securityRestControllerAutoCryptoResponseAdvice(TransportCryptoUtil cryptoUtil) {
+        return new SensitiveResponseEncryptAdvice(cryptoUtil);
     }
 
 }

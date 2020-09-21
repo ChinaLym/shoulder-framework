@@ -1,20 +1,17 @@
-package org.shoulder.crypto.negotiation.interceptor;
+package org.shoulder.crypto.negotiation.support.client;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.core.dto.response.BaseResponse;
-import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
-import org.shoulder.crypto.negotiation.cache.SensitiveFieldCache;
+import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
-import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
-import org.shoulder.crypto.negotiation.cache.dto.SensitiveFieldWrapper;
+import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
-import org.shoulder.crypto.negotiation.http.SecurityRestTemplate;
+import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -24,23 +21,22 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * RestTemplate拦截器。
  * client 向 server 发出安全请求，在响应后解析响应头，将解密器放置于县城变量中
  * <p>
- * @see SecurityRestTemplate
  *
  * @author lym
+ * @see SecurityRestTemplate
  */
-public class DecryptSecurityResponseClientInterceptor implements ClientHttpRequestInterceptor {
+public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInterceptor, Ordered {
 
-    private static final Logger log = LoggerFactory.getLogger(DecryptSecurityResponseClientInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(SensitiveResponseDecryptInterceptor.class);
 
     private TransportCryptoUtil transportCryptoUtil;
 
-    public DecryptSecurityResponseClientInterceptor(TransportCryptoUtil transportCryptoUtil) {
+    public SensitiveResponseDecryptInterceptor(TransportCryptoUtil transportCryptoUtil) {
         this.transportCryptoUtil = transportCryptoUtil;
     }
 
@@ -80,18 +76,7 @@ public class DecryptSecurityResponseClientInterceptor implements ClientHttpReque
             byte[] realDataKey = TransportCryptoUtil.decryptDk(keyExchangeInfo, xDk);
 
             TransportCipher responseDecryptCipher = TransportCipher.buildDecryptCipher(keyExchangeInfo, realDataKey);
-
-            Object toCrypt = JsonUtils.toObject(new String(response.getBody().readAllBytes()), BaseResponse.class);
-            // 专门处理 BaseResponse 以及其子类
-            if (toCrypt == null || (toCrypt = ((BaseResponse) toCrypt).getData()) == null) {
-                return response;
-            }
-            Class<?> resultClazz = toCrypt.getClass();
-            List<SensitiveFieldWrapper> securityResultField = SensitiveFieldCache.findSensitiveResponseFieldInfo(resultClazz);
-            if (!CollectionUtils.isEmpty(securityResultField)) {
-                // 解密
-                SensitiveFieldCache.handleSensitiveData(toCrypt, securityResultField, responseDecryptCipher);
-            }
+            TransportCipherHolder.setResponseCipher(responseDecryptCipher);
 
         } catch (AsymmetricCryptoException e) {
             log.warn("token validate fail!", e);
@@ -106,4 +91,8 @@ public class DecryptSecurityResponseClientInterceptor implements ClientHttpReque
         return response;
     }
 
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE + 30;
+    }
 }

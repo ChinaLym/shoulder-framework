@@ -1,7 +1,7 @@
 package org.shoulder.crypto.negotiation.cache.cipher;
 
 import org.shoulder.crypto.aes.exception.AesCryptoException;
-import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 
 /**

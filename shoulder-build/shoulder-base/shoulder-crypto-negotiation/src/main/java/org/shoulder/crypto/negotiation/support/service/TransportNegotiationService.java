@@ -1,14 +1,21 @@
-package org.shoulder.crypto.negotiation.service;
+package org.shoulder.crypto.negotiation.support.service;
 
-import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeRequest;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResponse;
+import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
+import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
+import org.shoulder.crypto.negotiation.support.dto.KeyExchangeResponse;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
+import org.shoulder.crypto.negotiation.support.endpoint.NegotiationEndPoint;
 import org.springframework.lang.NonNull;
 
 import java.net.URI;
 
 /**
+ * 安全会话，密钥协商逻辑抽象接口，供以下两处使用
+ *
+ * @see SecurityRestTemplate 发起秘钥交换请求
+ * @see NegotiationEndPoint  处理秘钥交换请求
+ *
  * @author lym
  */
 public interface TransportNegotiationService {

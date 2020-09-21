@@ -1,4 +1,4 @@
-package org.shoulder.crypto.negotiation.interceptor;
+package org.shoulder.crypto.negotiation.support.server;
 
 import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
@@ -6,12 +6,12 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.negotiation.annotation.Sensitive;
+import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
-import org.shoulder.crypto.negotiation.cache.SensitiveFieldCache;
+import org.shoulder.crypto.negotiation.util.SensitiveFieldCache;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
-import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
-import org.shoulder.crypto.negotiation.cache.dto.SensitiveFieldWrapper;
+import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.dto.SensitiveFieldWrapper;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.springframework.core.MethodParameter;
@@ -39,13 +39,13 @@ import java.util.List;
  * @author lym
  */
 @RestControllerAdvice
-public class SecurityRestControllerAutoCryptoResponseAdvice implements ResponseBodyAdvice<Object> {
+public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final TransportCryptoUtil transportCryptoUtil;
 
-    public SecurityRestControllerAutoCryptoResponseAdvice(TransportCryptoUtil transportCryptoUtil) {
+    public SensitiveResponseEncryptAdvice(TransportCryptoUtil transportCryptoUtil) {
         this.transportCryptoUtil = transportCryptoUtil;
     }
 

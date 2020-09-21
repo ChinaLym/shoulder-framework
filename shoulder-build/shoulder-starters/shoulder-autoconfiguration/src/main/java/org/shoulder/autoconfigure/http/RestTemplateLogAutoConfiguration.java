@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 
@@ -25,7 +26,7 @@ public class RestTemplateLogAutoConfiguration {
      * 多行彩色形式【用于开发态】日志打在多行，且带颜色，代码跳转
      */
     @Bean
-    @Order(value = 0)
+    @Order(value = BaseRestTemplateLogInterceptor.DEFAULT_ORDER)
     @ConditionalOnProperty(name = "shoulder.http.logRequest", havingValue = "colorful", matchIfMissing = true)
     public ClientHttpRequestInterceptor restTemplateColorfulLogInterceptor(
         @Value("${shoulder.http.log.logTillResponse:true}") boolean logTillResponse,
@@ -38,6 +39,7 @@ public class RestTemplateLogAutoConfiguration {
      * Json 形式【用于生产态】日志打在一行中
      */
     @Bean
+    @Order(value = BaseRestTemplateLogInterceptor.DEFAULT_ORDER)
     @ConditionalOnMissingBean
     @ConditionalOnProperty(name = "shoulder.http.logRequest", havingValue = "json")
     public ClientHttpRequestInterceptor restTemplateJsonLogInterceptor(

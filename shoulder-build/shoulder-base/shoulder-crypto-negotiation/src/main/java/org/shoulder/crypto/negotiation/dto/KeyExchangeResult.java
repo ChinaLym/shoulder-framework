@@ -1,4 +1,4 @@
-package org.shoulder.crypto.negotiation.cache.dto;
+package org.shoulder.crypto.negotiation.dto;
 
 import java.io.Serializable;
 

@@ -2,15 +2,16 @@ package org.shoulder.autoconfigure.crypto;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.autoconfigure.http.HttpAutoConfiguration;
-import org.shoulder.crypto.negotiation.http.SecurityRestTemplate;
-import org.shoulder.crypto.negotiation.http.SensitiveDateEncryptMessageConverter;
-import org.shoulder.crypto.negotiation.interceptor.DecryptSecurityResponseClientInterceptor;
-import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
+import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
+import org.shoulder.crypto.negotiation.support.client.SensitiveRequestEncryptMessageConverter;
+import org.shoulder.crypto.negotiation.support.client.SensitiveResponseDecryptInterceptor;
+import org.shoulder.crypto.negotiation.support.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.lang.Nullable;
@@ -32,7 +33,9 @@ public class SecurityHttpAutoConfiguration {
     @Bean
     @ConditionalOnClass
     public SecurityRestTemplate securityRestTemplate(TransportNegotiationService transportNegotiationService,
-                                                     TransportCryptoUtil cryptoUtil, @Nullable List<ClientHttpRequestInterceptor> interceptors) {
+                                                     TransportCryptoUtil cryptoUtil,
+                                                     @Nullable List<ClientHttpRequestInterceptor> interceptors) {
+
         SecurityRestTemplate securityRestTemplate = new SecurityRestTemplate(transportNegotiationService, cryptoUtil);
         // ClientHttpRequestInterceptor
         if (CollectionUtils.isNotEmpty(interceptors)) {
@@ -42,9 +45,19 @@ public class SecurityHttpAutoConfiguration {
 
             if (CollectionUtils.isNotEmpty(toAdd)) {
                 List<ClientHttpRequestInterceptor> newInterceptors = new ArrayList<>(existConverters.size() + toAdd.size());
-                newInterceptors.add(new DecryptSecurityResponseClientInterceptor(cryptoUtil));
+                // 根据 order 排序
+                newInterceptors.add(new SensitiveResponseDecryptInterceptor(cryptoUtil));
                 newInterceptors.addAll(existConverters);
                 newInterceptors.addAll(toAdd);
+                newInterceptors.sort((interceptor1, interceptor2) -> {
+                    boolean isOrdered1 = interceptor1 instanceof Ordered;
+                    boolean isOrdered2 = interceptor2 instanceof Ordered;
+                    if(isOrdered1 && isOrdered2){
+                        return Integer.compare(((Ordered)interceptor1).getOrder(), ((Ordered)interceptor2).getOrder());
+                    }else {
+                        return isOrdered1 ? -1 : 1;
+                    }
+                });
                 securityRestTemplate.setInterceptors(newInterceptors);
             }
         }
@@ -52,7 +65,7 @@ public class SecurityHttpAutoConfiguration {
         List<HttpMessageConverter<?>> converterList = securityRestTemplate.getMessageConverters();
         boolean containsSecurityConverter = false;
         for (HttpMessageConverter<?> httpMessageConverter : converterList) {
-            if (httpMessageConverter instanceof SensitiveDateEncryptMessageConverter) {
+            if (httpMessageConverter instanceof SensitiveRequestEncryptMessageConverter) {
                 containsSecurityConverter = true;
                 break;
             }
@@ -60,7 +73,7 @@ public class SecurityHttpAutoConfiguration {
         if (!containsSecurityConverter) {
             List<HttpMessageConverter<?>> newConverters = new ArrayList<>(converterList.size() + 1);
             // 先加必须的，常用的
-            newConverters.add(new SensitiveDateEncryptMessageConverter());
+            newConverters.add(new SensitiveRequestEncryptMessageConverter());
             // 再加Spring自带的
             newConverters.addAll(converterList);
             securityRestTemplate.setMessageConverters(newConverters);

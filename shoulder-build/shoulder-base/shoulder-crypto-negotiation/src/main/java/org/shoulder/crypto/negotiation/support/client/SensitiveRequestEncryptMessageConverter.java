@@ -1,16 +1,20 @@
-package org.shoulder.crypto.negotiation.http;
+package org.shoulder.crypto.negotiation.support.client;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.crypto.negotiation.cache.SensitiveFieldCache;
+import org.shoulder.crypto.negotiation.util.SensitiveFieldCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
-import org.shoulder.crypto.negotiation.cache.dto.SensitiveFieldWrapper;
+import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.shoulder.crypto.negotiation.dto.SensitiveFieldWrapper;
+import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 
@@ -23,13 +27,13 @@ import java.util.List;
  *
  * @author lym
  */
-public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMessageConverter {
+public class SensitiveRequestEncryptMessageConverter extends MappingJackson2HttpMessageConverter {
 
-    public SensitiveDateEncryptMessageConverter() {
+    public SensitiveRequestEncryptMessageConverter() {
         super();
     }
 
-    public SensitiveDateEncryptMessageConverter(ObjectMapper objectMapper) {
+    public SensitiveRequestEncryptMessageConverter(ObjectMapper objectMapper) {
         super(objectMapper);
     }
 
@@ -37,14 +41,15 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
      * 发送前，序列化前加密
      */
     @Override
-    protected void writeInternal(@NonNull Object object, @Nullable Type type, HttpOutputMessage outputMessage)
+    protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage)
         throws IOException, HttpMessageNotWritableException {
         // 获取参数类型，
-        Object param = object;
         if (object instanceof MappingJacksonValue) {
             MappingJacksonValue container = (MappingJacksonValue) object;
-            param = container.getValue();
+            object = container.getValue();
         }
+        // 提前取出并清理，避免遗漏
+        TransportCipher requestEncryptCipher = TransportCipherHolder.removeRequestCipher();
         Class<?> objectClass = object.getClass();
         List<SensitiveFieldWrapper> securityParamField = SensitiveFieldCache.findSensitiveRequestFieldInfo(objectClass);
 
@@ -59,31 +64,35 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
             object = cloned;
 
             // 加密敏感数据
-            SensitiveFieldCache.handleSensitiveData(object, securityParamField, TransportCipherHolder.getRequestCipher());
+            SensitiveFieldCache.handleSensitiveData(object, securityParamField, requestEncryptCipher);
         }
 
         // 序列化
         super.writeInternal(object, type, outputMessage);
     }
 
-    /*@NonNull
     @Override
-    public Object read(@NonNull Type type, @Nullable Class<?> contextClass, HttpInputMessage inputMessage)
+    public Object read(Type type, @Nullable Class<?> contextClass, HttpInputMessage inputMessage)
         throws IOException, HttpMessageNotReadableException {
 
         Object result = super.read(type, contextClass, inputMessage);
+        Object toCrypt = result;
         // 专门处理 BaseResponse 以及其子类
         if (result instanceof BaseResponse) {
-            result = ((BaseResponse) result).getData();
+            toCrypt = ((BaseResponse) toCrypt).getData();
         }
-        Class<?> resultClazz = result.getClass();
+        if (toCrypt == null) {
+            return result;
+        }
+        Class<?> resultClazz = toCrypt.getClass();
+        TransportCipher cipher = TransportCipherHolder.removeResponseCipher();
         List<SensitiveFieldWrapper> securityResultField = SensitiveFieldCache.findSensitiveResponseFieldInfo(resultClazz);
         if (!CollectionUtils.isEmpty(securityResultField)) {
             // 解密
-            decryptSensitiveData(result, securityResultField);
+            SensitiveFieldCache.handleSensitiveData(toCrypt, securityResultField, cipher);
         }
         return result;
-    }*/
+    }
 
 
 }

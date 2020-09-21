@@ -1,4 +1,4 @@
-package org.shoulder.crypto.negotiation.service.impl;
+package org.shoulder.crypto.negotiation.support.service.impl;
 
 import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
@@ -7,13 +7,13 @@ import org.shoulder.core.dto.response.BaseResponse;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
-import org.shoulder.crypto.negotiation.cache.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeRequest;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResponse;
-import org.shoulder.crypto.negotiation.dto.TransportNegotiationInfo;
+import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
+import org.shoulder.crypto.negotiation.support.dto.KeyExchangeResponse;
+import org.shoulder.crypto.negotiation.support.dto.TransportNegotiationInfo;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
-import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
+import org.shoulder.crypto.negotiation.support.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.http.AppIdExtractor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -30,7 +30,7 @@ import java.net.URI;
 import java.util.*;
 
 /**
- * 安全会话，密钥协商
+ * 安全会话，密钥协商默认逻辑
  *
  * @author lym
  */

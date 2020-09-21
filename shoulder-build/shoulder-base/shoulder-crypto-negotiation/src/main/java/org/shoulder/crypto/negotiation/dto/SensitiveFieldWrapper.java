@@ -1,4 +1,4 @@
-package org.shoulder.crypto.negotiation.cache.dto;
+package org.shoulder.crypto.negotiation.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,13 +11,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * 敏感字段包装器（为了支持字段嵌套与泛型）
+ *
  * @author lym
  */
 @Data
 @NoArgsConstructor
 public class SensitiveFieldWrapper {
+
     private Field field;
+
     private boolean sensitive = true;
+
     private List<SensitiveFieldWrapper> internalFields = new LinkedList<>();
 
     public SensitiveFieldWrapper(Field field) {

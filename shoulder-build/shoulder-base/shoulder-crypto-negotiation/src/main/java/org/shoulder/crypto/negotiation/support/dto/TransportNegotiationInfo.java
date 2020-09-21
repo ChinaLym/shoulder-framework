@@ -1,4 +1,4 @@
-package org.shoulder.crypto.negotiation.dto;
+package org.shoulder.crypto.negotiation.support.dto;
 
 import lombok.Data;
 
