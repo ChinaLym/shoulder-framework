@@ -20,14 +20,14 @@ public class CryptoConfig {
 
     /**
      * fixme 这里使用了用于demo测试的 HashMapCryptoInfoRepository（每次运行将重置！）
-     *  生产环境需要配置为可持久化的，如使用 mysql 作为持久化！！！！！
+     * 生产环境需要配置为可持久化的，如使用 mysql 作为持久化！！！！！
      *
      * @see JdbcLocalCryptoInfoRepository
      * @see RedisLocalCryptoInfoRepository
      * @see FileLocalCryptoInfoRepository
      */
     @Bean
-    public HashMapCryptoInfoRepository hashMapCryptoInfoRepository(){
+    public HashMapCryptoInfoRepository hashMapCryptoInfoRepository() {
         return new HashMapCryptoInfoRepository();
     }
 
@@ -35,7 +35,7 @@ public class CryptoConfig {
     /**
      * 打开 @Bean 注释，非对称加解密将使用 RSA 算法
      * shoulder 默认使用性能更好，安全系数更高的 ECC 算法，{@link EccCryptoDemoController}
-     *
+     * <p>
      * 默认 RSA 算法参数详见 {@link DefaultAsymmetricCryptoProcessor#rsa2048}
      */
     //@Bean

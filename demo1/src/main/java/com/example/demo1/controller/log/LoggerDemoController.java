@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 日志使用示例
- *
+ * <p>
  * 为了简化日志记录错误码，shoulder 在 Slf4j 的 Logger 接口上额外添加了记录错误码的方法
- *      且可灵活替换为任何一个日志框架（替换参见 {@link LoggerFactory} 的 spi 机制）
- *
+ * 且可灵活替换为任何一个日志框架（替换参见 {@link LoggerFactory} 的 spi 机制）
+ * <p>
  * 习惯了 lombok，不想写这行代码？
- *      把原来的 {@link lombok.extern.slf4j.Slf4j} 替换为 {@link SLog} 即可（Shoulder 为你量身定制了 lombok 源码）
- *
- *  {@link SLog} 没有自动提示？
- *      IDEA 中可以安装 shoulder 提供的 lombok-intellij-plugin 插件
- *      <a href="https://gitee.com/ChinaLym/lombok-intellij-plugin" /a>
- *          该插件在原 lombok 插件基础上新增了支持 Shoulder 的扩展，且 100% 支持原有功能
+ * 把原来的 {@link lombok.extern.slf4j.Slf4j} 替换为 {@link SLog} 即可（Shoulder 为你量身定制了 lombok 源码）
+ * <p>
+ * {@link SLog} 没有自动提示？
+ * IDEA 中可以安装 shoulder 提供的 lombok-intellij-plugin 插件
+ * <a href="https://gitee.com/ChinaLym/lombok-intellij-plugin" /a>
+ * 该插件在原 lombok 插件基础上新增了支持 Shoulder 的扩展，且 100% 支持原有功能
  *
  * @author lym
  */
@@ -30,7 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("log")
 public class LoggerDemoController {
 
-    /** 定义 shoulder 的 logger， 使用注解 {@link SLog} 时则可不写这行代码 */
+    /**
+     * 定义 shoulder 的 logger， 使用注解 {@link SLog} 时则可不写这行代码
+     */
     private static final Logger log = LoggerFactory.getLogger(LoggerDemoController.class);
 
 
@@ -42,7 +44,7 @@ public class LoggerDemoController {
      * 使用彩色展示，优化了 logback 的性能
      */
     @GetMapping("0")
-    public String notRecommended(){
+    public String notRecommended() {
         log.info("this is a example log.");
         return TIP;
     }
@@ -51,7 +53,7 @@ public class LoggerDemoController {
      * 打印带错误码的日志，目前只有 warn 和 error 级别提供了错误码（更推荐 {@link #case2} 的方式）
      */
     @GetMapping("1")
-    public String case1(){
+    public String case1() {
         String errorCode = "0xxxxx1";
         log.warnWithErrorCode(errorCode, "This is a warn log with errorCode");
         log.errorWithErrorCode(errorCode, "This is a error log with errorCode");
@@ -62,7 +64,7 @@ public class LoggerDemoController {
      * 记录错误码类
      */
     @GetMapping("2")
-    public String case2(){
+    public String case2() {
 
         return TIP;
     }

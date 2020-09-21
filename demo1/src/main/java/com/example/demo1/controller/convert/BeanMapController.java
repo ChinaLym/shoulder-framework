@@ -17,7 +17,7 @@ import java.util.Date;
 
 /**
  * 原生 MapStruct， shoulder 未做任何修改
- *
+ * <p>
  * 介绍 https://gitee.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-starters/shoulder-starter-beanmap
  * 介绍 https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-starters/shoulder-starter-beanmap
  *
@@ -33,11 +33,11 @@ public class BeanMapController {
 
     /**
      * <a href="http://localhost:8080/bean/1"/> 自动转换，懒人专享
-     *
+     * <p>
      * 默认采用名称严格匹配，也可以实现自己的转换器，实现方式参见 {@link EnumConverter}
      */
     @GetMapping("1")
-    public ShopDTO case1(){
+    public ShopDTO case1() {
         return beanMapping.toDTO(demoBO());
     }
 
@@ -45,14 +45,14 @@ public class BeanMapController {
      * <a href="http://localhost:8080/bean/2"/> 复杂的转换
      */
     @GetMapping("2")
-    public ShopDTO case2(){
+    public ShopDTO case2() {
         return beanMapping.toComposeDTO(demoBO());
     }
 
     /**
      * 假设有这么一个 BO
      */
-    private ShopBO demoBO(){
+    private ShopBO demoBO() {
         ShopBO bo = new ShopBO();
         bo.setId(StringUtils.uuid32());
         bo.setName("shoulder 杂货铺");

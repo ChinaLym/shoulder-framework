@@ -15,9 +15,8 @@ import java.util.Locale;
 /**
  * 翻译、国际化、多语言功能介绍
  *
- * @see ShoulderMessageSource 该类的类注释，必看，shoulder 翻译核心简介
- *
  * @author lym
+ * @see ShoulderMessageSource 该类的类注释，必看，shoulder 翻译核心简介
  */
 @RestController
 @RequestMapping("i18n")
@@ -40,19 +39,19 @@ public class ShoulderI18nDemoController {
      * Spring 中提供的用法 <a href="http://localhost:8080/i18n/spring?code=shoulder.test.hi&locale=zh_CN" />
      *
      * @param toBeTranslate 待翻译的
-     * @param args 用于填充翻译的参数
-     * @param locale 语言
+     * @param args          用于填充翻译的参数
+     * @param locale        语言
      * @return 翻译后的
      */
     @GetMapping("spring")
-    public String messageSource(String toBeTranslate, String args, String locale){
+    public String messageSource(String toBeTranslate, String args, String locale) {
 
         Locale aimLocale = org.springframework.util.StringUtils.parseLocale(locale);
-        if(aimLocale == null){
+        if (aimLocale == null) {
             aimLocale = Locale.getDefault();
         }
         String[] trArgs = null;
-        if(!org.springframework.util.StringUtils.isEmpty(args)){
+        if (!org.springframework.util.StringUtils.isEmpty(args)) {
             trArgs = args.split(",");
         }
         return messageSource.getMessage(toBeTranslate, trArgs, aimLocale);
@@ -64,23 +63,24 @@ public class ShoulderI18nDemoController {
      * 在 Spring 之上简化了使用，不必再填写 Locale，将自动获取
      *
      * @param toBeTranslate 待翻译的
-     * @param args 用于填充翻译的参数
-     * @param locale 语言
+     * @param args          用于填充翻译的参数
+     * @param locale        语言
      * @return 翻译后的
      */
     @GetMapping("shoulder")
-    public String translator(String toBeTranslate, String args){
+    public String translator(String toBeTranslate, String args) {
         Object[] trArgs = StringUtils.isNotEmpty(args) ? args.split(",") : null;
 
         return translator.getMessage(toBeTranslate, (Object[]) trArgs);
     }
 
     /**
-     *   <a href="http://localhost:8080/i18n/shoulder" />
+     * <a href="http://localhost:8080/i18n/shoulder" />
+     *
      * @return 翻译好的
      */
     @GetMapping("1")
-    public String case1(){
+    public String case1() {
         // spring:
         messageSource.getMessage("shoulder.test.hi", null, AppContext.getLocale());
 
@@ -90,10 +90,11 @@ public class ShoulderI18nDemoController {
 
     /**
      * 翻译带填充参数的 <a href="http://localhost:8080/i18n/shoulder" />
+     *
      * @return 翻译好的
      */
     @GetMapping("2")
-    public String case2(){
+    public String case2() {
         // spring:
         Object[] args = new Object[1];
         args[0] = "shoulder";

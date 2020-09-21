@@ -19,9 +19,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * 延迟任务使用示例
  *
- * @see DelayTasDispatcher 阻塞式实现类
- *
  * @author lym
+ * @see DelayTasDispatcher 阻塞式实现类
  */
 @SLog
 @SkipResponseWrap // 该类所有方法的返回值将不被包装
@@ -29,7 +28,9 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("delay")
 public class DelayTaskDemoController {
 
-    /** 定义 shoulder 的 logger， 使用注解 {@link SLog} 时则可不写这行代码 */
+    /**
+     * 定义 shoulder 的 logger， 使用注解 {@link SLog} 时则可不写这行代码
+     */
     private static final Logger log = LoggerFactory.getLogger(DelayTaskDemoController.class);
 
 
@@ -43,7 +44,7 @@ public class DelayTaskDemoController {
      * <a href="http://localhost:8080/delay/0" />
      */
     @GetMapping("0")
-    public String notRecommended(){
+    public String notRecommended() {
         Thread delay = new Thread(() -> {
             // 5s 后触发
             try {
@@ -61,7 +62,7 @@ public class DelayTaskDemoController {
      * 建议使用 Shoulder 中的方式，触发前不会占用线程 <a href="http://localhost:8080/delay/1" />
      */
     @GetMapping("1")
-    public String case1(){
+    public String case1() {
         DelayTask delayTask = new DelayTask(() -> log.warn("I'am a shoulder delayTask"), Duration.ofSeconds(5));
         delayTaskHolder.put(delayTask);
         return TIP;
@@ -71,7 +72,7 @@ public class DelayTaskDemoController {
      * 封装过的方式，写起来更少 <a href="http://localhost:8080/delay/2" />
      */
     @GetMapping("2")
-    public String case2(){
+    public String case2() {
         Threads.delay(() -> log.warn("I'am a simple shoulder delayTask"), 5, TimeUnit.SECONDS);
         return TIP;
     }

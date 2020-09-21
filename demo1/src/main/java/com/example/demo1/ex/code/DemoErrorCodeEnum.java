@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus;
 
 /**
  * 工程中常用错误，可以按照业务划分，一个模块一个错误码枚举
- *
+ * <p>
  * 框架中已经定义了一些常用错误 {@link CommonErrorCodeEnum}
- *
- *     这里以活动报名相关业务举例
+ * <p>
+ * 这里以活动报名相关业务举例
  *
  * @author lym
  */

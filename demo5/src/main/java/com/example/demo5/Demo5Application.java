@@ -1,4 +1,4 @@
-package com.example.demo1;
+package com.example.demo5;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,10 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author lym
  */
 @SpringBootApplication
-public class Demo1Application {
+public class Demo5Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Demo1Application.class, args);
+        SpringApplication.run(Demo5Application.class, args);
     }
 
 }

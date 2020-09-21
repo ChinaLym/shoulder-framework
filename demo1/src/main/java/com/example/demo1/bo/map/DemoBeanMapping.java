@@ -42,7 +42,4 @@ public interface DemoBeanMapping {
     ShopDTO toComposeDTO(ShopBO bo);
 
 
-
-
-
 }

@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * RSA 非对称加解密  若需测试 rsa 需要打开 {@link CryptoConfig#rsa2048} 的 @Bean
  * 否则 shoulder 默认使用性能更好，安全系数更高的 ECC 算法，{@link EccCryptoDemoController}
  *
- * @see DefaultAsymmetricCryptoProcessor#ecc256
- *
  * @author lym
+ * @see DefaultAsymmetricCryptoProcessor#ecc256
  */
 @Slf4j
 @SkipResponseWrap

@@ -17,12 +17,17 @@ public class ShopBO {
 
     String id;
     String name;
-    /** 枚举转字符串，默认使用其名称 */
+    /**
+     * 枚举转字符串，默认使用其名称
+     */
     MyColorEnum color;
-    /** 属性名不同需要在 @Mapping 中描述 */
+    /**
+     * 属性名不同需要在 @Mapping 中描述
+     */
     String addr;
     Owner boss;
     Date createTime;
+
     /**
      * 超市拥有者，演示复杂类型转换
      */

@@ -14,13 +14,12 @@ import java.util.*;
 
 /**
  * 统一返回值类型示例
- *      自动包装返回值为标准返回值（包装 json 和 string 类型）
- *      可以通过 {@link SkipResponseWrap} 或返回值继承 {@link BaseResponse} 跳过包装
- *
- * @see SkipResponseWrap 跳过包装
- * @see WebAdvanceAutoConfiguration#restControllerUnionResponseAdvice 框架实现方式
+ * 自动包装返回值为标准返回值（包装 json 和 string 类型）
+ * 可以通过 {@link SkipResponseWrap} 或返回值继承 {@link BaseResponse} 跳过包装
  *
  * @author lym
+ * @see SkipResponseWrap 跳过包装
+ * @see WebAdvanceAutoConfiguration#restControllerUnionResponseAdvice 框架实现方式
  */
 @RestController
 @RequestMapping("response")
@@ -31,7 +30,7 @@ public class ResponseDemoController {
      * 正常写法举例，框架不会嵌套包装   <a href="http://localhost:8080/response/0" />
      */
     @GetMapping("0")
-    public BaseResponse<String> notRecommended(){
+    public BaseResponse<String> notRecommended() {
         BaseResponse<String> response = new BaseResponse<>();
         response.setCode("0");
         response.setMsg("msg");
@@ -43,7 +42,7 @@ public class ResponseDemoController {
      * 字符类型返回值自动包装   <a href="http://localhost:8080/response/1" />
      */
     @GetMapping("1")
-    public String case1(){
+    public String case1() {
         return "data";
     }
 
@@ -52,7 +51,7 @@ public class ResponseDemoController {
      * json 类型返回值自动包装   <a href="http://localhost:8080/response/2" />
      */
     @GetMapping("2")
-    public Map<String, User> case2(){
+    public Map<String, User> case2() {
         Map<String, User> map = new HashMap<>(2);
         map.put("1", new User());
         map.put("2", new User());
@@ -64,7 +63,7 @@ public class ResponseDemoController {
      */
     @SkipResponseWrap
     @GetMapping("3")
-    public String case3(){
+    public String case3() {
         return "noWarp";
     }
 
@@ -73,7 +72,7 @@ public class ResponseDemoController {
      */
     @SkipResponseWrap
     @GetMapping("4")
-    public CustomizedResponse<String> case4(){
+    public CustomizedResponse<String> case4() {
         CustomizedResponse<String> response = new CustomizedResponse<>();
         response.setCode("0");
         response.setMsg("msg");
@@ -97,6 +96,7 @@ public class ResponseDemoController {
 
     /**
      * 使用者定义的返回值类型
+     *
      * @param <T>
      */
     public static class CustomizedResponse<T> extends BaseResponse<T> {
