@@ -90,8 +90,8 @@
     <!-- 继承 shoulder 提供的父工程，自动管理版本号，包含了 spring-boot-parent -->
     <parent>
         <groupId>cn.itlym</groupId>
-        <artifactId>shoulder-framework</artifactId>
-        <version>0.1</version><!-- shoulder-version -->
+        <artifactId>shoulder-parent</artifactId>
+        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- 你的 groupId -->
