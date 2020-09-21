@@ -62,7 +62,7 @@ public class SensitiveFieldCache {
             Class<?> fieldClass;
             if (!String.class.isAssignableFrom(fieldClass = field.getType())) {
                 // 如果是复杂变量还需要递归，可以通过加类注解减少递归复杂度，否则报错/警告，用法错误
-                allSensitiveField.addAll(findSensitiveFields(fieldClass, requestOrResponse));
+                wrapper.addInternalFields(findSensitiveFields(fieldClass, requestOrResponse));
             }
             allSensitiveField.add(wrapper);
             // 压缩内存、校准状态
@@ -86,14 +86,18 @@ public class SensitiveFieldCache {
             assert cipher != null;
             for (SensitiveFieldWrapper filedWrapper : sensitiveFields) {
                 Field field = filedWrapper.getField();
+                field.setAccessible(true);
+                Object fieldValue = field.get(object);
+                if (fieldValue == null) {
+                    // 跳过 null
+                    continue;
+                }
                 if (filedWrapper.isSensitive()) {
-                    field.setAccessible(true);
                     // 意味着一定是 String 类型
-                    String origin = (String) field.get(object);
-                    String handled = cipher.doCipher(origin);
+                    String handled = cipher.doCipher((String) fieldValue);
                     field.set(object, handled);
                 } else {
-                    handleSensitiveData(field.get(object), filedWrapper.getInternalFields(), cipher);
+                    handleSensitiveData(fieldValue, filedWrapper.getInternalFields(), cipher);
                 }
 
             }
