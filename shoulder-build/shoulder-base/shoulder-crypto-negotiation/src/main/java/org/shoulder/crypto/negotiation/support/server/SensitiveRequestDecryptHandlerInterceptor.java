@@ -6,14 +6,15 @@ import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
+import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -23,8 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 服务端敏感api接口拦截器
  * 只拦截握手完毕后的加密接口，即只拦截header中带 xSessionId 和 xDk 的请求。
- * order 一般在最早生效，如监控、日志拦截器之后，其他拦截器之前，具体顺序由具体场景决定
+ * order: 安全过滤/拦截器常设置为最早生效，如监控、日志拦截器之后，其他拦截器之前，具体顺序由具体场景决定
  *
+ * @see SensitiveRequestDecryptAdvance 实际解密在这里完成
  * @author lym
  */
 public class SensitiveRequestDecryptHandlerInterceptor extends HandlerInterceptorAdapter {
@@ -55,6 +57,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             // 只拦截带 @Sensitive 的接口
             return true;
         }
+
         String xSessionId = request.getHeader(KeyExchangeConstants.SECURITY_SESSION_ID);
         String xDk = request.getHeader(KeyExchangeConstants.SECURITY_DATA_KEY);
         String token = request.getHeader(KeyExchangeConstants.TOKEN);
@@ -62,14 +65,13 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             // 记录请求中这几个重要地参数，便于排查问题
             log.debug("xSessionId: {}, xDk: {}, token: {}.", xSessionId, xDk, token);
         }
-        //if (StringUtils.isEmpty(xSessionId) || StringUtils.isEmpty(xDk) || StringUtils.isEmpty(token)) {
-            // xSessionId 没有说明不是一个 ecdh 请求，没有 xDk 说明还在密钥协商阶段
-            // return true;
-        //}
+        if (StringUtils.isEmpty(xSessionId) || StringUtils.isEmpty(xDk) || StringUtils.isEmpty(token)) {
+            // xSessionId 没有说明不是一个 ecdh 请求；没有 xDk 仅出现在密钥协商阶段；没有 token不能保证安全
+            log.debug("reject for invalid security headers.");
+            return false;
+        }
 
-        // 一、处理请求：解密发送方的会话密钥
         KeyExchangeResult cacheKeyExchangeResult = keyNegotiationCache.getAsServer(xSessionId);
-
         if (cacheKeyExchangeResult == null) {
             // 返回重新握手错误码
             response.setStatus(HttpStatus.OK.value());
@@ -81,34 +83,16 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
         KeyNegotiationCache.SERVER_LOCAL_CACHE.set(cacheKeyExchangeResult);
 
         // 校验token是否正确
-        transportCryptoUtil.verifyToken(xSessionId, xDk, token);
+        if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token)) {
+            log.debug("Token({}) invalid!", token);
+            return false;
+        }
 
-        log.debug("security request. xDk is " + xDk);
-        // 解密数据密钥
+        // 解密本次会话的数据密钥
         byte[] requestDk = TransportCryptoUtil.decryptDk(cacheKeyExchangeResult, xDk);
         // 缓存请求解密处理器
         TransportCipher requestDecryptCipher = TransportCipher.buildDecryptCipher(cacheKeyExchangeResult, requestDk);
         TransportCipherHolder.setRequestCipher(requestDecryptCipher);
-
-        // todo 解密请求
-
-        /*Object result = super.read(type, contextClass, inputMessage);
-        Object toCrypt = result;
-        // 专门处理 BaseResponse 以及其子类
-        if (result instanceof BaseResponse) {
-            toCrypt = ((BaseResponse) toCrypt).getData();
-        }
-        if (toCrypt == null) {
-            return result;
-        }
-        Class<?> resultClazz = toCrypt.getClass();
-        TransportCipher cipher = TransportCipherHolder.removeResponseCipher();
-        List<SensitiveFieldWrapper> securityResultField = SensitiveFieldCache.findSensitiveResponseFieldInfo(resultClazz);
-        if (!CollectionUtils.isEmpty(securityResultField)) {
-            // 解密
-            SensitiveFieldCache.handleSensitiveData(toCrypt, securityResultField, cipher);
-        }
-        return result;*/
 
         return true;
     }

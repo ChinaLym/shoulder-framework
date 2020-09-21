@@ -6,13 +6,13 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
-import org.shoulder.crypto.negotiation.util.SensitiveFieldCache;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.dto.SensitiveFieldWrapper;
-import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
+import org.shoulder.crypto.negotiation.support.Sensitive;
+import org.shoulder.crypto.negotiation.util.SensitiveFieldCache;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -33,8 +33,6 @@ import java.util.List;
 
 /**
  * 服务端敏感api响应自动加密，注意不要与统一拦截器顺序冲突
- *
- * todo 仅拦截带
  *
  * @author lym
  */

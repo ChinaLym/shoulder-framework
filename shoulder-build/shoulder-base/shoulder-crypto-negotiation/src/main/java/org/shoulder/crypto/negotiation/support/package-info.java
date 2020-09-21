@@ -18,7 +18,9 @@ package org.shoulder.crypto.negotiation.support;
  *      把参数中敏感字段加密（SensitiveRequestEncryptMessageConverter）
  * 发送 http 请求后将返回值中安全字段解密（SensitiveResponseDecryptInterceptor）
  * <p>
- * 接收 http 请求前校验请求是否安全合法，并把参数中安全字段解密（SensitiveRequestDecryptHandlerInterceptor）
+ * 接收 http 请求前
+ *      校验请求是否安全合法（SensitiveRequestDecryptHandlerInterceptor）
+ *      解密参数中的敏感字段（SensitiveRequestDecryptAdvance）
  * 返回 http 请求前把返回值中安全字段加密（SensitiveResponseEncryptAdvice）
  */
 
