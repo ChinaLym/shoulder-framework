@@ -94,11 +94,10 @@ public class TransportCryptoAutoConfiguration {
     }
 
     @Bean
-    @Order(value = 20)
+    @Order(value = 20)// advance 越大越先执行
     @ConditionalOnClass(SecurityRestControllerAutoCryptoResponseAdvice.class)
-    public SecurityRestControllerAutoCryptoResponseAdvice securityRestControllerAutoCryptoResponseAdvice(KeyNegotiationCache keyNegotiationCache,
-                                                                                                         TransportCryptoUtil cryptoUtil) {
-        return new SecurityRestControllerAutoCryptoResponseAdvice(keyNegotiationCache, cryptoUtil);
+    public SecurityRestControllerAutoCryptoResponseAdvice securityRestControllerAutoCryptoResponseAdvice(TransportCryptoUtil cryptoUtil) {
+        return new SecurityRestControllerAutoCryptoResponseAdvice(cryptoUtil);
     }
 
 }

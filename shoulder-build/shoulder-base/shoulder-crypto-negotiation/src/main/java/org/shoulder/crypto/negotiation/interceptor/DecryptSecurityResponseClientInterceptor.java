@@ -34,25 +34,21 @@ import java.util.List;
  *
  * @author lym
  */
-public class SecurityResponseDecrypterClientInterceptor implements ClientHttpRequestInterceptor {
+public class DecryptSecurityResponseClientInterceptor implements ClientHttpRequestInterceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(SecurityResponseDecrypterClientInterceptor.class);
-
-
-    private KeyNegotiationCache keyNegotiationCache;
+    private static final Logger log = LoggerFactory.getLogger(DecryptSecurityResponseClientInterceptor.class);
 
     private TransportCryptoUtil transportCryptoUtil;
 
-    public SecurityResponseDecrypterClientInterceptor(KeyNegotiationCache keyNegotiationCache, TransportCryptoUtil transportCryptoUtil) {
-        this.keyNegotiationCache = keyNegotiationCache;
+    public DecryptSecurityResponseClientInterceptor(TransportCryptoUtil transportCryptoUtil) {
         this.transportCryptoUtil = transportCryptoUtil;
     }
 
     @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+    public ClientHttpResponse intercept(HttpRequest request, byte[] requestBody, ClientHttpRequestExecution execution) throws IOException {
         // *************************** preRequest ***************************
 
-        ClientHttpResponse response = execution.execute(request, body);
+        ClientHttpResponse response = execution.execute(request, requestBody);
 
         // *************************** afterRequest ***************************
         if (response.getStatusCode() != HttpStatus.OK) {
@@ -76,8 +72,8 @@ public class SecurityResponseDecrypterClientInterceptor implements ClientHttpReq
                 throw new RuntimeException("security token validate fail!");
             }
 
-            // 2. 获取本次请求真正的数据密钥 THREAD_LOCAL
-            KeyExchangeResult keyExchangeInfo = KeyNegotiationCache.THREAD_LOCAL.get();
+            // 2. 获取本次请求真正的数据密钥
+            KeyExchangeResult keyExchangeInfo = KeyNegotiationCache.CLIENT_LOCAL_CACHE.get();
             if (keyExchangeInfo == null) {
                 throw new IllegalStateException("keyExchangeInfo can't be null!");
             }
@@ -85,16 +81,16 @@ public class SecurityResponseDecrypterClientInterceptor implements ClientHttpReq
 
             TransportCipher responseDecryptCipher = TransportCipher.buildDecryptCipher(keyExchangeInfo, realDataKey);
 
-            Object result = JsonUtils.toObject(new String(body), BaseResponse.class);
+            Object toCrypt = JsonUtils.toObject(new String(response.getBody().readAllBytes()), BaseResponse.class);
             // 专门处理 BaseResponse 以及其子类
-            if (result instanceof BaseResponse) {
-                result = ((BaseResponse) result).getData();
+            if (toCrypt == null || (toCrypt = ((BaseResponse) toCrypt).getData()) == null) {
+                return response;
             }
-            Class<?> resultClazz = result.getClass();
+            Class<?> resultClazz = toCrypt.getClass();
             List<SensitiveFieldWrapper> securityResultField = SensitiveFieldCache.findSensitiveResponseFieldInfo(resultClazz);
             if (!CollectionUtils.isEmpty(securityResultField)) {
                 // 解密
-                SensitiveFieldCache.handleSensitiveData(result, securityResultField, responseDecryptCipher);
+                SensitiveFieldCache.handleSensitiveData(toCrypt, securityResultField, responseDecryptCipher);
             }
 
         } catch (AsymmetricCryptoException e) {
@@ -105,7 +101,7 @@ public class SecurityResponseDecrypterClientInterceptor implements ClientHttpReq
             throw new RuntimeException("Decrypt xDk fail!", e);
         } finally {
             // 清理线程变量
-            KeyNegotiationCache.THREAD_LOCAL.remove();
+            KeyNegotiationCache.CLIENT_LOCAL_CACHE.remove();
         }
         return response;
     }

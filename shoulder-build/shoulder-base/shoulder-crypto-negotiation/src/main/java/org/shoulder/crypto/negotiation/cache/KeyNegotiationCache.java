@@ -11,11 +11,19 @@ import org.springframework.lang.Nullable;
  */
 public interface KeyNegotiationCache {
 
+    // =================== 线程缓存，在 getAsXxx 时放缓存，在处理响应时拿 =========================
+
     /**
-     * todo 不要直接使用，尽管直接使用性能较好
-     * 接收响应前getAndRemove
+     * 客户端：接收响应从这里拿，避免等待接口返回值时秘钥过期
      */
-    ThreadLocal<KeyExchangeResult> THREAD_LOCAL = new ThreadLocal<>();
+    ThreadLocal<KeyExchangeResult> CLIENT_LOCAL_CACHE = new ThreadLocal<>();
+
+    /**
+     * 服务端返回响应从这里拿，避免处理过程中秘钥过期
+     */
+    ThreadLocal<KeyExchangeResult> SERVER_LOCAL_CACHE = new ThreadLocal<>();
+
+    // ======================== 放缓存，【只在秘钥协商阶段调用】 ================================
 
     /**
      * 放缓存
@@ -37,6 +45,8 @@ public interface KeyNegotiationCache {
         put(xSessionId, keyExchangeResult, false);
     }
 
+    // ============= 从缓存中拿数据，【应只在请求前获取，处理响应应从线程变量中获取，避免中途过期情况】 ============
+
     /**
      * 从缓存中拿数据，发送安全请求时
      *
@@ -49,7 +59,7 @@ public interface KeyNegotiationCache {
     }
 
     /**
-     * 从缓存中拿数据，当接收对方安全请求时
+     * 从缓存中拿数据，当接收对方安全请求时【应只在请求前获取，处理响应应从线程变量中获取，避免中途过期情况】
      *
      * @param xSessionId 客户端发来请求的 xSessionId
      * @return 密钥协商结果 如果没有则为 null

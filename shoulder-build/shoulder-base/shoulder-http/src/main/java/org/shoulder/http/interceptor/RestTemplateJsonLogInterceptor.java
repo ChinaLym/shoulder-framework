@@ -14,11 +14,6 @@ public class RestTemplateJsonLogInterceptor extends BaseRestTemplateLogIntercept
 
     private static final Logger log = LoggerFactory.getLogger(RestTemplateJsonLogInterceptor.class);
 
-
-    public RestTemplateJsonLogInterceptor() {
-        super();
-    }
-
     public RestTemplateJsonLogInterceptor(boolean logTillResponse) {
         super(logTillResponse);
     }

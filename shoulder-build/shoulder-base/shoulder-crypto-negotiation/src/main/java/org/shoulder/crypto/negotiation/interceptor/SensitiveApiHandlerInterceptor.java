@@ -60,6 +60,7 @@ public class SensitiveApiHandlerInterceptor extends HandlerInterceptorAdapter {
             response.getWriter().write(JsonUtils.toJson(r));
             return false;
         }
+        KeyNegotiationCache.SERVER_LOCAL_CACHE.set(cacheKeyExchangeResult);
 
         // 校验token是否正确
         transportCryptoUtil.verifyToken(xSessionId, xDk, token);

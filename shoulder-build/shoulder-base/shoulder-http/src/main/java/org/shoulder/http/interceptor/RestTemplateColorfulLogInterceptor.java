@@ -26,11 +26,7 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
      */
     private final boolean useCallerLogger;
 
-    public RestTemplateColorfulLogInterceptor(boolean useCallerLogger) {
-        this(useCallerLogger, BaseRestTemplateLogInterceptor.LOG_TILL_RESPONSE_DEFAULT);
-    }
-
-    public RestTemplateColorfulLogInterceptor(boolean useCallerLogger, boolean logTillResponse) {
+    public RestTemplateColorfulLogInterceptor(boolean logTillResponse, boolean useCallerLogger) {
         super(logTillResponse);
         this.useCallerLogger = useCallerLogger;
     }
@@ -50,13 +46,13 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
             .cyan(" (" + SELF_CLASS_NAME + ")")
             .cyan(" --------------------- ");
 
-        StackTraceElement stack = PrintUtils.findStackTraceElement(RestTemplate.class.getName(), "");
+        StackTraceElement stack = PrintUtils.findStackTraceElement(RestTemplate.class, "", true);
         // 肯定会有一个，否则不应该触发该方法 null
         if (stack == null) {
             throw new IllegalCallerException("Current StackTrack not contains any RestTemplate's method call!");
         }
         Logger logger = useCallerLogger ? LoggerFactory.getLogger(stack.getClassName()) : log;
-        String codeLocation = PrintUtils.fetchCodeLocation(stack);
+        String codeLocation = PrintUtils.findCodeLocation(stack);
 
         builder
             .newLine(BOUNDARY_LEFT)

@@ -114,7 +114,7 @@ public class SecurityRestTemplate extends RestTemplate {
             KeyExchangeResult keyExchangeResult = null;
             while (keyExchangeResult == null) {
                 keyExchangeResult = negotiate(uri, time);
-                KeyNegotiationCache.THREAD_LOCAL.set(keyExchangeResult);
+                KeyNegotiationCache.CLIENT_LOCAL_CACHE.set(keyExchangeResult);
                 time++;
             }
 

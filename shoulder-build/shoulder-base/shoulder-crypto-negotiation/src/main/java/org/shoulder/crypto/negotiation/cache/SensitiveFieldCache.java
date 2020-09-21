@@ -79,7 +79,7 @@ public class SensitiveFieldCache {
      * @param sensitiveFields 所有需要处理的敏感字段信息
      * @param encrypt         加密/解密
      */
-    public static void handleSensitiveData(Object object, List<SensitiveFieldWrapper> sensitiveFields,
+    public static void handleSensitiveData(@NonNull Object object, @NonNull List<SensitiveFieldWrapper> sensitiveFields,
                                            @NonNull TransportCipher cipher) {
         try {
             // 不应该为空

@@ -2,10 +2,9 @@ package org.shoulder.autoconfigure.crypto;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.autoconfigure.http.HttpAutoConfiguration;
-import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.http.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.http.SensitiveDateEncryptMessageConverter;
-import org.shoulder.crypto.negotiation.interceptor.SecurityResponseDecrypterClientInterceptor;
+import org.shoulder.crypto.negotiation.interceptor.DecryptSecurityResponseClientInterceptor;
 import org.shoulder.crypto.negotiation.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -32,7 +31,7 @@ public class SecurityHttpAutoConfiguration {
 
     @Bean
     @ConditionalOnClass
-    public SecurityRestTemplate securityRestTemplate(TransportNegotiationService transportNegotiationService, KeyNegotiationCache keyNegotiationCache,
+    public SecurityRestTemplate securityRestTemplate(TransportNegotiationService transportNegotiationService,
                                                      TransportCryptoUtil cryptoUtil, @Nullable List<ClientHttpRequestInterceptor> interceptors) {
         SecurityRestTemplate securityRestTemplate = new SecurityRestTemplate(transportNegotiationService, cryptoUtil);
         // ClientHttpRequestInterceptor
@@ -43,7 +42,7 @@ public class SecurityHttpAutoConfiguration {
 
             if (CollectionUtils.isNotEmpty(toAdd)) {
                 List<ClientHttpRequestInterceptor> newInterceptors = new ArrayList<>(existConverters.size() + toAdd.size());
-                newInterceptors.add(new SecurityResponseDecrypterClientInterceptor(keyNegotiationCache, cryptoUtil));
+                newInterceptors.add(new DecryptSecurityResponseClientInterceptor(cryptoUtil));
                 newInterceptors.addAll(existConverters);
                 newInterceptors.addAll(toAdd);
                 securityRestTemplate.setInterceptors(newInterceptors);

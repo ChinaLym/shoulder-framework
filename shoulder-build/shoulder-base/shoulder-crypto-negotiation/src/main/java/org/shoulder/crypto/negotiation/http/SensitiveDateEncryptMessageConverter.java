@@ -59,22 +59,12 @@ public class SensitiveDateEncryptMessageConverter extends MappingJackson2HttpMes
             object = cloned;
 
             // 加密敏感数据
-            encryptSensitiveData(object, securityParamField);
+            SensitiveFieldCache.handleSensitiveData(object, securityParamField, TransportCipherHolder.getRequestCipher());
         }
 
         // 序列化
         super.writeInternal(object, type, outputMessage);
     }
-
-
-    private void encryptSensitiveData(Object object, List<SensitiveFieldWrapper> sensitiveFields) {
-        SensitiveFieldCache.handleSensitiveData(object, sensitiveFields, TransportCipherHolder.getRequestCipher());
-    }
-
-    private void decryptSensitiveData(Object object, List<SensitiveFieldWrapper> sensitiveFields) {
-        SensitiveFieldCache.handleSensitiveData(object, sensitiveFields, TransportCipherHolder.getResponseCipher());
-    }
-
 
     /*@NonNull
     @Override

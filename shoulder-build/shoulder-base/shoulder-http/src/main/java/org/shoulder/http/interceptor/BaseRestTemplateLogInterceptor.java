@@ -31,7 +31,8 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
     protected static final boolean LOG_TILL_RESPONSE_DEFAULT = true;
 
     /**
-     * 等待响应返回后再进行统一记录（分开打印会导致请求日志和响应日志不在一起，推荐在开发阶段打印在一起方便查看）。
+     * 等待响应返回后再进行统一记录（分开打印会导致请求日志和响应日志不在一起，由于RestTemplate是阻塞的，故在请求中，
+     * 当前线程也不会打印其他日志，默认打印在一起，方便查看）。
      * tip:若请求过慢可能导致日志迟迟不打印
      */
     private final boolean logTillResponse;

@@ -6,6 +6,7 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
+import org.shoulder.crypto.negotiation.annotation.Sensitive;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.SensitiveFieldCache;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
@@ -33,6 +34,8 @@ import java.util.List;
 /**
  * 服务端敏感api响应自动加密，注意不要与统一拦截器顺序冲突
  *
+ * todo 仅拦截带
+ *
  * @author lym
  */
 @RestControllerAdvice
@@ -40,12 +43,9 @@ public class SecurityRestControllerAutoCryptoResponseAdvice implements ResponseB
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final KeyNegotiationCache keyNegotiationCache;
-
     private final TransportCryptoUtil transportCryptoUtil;
 
-    public SecurityRestControllerAutoCryptoResponseAdvice(KeyNegotiationCache keyNegotiationCache, TransportCryptoUtil transportCryptoUtil) {
-        this.keyNegotiationCache = keyNegotiationCache;
+    public SecurityRestControllerAutoCryptoResponseAdvice(TransportCryptoUtil transportCryptoUtil) {
         this.transportCryptoUtil = transportCryptoUtil;
     }
 
@@ -55,7 +55,14 @@ public class SecurityRestControllerAutoCryptoResponseAdvice implements ResponseB
 
         boolean jsonType = MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
         // 返回值不是 json对象或为 Spring 框架的返回值
-        return jsonType && !ResponseEntity.class.isAssignableFrom(returnType.getParameterType());
+        if( !jsonType || ResponseEntity.class.isAssignableFrom(returnType.getParameterType())){
+            return false;
+        }
+
+        // Controller 方法上必须要有 @Sensitive 注解
+        Sensitive methodAnnotation = returnType.getMethodAnnotation(Sensitive.class);
+        boolean hasAnnotationOnMethod = methodAnnotation != null;
+        return hasAnnotationOnMethod;
     }
 
     /**
@@ -95,9 +102,9 @@ public class SecurityRestControllerAutoCryptoResponseAdvice implements ResponseB
         }
 
         // 生成返回值加密的数据密钥，以加密要返回的敏感数据信息（请求和响应中使用的数据密钥不同）
-        KeyExchangeResult cacheKeyExchangeResult = keyNegotiationCache.getAsServer(xSessionId);
+        KeyExchangeResult cacheKeyExchangeResult = KeyNegotiationCache.SERVER_LOCAL_CACHE.get();
         if (cacheKeyExchangeResult == null) {
-            // todo 处理接口请求时过期，导致本次接口失败。应该提前缓存到线程变量中，避免这种情况发生。目前暂时返回重新握手错误码，让客户端重新发一次请求
+            // todo 若在返回接口响应时过期，会导致本次接口失败。应使用线程变量中的
 
             response.setStatusCode(HttpStatus.OK);
             response.getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -124,7 +131,7 @@ public class SecurityRestControllerAutoCryptoResponseAdvice implements ResponseB
             throw new RuntimeException("encrypt dk fail!", e);
         } finally {
             // 清理线程变量
-            KeyNegotiationCache.THREAD_LOCAL.remove();
+            KeyNegotiationCache.SERVER_LOCAL_CACHE.remove();
         }
         return body;
     }
