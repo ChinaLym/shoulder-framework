@@ -25,10 +25,6 @@
         <module>shoulder-starter-security-browser</module>
         <module>shoulder-starter-security-code</module>
         <module>shoulder-starter-auth-server</module>
-        <!--
-
-         <module>shoulder-starter-trace</module>
-         <module>shoulder-starter-minio</module>-->
         <module>shoulder-starter-monitor</module>
     </modules>
 
