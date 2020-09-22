@@ -3,16 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>cn.itlym</groupId>
-        <artifactId>shoulder-parent</artifactId>
-        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
+        <groupId>cn.itlym.demo</groupId>
+        <artifactId>shoulder-demos</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
     <artifactId>demo4</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+
     <name>demo4</name>
     <description>Demo project for Shoulder Framework</description>
 

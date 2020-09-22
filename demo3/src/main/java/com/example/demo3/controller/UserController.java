@@ -25,7 +25,7 @@ public class UserController extends BaseController<IUserService, UserEntity> {
      */
     @RequestMapping("1")
     public UserEntity get() {
-        // 已经自动注入 bizService，即 IUserService
+        // 自动根据当前 Controller 泛型注入对应的 IService（IUserService），可通过 bizService 调用
         return bizService.getById(1);
     }
 

@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>cn.itlym</groupId>
-        <artifactId>shoulder-parent</artifactId>
-        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
+        <groupId>cn.itlym.demo</groupId>
+        <artifactId>shoulder-demos</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <groupId>com.example</groupId>
     <artifactId>demo2</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+
     <name>demo2</name>
     <description>Demo project for Shoulder Framework</description>
 
