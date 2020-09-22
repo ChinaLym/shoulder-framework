@@ -1,4 +1,4 @@
-<h1 align="center"><a href="https://github.com/ChinaLym" target="_blank">Shoulder</a></h1>
+<h1 align="center"><a href="https://github.com/ChinaLym" target="_blank">Shoulder Framework（一个肩膀）</a></h1>
 
 ![LOGO](doc/img/logo.jpg)
 
@@ -17,11 +17,11 @@
 
 - 地址: [github](https://github.com/ChinaLym/Shoulder-Framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)
 
-# shoulder （肩膀）
-
 一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能。
 
-### 与 `Spring Boot` 的关系
+---
+
+### 与 `Spring Boot`
 
 可以把 `Shoulder` 看作为 `Spring Boot` 的一个 `插件`。即在 `Spring Boot` 基础上实现了常用能力的集合，将 **[软件优雅设计与开发最佳实践](http://spec.itlym.cn)** 落地。
 
@@ -75,6 +75,8 @@
 - 更多
     - ...
     
+---
+
 # 快速开始
 
 推荐通过一个简单的 **[示例工程](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)**（[github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)），快速感受 `Shoulder` 带来的优雅编码体验。
@@ -138,6 +140,8 @@
         </dependency> 
     </dependencies>
 ```
+
+---
 
 # 常见问题
 
@@ -207,7 +211,7 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 一千开发手里有一千种实践之路，这一千条路中，`平坦的`（开发维护成本低）、`坎坷的`（开发维护成本高） 差别很大，使用业界有成熟的解决方案往往会**事半功倍**！
 为保证 `代码性能` ，降低 `维护成本`、`开发成本`。**Shoulder** 还提供了`技术选型指导`和一定的`开发规范`，带你轻松踏上最佳实践之路！[点击这里可以查看 Shoulder Framework 推荐的开发规约](http://doc.itlym.cn)
 
-## 平台 & 未来
+## Road Map
 
 `Shoulder` 希望做一个整套的可复用的平台（`PaaS`），使用者只需要做做自己的业务即可。整体格局如下
 
@@ -222,12 +226,12 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 | 项目 | 开源地址 | 说明 |
 |---|---|---|
 | Shoulder Framework | [github](https://github.com/ChinaLym/Shoulder-Framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework) | 开发框架，在 Spring Boot 基础之上，结合[软件优雅设计与开发最佳实践](http://spec.itlym.cn)，增加常用的功能，任何基于`Spring Boot`/`Spring Cloud`的项目都可以使用。 |
-| Shoulder Platform | [github](https://github.com/ChinaLym/Shoulder-Platform)、[gitee](https://gitee.com/ChinaLym/shoulder-Platform) | SaaS 开发平台，提供了基础通用能力，与具体业务无关 |
-| shoulder-framework-demo | [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework) | 以简单的例子介绍 `Shoulder Framework` 的使用 |
-| shoulder-plugins | [github](https://github.com/ChinaLym/shoulder-plugins)、[gitee](https://gitee.com/ChinaLym/shoulder-plugins) | shoulder 提供的的减少开发工作量的`maven`插件（非必须，如遵循[软件优雅设计与开发最佳实践-国际化开发](http://doc.itlym.cn/specs/base/i18n.html)时推荐希望使用自动生成多语言翻译资源文件的插件减少开发工作量） |
+| Shoulder Platform | [github](https://github.com/ChinaLym/Shoulder-Platform)、[gitee](https://gitee.com/ChinaLym/shoulder-platform) | SaaS 开发平台，提供了基础通用能力，与具体业务无关 |
+| shoulder-framework-demo | [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework-demo) | 以简单的例子介绍 `Shoulder Framework` 的使用 |
+| shoulder-plugins | [github](https://gitee.com/ChinaLym/shoulder-plugins)、[gitee](https://gitee.com/ChinaLym/shoulder-plugins) | shoulder 提供的的减少开发工作量的`maven`插件（非必须，如遵循[软件优雅设计与开发最佳实践-国际化开发](http://doc.itlym.cn/specs/base/i18n.html)时推荐希望使用自动生成多语言翻译资源文件的插件减少开发工作量） |
 | shoulder-lombok | [github](https://github.com/ChinaLym/shoulder-lombok)、[gitee](https://gitee.com/ChinaLym/shoulder-lombok) | 在`lombok`之上，增加 `@SLog` 注解，用于简化[软件优雅设计与开发最佳实践-错误码与日志](http://spec.itlym.cn/specs/base/errorCode.html) -shoulder 实现的日志框架的使用（非必须） |
 | shoulder-lombok-idea-plugin | [github](https://github.com/ChinaLym/lombok-intellij-plugin)、[gitee](https://gitee.com/ChinaLym/lombok-intellij-plugin) | 在 `lombok-idea-plugin`之上，在 IDEA 中增加`@SLog`的编码提示，以更好的使用 `shoulder-lombok`（非必须，使用 shoulder-lombok 时推荐） |
-| Shoulder iPaaS | [github](https://github.com/ChinaLym/shoulder-iPaaS)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS) | iPaaS 平台，介绍了常见中间件、监控系统、私有基础平台如何部署 |
+| Shoulder iPaaS | [github](https://github.com/ChinaLym/shoulder-ipaas)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS) | iPaaS 平台，介绍了常见中间件、监控系统、私有基础平台如何部署 |
 
 ## 发行版本号说明
 
