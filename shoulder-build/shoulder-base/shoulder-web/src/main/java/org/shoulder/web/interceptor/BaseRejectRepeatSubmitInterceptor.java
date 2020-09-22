@@ -1,6 +1,8 @@
 package org.shoulder.web.interceptor;
 
-import lombok.extern.shoulder.SLog;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.http.interceptor.BaseRestTemplateLogInterceptor;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,8 +13,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author lym
  */
-@SLog
 public abstract class BaseRejectRepeatSubmitInterceptor extends HandlerInterceptorAdapter {
+
+    private static final Logger log = LoggerFactory.getLogger(BaseRestTemplateLogInterceptor.class);
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

@@ -1,6 +1,6 @@
 package org.shoulder.web.filter.xss;
 
-import org.shoulder.web.filter.AbstractPathFilterProperties;
+import org.shoulder.web.filter.PathFilterProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -9,6 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author lym
  */
 @ConfigurationProperties(prefix = "shoulder.web.waf.xss")
-public class XssProperties extends AbstractPathFilterProperties {
+public class XssProperties extends PathFilterProperties {
 
 }

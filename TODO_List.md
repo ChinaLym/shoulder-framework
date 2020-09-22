@@ -16,18 +16,18 @@ shoulder-core 中未使用，但常用的工具类考虑抽至新的 util 包
     - 简单增删改接口
     - 批量增删改
     - 异步导入与导出（基于csv/excel）
-
+    - 应用内部广播变更通知
+    
 ## WEB
 - 考虑使用自定义的 ObjectMapper 替代，MappingJackson2HttpMessageConverter 中的，获取更好的接口兼容性？
 
-将 @Async 的线程池开发出来，以配置形式？
+将 `@Async` 的线程池以配置形式开放出来？
 
-- 接口日志美化？
 - api 带版本
 - @API 注解区分哪些是对外（第三方）暴露的接口，哪些是系统内部的接口
 
 
-操作日志推荐加在 ControllerImpl、ListenerImpl、ScheduleImpl ，避免业务嵌套，否则还需要考虑业务传播与覆盖，参考Spring 的事务传播
+操作日志推荐加在最外层，如 ControllerImpl、ListenerImpl、ScheduleImpl ，避免业务嵌套，否则还需要考虑业务传播与覆盖，参考Spring 的事务传播
 ```
 - 同时记录父子业务
     - 为子业务创建一个新的业务上下文，分别记录嵌套业务
@@ -43,7 +43,7 @@ shoulder-core 中未使用，但常用的工具类考虑抽至新的 util 包
 
 
 #### api 文档
-- open-api 2/3 ?
+- open-api v2/v3 ?
 - 接口上报到网关？
     - 自动推送
     - 插件生成网关可解析的格式
@@ -53,7 +53,7 @@ shoulder-core 中未使用，但常用的工具类考虑抽至新的 util 包
 扫描特定枚举类，生成字典信息到统一目录，字典服务
     
 ## spring-cache
-使用 ConversionService 代替 StringRedisSerializer 获得更好的编码体验
+使用 ConversionService 代替 StringRedisSerializer 支持枚举等，获得更好的编码体验
 
 ## 安全
 
@@ -69,23 +69,7 @@ shoulder-core 中未使用，但常用的工具类考虑抽至新的 util 包
 
 # 提供技术选型推荐
 
-csv、excel 
-
-
-# 使用说明补充
-
-test & 使用说明
-
-
-
-
-# shoulder-platform
-
-开放默认EndPoint
-    /redirect/**
-    /current/userinfo
-
-SDK
+csv、excel 导入导出。定时任务。 
 
 sessionKey枚举
 

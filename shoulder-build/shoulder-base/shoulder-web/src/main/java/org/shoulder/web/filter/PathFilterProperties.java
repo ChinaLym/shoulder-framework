@@ -9,7 +9,7 @@ import java.util.List;
  * @author lym
  */
 @Data
-public class AbstractPathFilterProperties {
+public class PathFilterProperties {
 
     /**
      * 拦截请求请求路径。默认拦截所有，支持 antMatcher
