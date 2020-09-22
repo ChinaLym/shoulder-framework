@@ -1,6 +1,7 @@
 package org.shoulder.web.filter.xss;
 
 import org.shoulder.web.filter.BasePathFilter;
+import org.shoulder.web.filter.PathFilterHelper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -16,7 +17,7 @@ import java.io.IOException;
 public class XssFilter extends BasePathFilter {
 
     public XssFilter(XssProperties xssProperties) {
-        super(xssProperties);
+        super(new PathFilterHelper(xssProperties));
     }
 
     @Override

@@ -3,7 +3,6 @@
 ## 0.4 （planing）
 - 全局唯一标识生成器（分布式全局id）
 - 默认使用 `Undertow` 而非 `Tomcat`
-- 升级依赖
 - operation-log
 - 完善安全认证实现，支持简单 `JWT认证`
 - 框架异常整理
@@ -20,7 +19,8 @@
 - 完善安全认证实现，`browser`可用
 - 完善验证码框架，可用
 - 增加监控模块（线程池监控、错误码、异常监控），基于 `micrometer`，可使用 `Prometheus` 等对接
-- 废弃 trace、minio 两个模块，移动至 shoulder-platform 中
+- 升级依赖 Spring Boot-> 2.3.4, Cloud-> H.S8，修复 RFD 漏洞
+- 废弃 trace、minio、aopx 三个模块，移动至 shoulder-platform 中，Spring 高级特性使用保留原生用法
 
 ## ~~0.2（2020年9月10日）~~
 - 数据库功能支撑

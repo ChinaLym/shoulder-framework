@@ -3,12 +3,11 @@ package org.shoulder.core.converter;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
 
-import javax.validation.constraints.NotEmpty;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
 /**
- * 字符串转日期或时间类型，模板方法
+ * 字符串转日期或时间类型，模板方法【注意，spring boot 2.3 之后内置支持了】
  *
  * @param <T> 时间类
  * @author lym
@@ -56,6 +55,6 @@ public abstract class BaseDateConverter<T> implements Converter<String, T> {
      * @return 日期时间类对象
      * @throws DateTimeParseException 日期转换出错
      */
-    protected abstract T parseDateOrTime(@NotEmpty String sourceDateString, String dateTimeTemplate) throws DateTimeParseException;
+    protected abstract T parseDateOrTime(@NonNull String sourceDateString, String dateTimeTemplate) throws DateTimeParseException;
 
 }

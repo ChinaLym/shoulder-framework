@@ -2,8 +2,8 @@ package org.shoulder.core.converter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.springframework.lang.NonNull;
 
-import javax.validation.constraints.NotEmpty;
 import java.text.ParseException;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
@@ -43,7 +43,7 @@ public class DateConverter extends BaseDateConverter<Date> {
 
 
     @Override
-    protected Date parseDateOrTime(@NotEmpty String sourceDateString, String dateTimeTemplate) {
+    protected Date parseDateOrTime(@NonNull String sourceDateString, String dateTimeTemplate) {
         try {
             return FastDateFormat.getInstance(dateTimeTemplate).parse(sourceDateString);
         } catch (ParseException e) {

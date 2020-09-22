@@ -3,14 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <!-- 最新 spring cloud 版本：https://spring.io/projects/spring-cloud#learn -->
-
-    <modelVersion>4.0.0</modelVersion>
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-framework</artifactId>
+    <version>0.3</version><!-- shoulder-version -->
+
+    <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
 
-    <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
     <!-- mvn versions:set -DnewVersion=1.0.1-RELEASE、mvn versions:commit、mvn versions:revert -->
 
     <!-- 简介 -->

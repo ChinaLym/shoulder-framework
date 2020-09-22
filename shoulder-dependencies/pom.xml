@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.3-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.3</version><!-- shoulder-version -->
         <!--<relativePath>../pom.xml</relativePath>-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -16,19 +16,17 @@
     <properties>
         <!-- shoulder framework bom -->
         <shoulder-lombok.version>0.1</shoulder-lombok.version>
-        <shoulder.version>0.3-SNAPSHOT</shoulder.version><!-- shoulder-version -->
+        <shoulder.version>0.3</shoulder.version><!-- shoulder-version -->
 
         <!-- dependencies bom -->
-        <!--<spring.version>5.2.4.RELEASE</spring.version>-->
-        <!-- spring 5.2.4 -->
-        <spring-boot.version>2.2.8.RELEASE</spring-boot.version>
+
+        <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
         <!-- 由于Spring Boot提供了Maven BOM来管理依赖版本，因此您无需指定版本 -->
         <!--<spring-security.version></spring-security.version>-->
-        <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info -->
-        <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
 
-        <!--由于 spring-cloud-alibaba 一些依赖版本过久，使用时可能出现不兼容问题，且依赖了低版本的 fastJson，故这里不直接使用-->
-        <!--<spring-cloud-alibaba.version>2.2.1.RELEASE</spring-cloud-alibaba.version>-->
+        <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info -->
+        <!-- 最新 spring cloud 版本：https://spring.io/projects/spring-cloud#learn -->
+        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
 
         <!-- build -->
         <java.version>11</java.version>
@@ -56,22 +54,22 @@
         <commons-exec.version>1.3</commons-exec.version>
         <commons-email.version>1.5</commons-email.version>
         <commons-io.version>2.7</commons-io.version>
-        <commons-lang3.version>3.10</commons-lang3.version>
+        <commons-lang3.version>3.11</commons-lang3.version>
         <commons-net.version>3.6</commons-net.version>
         <commons-daemon.version>1.2.2</commons-daemon.version>
 
 
         <jna.version>5.5.0</jna.version>
         <!-- useful tools -->
-        <hutool.version>5.3.8</hutool.version>
+        <hutool.version>5.4.3</hutool.version>
         <javassist.version>3.27.0-GA</javassist.version>
 
         <guava.version>29.0-jre</guava.version>
         <findbugs-annotations.version>3.0.0</findbugs-annotations.version>
         <alibaba.transmittable.version>2.11.5</alibaba.transmittable.version>
 
-        <bcprov.jdk15on.version>1.65.01</bcprov.jdk15on.version>
-        <bcpkix.jdk15on.version>1.65</bcpkix.jdk15on.version>
+        <bcprov.jdk15on.version>1.66</bcprov.jdk15on.version>
+        <bcpkix.jdk15on.version>1.66</bcpkix.jdk15on.version>
         <caffeine.version>2.8.5</caffeine.version>
         <mapstruct.version>1.3.1.Final</mapstruct.version>
 
@@ -84,17 +82,11 @@
         <mysql.version>8.0.19</mysql.version>
         <postgresql.version>42.2.5</postgresql.version>
         <druid.version>1.1.21</druid.version>
-        <mybatis-plus.version>3.3.2</mybatis-plus.version>
+        <mybatis-plus.version>3.4.0</mybatis-plus.version>
         <BeeCP.version>2.5.4.1</BeeCP.version>
         <p6spy.version>3.9.1</p6spy.version>
 
-        <!-- dataBase-->
-        <minio.version>7.0.2</minio.version>
-
-
-        <!-- log-trace -->
-        <brave.version>5.12.3</brave.version>
-        <micrometer.version>1.5.2</micrometer.version>
+        <micrometer.version>1.5.5</micrometer.version>
 
         <!-- test -->
         <mockito-all.version>1.10.19</mockito-all.version>
@@ -144,16 +136,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-
-            <!-- https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html -->
-            <!--<dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${spring-cloud-alibaba.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>-->
 
             <!-- ================================== Shoulder-framework party ==================================== -->
 
@@ -293,18 +275,6 @@
             <dependency>
                 <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-monitor</artifactId>
-                <version>${shoulder.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-starter-minio</artifactId>
-                <version>${shoulder.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-starter-trace</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 
@@ -520,33 +490,6 @@
             <!-- db end -->
 
 
-            <!-- log-trace begin -->
-            <dependency>
-                <groupId>io.zipkin.brave</groupId>
-                <artifactId>brave</artifactId>
-                <version>${brave.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.zipkin.brave</groupId>
-                <artifactId>brave-instrumentation-http</artifactId>
-                <version>${brave.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.zipkin.brave</groupId>
-                <artifactId>brave-instrumentation-servlet</artifactId>
-                <version>${brave.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.zipkin.brave</groupId>
-                <artifactId>brave-context-slf4j</artifactId>
-                <version>${brave.version}</version>
-            </dependency>
-            <!-- log-trace end -->
-
-
             <!-- monitor -->
             <dependency>
                 <groupId>io.micrometer</groupId>
@@ -554,28 +497,6 @@
                 <version>${micrometer.version}</version>
             </dependency>
             <!-- monitor end -->
-
-            <dependency>
-                <groupId>io.minio</groupId>
-                <artifactId>minio</artifactId>
-                <version>${minio.version}</version>
-            </dependency>
-
-
-            <!-- spring basepackage start -->
-            <!--<dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${spring.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${spring.version}</version>
-                <scope>provided</scope>
-            </dependency>-->
-            <!-- spring basepackage end -->
 
             <!-- test -->
             <dependency>
@@ -605,6 +526,7 @@
 
         </dependencies>
     </dependencyManagement>
+
 
     <build>
         <plugins>

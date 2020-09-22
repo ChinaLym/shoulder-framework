@@ -63,7 +63,7 @@ public class BrowserSessionAuthBeanConfiguration {
     @ConditionalOnBean(DataSource.class)
     @ConditionalOnMissingBean
     public PersistentTokenRepository persistentTokenRepository(DataSource dataSource, JdbcTemplate jdbcTemplate,
-                                                               @Value("${spring.datasource.driverClassName}:''") String driverType) {
+                                                               @Value("${spring.datasource.driver-class-name:''}") String driverType) {
 
         // tokenRepository spring security 不支持修改表名 shoulder 未来支持表名修改
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();

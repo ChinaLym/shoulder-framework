@@ -1,6 +1,7 @@
 package org.shoulder.core.converter;
 
-import javax.validation.constraints.NotEmpty;
+import org.springframework.lang.NonNull;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
@@ -23,7 +24,7 @@ public class LocalDateConverter extends BaseLocalDateTimeConverter<LocalDate> {
     }
 
     @Override
-    protected String toStandFormat(@NotEmpty String sourceDateString) {
+    protected String toStandFormat(@NonNull String sourceDateString) {
         return super.toStandYearMonthDay(sourceDateString);
     }
 

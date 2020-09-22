@@ -1,6 +1,5 @@
 package org.shoulder.code.propertities;
 
-import javax.validation.constraints.Min;
 import java.time.Duration;
 import java.util.List;
 
@@ -12,13 +11,12 @@ import java.util.List;
 public abstract class BaseValidateCodeProperties {
 
     /**
-     * 验证码长度，默认6个字符
+     * 验证码长度，默认6个字符，推荐至少为4
      */
-    @Min(1)
     private int length = 6;
 
     /**
-     * 验证码有效秒数，默认 10 分钟
+     * 验证码有效时间，默认 10 分钟
      */
     private Duration effectiveSeconds = Duration.ofMinutes(10);
 
