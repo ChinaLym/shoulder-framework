@@ -42,7 +42,7 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
         builder
             .newLine()
             .cyan("+---------------------- ")
-            .yellow("Shoulder HTTP Report", ColorString.Style.NORMAL, true)
+            .green("Shoulder HTTP Report")
             .cyan(" (" + SELF_CLASS_NAME + ")")
             .cyan(" --------------------- ");
 
@@ -105,7 +105,7 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
             .lBlue("responseBody   : ").append(record.getResponseBody());
 
         builder.newLine()
-            .cyan("+------------------------------------------------------------------");
+            .cyan("+---------------------------------------------------------------------------------------");
 
         logger.debug(builder.toString());
     }
