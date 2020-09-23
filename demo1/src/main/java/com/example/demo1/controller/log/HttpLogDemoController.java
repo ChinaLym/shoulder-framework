@@ -1,5 +1,6 @@
 package com.example.demo1.controller.log;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
  * @author lym
  * @see RestTemplateColorfulLogInterceptor
  */
+@Slf4j
 @RestController
 @RequestMapping("httpLog")
 public class HttpLogDemoController {
@@ -40,12 +42,15 @@ public class HttpLogDemoController {
     }
 
     /**
-     * 带参数 http://localhost:8080/httpLog/2?param=shoulderframework
+     * http://localhost:8080/httpLog/2
      */
     @GetMapping("2")
     public String common(String param) {
-        // 调用百度的看看响应时间颜色会不会变
-        return restTemplate.getForObject("http://www.baidu.com/" + "?wd=" + param, String.class);
+        // 响应时间颜色会根据响应时间长短变化
+        log.debug("准备发起请求。。。");
+        restTemplate.getForObject("http://gitee.com/ChinaLym/Shoulder-Framework", String.class);
+        log.debug("请求结束。。。");
+        return "";
     }
 
     /**
