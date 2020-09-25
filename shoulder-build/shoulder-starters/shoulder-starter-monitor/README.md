@@ -211,6 +211,8 @@ prometheus.集的指标由`指标名称 metric name`、`标签 label name` 两�
 
 参考：
 
+- [spring boot actuator demo](https://www.cnblogs.com/jmcui/p/9820579.html)
+
 - [micrometer.io 官网](http://micrometer.io/docs/concepts#_the_timed_annotation)
 
 - [Prometheus 中文文档](http://www.coderdocument.com/docs/prometheus/v2.14/best_practices/metric_and_label_naming.htm)
