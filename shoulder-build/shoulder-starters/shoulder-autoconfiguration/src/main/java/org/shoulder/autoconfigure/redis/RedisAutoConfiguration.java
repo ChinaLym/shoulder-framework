@@ -14,8 +14,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
- * redis相关配置，提供以下 Bean
- * redisTemplate<String, Object>、StringRedisTemplate
+ * redis相关配置，提供 string 和 string-object 两种
  * 其中 redis 是否为集群是由 RedisConnectionFactory 决定的，spring boot 已经自动支持
  *
  * @author lym

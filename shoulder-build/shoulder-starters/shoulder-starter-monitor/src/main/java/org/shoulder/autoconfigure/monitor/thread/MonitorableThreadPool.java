@@ -195,7 +195,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
     /**
      * 修改核心线程数
      *
-     * @param newCorePoolSize 0 <= corePoolSize <= maximumPoolSize
+     * @param newCorePoolSize [0 , maximumPoolSize]
      */
     @Override
     public void setCorePoolSize(int newCorePoolSize) {
@@ -207,7 +207,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
     /**
      * 修改最大线程数
      *
-     * @param newMaximumPoolSize corePoolSize <= maximumPoolSize && 0 < maximumPoolSize
+     * @param newMaximumPoolSize corePoolSize 小于等于 maximumPoolSize 且 maximumPoolSize 大于 0
      */
     @Override
     public void setMaximumPoolSize(int newMaximumPoolSize) {

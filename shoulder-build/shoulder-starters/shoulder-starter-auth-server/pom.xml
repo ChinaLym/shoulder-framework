@@ -46,6 +46,11 @@
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
 
+            <!-- deploy -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
 
         </plugins>
     </build>

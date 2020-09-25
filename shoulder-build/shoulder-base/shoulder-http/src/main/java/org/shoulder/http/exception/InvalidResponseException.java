@@ -3,7 +3,7 @@ package org.shoulder.http.exception;
 import org.shoulder.core.exception.BaseRuntimeException;
 
 /**
- * 响应不是 BaseResponse<?>
+ * 响应不是 BaseResponse
  *
  * @author lym
  */

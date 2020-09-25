@@ -63,7 +63,7 @@ public class HttpLogHelper {
 
     /**
      * IDE 控制台日志跳转代码原理：https://www.jetbrains.com/help/idea/setting-log-options.html
-     * 输出这种格式则可以识别 <fully-qualified-class-name>.<method-name>(<file-name>:<line-number>)
+     * 输出这种格式则可以识别 类全限定名.方法名(文件名.java:行号)
      * 但测试发现 IDEA 只要 .(xxx.java:行号) 格式即可
      *
      * @param method 方法

@@ -11,9 +11,6 @@ import java.util.Objects;
 
 /**
  * 控制台颜色
- * <p>
- * 2/3、>=60 的控制符未被納入规范
- * <p>
  * https://blog.csdn.net/ShewMi/article/details/78992458
  *
  * @author lym

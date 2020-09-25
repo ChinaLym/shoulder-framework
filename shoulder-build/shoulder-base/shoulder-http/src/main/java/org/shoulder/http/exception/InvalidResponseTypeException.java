@@ -1,7 +1,7 @@
 package org.shoulder.http.exception;
 
 /**
- * 响应格式不是 BaseResponse<?>
+ * 响应格式不是 BaseResponse
  * - code、msg、data
  *
  * @author lym

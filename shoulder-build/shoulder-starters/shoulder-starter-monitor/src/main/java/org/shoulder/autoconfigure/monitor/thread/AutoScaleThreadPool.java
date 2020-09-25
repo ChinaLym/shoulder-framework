@@ -15,8 +15,8 @@ import java.util.concurrent.*;
  * 实际中应根据队列容量自动扩容线程数，如，当队列中任务数达到上限的 70%、80%、90%，则自动扩容线程，而不是满了之后才扩容，缓解大压力场景下触发
  * <p>
  * 默认参数举例：
- * - 执行前，若队列中任务数 > 75% 队列容量 且 threadSize < maxSize，将线程数加一，默认冷却时间 5s
- * - 执行后，若队列中任务数 < 25% 队列容量 且 threadSize < originCoreSize，将 core 线程数减少一，默认冷却时间 5s
+ * - 执行前，若队列中任务数大于 75% 队列容量 且 threadSize 小于 maxSize，将线程数加一，默认冷却时间 5s
+ * - 执行后，若队列中任务数小于25% 队列容量 且 threadSize 小于 originCoreSize，将 core 线程数减少一，默认冷却时间 5s
  * <p>
  * 动态设置参数实现： 对接配置中心
  * 监控、告警实现： 对接 prometheus，过载告警

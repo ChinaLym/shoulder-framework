@@ -48,7 +48,7 @@ public @interface OperationLog {
     /**
      * 操作内容        (选填)
      * 该字段仅适用于不支持多语言的情况
-     * 【支持多语言时，请在代码中 set {@link OperationLogDTO#setDetailItems} 或 {@link OperationLogDTO#addDetailItem} 来填充】
+     * 【支持多语言时，请在代码中编码填充 detailItems {@link OperationLogDTO#addDetailItem} 】
      * <p>
      * 填写 {@link #detailKey} 将忽略该字段，认为支持多语言
      */
