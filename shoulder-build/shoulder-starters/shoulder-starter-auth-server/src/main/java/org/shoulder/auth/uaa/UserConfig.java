@@ -12,6 +12,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 /**
  * 配置本系统用户，以通过这些用户完成认证。
+ * @author lym
  */
 @Configuration(proxyBeanMethods = false)
 public class UserConfig extends WebSecurityConfigurerAdapter {

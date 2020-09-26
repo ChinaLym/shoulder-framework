@@ -36,6 +36,11 @@
             <artifactId>spring-security-oauth2-autoconfigure</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-web</artifactId>
+        </dependency>
+
         <!-- 基本加密算法 -->
         <dependency>
             <groupId>cn.itlym</groupId>

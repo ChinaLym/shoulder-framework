@@ -1,6 +1,7 @@
 package org.shoulder.security.code.img;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.shoulder.code.dto.ValidateCodeDTO;
 
 import java.awt.image.BufferedImage;
@@ -15,7 +16,8 @@ import java.time.LocalDateTime;
  */
 public class ImageCode extends ValidateCodeDTO {
 
-    private BufferedImage image;
+    @JsonIgnore
+    private transient BufferedImage image;
 
     public ImageCode(BufferedImage image, String code, Duration expireIn) {
         super(code, expireIn);

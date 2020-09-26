@@ -28,6 +28,8 @@ public class ImageCodeProcessor extends AbstractValidateCodeProcessor<ImageCode>
     public void send(ServletWebRequest request, ImageCode imageCode) throws ValidateCodeException {
         try {
             ImageIO.write(imageCode.getImage(), "JPEG", Objects.requireNonNull(request.getResponse()).getOutputStream());
+            // 这里置为 null，help gc，避免保存时还要存图片信息
+            imageCode.setImage(null);
         } catch (Exception e) {
             throw new ValidateCodeException("send validate code fail.", e);
         }

@@ -5,20 +5,20 @@
     - 单机
     - 多实例小场景
     - 分布式
-- ~~默认使用 `Undertow` 而非 `Tomcat`~~
-    - 取消各个模块对 tomcat 的依赖
-    - 注意 `undertow` 不支持jsp
-    - 实际未实现，默认 tomcat、若希望使用 undertow 使用者自行排除即可
 - `operation-log` 模块
 - 完善安全认证实现
     - 支持简单 `JWT认证`
     - session 支持集群模式
-- 框架异常整理
-    - 供使用者直接使用的工具抛出带错误码的 runtimeException
 - 接口文档选型
     - 注解同时支持 swagger3（主）/swagger2
     - 注释支持 smartDoc
     - 可视化界面默认使用 xxx
+- ~~默认使用 `Undertow` 而非 `Tomcat`~~
+    - 取消各个模块对 tomcat 的依赖
+    - 注意 `undertow` 不支持jsp
+    - 实际未实现，默认 tomcat、若希望使用 undertow 使用者自行排除即可
+- 框架异常整理
+    - 供使用者直接使用的工具抛出带错误码的 runtimeException
 - 翻译支持spring原生用法、增加识别jar内多语言资源文件夹
 
 ## 0.3 （stable）

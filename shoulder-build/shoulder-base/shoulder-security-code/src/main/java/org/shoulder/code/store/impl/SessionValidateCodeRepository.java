@@ -18,7 +18,9 @@ public class SessionValidateCodeRepository implements ValidateCodeStore {
 
     @Override
     public void save(ServletWebRequest request, ValidateCodeDTO code, String validateCodeType) {
-        request.getRequest().getSession().setAttribute(buildSessionKey(validateCodeType), code);
+        // 只存值与类型，不存图片等
+        ValidateCodeDTO codeCopy = new ValidateCodeDTO(code.getCode(), code.getExpireTime());
+        request.getRequest().getSession().setAttribute(buildSessionKey(validateCodeType), codeCopy);
     }
 
 

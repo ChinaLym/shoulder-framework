@@ -25,6 +25,13 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- web项目相关依赖 -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-security-code</artifactId>

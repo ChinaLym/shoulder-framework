@@ -33,7 +33,9 @@ public class RedisValidateCodeRepository implements ValidateCodeStore {
 
     @Override
     public void save(ServletWebRequest request, ValidateCodeDTO code, String type) {
-        redisTemplate.opsForValue().set(buildKey(request, type), code, 30, TimeUnit.MINUTES);
+        // 只存值与类型，不存图片等
+        ValidateCodeDTO codeCopy = new ValidateCodeDTO(code.getCode(), code.getExpireTime());
+        redisTemplate.opsForValue().set(buildKey(request, type), codeCopy, 30, TimeUnit.MINUTES);
     }
 
 
