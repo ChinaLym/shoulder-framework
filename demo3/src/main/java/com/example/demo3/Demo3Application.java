@@ -1,15 +1,14 @@
 package com.example.demo3;
 
-import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * demo3
+ * 尝试访问 http://localhost:8080/，尝试进入主页，但因引入了框架的认证，故需要登录认证后才行
  *
  * @author lym
  */
-@SpringBootApplication(exclude = I18nAutoConfiguration.class)
+@SpringBootApplication//(exclude = I18nAutoConfiguration.class)
 public class Demo3Application {
 
     public static void main(String[] args) {

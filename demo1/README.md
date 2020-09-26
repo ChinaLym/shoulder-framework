@@ -24,3 +24,12 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 
 **demo1** 工程包含最基本功能的使用，更多优雅的设计期待被探索...
 
+---
+
+## 常见问题
+
+### `xxx.propreties` 文件中写入中文后保存乱码？或显示为 unicode 格式？
+
+IDEA 可以为我们自动转化：
+- 打开设置 `File -> Settings -> Editor -> File Encodings`
+- 勾选 `Transparent native-to-ascii conversion`

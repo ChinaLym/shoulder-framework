@@ -1,7 +1,7 @@
 package com.example.demo1.controller.i18n;
 
 import org.shoulder.core.context.AppContext;
-import org.shoulder.core.i18.ShoulderMessageSource;
+import org.shoulder.core.i18.ReloadableLocaleDirectoryMessageSource;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.Locale;
  * 翻译、国际化、多语言功能介绍
  *
  * @author lym
- * @see ShoulderMessageSource 该类的类注释，必看，shoulder 翻译核心简介
+ * @see ReloadableLocaleDirectoryMessageSource 实现类，在 Spring 基础上额外增加了翻译文件加载方式、简化了使用
  */
 @RestController
 @RequestMapping("i18n")
@@ -24,21 +24,21 @@ public class ShoulderI18nDemoController {
 
 
     /**
-     * Spring 定义的接口，shoulder 100%兼容
+     * Spring 定义的接口，使用者仍然可以只依赖 Spring、shoulder 的能力仅以Spring指定的插件形式生效、100%兼容 Spring 原生用法
      */
     @Autowired
     private MessageSource messageSource;
 
     /**
-     * 实际上与 messageSource 为同一个对象，具体实现类都是 {@link ShoulderMessageSource}
+     * 实际上与 messageSource 为同一个对象，具体实现类都是 {@link ReloadableLocaleDirectoryMessageSource}，但额外增加了两个简单的用法
      */
     @Autowired
     private Translator translator;
 
     /**
-     * Spring 中提供的用法 <a href="http://localhost:8080/i18n/spring?code=shoulder.test.hi&locale=zh_CN" />
+     * Spring 中提供的用法 <a href="http://localhost:8080/i18n/spring?toBeTranslate=shoulder.test.hi&locale=zh_CN" />
      *
-     * @param toBeTranslate 待翻译的
+     * @param toBeTranslate 待翻译的 多语言标识 code
      * @param args          用于填充翻译的参数
      * @param locale        语言
      * @return 翻译后的
@@ -59,10 +59,10 @@ public class ShoulderI18nDemoController {
 
 
     /**
-     * Shoulder 中的推荐用法  <a href="http://localhost:8080/i18n/shoulder?code=shoulder.test.hi" />
+     * Shoulder 中的推荐用法  <a href="http://localhost:8080/i18n/shoulder?toBeTranslate=shoulder.test.hi" />
      * 在 Spring 之上简化了使用，不必再填写 Locale，将自动获取
      *
-     * @param toBeTranslate 待翻译的
+     * @param toBeTranslate 待翻译的 多语言标识 code
      * @param args          用于填充翻译的参数
      * @param locale        语言
      * @return 翻译后的

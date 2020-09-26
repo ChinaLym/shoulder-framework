@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.shoulder.autoconfigure.web.WebAdvanceAutoConfiguration;
-import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 /**
- * 统一返回值类型示例
+ * 统一 Restful 返回值类型示例
  * 自动包装返回值为标准返回值（包装 json 和 string 类型）
- * 可以通过 {@link SkipResponseWrap} 或返回值继承 {@link BaseResponse} 跳过包装
+ * 可以通过 {@link SkipResponseWrap} 或返回值继承 {@link RestResult} 跳过包装
  *
  * @author lym
  * @see SkipResponseWrap 跳过包装
@@ -23,15 +23,15 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("response")
-public class ResponseDemoController {
+public class RestfulResponseDemoController {
 
 
     /**
      * 正常写法举例，框架不会嵌套包装   <a href="http://localhost:8080/response/0" />
      */
     @GetMapping("0")
-    public BaseResponse<String> notRecommended() {
-        BaseResponse<String> response = new BaseResponse<>();
+    public RestResult<String> notRecommended() {
+        RestResult<String> response = new RestResult<>();
         response.setCode("0");
         response.setMsg("msg");
         response.setData("data");
@@ -99,7 +99,7 @@ public class ResponseDemoController {
      *
      * @param <T>
      */
-    public static class CustomizedResponse<T> extends BaseResponse<T> {
+    public static class CustomizedResponse<T> extends RestResult<T> {
 
         /**
          * 在 shoulder 标准之上额外定义了一个通用返回字段

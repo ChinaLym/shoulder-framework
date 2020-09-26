@@ -3,6 +3,8 @@ package com.example.demo3.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo3.entity.UserEntity;
 import com.example.demo3.service.IUserService;
+import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.util.SpringUtils;
 import org.shoulder.data.mybatis.base.controller.BaseController;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,16 @@ public class UserController extends BaseController<IUserService, UserEntity> {
     public UserEntity get() {
         // 自动根据当前 Controller 泛型注入对应的 IService（IUserService），可通过 bizService 调用
         return bizService.getById(1);
+    }
+
+    /**
+     * 查询 id 为 1 的用户信息
+     * http://localhost:8080/user/test
+     */
+    @RequestMapping("test")
+    public String test() {
+        // 自动根据当前 Controller 泛型注入对应的 IService（IUserService），可通过 bizService 调用
+        return SpringUtils.getApplicationContext().getMessage("aaa", null, AppInfo.defaultLocale());
     }
 
     /**
