@@ -5,7 +5,9 @@ import org.springframework.context.MessageSourceResolvable;
 /**
  * 可被翻译的
  * 对应 Spring 中的接口 {@link MessageSourceResolvable}，本类仅简化了使用（支持getCode返回单个），也可以直接继承 Spring 中的接口
- *（推荐用枚举类实现）
+ * （推荐用枚举类实现）
+ * 自动适配上下文，不需要传入语种，语种取值顺序：从当前用户或请求头中获取语言标识、其次设置的默认语言、其次系统语言
+ *
  * @author lym
  */
 public interface Translatable extends MessageSourceResolvable {

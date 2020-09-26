@@ -1,5 +1,7 @@
 package org.shoulder.core.i18;
 
+import org.shoulder.core.context.AppInfo;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -12,21 +14,11 @@ import java.util.stream.Collectors;
 
 /**
  * Spring 多语言/翻译 接口实现
- *
- * 在 Spring 默认实现类基础上增加了按语种文件名加载多语言文件的方式；Translator 实现：
  * <p>
- * 额外支持了基于路径的加载方式： 多语言资源文件路径/{语言标识}_{地区标识}/{资源名}.properties/.xml
- * 【使得资源文件名称只包含关键字，翻译文件按照语言分文件夹存放，容易维护与扩展】
+ * 主要特点：在 Spring 的基础上增加了按 语种文件夹 加载多语言文件的方式
  * <p>
- * 自动适配上下文，增加不需要传入语种参数，取值顺序：从当前用户或请求头中获取语言标识、其次设置的默认语言、其次系统语言
- * <p>
- * 约定：默认会加载 classpath*:language 中的多语言，作为 spi 便于自定义jar包中扩充，优先级较低，优先使用用户的
- * <p>
- * 多语言文件命名限制：由于 Spring 采用了 jdk {@link ResourceBundle} 的思想加载多语言文件，故对多语言资源文件命名有一定限制
- * 顺序：尝试加载传入语言： 资源名_语言_地区_变种 > 资源名_语言_地区 > 资源名_语言。再使用系统语言尝试加载
- * <p>
- * 翻译场景推荐 注：Thymeleaf、FreeMark 等动态页面由后端翻译，html静态页面或前后分离时推荐由前端翻译
- * 若有大量重复 message 映射时，如多租户，每个租户可以定制自己的界面和提示信息，可采用继承方式简化多语言管理
+ * 额外支持了基于语种文件夹的加载方式： 多语言资源文件路径/{语言标识}_{地区标识}/xxx.properties(.xml)
+ * 【翻译文件按照语言分文件夹存放，支持按模块管理多语言文件，方便维护与扩展】
  * <p>
  * 若要清空多语言缓存，通过父类方法 {@link ReloadableResourceBundleMessageSource#clearCacheIncludingAncestors}
  *
@@ -37,8 +29,19 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
     private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
     public ReloadableLocaleDirectoryMessageSource() {
-        // 默认约定，spi
+        // 默认会加载 classpath*:language 中的多语言（便于自定义jar包中扩充，优先级较低，优先使用用户的）
         super.addBasenames("classpath*:language");
+    }
+
+    /**
+     * 通过 MessageSourceAccessor 简化使用
+     */
+    public static MessageSourceAccessor getAccessor() {
+        return new MessageSourceAccessor(new ReloadableLocaleDirectoryMessageSource(), AppInfo.defaultLocale());
+    }
+
+    public static MessageSourceAccessor getAccessor(Locale defaultLocale) {
+        return new MessageSourceAccessor(new ReloadableLocaleDirectoryMessageSource(), defaultLocale);
     }
 
     /**
@@ -50,7 +53,7 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
     public Locale currentLocale() {
         // 尝试从上下问（当前请求/用户）中获取，然后取 AppInfo 中的，然后取配置的
         Locale currentLocale;
-        return (currentLocale = Translator.super.currentLocale()) != null ? currentLocale :  getDefaultLocale();
+        return (currentLocale = Translator.super.currentLocale()) != null ? currentLocale : getDefaultLocale();
     }
 
     /**
@@ -133,7 +136,7 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
      * @return 是否可以解析（properties、xml）
      */
     private boolean withResolveSuffix(String fileName) {
-        return fileName.endsWith(".properties") ||fileName.endsWith(".xml");
+        return fileName.endsWith(".properties") || fileName.endsWith(".xml");
     }
 
 }

@@ -77,7 +77,7 @@ public class SensitiveFieldCache {
      *
      * @param object          obj
      * @param sensitiveFields 所有需要处理的敏感字段信息
-     * @param cipher         加密/解密
+     * @param cipher          加密/解密
      */
     public static void handleSensitiveData(@NonNull Object object, @NonNull List<SensitiveFieldWrapper> sensitiveFields,
                                            @NonNull TransportCipher cipher) {

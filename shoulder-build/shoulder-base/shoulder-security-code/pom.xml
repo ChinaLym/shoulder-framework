@@ -18,6 +18,13 @@
             <artifactId>shoulder-security</artifactId>
         </dependency>
 
+        <!-- 服务端增强 -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- redis 缓存 -->
         <dependency>
             <groupId>org.springframework.data</groupId>

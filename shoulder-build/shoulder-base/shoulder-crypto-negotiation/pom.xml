@@ -14,22 +14,32 @@
 
     <dependencies>
 
+        <!-- 基本加密算法 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-crypto</artifactId>
         </dependency>
 
+        <!-- 请求端增强 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-http</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
             <optional>true</optional>
         </dependency>
 
+        <!-- 服务端增强 -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- redis 缓存 -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>

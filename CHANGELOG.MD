@@ -2,12 +2,20 @@
 
 ## 0.4 （doing）
 - 全局唯一标识生成器（分布式全局id）
-- 默认使用 `Undertow` 而非 `Tomcat`
-- operation-log
+    - 单机
+    - 多实例小场景
+    - 分布式
+- ~~默认使用 `Undertow` 而非 `Tomcat`~~(不作为默认实现。移至shoulder-platform实现)
+    - 注意 `undertow` 不支持jsp
+- `operation-log` 模块
 - 完善安全认证实现，支持简单 `JWT认证`
 - 框架异常整理
+    - 供使用者直接使用的工具抛出带错误码的 runtimeException
 - 接口文档选型
-- 翻译支持原生用法
+    - 注解同时支持 swagger3（主）/swagger2
+    - 注释支持 smartDoc
+    - 可视化界面默认使用 xxx
+- 翻译支持spring原生用法、增加识别jar内多语言资源文件夹
 
 ## 0.3 （stable）
 - 数据库功能增强：分页、自动补充创建者、修改者、创建时间、修改时间

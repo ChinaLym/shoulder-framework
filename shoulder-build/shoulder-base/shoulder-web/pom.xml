@@ -29,7 +29,7 @@
             <artifactId>shoulder-http</artifactId>
         </dependency>
 
-        <!--web项目相关依赖 start -->
+        <!-- web项目相关依赖 start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

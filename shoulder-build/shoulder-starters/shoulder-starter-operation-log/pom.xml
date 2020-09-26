@@ -24,12 +24,6 @@
             <artifactId>shoulder-operation-log</artifactId>
         </dependency>
 
-        <!--web项目相关依赖 start -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
         <!-- AOP 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

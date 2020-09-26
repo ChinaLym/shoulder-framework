@@ -4,6 +4,8 @@ import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.NoSuchMessageException;
+import org.springframework.context.support.MessageSourceAccessor;
 
 import java.util.Locale;
 
@@ -13,6 +15,7 @@ import java.util.Locale;
  * getMessage 时不再需要传语言标识，简化使用（默认语言标识为 {@link AppContext#getLocale}）
  *
  * @author lym
+ * @see MessageSourceAccessor Spring 的该类也有类似的功能
  */
 public interface Translator extends MessageSource {
 
@@ -22,8 +25,9 @@ public interface Translator extends MessageSource {
      * @param languageKey 待翻译的多语言 key
      * @param args        填充参数（支持嵌套翻译，如参数为 MessageSourceResolvable）
      * @return 翻译后的
+     * @throws NoSuchMessageException 未找到 languageKey 对应的翻译
      */
-    default String getMessage(String languageKey, Object... args) {
+    default String getMessage(String languageKey, Object... args) throws NoSuchMessageException {
         return getMessage(languageKey, args, currentLocale());
     }
 
@@ -32,8 +36,9 @@ public interface Translator extends MessageSource {
      *
      * @param translatable 可翻译的目标
      * @return 翻译后的
+     * @throws NoSuchMessageException 未找到 languageKey 对应的翻译
      */
-    default String getMessage(MessageSourceResolvable translatable) {
+    default String getMessage(MessageSourceResolvable translatable) throws NoSuchMessageException {
         return getMessage(translatable, currentLocale());
     }
 

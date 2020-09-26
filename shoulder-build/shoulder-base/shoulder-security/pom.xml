@@ -21,10 +21,16 @@
         </dependency>
 
 
-        <!--web项目相关依赖 start -->
+        <!-- web项目相关依赖 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- spring-security 项目必备，包含 spring-security-config、web 两个基础模块 -->
