@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.support.server;
 
-import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
@@ -76,7 +76,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             // 返回重新握手错误码
             response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            BaseResponse r = BaseResponse.error(CommonErrorCodeEnum.SECURITY_SESSION_INVALID);
+            RestResult r = RestResult.error(CommonErrorCodeEnum.SECURITY_SESSION_INVALID);
             response.getWriter().write(JsonUtils.toJson(r));
             return false;
         }

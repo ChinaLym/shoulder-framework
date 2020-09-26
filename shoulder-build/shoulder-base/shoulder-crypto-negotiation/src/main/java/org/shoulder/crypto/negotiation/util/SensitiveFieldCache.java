@@ -49,7 +49,7 @@ public class SensitiveFieldCache {
             Sensitive requestSecret = field.getAnnotation(Sensitive.class);
             if (requestSecret == null) {
                 if (field.getClass().isAssignableFrom(Object.class)) {
-                    // todo 处理特殊类：BaseResponse 这种带泛型的
+                    // todo 处理特殊类：RestResult 这种带泛型的
                     System.out.println("");
                 }
                 continue;

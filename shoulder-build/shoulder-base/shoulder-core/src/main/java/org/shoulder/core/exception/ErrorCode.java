@@ -1,6 +1,6 @@
 package org.shoulder.core.exception;
 
-import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
@@ -96,8 +96,8 @@ public interface ErrorCode {
      * @param args 填充异常信息的参数
      * @return api 返回值
      */
-    default BaseResponse<Object[]> toResponse(Object... args) {
-        return new BaseResponse<>(
+    default RestResult<Object[]> toResponse(Object... args) {
+        return new RestResult<>(
             this.getCode(),
             this.getMessage(),
             args == null ? getArgs() : args

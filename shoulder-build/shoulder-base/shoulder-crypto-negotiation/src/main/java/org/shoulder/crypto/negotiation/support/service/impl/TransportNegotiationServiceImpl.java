@@ -3,7 +3,7 @@ package org.shoulder.crypto.negotiation.support.service.impl;
 import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.core.constant.ByteSpecification;
-import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
@@ -84,9 +84,9 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             String dslAimUrl = uri.toString().replace(uri.getPath(), negotiationUrl);
             log.debug("negotiate with {}, url is {}", appId, dslAimUrl);
 
-            ParameterizedTypeReference<BaseResponse<KeyExchangeResponse>> responseType = new ParameterizedTypeReference<>() {
+            ParameterizedTypeReference<RestResult<KeyExchangeResponse>> responseType = new ParameterizedTypeReference<>() {
             };
-            ResponseEntity<BaseResponse<KeyExchangeResponse>> httpResponse =
+            ResponseEntity<RestResult<KeyExchangeResponse>> httpResponse =
                 restTemplate.exchange(dslAimUrl, HttpMethod.POST, createKeyNegotiationHttpEntity(), responseType);
 
             // 3. 校验密钥协商的结果
@@ -135,8 +135,8 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
      * @param httpResponse 密钥协商响应
      * @return 合法的响应
      */
-    private KeyExchangeResponse validateAndFill(ResponseEntity<BaseResponse<KeyExchangeResponse>> httpResponse) throws AsymmetricCryptoException, NegotiationException {
-        BaseResponse<KeyExchangeResponse> response = httpResponse.getBody();
+    private KeyExchangeResponse validateAndFill(ResponseEntity<RestResult<KeyExchangeResponse>> httpResponse) throws AsymmetricCryptoException, NegotiationException {
+        RestResult<KeyExchangeResponse> response = httpResponse.getBody();
         if (HttpStatus.OK != httpResponse.getStatusCode() || response == null) {
             throw new NegotiationException("response error! response = " + JsonUtils.toJson(response));
         }

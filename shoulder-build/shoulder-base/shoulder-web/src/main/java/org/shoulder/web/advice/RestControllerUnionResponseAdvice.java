@@ -1,6 +1,6 @@
 package org.shoulder.web.advice;
 
-import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
@@ -21,13 +21,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 /**
  * 统一接口返回值
- * 自动将 json 或者 str 类型返回值（RestController 的返回值）用 {@link BaseResponse} 包装。
+ * 自动将 json 或者 str 类型返回值（RestController 的返回值）用 {@link RestResult} 包装。
  * 关闭包装：
  * 禁止对某个方法返回值包装： 方法上添加 {@link SkipResponseWrap}
  * 禁止对某个RestController类的所有返回值包装： 类上添加 {@link SkipResponseWrap}
  * 禁用功能： shoulder.web.unionResponse=false
  * <p>
- * 如果希望使用自己项目中的返回值类，返回值继承 {@link BaseResponse} 类即可。
+ * 如果希望使用自己项目中的返回值类，返回值继承 {@link RestResult} 类即可。
  * <p>
  *
  * @author lym
@@ -76,13 +76,13 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
         if (MappingJackson2HttpMessageConverter.class.isAssignableFrom(selectedConverterType)) {
             if (body == null) {
                 log.debug("body is null");
-                return BaseResponse.success();
+                return RestResult.success();
             }
             // json
-            if (BaseResponse.class.isAssignableFrom(body.getClass())) {
+            if (RestResult.class.isAssignableFrom(body.getClass())) {
                 return body;
             }
-            return BaseResponse.success().setData(body);
+            return RestResult.success().setData(body);
         } else {
             // string 类型单独处理
             if (body == null || StringUtils.isEmpty((CharSequence) body)) {

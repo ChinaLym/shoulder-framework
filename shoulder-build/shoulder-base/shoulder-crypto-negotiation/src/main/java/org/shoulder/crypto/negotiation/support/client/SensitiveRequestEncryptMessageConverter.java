@@ -2,7 +2,7 @@ package org.shoulder.crypto.negotiation.support.client;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
@@ -77,9 +77,9 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
 
         Object result = super.read(type, contextClass, inputMessage);
         Object toCrypt = result;
-        // 专门处理 BaseResponse 以及其子类
-        if (result instanceof BaseResponse) {
-            toCrypt = ((BaseResponse) toCrypt).getData();
+        // 专门处理 RestResult 以及其子类
+        if (result instanceof RestResult) {
+            toCrypt = ((RestResult) toCrypt).getData();
         }
         if (toCrypt == null) {
             return result;

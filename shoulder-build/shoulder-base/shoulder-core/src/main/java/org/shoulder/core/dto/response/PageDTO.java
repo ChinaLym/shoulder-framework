@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 分页数据
  * <p>
- * 统一分页列表返回值，作为 {@link BaseResponse} 的 data 字段，total，list
+ * 统一分页列表返回值，作为 {@link RestResult} 的 data 字段，total，list
  *
  * @author lym
  */

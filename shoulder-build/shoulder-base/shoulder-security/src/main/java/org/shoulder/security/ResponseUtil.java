@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * {"msg":"xxx"}
  *
  * @author lym
- * @deprecated use BaseResponse
+ * @deprecated use RestResult
  */
 public class ResponseUtil {
 

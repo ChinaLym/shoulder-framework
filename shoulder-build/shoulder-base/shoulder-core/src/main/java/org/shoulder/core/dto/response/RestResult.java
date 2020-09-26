@@ -11,29 +11,29 @@ import org.shoulder.core.util.ExceptionUtil;
 import java.io.Serializable;
 
 /**
- * 通用返回对象
+ * Restful 风格返回值
  * <p>
  * 统一接口返回值格式，包含 code，msg，data
  *
  * @author lym
  */
-@ApiModel(value = "通用 HTTP 响应 DTO 格式")
-//@Schema(name = "通用 HTTP 响应 DTO")
-public class BaseResponse<T> implements Serializable {
+@ApiModel(value = "Restful 风格响应 DTO 格式")
+//@Schema(name = "Restful 风格响应 DTO")
+public class RestResult<T> implements Serializable {
 
-    @ApiModelProperty(value = "通用 HTTP 响应 DTO", dataType = "String", required = true, example = "0", position = 0)
-    //@Schema(name = "状态码，成功为0，失败非0", example = "0")
+    @ApiModelProperty(value = "状态码/错误码，成功为0，失败非0，必定返回", dataType = "String", required = true, example = "0", position = 0)
+    //@Schema(name = "状态码/错误码，成功为0，失败非0", example = "0")
     private String code = "0";
 
-    @ApiModelProperty(value = "描述，一般成功时不需要该值", dataType = "String", required = false, example = "success", position = 1)
-    //@Schema(name = "描述，一般成功时不需要该值", example = "success")
+    @ApiModelProperty(value = "响应描述，成功时一般不需要该值，必定返回", dataType = "String", required = false, example = "success", position = 1)
+    //@Schema(name = "响应描述，成功时一般不需要该值", example = "success")
     private String msg = "success";
 
     @ApiModelProperty(value = "传输的数据", dataType = "Object", required = false, example = "{\"name\":\"shoulder\"}", position = 2)
     //@Schema(name = "传输的数据")
     private T data;
 
-    public BaseResponse() {
+    public RestResult() {
     }
 
     /**
@@ -41,7 +41,7 @@ public class BaseResponse<T> implements Serializable {
      *
      * @param errorCode 错误码
      */
-    public BaseResponse(ErrorCode errorCode) {
+    public RestResult(ErrorCode errorCode) {
         setCode(errorCode.getCode());
         setMsg(errorCode.getMessage());
     }
@@ -54,27 +54,27 @@ public class BaseResponse<T> implements Serializable {
      * @param msg  提示信息
      * @param data 返回数据
      */
-    public BaseResponse(String code, String msg, T data) {
+    public RestResult(String code, String msg, T data) {
         setCode(code);
         setMsg(msg);
         setData(data);
     }
 
 
-    public static <T> BaseResponse<T> success() {
-        return new BaseResponse<T>(ErrorCode.SUCCESS);
+    public static <T> RestResult<T> success() {
+        return new RestResult<T>(ErrorCode.SUCCESS);
     }
 
-    public static <T> BaseResponse<T> success(T data) {
-        return new BaseResponse<T>(ErrorCode.SUCCESS).setData(data);
+    public static <T> RestResult<T> success(T data) {
+        return new RestResult<T>(ErrorCode.SUCCESS).setData(data);
     }
 
-    public static <T> BaseResponse<T> error(ErrorCode errorCode) {
-        return new BaseResponse<T>(errorCode);
+    public static <T> RestResult<T> error(ErrorCode errorCode) {
+        return new RestResult<T>(errorCode);
     }
 
-    public static <T> BaseResponse<T> error(ErrorCode error, T data) {
-        return new BaseResponse<T>(error).setData(data);
+    public static <T> RestResult<T> error(ErrorCode error, T data) {
+        return new RestResult<T>(error).setData(data);
     }
 
 
@@ -104,7 +104,7 @@ public class BaseResponse<T> implements Serializable {
         return code;
     }
 
-    public BaseResponse<T> setCode(String code) {
+    public RestResult<T> setCode(String code) {
         this.code = ExceptionUtil.formatErrorCode(code);
         return this;
     }
@@ -113,7 +113,7 @@ public class BaseResponse<T> implements Serializable {
         return msg;
     }
 
-    public BaseResponse<T> setMsg(String msg) {
+    public RestResult<T> setMsg(String msg) {
         this.msg = msg;
         return this;
     }
@@ -122,7 +122,7 @@ public class BaseResponse<T> implements Serializable {
         return data;
     }
 
-    public BaseResponse<T> setData(T data) {
+    public RestResult<T> setData(T data) {
         this.data = data;
         return this;
     }

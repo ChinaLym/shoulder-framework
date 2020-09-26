@@ -1,7 +1,7 @@
 package org.shoulder.http.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.dto.response.RestResult;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -12,17 +12,17 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
- * 去除响应中 {@link BaseResponse} 的包装
+ * 去除响应中 {@link RestResult} 的包装
  *
  * @author lym
  */
-public class UnWrapperBaseResponseMessageConverter extends MappingJackson2HttpMessageConverter {
+public class UnWrapperRestResultMessageConverter extends MappingJackson2HttpMessageConverter {
 
-    public UnWrapperBaseResponseMessageConverter() {
+    public UnWrapperRestResultMessageConverter() {
         super();
     }
 
-    public UnWrapperBaseResponseMessageConverter(ObjectMapper objectMapper) {
+    public UnWrapperRestResultMessageConverter(ObjectMapper objectMapper) {
         super(objectMapper);
     }
 
@@ -33,9 +33,9 @@ public class UnWrapperBaseResponseMessageConverter extends MappingJackson2HttpMe
 
         Object result = super.read(type, contextClass, inputMessage);
         Object toCrypt = result;
-        // 专门处理 BaseResponse 以及其子类
-        if (result instanceof BaseResponse) {
-            toCrypt = ((BaseResponse) toCrypt).getData();
+        // 专门处理 RestResult 以及其子类
+        if (result instanceof RestResult) {
+            toCrypt = ((RestResult) toCrypt).getData();
         }
         if (toCrypt == null) {
             return result;

@@ -1,6 +1,6 @@
 package org.shoulder.security.authentication.browser;
 
-import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.security.SecurityConst;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ public class BrowserAuthEndpoint {
      */
     @RequestMapping(SecurityConst.URL_REQUIRE_AUTHENTICATION)
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-    public BaseResponse requireAuthentication(HttpServletRequest request, HttpServletResponse response)
+    public RestResult requireAuthentication(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
 
         // 获取引发跳转的请求
@@ -73,7 +73,7 @@ public class BrowserAuthEndpoint {
                 }
             }
             // 返回 json 响应
-            return new BaseResponse(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
+            return new RestResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
 
         }
         if (request.getHeader(HttpHeaders.ACCEPT).contains(MediaType.TEXT_HTML_VALUE)) {
@@ -81,7 +81,7 @@ public class BrowserAuthEndpoint {
             redirectStrategy.sendRedirect(request, response, redirectSignInUrl);
         }
         // 返回 json 响应
-        return new BaseResponse(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
+        return new RestResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
     }
 
 

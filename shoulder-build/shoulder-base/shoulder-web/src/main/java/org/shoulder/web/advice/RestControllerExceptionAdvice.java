@@ -1,6 +1,6 @@
 package org.shoulder.web.advice;
 
-import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
@@ -44,7 +44,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MissingServletRequestParameterException.class})
-    public BaseResponse<Object[]> paramsMissingHandler(MissingServletRequestParameterException e) {
+    public RestResult<Object[]> paramsMissingHandler(MissingServletRequestParameterException e) {
         BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_BLANK, e, e.getParameterName());
         log.info(stdEx);
         return stdEx.toResponse();
@@ -55,7 +55,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public BaseResponse<Object[]> messageNotReadableHandler(HttpMessageNotReadableException e) {
+    public RestResult<Object[]> messageNotReadableHandler(HttpMessageNotReadableException e) {
         final String springErrorTipHeader = "Could not read document:";
         final String errorStackSplit = " at ";
         String message = e.getMessage();
@@ -75,7 +75,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public BaseResponse<Object[]> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+    public RestResult<Object[]> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
         BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_NOT_VALID, e, firstErrorInfo);
         log.info(stdEx);
@@ -87,7 +87,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BindException.class})
-    public BaseResponse<Object[]> bindExceptionHandler(BindException e) {
+    public RestResult<Object[]> bindExceptionHandler(BindException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
         BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_NOT_VALID, e, firstErrorInfo);
         log.info(stdEx);
@@ -100,7 +100,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {ConstraintViolationException.class})
-    public BaseResponse<Object[]> constraintViolationExceptionHandler(ConstraintViolationException e) {
+    public RestResult<Object[]> constraintViolationExceptionHandler(ConstraintViolationException e) {
         String firstErrorInfo = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).findFirst().orElse("");
         BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_NOT_VALID, e, firstErrorInfo);
         log.info(stdEx);
@@ -141,7 +141,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-    public BaseResponse methodNotSupportedHandler(HttpRequestMethodNotSupportedException e) {
+    public RestResult methodNotSupportedHandler(HttpRequestMethodNotSupportedException e) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.REQUEST_METHOD_MISMATCH, e);
         log.warn(ex);
         return ex.toResponse();
@@ -153,7 +153,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public BaseResponse methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
+    public RestResult methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
         BaseRuntimeException ex =
             new BaseRuntimeException(CommonErrorCodeEnum.PARAM_TYPE_NOT_MATCH, e,
                 e.getName(), e.getValue(), e.getRequiredType() == null ? null : e.getRequiredType().getName());
@@ -167,7 +167,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public BaseResponse httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
+    public RestResult httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.CONTENT_TYPE_INVALID, e, String.valueOf(e.getContentType()));
         log.info(ex);
         return ex.toResponse();
@@ -184,7 +184,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(MultipartException.class)
-    public BaseResponse multipartException(MultipartException e) {
+    public RestResult multipartException(MultipartException e) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.MULTIPART_INVALID, e);
         log.warn(ex);
         return ex.toResponse();
@@ -194,7 +194,7 @@ public class RestControllerExceptionAdvice {
      * 其他异常
      */
     @ExceptionHandler(Exception.class)
-    public BaseResponse otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) {
+    public RestResult otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) {
         BaseRuntimeException ex;
         if (e instanceof ErrorCode) {
             // 符合规范定义的错误码，按照错误码日志级别记录
@@ -227,7 +227,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(SQLException.class)
-    public BaseResponse sqlExceptionHandler(SQLException e) {
+    public RestResult sqlExceptionHandler(SQLException e) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL, e);
         log.error(ex);
         return ex.toResponse();

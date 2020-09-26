@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.support.server;
 
-import org.shoulder.core.dto.response.BaseResponse;
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -80,8 +80,8 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
         }
         Object toEncryptDTO = body;
         // json
-        if (body instanceof BaseResponse) {
-            toEncryptDTO = ((BaseResponse) body).getData();
+        if (body instanceof RestResult) {
+            toEncryptDTO = ((RestResult) body).getData();
             if (toEncryptDTO == null) {
                 return body;
             }
@@ -106,7 +106,7 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
 
             response.setStatusCode(HttpStatus.OK);
             response.getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
-            return BaseResponse.error(CommonErrorCodeEnum.AUTH_401_EXPIRED);
+            return RestResult.error(CommonErrorCodeEnum.AUTH_401_EXPIRED);
         }
         try {
             byte[] responseDk = TransportCryptoUtil.generateDataKey(cacheKeyExchangeResult.getKeyLength());
