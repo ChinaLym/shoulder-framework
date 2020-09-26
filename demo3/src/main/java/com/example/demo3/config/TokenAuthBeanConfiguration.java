@@ -1,17 +1,20 @@
-package com.example.demo3.token;
+package com.example.demo3.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.InMemoryClientDetailsService;
 
+/**
+ * @author lym
+ */
+@Configuration
 @EnableResourceServer
 @EnableAuthorizationServer
-@TestConfiguration
-public class TestBeanConfiguration {
+public class TokenAuthBeanConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ClientDetailsService.class)
@@ -19,4 +22,5 @@ public class TestBeanConfiguration {
 
         return new InMemoryClientDetailsService();
     }
+
 }

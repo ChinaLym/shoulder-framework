@@ -60,18 +60,18 @@ public class ShoulderI18nDemoController {
 
     /**
      * Shoulder 中的推荐用法  <a href="http://localhost:8080/i18n/shoulder?toBeTranslate=shoulder.test.hi" />
+     *   <a href="http://localhost:8080/i18n/shoulder?toBeTranslate=shoulder.test.hi" />
      * 在 Spring 之上简化了使用，不必再填写 Locale，将自动获取
      *
      * @param toBeTranslate 待翻译的 多语言标识 code
      * @param args          用于填充翻译的参数
-     * @param locale        语言
      * @return 翻译后的
      */
     @GetMapping("shoulder")
     public String translator(String toBeTranslate, String args) {
         Object[] trArgs = StringUtils.isNotEmpty(args) ? args.split(",") : null;
 
-        return translator.getMessage(toBeTranslate, (Object[]) trArgs);
+        return translator.getMessage(toBeTranslate, trArgs);
     }
 
     /**

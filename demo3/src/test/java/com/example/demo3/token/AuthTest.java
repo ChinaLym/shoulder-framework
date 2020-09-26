@@ -57,7 +57,7 @@ public class AuthTest {
      */
     @Test
     public void testAuth() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get("/authentication/form")
+        RequestBuilder request = MockMvcRequestBuilders.post("/authentication/form")
                 .param("username", "shoulder")          // 用户名
                 .param("password", "shoulder")          // 密码
                 .accept(MediaType.APPLICATION_JSON)
