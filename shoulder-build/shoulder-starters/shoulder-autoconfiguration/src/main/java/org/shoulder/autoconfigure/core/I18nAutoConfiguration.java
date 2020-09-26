@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.core;
 
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.i18.ShoulderMessageSource;
+import org.shoulder.core.i18.ReloadableLocaleDirectoryMessageSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.context.MessageSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -36,8 +36,9 @@ public class I18nAutoConfiguration {
      * @return messageSource
      */
     @Bean(name = AbstractApplicationContext.MESSAGE_SOURCE_BEAN_NAME)
-    public ShoulderMessageSource shoulderMessageSource(MessageSourceProperties properties) {
-        ShoulderMessageSource messageSource = new ShoulderMessageSource();
+    @ConditionalOnMissingBean
+    public ReloadableLocaleDirectoryMessageSource reloadableLocaleDirectoryMessageSource(MessageSourceProperties properties) {
+        ReloadableLocaleDirectoryMessageSource messageSource = new ReloadableLocaleDirectoryMessageSource();
         messageSource.setDefaultEncoding(AppInfo.charset().name());
         messageSource.setDefaultLocale(AppInfo.defaultLocale());
         messageSource.addBasenames(properties.getBasename());

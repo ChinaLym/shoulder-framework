@@ -2,7 +2,7 @@ package org.shoulder.core.i18n;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.shoulder.core.i18.ShoulderMessageSource;
+import org.shoulder.core.i18.ReloadableLocaleDirectoryMessageSource;
 import org.springframework.context.NoSuchMessageException;
 
 import java.util.Locale;
@@ -14,7 +14,7 @@ public class ShoulderResourceMessageTes {
      */
     @Test
     public void testTranslate_zh() {
-        ShoulderMessageSource messageSource = new ShoulderMessageSource();
+        ReloadableLocaleDirectoryMessageSource messageSource = new ReloadableLocaleDirectoryMessageSource();
         String result = messageSource.getMessage("shoulder.test.hi", null, Locale.CHINA);
         Assertions.assertThat(result).isEqualTo("hai");
 
@@ -24,7 +24,7 @@ public class ShoulderResourceMessageTes {
 
     @Test
     public void testTranslate_en() {
-        ShoulderMessageSource messageSource = new ShoulderMessageSource();
+        ReloadableLocaleDirectoryMessageSource messageSource = new ReloadableLocaleDirectoryMessageSource();
         String result = messageSource.getMessage("shoulder.test.hi", null, Locale.US);
         Assertions.assertThat(result).isEqualTo("hi");
 
@@ -37,7 +37,7 @@ public class ShoulderResourceMessageTes {
      */
     @Test(expected = NoSuchMessageException.class)
     public void testTranslate_zh_special() {
-        ShoulderMessageSource messageSource = new ShoulderMessageSource();
+        ReloadableLocaleDirectoryMessageSource messageSource = new ReloadableLocaleDirectoryMessageSource();
         messageSource.getMessage("shoulder.test.cnSpecial", null, Locale.US);
     }
 

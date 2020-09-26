@@ -1,14 +1,15 @@
 # 更新记录
 
-## 0.4 （planing）
+## 0.4 （doing）
 - 全局唯一标识生成器（分布式全局id）
 - 默认使用 `Undertow` 而非 `Tomcat`
 - operation-log
 - 完善安全认证实现，支持简单 `JWT认证`
 - 框架异常整理
 - 接口文档选型
+- 翻译支持原生用法
 
-## 0.3 （doing）
+## 0.3 （stable）
 - 数据库功能增强：分页、自动补充创建者、修改者、创建时间、修改时间
 - 更简单的服务间安全传输(基于`ECDH`，jdk15中才加的功能，shoulder已经在jdk8中实现，且为Spring Boot 提供了开箱即用的能力)
 - 增加 `ColorStringBuilder`，方便构建彩色输出

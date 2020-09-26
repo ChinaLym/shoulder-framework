@@ -83,3 +83,8 @@ IDEA 自动提示需要安装 `shoulder-lombok-plugins`
 异常需求：框架/工具类等可二次开发/使用的代码定义异常为检查异常，实现类/默认实现类需要定义带错误码的异常。
 
 [spring boot 注解解释](https://www.cnblogs.com/lovecindywang/p/9846846.html)
+
+---
+
+翻译与多语言
+
