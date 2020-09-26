@@ -11,8 +11,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 
 /**
  * token 模式下安全配置主类
@@ -23,31 +23,46 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(value = TokenAuthBeanConfig.class)
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
-public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
+public class TokenSecurityConfig extends ResourceServerConfigurerAdapter {
 
-    @Autowired
+    @Autowired(required = false)
     private UserDetailsService userDetailsService;
 
     @Autowired
+    private FormAuthenticationSecurityConfig formAuthenticationSecurityConfig;
+    /**
+     * 验证码功能（可选）
+     */
+    @Autowired(required = false)
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 
-    @Autowired
+    /**
+     * 短信验证码认证（可选）
+     */
+    @Autowired(required = false)
     private PhoneNumAuthenticationSecurityConfig phoneNumAuthenticationSecurityConfig;
 
-    @Autowired
-    private FormAuthenticationSecurityConfig formAuthenticationSecurityConfig;
 
+    // todo
+    //@Autowired
+    //private LogoutSuccessHandler logoutSuccessHandler;
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-
+    public void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
         formAuthenticationSecurityConfig.configure(http);
 
         //apply 方法：<C extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>> C apply(C configurer)
 
-        http.apply(validateCodeSecurityConfig).and()
-            .apply(phoneNumAuthenticationSecurityConfig).and()
+        if (validateCodeSecurityConfig != null) {
+            http.apply(validateCodeSecurityConfig);
+        }
 
+        if (phoneNumAuthenticationSecurityConfig != null) {
+            http.apply(phoneNumAuthenticationSecurityConfig);
+        }
+
+        http
             // 配置校验规则（哪些请求要过滤）
             .authorizeRequests()
             .antMatchers(
@@ -67,14 +82,15 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
 
             // 其余请求全部开启认证（需要登录）
-            .anyRequest().authenticated()
+            .anyRequest()
+            .authenticated()
             .and()
 
             // 关闭 csrf
             .csrf().disable();
 
         //authorizeConfigManager.config(http.authorizeRequests());
-
+        // @formatter:on
     }
 
 }

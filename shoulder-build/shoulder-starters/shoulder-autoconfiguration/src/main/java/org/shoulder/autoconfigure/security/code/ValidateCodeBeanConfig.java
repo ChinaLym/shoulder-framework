@@ -38,6 +38,7 @@ public class ValidateCodeBeanConfig {
      * 验证码相关 spring security 配置类
      */
     @Bean
+    @ConditionalOnMissingBean
     public ValidateCodeSecurityConfig validateCodeSecurityConfig(ValidateCodeFilter validateCodeFilter) {
         return new ValidateCodeSecurityConfig(validateCodeFilter);
     }
@@ -47,6 +48,7 @@ public class ValidateCodeBeanConfig {
      * 并装配进默认的 FrameworkEndpoint 中
      */
     @Bean
+    @ConditionalOnMissingBean
     public ValidateCodeProcessorHolder validateCodeProcessorHolder(List<ValidateCodeProcessor> validateCodeProcessors) {
         return new ValidateCodeProcessorHolder(validateCodeProcessors);
     }
@@ -62,6 +64,7 @@ public class ValidateCodeBeanConfig {
      * 验证码过滤器
      */
     @Bean
+    @ConditionalOnMissingBean
     public ValidateCodeFilter validateCodeFilter(ValidateCodeProcessorHolder validateCodeProcessorHolder,
                                                  @Nullable AuthenticationFailureHandler authenticationFailureHandler) {
         return new ValidateCodeFilter(authenticationFailureHandler, validateCodeProcessorHolder);
@@ -76,28 +79,28 @@ public class ValidateCodeBeanConfig {
         return new SessionValidateCodeRepository();
     }
 
-
+    //todo 无法装配？待排查
     @Configuration(proxyBeanMethods = false)
-    @ConditionalOnMissingBean(value = ValidateCodeStore.class)
     @ConditionalOnClass(RedisTemplate.class)
     @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
     public static class RedisValidateCodeStoreConfiguration {
 
         @Bean
+        @ConditionalOnMissingBean(value = ValidateCodeStore.class)
         public ValidateCodeStore redisValidateCodeRepository(RedisTemplate redisTemplate,
                                                              @Value("${shoulder.security.auth.code.unionCodePramName:deviceId}") String unionCodePramName) {
             return new RedisValidateCodeRepository(redisTemplate, unionCodePramName);
         }
     }
 
-    @Deprecated
+    //@Deprecated
     @Configuration(proxyBeanMethods = false)
-    @ConditionalOnMissingBean(value = ValidateCodeStore.class)
     @ConditionalOnMissingClass(value = "org.springframework.data.redis.core.RedisTemplate")
     @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
     public static class MemoryValidateCodeStoreConfiguration {
 
         @Bean
+        @ConditionalOnMissingBean(value = ValidateCodeStore.class)
         public ValidateCodeStore memoryValidateCodeRepository() {
             LoggerFactory.getLogger(getClass()).warn("MemoryValidateCodeRepository is a ValidateCodeStore just for test, not a production level implement.");
             return new MemoryValidateCodeRepository();

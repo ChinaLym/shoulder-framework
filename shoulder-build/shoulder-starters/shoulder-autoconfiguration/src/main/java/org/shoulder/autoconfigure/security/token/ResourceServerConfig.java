@@ -1,6 +1,8 @@
 package org.shoulder.autoconfigure.security.token;
 
+import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig;
+import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,12 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Configuration(proxyBeanMethods = false)
 @EnableResourceServer
 @EnableConfigurationProperties(OAuth2Properties.class)
+@ConditionalOnAuthType(type = AuthenticationType.TOKEN)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
+
+    @Autowired
+    private FormAuthenticationSecurityConfig formAuthenticationConfig;
     /**
      * 认证成功处理器
      */
@@ -33,14 +39,15 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Autowired
     protected AuthenticationFailureHandler authenticationFailureHandler;
     /**
-     * 验证码功能
+     * 验证码功能（可选）
      */
-    @Autowired
+    @Autowired(required = false)
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
+
     /**
-     * 短信验证码认证方式
+     * 短信验证码认证（可选）
      */
-    @Autowired
+    @Autowired(required = false)
     private PhoneNumAuthenticationSecurityConfig phoneNumAuthenticationSecurityConfig;
     /**
      * openId 认证方式
@@ -55,18 +62,20 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     //@Autowired
     //private AuthorizeConfigManager authorizeConfigManager;
 
-    @Autowired
-    private FormAuthenticationSecurityConfig formAuthenticationConfig;
-
     @Override
     public void configure(HttpSecurity http) throws Exception {
 
         formAuthenticationConfig.configure(http);
 
-        http.apply(validateCodeSecurityConfig)
-            .and()
-            .apply(phoneNumAuthenticationSecurityConfig)
-            .and()
+        if (validateCodeSecurityConfig != null) {
+            http.apply(validateCodeSecurityConfig);
+        }
+
+        if (phoneNumAuthenticationSecurityConfig != null) {
+            http.apply(phoneNumAuthenticationSecurityConfig);
+        }
+
+        http
             /*.apply(socialSecurityConfig)
                 .and()
             .apply(openIdAuthenticationSecurityConfig)

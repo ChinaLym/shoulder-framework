@@ -7,8 +7,9 @@ import org.springframework.session.data.redis.config.annotation.web.http.RedisHt
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
 /**
+ * todo 配置
+ * spring-session 支持的存储类型：见 StoreType
  * @author lym
- * @see org.springframework.boot.autoconfigure.session.StoreType spring-session 支持的存储类型
  */
 @Configuration
 @EnableRedisHttpSession

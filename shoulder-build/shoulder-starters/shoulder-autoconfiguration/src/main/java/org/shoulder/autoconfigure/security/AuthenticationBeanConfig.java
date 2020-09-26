@@ -39,6 +39,7 @@ public class AuthenticationBeanConfig {
 
     /**
      * 用户名、密码认证(表单登录)配置
+     * todo 这两个 bean 太晚了？
      */
     @Bean
     @ConditionalOnBean(UserDetailsService.class)
