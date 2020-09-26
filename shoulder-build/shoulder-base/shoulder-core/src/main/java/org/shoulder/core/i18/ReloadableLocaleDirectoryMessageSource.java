@@ -1,20 +1,13 @@
 package org.shoulder.core.i18;
 
-import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
-import org.springframework.util.CollectionUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 /**
@@ -27,7 +20,7 @@ import java.util.stream.Collectors;
  * <p>
  * 自动适配上下文，增加不需要传入语种参数，取值顺序：从当前用户或请求头中获取语言标识、其次设置的默认语言、其次系统语言
  * <p>
- * 约定：默认会加载 classPath:language 中的多语言，作为 spi 便于自定义jar包中扩充，优先级较低，优先使用用户的
+ * 约定：默认会加载 classpath*:language 中的多语言，作为 spi 便于自定义jar包中扩充，优先级较低，优先使用用户的
  * <p>
  * 多语言文件命名限制：由于 Spring 采用了 jdk {@link ResourceBundle} 的思想加载多语言文件，故对多语言资源文件命名有一定限制
  * 顺序：尝试加载传入语言： 资源名_语言_地区_变种 > 资源名_语言_地区 > 资源名_语言。再使用系统语言尝试加载
@@ -41,18 +34,11 @@ import java.util.stream.Collectors;
  */
 public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBundleMessageSource implements Translator {
 
-    private static final Logger log = LoggerFactory.getLogger(ReloadableLocaleDirectoryMessageSource.class);
-
-    private ResourceLoader resourceLoader = new DefaultResourceLoader();
+    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
     public ReloadableLocaleDirectoryMessageSource() {
-        super.addBasenames("classpath:language");
-    }
-
-    @Override
-    public void setResourceLoader(@Nullable ResourceLoader resourceLoader) {
-        super.setResourceLoader(resourceLoader);
-        this.resourceLoader = (resourceLoader != null ? resourceLoader : new DefaultResourceLoader());
+        // 默认约定，spi
+        super.addBasenames("classpath*:language");
     }
 
     /**
@@ -68,7 +54,9 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
     }
 
     /**
-     * 加载特定语言对应的资源文件
+     * 加载特定语言对应的资源文件。在这里解析通配符
+     *
+     * @return 多语言资源路径
      */
     @NonNull
     @Override
@@ -83,191 +71,69 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
         boolean hasLanguage = language.length() > 0;
         if (hasLanguage) {
             temp.append(language);
-            result.addAll(0, listLanguageSourceDir(temp.toString(), locale));
+            result.addAll(0, listLanguageSourceDir(temp.toString()));
         }
 
         temp.append('_');
         boolean hasCountry = country.length() > 0;
         if (hasCountry) {
             temp.append(country);
-            result.addAll(0, listLanguageSourceDir(temp.toString(), locale));
+            result.addAll(0, listLanguageSourceDir(temp.toString()));
         }
 
         if (variant.length() > 0 && (hasLanguage || hasCountry)) {
             temp.append('_').append(variant);
-            result.addAll(0, listLanguageSourceDir(temp.toString(), locale));
+            result.addAll(0, listLanguageSourceDir(temp.toString()));
         }
-
         return result;
     }
 
     /**
      * 列出 basename 目录下所有要加载多语言文件（支持 jar/文件系统）
      *
-     * @param basename 多语言路径，如 classpath:language
+     * @param basename 多语言路径，如 classpath*:language
      * @return 举例 language/zh_CN、language/en_US
      */
     @NonNull
-    private List<String> listLanguageSourceDir(String basename, Locale locale) {
-        Resource resource = resourceLoader.getResource(basename);
-        if (!resource.exists()) {
-            log.debug("i18n basename(" + resource.getDescription() + ") not found");
+    private List<String> listLanguageSourceDir(String basename) {
+        /*if(!basename.startsWith("classpath")){
             return Collections.emptyList();
-        }
+        }*/
+        Resource[] resources;
         try {
-            String fileUrlName = resource.getURL().getFile();
-            if (fileUrlName.contains(".jar")) {
-                return loadI18nResourceFromJar(basename, locale, resource);
+            // 扫描可能会很慢
+            resources = resourcePatternResolver.getResources(basename + "/*");
+        } catch (IOException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Could resolve resourcePath [" + basename + "]", e);
             }
-            return loadI18nResourceFromFileSystem(locale, resource);
-        }catch (IOException e){
-            // 加载失败不应报错，而是返回未加载到
-            logger.debug("load fail. basename=" + basename + ", locale=" + locale, e);
             return Collections.emptyList();
         }
-    }
-
-    // -------------------- 从文件系统中加载 ------------------------
-
-
-    /**
-     * 从文件系统中获取多语言资源文件
-     *
-     * @param locale   语种
-     * @param resource 待加载的文件夹，默认 language
-     * @return 资源文件加载通配符
-     * @throws IOException 加载失败
-     */
-    private List<String> loadI18nResourceFromFileSystem(Locale locale, Resource resource) throws IOException {
-        if (!resource.getFile().isDirectory()) {
-            // 否则必须为本地的文件夹，不然不支持
-            log.debug("i18n resource(" + resource.getDescription() + ") not a directory");
+        if (resources.length == 0) {
             return Collections.emptyList();
         }
-        List<String> resourceFilePattern = new LinkedList<>();
-        File[] languageDirs = resource.getFile().listFiles();
-        // languageDirs item 举例 "language/zh_CN"
-        if (languageDirs == null) {
-            // 目录为空
-            log.debug("resource(" + resource.getDescription() + ") contains 0 file named like '<translate>.properties'.");
-            return Collections.emptyList();
-        }
-        String aimLanguage = locale.getLanguage();
-        String aimCountry = locale.getCountry();
-        for (File specialLanguageDir : languageDirs) {
-            String[] dirLocaleParts = specialLanguageDir.getName().split("_");
-            if (dirLocaleParts.length < 2) {
-                log.debug("File name({}) not contains countryCode. " +
-                        "Recommend: <languageCode>_<countryCode> example: 'zh_CN'. File absolutePath:{}",
-                    specialLanguageDir.getName(), specialLanguageDir.getAbsolutePath());
-            }
-            String dirLanguage = dirLocaleParts[0];
-            String dirCountry = dirLocaleParts.length > 1 ? dirLocaleParts[1] : "";
-            if (!aimLanguage.equals(dirLanguage)) {
-                // 语言不匹配直接返回
-                continue;
-            }
-            if (aimCountry.equals(dirCountry)) {
-                // 地区也匹配，优先级更高，放置在最前
-                resourceFilePattern.addAll(0, getLocaleFilePatterns(specialLanguageDir));
-            } else {
-                resourceFilePattern.addAll(getLocaleFilePatterns(specialLanguageDir));
-            }
-            // 这里未加载默认语言资源
-        }
-        return resourceFilePattern;
-    }
-
-    /**
-     * 获取特定语言文件夹下所有的（properties 或 xml）文件
-     *
-     * @param specialLanguageDir language/zh_CN
-     * @return 加载这些文件对应的 spring resource 表达式，如 file:///d:/language/zh_CN
-     */
-    private List<String> getLocaleFilePatterns(File specialLanguageDir) {
-        if (!specialLanguageDir.isDirectory()) {
-            // 必须为文件夹
-            return Collections.emptyList();
-        }
-        File[] specialLanguageResources = specialLanguageDir.listFiles();
-        if (specialLanguageResources == null) {
-            // 空文件夹
-            return Collections.emptyList();
-        }
-        // 加载该文件下的所有 properties 和 xml 文件（同名不同类型可能导致重复加载，最好不要多个格式混用）
-        return Arrays.stream(specialLanguageResources)
-            .map(File::getAbsolutePath)
-            .filter(this::canResolve)
-            .map(name -> name.replace(".properties", ""))
-            .map(name -> name.replace(".xml", ""))
-            .map(name -> "file:///" + name)
-            .collect(Collectors.toList());
-    }
-
-    // -------------------- 从 jar 里加载 ------------------------
-
-    /**
-     * 从 jar 里获取多语言资源文件
-     *
-     * @param basename 资源名，默认为 language
-     * @param locale   语种
-     * @param resource 待加载的 jar
-     * @return 资源文件加载通配符
-     * @throws IOException 加载失败
-     */
-    @NonNull
-    protected List<String> loadI18nResourceFromJar(String basename, Locale locale, @NonNull Resource resource) throws IOException {
-        // jar 内资源
-        String[] parts = resource.getURL().getFile().split(".jar");
-        String realPath = parts[0].replace("file:", "") + ".jar";
-        List<String> relativeJarPath = listAllResourceFromJar(realPath, basename);
-        if (CollectionUtils.isEmpty(relativeJarPath)) {
-            return Collections.emptyList();
-        }
-        return relativeJarPath.stream()
-            .map(path -> {
-                String resourcePath = "classpath:" + path;
-                return resourceLoader.getResource(resourcePath).isReadable() ? resourcePath : null;
+        return Arrays.stream(resources)
+            .map(r -> {
+                try {
+                    return r.getURI().toString();
+                } catch (IOException e) {
+                    return "";
+                }
             })
-            .filter(Objects::nonNull)
+            // 只取 .properties .xml
+            .filter(this::withResolveSuffix)
+            .map(name -> name.replace(".properties", "").replace(".xml", ""))
             .collect(Collectors.toList());
     }
 
-
     /**
-     * 列出 jarFilePath 对应 jar 的 resourceDirName 目录中的 properties、xml 文件
-     *
-     * @param jarFilePath jar 文件路径，如 "/F:/files/mavenRepository/cn/itlym/shoulder-core/1.0/shoulder-core-1.0.jar"
-     * @param baseName    如 classpath:language
-     * @return 相对于该 jar 的resource path
-     * @throws IOException 读取jar文件失败
-     */
-    private List<String> listAllResourceFromJar(String jarFilePath, String baseName) throws IOException {
-        String resourceDirName = baseName;
-        if (resourceDirName.contains(":")) {
-            resourceDirName = baseName.split(":")[1];
-        }
-        JarFile jarFile = new JarFile(jarFilePath);
-        Enumeration<JarEntry> entries = jarFile.entries();
-        List<String> resourcePaths = new LinkedList<>();
-        while (entries.hasMoreElements()) {
-            JarEntry jarEntry = entries.nextElement();
-            String entryName = jarEntry.getRealName();
-            if (entryName.startsWith(resourceDirName) && canResolve(entryName)) {
-                // 如 language/zh_CN/messages.properties
-                resourcePaths.add(entryName);
-            }
-        }
-        return resourcePaths;
-    }
-
-    /**
-     * 是否支持该文件
+     * 是否包含可解析的文件后缀名
      *
      * @param fileName 文件名 如 xxx.properties
      * @return 是否可以解析（properties、xml）
      */
-    private boolean canResolve(String fileName) {
+    private boolean withResolveSuffix(String fileName) {
         return fileName.endsWith(".properties") ||fileName.endsWith(".xml");
     }
+
 }

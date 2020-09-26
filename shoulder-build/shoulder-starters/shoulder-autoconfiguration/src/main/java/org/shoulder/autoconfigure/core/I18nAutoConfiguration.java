@@ -25,7 +25,7 @@ public class I18nAutoConfiguration {
     public MessageSourceProperties messageSourceProperties() {
         // 修改默认多语言资源路径
         MessageSourceProperties messageSourceProperties = new MessageSourceProperties();
-        messageSourceProperties.setBasename("classpath:language");
+        messageSourceProperties.setBasename("classpath*:language");
         return messageSourceProperties;
     }
 
