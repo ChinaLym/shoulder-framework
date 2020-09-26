@@ -1,7 +1,7 @@
 package org.shoulder.crypto.asymmetric;
 
 
-import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
+import org.shoulder.crypto.exception.CipherRuntimeException;
 
 /**
  * 非对称加解密门面接口
@@ -16,7 +16,7 @@ public interface AsymmetricTextCipher extends SingleKeyPairAsymmetricTextCipher,
      * @param text      需加密的数据
      * @param publicKey 对方的公钥(base64编码过的)
      * @return 密文
-     * @throws AsymmetricCryptoException 加解密出错
+     * @throws CipherRuntimeException 加解密出错
      */
-    String encrypt(String text, String publicKey) throws AsymmetricCryptoException;
+    String encrypt(String text, String publicKey) throws CipherRuntimeException;
 }

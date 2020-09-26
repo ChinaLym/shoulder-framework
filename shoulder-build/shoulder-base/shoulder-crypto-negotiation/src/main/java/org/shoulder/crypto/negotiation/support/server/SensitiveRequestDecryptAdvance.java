@@ -1,7 +1,7 @@
 package org.shoulder.crypto.negotiation.support.server;
 
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
-import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
 import org.shoulder.crypto.negotiation.dto.SensitiveFieldWrapper;
 import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.util.SensitiveFieldCache;
@@ -43,7 +43,7 @@ public class SensitiveRequestDecryptAdvance extends RequestBodyAdviceAdapter {
                                 Class<? extends HttpMessageConverter<?>> converterType) {
 
         Class<?> resultClazz = body.getClass();
-        TransportCipher cipher = TransportCipherHolder.removeRequestCipher();
+        TransportTextCipher cipher = TransportCipherHolder.removeRequestCipher();
         List<SensitiveFieldWrapper> securityResultField = SensitiveFieldCache.findSensitiveResponseFieldInfo(resultClazz);
         if (!CollectionUtils.isEmpty(securityResultField)) {
             // 解密

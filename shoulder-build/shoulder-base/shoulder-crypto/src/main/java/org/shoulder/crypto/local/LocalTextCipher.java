@@ -2,7 +2,6 @@ package org.shoulder.crypto.local;
 
 
 import org.shoulder.crypto.TextCipher;
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.springframework.lang.NonNull;
 
 /**
@@ -18,20 +17,18 @@ public interface LocalTextCipher extends TextCipher {
      *
      * @param text 待加密数据，不能为null，否则 NPE
      * @return 参数 text 加密后的密文
-     * @throws SymmetricCryptoException aes异常
      */
     @Override
-    String encrypt(@NonNull String text) throws SymmetricCryptoException;
+    String encrypt(@NonNull String text);
 
     /**
      * 以Aes256解密
      *
      * @param cipherText aes256 加密过的密文，不能为null，否则 NPE
      * @return 参数 cipherText 解密后的明文
-     * @throws SymmetricCryptoException aes异常
      */
     @Override
-    String decrypt(@NonNull String cipherText) throws SymmetricCryptoException;
+    String decrypt(@NonNull String cipherText);
 
     /**
      * 确保加密功能正常使用

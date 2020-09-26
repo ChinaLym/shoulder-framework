@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.cache;
 
-import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
 import org.springframework.web.client.ResponseExtractor;
 
 /**
@@ -14,24 +14,24 @@ public class TransportCipherHolder {
     /**
      * 发起请求 和 处理请求时，使用这个
      */
-    private static ThreadLocal<TransportCipher> request = new ThreadLocal<>();
+    private static ThreadLocal<TransportTextCipher> request = new ThreadLocal<>();
 
     /**
      * 接收响应 和 响应对方时，用这个
      *
      * @see ResponseExtractor
      */
-    private static ThreadLocal<TransportCipher> response = new ThreadLocal<>();
+    private static ThreadLocal<TransportTextCipher> response = new ThreadLocal<>();
 
     /**
      * 用于解密收到的请求 or 加密发送请求
      */
-    public static void setRequestCipher(TransportCipher transportCipher) {
+    public static void setRequestCipher(TransportTextCipher transportCipher) {
         request.set(transportCipher);
     }
 
-    public static TransportCipher removeRequestCipher() {
-        TransportCipher cipher = request.get();
+    public static TransportTextCipher removeRequestCipher() {
+        TransportTextCipher cipher = request.get();
         request.remove();
         return cipher;
     }
@@ -39,12 +39,12 @@ public class TransportCipherHolder {
     /**
      * 用于加密响应 or 解密对方响应
      */
-    public static void setResponseCipher(TransportCipher transportCipher) {
+    public static void setResponseCipher(TransportTextCipher transportCipher) {
         response.set(transportCipher);
     }
 
-    public static TransportCipher removeResponseCipher() {
-        TransportCipher cipher = response.get();
+    public static TransportTextCipher removeResponseCipher() {
+        TransportTextCipher cipher = response.get();
         response.remove();
         return cipher;
     }

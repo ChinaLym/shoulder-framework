@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
-import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
 import org.shoulder.crypto.negotiation.dto.SensitiveFieldWrapper;
 import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.util.SensitiveFieldCache;
@@ -49,7 +49,7 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
             object = container.getValue();
         }
         // 提前取出并清理，避免遗漏
-        TransportCipher requestEncryptCipher = TransportCipherHolder.removeRequestCipher();
+        TransportTextCipher requestEncryptCipher = TransportCipherHolder.removeRequestCipher();
         Class<?> objectClass = object.getClass();
         List<SensitiveFieldWrapper> securityParamField = SensitiveFieldCache.findSensitiveRequestFieldInfo(objectClass);
 
@@ -85,7 +85,7 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
             return result;
         }
         Class<?> resultClazz = toCrypt.getClass();
-        TransportCipher cipher = TransportCipherHolder.removeResponseCipher();
+        TransportTextCipher cipher = TransportCipherHolder.removeResponseCipher();
         List<SensitiveFieldWrapper> securityResultField = SensitiveFieldCache.findSensitiveResponseFieldInfo(resultClazz);
         if (!CollectionUtils.isEmpty(securityResultField)) {
             // 解密

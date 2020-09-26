@@ -2,7 +2,7 @@ package org.shoulder.crypto.negotiation.util;
 
 import cn.hutool.core.util.ReflectUtil;
 import org.shoulder.core.exception.BaseRuntimeException;
-import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
 import org.shoulder.crypto.negotiation.dto.SensitiveFieldWrapper;
 import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.springframework.lang.NonNull;
@@ -80,7 +80,7 @@ public class SensitiveFieldCache {
      * @param cipher          加密/解密
      */
     public static void handleSensitiveData(@NonNull Object object, @NonNull List<SensitiveFieldWrapper> sensitiveFields,
-                                           @NonNull TransportCipher cipher) {
+                                           @NonNull TransportTextCipher cipher) {
         try {
             // 不应该为空
             assert cipher != null;

@@ -99,7 +99,7 @@ public class TransportCryptoByteUtil {
     /**
      * 创建一个响应
      */
-    public KeyExchangeResponse createResponse(KeyExchangeRequest keyExchangeRequest) throws Exception {
+    public KeyExchangeResponse createResponse(KeyExchangeRequest keyExchangeRequest) throws KeyPairException {
         KeyExchangeResponse response = new KeyExchangeResponse();
         // 1. 验证签名
         // 2. 构建密钥对

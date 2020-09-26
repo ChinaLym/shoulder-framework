@@ -3,15 +3,13 @@ package org.shoulder.crypto.util;
 
 import org.shoulder.core.util.SpringUtils;
 import org.shoulder.crypto.CryptoFacade;
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
-import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
+import org.shoulder.crypto.exception.CipherRuntimeException;
 
 /**
  * 加解密工具门面
  *
  * @author lym
- * @deprecated 不推荐直接这么用
  */
 public final class CryptoUtil {
 
@@ -28,9 +26,9 @@ public final class CryptoUtil {
      *
      * @param text 待加密数据，不能为null，否则 NPE
      * @return 参数 text 加密后的密文
-     * @throws SymmetricCryptoException 加密异常
+     * @throws CipherRuntimeException 加密异常
      */
-    public static String encryptAes(String text) throws SymmetricCryptoException {
+    public static String encryptAes(String text) throws CipherRuntimeException {
         return crypto.encryptLocal(text);
     }
 
@@ -39,9 +37,9 @@ public final class CryptoUtil {
      *
      * @param cipherText 密文，不能为null，否则 NPE
      * @return 参数 cipherText 解密后的明文
-     * @throws SymmetricCryptoException 加密异常
+     * @throws CipherRuntimeException 加密异常
      */
-    public static String decryptAes(String cipherText) throws SymmetricCryptoException {
+    public static String decryptAes(String cipherText) throws CipherRuntimeException {
         return crypto.decryptLocal(cipherText);
     }
 
@@ -69,9 +67,9 @@ public final class CryptoUtil {
      *
      * @param text 待加密数据
      * @return 加密后的
-     * @throws AsymmetricCryptoException RsaCryptoException
+     * @throws CipherRuntimeException RsaCryptoException
      */
-    public static String encryptRsa(String text) throws AsymmetricCryptoException {
+    public static String encryptRsa(String text) throws CipherRuntimeException {
         return crypto.encryptAsymmetric(text);
     }
 
@@ -80,9 +78,9 @@ public final class CryptoUtil {
      *
      * @param cipherText 待解密的数据，密文
      * @return 解密后的
-     * @throws AsymmetricCryptoException RsaCryptoException
+     * @throws CipherRuntimeException RsaCryptoException
      */
-    public static String decryptRsa(String cipherText) throws AsymmetricCryptoException {
+    public static String decryptRsa(String cipherText) throws CipherRuntimeException {
         return crypto.decryptAsymmetric(cipherText);
     }
 
@@ -93,9 +91,9 @@ public final class CryptoUtil {
      * @param text      需加密的数据
      * @param publicKey 对方的公钥
      * @return 密文
-     * @throws AsymmetricCryptoException 加解密出错
+     * @throws CipherRuntimeException 加解密出错
      */
-    public String encryptRsa(String text, String publicKey) throws AsymmetricCryptoException {
+    public String encryptRsa(String text, String publicKey) throws CipherRuntimeException {
         return crypto.encryptAsymmetric(text, publicKey);
     }
 
@@ -104,9 +102,9 @@ public final class CryptoUtil {
      *
      * @param text 签名内容
      * @return 签名结果
-     * @throws AsymmetricCryptoException 加解密出错
+     * @throws CipherRuntimeException 加解密出错
      */
-    public String signRsa(String text) throws AsymmetricCryptoException {
+    public String signRsa(String text) throws CipherRuntimeException {
         return crypto.signAsymmetric(text);
     }
 
@@ -116,9 +114,9 @@ public final class CryptoUtil {
      * @param text      内容
      * @param signature 签名
      * @return 是否合法
-     * @throws AsymmetricCryptoException 加解密出错
+     * @throws CipherRuntimeException 加解密出错
      */
-    public boolean verifyRsa(String text, String signature) throws AsymmetricCryptoException {
+    public boolean verifyRsa(String text, String signature) throws CipherRuntimeException {
         return crypto.verifyAsymmetric(text, signature);
     }
 

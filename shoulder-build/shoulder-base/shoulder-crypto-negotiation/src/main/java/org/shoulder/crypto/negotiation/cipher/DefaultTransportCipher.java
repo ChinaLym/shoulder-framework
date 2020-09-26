@@ -1,6 +1,7 @@
-package org.shoulder.crypto.negotiation.cache.cipher;
+package org.shoulder.crypto.negotiation.cipher;
 
 import org.shoulder.crypto.aes.exception.AesCryptoException;
+import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 
@@ -9,7 +10,7 @@ import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
  *
  * @author lym
  */
-public class TransportCipher {
+public class DefaultTransportCipher implements TransportTextCipher {
 
     private KeyExchangeResult keyExchangeResult;
 
@@ -19,7 +20,7 @@ public class TransportCipher {
     private byte[] dk;
 
 
-    private TransportCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
+    private DefaultTransportCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
         this.keyExchangeResult = keyExchangeInfo;
         this.dk = dk;
     }
@@ -51,10 +52,14 @@ public class TransportCipher {
      *
      * @param toCipher 待加密明文
      * @return 密文
-     * @throws AesCryptoException 加密异常
      */
-    public String encrypt(String toCipher) throws AesCryptoException {
-        return TransportCryptoUtil.encrypt(keyExchangeResult, dk, toCipher);
+    @Override
+    public String encrypt(String toCipher) {
+        try {
+            return TransportCryptoUtil.encrypt(keyExchangeResult, dk, toCipher);
+        } catch (AesCryptoException e) {
+            throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
+        }
     }
 
     /**
@@ -62,16 +67,21 @@ public class TransportCipher {
      *
      * @param cipherText 对方加密过的密文
      * @return 明文
-     * @throws AesCryptoException 加密异常
      */
-    public String decrypt(String cipherText) throws AesCryptoException {
-        return TransportCryptoUtil.decrypt(keyExchangeResult, dk, cipherText);
+    @Override
+    public String decrypt(String cipherText) {
+        try {
+            return TransportCryptoUtil.decrypt(keyExchangeResult, dk, cipherText);
+        } catch (AesCryptoException e) {
+            throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
+        }
     }
 
     /**
      * 加密或解密，根据实现类具体职责决定
      */
-    public String doCipher(String input) throws AesCryptoException {
+    @Override
+    public String doCipher(String input) {
         throw new UnsupportedOperationException("not support!");
     }
 
@@ -80,7 +90,7 @@ public class TransportCipher {
     /**
      * 加密器
      */
-    private static class EncryptCipher extends TransportCipher {
+    private static class EncryptCipher extends DefaultTransportCipher {
 
         private EncryptCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
             super(keyExchangeInfo, dk);
@@ -95,7 +105,7 @@ public class TransportCipher {
          * 加密
          */
         @Override
-        public String doCipher(String input) throws AesCryptoException {
+        public String doCipher(String input) {
             return super.encrypt(input);
         }
     }
@@ -104,7 +114,7 @@ public class TransportCipher {
     /**
      * 解密器
      */
-    private static class DecryptCipher extends TransportCipher {
+    private static class DecryptCipher extends DefaultTransportCipher {
 
         private DecryptCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
             super(keyExchangeInfo, dk);
@@ -119,7 +129,7 @@ public class TransportCipher {
          * 加密
          */
         @Override
-        public String doCipher(String input) throws AesCryptoException {
+        public String doCipher(String input) {
             return super.decrypt(input);
         }
     }

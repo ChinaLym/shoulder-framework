@@ -7,7 +7,7 @@ import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
-import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.dto.SensitiveFieldWrapper;
@@ -111,7 +111,7 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
         try {
             byte[] responseDk = TransportCryptoUtil.generateDataKey(cacheKeyExchangeResult.getKeyLength());
             // 缓存响应加密处理器
-            TransportCipher responseEncryptCipher = TransportCipher.buildEncryptCipher(cacheKeyExchangeResult, responseDk);
+            DefaultTransportCipher responseEncryptCipher = DefaultTransportCipher.buildEncryptCipher(cacheKeyExchangeResult, responseDk);
             String responseX_Dk = TransportCryptoUtil.encryptDk(cacheKeyExchangeResult, responseDk);
             log.debug("security response. xDk is " + responseX_Dk);
             //  加密 toEncryptDTO

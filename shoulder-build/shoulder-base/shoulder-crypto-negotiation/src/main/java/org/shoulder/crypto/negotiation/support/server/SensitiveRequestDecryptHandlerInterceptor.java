@@ -5,7 +5,7 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
-import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.support.Sensitive;
@@ -91,7 +91,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
         // 解密本次会话的数据密钥
         byte[] requestDk = TransportCryptoUtil.decryptDk(cacheKeyExchangeResult, xDk);
         // 缓存请求解密处理器
-        TransportCipher requestDecryptCipher = TransportCipher.buildDecryptCipher(cacheKeyExchangeResult, requestDk);
+        DefaultTransportCipher requestDecryptCipher = DefaultTransportCipher.buildDecryptCipher(cacheKeyExchangeResult, requestDk);
         TransportCipherHolder.setRequestCipher(requestDecryptCipher);
 
         return true;

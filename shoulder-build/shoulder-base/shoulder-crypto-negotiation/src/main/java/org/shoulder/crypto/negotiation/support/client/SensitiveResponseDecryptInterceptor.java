@@ -4,7 +4,8 @@ import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
-import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
+import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
@@ -75,7 +76,7 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
             }
             byte[] realDataKey = TransportCryptoUtil.decryptDk(keyExchangeInfo, xDk);
 
-            TransportCipher responseDecryptCipher = TransportCipher.buildDecryptCipher(keyExchangeInfo, realDataKey);
+            TransportTextCipher responseDecryptCipher = DefaultTransportCipher.buildDecryptCipher(keyExchangeInfo, realDataKey);
             TransportCipherHolder.setResponseCipher(responseDecryptCipher);
 
         } catch (AsymmetricCryptoException e) {

@@ -62,14 +62,27 @@ public class EccUtil implements ByteSpecification {
         return keyFactory.generatePrivate(keySpec);
     }
 
-    //公钥加密
+    /**
+     * 公钥加密
+     *
+     * @param content
+     * @param publicKey
+     * @return
+     * @throws Exception
+     */
     public static byte[] publicEncrypt(byte[] content, PublicKey publicKey) throws Exception {
         Cipher cipher = Cipher.getInstance(TRANSFORMATION, PROVIDER);
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         return cipher.doFinal(content);
     }
 
-    //私钥解密
+    /**
+     * 私钥解密
+     * @param content
+     * @param privateKey
+     * @return
+     * @throws Exception
+     */
     public static byte[] privateDecrypt(byte[] content, PrivateKey privateKey) throws Exception {
         Cipher cipher = Cipher.getInstance(TRANSFORMATION, PROVIDER);
         cipher.init(Cipher.DECRYPT_MODE, privateKey);

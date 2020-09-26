@@ -1,10 +1,7 @@
 package org.shoulder.crypto;
 
 import lombok.NonNull;
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
-import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,12 +25,12 @@ public class CryptoFacadeImpl implements CryptoFacade {
     }
 
     @Override
-    public String encryptLocal(@NonNull String text) throws SymmetricCryptoException {
+    public String encryptLocal(@NonNull String text) {
         return local.encrypt(text);
     }
 
     @Override
-    public String decryptLocal(@NonNull String cipherText) throws SymmetricCryptoException {
+    public String decryptLocal(@NonNull String cipherText) {
         return local.encrypt(cipherText);
     }
 
@@ -45,32 +42,32 @@ public class CryptoFacadeImpl implements CryptoFacade {
     // ================================ 传输加解密（如前后交互） =====================================
 
     @Override
-    public String getPk() throws KeyPairException {
+    public String getPk() {
         return asymmetric.getPublicKey();
     }
 
     @Override
-    public String encryptAsymmetric(String text) throws AsymmetricCryptoException {
+    public String encryptAsymmetric(String text) {
         return asymmetric.encrypt(text);
     }
 
     @Override
-    public String encryptAsymmetric(String text, String publicKey) throws AsymmetricCryptoException {
+    public String encryptAsymmetric(String text, String publicKey) {
         return asymmetric.encrypt(text, publicKey);
     }
 
     @Override
-    public String decryptAsymmetric(String cipherText) throws AsymmetricCryptoException {
+    public String decryptAsymmetric(String cipherText) {
         return asymmetric.decrypt(cipherText);
     }
 
     @Override
-    public String signAsymmetric(String text) throws AsymmetricCryptoException {
+    public String signAsymmetric(String text) {
         return asymmetric.sign(text);
     }
 
     @Override
-    public boolean verifyAsymmetric(String text, String signature) throws AsymmetricCryptoException {
+    public boolean verifyAsymmetric(String text, String signature) {
         return asymmetric.verify(text, signature);
     }
 

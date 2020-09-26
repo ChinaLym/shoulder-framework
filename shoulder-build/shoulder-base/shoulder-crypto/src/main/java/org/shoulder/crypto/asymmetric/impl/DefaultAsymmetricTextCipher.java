@@ -6,6 +6,8 @@ import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
+import org.shoulder.crypto.exception.CipherRuntimeException;
+import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -16,7 +18,6 @@ import java.nio.charset.Charset;
  * 非对称的加解密以及签名工具实现。
  * 加解密实现为 AsymmetricCryptoProcessor，本类做字符串与 byte[] 的转换。
  * 同时支持默认秘钥，与多秘钥对
- * todo 检查异常在这里转为运行异常
  *
  * @author lym
  */
@@ -53,37 +54,37 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
 
     @Override
     @NonNull
-    public String getPublicKey() throws KeyPairException {
+    public String getPublicKey() {
         return getPublicKey(defaultKeyPairId);
     }
 
     @Override
-    public String decrypt(String cipher) throws AsymmetricCryptoException {
+    public String decrypt(String cipher) throws CipherRuntimeException {
         return this.decrypt(defaultKeyPairId, cipher);
     }
 
     @Override
-    public byte[] decryptAsBytes(String cipher) throws AsymmetricCryptoException {
+    public byte[] decryptAsBytes(String cipher) throws CipherRuntimeException {
         return this.decryptAsBytes(defaultKeyPairId, cipher);
     }
 
     @Override
-    public String encrypt(String text) throws AsymmetricCryptoException {
+    public String encrypt(String text) throws CipherRuntimeException {
         return this.encrypt(defaultKeyPairId, text);
     }
 
     @Override
-    public String sign(String content) throws AsymmetricCryptoException {
+    public String sign(String content) throws CipherRuntimeException {
         return this.sign(defaultKeyPairId, content);
     }
 
     @Override
-    public boolean verify(String content, String signature) throws AsymmetricCryptoException {
+    public boolean verify(String content, String signature) throws CipherRuntimeException {
         return this.verify(defaultKeyPairId, content, signature);
     }
 
     @Override
-    public boolean verify(byte[] content, byte[] signature) throws AsymmetricCryptoException {
+    public boolean verify(byte[] content, byte[] signature) throws CipherRuntimeException {
         return this.verify(defaultKeyPairId, content, signature);
     }
 
@@ -91,12 +92,16 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
 
     @Override
     @NonNull
-    public String getPublicKey(String keyPairId) throws KeyPairException {
-        return processor.getPublicKeyString(this.defaultKeyPairId);
+    public String getPublicKey(String keyPairId) throws CipherRuntimeException {
+        try {
+            return processor.getPublicKeyString(this.defaultKeyPairId);
+        } catch (KeyPairException e) {
+            throw CryptoErrorCodeEnum.NO_SUCH_KEY_PAIR.toException(e);
+        }
     }
 
     @Override
-    public String decrypt(String keyPairId, String cipher) throws AsymmetricCryptoException {
+    public String decrypt(String keyPairId, String cipher) throws CipherRuntimeException {
         if (StringUtils.isNotBlank(cipher)) {
             return new String(decryptAsBytes(keyPairId, cipher), CHAR_SET);
         }
@@ -104,37 +109,57 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     }
 
     @Override
-    public byte[] decryptAsBytes(String keyPairId, String cipher) throws AsymmetricCryptoException {
-        if (StringUtils.isNotBlank(cipher)) {
-            return processor.decrypt(keyPairId, ByteSpecification.decodeToBytes(cipher));
+    public byte[] decryptAsBytes(String keyPairId, String cipher) throws CipherRuntimeException {
+        if (StringUtils.isBlank(cipher)) {
+            return new byte[0];
         }
-        return new byte[0];
+        try {
+            return processor.decrypt(keyPairId, ByteSpecification.decodeToBytes(cipher));
+        } catch (AsymmetricCryptoException e) {
+            throw CryptoErrorCodeEnum.DECRYPT_FAIL.toException(e);
+        }
     }
 
     @Override
-    public String encrypt(String keyPairId, String text) throws AsymmetricCryptoException {
+    public String encrypt(String keyPairId, String text) throws CipherRuntimeException {
         if (StringUtils.isNotBlank(text)) {
-            byte[] cipher = processor.encrypt(keyPairId, text.getBytes(CHAR_SET));
-            return ByteSpecification.encodeToString(cipher);
+            try {
+                byte[] cipher = processor.encrypt(keyPairId, text.getBytes(CHAR_SET));
+                return ByteSpecification.encodeToString(cipher);
+            } catch (AsymmetricCryptoException e) {
+                throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
+            }
         }
         return text;
     }
 
     @Override
-    public String sign(String keyPairId, String content) throws AsymmetricCryptoException {
-        byte[] signBytes = processor.sign(keyPairId, content.getBytes(CHAR_SET));
-        return ByteSpecification.encodeToString(signBytes);
+    public String sign(String keyPairId, String content) throws CipherRuntimeException {
+        try {
+            byte[] signBytes = processor.sign(keyPairId, content.getBytes(CHAR_SET));
+            return ByteSpecification.encodeToString(signBytes);
+        } catch (AsymmetricCryptoException e) {
+            throw CryptoErrorCodeEnum.SIGN_FAIL.toException(e);
+        }
     }
 
     @Override
-    public boolean verify(String keyPairId, String content, String signature) throws AsymmetricCryptoException {
+    public boolean verify(String keyPairId, String content, String signature) throws CipherRuntimeException {
         byte[] signatureBytes = ByteSpecification.decodeToBytes(signature);
-        return processor.verify(keyPairId, content.getBytes(CHAR_SET), signatureBytes);
+        try {
+            return processor.verify(keyPairId, content.getBytes(CHAR_SET), signatureBytes);
+        } catch (AsymmetricCryptoException e) {
+            throw CryptoErrorCodeEnum.SIGN_VERIFY_FAIL.toException(e);
+        }
     }
 
     @Override
-    public boolean verify(String keyPairId, byte[] content, byte[] signature) throws AsymmetricCryptoException {
-        return processor.verify(keyPairId, content, signature);
+    public boolean verify(String keyPairId, byte[] content, byte[] signature) throws CipherRuntimeException {
+        try {
+            return processor.verify(keyPairId, content, signature);
+        } catch (AsymmetricCryptoException e) {
+            throw CryptoErrorCodeEnum.SIGN_VERIFY_FAIL.toException(e);
+        }
     }
 
 }

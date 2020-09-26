@@ -5,9 +5,10 @@ import org.shoulder.core.util.ByteUtils;
 import org.shoulder.crypto.aes.AesUtil;
 import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.shoulder.crypto.digest.Sha256Utils;
+import org.shoulder.crypto.exception.CipherRuntimeException;
+import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
 import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
-import org.shoulder.crypto.local.exception.HeaderNotMatchDecryptException;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,26 +119,35 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     }
 
     @Override
-    public String encrypt(@NonNull String text) throws AesCryptoException {
+    public String encrypt(@NonNull String text) {
         ensureEncryption();
         AesInfoCache cacheInfo = CacheManager.getAesInfoCache(ALGORITHM_HEADER);
-        byte[] encryptResult = AesUtil.encrypt(text.getBytes(CHAR_SET), cacheInfo.dataKey,
-            cacheInfo.dateIv);
-        return ALGORITHM_HEADER + ByteSpecification.encodeToString(encryptResult);
+        try {
+            byte[] encryptResult = AesUtil.encrypt(text.getBytes(CHAR_SET), cacheInfo.dataKey,
+                cacheInfo.dateIv);
+            return ALGORITHM_HEADER + ByteSpecification.encodeToString(encryptResult);
+        } catch (AesCryptoException e) {
+            throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
+        }
     }
 
     @Override
-    public String decrypt(@NonNull String cipherText) throws AesCryptoException, HeaderNotMatchDecryptException {
+    public String decrypt(@NonNull String cipherText) {
         ensureEncryption();
         String[] cipherTextAndHeader = splitHeader(cipherText);
         String cipherTextHeader = cipherTextAndHeader[0];
         String realCipherText = cipherTextAndHeader[1];
         AesInfoCache cacheInfo = CacheManager.getAesInfoCache(cipherTextHeader);
         if (cacheInfo == null) {
-            throw new HeaderNotMatchDecryptException("cipher's markHeader is " + cipherTextHeader);
+            throw new CipherRuntimeException(CryptoErrorCodeEnum.ENCRYPT_FAIL.getCode(),
+                "cipher's markHeader is {}", cipherTextHeader);
         }
-        byte[] decryptData = AesUtil.decrypt(Base64.getDecoder().decode(realCipherText), cacheInfo.dataKey, cacheInfo.dateIv);
-        return new String(decryptData, CHAR_SET);
+        try {
+            byte[] decryptData = AesUtil.decrypt(Base64.getDecoder().decode(realCipherText), cacheInfo.dataKey, cacheInfo.dateIv);
+            return new String(decryptData, CHAR_SET);
+        } catch (AesCryptoException e) {
+            throw CryptoErrorCodeEnum.DECRYPT_FAIL.toException(e);
+        }
     }
 
     /**

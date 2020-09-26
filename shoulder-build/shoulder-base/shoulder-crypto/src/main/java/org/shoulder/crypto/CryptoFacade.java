@@ -1,9 +1,7 @@
 package org.shoulder.crypto;
 
 
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
-import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.asymmetric.exception.KeyPairException;
+import org.shoulder.crypto.exception.CipherRuntimeException;
 
 /**
  * 加解密门面接口
@@ -19,18 +17,18 @@ public interface CryptoFacade {
      *
      * @param text 待加密数据，不能为null，否则 NPE
      * @return 参数 text 加密后的密文
-     * @throws SymmetricCryptoException 加密异常
+     * @throws CipherRuntimeException 加密异常
      */
-    String encryptLocal(String text) throws SymmetricCryptoException;
+    String encryptLocal(String text) throws CipherRuntimeException;
 
     /**
      * 本地存储加密解密
      *
      * @param cipherText 密文，不能为null，否则 NPE
      * @return 参数 cipherText 解密后的明文
-     * @throws SymmetricCryptoException 加密异常
+     * @throws CipherRuntimeException 加密异常
      */
-    String decryptLocal(String cipherText) throws SymmetricCryptoException;
+    String decryptLocal(String cipherText) throws CipherRuntimeException;
 
     /**
      * 确保本地加密功能正常使用
@@ -44,18 +42,18 @@ public interface CryptoFacade {
      * 获取 RSA 公钥
      *
      * @return 公钥
-     * @throws KeyPairException e
+     * @throws CipherRuntimeException e
      */
-    String getPk() throws KeyPairException;
+    String getPk() throws CipherRuntimeException;
 
     /**
      * 加密
      *
      * @param text 待加密数据
      * @return 加密后的
-     * @throws AsymmetricCryptoException RsaCryptoException
+     * @throws CipherRuntimeException RsaCryptoException
      */
-    String encryptAsymmetric(String text) throws AsymmetricCryptoException;
+    String encryptAsymmetric(String text) throws CipherRuntimeException;
 
 
     /**
@@ -64,9 +62,9 @@ public interface CryptoFacade {
      * @param text      需加密的数据
      * @param publicKey 对方的公钥
      * @return 密文
-     * @throws AsymmetricCryptoException 加解密出错
+     * @throws CipherRuntimeException 加解密出错
      */
-    String encryptAsymmetric(String text, String publicKey) throws AsymmetricCryptoException;
+    String encryptAsymmetric(String text, String publicKey) throws CipherRuntimeException;
 
 
     /**
@@ -74,18 +72,18 @@ public interface CryptoFacade {
      *
      * @param cipherText 待解密的数据，密文
      * @return 解密后的
-     * @throws AsymmetricCryptoException RsaCryptoException
+     * @throws CipherRuntimeException RsaCryptoException
      */
-    String decryptAsymmetric(String cipherText) throws AsymmetricCryptoException;
+    String decryptAsymmetric(String cipherText) throws CipherRuntimeException;
 
     /**
      * 签名
      *
      * @param text 签名内容
      * @return 签名结果
-     * @throws AsymmetricCryptoException 加解密出错
+     * @throws CipherRuntimeException 加解密出错
      */
-    String signAsymmetric(String text) throws AsymmetricCryptoException;
+    String signAsymmetric(String text) throws CipherRuntimeException;
 
     /**
      * 签名验证
@@ -93,9 +91,9 @@ public interface CryptoFacade {
      * @param text      内容
      * @param signature 签名
      * @return 是否合法
-     * @throws AsymmetricCryptoException 加解密出错
+     * @throws CipherRuntimeException 加解密出错
      */
-    boolean verifyAsymmetric(String text, String signature) throws AsymmetricCryptoException;
+    boolean verifyAsymmetric(String text, String signature) throws CipherRuntimeException;
 
 
     // ================================ todo 消息认证，用于接口验证（非加密） =====================================

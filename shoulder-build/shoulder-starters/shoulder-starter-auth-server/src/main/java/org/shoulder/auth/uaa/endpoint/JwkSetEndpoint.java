@@ -1,37 +1,32 @@
 package org.shoulder.auth.uaa.endpoint;
 
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
+import org.shoulder.crypto.asymmetric.exception.KeyPairException;
+import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpoint;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.security.KeyPair;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
 
 /**
- * 传统授权服务器（spring-security-oauth2）不支持 jwk 的url
+ * 标准授权服务器（spring-security-oauth2）不支持 jwk 相关 url
  * <a href target="_blank" href="https://tools.ietf.org/html/rfc7517#section-5">JWK Set</a> endpoint.
  * <p>
- * 本类特地支持该端点，以更好地支持使用。
+ * 为更简单/方便地支持使用，特地支持
  *
  * @author lym
  */
 @FrameworkEndpoint
 public class JwkSetEndpoint {
 
-    private KeyPair keyPair;
-
-    JwkSetEndpoint(KeyPair keyPair) {
-        this.keyPair = keyPair;
-    }
+    private AsymmetricCryptoProcessor processor;
 
     @GetMapping("/.well-known/jwks.json")
     @ResponseBody
-    public Map<String, Object> getKey() {
-        RSAPublicKey publicKey = (RSAPublicKey) this.keyPair.getPublic();
-        RSAKey key = new RSAKey.Builder(publicKey).build();
-        return new JWKSet(key).toJSONObject();
+    public Map<String, Object> getKey() throws KeyPairException {
+        /*ECPublicKey publicKey = (ECPublicKey) processor.getPublicKey("default");
+        ECKey key = new ECKey.Builder(publicKey).build();
+        return new JWKSet(key).toJSONObject();*/
+        return null;
     }
 }

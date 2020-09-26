@@ -1,6 +1,5 @@
 package org.shoulder.crypto.local.impl;
 
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.springframework.core.Ordered;
@@ -39,12 +38,12 @@ public class LocalTextCipherManager implements LocalTextCipher {
     }
 
     @Override
-    public String encrypt(@NonNull String text) throws SymmetricCryptoException {
+    public String encrypt(@NonNull String text) {
         return ciphers.get(0).encrypt(text);
     }
 
     @Override
-    public String decrypt(@NonNull String cipherText) throws SymmetricCryptoException {
+    public String decrypt(@NonNull String cipherText) {
         // 遍历所有加密器，这里认为每个加密器是互斥的，因为一般来说 a 加密器无法解密由 b 加密器加密过的数据，因此直接交给第一个能解密的加密器进行解密
         for (JudgeAbleLocalTextCipher cipher : ciphers) {
             if (cipher.support(cipherText)) {

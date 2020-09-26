@@ -5,7 +5,8 @@ import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
-import org.shoulder.crypto.negotiation.cache.cipher.TransportCipher;
+import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
+import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.service.TransportNegotiationService;
@@ -125,7 +126,7 @@ public class SecurityRestTemplate extends RestTemplate {
 
             // 创建本次请求的加密器 todo 小优化，如果请求不带（敏感）参数，则无需生成数据密钥
             byte[] requestDk = TransportCryptoUtil.generateDataKey(keyExchangeResult.getKeyLength());
-            TransportCipher requestEncryptCipher = TransportCipher.buildEncryptCipher(keyExchangeResult, requestDk);
+            TransportTextCipher requestEncryptCipher = DefaultTransportCipher.buildEncryptCipher(keyExchangeResult, requestDk);
             TransportCipherHolder.setRequestCipher(requestEncryptCipher);
 
             return cryptoUtil.generateHeaders(keyExchangeResult, requestDk);
