@@ -1,5 +1,3 @@
-package org.shoulder.crypto.negotiation.support;
-
 /**
  * 简化在 Spring 中的使用，减少学习成本，编码量：只需要关注 {@link org.shoulder.crypto.negotiation.support.Sensitive}、
  * {@link org.shoulder.crypto.negotiation.support.SecurityRestTemplate}
@@ -23,4 +21,4 @@ package org.shoulder.crypto.negotiation.support;
  * 解密参数中的敏感字段（SensitiveRequestDecryptAdvance）
  * 返回 http 请求前把返回值中安全字段加密（SensitiveResponseEncryptAdvice）
  */
-
+package org.shoulder.crypto.negotiation.support;

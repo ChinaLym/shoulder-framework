@@ -8,10 +8,7 @@
 
 基于目前最新版的 `spring security oauth 2.3.x`
 
-由于授权服务器在当前（2020.2）的spring security 最新版还未完成对应的功能，因此选择 spring security oauth来实现。
-
-spring至少至少会维护该项目2.3.x至少到2021年3月以后，且其最后一个维护版本将是2.4.x。
-
+`spring security` 支持 `oAuth2/OpenID` 认证，但不支持自身作为 `授权服务器`。因此选择 `spring security oauth` 来实现（注意该项目将于2020.5转移至社区维护）。
 
 ## 说明
 

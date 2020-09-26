@@ -30,6 +30,18 @@
             <artifactId>shoulder-security</artifactId>
         </dependency>
 
+        <!-- oauth2 授权服务器相关依赖 -->
+        <dependency>
+            <groupId>org.springframework.security.oauth.boot</groupId>
+            <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- 基本加密算法 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-crypto</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

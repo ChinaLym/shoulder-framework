@@ -34,6 +34,9 @@ public class BrowserAuthEndpoint {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    /**
+     * 登录页面
+     */
     private final String signInPage;
 
     /**
@@ -41,6 +44,9 @@ public class BrowserAuthEndpoint {
      */
     private RequestCache requestCache = new HttpSessionRequestCache();
 
+    /**
+     * 重定向策略
+     */
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     public BrowserAuthEndpoint(String signInPage) {
@@ -59,7 +65,6 @@ public class BrowserAuthEndpoint {
 
         // 获取引发跳转的请求
         SavedRequest savedRequest = requestCache.getRequest(request, response);
-
 
         String redirectSignInUrl =
             signInPage + "?" + SecurityConst.AUTH_FAIL_PARAM_NAME + "=" + request.getAttribute(SecurityConst.AUTH_FAIL_PARAM_NAME);

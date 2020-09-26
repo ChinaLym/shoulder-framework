@@ -5,10 +5,14 @@
     - 单机
     - 多实例小场景
     - 分布式
-- ~~默认使用 `Undertow` 而非 `Tomcat`~~(不作为默认实现。移至shoulder-platform实现)
+- ~~默认使用 `Undertow` 而非 `Tomcat`~~
+    - 取消各个模块对 tomcat 的依赖
     - 注意 `undertow` 不支持jsp
+    - 实际未实现，默认 tomcat、若希望使用 undertow 使用者自行排除即可
 - `operation-log` 模块
-- 完善安全认证实现，支持简单 `JWT认证`
+- 完善安全认证实现
+    - 支持简单 `JWT认证`
+    - session 支持集群模式
 - 框架异常整理
     - 供使用者直接使用的工具抛出带错误码的 runtimeException
 - 接口文档选型

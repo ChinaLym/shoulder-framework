@@ -99,6 +99,15 @@
             <artifactId>shoulder-security-code</artifactId>
             <optional>true</optional>
         </dependency>
+
+
+        <!-- oauth2 授权服务器相关依赖 -->
+        <dependency>
+            <groupId>org.springframework.security.oauth.boot</groupId>
+            <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- ======================================================================================= -->
 
         <!-- 生成 META-INF/spring-autoconfigure-metadata.properties，加快 spring boot 启动时排除不匹配的自动装配信息，用于缩短启动时间 -->

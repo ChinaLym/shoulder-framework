@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication.token;
 /**
- * 为基于token 认证方案的系统提供支持。
+ * 支持基于 token 认证的系统
  */
+package org.shoulder.security.authentication.token;

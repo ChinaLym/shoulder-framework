@@ -21,13 +21,13 @@
 
 ---
 
-- `Swagger2` VS `Swagger3（OpenApi3）`
-    - 目前大多数开发者尤其国内开发者更熟悉 `Swagger2`
-    - 主流第三方接口辅助软件（UI、文档、mock服务器）解析支持也是 swagger2居多（swagger2基本都支持，swagger3仅极少数软件支持）
-    - 如果希望使用 swagger3 则可以使用 `springdoc-openapi` 相当于 `springfox-doc`
+### `Swagger2` VS `Swagger3（OpenApi3）`
+- 目前大多数开发者尤其国内开发者更熟悉 `Swagger2`
+- 主流第三方接口辅助软件（UI、文档、mock服务器）解析支持也是 swagger2居多（swagger2基本都支持，swagger3仅极少数软件支持）
+- 如果希望使用 swagger3 则可以使用 `springdoc-openapi` 相当于 `springfox-doc`
  
  
-- Swaager 文档：`Markdown` 替代 `javadoc`（需要IDE 插件）
+### Swaager 文档：`Markdown` 替代 `javadoc`（需要IDE 插件）
  ```xml
 <build>
   <plugins>

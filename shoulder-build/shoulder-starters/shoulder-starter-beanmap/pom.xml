@@ -13,12 +13,6 @@
     <artifactId>shoulder-starter-beanmap</artifactId>
 
     <dependencies>
-
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
