@@ -22,7 +22,7 @@ public class AuthResponseUtil {
     public static void authFail(HttpServletResponse response, AuthenticationException exception, ErrorCode errorCode)
         throws IOException {
 
-        RestResult restResult = errorCode.toResponse(exception);
+        RestResult restResult = errorCode.toResponse(exception.getMessage());
         response.setStatus(errorCode.getHttpStatusCode().value());
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.getWriter().write(JsonUtils.toJson(restResult));
