@@ -1,7 +1,6 @@
 package org.shoulder.security.authentication.sms;
 
 import lombok.extern.shoulder.SLog;
-import org.shoulder.security.authentication.PhoneNumAuthenticateService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

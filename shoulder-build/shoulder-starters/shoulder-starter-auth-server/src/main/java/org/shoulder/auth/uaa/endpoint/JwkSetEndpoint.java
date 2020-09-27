@@ -19,9 +19,14 @@ import java.util.Map;
 @FrameworkEndpoint
 public class JwkSetEndpoint {
 
+    /**
+     * 获取公钥信息，开放端点
+     */
+    public static final String PUBLIC_KEY_END_POINT = "/.well-known/jwks.json";
+
     private AsymmetricCryptoProcessor processor;
 
-    @GetMapping("/.well-known/jwks.json")
+    @GetMapping(PUBLIC_KEY_END_POINT)
     @ResponseBody
     public Map<String, Object> getKey() throws KeyPairException {
         /*ECPublicKey publicKey = (ECPublicKey) processor.getPublicKey("default");

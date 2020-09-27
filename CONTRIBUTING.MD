@@ -95,3 +95,15 @@ v{x.y.z}.RELEASE
 
 参考：[spring security 发布流程](https://github.com/spring-projects/spring-security/wiki/Release-Process)
 
+----
+
+## IED 实用设置
+
+#### 部分代码跳过格式化（spring security dsl）
+IDEA：settings - Editor - Code Style - enable formatter marks in comments
+
+#### `xxx.propreties` 文件中写入中文后保存乱码？或显示为 unicode 格式？
+
+IDEA 可以为我们自动转化：
+- 打开设置 `File -> Settings -> Editor -> File Encodings`
+- 勾选 `Transparent native-to-ascii conversion`

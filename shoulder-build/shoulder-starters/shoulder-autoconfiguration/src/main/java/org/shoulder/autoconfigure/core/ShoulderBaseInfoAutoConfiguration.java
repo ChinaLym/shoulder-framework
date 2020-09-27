@@ -44,6 +44,9 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
      */
     private void initApplicationInfo(ConfigurableEnvironment environment) {
         Logger log = LoggerFactory.getLogger(getClass());
+
+        Properties shoulderProperties = new Properties();
+
         String appIdKey = "shoulder.application.id";
         if (StringUtils.isEmpty(environment.getProperty(appIdKey))) {
             // appId 如果为空则采用 spring.application.name
@@ -52,9 +55,7 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
 
             String appName = environment.getProperty(springAppNameKey);
             if (StringUtils.isNotEmpty(appName)) {
-                Properties properties = new Properties();
-                properties.setProperty(appIdKey, appName);
-                environment.getPropertySources().addFirst(new PropertiesPropertySource(SHOULDER_PROPERTIES, properties));
+                shoulderProperties.setProperty(appIdKey, appName);
             } else {
                 log.error("both of '" + appIdKey + "' and '" + springAppNameKey +
                     "' are empty! set value please");
@@ -68,6 +69,14 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
         AppInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
         AppInfo.initDefaultLocale(StringUtils.parseLocale(environment.getProperty("shoulder.application.defaultLocale")));
         AppInfo.initTimeZone(TimeZone.getTimeZone(environment.getProperty("shoulder.application.timeZone")));
+
+        // -----
+        // todo token 认证响应必须为 json
+
+        if (!shoulderProperties.isEmpty()) {
+            environment.getPropertySources().addFirst(new PropertiesPropertySource(SHOULDER_PROPERTIES, shoulderProperties));
+        }
+
     }
 
 

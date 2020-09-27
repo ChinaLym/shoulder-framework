@@ -88,74 +88,78 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
             // 记住我配置，采用 spring security 的默认实现
             // 如果想在'记住我'登录时记录日志，可以注册一个 InteractiveAuthenticationSuccessEvent 事件的监听器
             .rememberMe()
-            //用token拿到用户名
-            .tokenRepository(persistentTokenRepository)
-            //token有效时间
-            .tokenValiditySeconds((int) browserSessionAuthProperties.getRememberMeSeconds().toSeconds())
-            //认证类
-            .userDetailsService(userDetailsService)
+            // 用token拿到用户名
+                .tokenRepository(persistentTokenRepository)
+                //token有效时间
+                .tokenValiditySeconds((int) browserSessionAuthProperties.getRememberMeSeconds().toSeconds())
+                // 认证类
+                .userDetailsService(userDetailsService)
             .and()
 
             // 会话管理器
             .sessionManagement()
-            //session 无效策略（首次请求必定无效）
-            .invalidSessionStrategy(invalidSessionStrategy)
-            // 同一个用户在系统中的最大session数
-            .maximumSessions(browserSessionAuthProperties.getSession().getMaximumSessions())
-            // 登录同一个用户达到最大数量后，阻止后来的session登录 还是将原有 session 顶替
-            .maxSessionsPreventsLogin(browserSessionAuthProperties.getSession().isMaxSessionsPreventsLogin())
-            // session 过期策略
-            .expiredSessionStrategy(sessionInformationExpiredStrategy)
-            .and()
+                // session 无效策略（首次请求必定无效）
+                .invalidSessionStrategy(invalidSessionStrategy)
+                    // 同一个用户在系统中的最大session数
+                    .maximumSessions(browserSessionAuthProperties.getSession().getMaximumSessions())
+                    // 登录同一个用户达到最大数量后，阻止后来的session登录 还是将原有 session 顶替
+                    .maxSessionsPreventsLogin(browserSessionAuthProperties.getSession().isMaxSessionsPreventsLogin())
+                    // session 过期策略
+                    .expiredSessionStrategy(sessionInformationExpiredStrategy)
+                .and()
             .and()
 
             // 退出登录相关配置
             .logout()
-            .logoutUrl(SecurityConst.URL_AUTHENTICATION_CANCEL)
-            .logoutSuccessHandler(logoutSuccessHandler)
-            .logoutSuccessUrl(browserSessionAuthProperties.getSignOutSuccessUrl())
-            .deleteCookies("JSESSIONID")
+                .logoutUrl(SecurityConst.URL_AUTHENTICATION_CANCEL)
+                .logoutSuccessHandler(logoutSuccessHandler)
+                .logoutSuccessUrl(browserSessionAuthProperties.getSignOutSuccessUrl())
+                .deleteCookies("JSESSIONID")
             .and()
 
 
-            // 配置校验规则（哪些请求要过滤）
+            // 配置过滤规则
             .authorizeRequests()
-            .antMatchers(
-                // 未认证的跳转
-                SecurityConst.URL_REQUIRE_AUTHENTICATION,
+                // 不需要登录认证可以访问的
+                .antMatchers(
+                    // 未认证的跳转
+                    SecurityConst.URL_REQUIRE_AUTHENTICATION,
 
-                // 登录页面
-                browserSessionAuthProperties.getSignUpUrl(),
-                // 获取验证码请求
-                SecurityConst.URL_VALIDATE_CODE,
+                    // 登录页面
+                    browserSessionAuthProperties.getSignUpUrl(),
+                    // 获取验证码请求
+                    SecurityConst.URL_VALIDATE_CODE,
 
-                // 登录请求
-                // 用户名、密码登录请求
-                browserSessionAuthProperties.getSignInPage(),
-                // 手机验证码登录请求
-                SecurityConst.URL_AUTHENTICATION_SMS,
+                    // 登录请求
+                    // 用户名、密码登录请求
+                    browserSessionAuthProperties.getSignInPage(),
+                    // 手机验证码登录请求
+                    SecurityConst.URL_AUTHENTICATION_SMS,
 
-                // 退出登录跳转的请求
-                browserSessionAuthProperties.getSignOutSuccessUrl(),
+                    // 退出登录跳转的请求
+                    browserSessionAuthProperties.getSignOutSuccessUrl(),
 
-                // 注册页面
-                DefaultPage.SIGN_UP,
-                // 注册请求
-                SecurityConst.URL_REGISTER,
+                    // 注册页面
+                    DefaultPage.SIGN_UP,
+                    // 注册请求
+                    SecurityConst.URL_REGISTER,
 
-                // session失效默认的跳转地址
-                browserSessionAuthProperties.getSession().getSessionInvalidUrl()
-            )
-            .permitAll()
+                    // session失效默认的跳转地址
+                    browserSessionAuthProperties.getSession().getSessionInvalidUrl()
+                )
+                .permitAll()
 
-            // 其余请求全部开启认证（需要登录）
-            .anyRequest().authenticated()
+                // 其余请求全部开启认证（需要登录）
+                .anyRequest().authenticated()
             .and()
 
-            // 关闭 csrf
-            .csrf().disable();
+            .csrf().disable()
 
-        //authorizeConfigManager.config(http.authorizeRequests());
+            .oauth2ResourceServer()
+                .jwt();
+            // 关闭 csrf
+
+        // authorizeConfigManager.config(http.authorizeRequests());
         // @formatter:on
     }
 

@@ -11,19 +11,21 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 
 /**
  * token 模式下安全配置主类
  *
  * @author lym
  */
+@EnableWebSecurity
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(value = TokenAuthBeanConfig.class)
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
-public class TokenSecurityConfig extends ResourceServerConfigurerAdapter {
+public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired(required = false)
     private UserDetailsService userDetailsService;
@@ -42,8 +44,6 @@ public class TokenSecurityConfig extends ResourceServerConfigurerAdapter {
     @Autowired(required = false)
     private PhoneNumAuthenticationSecurityConfig phoneNumAuthenticationSecurityConfig;
 
-
-    // todo
     //@Autowired
     //private LogoutSuccessHandler logoutSuccessHandler;
 
@@ -51,7 +51,6 @@ public class TokenSecurityConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         formAuthenticationSecurityConfig.configure(http);
-
         //apply 方法：<C extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>> C apply(C configurer)
 
         if (validateCodeSecurityConfig != null) {
@@ -63,6 +62,7 @@ public class TokenSecurityConfig extends ResourceServerConfigurerAdapter {
         }
 
         http
+            .userDetailsService(userDetailsService)
             // 配置校验规则（哪些请求要过滤）
             .authorizeRequests()
             .antMatchers(
@@ -90,6 +90,7 @@ public class TokenSecurityConfig extends ResourceServerConfigurerAdapter {
             .csrf().disable();
 
         //authorizeConfigManager.config(http.authorizeRequests());
+
         // @formatter:on
     }
 

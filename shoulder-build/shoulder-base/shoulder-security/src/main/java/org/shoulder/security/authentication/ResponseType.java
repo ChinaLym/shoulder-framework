@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication.browser.handler;
+package org.shoulder.security.authentication;
 
 /**
  * 登录成功/失败响应类型

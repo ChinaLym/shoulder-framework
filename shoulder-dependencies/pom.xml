@@ -250,7 +250,13 @@
 
             <dependency>
                 <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-starter-security-browser</artifactId>
+                <artifactId>shoulder-starter-auth-session</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-starter-auth-token</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>
 

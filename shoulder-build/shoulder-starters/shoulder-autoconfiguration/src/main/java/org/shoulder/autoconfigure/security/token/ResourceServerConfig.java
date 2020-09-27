@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  *
  * @author lym
  */
+@Deprecated
 @Configuration(proxyBeanMethods = false)
 @EnableResourceServer
 @EnableConfigurationProperties(OAuth2Properties.class)

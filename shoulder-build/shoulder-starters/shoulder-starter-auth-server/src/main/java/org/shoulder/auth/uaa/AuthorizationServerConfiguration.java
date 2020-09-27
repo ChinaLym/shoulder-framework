@@ -3,6 +3,7 @@ package org.shoulder.auth.uaa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
@@ -50,10 +51,16 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private boolean jwtEnabled;
     private DataSource dataSource;
 
+    /**
+     * @param authenticationConfiguration
+     * @param keyPair
+     * @param jwtEnabled                  默认使用 jwt
+     * @param dataSource                  数据源
+     * @throws Exception 异常
+     */
     public AuthorizationServerConfiguration(
         AuthenticationConfiguration authenticationConfiguration,
         KeyPair keyPair,
-        /** 默认使用 jwt */
         @Value("${security.oauth2.authorizationserver.jwt.enabled:true}") boolean jwtEnabled,
         @Nullable DataSource dataSource) throws Exception {
 
@@ -141,6 +148,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 
     @Bean
+    @ConditionalOnMissingBean
     public TokenStore tokenStore() {
         TokenStore tokenStore;
         String type;
@@ -159,6 +167,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setKeyPair(this.keyPair);

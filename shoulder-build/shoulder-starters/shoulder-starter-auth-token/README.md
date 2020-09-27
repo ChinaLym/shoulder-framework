@@ -1,4 +1,4 @@
-# shoulder-security
+# shoulder-auth-token
 
 封装了 spring-security，支持 web（http） 环境的认证功能以及自动装配，
 

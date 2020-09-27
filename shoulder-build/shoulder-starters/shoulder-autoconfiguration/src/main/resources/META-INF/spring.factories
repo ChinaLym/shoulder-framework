@@ -35,6 +35,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.operation.OperationLogParamConverterAutoConfiguration,\
   \
   org.shoulder.autoconfigure.security.AuthenticationBeanConfig, \
+  org.shoulder.autoconfigure.security.AuthenticationHandlerConfig, \
   org.shoulder.autoconfigure.security.browser.BrowserSessionAuthBeanConfiguration, \
   org.shoulder.autoconfigure.security.browser.BrowserSecurityConfiguration, \
   org.shoulder.autoconfigure.security.token.TokenAuthBeanConfig, \

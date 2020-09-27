@@ -1,6 +1,5 @@
 package org.shoulder.security.authentication.sms;
 
-import org.shoulder.security.authentication.PhoneNumAuthenticateService;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -35,7 +34,7 @@ public class PhoneNumAuthenticationProvider implements AuthenticationProvider {
             throw new InternalAuthenticationServiceException("can't find any userDetail!");
         }
 
-        // 只要查到用户信息即认证通过，因为手机短信验证是通过验 证码过滤器负责，这样可以实现验证码过滤器更好的灵活性
+        // 只要查到用户信息即认证通过，因为手机短信验证是通过验证码过滤器负责，这样可以实现验证码过滤器更好的灵活性
         PhoneNumAuthenticationToken authenticationResult =
             new PhoneNumAuthenticationToken(user, user.getAuthorities());
 

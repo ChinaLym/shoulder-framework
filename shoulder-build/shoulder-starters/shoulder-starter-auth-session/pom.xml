@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>shoulder-starter-security-browser</artifactId>
+    <artifactId>shoulder-starter-auth-session</artifactId>
 
 
     <dependencies>

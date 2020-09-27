@@ -1,12 +1,11 @@
 package org.shoulder.autoconfigure.security.token;
 
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
-import org.shoulder.autoconfigure.security.AuthenticationBeanConfig;
+import org.shoulder.autoconfigure.security.AuthenticationHandlerConfig;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
-import org.shoulder.security.authentication.token.handler.AppAuthenticationFailureHandler;
-import org.shoulder.security.authentication.token.handler.AppAuthenticationSuccessHandler;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.shoulder.security.authentication.handler.TokenAuthenticationSuccessHandler;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -14,8 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.client.InMemoryClientDetailsService;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /**
@@ -25,20 +24,17 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(SecurityConst.class)
-@AutoConfigureAfter(AuthenticationBeanConfig.class)
+@AutoConfigureBefore(AuthenticationHandlerConfig.class)
 @EnableConfigurationProperties(OAuth2Properties.class)
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
 public class TokenAuthBeanConfig {
 
-    /**
-     * ClientDetailsService
-     */
-    /*@Bean
+    @Deprecated
+    @Bean
     @ConditionalOnMissingBean(ClientDetailsService.class)
     public ClientDetailsService clientDetailsService(){
-
         return new InMemoryClientDetailsService();
-    }*/
+    }
 
     /**
      * 认证成功处理器
@@ -46,18 +42,9 @@ public class TokenAuthBeanConfig {
      */
     @Bean
     @ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
-    public AuthenticationSuccessHandler appAuthenticationSuccessHandler(ClientDetailsService clientDetailsService,
-                                                                        AuthorizationServerTokenServices authorizationServerTokenServices) {
-        return new AppAuthenticationSuccessHandler(clientDetailsService, authorizationServerTokenServices);
-    }
-
-    /**
-     * 认证失败处理器
-     */
-    @Bean
-    @ConditionalOnMissingBean(AuthenticationFailureHandler.class)
-    public AuthenticationFailureHandler appAuthenticationFailureHandler() {
-        return new AppAuthenticationFailureHandler();
+    public AuthenticationSuccessHandler tokenAuthenticationSuccessHandler(ClientDetailsService clientDetailsService,
+                                                                          AuthorizationServerTokenServices authorizationServerTokenServices) {
+        return new TokenAuthenticationSuccessHandler(clientDetailsService, authorizationServerTokenServices);
     }
 
 

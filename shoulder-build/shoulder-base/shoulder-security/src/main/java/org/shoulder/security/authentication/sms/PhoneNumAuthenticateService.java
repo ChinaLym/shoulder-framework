@@ -1,5 +1,6 @@
-package org.shoulder.security.authentication;
+package org.shoulder.security.authentication.sms;
 
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -14,9 +15,10 @@ public interface PhoneNumAuthenticateService {
      * 通过收集号码查询用户信息
      *
      * @param phoneNum 手机号
-     * @return 用户信息
+     * @return 用户信息，不存在则为 null
      * @throws UsernameNotFoundException 用户不存在
      */
+    @Nullable
     default UserDetails loadUserByPhoneNum(String phoneNum) throws UsernameNotFoundException {
         throw new UsernameNotFoundException("not support");
     }

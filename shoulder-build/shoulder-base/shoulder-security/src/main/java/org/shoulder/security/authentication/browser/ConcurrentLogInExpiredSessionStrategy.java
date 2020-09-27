@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication.browser.session;
+package org.shoulder.security.authentication.browser;
 
 import org.springframework.security.web.session.SessionInformationExpiredEvent;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;

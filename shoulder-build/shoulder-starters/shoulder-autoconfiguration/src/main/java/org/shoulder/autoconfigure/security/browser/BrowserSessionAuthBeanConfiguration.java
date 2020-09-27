@@ -4,12 +4,8 @@ import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationBeanConfig;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
-import org.shoulder.security.authentication.browser.BrowserAuthEndpoint;
-import org.shoulder.security.authentication.browser.handler.BrowserAuthenticationFailureHandler;
-import org.shoulder.security.authentication.browser.handler.BrowserAuthenticationSuccessHandler;
-import org.shoulder.security.authentication.browser.handler.BrowserLogoutSuccessHandler;
-import org.shoulder.security.authentication.browser.session.ConcurrentLogInExpiredSessionStrategy;
-import org.shoulder.security.authentication.browser.session.DefaultInvalidSessionStrategy;
+import org.shoulder.security.authentication.browser.ConcurrentLogInExpiredSessionStrategy;
+import org.shoulder.security.authentication.browser.DefaultInvalidSessionStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,15 +13,11 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -85,38 +77,6 @@ public class BrowserSessionAuthBeanConfiguration {
     }
 
     /**
-     * 认证成功逻辑
-     */
-    @Bean
-    @ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
-    public AuthenticationSuccessHandler browserAuthenticationSuccessHandler() {
-        return new BrowserAuthenticationSuccessHandler(
-            browserSessionAuthProperties.getResponseType(), browserSessionAuthProperties.getSignInSuccessUrl());
-    }
-
-    /**
-     * 默认认证失败逻辑
-     * 登录失败后跳转到登录页面
-     */
-    @Bean
-    @ConditionalOnMissingBean(AuthenticationFailureHandler.class)
-    public AuthenticationFailureHandler browserAuthenticationFailureHandler() {
-        return new BrowserAuthenticationFailureHandler(browserSessionAuthProperties.getResponseType(),
-            SecurityConst.URL_REQUIRE_AUTHENTICATION);
-    }
-
-    /**
-     * 默认退出登录逻辑
-     */
-    @Bean
-    @ConditionalOnMissingBean(LogoutSuccessHandler.class)
-    public LogoutSuccessHandler browserLogoutSuccessHandler() {
-        return new BrowserLogoutSuccessHandler(browserSessionAuthProperties.getResponseType(),
-            browserSessionAuthProperties.getSignOutSuccessUrl());
-    }
-
-
-    /**
      * session 无效处理策略
      */
     @Bean
@@ -141,18 +101,5 @@ public class BrowserSessionAuthBeanConfiguration {
             browserSessionAuthProperties.getSignOutSuccessUrl()
         );
     }
-
-
-    /**
-     * 待认证请求处理器，负责将请求跳转至登陆界面
-     *
-     * @return 待认证请求处理器
-     */
-    @Bean
-    @ConditionalOnProperty(value = "shoulder.security.auth.browser.default-endpoint.enable", havingValue = "true", matchIfMissing = true)
-    public BrowserAuthEndpoint browserAuthEndpoint() {
-        return new BrowserAuthEndpoint(browserSessionAuthProperties.getSignInPage());
-    }
-
 
 }

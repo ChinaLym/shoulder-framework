@@ -2,16 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
         <version>0.4-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <name>shoulder-security</name>
-    <artifactId>shoulder-security</artifactId>
+    <artifactId>shoulder-starter-auth-token</artifactId>
+
 
     <dependencies>
 
@@ -20,51 +20,36 @@
             <artifactId>shoulder-core</artifactId>
         </dependency>
 
-        <!-- spring-security 项目必备，包含 spring-security-config、web 两个基础模块 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
 
-        <!-- web项目相关依赖 -->
         <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <optional>true</optional>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-security</artifactId>
         </dependency>
 
-        <!-- oauth2 授权服务器相关依赖 deprecated -->
+        <!--只比 session 多了这个依赖-->
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
             <version>2.3.5.RELEASE</version>
+        </dependency>
+
+        <!-- 生成 META-INF/spring-autoconfigure-metadata.properties，加快 spring boot 启动时排除不匹配的自动装配信息，用于缩短启动时间 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure-processor</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--Spring Security OAuth通过提供了自己的JWT支持spring-security-jwt。
-            Spring Security依靠Nimbus来提供JWT支持。-->
-        <!--<dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-jwt</artifactId>
-            <version>1.0.9.RELEASE</version>
-            <optional>true</optional>
-        </dependency>-->
 
-        <!-- oauth2 资源服务器相关依赖 -->
-        <!--<dependency>
+        <!-- 根据 java doc 生成 additional-spring-configuration-metadata.json，这样 IDE 中配置项会有提示。但不支持 Enum 和 Collections -->
+        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-        </dependency>-->
-        <!-- oauth2 客户端 相关依赖 -->
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
-        </dependency>-->
+        </dependency>
 
     </dependencies>
 

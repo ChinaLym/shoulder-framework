@@ -1,7 +1,6 @@
 package org.shoulder.autoconfigure.security.browser;
 
 import org.shoulder.security.SecurityConst.DefaultPage;
-import org.shoulder.security.authentication.browser.handler.ResponseType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
@@ -33,10 +32,6 @@ public class BrowserSessionAuthProperties {
      * '记住我'功能的有效时间，默认一个月
      */
     private Duration rememberMeSeconds = Duration.ofDays(30);
-    /**
-     * 登录/退出响应的方式，默认是跳转，可设置为 JSON，以适配 ajax 等由前端决定路由方式
-     */
-    private ResponseType responseType = ResponseType.REDIRECT;
     /**
      * 登录成功后跳转的地址，如果设置了此属性，则登录成功后总是会跳到这个地址上。
      * 只在 signInResponseType 为REDIRECT时生效
@@ -93,14 +88,6 @@ public class BrowserSessionAuthProperties {
 
     public void setSignInSuccessUrl(String signInSuccessUrl) {
         this.signInSuccessUrl = signInSuccessUrl;
-    }
-
-    public ResponseType getResponseType() {
-        return responseType;
-    }
-
-    public void setResponseType(ResponseType responseType) {
-        this.responseType = responseType;
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication.browser;
+package org.shoulder.security.authentication;
 
 import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
@@ -30,7 +30,7 @@ import java.util.List;
  * @see LoginUrlAuthenticationEntryPoint spring security 默认
  */
 @RestController
-public class BrowserAuthEndpoint {
+public class BeforeAuthEndpoint {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -49,7 +49,7 @@ public class BrowserAuthEndpoint {
      */
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    public BrowserAuthEndpoint(String signInPage) {
+    public BeforeAuthEndpoint(String signInPage) {
         this.signInPage = signInPage;
     }
 

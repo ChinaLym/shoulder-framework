@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication.browser.session;
+package org.shoulder.security.authentication.browser;
 
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.core.dto.response.RestResult;

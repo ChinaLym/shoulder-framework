@@ -25,6 +25,7 @@ import java.util.List;
  *
  * @author lym
  */
+@Deprecated
 @Configuration(proxyBeanMethods = false)
 @EnableAuthorizationServer
 @EnableConfigurationProperties(OAuth2Properties.class)
