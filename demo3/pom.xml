@@ -2,9 +2,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <dependencies>
 
-        <!-- 包含了 spring-boot-starter-web，在其之上额外提供了更棒的能力 -->
+    <!-- 包含了 spring-boot-starter-web，在其之上额外提供了更棒的能力 -->
+    <parent>
+        <groupId>cn.itlym</groupId>
+        <artifactId>shoulder-parent</artifactId>
+        <version>0.4-SNAPSHOT</version><!-- shoulder-version -->
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>demo3</artifactId>
+
+    <name>demo3</name>
+    <description>Demo project for Shoulder Framework</description>
+
+
+    <properties>
+        <java.version>11</java.version>
+    </properties>
+
+    <dependencies>
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
@@ -32,6 +51,11 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-security-code</artifactId>
         </dependency>-->
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>2.3.5.RELEASE</version>
+        </dependency>
 
         <dependency>
             <groupId>cn.itlym</groupId>
@@ -49,10 +73,10 @@
 
         <!-- ======================== ============================== -->
         <!--认证服务器，使用 token 认证，在 test 里测试 -->
-        <dependency>
+        <!--<dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-auth-server</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- 热更新插件，修改代码无需重启 -->
         <dependency>
@@ -76,25 +100,6 @@
         </dependency>
 
     </dependencies>
-
-    <parent>
-        <groupId>cn.itlym</groupId>
-        <artifactId>shoulder-parent</artifactId>
-        <version>0.4-SNAPSHOT</version><!-- shoulder-version -->
-    </parent>
-
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
-
-    <artifactId>demo3</artifactId>
-    <name>demo3</name>
-
-
-    <description>Demo project for Shoulder Framework</description>
-
-    <properties>
-        <java.version>11</java.version>
-    </properties>
 
 
 </project>

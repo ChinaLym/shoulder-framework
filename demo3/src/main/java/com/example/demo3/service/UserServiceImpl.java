@@ -25,7 +25,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserEntity> imp
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // 根据用户名查找用户信息
+        // 根据用户名查找用户信息，在这打断点可以追踪 spring security 是如何运作的
         LambdaQueryWrapper<UserEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserEntity::getUsername, username);
         UserEntity user = this.getOne(queryWrapper);
