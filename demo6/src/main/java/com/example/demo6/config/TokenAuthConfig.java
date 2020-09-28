@@ -1,31 +1,22 @@
-package com.example.demo3.config;
+package com.example.demo6.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.client.BaseClientDetails;
-import org.springframework.security.oauth2.provider.client.InMemoryClientDetailsService;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
+ * 注意，token 认证不需要开启 @EnableResourceServer @EnableAuthorizationServer
+ * 因为仅仅是借用了其生成 oauth2 token的流程，不必激活其资源/认证服务器的相关配置
+ *
  * @author lym
  */
 @Configuration
-public class TokenAuthBeanConfiguration {
+public class TokenAuthConfig {
 
-    @Bean
+    /*@Bean
     @ConditionalOnMissingBean(ClientDetailsService.class)
     public ClientDetailsService clientDetailsService() {
         InMemoryClientDetailsService service = new InMemoryClientDetailsService();
 
         Map<String, ClientDetails> clientDetailsStore = new HashMap<>();
-        //String clientId, String resourceIds, String scopes, String grantTypes, String authorities
         BaseClientDetails details = new BaseClientDetails("shoulder", "resourceIds", "resourceIds", "resourceIds", "resourceIds");
         details.setClientSecret("shoulder");
         clientDetailsStore.put(details.getClientId(), details);
@@ -44,7 +35,6 @@ public class TokenAuthBeanConfiguration {
     @Bean
     public InMemoryTokenStore inMemoryTokenStore() {
         return new InMemoryTokenStore();
-    }
-
+    }*/
 
 }

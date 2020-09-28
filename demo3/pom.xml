@@ -28,6 +28,16 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-auth-session</artifactId>
+        </dependency>
+
+        <!-- 验证码框架，开启后可测试验证码，关闭后验证码功能将无效 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-security-code</artifactId>
+        </dependency>
 
         <!-- shoulder 改写的 lombok，额外提供 @SLog -->
         <dependency>
@@ -35,28 +45,7 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-beanmap</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-security-browser</artifactId>
-        </dependency>
-
-        <!-- 验证码框架，开启后可测试验证码，关闭后验证码功能将无效 -->
-        <!--<dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-security-code</artifactId>
-        </dependency>-->
-        <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>2.3.5.RELEASE</version>
-        </dependency>
-
+        <!--数据库-->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-data-db</artifactId>
@@ -69,6 +58,12 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-beanmap</artifactId>
+        </dependency>
+
         <!-- shoulder 继承了 spring boot 的所有特性，引入 spring boot 的jar 一样不需要写版本号 -->
 
         <!-- ======================== ============================== -->

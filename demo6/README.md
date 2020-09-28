@@ -2,6 +2,6 @@
 
 ## 模块功能
 
-建议根据以下的顺序了解 `Shoulder` 的使用
+基于 token 的认证实现
 
-- 阅读 [Shoulder - ](https://gitee.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-base/shoulder-crypto-negotiation)
+- 阅读 [shoulder-security](https://gitee.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-starter/shoulder-starter-auth-token)
