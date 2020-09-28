@@ -2,12 +2,13 @@ package org.shoulder.security.authentication;
 
 import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.security.SecurityConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -35,22 +36,34 @@ public class BeforeAuthEndpoint {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
-     * 登录页面
+     * 登录页面，为 null 则不会触发跳转
      */
     private final String signInPage;
 
     /**
      * spring security 会将待认证的请求放到这里
      */
-    private RequestCache requestCache = new HttpSessionRequestCache();
+    private final RequestCache requestCache;
 
     /**
      * 重定向策略
      */
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final RedirectStrategy redirectStrategy;
 
-    public BeforeAuthEndpoint(String signInPage) {
+    public BeforeAuthEndpoint(@Nullable String signInPage) {
         this.signInPage = signInPage;
+        if (signInPage != null) {
+            if (SecurityConst.URL_REQUIRE_AUTHENTICATION.equalsIgnoreCase(signInPage)) {
+                // 自身不能作为登录页面（重定向目标地址），否则会导致无限重定向
+                throw new IllegalArgumentException("invalid loginPage!");
+            }
+            requestCache = new HttpSessionRequestCache();
+            redirectStrategy = new DefaultRedirectStrategy();
+        } else {
+            // 为 null 则不会触发跳转，直接返回 json
+            requestCache = null;
+            redirectStrategy = null;
+        }
     }
 
     /**
@@ -63,31 +76,53 @@ public class BeforeAuthEndpoint {
     public RestResult requireAuthentication(HttpServletRequest request, HttpServletResponse response)
         throws IOException {
 
-        // 获取引发跳转的请求
-        SavedRequest savedRequest = requestCache.getRequest(request, response);
-
-        String redirectSignInUrl =
-            signInPage + "?" + SecurityConst.AUTH_FAIL_PARAM_NAME + "=" + request.getAttribute(SecurityConst.AUTH_FAIL_PARAM_NAME);
-        if (savedRequest != null) {
-            String targetUrl = savedRequest.getRedirectUrl();
-            log.debug("authentication when request to: {}", targetUrl);
-            List<String> headerAccepts = savedRequest.getHeaderValues(HttpHeaders.ACCEPT);
-            for (String headerAccept : headerAccepts) {
-                if (headerAccept.contains(MediaType.TEXT_HTML_VALUE)) {
-                    redirectStrategy.sendRedirect(request, response, redirectSignInUrl);
-                }
-            }
-            // 返回 json 响应
+        if (signInPage == null) {
             return new RestResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
+        }
 
+        // 是否有认证错误
+        String failReason = (String) request.getAttribute(SecurityConst.AUTH_FAIL_PARAM_NAME);
+        boolean withoutError = StringUtils.isBlank(failReason) || "null".equalsIgnoreCase(failReason);
+
+        if (returnJson(request, response)) {
+            log.trace("json type");
+            // json 响应
+            return withoutError ? new RestResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH) :
+                new RestResult<>(CommonErrorCodeEnum.AUTH_401_NEED_AUTH).setData(failReason);
         }
-        if (request.getHeader(HttpHeaders.ACCEPT).contains(MediaType.TEXT_HTML_VALUE)) {
-            // 可以接受 html 的响应，跳转到指定的登录认证页面
-            redirectStrategy.sendRedirect(request, response, redirectSignInUrl);
-        }
-        // 返回 json 响应
+        log.trace("redirect to signInPage({})", signInPage);
+
+        // 跳转
+        String redirectSignInUrl = withoutError ? signInPage :
+            signInPage + "?" + SecurityConst.AUTH_FAIL_PARAM_NAME + "=" + failReason;
+        redirectStrategy.sendRedirect(request, response, redirectSignInUrl);
+
         return new RestResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
     }
 
+
+    /**
+     * 响应格式为 json 还是 跳转
+     *
+     * @return 可以接受 json 的响应，则返回 json 否则跳转到指定的登录页面
+     */
+    protected boolean returnJson(HttpServletRequest request, HttpServletResponse response) {
+        // 获取引发跳转的请求
+        SavedRequest savedRequest = requestCache.getRequest(request, response);
+
+        // 可以接受 html 的响应，跳转到指定的登录认证页面，默认策略，如果支持 json，则返回 json
+        //
+        if (savedRequest != null) {
+            List<String> headerAccepts = savedRequest.getHeaderValues(HttpHeaders.ACCEPT);
+            for (String headerAccept : headerAccepts) {
+                if (StringUtils.containsAny(headerAccept, "*/*", "json")) {
+                    return true;
+                }
+            }
+        } else {
+            return StringUtils.containsAny(request.getHeader(HttpHeaders.ACCEPT), "*/*", "json");
+        }
+        return false;
+    }
 
 }

@@ -8,9 +8,10 @@
 - `operation-log` 模块
 - 完善安全认证实现
     - 重构安全认证模块
-    - 支持自签 `Oauth2 JWT认证`
+    - 支持自签 `Oauth2 JWT Token 认证`
     - session 支持集群模式
-    - 全局异常处理器
+    - security 的全局异常处理器
+- 接口响应自动包装支持配置排除路径
 - 接口文档选型
     - 注解同时支持 swagger3（主）/swagger2
     - 注释支持 smartDoc

@@ -10,13 +10,13 @@ import java.time.temporal.ChronoUnit;
  *
  * @author lym
  */
-@ConfigurationProperties(prefix = SecurityConst.CONFIG_PREFIX + ".app")
-public class OAuth2Properties {
+@ConfigurationProperties(prefix = SecurityConst.CONFIG_PREFIX + ".token")
+public class TokenProperties {
 
     /**
      * 使用jwt时为token签名的秘钥，重要！
      */
-    private String jwtSigningKey = "lym";
+    private String jwtSigningKey = "shoulder";
 
     /**
      * 客户端配置

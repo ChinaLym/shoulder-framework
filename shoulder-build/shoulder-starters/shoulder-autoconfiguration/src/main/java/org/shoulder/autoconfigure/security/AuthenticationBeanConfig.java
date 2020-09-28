@@ -1,7 +1,6 @@
 package org.shoulder.autoconfigure.security;
 
 import org.shoulder.security.SecurityConst;
-import org.shoulder.security.authentication.BeforeAuthEndpoint;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticateService;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityConfig;
@@ -9,7 +8,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,18 +60,6 @@ public class AuthenticationBeanConfig {
                                                                                     PhoneNumAuthenticateService userDetailsService) {
 
         return new PhoneNumAuthenticationSecurityConfig(authenticationSuccessHandler, authenticationFailureHandler, userDetailsService);
-    }
-
-    /**
-     * 待认证请求处理器
-     *
-     * @return 待认证请求处理器
-     */
-    @Bean
-    @ConditionalOnProperty(value = "shoulder.security.auth.browser.default-endpoint.enable", havingValue = "true", matchIfMissing = true)
-    public BeforeAuthEndpoint beforeAuthEndpoint() {
-        // fixme 登录前处理，这里暂时写死
-        return new BeforeAuthEndpoint(SecurityConst.URL_REQUIRE_AUTHENTICATION);
     }
 
 }

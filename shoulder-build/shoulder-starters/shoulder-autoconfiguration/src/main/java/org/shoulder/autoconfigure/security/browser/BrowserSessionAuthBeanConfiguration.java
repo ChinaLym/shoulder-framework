@@ -4,6 +4,7 @@ import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationBeanConfig;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
+import org.shoulder.security.authentication.BeforeAuthEndpoint;
 import org.shoulder.security.authentication.browser.ConcurrentLogInExpiredSessionStrategy;
 import org.shoulder.security.authentication.browser.DefaultInvalidSessionStrategy;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,11 +28,11 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 import javax.sql.DataSource;
 
 /**
- * 浏览器相关 bean 配置：几个默认处理器、session 策略
+ * session 认证相关 bean 配置：几个默认处理器、session 策略
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(AuthenticationBeanConfig.class)
 @EnableConfigurationProperties(BrowserSessionAuthProperties.class)
@@ -43,6 +45,17 @@ public class BrowserSessionAuthBeanConfiguration {
 
     public BrowserSessionAuthBeanConfiguration(BrowserSessionAuthProperties browserSessionAuthProperties) {
         this.browserSessionAuthProperties = browserSessionAuthProperties;
+    }
+
+    /**
+     * 待认证请求处理器
+     *
+     * @return 待认证请求处理器
+     */
+    @Bean
+    @ConditionalOnProperty(value = "shoulder.security.auth.browser.default-endpoint.enable", havingValue = "true", matchIfMissing = true)
+    public BeforeAuthEndpoint beforeAuthEndpoint() {
+        return new BeforeAuthEndpoint(browserSessionAuthProperties.getSignInPage());
     }
 
     /**

@@ -108,6 +108,13 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- spring security5 oauth2 资源服务器相关依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- ======================================================================================= -->
 
         <!-- 生成 META-INF/spring-autoconfigure-metadata.properties，加快 spring boot 启动时排除不匹配的自动装配信息，用于缩短启动时间 -->

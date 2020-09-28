@@ -102,10 +102,15 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * 是否包含字符串
      *
      * @param aimString 验证字符串
-     * @param toMatch   字符串组
+     * @param anyContains   字符串组
      * @return 包含返回true
      */
-    public static boolean contains(String aimString, String... toMatch) {
+    public static boolean containsAny(CharSequence aimString, CharSequence... anyContains) {
+        return StrUtil.containsAny(aimString, anyContains);
+
+    }
+
+    public static boolean equalsAny(CharSequence aimString, String... toMatch) {
         if (aimString != null) {
             for (String s : toMatch) {
                 if (aimString.equals(trim(s))) {

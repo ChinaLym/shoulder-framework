@@ -28,14 +28,14 @@ import java.util.List;
 @Deprecated
 @Configuration(proxyBeanMethods = false)
 @EnableAuthorizationServer
-@EnableConfigurationProperties(OAuth2Properties.class)
+@EnableConfigurationProperties(TokenProperties.class)
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     /**
      * 配置类
      */
     @Autowired
-    private OAuth2Properties oAuth2Properties;
+    private TokenProperties tokenProperties;
 
     /**
      * 用户提供
@@ -87,6 +87,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     /**
      * tokenKey的访问权限表达式配置
      */
+    @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security.tokenKeyAccess("permitAll()");
     }
@@ -99,8 +100,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         // 这里将配置放到内存中，实际也可以放到数据库，完成动态配置
         InMemoryClientDetailsServiceBuilder builder = clients.inMemory();
 
-        if (ArrayUtils.isNotEmpty(oAuth2Properties.getClients())) {
-            for (OAuth2Properties.OAuth2ClientProperties client : oAuth2Properties.getClients()) {
+        if (ArrayUtils.isNotEmpty(tokenProperties.getClients())) {
+            for (TokenProperties.OAuth2ClientProperties client : tokenProperties.getClients()) {
                 builder.withClient(client.getClientId())
                     .secret(client.getClientSecret())
                     .redirectUris("http://www.xxx.com")

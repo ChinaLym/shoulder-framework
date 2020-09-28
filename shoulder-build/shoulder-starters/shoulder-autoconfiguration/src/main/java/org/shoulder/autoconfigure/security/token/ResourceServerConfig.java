@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Deprecated
 @Configuration(proxyBeanMethods = false)
 @EnableResourceServer
-@EnableConfigurationProperties(OAuth2Properties.class)
+@EnableConfigurationProperties(TokenProperties.class)
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 

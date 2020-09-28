@@ -9,22 +9,34 @@ import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityCo
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
+import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * token 模式下安全配置主类
  *
  * @author lym
  */
-@EnableWebSecurity
-@Configuration(proxyBeanMethods = false)
+@EnableWebSecurity// 就算不写 spring boot 也会自动识别。WebSecurityEnablerConfiguration
+@Configuration
 @ConditionalOnClass(SecurityConst.class)
 @AutoConfigureAfter(value = TokenAuthBeanConfig.class)
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
+@ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
+@ConditionalOnProperty(name = "shoulder.security.auth.token.default-config", havingValue = "enable", matchIfMissing = true)
 public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired(required = false)
@@ -47,6 +59,9 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     //@Autowired
     //private LogoutSuccessHandler logoutSuccessHandler;
 
+    @Autowired(required = false)
+    private OpaqueTokenIntrospector opaqueTokenIntrospector;
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         // @formatter:off
@@ -61,37 +76,61 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
             http.apply(phoneNumAuthenticationSecurityConfig);
         }
 
+        if(opaqueTokenIntrospector == null){
+            opaqueTokenIntrospector = new MockOpaqueTokenIntrospector();
+        }
+
         http
             .userDetailsService(userDetailsService)
             // 配置校验规则（哪些请求要过滤）
             .authorizeRequests()
-            .antMatchers(
-                // 未认证的跳转
-                SecurityConst.URL_REQUIRE_AUTHENTICATION,
+                .antMatchers(
+                    // 未认证的跳转
+                    SecurityConst.URL_REQUIRE_AUTHENTICATION,
 
-                // 获取验证码请求
-                SecurityConst.URL_VALIDATE_CODE,
+                    // 获取验证码请求
+                    SecurityConst.URL_VALIDATE_CODE,
 
-                // 登录请求
-                // 用户名、密码登录请求
-                SecurityConst.URL_AUTHENTICATION_FORM,
-                // 手机验证码登录请求
-                SecurityConst.URL_AUTHENTICATION_SMS
+                    // 登录请求
+                    // 用户名、密码登录请求
+                    SecurityConst.URL_AUTHENTICATION_FORM,
+                    // 手机验证码登录请求
+                    SecurityConst.URL_AUTHENTICATION_SMS
 
-            )
-            .permitAll()
+                )
+                .permitAll()
 
-            // 其余请求全部开启认证（需要登录）
-            .anyRequest()
-            .authenticated()
+                // 其余请求全部开启认证（需要登录）
+                .anyRequest().authenticated()
+
             .and()
+                // 关闭 csrf
+                .csrf()
+            .disable()
+                .oauth2ResourceServer()
+                    .opaqueToken()
+            // token 校验地址
+                        .introspectionUri("http://localhost:8080/token/introspect")
+            // 自己的 ak/sk
+                        .introspectionClientCredentials("shoulder", "shoulder")
 
-            // 关闭 csrf
-            .csrf().disable();
+        ;
 
         //authorizeConfigManager.config(http.authorizeRequests());
 
         // @formatter:on
     }
 
+
+    class MockOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
+
+        @Override
+        public OAuth2AuthenticatedPrincipal introspect(String s) {
+            Map<String, Object> auth = new HashMap<>(1);
+            auth.put("name", "testOAuth2UserAuthority");
+            Map<String, Object> map = new HashMap<>(1);
+            map.put("name", "shoulder-name");
+            return new DefaultOAuth2User(List.of(new OAuth2UserAuthority(auth)), map, "name");
+        }
+    }
 }

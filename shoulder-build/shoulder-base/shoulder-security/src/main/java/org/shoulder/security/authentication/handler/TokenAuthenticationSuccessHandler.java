@@ -50,7 +50,19 @@ public class TokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         this.authorizationServerTokenServices = authorizationServerTokenServices;
     }
 
-
+    /**
+     * 认证成功时，Json 格式响应
+     * {
+     * "code": "0",
+     * "msg": "success",
+     * "data": {
+     * "access_token": "457d702b-659e-400f-8485-12b420b8f686",
+     * "token_type": "bearer",
+     * "expires_in": 43183,
+     * "scope": "resourceIds"
+     * }
+     * }
+     */
     @SuppressWarnings("unchecked")
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

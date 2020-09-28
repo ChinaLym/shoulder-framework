@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
+import java.util.List;
+
 /**
  * web 增强切面相关配置
  *
@@ -41,9 +43,10 @@ public class WebAdvanceAutoConfiguration {
      */
     @Bean
     @Order(value = 0)
-    @ConditionalOnProperty(name = "shoulder.web.unionResponse", havingValue = "true", matchIfMissing = true)
-    public RestControllerUnionResponseAdvice restControllerUnionResponseAdvice() {
-        return new RestControllerUnionResponseAdvice();
+    @ConditionalOnProperty(name = "shoulder.web.restResponse.auto-warp", havingValue = "true", matchIfMissing = true)
+    public RestControllerUnionResponseAdvice restControllerUnionResponseAdvice(
+        @Value("#{'${shoulder.web.restResponse.skipWarpPathPatterns:}'.split(',')}") List<String> skipWarpPathPatterns) {
+        return new RestControllerUnionResponseAdvice(skipWarpPathPatterns);
     }
 
     /**
