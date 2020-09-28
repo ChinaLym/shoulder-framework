@@ -1,8 +1,10 @@
 package org.shoulder.web.advice;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.ServletUtil;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.core.MethodParameter;
@@ -16,8 +18,12 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+
+import java.util.List;
 
 /**
  * 统一接口返回值
@@ -25,7 +31,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  * 关闭包装：
  * 禁止对某个方法返回值包装： 方法上添加 {@link SkipResponseWrap}
  * 禁止对某个RestController类的所有返回值包装： 类上添加 {@link SkipResponseWrap}
- * 禁用功能： shoulder.web.unionResponse=false
+ * 禁用功能： shoulder.web.restResponse=false
  * <p>
  * 如果希望使用自己项目中的返回值类，返回值继承 {@link RestResult} 类即可。
  * <p>
@@ -36,6 +42,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Object> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    private PathMatcher matcher = new AntPathMatcher();
+
+    private final List<String> skipWarpPathPatterns;
+
+    public RestControllerUnionResponseAdvice(List<String> skipWarpPathPatterns) {
+        this.skipWarpPathPatterns = skipWarpPathPatterns;
+    }
 
     /**
      * 是否需要包装返回值，自动包装必须符合以下条件
@@ -57,6 +71,16 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
         if (springStdResponseType) {
             // Spring 框架的返回值
             return false;
+        }
+
+        // 配置文件里明确指出不要包装
+        if (CollectionUtils.isNotEmpty(skipWarpPathPatterns)) {
+            String requestPath = ServletUtil.getRequest().getPathInfo();
+            for (String unWarpPathPattern : skipWarpPathPatterns) {
+                if (matcher.match(unWarpPathPattern, requestPath)) {
+                    return false;
+                }
+            }
         }
 
         // 方法、或类上不能有 SkipResponseWrap 注解
