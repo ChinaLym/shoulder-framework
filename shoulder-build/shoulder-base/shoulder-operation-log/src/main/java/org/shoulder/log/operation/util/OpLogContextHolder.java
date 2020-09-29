@@ -1,6 +1,7 @@
 package org.shoulder.log.operation.util;
 
-import lombok.extern.shoulder.SLog;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperationLogDTO;
@@ -22,8 +23,9 @@ import java.util.List;
  *
  * @author lym
  */
-@SLog
 public class OpLogContextHolder {
+
+    private final static Logger log = LoggerFactory.getLogger(OpLogContextHolder.class);
 
     /**
      * 保存操作日志上下文

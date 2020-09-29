@@ -1,6 +1,5 @@
 package org.shoulder.autoconfigure.operation;
 
-import lombok.extern.shoulder.SLog;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -8,6 +7,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.annotation.OperationLogParam;
@@ -43,7 +44,6 @@ import java.util.Objects;
  *
  * @author lym
  */
-@SLog
 @Aspect
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(OperationLogDTO.class)
@@ -53,6 +53,8 @@ import java.util.Objects;
 })
 @EnableConfigurationProperties(OperationLogProperties.class)
 public class OperationLogAspect {
+
+    private final static Logger log = LoggerFactory.getLogger(OperationLogAspect.class);
 
     /**
      * 保存操作日志上次的上下文

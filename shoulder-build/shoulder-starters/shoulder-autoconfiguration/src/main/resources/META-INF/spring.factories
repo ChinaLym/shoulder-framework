@@ -32,7 +32,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.operation.OperationLogAspect,\
   org.shoulder.autoconfigure.operation.OperationLoggerAutoConfiguration,\
   org.shoulder.autoconfigure.operation.OperationLogParamConverterAutoConfiguration,\
-  org.shoulder.autoconfigure.operation.OperationLogParamConverterAutoConfiguration,\
+  org.shoulder.autoconfigure.operation.OperationLogWebAutoConfiguration,\
   \
   org.shoulder.autoconfigure.security.AuthenticationBeanConfig, \
   org.shoulder.autoconfigure.security.AuthenticationHandlerConfig, \

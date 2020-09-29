@@ -19,7 +19,7 @@ public class CurrentContextOperatorInfoInterceptor extends OperationLogOperatorI
      * 也可覆盖，改为从 spring security context holder 中拿
      */
     @Override
-    Operator resolveOperator(HttpServletRequest request) {
+    protected Operator resolveOperator(HttpServletRequest request) {
         ShoulderCurrentUserOperator operator = new ShoulderCurrentUserOperator(AppContext.getUserId());
         operator.setLanguageId(String.valueOf(AppContext.getLocale()));
         return operator;

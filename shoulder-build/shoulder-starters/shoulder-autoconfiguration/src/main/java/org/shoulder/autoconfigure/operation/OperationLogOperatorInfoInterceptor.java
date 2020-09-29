@@ -22,7 +22,7 @@ public abstract class OperationLogOperatorInfoInterceptor implements HandlerInte
      * @param request 当前请求
      * @return 作为创建日志实体的默认值
      */
-    abstract Operator resolveOperator(HttpServletRequest request);
+    protected abstract Operator resolveOperator(HttpServletRequest request);
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

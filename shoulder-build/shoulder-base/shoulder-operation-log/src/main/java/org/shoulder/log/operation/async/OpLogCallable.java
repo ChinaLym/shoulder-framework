@@ -1,7 +1,5 @@
 package org.shoulder.log.operation.async;
 
-import org.shoulder.log.operation.util.OpLogContextHolder;
-
 import java.util.concurrent.Callable;
 
 /**
@@ -27,10 +25,8 @@ public class OpLogCallable<V> extends AbstractOpLogAsyncRunner implements Callab
 
             // 2. 执行任务
             return this.delegate.call();
-
         } catch (Exception e) {
-            // 如果异常则记录失败
-            OpLogContextHolder.getLog().setResultFail();
+            error();
             throw e;
         } finally {
             // 3. 清理持有者的变量信息

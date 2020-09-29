@@ -3,7 +3,7 @@ package org.shoulder.autoconfigure.operation;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Configuration properties for operationLog.
+ * 操作日志相关配置
  *
  * @author lym
  */
@@ -29,6 +29,8 @@ public class OperationLogProperties {
      * 参数值为 null 时的输出样式，一般取值为 '' 或 'null' 等
      */
     private String nullParamOutput = "";
+
+    private Integer interceptorOrder = 0;
 
     public boolean isAsync() {
         return async;
@@ -62,4 +64,11 @@ public class OperationLogProperties {
         this.nullParamOutput = nullParamOutput;
     }
 
+    public Integer getInterceptorOrder() {
+        return interceptorOrder;
+    }
+
+    public void setInterceptorOrder(Integer interceptorOrder) {
+        this.interceptorOrder = interceptorOrder;
+    }
 }

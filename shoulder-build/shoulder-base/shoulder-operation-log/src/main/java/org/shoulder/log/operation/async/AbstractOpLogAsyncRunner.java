@@ -47,6 +47,18 @@ public abstract class AbstractOpLogAsyncRunner {
     /**
      * 在运行后删除保存的信息，需要在 finally 中调用
      */
+    void error() {
+        // 如果异常则尝试记录失败
+        OpLogContext opLogContext = OpLogContextHolder.getContext();
+        OperationLogDTO logDTO;
+        if (opLogContext != null && (logDTO = opLogContext.getOperationLog()) != null) {
+            logDTO.setResultFail();
+        }
+    }
+
+    /**
+     * 在运行后删除保存的信息，需要在 finally 中调用
+     */
     void after() {
         if (!shouldEnhancer()) {
             return;
