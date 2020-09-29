@@ -3,8 +3,9 @@ package org.shoulder.autoconfigure.db.mybatis;
 import com.baomidou.mybatisplus.core.MybatisPlusVersion;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
-import lombok.extern.slf4j.Slf4j;
 import org.shoulder.core.constant.PageConst;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.data.mybatis.config.handler.ModelMetaObjectHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -16,10 +17,11 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author lym
  */
-@Slf4j
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(MybatisPlusVersion.class)
 public class MybatisPlusAutoConfiguration {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * 开启分页插件

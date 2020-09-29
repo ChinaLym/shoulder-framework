@@ -1,11 +1,9 @@
 package org.shoulder.crypto.digest;
 
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.shoulder.core.constant.ByteSpecification;
 
-@Slf4j
 public class Sha256ExUtilsTest {
 
     /**

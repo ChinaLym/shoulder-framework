@@ -1,11 +1,13 @@
 package org.shoulder.crypto.sign;
 
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 
-@Slf4j
 public class SignTest {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * 测试签名和验签正确

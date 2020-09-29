@@ -1,7 +1,8 @@
 package org.shoulder.core.converter;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.springframework.lang.NonNull;
 
 import java.text.ParseException;
@@ -15,8 +16,9 @@ import java.util.Map;
  *
  * @author lym
  */
-@Slf4j
 public class DateConverter extends BaseDateConverter<Date> {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * 严格模式，默认关

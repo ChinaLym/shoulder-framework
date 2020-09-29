@@ -1,6 +1,7 @@
 package org.shoulder.security.authentication.sms;
 
-import lombok.extern.shoulder.SLog;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,8 +16,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  *
  * @author lym
  */
-@SLog
 public class PhoneNumAuthenticationSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+
+    private static final Logger log = LoggerFactory.getLogger(PhoneNumAuthenticationSecurityConfig.class);
 
     private AuthenticationSuccessHandler authenticationSuccessHandler;
 

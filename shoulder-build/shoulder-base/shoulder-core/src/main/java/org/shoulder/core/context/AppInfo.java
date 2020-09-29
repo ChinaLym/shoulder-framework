@@ -1,6 +1,7 @@
 package org.shoulder.core.context;
 
-import lombok.extern.shoulder.SLog;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
 
 import java.nio.charset.Charset;
@@ -14,8 +15,9 @@ import java.util.TimeZone;
  *
  * @author lym
  */
-@SLog
 public class AppInfo {
+
+    private static final Logger log = LoggerFactory.getLogger(AppInfo.class);
 
     public static final String UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
 

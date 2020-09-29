@@ -1,13 +1,9 @@
 package org.shoulder.crypto.aes;
-
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.shoulder.crypto.aes.exception.AesCryptoException;
 
 import java.nio.charset.StandardCharsets;
-
-@Slf4j
 public class AesUtilTest {
 
     /**

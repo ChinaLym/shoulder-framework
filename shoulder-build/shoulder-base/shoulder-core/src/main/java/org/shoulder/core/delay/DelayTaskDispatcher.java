@@ -1,6 +1,7 @@
 package org.shoulder.core.delay;
 
-import lombok.extern.shoulder.SLog;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -12,8 +13,9 @@ import java.util.concurrent.Executors;
  *
  * @author lym
  */
-@SLog
-public class DelayTasDispatcher implements Runnable {
+public class DelayTaskDispatcher implements Runnable {
+
+    private static final Logger log = LoggerFactory.getLogger(DelayTaskDispatcher.class);
 
     private static volatile boolean running = false;
     /**
@@ -25,7 +27,7 @@ public class DelayTasDispatcher implements Runnable {
      */
     private DelayTaskHolder delayTaskHolder;
 
-    public DelayTasDispatcher(Executor defaultExecutor, DelayTaskHolder delayTaskHolder) {
+    public DelayTaskDispatcher(Executor defaultExecutor, DelayTaskHolder delayTaskHolder) {
         this.defaultExecutor = defaultExecutor;
         this.delayTaskHolder = delayTaskHolder;
     }

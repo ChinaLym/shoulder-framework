@@ -1,6 +1,5 @@
 package org.shoulder.crypto.asymmetric;
 
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.shoulder.core.util.StringUtils;
@@ -9,7 +8,6 @@ import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 
-@Slf4j
 public class AsymmetricCipherTest {
 
     private AsymmetricCryptoProcessor ecc256 = DefaultAsymmetricCryptoProcessor.ecc256(new HashMapKeyPairCache());

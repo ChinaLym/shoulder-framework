@@ -1,6 +1,7 @@
 package org.shoulder.core.delay;
 
-import lombok.extern.shoulder.SLog;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.springframework.lang.NonNull;
 
 import java.util.concurrent.DelayQueue;
@@ -11,8 +12,9 @@ import java.util.concurrent.DelayQueue;
  *
  * @author lym
  */
-@SLog
 public class DelayQueueDelayTaskHolder implements DelayTaskHolder {
+
+    private static final Logger log = LoggerFactory.getLogger(DelayQueueDelayTaskHolder.class);
 
     /**
      * 延迟队列

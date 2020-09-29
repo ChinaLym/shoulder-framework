@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.core;
 
 import org.shoulder.core.delay.DelayQueueDelayTaskHolder;
-import org.shoulder.core.delay.DelayTasDispatcher;
+import org.shoulder.core.delay.DelayTaskDispatcher;
 import org.shoulder.core.delay.DelayTaskHolder;
 import org.shoulder.core.util.Threads;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class DelayTaskAutoConfiguration implements ApplicationListener<ContextRe
 
     @Lazy
     @Autowired
-    private DelayTasDispatcher delayTasDispatcher;
+    private DelayTaskDispatcher delayTaskDispatcher;
 
     @Bean
     @ConditionalOnMissingBean
@@ -42,14 +42,14 @@ public class DelayTaskAutoConfiguration implements ApplicationListener<ContextRe
     @Bean
     @DependsOn(Threads.DEFAULT_THREAD_POOL_NAME)
     @ConditionalOnProperty(name = "shoulder.delayTask.defaultDispatcher.enable", havingValue = "true", matchIfMissing = true)
-    public DelayTasDispatcher delayTaskPorter(@Qualifier(Threads.DEFAULT_THREAD_POOL_NAME) Executor defaultExecutor,
-                                              DelayTaskHolder delayTaskHolder) {
-        return new DelayTasDispatcher(defaultExecutor, delayTaskHolder);
+    public DelayTaskDispatcher delayTaskPorter(@Qualifier(Threads.DEFAULT_THREAD_POOL_NAME) Executor defaultExecutor,
+                                               DelayTaskHolder delayTaskHolder) {
+        return new DelayTaskDispatcher(defaultExecutor, delayTaskHolder);
     }
 
     @Override
     public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
-        delayTasDispatcher.start();
+        delayTaskDispatcher.start();
     }
 
 }

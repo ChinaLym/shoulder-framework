@@ -5,7 +5,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import lombok.extern.slf4j.Slf4j;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
 
 import java.io.IOException;
@@ -19,9 +20,9 @@ import java.lang.reflect.Method;
  *
  * @author lym
  */
-@Slf4j
 public class EnumDeserializer extends StdDeserializer<Enum<?>> {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
     /**
      * 约定方法名，当且仅当枚举中存在
      * <code>public static Enum from(String str)</code> Enum代表自身

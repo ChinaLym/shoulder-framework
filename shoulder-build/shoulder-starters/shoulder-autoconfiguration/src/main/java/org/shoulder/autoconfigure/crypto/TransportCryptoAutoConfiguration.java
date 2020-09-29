@@ -1,9 +1,9 @@
 package org.shoulder.autoconfigure.crypto;
-
-import lombok.extern.slf4j.Slf4j;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.autoconfigure.http.HttpAutoConfiguration;
 import org.shoulder.autoconfigure.redis.RedisAutoConfiguration;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.asymmetric.annotation.Ecc;
 import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
@@ -37,12 +37,13 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author lym
  */
-@Slf4j
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(TransportNegotiationService.class)
 @AutoConfigureAfter(value = {LocalCryptoAutoConfiguration.class, HttpAutoConfiguration.class})
 @ConditionalOnProperty(value = "shoulder.crypto.transport.enable", havingValue = "true", matchIfMissing = true)
 public class TransportCryptoAutoConfiguration {
+
+    private static final Logger log = LoggerFactory.getLogger(TransportCryptoAutoConfiguration.class);
 
     /**
      * 密钥协商工具，封装密钥协商相关基本方法单元

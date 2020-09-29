@@ -1,6 +1,5 @@
 package org.shoulder.core.util;
 
-import lombok.extern.shoulder.SLog;
 import org.shoulder.core.delay.DelayTask;
 import org.shoulder.core.delay.DelayTaskHolder;
 import org.shoulder.core.log.Logger;
@@ -16,11 +15,14 @@ import java.util.concurrent.*;
  *
  * @author lym
  */
-@SLog
 public class Threads {
 
+    private static final Logger log = LoggerFactory.getLogger(Threads.class);
+
     public final static String DEFAULT_THREAD_POOL_NAME = "shoulderThreadPool";
+
     private static ExecutorService DEFAULT_THREAD_POOL;
+
     private static DelayTaskHolder DELAY_TASK_HOLDER;
 
     public static void setExecutorService(ExecutorService executorService) {

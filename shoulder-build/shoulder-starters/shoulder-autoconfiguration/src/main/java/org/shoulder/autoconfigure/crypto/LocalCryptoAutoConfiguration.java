@@ -1,7 +1,8 @@
 package org.shoulder.autoconfigure.crypto;
 
-import lombok.extern.shoulder.SLog;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.shoulder.crypto.local.impl.Aes256LocalTextCipher;
@@ -29,12 +30,13 @@ import java.util.List;
  *
  * @author lym
  */
-@SLog
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(LocalTextCipher.class)
 @ConditionalOnProperty(value = "shoulder.crypto.local.enable", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(CryptoProperties.class)
 public class LocalCryptoAutoConfiguration {
+
+    private static final Logger log = LoggerFactory.getLogger(LocalCryptoAutoConfiguration.class);
 
     // BC
     static {

@@ -38,12 +38,6 @@
             <artifactId>shoulder-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
         <!-- jdk加解密扩展 -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
