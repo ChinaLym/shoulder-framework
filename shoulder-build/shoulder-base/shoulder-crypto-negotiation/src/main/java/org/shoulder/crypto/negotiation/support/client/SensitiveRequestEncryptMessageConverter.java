@@ -2,6 +2,7 @@ package org.shoulder.crypto.negotiation.support.client;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -16,7 +17,7 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.lang.Nullable;
-import org.springframework.util.CollectionUtils;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -53,8 +54,10 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
         Class<?> objectClass = object.getClass();
         List<SensitiveFieldWrapper> securityParamField = SensitiveFieldCache.findSensitiveRequestFieldInfo(objectClass);
 
-        if (!CollectionUtils.isEmpty(securityParamField)) {
-            // 参数需要加密
+        if (CollectionUtils.isNotEmpty(securityParamField)) {
+            // 参数需要加密，加密处理器必定不是 null
+            Assert.notNull(requestEncryptCipher, "requestEncryptCipher must not be null " +
+                "when request param with sensitive fields");
             // todo 这里深克隆了所有属性，应该只保存需要加密的字段，以提高性能
             Object cloned = ObjectUtil.clone(object);
             if (cloned == null) {
@@ -87,7 +90,7 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
         Class<?> resultClazz = toCrypt.getClass();
         TransportTextCipher cipher = TransportCipherHolder.removeResponseCipher();
         List<SensitiveFieldWrapper> securityResultField = SensitiveFieldCache.findSensitiveResponseFieldInfo(resultClazz);
-        if (!CollectionUtils.isEmpty(securityResultField)) {
+        if (CollectionUtils.isNotEmpty(securityResultField)) {
             // 解密
             SensitiveFieldCache.handleSensitiveData(toCrypt, securityResultField, cipher);
         }

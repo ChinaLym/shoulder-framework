@@ -1,6 +1,7 @@
 package org.shoulder.crypto.negotiation.support;
 
-import lombok.extern.slf4j.Slf4j;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
@@ -34,8 +35,9 @@ import java.util.LinkedList;
  *
  * @author lym
  */
-@Slf4j
 public class SecurityRestTemplate extends RestTemplate {
+
+    private static final Logger log = LoggerFactory.getLogger(SecurityRestTemplate.class);
 
     private final TransportNegotiationService transportNegotiationService;
 
@@ -124,7 +126,7 @@ public class SecurityRestTemplate extends RestTemplate {
                 time++;
             }
 
-            // 创建本次请求的加密器 todo 小优化，如果请求不带（敏感）参数，则无需生成数据密钥
+            // 创建本次请求的加密器 todo 小优化，如果请求不带（敏感）参数，则无需生成数据密钥 —— 1. 保存 keyChangeResult。2. 如何感知是否要加密
             byte[] requestDk = TransportCryptoUtil.generateDataKey(keyExchangeResult.getKeyLength());
             TransportTextCipher requestEncryptCipher = DefaultTransportCipher.buildEncryptCipher(keyExchangeResult, requestDk);
             TransportCipherHolder.setRequestCipher(requestEncryptCipher);

@@ -1,6 +1,8 @@
 package org.shoulder.crypto.negotiation.util;
 
 import org.shoulder.core.constant.ByteSpecification;
+import org.shoulder.core.util.ByteUtils;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
@@ -12,6 +14,7 @@ import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
 import org.shoulder.crypto.negotiation.support.dto.KeyExchangeResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 
 /**
  * 为 String 提供适配
@@ -130,8 +133,10 @@ public class TransportCryptoUtil {
      *
      * @param xDk 每次请求发过来的临时密钥
      */
-    public String generateToken(String xSessionId, String xDk) throws AsymmetricCryptoException {
-        return ByteSpecification.encodeToString(adapter.generateToken(xSessionId, ByteSpecification.decodeToBytes(xDk)));
+    public String generateToken(String xSessionId, @Nullable String xDk) throws AsymmetricCryptoException {
+        return ByteSpecification.encodeToString(
+            adapter.generateToken(xSessionId, StringUtils.isEmpty(xDk) ? null : ByteSpecification.decodeToBytes(xDk))
+        );
     }
 
     /**
@@ -142,31 +147,34 @@ public class TransportCryptoUtil {
     }
 
     /**
-     * 生成客户端的加密传输请求头（不带 xDk ）
-     */
-    /*public HttpHeaders generateHeaders(KeyExchangeResult keyExchangeResult) throws AsymmetricCryptoException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(KeyExchangeConstants.PARAM_TOKEN, ByteSpecification.encodeToString(this.generateToken(keyExchangeResult.getxSessionId(), keyExchangeResult.)));
-        headers.add(KeyExchangeConstants.PARAM_SECURITY_SESSION_ID, keyExchangeResult.getxSessionId());
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        return headers;
-    }*/
-
-    /**
-     * 请求发起时，生成头部信息
+     * 发起请求前，生成头部信息【请求中不带敏感信息】
      *
      * @param keyExchangeResult 密钥交换结果
-     * @param dataKey           数据密钥明文
      * @return 请求头
-     * @throws AsymmetricCryptoException
-     * @throws AesCryptoException
+     * @throws AsymmetricCryptoException 签名出错
+     * @throws AesCryptoException 加密 dataKey 出错
      */
-    public HttpHeaders generateHeaders(KeyExchangeResult keyExchangeResult, byte[] dataKey) throws AsymmetricCryptoException, AesCryptoException {
+    public HttpHeaders generateHeaders(KeyExchangeResult keyExchangeResult) throws AsymmetricCryptoException, AesCryptoException {
+        return generateHeaders(keyExchangeResult, null);
+    }
+
+    /**
+     * 发起请求前，生成头部信息
+     *
+     * @param keyExchangeResult 密钥交换结果
+     * @param dataKey           数据密钥明文，如果为 null 表示请求中不带敏感信息，发起请求或收到请求时无需加密或解密
+     * @return 请求头
+     * @throws AsymmetricCryptoException 签名出错
+     * @throws AesCryptoException 加密 dataKey 出错
+     */
+    public HttpHeaders generateHeaders(KeyExchangeResult keyExchangeResult, @Nullable byte[] dataKey) throws AsymmetricCryptoException, AesCryptoException {
         String xDk = encryptDk(keyExchangeResult, dataKey);
         HttpHeaders headers = new HttpHeaders();
         headers.add(KeyExchangeConstants.TOKEN, generateToken(keyExchangeResult.getxSessionId(), xDk));
         headers.add(KeyExchangeConstants.SECURITY_SESSION_ID, keyExchangeResult.getxSessionId());
-        headers.add(KeyExchangeConstants.SECURITY_DATA_KEY, xDk);
+        if (ByteUtils.isNotEmpty(dataKey)) {
+            headers.add(KeyExchangeConstants.SECURITY_DATA_KEY, xDk);
+        }
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         return headers;
     }

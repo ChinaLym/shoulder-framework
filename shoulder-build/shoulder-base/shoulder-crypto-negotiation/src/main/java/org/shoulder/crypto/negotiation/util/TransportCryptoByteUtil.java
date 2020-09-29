@@ -15,6 +15,7 @@ import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
 import org.shoulder.crypto.negotiation.support.dto.KeyExchangeResponse;
+import org.springframework.lang.Nullable;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -240,7 +241,7 @@ public class TransportCryptoByteUtil {
      *
      * @param xDk 每次请求的临时密钥密文
      */
-    public byte[] generateToken(String xSessionId, byte[] xDk) throws AsymmetricCryptoException {
+    public byte[] generateToken(String xSessionId, @Nullable byte[] xDk) throws AsymmetricCryptoException {
         byte[] xSessionIdBytes = xSessionId.getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] toSin = ByteUtils.compound(Arrays.asList(xSessionIdBytes, xDk));
         return eccProcessor.sign(xSessionId, toSin);

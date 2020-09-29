@@ -1,9 +1,10 @@
 package org.shoulder.crypto.negotiation.support.service.impl;
 
 import cn.hutool.core.lang.Assert;
-import lombok.extern.slf4j.Slf4j;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
@@ -34,8 +35,9 @@ import java.util.*;
  *
  * @author lym
  */
-@Slf4j
 public class TransportNegotiationServiceImpl implements TransportNegotiationService {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final TransportCryptoUtil transportCryptoUtil;
 

@@ -1,6 +1,7 @@
 package org.shoulder.crypto.negotiation.cache;
 
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
+import org.springframework.lang.Nullable;
 import org.springframework.web.client.ResponseExtractor;
 
 /**
@@ -30,6 +31,12 @@ public class TransportCipherHolder {
         request.set(transportCipher);
     }
 
+    /**
+     * 如果没有放则可能为 null
+     *
+     * @return 加密/解密处理器
+     */
+    @Nullable
     public static TransportTextCipher removeRequestCipher() {
         TransportTextCipher cipher = request.get();
         request.remove();
