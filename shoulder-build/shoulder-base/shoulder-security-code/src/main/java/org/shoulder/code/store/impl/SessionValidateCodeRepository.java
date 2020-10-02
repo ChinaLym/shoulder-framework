@@ -4,6 +4,8 @@ import org.shoulder.code.dto.ValidateCodeDTO;
 import org.shoulder.code.store.ValidateCodeStore;
 import org.springframework.web.context.request.ServletWebRequest;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * 基于session的验证码存取器
  *
@@ -31,7 +33,10 @@ public class SessionValidateCodeRepository implements ValidateCodeStore {
 
     @Override
     public void remove(ServletWebRequest request, String codeType) {
-        request.getRequest().getSession().removeAttribute(buildSessionKey(codeType));
+        HttpSession session = request.getRequest().getSession(false);
+        if (session != null) {
+            session.removeAttribute(buildSessionKey(codeType));
+        }
     }
 
     /**

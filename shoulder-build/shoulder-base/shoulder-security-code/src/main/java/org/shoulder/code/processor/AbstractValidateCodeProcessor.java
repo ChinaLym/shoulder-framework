@@ -52,9 +52,15 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCodeDTO> i
         }
         // 生成校验码
         C validateCode = (C) validateCodeGenerator.generate(request);
-        send(request, validateCode);
-        // 发生成功再保存
-        save(request, validateCode);
+
+        try {
+            // 先保存再发送，避免响应流关闭
+            save(request, validateCode);
+            send(request, validateCode);
+        } catch (Exception e) {
+            remove(request, getType());
+            throw e;
+        }
     }
 
     /**
@@ -62,6 +68,13 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCodeDTO> i
      */
     private void save(ServletWebRequest request, C validateCode) {
         validateCodeStore.save(request, validateCode, getType());
+    }
+
+    /**
+     * 保存校验码
+     */
+    private void remove(ServletWebRequest request, String codeType) {
+        validateCodeStore.remove(request, codeType);
     }
 
     /**

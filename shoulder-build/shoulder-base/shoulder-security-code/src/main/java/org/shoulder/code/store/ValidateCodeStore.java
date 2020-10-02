@@ -22,6 +22,7 @@ public interface ValidateCodeStore {
 
     /**
      * 移除
+     * 不存在时，也不抛异常
      */
     void remove(ServletWebRequest request, String codeType);
 
