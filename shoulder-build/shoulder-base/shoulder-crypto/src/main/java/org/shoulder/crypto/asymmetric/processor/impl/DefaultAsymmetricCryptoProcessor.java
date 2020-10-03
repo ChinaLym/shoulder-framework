@@ -105,7 +105,7 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
         lock.lock();
         try {
             // 如果能成功将缓存中的值拿出来构建密钥对，则说明已经构建过，无需再次构建
-            getKeyPairFromDto(keyPairCache.get(id));
+            getKeyPair(id);
         } catch (NoSuchKeyPairException e) {
             // 未拿到或构建出错，则重新生成并保存
             kp = keyPairFactory.build();
@@ -132,7 +132,7 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
             ByteSpecification.decodeToBytes(dto.getVk())
         );
         // 兼容非直接存储的本地缓存，是否存在这种？
-        //dto.setOriginKeyPair(keyPair);
+        dto.setOriginKeyPair(keyPair);
         return keyPair;
     }
 
@@ -140,7 +140,7 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
     public byte[] decrypt(String id, byte[] content) throws AsymmetricCryptoException {
         try {
             Cipher cipher = Cipher.getInstance(transformation, provider);
-            cipher.init(Cipher.DECRYPT_MODE, keyPairFactory.generatePrivateKey(getKeyPairFromDto(keyPairCache.get(id)).getPrivate().getEncoded()));
+            cipher.init(Cipher.DECRYPT_MODE, keyPairFactory.generatePrivateKey(getKeyPair(id).getPrivate().getEncoded()));
             return cipher.doFinal(content);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | KeyPairException | NoSuchProviderException e) {
             throw new AsymmetricCryptoException("decrypt fail.", e);
@@ -152,7 +152,7 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
         try {
             // 对数据加密
             Cipher cipher = Cipher.getInstance(transformation, provider);
-            cipher.init(Cipher.ENCRYPT_MODE, keyPairFactory.generatePublicKey(getKeyPairFromDto(keyPairCache.get(id)).getPublic().getEncoded()));
+            cipher.init(Cipher.ENCRYPT_MODE, keyPairFactory.generatePublicKey(getKeyPair(id).getPublic().getEncoded()));
             return cipher.doFinal(content);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | KeyPairException | NoSuchProviderException e) {
             throw new AsymmetricCryptoException("encrypt fail.", e);
@@ -175,7 +175,7 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
     public byte[] sign(String id, byte[] content) throws AsymmetricCryptoException {
         try {
             Signature signature = Signature.getInstance(signatureAlgorithm);
-            signature.initSign(keyPairFactory.generatePrivateKey(getKeyPairFromDto(keyPairCache.get(id)).getPrivate().getEncoded()));
+            signature.initSign(keyPairFactory.generatePrivateKey(getKeyPair(id).getPrivate().getEncoded()));
             signature.update(content);
             return signature.sign();
         } catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | KeyPairException e) {
@@ -186,7 +186,7 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
     @Override
     public boolean verify(String id, byte[] content, byte[] signature) throws AsymmetricCryptoException {
         try {
-            return this.verify(getKeyPairFromDto(keyPairCache.get(id)).getPublic().getEncoded(), content, signature);
+            return this.verify(getKeyPair(id).getPublic().getEncoded(), content, signature);
         } catch (NoSuchKeyPairException e) {
             throw new AsymmetricCryptoException("verify fail.", e);
         }
@@ -204,9 +204,15 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
         }
     }
 
+
+    @Override
+    public KeyPair getKeyPair(String id) throws KeyPairException {
+        return getKeyPairFromDto(keyPairCache.get(id));
+    }
+
     @Override
     public PublicKey getPublicKey(String id) throws KeyPairException {
-        return getKeyPairFromDto(keyPairCache.get(id)).getPublic();
+        return getKeyPair(id).getPublic();
     }
 
 
@@ -217,7 +223,7 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
 
     @Override
     public PrivateKey getPrivateKey(String id) throws KeyPairException {
-        return getKeyPairFromDto(keyPairCache.get(id)).getPrivate();
+        return getKeyPair(id).getPrivate();
     }
 
 }

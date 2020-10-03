@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication.handler;
+package org.shoulder.security.authentication.handler.json;
 
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.JsonUtils;

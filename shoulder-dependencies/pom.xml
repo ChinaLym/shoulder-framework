@@ -361,6 +361,12 @@
                 <version>${springdoc-openapi.version}</version>
             </dependency>-->
 
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>8.20.1</version>
+            </dependency>
+
 
             <!--Commons begin -->
             <dependency>

@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication.handler;
+package org.shoulder.security.authentication.handler.json;
 
 import org.shoulder.security.AuthResponseUtil;
 import org.slf4j.Logger;

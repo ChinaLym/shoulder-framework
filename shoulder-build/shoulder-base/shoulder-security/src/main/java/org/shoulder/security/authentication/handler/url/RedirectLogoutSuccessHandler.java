@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication.handler;
+package org.shoulder.security.authentication.handler.url;
 
 import cn.hutool.core.util.StrUtil;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;

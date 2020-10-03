@@ -4,7 +4,10 @@ import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.browser.BrowserSessionAuthProperties;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
-import org.shoulder.security.authentication.handler.*;
+import org.shoulder.security.authentication.handler.json.*;
+import org.shoulder.security.authentication.handler.url.RedirectAuthenticationFailureHandler;
+import org.shoulder.security.authentication.handler.url.RedirectAuthenticationSuccessHandler;
+import org.shoulder.security.authentication.handler.url.RedirectLogoutSuccessHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -83,6 +86,18 @@ public class AuthenticationHandlerConfig {
         @ConditionalOnMissingBean
         public AuthenticationFailureHandler jsonAuthenticationFailureHandler() {
             return new JsonAuthenticationFailureHandler();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        public Restful401AuthenticationEntryPoint restful401AuthenticationEntryPoint() {
+            return new Restful401AuthenticationEntryPoint();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        public Restful403AccessDeniedHandler restful403AccessDeniedHandler() {
+            return new Restful403AccessDeniedHandler();
         }
     }
 

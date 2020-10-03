@@ -1,17 +1,11 @@
 package org.shoulder.auth.uaa.endpoint;
 
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import org.shoulder.core.exception.BaseRuntimeException;
-import org.shoulder.crypto.asymmetric.exception.KeyPairException;
-import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
-import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
-import org.shoulder.crypto.asymmetric.store.KeyPairCache;
-import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpoint;
+import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
 
 /**
@@ -22,7 +16,8 @@ import java.util.Map;
  *
  * @author lym
  */
-@FrameworkEndpoint
+@SkipResponseWrap
+@RestController
 public class JwkSetEndpoint {
 
     /**
@@ -31,36 +26,21 @@ public class JwkSetEndpoint {
     public static final String PUBLIC_KEY_END_POINT = "/.well-known/jwks.json";
 
     /**
-     * 只支持 RSA
+     * keyPairId，默认只有一个，可以存在多个
      */
-    private final AsymmetricCryptoProcessor rsa2048;
+    private JWKSet jwkSet;
 
-    private Map<String, Object> cache;
-
-    public JwkSetEndpoint(KeyPairCache keyPairCache) {
-        this.rsa2048 = DefaultAsymmetricCryptoProcessor.rsa2048(keyPairCache);
-
+    public JwkSetEndpoint(JWKSet jwkSet) {
+        this.jwkSet = jwkSet;
     }
 
+    /**
+     * 查看接口返回结果 http://localhost:8080/.well-known/jwks.json
+     */
     @GetMapping(PUBLIC_KEY_END_POINT)
     @ResponseBody
     public Map<String, Object> getKey() {
-        return genKeySet();
+        return jwkSet.toJSONObject();
     }
-
-    private Map<String, Object> genKeySet() {
-        if (cache == null) {
-            try {
-                RSAPublicKey publicKey = (RSAPublicKey) this.rsa2048.getPublicKey("jwk");
-                RSAKey key = new RSAKey.Builder(publicKey).build();
-                cache = new JWKSet(key).toJSONObject();
-            } catch (KeyPairException e) {
-                throw new BaseRuntimeException("genKeySet fail.");
-            }
-        }
-        return cache;
-
-    }
-
 
 }

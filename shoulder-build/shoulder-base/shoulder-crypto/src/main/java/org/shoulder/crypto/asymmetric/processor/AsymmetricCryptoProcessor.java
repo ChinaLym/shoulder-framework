@@ -4,6 +4,7 @@ import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 
+import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.Duration;
@@ -121,5 +122,14 @@ public interface AsymmetricCryptoProcessor {
      * @throws KeyPairException 密钥对标识 不存在
      */
     PrivateKey getPrivateKey(String id) throws KeyPairException;
+
+    /**
+     * 获取密钥对
+     *
+     * @param id 密钥对标识
+     * @return 密钥对
+     * @throws KeyPairException 密钥对标识 不存在
+     */
+    KeyPair getKeyPair(String id) throws KeyPairException;
 
 }

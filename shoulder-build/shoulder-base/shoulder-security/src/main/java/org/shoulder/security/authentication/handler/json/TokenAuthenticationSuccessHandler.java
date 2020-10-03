@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication.handler;
+package org.shoulder.security.authentication.handler.json;
 
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.dto.response.RestResult;
@@ -29,7 +29,7 @@ import java.util.Collections;
  */
 public class TokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * 借用 spring-security-oauth 的 oauth2 存储代码
@@ -68,7 +68,7 @@ public class TokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        logger.info("login success");
+        log.info("login success");
 
         String header = request.getHeader("Authorization");
 

@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication.handler;
+package org.shoulder.security.authentication.handler.url;
 
 import org.shoulder.core.util.StringUtils;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;

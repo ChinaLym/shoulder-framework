@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication;
+package org.shoulder.security.authentication.handler.mixed;
 
 import org.shoulder.core.util.ServletUtil;
 import org.springframework.security.access.AccessDeniedException;

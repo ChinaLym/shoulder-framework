@@ -45,6 +45,7 @@ public class FormAuthenticationSecurityConfig extends SecurityConfigurerAdapter<
         // @formatter:off
         http
             .formLogin()
+            //todo loginPage url
                 //.loginPage(SecurityConst.URL_REQUIRE_AUTHENTICATION)
                 .loginProcessingUrl(SecurityConst.URL_AUTHENTICATION_FORM)
                 .successHandler(authenticationSuccessHandler)

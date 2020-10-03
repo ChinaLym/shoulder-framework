@@ -1,6 +1,7 @@
-package org.shoulder.security.authentication;
+package org.shoulder.security.authentication.handler.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.shoulder.SLog;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
@@ -19,11 +20,12 @@ import java.io.PrintWriter;
  *
  * @author lym
  */
+@SLog
 public class Restful401AuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-
+        log.debug("need auth 401 for: " + authException.getMessage(), authException);
         RestResult result = CommonErrorCodeEnum.AUTH_401_NEED_AUTH.toResponse();
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 

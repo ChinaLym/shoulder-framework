@@ -19,9 +19,14 @@ public class TokenProperties {
     private String jwtSigningKey = "shoulder";
 
     /**
-     * jwt/db/redis
+     * jwt/jdbc/redis/memory
      */
     private String store = "jwt";
+
+    /**
+     * jwt/jwk
+     */
+    private boolean jwk = true;
 
     /**
      * 客户端配置
@@ -42,6 +47,22 @@ public class TokenProperties {
 
     public void setJwtSigningKey(String jwtSigningKey) {
         this.jwtSigningKey = jwtSigningKey;
+    }
+
+    public String getStore() {
+        return store;
+    }
+
+    public void setStore(String store) {
+        this.store = store;
+    }
+
+    public boolean isJwk() {
+        return jwk;
+    }
+
+    public void setJwk(Boolean jwk) {
+        this.jwk = jwk;
     }
 
     /**

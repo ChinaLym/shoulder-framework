@@ -1,12 +1,13 @@
 package org.shoulder.auth.uaa.endpoint;
 
+import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpoint;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,12 +19,13 @@ import java.util.Map;
  *
  * @author lym
  */
-@FrameworkEndpoint
+@SkipResponseWrap
+@RestController
 public class IntrospectEndpoint {
 
     private TokenStore tokenStore;
 
-    IntrospectEndpoint(TokenStore tokenStore) {
+    public IntrospectEndpoint(TokenStore tokenStore) {
         this.tokenStore = tokenStore;
     }
 
@@ -33,12 +35,12 @@ public class IntrospectEndpoint {
      * @param token accessToken
      * @return accessToken的信息
      */
-    @PostMapping("/introspect")
+    @PostMapping("/token/introspect")
     @ResponseBody
     public Map<String, Object> introspect(@RequestParam("token") String token) {
         // 尝试从 accessToken 缓存中取，如果没有，则返回失效
         OAuth2AccessToken accessToken = this.tokenStore.readAccessToken(token);
-        Map<String, Object> attributes = new HashMap<>();
+        Map<String, Object> attributes = new HashMap<>(4);
         // 判断是否有效
         boolean invalid = accessToken == null || accessToken.isExpired();
         boolean active = !invalid;

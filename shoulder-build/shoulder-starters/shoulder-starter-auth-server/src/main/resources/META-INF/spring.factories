@@ -1,2 +1,3 @@
 # Auto Configuration shoulder-starter-security-code
-
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.shoulder.auth.uaa.configuration.TokenEndPointConfiguration

@@ -1,4 +1,4 @@
-package org.shoulder.security.authentication;
+package org.shoulder.security.authentication.handler.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.shoulder.SLog;
@@ -8,7 +8,6 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ import java.io.PrintWriter;
  *
  * @author lym
  */
-@Component
 @SLog
 public class Restful403AccessDeniedHandler implements AccessDeniedHandler {
 
