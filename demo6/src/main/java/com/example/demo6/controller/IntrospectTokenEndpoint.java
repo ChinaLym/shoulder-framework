@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 适用于 opaqueToken
+ *
  * @author lym
  */
 @SkipResponseWrap
@@ -30,6 +32,7 @@ public class IntrospectTokenEndpoint {
 
     /**
      * 校验accessToken是否有效以及对应信息
+     * 不加的话，{@link NimbusOpaqueTokenIntrospector#adaptToNimbusResponse} 可能NPE
      *
      * @param token accessToken
      * @return accessToken的信息

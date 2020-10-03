@@ -1,5 +1,3 @@
-# demo2 使用 yaml 格式配置作为示例，properties转yaml: https://www.toyaml.com/index.html
-
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource

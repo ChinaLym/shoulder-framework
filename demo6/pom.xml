@@ -20,6 +20,10 @@
         </dependency>
         <dependency>
             <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-auth-token</artifactId>
         </dependency>
         <!-- resourceServer -->

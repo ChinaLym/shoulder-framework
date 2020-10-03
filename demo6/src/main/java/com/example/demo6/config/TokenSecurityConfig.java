@@ -12,16 +12,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
-import org.springframework.security.oauth2.server.resource.introspection.NimbusOpaqueTokenIntrospector;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 
+import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * todo {@link NimbusOpaqueTokenIntrospector#adaptToNimbusResponse(org.springframework.http.ResponseEntity)} 可能NPE
- *
  * @author lym
  */
 @Configuration
@@ -38,6 +37,8 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired(required = false)
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 
+    @Autowired
+    private JwtAccessTokenConverter converter;
     /**
      * 短信验证码认证（可选）
      */
@@ -49,6 +50,10 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired(required = false)
     private OpaqueTokenIntrospector opaqueTokenIntrospector;
+
+
+    @Autowired
+    private KeyPair keyPair;
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
@@ -69,6 +74,14 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
         }
 
         http
+                .exceptionHandling()
+                // 访问拒绝
+                .accessDeniedHandler(new Restful403AccessDeniedHandler())
+                // 认证拒绝
+                .authenticationEntryPoint(new Restful401AuthenticationEntryPoint())
+        ;
+
+        http
             .userDetailsService(userDetailsService)
             // 配置校验规则（哪些请求要过滤）
             .authorizeRequests()
@@ -84,10 +97,15 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
                     // 用户名、密码登录请求
                     SecurityConst.URL_AUTHENTICATION_FORM,
                     // 手机验证码登录请求
-                    SecurityConst.URL_AUTHENTICATION_SMS
+                    SecurityConst.URL_AUTHENTICATION_SMS,
+
+                    "/.well-known/jwks.json",
+                    "/oauth/**"
 
                 )
                 .permitAll()
+                .antMatchers("/user/1").hasAuthority("SCOPE_all")
+                .antMatchers("/user/getOne").hasAuthority("SCOPE_cant_access")
 
                 // 其余请求全部开启认证（需要登录）
                 .anyRequest().authenticated()
@@ -97,11 +115,15 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
             .disable()
                 .oauth2ResourceServer()
-                    .opaqueToken()
-            // token 校验地址
-                        .introspectionUri("http://localhost:8080/token/introspect")
-            // 自己的 ak/sk
-                        .introspectionClientCredentials("shoulder", "shoulder")
+                    .jwt()
+                        //.decoder(NimbusJwtDecoder.withPublicKey((RSAPublicKey) keyPair.getPublic()).build())
+                        .jwkSetUri("http://localhost:8080/.well-known/jwks.json")
+                    /*.opaqueToken()
+                        // token 校验地址
+                        //.introspectionUri("http://localhost:8080/token/introspect")
+                        .introspector(opaqueTokenIntrospector)
+                        // 自己的 ak/sk
+                        .introspectionClientCredentials("shoulder", "shoulder")*/
 
         ;
 

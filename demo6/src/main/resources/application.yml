@@ -18,6 +18,15 @@ spring:
 
   security:
     oauth2:
+      resourceserver:
+        #opaque:
+        #  introspection-uri: ${auth.uri}/introspect
+        #  introspection-client-id: resource-client-id
+        #  introspection-client-secret: secret
+        user-info-uri: http://localhost:8080/user/me # 这里是授权服务的地址，即auth-service
+        prefer-token-info: false
+        #authorization:
+        #check-token-access: ${auth.uri}/oauth/check_token
       client:
         registration:               # 需要把 demo 相关的配置到 demo 的授权服务器里，类似在QQ的开发者页面注册应用
           demo-auth-code:
@@ -84,7 +93,8 @@ spring:
 shoulder:
   application:
     errorCodePrefix: '0x000b'
-
+  web:
+    handleGlobalException: false
   # ---------------------------- 关注这里 ------------------------------
   security:
     auth: # 如果使用者自行实现登录成功、退出成功处理器，则这些配置将失效，使用者实现的优先生效
