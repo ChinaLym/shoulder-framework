@@ -1,6 +1,8 @@
 # 更新记录
 
 ## 0.4 （doing）
+- 提供 starters
+    - mysql
 - 全局唯一标识生成器（分布式全局id）
     - 单机
     - 多实例小场景
@@ -11,6 +13,7 @@
     - 支持自签 `Oauth2 JWT Token 认证`
     - session 支持集群模式
     - security 的全局异常处理器
+    - successHandler 同时支持 session、token（TokenAuthenticationSuccessHandler）
 - 接口响应自动包装支持配置排除路径
 - 接口文档选型
     - 注解同时支持 swagger3（主）/swagger2

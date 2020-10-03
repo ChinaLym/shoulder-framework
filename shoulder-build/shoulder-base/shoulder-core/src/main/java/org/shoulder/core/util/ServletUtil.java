@@ -2,6 +2,8 @@ package org.shoulder.core.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -121,7 +123,45 @@ public class ServletUtil {
     public static boolean isAjax(final HttpServletRequest request) {
         // 如果 requestType 值为 XMLHttpRequest ，证明请求为ajax请求
         String requestHeader = request.getHeader("X-Requested-With");
-        return XML_HTTP_REQ_VALUE.equalsIgnoreCase(requestHeader.trim());
+        return XML_HTTP_REQ_VALUE.equalsIgnoreCase(StringUtils.trim(requestHeader));
+    }
+
+    /**
+     * 判断请求是否为浏览器发送的请求
+     *
+     * @param request 请求
+     * @return 判断结果
+     */
+    public static boolean isBrowser(final HttpServletRequest request) {
+        return StringUtils.startsWith(request.getHeader("User-Agent"), "Mozilla");
+    }
+
+    /**
+     * 判断请求是否可接受页面/跳转类响应
+     *
+     * @param request 请求
+     * @return 判断结果
+     */
+    public static boolean isAcceptPage(final HttpServletRequest request) {
+        return request.getHeader(HttpHeaders.ACCEPT).contains(MediaType.TEXT_HTML_VALUE)
+            || request.getHeader(HttpHeaders.ACCEPT).contains(MediaType.ALL_VALUE);
+    }
+
+    /**
+     * 判断请求是否为浏览器发送的页面请求
+     *
+     * @param request 请求
+     * @return 判断结果
+     */
+    public static boolean isBrowserPage(final HttpServletRequest request) {
+        // 如果 User-Agent 为 Mozilla 开头，认为是浏览器请求
+        return isBrowser(request)
+            // 可接受页面响应
+            && isAcceptPage(request)
+            // 不是 ajax
+            && !isAjax(request);
+
+
     }
 
     /**

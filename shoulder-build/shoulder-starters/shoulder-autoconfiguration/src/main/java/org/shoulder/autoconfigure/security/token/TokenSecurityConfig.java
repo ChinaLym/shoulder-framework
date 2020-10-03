@@ -16,14 +16,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
-import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * token 模式下安全配置主类
@@ -39,7 +31,7 @@ import java.util.Map;
 @ConditionalOnProperty(name = "shoulder.security.auth.token.default-config", havingValue = "enable", matchIfMissing = true)
 public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired(required = false)
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -56,12 +48,6 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired(required = false)
     private PhoneNumAuthenticationSecurityConfig phoneNumAuthenticationSecurityConfig;
 
-    //@Autowired
-    //private LogoutSuccessHandler logoutSuccessHandler;
-
-    @Autowired(required = false)
-    private OpaqueTokenIntrospector opaqueTokenIntrospector;
-
     @Override
     public void configure(HttpSecurity http) throws Exception {
         // @formatter:off
@@ -74,10 +60,6 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
         if (phoneNumAuthenticationSecurityConfig != null) {
             http.apply(phoneNumAuthenticationSecurityConfig);
-        }
-
-        if(opaqueTokenIntrospector == null){
-            opaqueTokenIntrospector = new MockOpaqueTokenIntrospector();
         }
 
         http
@@ -121,16 +103,4 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
         // @formatter:on
     }
 
-
-    class MockOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
-
-        @Override
-        public OAuth2AuthenticatedPrincipal introspect(String s) {
-            Map<String, Object> auth = new HashMap<>(1);
-            auth.put("name", "testOAuth2UserAuthority");
-            Map<String, Object> map = new HashMap<>(1);
-            map.put("name", "shoulder-name");
-            return new DefaultOAuth2User(List.of(new OAuth2UserAuthority(auth)), map, "name");
-        }
-    }
 }

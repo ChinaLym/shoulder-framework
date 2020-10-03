@@ -19,6 +19,11 @@ public class TokenProperties {
     private String jwtSigningKey = "shoulder";
 
     /**
+     * jwt/db/redis
+     */
+    private String store = "jwt";
+
+    /**
      * 客户端配置
      */
     private OAuth2ClientProperties[] clients = {};

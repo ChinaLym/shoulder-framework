@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * 抽象的session失效处理器
+ * session 无效处理器
  *
  * @author lym
  */

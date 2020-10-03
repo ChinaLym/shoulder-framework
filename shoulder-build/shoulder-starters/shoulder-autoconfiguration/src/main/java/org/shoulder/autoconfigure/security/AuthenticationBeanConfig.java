@@ -17,6 +17,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+
+import java.util.List;
 
 /**
  * 认证相关基本 bean 配置（用户名密码登录、手机号登录）
@@ -45,8 +49,11 @@ public class AuthenticationBeanConfig {
     @Bean
     @ConditionalOnBean(UserDetailsService.class)
     public FormAuthenticationSecurityConfig formAuthenticationConfig(@Nullable AuthenticationSuccessHandler authenticationSuccessHandler,
-                                                                     @Nullable AuthenticationFailureHandler authenticationFailureHandler) {
-        return new FormAuthenticationSecurityConfig(authenticationSuccessHandler, authenticationFailureHandler);
+                                                                     @Nullable AuthenticationFailureHandler authenticationFailureHandler,
+                                                                     @Nullable LogoutSuccessHandler logoutSuccessHandler,
+                                                                     @Nullable List<LogoutHandler> logoutHandlers) {
+        return new FormAuthenticationSecurityConfig(authenticationSuccessHandler, authenticationFailureHandler,
+            logoutSuccessHandler, logoutHandlers);
     }
 
     /**

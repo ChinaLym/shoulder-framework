@@ -46,6 +46,11 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-crypto</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>9.0.1</version>
+        </dependency>
 
     </dependencies>
 

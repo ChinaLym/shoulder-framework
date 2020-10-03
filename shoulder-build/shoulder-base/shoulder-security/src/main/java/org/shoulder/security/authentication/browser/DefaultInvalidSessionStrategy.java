@@ -8,7 +8,7 @@ import java.io.IOException;
 
 /**
  * 默认的 session 无效处理策略
- * （第一次访问必定无效）
+ * （第一次访问不带sessionid必定无效）
  *
  * @author lym
  */

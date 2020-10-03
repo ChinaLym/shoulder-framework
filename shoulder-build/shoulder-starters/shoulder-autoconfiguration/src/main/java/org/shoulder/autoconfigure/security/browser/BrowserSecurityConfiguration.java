@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
@@ -38,8 +37,23 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private BrowserSessionAuthProperties browserSessionAuthProperties;
 
+    /**
+     * 用户表 service
+     */
     @Autowired
     private UserDetailsService userDetailsService;
+
+    /**
+     * 表单登录
+     */
+    @Autowired
+    private FormAuthenticationSecurityConfig formAuthenticationSecurityConfig;
+
+    @Autowired
+    private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
 
     /**
      * 验证码相关配置（可选）
@@ -54,23 +68,10 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private PhoneNumAuthenticationSecurityConfig phoneNumAuthenticationSecurityConfig;
 
     /**
-     * 表单登录
+     * remember （可选）
      */
-    @Autowired
-    private FormAuthenticationSecurityConfig formAuthenticationSecurityConfig;
-
-    @Autowired
+    @Autowired(required = false)
     private PersistentTokenRepository persistentTokenRepository;
-
-    @Autowired
-    private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
-
-    @Autowired
-    private InvalidSessionStrategy invalidSessionStrategy;
-
-    @Autowired
-    private LogoutSuccessHandler logoutSuccessHandler;
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -87,8 +88,8 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
             http.apply(phoneNumAuthenticationSecurityConfig);
         }
 
-        http
-            //.exceptionHandling()
+        if(persistentTokenRepository != null){
+            http
             // 记住我配置，采用 spring security 的默认实现
             // 如果想在'记住我'登录时记录日志，可以注册一个 InteractiveAuthenticationSuccessEvent 事件的监听器
             .rememberMe()
@@ -97,9 +98,10 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //token有效时间
                 .tokenValiditySeconds((int) browserSessionAuthProperties.getRememberMeSeconds().toSeconds())
                 // 认证类
-                .userDetailsService(userDetailsService)
-            .and()
+                .userDetailsService(userDetailsService);
+        }
 
+        http
             // 会话管理器
             .sessionManagement()
                 // session 无效策略（首次请求必定无效）
@@ -116,7 +118,6 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
             // 退出登录相关配置
             .logout()
                 .logoutUrl(SecurityConst.URL_AUTHENTICATION_CANCEL)
-                .logoutSuccessHandler(logoutSuccessHandler)
                 .logoutSuccessUrl(browserSessionAuthProperties.getSignOutSuccessUrl())
                 .deleteCookies("JSESSIONID")
             .and()
@@ -157,12 +158,11 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
             .and()
 
-            .csrf().disable()
-
-            .oauth2ResourceServer()
-                .jwt();
+                .csrf()
+            .disable()
             // 关闭 csrf
 
+        ;
         // authorizeConfigManager.config(http.authorizeRequests());
         // @formatter:on
     }
