@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author lym
  */
 @Data
-public class TreeNodeDTO implements Serializable {
+public class TreeNodeResult implements Serializable {
 
     /**
      * 数据标识
@@ -31,7 +31,7 @@ public class TreeNodeDTO implements Serializable {
     /**
      * 第几层
      */
-    private Integer namePathLevel;
+    private int namePathLevel;
     /**
      * 路径
      */
@@ -39,26 +39,26 @@ public class TreeNodeDTO implements Serializable {
     /**
      * 排序
      */
-    private Integer disOrder;
+    private int order;
     /**
      * 图标
      */
     private String icon;
     /**
-     * 权限
+     * 是否有权限
      */
-    private Boolean auth;
+    private boolean auth;
     /**
-     * 左子
+     * 是否为叶子节点
      */
-    private Boolean leaf;
+    private boolean leaf;
     /**
-     * 勾选框禁用状态
+     * 是否启用勾选框
      */
-    private Boolean chkDisabled;
+    private boolean checkBox;
     /**
      * 是否已经展开
      */
-    private Boolean open;
+    private boolean open;
 
 }

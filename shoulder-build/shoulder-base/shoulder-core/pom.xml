@@ -60,6 +60,12 @@
             <artifactId>hutool-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <optional>true</optional>
+        </dependency>
+
 
         <dependency>
             <groupId>io.swagger</groupId>
