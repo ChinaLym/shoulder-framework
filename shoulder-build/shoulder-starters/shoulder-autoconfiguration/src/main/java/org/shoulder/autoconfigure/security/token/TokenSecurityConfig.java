@@ -16,9 +16,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 /**
  * token 模式下安全配置主类
+ * todo 该类应由使用者来做，其余请求全部开启认证
  *
  * @author lym
  */
@@ -48,6 +51,12 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired(required = false)
     private PhoneNumAuthenticationSecurityConfig phoneNumAuthenticationSecurityConfig;
 
+    @Autowired(required = false)
+    AuthenticationEntryPoint authenticationEntryPoint;
+
+    @Autowired(required = false)
+    AccessDeniedHandler accessDeniedHandler;
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         // @formatter:off
@@ -60,6 +69,19 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
         if (phoneNumAuthenticationSecurityConfig != null) {
             http.apply(phoneNumAuthenticationSecurityConfig);
+        }
+
+        if(accessDeniedHandler != null){
+             http
+                .exceptionHandling()
+                // 403 权限不够，拒绝访问
+                .accessDeniedHandler(accessDeniedHandler);
+        }
+        if(authenticationEntryPoint != null){
+             http
+                .exceptionHandling()
+                // 401 未认证，拒绝访问
+                .authenticationEntryPoint(authenticationEntryPoint);
         }
 
         http
@@ -82,23 +104,7 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
                 )
                 .permitAll()
 
-                // 其余请求全部开启认证（需要登录）
-                .anyRequest().authenticated()
-
-            .and()
-                // 关闭 csrf
-                .csrf()
-            .disable()
-                .oauth2ResourceServer()
-                    .opaqueToken()
-            // token 校验地址
-                        .introspectionUri("http://localhost:8080/token/introspect")
-            // 自己的 ak/sk
-                        .introspectionClientCredentials("shoulder", "shoulder")
-
         ;
-
-        //authorizeConfigManager.config(http.authorizeRequests());
 
         // @formatter:on
     }

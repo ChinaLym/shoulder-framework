@@ -6,9 +6,8 @@
 
 ## 技术、版本选型
 
-基于目前最新版的 `spring security oauth 2.3.x`
-
-`spring security` 支持 `oAuth2/OpenID` 认证，但不支持自身作为 `授权服务器`。因此选择 `spring security oauth` 来实现（注意该项目将于2020.5转移至社区维护）。
+`spring security` 支持 `oAuth2/OpenID` 认证，但不支持自身作为 `授权服务器`。
+ 因此选择 `spring security oauth` 来实现（注意该项目将于2022.5转移至社区维护）。
 
 ## 说明
 
@@ -29,7 +28,7 @@ org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint.auth
 
 ## 常见错误 
 
-#### [authorization_request_not_found]
+### 本地调试时出现 authorization_request_not_found
 - 常见原因：
     授权服务器和客户端域名相同(如都在以不同端口本地部署，但访问时都输入localhost)。
     

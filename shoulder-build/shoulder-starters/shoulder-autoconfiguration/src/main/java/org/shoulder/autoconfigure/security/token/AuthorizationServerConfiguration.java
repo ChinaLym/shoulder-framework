@@ -1,9 +1,10 @@
-package org.shoulder.auth.uaa.configuration;
+package org.shoulder.autoconfigure.security.token;
 
+import org.shoulder.security.SecurityConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +31,7 @@ import javax.sql.DataSource;
  * @since 5.1
  */
 @EnableAuthorizationServer
+@ConditionalOnClass(SecurityConst.class)
 @Configuration
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
@@ -50,13 +52,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Autowired(required = false)
     private DataSource dataSource;
-
-    /**
-     * 默认使用 jwt
-     */
-    @Autowired
-    @Value("${shoulder.security.token.jwk:true}")
-    private boolean jwtEnabled;
 
     /**
      * 配置授权服务器的校验策略

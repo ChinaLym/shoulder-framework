@@ -39,6 +39,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.security.browser.BrowserSessionAuthBeanConfiguration, \
   org.shoulder.autoconfigure.security.browser.BrowserSecurityConfiguration, \
   org.shoulder.autoconfigure.security.token.TokenAuthBeanConfig, \
+  org.shoulder.autoconfigure.security.token.TokenEndPointConfiguration, \
   org.shoulder.autoconfigure.security.token.TokenSecurityConfig, \
   org.shoulder.autoconfigure.security.code.ValidateCodeBeanConfig, \
   org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig

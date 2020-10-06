@@ -1,10 +1,9 @@
-package org.shoulder.auth.uaa.endpoint;
+package org.shoulder.security.authentication.endpoint;
 
 import com.nimbusds.jose.jwk.JWKSet;
-import org.shoulder.web.annotation.SkipResponseWrap;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -16,8 +15,7 @@ import java.util.Map;
  *
  * @author lym
  */
-@SkipResponseWrap
-@RestController
+@Controller
 public class JwkSetEndpoint {
 
     /**

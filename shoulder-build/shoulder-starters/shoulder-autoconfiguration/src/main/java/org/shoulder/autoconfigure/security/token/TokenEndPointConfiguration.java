@@ -1,8 +1,10 @@
-package org.shoulder.auth.uaa.configuration;
+package org.shoulder.autoconfigure.security.token;
 
 import com.nimbusds.jose.jwk.JWKSet;
-import org.shoulder.auth.uaa.endpoint.IntrospectEndpoint;
-import org.shoulder.auth.uaa.endpoint.JwkSetEndpoint;
+import org.shoulder.security.SecurityConst;
+import org.shoulder.security.authentication.endpoint.IntrospectEndpoint;
+import org.shoulder.security.authentication.endpoint.JwkSetEndpoint;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +17,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  * @author lym
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(value = "shoulder.security.token.default-endPoint", havingValue = "enable", matchIfMissing = true)
+@ConditionalOnClass(SecurityConst.class)
+@ConditionalOnProperty(value = "shoulder.security.token.store", havingValue = "jwt", matchIfMissing = true)
 public class TokenEndPointConfiguration {
 
     /**
@@ -23,6 +26,7 @@ public class TokenEndPointConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(value = "shoulder.security.token.jwk", havingValue = "false")
     public IntrospectEndpoint introspectEndpoint(TokenStore tokenStore) {
         return new IntrospectEndpoint(tokenStore);
     }
@@ -32,6 +36,7 @@ public class TokenEndPointConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(value = "shoulder.security.token.store", havingValue = "jwt")
     public JwkSetEndpoint jwkSetEndpoint(JWKSet jwkSet) {
         return new JwkSetEndpoint(jwkSet);
     }

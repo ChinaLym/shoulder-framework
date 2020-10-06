@@ -53,6 +53,11 @@
             <version>1.0.9.RELEASE</version>
             <optional>true</optional>
         </dependency>-->
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!-- oauth2 资源服务器相关依赖 -->
         <!--<dependency>

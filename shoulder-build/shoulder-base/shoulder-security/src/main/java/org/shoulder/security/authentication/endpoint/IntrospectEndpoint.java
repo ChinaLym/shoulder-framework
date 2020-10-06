@@ -1,13 +1,12 @@
-package org.shoulder.auth.uaa.endpoint;
+package org.shoulder.security.authentication.endpoint;
 
-import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +18,7 @@ import java.util.Map;
  *
  * @author lym
  */
-@SkipResponseWrap
-@RestController
+@Controller
 public class IntrospectEndpoint {
 
     private TokenStore tokenStore;
