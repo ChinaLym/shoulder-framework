@@ -1,6 +1,6 @@
 # shoulder-archetype-simple
 
-单模块的 maven 骨架工程，适合微型或需要快速迭代的项目，如课设、毕设等
+单模块的 `maven` 骨架工程，适合微型或需要快速迭代的项目，如课设、毕设等
 
 ## 保姆级使用介绍
 
@@ -8,7 +8,13 @@
 
 ### 添加 shoulder 的 archetype
 
-第一次使用时需要添加，以后都不用这一步咯
+第一次使用时需要添加，以后都不用这一步咯，`version` 不同，创建的也可能不同哦
+
+```
+groupId     cn.itlym
+artifactId  shoulder-archetype-simple
+version     0.4-SNAPSHOT
+```
 
 ![添加 shoulder 的 archetype](../doc/img/archetype/idea/add.png)
 
