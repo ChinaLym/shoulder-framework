@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor
+    xsi:schemaLocation="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0 http://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd"
+    name="demo1"
+    xmlns="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+            <directory>src/main/java</directory>
+        </fileSet>
+
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>src/main/resources</directory>
+        </fileSet>
+
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>src/test/java</directory>
+        </fileSet>
+
+        <fileSet encoding="UTF-8">
+            <directory></directory>
+            <includes>
+                <include>README.md</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+
+    <requiredProperties>
+
+        <requiredProperty key="contextPath">
+            <defaultValue>/</defaultValue>
+        </requiredProperty>
+
+        <requiredProperty key="appId">
+            <defaultValue>yourAppId</defaultValue>
+        </requiredProperty>
+
+        <requiredProperty key="SpringBootStartAppClassName">
+            <defaultValue>ShoulderApplication</defaultValue>
+        </requiredProperty>
+
+    </requiredProperties>
+
+</archetype-descriptor>
