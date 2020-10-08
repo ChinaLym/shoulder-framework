@@ -1,4 +1,4 @@
-# shoulder-archetype-simple
+# [shoulder-archetype-simple](https://github.com/ChinaLym/Shoulder-Framework/tree/master/shoulder-archetype-simple)
 
 单模块的 `maven` 骨架工程，适合微型或需要快速迭代的项目，如课设、毕设等
 
@@ -10,10 +10,11 @@
 
 下面以 IDEA 为例，介绍如何通过 `shoulder-archetype-simple` 快速创建一个引入了`shoulder`的 spring boot web 工程
 
-### 添加 shoulder 的 archetype
+### 添加 shoulder 的 archetype（仅第一次需要） 
 
-第一次使用时需要添加，以后都不用这一步咯，`version` 不同，创建的也可能不同哦
+第一次使用时需要添加，以后都不用这一步咯，除非调整 `version`
 
+本次以 `0.4-SNAPSHOT` 为例说明
 ```
 groupId     cn.itlym
 artifactId  shoulder-archetype-simple
@@ -22,6 +23,7 @@ version     0.4-SNAPSHOT
 
 ![添加 shoulder 的 archetype](../doc/img/archetype/idea/add.png)
 
+---
 
 ### 基于 shoulder 提供的模板创建 maven 工程
 
