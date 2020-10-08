@@ -45,6 +45,19 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <!-- 是否替换资源中的属性，properties.yml、banner 中需要获取应用版本号、名称、描述 -->
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
     </build>
+
 
 </project>

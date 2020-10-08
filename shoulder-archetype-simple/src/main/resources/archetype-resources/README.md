@@ -24,3 +24,14 @@ groupId.artifactId
 ```
 
 ---
+
+
+---
+
+## 模板属性表
+|属性 key | 说明 | 默认值 |
+|----|----|----|
+| appId | 应用/服务标识 | 使用 `${rootArtifactId}` 值 |
+| package | 包路径 | `${groupId}.${appId}` |
+| contextPath | 上下文路径 | `${appId}` |
+| StartClassName | 启动类名 | ShoulderApplication |
