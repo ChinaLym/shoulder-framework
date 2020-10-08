@@ -79,9 +79,14 @@
 
 # 快速开始
 
-推荐通过一个简单的 **[示例工程](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)**（[github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)），快速感受 `Shoulder` 带来的优雅编码体验。
+通过简单的 **[示例工程](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)**（[github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)），快速感受 `Shoulder` 带来的优雅编码体验。
+
+### 自动创建
+
+`shoulder` 提供了 maven [archetype](https://github.com/ChinaLym/Shoulder-Framework/tree/master/shoulder-archetype-simple) ，可通过该工程快速创建
 
 ### 在新的 Maven 项目中使用
+
 
 可以直接使用以下 `pom.xml`
 

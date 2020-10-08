@@ -21,7 +21,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 /**
  * token 模式下安全配置主类
- * todo 该类应由使用者来做，其余请求全部开启认证
+ * 使用者继承 WebSecurityConfigurerAdapter 或本类完成更多配置
  *
  * @author lym
  */

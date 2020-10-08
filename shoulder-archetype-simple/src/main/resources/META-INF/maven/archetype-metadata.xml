@@ -10,7 +10,7 @@
 
         <!-- 应用标识，一般与 ${artifactId} 相同 -->
         <requiredProperty key="appId">
-            <defaultValue>${rootArtifactId}</defaultValue>
+            <defaultValue>${artifactId}</defaultValue>
         </requiredProperty>
 
         <!-- 包路径 -->
@@ -30,7 +30,11 @@
 
         <!-- 类的作者 -->
         <requiredProperty key="author">
-            <defaultValue>${user.name}</defaultValue>
+            <defaultValue>shoulder</defaultValue>
+        </requiredProperty>
+
+        <requiredProperty key="gitignore">
+            <defaultValue>.gitignore</defaultValue>
         </requiredProperty>
 
     </requiredProperties>
@@ -44,6 +48,7 @@
         <fileSet filtered="true" encoding="UTF-8">
             <directory>src/main/resources</directory>
         </fileSet>
+
         <fileSet encoding="UTF-8">
             <directory>src/main/resources</directory>
             <includes>
@@ -52,8 +57,16 @@
         </fileSet>
 
         <fileSet filtered="true" encoding="UTF-8">
+            <directory></directory>
             <includes>
                 <include>README.md</include>
+            </includes>
+        </fileSet>
+
+        <fileSet encoding="UTF-8">
+            <directory></directory>
+            <includes>
+                <include>**</include>
             </includes>
         </fileSet>
 

@@ -1,8 +1,5 @@
 # 实现
 
-## 工具类
-shoulder-core 中未使用，但常用的工具类考虑抽至新的 util 包
-
 ## 校验部分
 
 校验与错误码整理
@@ -16,11 +13,6 @@ shoulder-core 中未使用，但常用的工具类考虑抽至新的 util 包
     - 批量增删改
     - 异步导入与导出（基于csv/excel）
     - 应用内部广播变更通知
-    
-## WEB
-- 考虑使用自定义的 ObjectMapper 替代，MappingJackson2HttpMessageConverter 中的，获取更好的接口兼容性？
-
-将 `@Async` 的线程池以配置形式开放出来？
 
 - api 带版本
 - @API 注解区分哪些是对外（第三方）暴露的接口，哪些是系统内部的接口

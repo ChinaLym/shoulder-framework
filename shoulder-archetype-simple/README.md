@@ -46,3 +46,13 @@ version     0.4-SNAPSHOT
 ![启动运行](../doc/img/archetype/idea/6.png)
 
 可以访问 DemoController [http://localhost:8080/demo/test](http://localhost:8080/demo/test) 查看一下
+
+## 模板属性表
+|属性 key | 说明 | 默认值 |
+|----|----|----|
+| appId | 应用/服务标识 | 使用 `${rootArtifactId}` 值 |
+| package | 包路径 | `${groupId}.${appId}` |
+| contextPath | 上下文路径 | `${appId}` |
+| StartClassName | 启动类名 | ShoulderApplication |
+| author | 作者名 | shoulder |
+

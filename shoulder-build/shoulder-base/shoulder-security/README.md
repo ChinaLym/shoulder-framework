@@ -46,6 +46,24 @@ Token（JWT）：
 | 缺点 | 默认支持web端，对于前后分离的服务支持需要自行改造 | 相对略复杂 |
 | 适用场景 | 单点登录 | 授权、第三方登录、单点登录 |
 
+----
+ 
+## 方案
+
+### `TOKEN` 续签问题
+
+通过放redis来解决
+
+- 发放 Token（accessToken） 时，同时将 Token 放置于 Redis 中，key、value均为发出的`Token`，有效期为双倍的Token有效期
+- 当请求来临时，校验 Token 中的过期时间，如果未过期，则直接通过（原流程）
+- 若requestToken过期，则查 redis 是否存在该 token 对应的 cacheToken
+    - 如果 `cacheToken` 存在，则说明刚过期不久，用户仍然处于活跃状态，校验该 `cacheToken` 有效期
+        - 如果 `cacheToken` 未过期，则将其当作本次请求的 token 处理请求
+        - 如果 `cacheToken` 过期，则创建新的 Token 并放置于 Redis 中，以原来的 Token 为 Key（key 不变），新的 Token 为 Value，过期时间仍然是两倍Token有效期
+    - 如果 `cacheToken` 不存在，则说明用户已经不是活跃状态了，通知客户端触发重新认证流程（这时，客户端通过`refreshToken`或重新认证都是可以的）
+
+
+
 ---
 
 - 启动后报错：`org.springframework.security.web.authentication.rememberme.CookieTheftException: Invalid remember-me token (Series/token) mismatch. Implies previous cookie theft attack.`

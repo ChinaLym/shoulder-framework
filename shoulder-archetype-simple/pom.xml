@@ -23,8 +23,16 @@
             </extension>
         </extensions>
 
+
         <pluginManagement>
             <plugins>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.0.2</version>
+                </plugin>
+
                 <plugin>
                     <artifactId>maven-archetype-plugin</artifactId>
                     <version>3.2.0</version>
