@@ -1,5 +1,6 @@
 package com.example.demo6.config;
 
+import org.shoulder.auth.uaa.annotation.EnableShoulderAuthServer;
 import org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
@@ -9,20 +10,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.security.KeyPair;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
+ * token 相关安全配置
+ *
  * @author lym
  */
+@EnableShoulderAuthServer
 @Configuration
 public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -36,20 +35,21 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Autowired(required = false)
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
-
-    @Autowired
-    private JwtAccessTokenConverter converter;
     /**
      * 短信验证码认证（可选）
      */
     @Autowired(required = false)
     private PhoneNumAuthenticationSecurityConfig phoneNumAuthenticationSecurityConfig;
 
-    //@Autowired
-    //private LogoutSuccessHandler logoutSuccessHandler;
-
     @Autowired(required = false)
     private OpaqueTokenIntrospector opaqueTokenIntrospector;
+
+    @Autowired(required = false)
+    AuthenticationEntryPoint authenticationEntryPoint;
+
+    @Autowired(required = false)
+    AccessDeniedHandler accessDeniedHandler;
+
 
 
     @Autowired
@@ -69,16 +69,12 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
             http.apply(phoneNumAuthenticationSecurityConfig);
         }
 
-        if(opaqueTokenIntrospector == null){
-            opaqueTokenIntrospector = new MockOpaqueTokenIntrospector();
-        }
-
         http
                 .exceptionHandling()
                 // 访问拒绝
-                .accessDeniedHandler(new Restful403AccessDeniedHandler())
+                .accessDeniedHandler(accessDeniedHandler)
                 // 认证拒绝
-                .authenticationEntryPoint(new Restful401AuthenticationEntryPoint())
+                .authenticationEntryPoint(authenticationEntryPoint)
         ;
 
         http
@@ -116,6 +112,7 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
             .disable()
                 .oauth2ResourceServer()
                     .jwt()
+                // jwk 多了这个配置
                         //.decoder(NimbusJwtDecoder.withPublicKey((RSAPublicKey) keyPair.getPublic()).build())
                         .jwkSetUri("http://localhost:8080/.well-known/jwks.json")
                     /*.opaqueToken()
@@ -132,16 +129,4 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
         // @formatter:on
     }
 
-
-    class MockOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
-
-        @Override
-        public OAuth2AuthenticatedPrincipal introspect(String s) {
-            Map<String, Object> auth = new HashMap<>(1);
-            auth.put("name", "testOAuth2UserAuthority");
-            Map<String, Object> map = new HashMap<>(1);
-            map.put("name", "shoulder-name");
-            return new DefaultOAuth2User(List.of(new OAuth2UserAuthority(auth)), map, "name");
-        }
-    }
 }

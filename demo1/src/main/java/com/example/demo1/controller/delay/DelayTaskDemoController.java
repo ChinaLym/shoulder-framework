@@ -1,8 +1,8 @@
 package com.example.demo1.controller.delay;
 
 import lombok.extern.shoulder.SLog;
-import org.shoulder.core.delay.DelayTasDispatcher;
 import org.shoulder.core.delay.DelayTask;
+import org.shoulder.core.delay.DelayTaskDispatcher;
 import org.shoulder.core.delay.DelayTaskHolder;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * 延迟任务使用示例
  *
  * @author lym
- * @see DelayTasDispatcher 阻塞式实现类
+ * @see DelayTaskDispatcher 阻塞式实现类
  */
 @SLog
 @SkipResponseWrap // 该类所有方法的返回值将不被包装
