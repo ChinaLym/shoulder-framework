@@ -15,8 +15,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
@@ -110,6 +114,7 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
 
         requestInfo
             .green("From      : ", ColorString.Style.BOLD)
+            // 0:0:0:0:0:0:0:1 127.0.0.1 本机
             .append(request.getRemoteAddr())
             .newLine();
 
@@ -132,6 +137,11 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
 
         for (int i = 0; i < parameters.length; i++) {
             Class<?> argType = parameters[i].getType();
+            if (args[i] instanceof ServletResponse || args[i] instanceof ServletRequest ||
+                args[i] instanceof InputStream || args[i] instanceof OutputStream) {
+                // 流类型，或者带有流属性的DTO跳过
+                continue;
+            }
             String argName = parameterNames[i];
             String argValue = JsonUtils.toJson(args[i]);
 

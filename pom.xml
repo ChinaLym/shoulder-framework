@@ -28,6 +28,7 @@
         <module>shoulder-dependencies</module>
         <module>shoulder-parent</module>
         <module>shoulder-build</module>
+        <module>shoulder-archetype-simple</module>
     </modules>
 
     <properties>
