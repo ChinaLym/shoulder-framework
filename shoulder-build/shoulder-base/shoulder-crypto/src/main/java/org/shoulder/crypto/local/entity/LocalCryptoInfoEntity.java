@@ -9,15 +9,16 @@ import java.util.Date;
  * @author lym
  */
 public class LocalCryptoInfoEntity implements Serializable {
-    /**
-     * 唯一标识
-     */
-    private String id;
 
     /**
-     * 应用唯一标识
+     * 应用标识
      */
     private String appId;
+
+    /**
+     * 密文头部标识信息，方便识别是否为该算法加密的密文，更新加密算法等
+     */
+    private String header;
 
     /**
      * 数据密钥
@@ -32,12 +33,7 @@ public class LocalCryptoInfoEntity implements Serializable {
     /**
      * 加密向量
      */
-    private String iv;
-
-    /**
-     * 密文头部标识信息，方便识别是否为该算法加密的密文，更新加密算法等
-     */
-    private String header;
+    private String vector;
 
     /**
      * 创建时间
@@ -47,23 +43,14 @@ public class LocalCryptoInfoEntity implements Serializable {
     public LocalCryptoInfoEntity() {
     }
 
-    public LocalCryptoInfoEntity(String id, String appId, String dataKey, String rootKeyPart, String iv,
+    public LocalCryptoInfoEntity(String appId, String dataKey, String rootKeyPart, String vector,
                                  String header, Date createTime) {
-        this.id = id;
         this.appId = appId;
         this.dataKey = dataKey;
         this.rootKeyPart = rootKeyPart;
-        this.iv = iv;
+        this.vector = vector;
         this.header = header;
         this.createTime = createTime;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getAppId() {
@@ -90,12 +77,12 @@ public class LocalCryptoInfoEntity implements Serializable {
         this.rootKeyPart = rootKeyPart;
     }
 
-    public String getIv() {
-        return iv;
+    public String getVector() {
+        return vector;
     }
 
-    public void setIv(String iv) {
-        this.iv = iv;
+    public void setVector(String vector) {
+        this.vector = vector;
     }
 
     public Date getCreateTime() {

@@ -77,6 +77,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         return fileLocation.resolve(fileName);
     }
 
+    @SuppressWarnings("unchecked")
     public List<LocalCryptoInfoEntity> getAll() throws Exception {
         String jsonStr = Files.readString(getFilePath(), charset);
         return (List<LocalCryptoInfoEntity>) JsonUtils.toObject(jsonStr, List.class, LocalCryptoInfoEntity.class);

@@ -21,34 +21,38 @@ import java.util.List;
 public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
     private static final String CREATE_STATEMENT =
-        "create table tb_security_info " +
-            "( " +
-            "     id varchar " +
-            "     app_id varchar, " +
-            "     data_key varchar, " +
-            "     root_key_part varchar, " +
-            "     iv varchar, " +
-            "     header varchar, " +
-            "     create_time date, " +
+        "create table crypt_info(" +
+            "    component_id  VARCHAR(32) NOT NULL COMMENT '应用标识'," +
+            "    header        VARCHAR(32) NOT NULL default '' COMMENT '密文前缀标识，算法标识'," +
+            "    data_key      VARCHAR(64) NOT NULL COMMENT '数据密钥（密文）'," +
+            "    root_key_part VARCHAR(64) COMMENT '根密钥部件'," +
+            "    vector        VARCHAR(64) COMMENT '初始偏移向量'," +
+            "    create_time   DATETIME             default now() COMMENT '创建时间'," +
+            "    PRIMARY KEY pk_crypt_info (component_id, header)" +
+            ") ENGINE = INNODB" +
+            "  DEFAULT CHARSET = UTF8MB4 COMMENT = '加密元信息';";
 
-            "     constraint tb_security_info_pk " +
-            "          primary key, " +
-            "     constraint tb_security_info_uk " +
-            "          unique (app_id, header) " +
-            "); " +
-            " " +
-            "comment on table tb_security_info is 'support local crypto';";
-    private static final String FIELDS = "id, app_id, data_key, root_key_part, iv, header, create_time";
-    private static final String TABLE_NAME = "tb_security_info";
+    private static final String FIELDS = "app_id, header, data_key, root_key_part, vector, create_time";
+
+    private static final String TABLE_NAME = "crypt_info";
+
     protected static final String SELECT_STATEMENT = "SELECT " + FIELDS + " FROM " + TABLE_NAME;
+
     protected static final String DEFAULT_INSERT_STATEMENT = "INSERT INTO " + TABLE_NAME + " (" + FIELDS
-        + ") values (?,?,?,?,?,?,?)";
+        + ") values (?,?,?,?,?,?)";
+
     private static final String WHERE = " WHERE app_id = ? ";
+
     protected static final String SELECT_BATCH_STATEMENT = SELECT_STATEMENT + WHERE;
+
     private static final String WHERE_UNIQUE = WHERE + " AND header = ? ";
+
     protected static final String SELECT_SINGLE_STATEMENT = SELECT_STATEMENT + WHERE_UNIQUE;
+
     private JdbcTemplate jdbcTemplate;
+
     private RowMapper<LocalCryptoInfoEntity> rowMapper = new AesInfoRowMapper();
+
     private String selectBatchSql = SELECT_BATCH_STATEMENT;
 
     private String selectSingleSql = SELECT_SINGLE_STATEMENT;
@@ -57,6 +61,26 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     public JdbcLocalCryptoInfoRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public void setRowMapper(RowMapper<LocalCryptoInfoEntity> rowMapper) {
+        this.rowMapper = rowMapper;
+    }
+
+    public void setSelectBatchSql(String selectBatchSql) {
+        this.selectBatchSql = selectBatchSql;
+    }
+
+    public void setSelectSingleSql(String selectSingleSql) {
+        this.selectSingleSql = selectSingleSql;
+    }
+
+    public void setInsertSql(String insertSql) {
+        this.insertSql = insertSql;
     }
 
     @Override
@@ -89,12 +113,11 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     protected Object[] getAllFields(LocalCryptoInfoEntity aesInfo) {
         return new Object[]{
-            aesInfo.getId(),
             aesInfo.getAppId(),
+            aesInfo.getHeader(),
             aesInfo.getDataKey(),
             aesInfo.getRootKeyPart(),
-            aesInfo.getIv(),
-            aesInfo.getHeader(),
+            aesInfo.getVector(),
             aesInfo.getCreateTime(),
         };
     }
@@ -110,15 +133,14 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
         @Override
         public LocalCryptoInfoEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new LocalCryptoInfoEntity(
-                rs.getString(1),
-                rs.getString(2),
-                rs.getString(3),
-                rs.getString(4),
-                rs.getString(5),
-                rs.getString(6),
-                rs.getDate(7)
-            );
+            LocalCryptoInfoEntity entity = new LocalCryptoInfoEntity();
+            entity.setAppId(rs.getString(0));
+            entity.setHeader(rs.getString(1));
+            entity.setDataKey(rs.getString(2));
+            entity.setRootKeyPart(rs.getString(3));
+            entity.setVector(rs.getString(4));
+            entity.setCreateTime(rs.getDate(5));
+            return entity;
         }
     }
 
