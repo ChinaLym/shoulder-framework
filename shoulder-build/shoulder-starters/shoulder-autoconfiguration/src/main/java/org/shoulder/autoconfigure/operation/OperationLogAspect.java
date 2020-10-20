@@ -231,7 +231,7 @@ public class OperationLogAspect {
         for (int i = 0; i < parameters.length; i++) {
             OperationLogParam paramAnnotation = parameters[i].getAnnotation(OperationLogParam.class);
             // if args[n] == null or without OperationLogParam Annotation than continue.
-            if (paramAnnotation == null && !methodAnnotation.logAllParam()) {
+            if (paramAnnotation == null && !methodAnnotation.logAllParams()) {
                 continue;
             }
             OpLogParam opLogParam = new OpLogParam();
