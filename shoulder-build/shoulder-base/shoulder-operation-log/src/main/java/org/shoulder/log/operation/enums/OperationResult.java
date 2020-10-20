@@ -27,7 +27,7 @@ public enum OperationResult {
     FAIL(1),
 
     /**
-     * 部分成功
+     * 部分成功（适用于批量操作，如批量保存10条数据，5条成功，5条失败）
      */
     PARTIAL(2);
 

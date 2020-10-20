@@ -23,6 +23,8 @@ public class OperableObject implements Operable, OperationDetailAble {
 
     protected List<String> detailItems;
 
+    protected String detailKey;
+
     protected String detail;
 
     public OperableObject() {
@@ -36,6 +38,9 @@ public class OperableObject implements Operable, OperationDetailAble {
             OperationDetailAble operationDetailAble = (OperationDetailAble) operable;
             if (CollectionUtils.isNotEmpty(operationDetailAble.getDetailItems())) {
                 this.detailItems = operationDetailAble.getDetailItems();
+            }
+            if (StringUtils.isNotEmpty(operationDetailAble.getDetailKey())) {
+                this.detailKey = operationDetailAble.getDetailKey();
             }
             if (StringUtils.isNotEmpty(operationDetailAble.getDetail())) {
                 this.detail = operationDetailAble.getDetail();
@@ -93,6 +98,15 @@ public class OperableObject implements Operable, OperationDetailAble {
     @Override
     public String getDetail() {
         return detail;
+    }
+
+    @Override
+    public String getDetailKey() {
+        return detailKey;
+    }
+
+    public void setDetailKey(String detailKey) {
+        this.detailKey = detailKey;
     }
 
     public void setDetail(String detail) {

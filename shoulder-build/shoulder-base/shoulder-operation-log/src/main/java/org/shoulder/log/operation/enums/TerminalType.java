@@ -13,19 +13,25 @@ public enum TerminalType {
     SYSTEM(0),
 
     /**
-     * 浏览器端
+     * 浏览器
      */
     BROWSER(1),
-
-    /**
-     * 移动端 APP
-     */
-    APP(2),
 
     /**
      * PC 客户端
      */
     CLIENT(2),
+
+    /**
+     * 移动 APP
+     */
+    APP(3),
+
+    /**
+     * 小程序 mini APP
+     */
+    MINA(4),
+
     ;
 
     private int code;

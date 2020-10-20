@@ -17,7 +17,7 @@ public class ShoulderCurrentUserOperator implements Serializable, Operator {
     private static final long serialVersionUID = 1429478242021042150L;
 
     protected String userId;
-    protected String personId;
+    protected String userRealName;
     protected String ip;
     protected String terminalId;
     protected String tgc;
@@ -30,9 +30,9 @@ public class ShoulderCurrentUserOperator implements Serializable, Operator {
         this.userId = userId;
     }
 
-    public ShoulderCurrentUserOperator(String userId, String personId, String ip, String terminalId, String tgc, String languageId) {
+    public ShoulderCurrentUserOperator(String userId, String userRealName, String ip, String terminalId, String tgc, String languageId) {
         this.userId = userId;
-        this.personId = personId;
+        this.userRealName = userRealName;
         this.ip = ip;
         this.terminalId = terminalId;
         this.tgc = tgc;

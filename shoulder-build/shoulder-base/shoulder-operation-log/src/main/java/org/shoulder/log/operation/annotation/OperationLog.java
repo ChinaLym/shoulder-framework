@@ -60,9 +60,7 @@ public @interface OperationLog {
      *
      * @see OperationLogParam#value
      */
-    boolean logAllParam() default false;
-
-    // ==================================== 下方不太常用 =========================================
+    boolean logAllParams() default false;
 
     /**
      * 被操作对象类型 （选填）
@@ -72,16 +70,10 @@ public @interface OperationLog {
     String objectType() default "";
 
     /**
-     * 操作者终端类型，选填 例： TerminalType.BROWSER
+     * 操作者终端类型（选填） 例： TerminalType.BROWSER
      * 【推荐：在类注解 {@link OperationLogConfig} 上描述该值，便不必在每个方法上填充】
      */
     TerminalType terminalType() default TerminalType.BROWSER;
-
-    /**
-     * 是否在抛出异常后自动记录一条操作结果为失败的操作日志。默认记录
-     */
-    boolean logWhenThrow() default true;
-
 
     /**
      * 一些通用的操作，用于填充 Operation

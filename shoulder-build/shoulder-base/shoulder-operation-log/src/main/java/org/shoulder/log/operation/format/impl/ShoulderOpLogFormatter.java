@@ -4,6 +4,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.log.operation.dto.OpLogParam;
 import org.shoulder.log.operation.dto.OperationLogDTO;
@@ -28,7 +29,7 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
     /**
      * 日期格式化:高性能线程安全
      */
-    private static FastDateFormat fastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    private static FastDateFormat fastDateFormat = FastDateFormat.getInstance(AppInfo.dateFormat());
 
     /**
      * {@link OperationLogDTO} 类中所有 String 类型的字段
@@ -84,7 +85,9 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
         builder
             .add("terminalType", String.valueOf(opLog.getTerminalType().getCode()))
             .add("result", String.valueOf(opLog.getResult().getCode()))
-            .add("operationTime", fastDateFormat.format(opLog.getOperationTime()));
+            .add("operationTime", fastDateFormat.format(opLog.getOperationTime()))
+            .add("endTime", fastDateFormat.format(opLog.getEndTime()))
+        ;
 
         // 拼接 List 类型
         if (CollectionUtils.isNotEmpty(opLog.getDetailItems())) {

@@ -36,7 +36,7 @@ public interface Operator {
      * @return 实名标识
      */
     @Nullable
-    default String getPersonId() {
+    default String getUserRealName() {
         return null;
     }
 

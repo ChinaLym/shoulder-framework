@@ -48,11 +48,11 @@ public class OperationLogDTO implements Cloneable {
     protected String userName;
 
     /**
-     * 操作者实名关联的人员唯一标识 （选填）
-     * 用户 ————————— 用户对应的真实人标识 例： tb_person 表 主键
+     * 操作者真实姓名，适合在实名制较强的后台管理系统 （选填）
+     * 用户 ————————— 用户对应的真实姓名
      * 系统内部触发 —— 不填
      */
-    protected String personId;
+    protected String userRealName;
 
     /**
      * 操作者所属组唯一标识（选填）
@@ -103,6 +103,11 @@ public class OperationLogDTO implements Cloneable {
      * 操作发生时间
      */
     protected LocalDateTime operationTime = LocalDateTime.now();
+
+    /**
+     * 操作结束时间
+     */
+    protected LocalDateTime endTime;
 
     /**
      * 操作参数，记录业务操作的参数信息，用于操作审计和分析 （选填）
@@ -176,7 +181,7 @@ public class OperationLogDTO implements Cloneable {
     protected String appId;
 
     /**
-     * 本次业务操作的业务号（选填）
+     * 本次业务操作的调用链标识（选填）
      */
     protected String traceId;
 
@@ -207,7 +212,7 @@ public class OperationLogDTO implements Cloneable {
         if (operator != null) {
             this.userId = operator.getUserId();
             this.userName = operator.getUserName();
-            this.personId = operator.getPersonId();
+            this.userRealName = operator.getUserRealName();
             this.userOrgId = operator.getUserOrgId();
             this.userOrgName = operator.getUserOrgName();
             this.ip = operator.getIp();
@@ -232,6 +237,9 @@ public class OperationLogDTO implements Cloneable {
                 OperationDetailAble operationDetailAble = (OperationDetailAble) operable;
                 if (CollectionUtils.isNotEmpty(operationDetailAble.getDetailItems())) {
                     this.detailItems = operationDetailAble.getDetailItems();
+                }
+                if (StringUtils.isNotEmpty(operationDetailAble.getDetailKey())) {
+                    this.detailKey = operationDetailAble.getDetailKey();
                 }
                 if (StringUtils.isNotEmpty(operationDetailAble.getDetail())) {
                     this.detail = operationDetailAble.getDetail();
@@ -296,7 +304,7 @@ public class OperationLogDTO implements Cloneable {
 
         clone.setUserId(userId);
         clone.setUserName(userName);
-        clone.setPersonId(personId);
+        clone.setUserRealName(userRealName);
         clone.setUserOrgId(userOrgId);
         clone.setTerminalType(terminalType);
         clone.setIp(ip);
@@ -311,6 +319,7 @@ public class OperationLogDTO implements Cloneable {
         // 这里不是深克隆
         clone.setParams(params);
         clone.setOperationTime(operationTime);
+        clone.setEndTime(endTime);
         clone.setResult(result);
         clone.setDetailKey(detailKey);
         clone.setDetailItems(new LinkedList<>(detailItems));

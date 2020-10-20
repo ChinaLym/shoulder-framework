@@ -13,7 +13,17 @@ import java.util.List;
 public interface OperationDetailAble {
 
     /**
-     * 获取操作详情填充参数。
+     * 获取操作详情对应多语言标识
+     *
+     * @return 对应 {@link OperationLogDTO#detail} 字段
+     */
+    @JsonIgnore
+    default String getDetailKey() {
+        return null;
+    }
+
+    /**
+     * 获取操作详情填充参数
      *
      * @return 对应 {@link OperationLogDTO#detailItems} 字段
      */
@@ -23,7 +33,7 @@ public interface OperationDetailAble {
     }
 
     /**
-     * 获取操作详情描述。
+     * 获取操作详情描述
      *
      * @return 对应 {@link OperationLogDTO#detail} 字段
      */

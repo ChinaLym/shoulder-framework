@@ -12,6 +12,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +46,9 @@ public class OpLogContextHolder {
         if (context != null) {
             OperationLogDTO opLog = OpLogContextHolder.getLog();
             List<? extends Operable> operableCollection = OpLogContextHolder.getOperableObjects();
-
+            if (opLog.getEndTime() == null) {
+                opLog.setEndTime(LocalDateTime.now());
+            }
             if (CollectionUtils.isEmpty(operableCollection)) {
                 operationLogger.log(opLog);
             } else {

@@ -47,7 +47,7 @@ class MultiOperableDecorator extends OperableObject {
                 objectsName.deleteCharAt(objectsName.length() - 1);
             }
 
-            // 日志规范不允许id或名称过长
+            // id、名称长度与数据库长度限制一致
             int idMaxLength = 127;
             int nameMaxLength = 255;
             if (objectsId.length() > idMaxLength) {
