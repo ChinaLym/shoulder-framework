@@ -265,17 +265,20 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         byte[] rootKeyRandomPart = ByteUtils.randomBytes(ROOT_KEY_RANDOM_LENGTH);
         String rootKeyRandomPartStr = ByteSpecification.encodeToString(rootKeyRandomPart);
         byte[] rootKey = generateDataKeyProtectKey(rootKeyRandomPart);
-        // 用于加密数据秘钥的 iv 向量，写死
+        // 用于加密数据秘钥的 initVector 向量，写死
         byte[] dataKey = generateDataKey();
         byte[] dataKeyIv = generateDataKeyIv();
         String dbDataKey = ByteSpecification.encodeToString(AesUtil.encrypt(dataKey, rootKey, DATA_KEY_IV));
+        String initVector = ByteSpecification.encodeToString(dataKeyIv);
 
-        String iv = ByteSpecification.encodeToString(dataKeyIv);
-        return new LocalCryptoInfoEntity(
-            UUID.randomUUID().toString(), appId,
-            dbDataKey, rootKeyRandomPartStr, iv,
-            ALGORITHM_HEADER, new Date()
-        );
+        LocalCryptoInfoEntity entity = new LocalCryptoInfoEntity();
+        entity.setAppId(appId);
+        entity.setHeader(ALGORITHM_HEADER);
+        entity.setDataKey(dbDataKey);
+        entity.setRootKeyPart(rootKeyRandomPartStr);
+        entity.setVector(initVector);
+        entity.setCreateTime(new Date());
+        return entity;
     }
 
 
@@ -340,7 +343,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
             byte[] cipherDataKey = ByteSpecification.decodeToBytes(entity.getDataKey());
 
             byte[] dataKey = AesUtil.decrypt(cipherDataKey, rootKey, DATA_KEY_IV);
-            byte[] dataIv = ByteSpecification.decodeToBytes(entity.getIv());
+            byte[] dataIv = ByteSpecification.decodeToBytes(entity.getVector());
 
             return new AesInfoCache(dataKey, dataIv);
         }
