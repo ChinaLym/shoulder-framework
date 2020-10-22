@@ -37,6 +37,10 @@
             <defaultValue>.gitignore</defaultValue>
         </requiredProperty>
 
+        <requiredProperty key="gitattributes">
+            <defaultValue>gitattributes</defaultValue>
+        </requiredProperty>
+
     </requiredProperties>
 
     <!-- ================= 模块结构 ================= -->
@@ -66,7 +70,11 @@
         <fileSet encoding="UTF-8">
             <directory></directory>
             <includes>
-                <include>**</include>
+                <include>.editorconfig</include>
+                <include>__gitattributes__</include>
+                <include>__gitignore__</include>
+                <include>CHANGELOG.MD</include>
+                <include>LICENSE</include>
             </includes>
         </fileSet>
 
