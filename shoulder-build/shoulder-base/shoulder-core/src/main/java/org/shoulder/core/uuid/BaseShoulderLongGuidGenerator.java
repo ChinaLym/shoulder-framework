@@ -1,5 +1,9 @@
 package org.shoulder.core.uuid;
 
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * 类 SnowFlake 算法改进
  *
@@ -8,11 +12,6 @@ package org.shoulder.core.uuid;
 public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
 
     // ==============================Fields===========================================
-
-    /**
-     * 元时间截
-     */
-    private final long timeEpoch;
 
     /**
      * 时间戳 占用位数
@@ -45,6 +44,11 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
     private final long sequenceMask;
 
     /**
+     * 元时间截
+     */
+    private final long timeEpoch;
+
+    /**
      * 当前服务实例标识
      */
     private long instanceId;
@@ -54,10 +58,10 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
      */
     private long lastTemplate = -1L;
 
-    //fixme 使用缓存时间轮
-    private long sequence = -1L;
+    //fixme 使用缓存时间轮，减少 sequence 的竞争，又能兼容时间戳回滚，时间轮内部采用 AutomicLong
+    private volatile long sequence = -1L;
 
-    private long lastTimestamp = -1L;
+    private volatile long lastTimestamp = -1L;
 
     /**
      * 初始化 id 自增器格式
@@ -66,7 +70,7 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
      * @param timeEpoch      元时间戳（位数必须与 timeStampBits 一致）
      * @param instanceIdBits 应用实例标识（机器标识）位数
      * @param instanceId     实例标识
-     * @param sequenceBits   自增序列长度
+     * @param sequenceBits   单位时间（时间戳相关）内自增序列bit位数
      */
     public BaseShoulderLongGuidGenerator(long timeStampBits, long timeEpoch,
                                          long instanceIdBits, long instanceId,
@@ -107,19 +111,35 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
 
     @Override
     public Long nextId() {
+        // 获取时间戳
+        final long lts = this.lastTimestamp;
+        long timestamp = timeStamp();
+
+        // 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过
+        boolean timeBack = timestamp < lts;
+        if (timeBack) {
+            onTimeBack();
+        }
+
+        // 序列号
+        final long seq = sequence;
+        final long currentSequence = (sequence + 1) & sequenceMask;
+
+        // 此时时间戳已经拿到，只需要看是否合法（获取到的序列不是0），如果不等于上次，CAS 修改最新时间戳
+        boolean success = compareAndSetObject(lastTimestamp, lts, lastTimestamp);
+        if (success) {
+            // 特殊处理：若成功则直接使用自增序列为0的，因为大多时候是没有竞争的
+            // todo 设置为0
+            return ((timestamp - timeEpoch) << timestampLeftShift)
+                | (instanceId << instanceIdShift)
+                | sequence;
+        } else {
+            // todo 否则说明其他线程已经修改，
+        }
+
         synchronized (this) {
-            long timestamp = timeStamp();
-
-            // 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过
-            boolean timeBack = timestamp < lastTimestamp;
-            if (timeBack) {
-                // 抛出异常
-                throw new RuntimeException(
-                    String.format("Clock moved backwards. Refusing to generate autoconfigure for %d milliseconds", lastTimestamp - timestamp));
-            }
-
-            //如果是同一时间生成的，则进行毫秒内序列
-            if (lastTimestamp == timestamp) {
+            // 时间戳相同，CAS 增加序列号
+            if (lts == timestamp) {
                 sequence = (sequence + 1) & sequenceMask;
                 //毫秒内序列溢出
                 if (sequence == 0) {
@@ -127,18 +147,18 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
                     //timestamp = tilNextMillis(lastTimestamp);
                 }
             } else {
-                //时间戳改变，毫秒内序列重置
+
                 sequence = 0L;
             }
+        }
 
-            //上次生成ID的时间截
-            lastTimestamp = timestamp;
+        // 序列已经拿到，CAS 更新上次生成ID的时间截（当且仅当lts == lts）
+        lastTimestamp = timestamp;
 
             //移位并通过或运算拼到一起组成64位的ID
             return ((timestamp - timeEpoch) << timestampLeftShift)
                 | (instanceId << instanceIdShift)
                 | sequence;
-        }
     }
 
     @Override
@@ -148,8 +168,7 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
 
 
     /**
-     * 返回当前时间戳
-     * 默认为当前毫秒数，共 41 位
+     * 返回当前时间戳 默认为当前毫秒数，共 41 位。如果访问量很大可以对其进行 lazyTime 缓存
      *
      * @return 当前时间戳
      */
@@ -160,7 +179,7 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
     /**
      * 返回下一个自增序列号
      *
-     * @return 当前时间戳 fixme 没有实现
+     * @return 下一个自增序列号 fixme 没有实现
      */
     protected long sequence() {
         return 1L;
@@ -169,5 +188,99 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
     // 达到本秒内的上限
 
     // 时间回拨
+
+    /**
+     * 处理时间回拨
+     *
+     * @return
+     */
+    protected long onTimeBack() {
+        // 默认回拨处理：抛出异常，也可考虑 await 阻塞
+        throw new RuntimeException("Clock moved backwards. Refusing to generate");
+    }
+
+
+    public static class TimeStampSequenceRingBuffer {
+        /**
+         * 最小的时间戳
+         */
+        volatile long lowTimeStamp;
+
+        volatile int lowIndex;
+        /**
+         * 最新的时间戳，位置，这两个要保证一起操作
+         */
+        volatile long latestTimeStamp;
+        volatile int latestIndex;
+
+        final int bufferSize = 1024;
+
+        Node[] buffer = new Node[bufferSize];
+
+        ReadWriteLock lock = new ReentrantReadWriteLock();
+
+        /**
+         * 根据时间戳获取
+         *
+         * @param timeStamp
+         * @return
+         */
+        Node getNode(long timeStamp) {
+            lock.readLock().lock();
+            final long lts = latestTimeStamp;
+            final long lIndex = latestIndex;
+            lock.readLock().unlock();
+
+            final long minTs = lts - bufferSize;
+            if (timeStamp < minTs) {
+                // 时钟回拨幅度过大，todo 阻塞 / 异常 (少见)
+                throw new IllegalStateException("Clock moved backwards. Refusing to generate");
+            } else {
+                // 尝试拿，若拿不到，创建新的，set 进去
+                int index = ((int) (lIndex + (lts - timeStamp) + bufferSize)) % bufferSize;
+                Node node = buffer[index];
+                if (node.timeStamp == timeStamp) {
+                    // 使用该 node 自增序列号
+                    return node;
+                } else {
+                    // CSA 设置时间戳，成功则获取0序列
+
+                    // 失败，且时间戳相等则返回node，否则抛异常【时钟回拨临近极限，刚才判断是否回拨过久导致的时还未过期，现在过期了】
+                }
+            }
+        }
+
+
+        public synchronized void nextStep(int step) {
+            lock.writeLock().lock();
+            lowTimeStamp += step;
+            lowIndex += step;
+            lowIndex = lowIndex % bufferSize;
+            lock.writeLock().unlock();
+        }
+
+        /**
+         * 与当前跨度太大，缓存不存在，直接
+         */
+        private void reset() {
+
+        }
+
+    }
+
+
+    public static class Node {
+
+        long timeStamp;
+
+        AtomicLong sequence = new AtomicLong(0);
+
+        public Node(long timeStamp) {
+            this.timeStamp = timeStamp;
+        }
+
+    }
+
+
 
 }
