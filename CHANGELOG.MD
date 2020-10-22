@@ -4,16 +4,15 @@
 - 提供 starters
     - mysql
 - 全局唯一标识生成器（分布式全局id）
-    - 单机
-    - 多实例小场景
-    - 分布式
+    - 高性能可配置的全局 id 生成器（持续高压场景为 twitter 雪花算法万倍性能），优雅处理时钟回拨，支持突发峰值、持续高压
+    - todo 多实例小场景、分布式默认装配
 - `operation-log` 模块
 - 完善安全认证实现
     - 重构安全认证模块
     - 支持自签 `Oauth2 JWT Token 认证`
     - session 支持集群模式
     - security 的全局异常处理器
-    - successHandler 同时支持 session、token（TokenAuthenticationSuccessHandler）
+    - successHandler 同时支持 session、token（`TokenAuthenticationSuccessHandler`）
 - 接口响应自动包装支持配置排除路径
 - 接口文档选型
     - 注解同时支持 swagger3（主）/swagger2
@@ -24,8 +23,11 @@
     - 注意 `undertow` 不支持jsp
     - 实际未实现，默认 tomcat、若希望使用 undertow 使用者自行排除即可
 - 框架异常整理
-    - 供使用者直接使用的工具抛出带错误码的 runtimeException
+    - 供使用者直接使用的工具
+    - 抛出带错误码的 RuntimeException
 - 翻译支持spring原生用法、增加识别jar内多语言资源文件夹
+- 增加 `maven archetype`，便于快速创建工程
+
 
 ## 0.3 （stable）
 - 数据库功能增强：分页、自动补充创建者、修改者、创建时间、修改时间
