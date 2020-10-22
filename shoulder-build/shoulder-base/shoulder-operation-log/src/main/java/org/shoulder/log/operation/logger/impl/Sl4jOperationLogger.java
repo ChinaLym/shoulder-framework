@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 以 Sl4j 的接口记录操作日志记录，并以 {@link OperationLogFormatter} 作为日志格式
+ * 以 Sl4j 的接口记录操作日志记录，并以 {@link OperationLogFormatter} 作为日志格式。后续由日志采集器收集、处理、转发至日志中心。
  * <p>
  * 注意：使用前需要保证 loggerName 对应的日志记录器存在。
  *

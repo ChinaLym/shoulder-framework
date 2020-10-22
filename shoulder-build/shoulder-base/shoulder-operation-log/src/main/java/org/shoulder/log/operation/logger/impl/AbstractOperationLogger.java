@@ -45,6 +45,7 @@ public abstract class AbstractOperationLogger implements OperationLogger {
 
     /**
      * 记录多条操作日志
+     * todo 支持批量操作，主要是前后置处理器需要支持批量
      */
     @Override
     public void log(@NonNull Collection<? extends OperationLogDTO> opLogList) {
@@ -64,7 +65,7 @@ public abstract class AbstractOperationLogger implements OperationLogger {
         // 组装后
         opLogs = afterAssembleBatchLogs(opLogs);
 
-        // 如果过多，需要考虑多线程
+        // 如果过多，需要考虑多线程 todo 支持批量
         opLogs.forEach(this::log);
     }
 
