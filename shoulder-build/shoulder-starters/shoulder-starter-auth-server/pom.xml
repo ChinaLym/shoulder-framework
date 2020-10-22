@@ -41,6 +41,13 @@
             <artifactId>shoulder-starter-web</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- 基本加密算法 -->
         <dependency>
             <groupId>cn.itlym</groupId>
