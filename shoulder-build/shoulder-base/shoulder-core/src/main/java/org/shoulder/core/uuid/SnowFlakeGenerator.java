@@ -1,11 +1,12 @@
 package org.shoulder.core.uuid;
 
 /**
- * 标准 SnowFlake 算法
+ * SnowFlake 格式
+ * 41 位时间戳，5位数据中心标识 5位机器标识 12 位自增序列号
  *
  * @author lym
  */
-public class StandSnowFlakeGuidGenerator extends BaseShoulderLongGuidGenerator {
+public class SnowFlakeGenerator extends ShoulderGuidGenerator {
 
     /**
      * 默认元时间截 (2020-8-1)
@@ -18,7 +19,7 @@ public class StandSnowFlakeGuidGenerator extends BaseShoulderLongGuidGenerator {
      * @param dataCenterId 数据中心 id
      * @param machineId    机器号
      */
-    public StandSnowFlakeGuidGenerator(long dataCenterId, long machineId) {
+    public SnowFlakeGenerator(long dataCenterId, long machineId) {
         this(DEFAULT_TIME_EPOCH, dataCenterId, machineId);
     }
 
@@ -29,7 +30,7 @@ public class StandSnowFlakeGuidGenerator extends BaseShoulderLongGuidGenerator {
      * @param dataCenterId 数据中心 id
      * @param machineId    机器号
      */
-    public StandSnowFlakeGuidGenerator(long timeEpoch, long dataCenterId, long machineId) {
+    public SnowFlakeGenerator(long timeEpoch, long dataCenterId, long machineId) {
         // snowflake 算法中包含 41 位时间戳，5位数据中心标识 5位机器标识 12 位自增序列号
         super(41, timeEpoch,
             5 + 5, (dataCenterId << 5) | (machineId),
