@@ -1,6 +1,7 @@
 package org.shoulder.core.converter;
 
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -34,12 +35,13 @@ public class DateConverter extends BaseDateConverter<Date> {
         formatMap.put("yyyy-MM-dd HH", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}");
         formatMap.put("yyyy-MM-dd HH:mm", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}$");
         formatMap.put("yyyy-MM-dd HH:mm:ss", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$");
+        // UTC: yyyy-MM-dd'T'HH:mm:ss.SSSXXX  yyyy-MM-dd'T'HH:mm:ss.SSS Z
+        formatMap.put(AppInfo.UTC_DATE_FORMAT, "^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{1,2}:\\d{1,2}");
         formatMap.put("yyyy/MM", "^\\d{4}/\\d{1,2}$");
         formatMap.put("yyyy/MM/dd", "^\\d{4}/\\d{1,2}/\\d{1,2}$");
         formatMap.put("yyyy/MM/dd HH", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}");
         formatMap.put("yyyy/MM/dd HH:mm", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}:\\d{1,2}$");
         formatMap.put("yyyy/MM/dd HH:mm:ss", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$");
-        // "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
         return formatMap;
     }
 

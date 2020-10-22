@@ -7,7 +7,7 @@ import org.springframework.context.NoSuchMessageException;
 
 import java.util.Locale;
 
-public class ShoulderResourceMessageTes {
+public class ShoulderResourceMessageTest {
 
     /**
      * 在代码中写中文容易乱码，受编译环境影响，故使用字母来代替
