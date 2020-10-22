@@ -82,6 +82,7 @@
 
         <!-- dataBase-->
         <mysql.version>8.0.19</mysql.version>
+        <h2.version>1.4.200</h2.version>
         <druid.version>1.1.21</druid.version>
         <mybatis-plus.version>3.4.0</mybatis-plus.version>
         <pagehelper.version>5.2.0</pagehelper.version>
@@ -503,6 +504,14 @@
                 <version>${p6spy.version}</version>
             </dependency>
 
+            <!-- h2 database -->
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.db.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
