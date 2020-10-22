@@ -1,5 +1,7 @@
 package org.shoulder.core.uuid;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -64,6 +66,13 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
     private volatile long lastTimestamp = -1L;
 
     /**
+     * 最新的时间戳，位置，这两个要保证一起操作
+     */
+    private volatile long latestTimeStamp;
+    private volatile int latestIndex;
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
+
+    /**
      * 初始化 id 自增器格式
      *
      * @param timeStampBits  时间戳所占位数
@@ -113,12 +122,12 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
     public Long nextId() {
         // 获取时间戳
         final long lts = this.lastTimestamp;
-        long timestamp = timeStamp();
+        long timestamp = currentTimeStamp();
 
         // 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过
         boolean timeBack = timestamp < lts;
         if (timeBack) {
-            onTimeBack();
+            return onTimeBack();
         }
 
         // 序列号
@@ -141,13 +150,12 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
             // 时间戳相同，CAS 增加序列号
             if (lts == timestamp) {
                 sequence = (sequence + 1) & sequenceMask;
-                //毫秒内序列溢出
+                // 毫秒内序列溢出
                 if (sequence == 0) {
-                    //阻塞到下一个毫秒,获得新的时间戳
-                    //timestamp = tilNextMillis(lastTimestamp);
+                    // 阻塞到下一个毫秒,获得新的时间戳（如果跑到这里，说明你的业务量的价值富可敌国了）
+                    timestamp = tilNextStamp(lastTimestamp);
                 }
             } else {
-
                 sequence = 0L;
             }
         }
@@ -155,11 +163,12 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
         // 序列已经拿到，CAS 更新上次生成ID的时间截（当且仅当lts == lts）
         lastTimestamp = timestamp;
 
-            //移位并通过或运算拼到一起组成64位的ID
-            return ((timestamp - timeEpoch) << timestampLeftShift)
-                | (instanceId << instanceIdShift)
-                | sequence;
+        //移位并通过或运算拼到一起组成64位的ID
+        return ((timestamp - timeEpoch) << timestampLeftShift)
+            | (instanceId << instanceIdShift)
+            | sequence;
     }
+
 
     @Override
     public Long[] nextIds(int num) {
@@ -168,11 +177,12 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
 
 
     /**
-     * 返回当前时间戳 默认为当前毫秒数，共 41 位。如果访问量很大可以对其进行 lazyTime 缓存
+     * 返回当前时间戳
+     * 默认为当前毫秒数，共 41 位。如果访问量很大 / 时间位数较少 可以对其进行 lazy 化缓存提高运行效率
      *
      * @return 当前时间戳
      */
-    protected long timeStamp() {
+    protected long currentTimeStamp() {
         return System.currentTimeMillis();
     }
 
@@ -181,13 +191,24 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
      *
      * @return 下一个自增序列号 fixme 没有实现
      */
-    protected long sequence() {
-        return 1L;
+    protected synchronized long nextSequence(long timeStamp) {
+        return sequence = (sequence + 1) & sequenceMask;
     }
 
-    // 达到本秒内的上限
-
-    // 时间回拨
+    /**
+     * 达到本秒内的上限，【阻塞】至下一个时间戳
+     * 默认使用 while 循环实现，原因：自增序列满了，说明这一毫秒内已经进行了非常多次的调用，故需要阻塞时间通常远小于 1ms，直接使用循环，注意CPU毛刺
+     *
+     * @param currentTimestamp 当前时间戳
+     * @return currentTimestamp + 1
+     */
+    protected long tilNextStamp(long currentTimestamp) {
+        long mill = currentTimeStamp();
+        while (mill <= currentTimestamp) {
+            mill = currentTimeStamp();
+        }
+        return mill;
+    }
 
     /**
      * 处理时间回拨
@@ -202,85 +223,131 @@ public class BaseShoulderLongGuidGenerator implements LongGuidGenerator {
 
     public static class TimeStampSequenceRingBuffer {
         /**
-         * 最小的时间戳
-         */
-        volatile long lowTimeStamp;
-
-        volatile int lowIndex;
-        /**
          * 最新的时间戳，位置，这两个要保证一起操作
          */
         volatile long latestTimeStamp;
         volatile int latestIndex;
-
-        final int bufferSize = 1024;
-
-        Node[] buffer = new Node[bufferSize];
-
         ReadWriteLock lock = new ReentrantReadWriteLock();
+
+        final int bufferSize;
+
+        final Node[] buffer;
+
+        VarHandle nodeHandle = MethodHandles.arrayElementVarHandle(Node[].class);
+
+        TimeStampSequenceRingBuffer() {
+            this(1024);
+        }
+
+        TimeStampSequenceRingBuffer(int bufferSize) {
+            this.bufferSize = bufferSize;
+            // 初始化缓冲区
+            buffer = new Node[bufferSize];
+            for (int i = 0; i < buffer.length; i++) {
+                buffer[i] = new Node(-1);
+            }
+        }
 
         /**
          * 根据时间戳获取
          *
-         * @param timeStamp
-         * @return
+         * @param timeStamp 时间戳
+         * @return 序列
          */
-        Node getNode(long timeStamp) {
+        long next(long timeStamp) {
             lock.readLock().lock();
             final long lts = latestTimeStamp;
             final long lIndex = latestIndex;
             lock.readLock().unlock();
 
+            // 缓存中最旧的时间戳
             final long minTs = lts - bufferSize;
             if (timeStamp < minTs) {
-                // 时钟回拨幅度过大，todo 阻塞 / 异常 (少见)
+                // 时钟回拨幅度过大（少见）
                 throw new IllegalStateException("Clock moved backwards. Refusing to generate");
-            } else {
-                // 尝试拿，若拿不到，创建新的，set 进去
-                int index = ((int) (lIndex + (lts - timeStamp) + bufferSize)) % bufferSize;
-                Node node = buffer[index];
-                if (node.timeStamp == timeStamp) {
-                    // 使用该 node 自增序列号
-                    return node;
-                } else {
-                    // CSA 设置时间戳，成功则获取0序列
+            }
 
-                    // 失败，且时间戳相等则返回node，否则抛异常【时钟回拨临近极限，刚才判断是否回拨过久导致的时还未过期，现在过期了】
+            // 尝试拿 Node
+            while (true) {
+                int index = ((int) (lIndex + (lts - timeStamp) + bufferSize)) % bufferSize;
+                Node node = getNodeAt(index);
+                if (node.timeStamp != timeStamp) {
+                    // 该时间戳内第一次访问，new 新的 CAS 替换
+                    Node newNode = new Node(timeStamp);
+                    if (casNodeAt(index, node, newNode)) {
+                        // 成功时序列为 0
+                        return ((timestamp - timeEpoch) << timestampLeftShift)
+                            | (instanceId << instanceIdShift);
+                    }
+                    // 失败则循环
+                    continue;
+                } else {
+                    // timeStamp == timeStamp，该毫秒内已经有其他线程已经设置过了
+                    long currentSequence = node.sequence.incrementAndGet();
+                    if (currentSequence != 0) {
+                        return ((timestamp - timeEpoch) << timestampLeftShift)
+                            | (instanceId << instanceIdShift) | currentSequence;
+                    }
+                    // 超出单毫秒内最大限制，说明该毫秒内竞争非常激烈，使用下一毫秒的数据
+                    timeStamp = timeStamp + 1;
                 }
             }
+
         }
 
+        private Node getNodeAt(int index) {
+            return (Node) nodeHandle.getAcquire(buffer, index);
+        }
+
+        private boolean casNodeAt(int index, Node old, Node newValue) {
+            return nodeHandle.compareAndSet(buffer, index, old, newValue);
+        }
 
         public synchronized void nextStep(int step) {
             lock.writeLock().lock();
-            lowTimeStamp += step;
-            lowIndex += step;
-            lowIndex = lowIndex % bufferSize;
+            latestTimeStamp += step;
+            latestIndex += step;
+            latestIndex = latestIndex % bufferSize;
             lock.writeLock().unlock();
-        }
-
-        /**
-         * 与当前跨度太大，缓存不存在，直接
-         */
-        private void reset() {
-
         }
 
     }
 
 
+    /**
+     * 缓存区，节点，保存时间/自增序列
+     * 更新方式：读写锁 （固定个数锁变量，需处理极小概率事件 ‘时钟回拨临近缓冲上限’）
+     * cas Node 方式（无锁，new 小对象）【默认】
+     */
     public static class Node {
 
-        long timeStamp;
+        final long timeStamp;
 
-        AtomicLong sequence = new AtomicLong(0);
+        final AtomicLong sequence = new AtomicLong(0);
+
+        //final long leadingTemplate;
 
         public Node(long timeStamp) {
             this.timeStamp = timeStamp;
         }
 
+        /*final ReadWriteLock lock = new ReentrantReadWriteLock();
+
+        public void update(long timeStamp, long newSequence) {
+            boolean holdLock = lock.writeLock().tryLock();
+            if(holdLock) {
+                this.timeStamp = timeStamp;
+                sequence.set(newSequence);
+                lock.writeLock().unlock();
+            }
+        }
+
+        public long nextSequence(){
+            lock.readLock().lock();
+            long result = sequence.getAndIncrement();
+            lock.readLock().unlock();
+            return result;
+        }*/
     }
-
-
 
 }
