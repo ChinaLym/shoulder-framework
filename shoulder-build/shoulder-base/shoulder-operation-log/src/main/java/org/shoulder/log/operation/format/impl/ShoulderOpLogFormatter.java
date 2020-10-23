@@ -55,6 +55,7 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
         }
 
         String name = operation + "." + param.getName();
+        // 一般 value 只有一个，出现多个直接使用 json / 逗号分隔
         StringJoiner valueJoiner = new StringJoiner(",");
         param.getValue().stream()
             .filter(StringUtils::isEmpty)
@@ -89,14 +90,14 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
             .add("endTime", fastDateFormat.format(opLog.getEndTime()))
         ;
 
-        // 拼接 List 类型
+        // 拼接 List 类型（json格式）
         if (CollectionUtils.isNotEmpty(opLog.getDetailItems())) {
             StringJoiner detailsStr = new StringJoiner(",", "[", "]");
             opLog.getDetailItems()
                 .stream().
                 filter(Objects::nonNull)
                 .forEach(detailsStr::add);
-            builder.add("detail", detailsStr.toString());
+            builder.add("detailItems", detailsStr.toString());
         }
         if (CollectionUtils.isNotEmpty(opLog.getParams())) {
             StringJoiner sj = new StringJoiner(",", "[", "]");
