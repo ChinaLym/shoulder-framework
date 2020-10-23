@@ -90,32 +90,35 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      * 服务不可用
      */
     SERVICE_UNAVAILABLE(302, "Service unavailable.", Level.ERROR, HttpStatus.SERVICE_UNAVAILABLE),
-
+    /**
+     * 不再支持的接口（接口已废弃）
+     */
+    DEPRECATED_NOT_SUPPORT(305, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
 
     /**
      * 参数校验未通过，参数非法，校验框架抛出
      */
-    PARAM_NOT_VALID(304, "Parameter not valid. for %s", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_NOT_VALID(314, "Parameter not valid. for %s", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * 参数不能为空
      */
-    PARAM_BLANK(305, "The required parameter %s is blank.", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_BLANK(315, "The required parameter %s is blank.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * 参数范围不正确，如年龄传入了负数
      */
-    PARAM_OUT_RANGE(306, "The value of parameter %s is not in the right range.", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_OUT_RANGE(316, "The value of parameter %s is not in the right range.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * 参数格式不正确
      */
-    PARAM_FORMAT_INVALID(307, "The format of parameter %s is not correct.", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_FORMAT_INVALID(317, "The format of parameter %s is not correct.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * 参数错误：返回报文过长，可能未指定分页大小 or 分页过大
      */
-    PARAM_PAGE_SETTING_INVALID(308, "Return message is too long, please resize page and retry.", HttpStatus.BAD_REQUEST),
+    PARAM_PAGE_SETTING_INVALID(318, "Return message is too long, please resize page and retry.", HttpStatus.BAD_REQUEST),
     /**
      * 参数不支持
      */
-    PARAM_NOT_SUPPORT(309, "The parameter(%s) not supported.", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_NOT_SUPPORT(319, "The parameter(%s) not supported.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * 参数内容长度超长，如用户名最大允许32个字符
      */
@@ -124,19 +127,19 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      * 包装 HttpMessageNotReadableException,
      * 请求体读取失败，传过来的参数与你controller接收的参数类型不匹配。如 Post 请求缺少参数或者解析 json 时失败了
      */
-    PARAM_BODY_NOT_READABLE(311, "HttpMessageNotReadable. %s", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_BODY_NOT_READABLE(321, "HttpMessageNotReadable. %s", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * 参数类型不匹配
      */
-    PARAM_TYPE_NOT_MATCH(312, "MethodArgumentTypeMismatch. The value of %s(%s) resolved to %s fail.", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_TYPE_NOT_MATCH(322, "MethodArgumentTypeMismatch. The value of %s(%s) resolved to %s fail.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * content-type 不正确
      */
-    CONTENT_TYPE_INVALID(313, "HttpMediaTypeNotSupported. ContentType(%s) is not acceptable.", Level.INFO, HttpStatus.BAD_REQUEST),
+    CONTENT_TYPE_INVALID(323, "HttpMediaTypeNotSupported. ContentType(%s) is not acceptable.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * 文件上传出错
      */
-    MULTIPART_INVALID(314, "Request is not a validate multipart request, please check request or file size.", HttpStatus.BAD_REQUEST),
+    MULTIPART_INVALID(324, "Request is not a validate multipart request, please check request or file size.", HttpStatus.BAD_REQUEST),
 
     /**
      * 无效的安全会话， xSessionId 不正确
