@@ -1,8 +1,11 @@
 package org.shoulder.core.uuid;
 
 import org.junit.Test;
+import org.shoulder.core.util.JsonUtils;
 
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * shoulder 开发的无锁化 Guid 生成器测试
@@ -96,6 +99,33 @@ public class ShoulderGuidTest {
             generator.nextId();
         }
         System.out.println("cost " + (System.currentTimeMillis() - start));
+    }
+
+
+    /**
+     * 测试解码
+     */
+    @Test
+    public void testDecode() {
+        long timeEpoch = System.currentTimeMillis();
+        long instanceIdBits = 10;
+        long instanceId = ThreadLocalRandom.current().nextInt(1 << instanceIdBits);
+        LongGuidGenerator generator = new ShoulderGuidGenerator(
+            41, timeEpoch, instanceIdBits, instanceId, 12);
+
+        long sequence = 0;
+        long id = generator.nextId();
+        long currentTimestamp = System.currentTimeMillis();
+        System.out.println("current=" + currentTimestamp);
+        System.out.println("instanceId=" + instanceId);
+        System.out.println("genId=" + id);
+        Map<String, String> decodeResult = generator.decode(id);
+        System.out.println(JsonUtils.toJson(decodeResult));
+
+
+        assert decodeResult.get("timestamp").equals(String.valueOf(currentTimestamp)) || decodeResult.get("timestamp").equals(String.valueOf(currentTimestamp) + 1);
+        assert decodeResult.get("sequence").equals(String.valueOf(sequence));
+        assert decodeResult.get("instanceId").equals(String.valueOf(instanceId));
     }
 
 

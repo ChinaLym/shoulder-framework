@@ -1,6 +1,8 @@
 package org.shoulder.core.uuid;
 
 
+import java.util.Map;
+
 /**
  * 返回值类型为 Long 全局唯一标识符 guid 生成器
  * <p>
@@ -33,4 +35,20 @@ public interface LongGuidGenerator {
         }
         return results;
     }
+
+
+    /**
+     * 解析 id，把各个部分
+     * <p>
+     * {
+     * "timestamp": "1567733700834(2019-09-06 09:35:00.834)",
+     * "sequenceId": "3448",
+     * "workerId": "39"
+     * }
+     *
+     * @param guid guid
+     * @return 解析结果
+     */
+    Map<String, String> decode(long guid);
+
 }

@@ -2,6 +2,8 @@ package org.shoulder.core.uuid;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -78,7 +80,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      *
      * @param timeStampBits  时间戳所占位数 > 0
      * @param timeEpoch      元时间戳（位数必须与 timeStampBits 一致）
-     * @param instanceIdBits 应用实例标识（机器标识）位数 >= 0
+     * @param instanceIdBits 应用实例标识（机器标识）位数 >= 0 todo 可以自动推断
      * @param instanceId     实例标识
      * @param sequenceBits   单位时间（时间戳相关）内自增序列bit位数 > 0
      */
@@ -90,17 +92,17 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
 
         // 初始化与校验
         instanceIdShift = sequenceBits;
-        timestampLeftShift = sequenceBits + instanceIdShift;
+        timestampLeftShift = sequenceBits + instanceIdBits;
         sequenceMask = ~(-1L << sequenceBits);
 
-        // 时间戳 所占位数必须大于零，且给定元时间戳也需要符合该限制
+        // 时间戳 所占位数必须大于零，且给定元时间戳也需要符合该限制并 <= timeStampBits
         int timeEpochBits = 64 - Long.numberOfLeadingZeros(timeEpoch);
         if (timeStampBits <= 0 || timeStampBits < timeEpochBits) {
             throw new IllegalArgumentException("timeStampBits or timeEpoch invalid. " +
                 "timeStampBits=" + timeStampBits + ", timeEpoch=" + timeEpoch);
         }
 
-        // 实例标识 所占位数必须大于零，且给定实例标识也需要符合该限制
+        // 实例标识 所占位数必须大于零，且给定实例标识也需要符合该限制并 <= instanceIdBits
         int selfInstanceIdBits = 64 - Long.numberOfLeadingZeros(instanceId);
         if (instanceIdBits < 0 || timeStampBits < selfInstanceIdBits) {
             throw new IllegalArgumentException("instanceIdBits or instanceId invalid. " +
@@ -110,6 +112,12 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         // 序列号所占位数必须大于 0
         if (sequenceBits <= 0) {
             throw new IllegalArgumentException("sequenceBits must > 0. sequenceBits=" + sequenceBits);
+        }
+
+        // 序列号所占位数必须大于 0
+        if (timeStampBits + instanceIdBits + sequenceBits != 63) {
+            throw new IllegalArgumentException("timeStampBits + instanceIdBits + sequenceBits != 63 must = 63. " +
+                "timeStampBits=" + timeStampBits + "instanceIdBits=" + instanceIdBits + "sequenceBits=" + sequenceBits);
         }
     }
 
@@ -156,6 +164,20 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
             }
         }
 
+    }
+
+    @Override
+    public Map<String, String> decode(long snowflakeId) {
+        Map<String, String> map = new HashMap<>(3);
+        long originTimestamp = (snowflakeId >> timestampLeftShift) + timeEpoch;
+        map.put("timestamp", String.valueOf(originTimestamp));
+
+        long sequence = snowflakeId & sequenceMask;
+        map.put("sequence", String.valueOf(sequence));
+
+        long instanceId = snowflakeId >> instanceIdShift & ~(-1 << (timestampLeftShift - instanceIdShift));
+        map.put("instanceId", String.valueOf(instanceId));
+        return map;
     }
 
 
@@ -214,15 +236,33 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      */
     public static class Node {
 
+        /**
+         *
+         */
         final long timeStamp;
 
-        final AtomicLong sequence = new AtomicLong(0);
-
-        // 该缓存不会引起访问主存，因此访问时间少于位运算
+        /**
+         * ((timeStamp - timeEpoch) << timestampLeftShift) | (instanceId << instanceIdShift)
+         * 顺便拿出8 bytes利用一下缓存行（L1 cache 快于本次计算）
+         */
         final long template = -1L;
+
+        // 干掉内存伪共享
+        long padding3;
+        long padding4;
+        long padding5;
+        long padding6;
+
+        // 并发竞争点
+        final AtomicLong sequence = new AtomicLong(0);
 
         public Node(long timeStamp) {
             this.timeStamp = timeStamp;
+        }
+
+        private long saveThePadding() {
+            // deceive jdk7 compiler
+            return padding3 + padding4 + padding5 + padding6;
         }
     }
 
