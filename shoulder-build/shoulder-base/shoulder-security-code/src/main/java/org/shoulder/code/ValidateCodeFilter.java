@@ -1,5 +1,8 @@
 package org.shoulder.code;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.code.processor.ValidateCodeProcessor;
 import org.springframework.beans.factory.InitializingBean;
@@ -16,9 +19,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -41,7 +43,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     /**
      * 存放所有需要校验验证码的 url 和 对应的类型
      */
-    private Map<String, String> needValidateUrlAndTypeMap = new HashMap<>();
+    private Set<ValidateCodeRule> needValidateUrlSet = new HashSet<>();
     /**
      * 验证请求url与配置的url是否匹配的工具类
      */
@@ -61,28 +63,28 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 
         List<ValidateCodeProcessor> allProcessors = validateCodeProcessorHolder.getAllProcessors();
         for (ValidateCodeProcessor allProcessor : allProcessors) {
-            addUrlToMap(allProcessor.processedUrls(), allProcessor.getType());
+            addValidateRule(allProcessor.processedUrls(), allProcessor.getType());
         }
     }
 
     /**
      * 系统中配置的需要校验验证码的URL根据校验的类型放入map
      */
-    protected void addUrlToMap(List<String> urls, String type) {
+    protected void addValidateRule(List<String> urls, String type) {
         if (CollectionUtils.isEmpty(urls) || StringUtils.isBlank(type)) {
             return;
         }
-        urls.forEach(url -> addUrlToMap(url, type));
+        urls.forEach(url -> addValidateRule(url, type));
     }
 
     /**
      * 系统中配置的需要校验验证码的URL根据校验的类型放入map
      */
-    protected void addUrlToMap(String url, String type) {
+    protected void addValidateRule(String url, String type) {
         if (StringUtils.isBlank(url) || StringUtils.isBlank(type)) {
             return;
         }
-        needValidateUrlAndTypeMap.put(url, type);
+        needValidateUrlSet.add(new ValidateCodeRule(url, type));
     }
 
 
@@ -129,16 +131,33 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
      */
     private String getCodeType(HttpServletRequest request) {
         // 登录请求都是 POST, 如果是 GET 则直接放行
-        if (!"GET".equalsIgnoreCase(request.getMethod())) {
-            Set<String> urls = needValidateUrlAndTypeMap.keySet();
-            for (String url : urls) {
-                if (pathMatcher.match(url, request.getRequestURI())) {
-                    return needValidateUrlAndTypeMap.get(url);
-                }
+        String currentRequestUri = request.getRequestURI();
+        for (ValidateCodeRule rule : needValidateUrlSet) {
+            if (pathMatcher.match(rule.getUrlPattern(), currentRequestUri)) {
+                return rule.getType();
             }
         }
 
         return null;
+    }
+
+    /**
+     * 验证码路径校验规则
+     */
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ValidateCodeRule {
+        /**
+         * 支持 ant 匹配
+         */
+        String urlPattern;
+
+        /**
+         * 需要校验的格式
+         */
+        String type;
+
     }
 
 }
