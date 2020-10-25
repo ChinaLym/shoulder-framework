@@ -4,7 +4,9 @@ import org.junit.Test;
 import org.shoulder.core.util.JsonUtils;
 
 import java.util.BitSet;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -17,7 +19,7 @@ public class ShoulderGuidTest {
     /**
      * 生成 1亿次
      */
-    private static final int GENERATE_NUM = 100_000_000;
+    private static final int GENERATE_NUM = 1000_000;
 
     /**
      * 测试单次获取
@@ -31,6 +33,32 @@ public class ShoulderGuidTest {
             generator.nextId();
         }
         System.out.println("cost " + (System.currentTimeMillis() - start));
+    }
+
+
+    /**
+     * 测试批量获取，
+     */
+    @Test
+    public void testMulti() {
+        LongGuidGenerator generator = new SnowFlakeGenerator(1, 1);
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < GENERATE_NUM; ) {
+            int getNum = 2048;
+            generator.nextIds(getNum);
+            i += getNum;
+        }
+        System.out.println("cost " + (System.currentTimeMillis() - start));
+    }
+
+    /**
+     * 压缩 long 为 int 方便统计是否重复
+     * 要求：starter snowflakes、元时间为最近时间，否则可能压缩失败
+     */
+    private static int press(long id) {
+        final long sequenceMask = ~(-1L << 12);
+        return (int) ((id >> 22 << 12) | (id & sequenceMask));
     }
 
     @Test
@@ -48,37 +76,35 @@ public class ShoulderGuidTest {
         assert GENERATE_NUM == bitSet.cardinality();
     }
 
-    /**
-     * 压缩 long 为 int 方便统计是否重复
-     * 要求：starter snowflakes、元时间为最近时间，否则可能压缩失败
-     */
-    private static int press(long id) {
-        final long sequenceMask = ~(-1L << 12);
-        return (int) ((id >> 22 << 12) | (id & sequenceMask));
-    }
-
 
     /**
      * 测试批量获取，
      */
     @Test
-    public void testMulti() {
+    public void testMultiNoRepeat() {
         LongGuidGenerator generator = new ShoulderGuidGenerator(
             41, System.currentTimeMillis(), 10, 0, 12, 1);
         BitSet bitSet = new BitSet(GENERATE_NUM);
+        Set<Long> set = new HashSet<>(GENERATE_NUM);
         long sequenceMask = ~(-1L << 12);
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int i = 0; i < GENERATE_NUM; ) {
-            int getNum = 2048;
+            int addPerCircle = 2048;
+            int getNum = i + addPerCircle > GENERATE_NUM ? GENERATE_NUM - i : addPerCircle;
             long[] ids = generator.nextIds(getNum);
-            for (int j = 0; j < ids.length; j++) {
-                long id = ids[j];
+            for (long id : ids) {
                 int pressedId = (int) ((id >> 22 << 12) | (id & sequenceMask));
-                if (bitSet.get(pressedId)) {
+                /*if (bitSet.get(pressedId)) {
+                    System.out.println("i=" + i + "    decode: " + generator.decode(id));
+                    System.out.println(bitSet.cardinality());
+                    throw new IllegalStateException("repeat!");
+                }*/
+                if (set.contains(id)) {
                     System.out.println(generator.decode(id));
                     System.out.println(bitSet.cardinality());
                     throw new IllegalStateException("repeat!");
                 }
+                set.add(id);
                 bitSet.set(pressedId);
             }
             i += getNum;
@@ -87,21 +113,6 @@ public class ShoulderGuidTest {
         assert GENERATE_NUM == bitSet.cardinality();
     }
 
-    /**
-     * 测试批量获取，
-     */
-    @Test
-    public void testMultiNoRepeat() {
-        LongGuidGenerator generator = new SnowFlakeGenerator(1, 1);
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        long start = System.currentTimeMillis();
-        for (int i = 0; i < GENERATE_NUM; ) {
-            int getNum = 2048;
-            generator.nextIds(getNum);
-            i += getNum;
-        }
-        System.out.println("cost " + (System.currentTimeMillis() - start));
-    }
 
     /**
      * 测试 twitter 的翻译实现，发现 shoulder 的生成速度是 twitterSnowFlakeIdGenerator.java 的近万倍！！

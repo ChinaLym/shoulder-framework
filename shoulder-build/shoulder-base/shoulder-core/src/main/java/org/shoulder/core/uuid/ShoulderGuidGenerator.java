@@ -4,7 +4,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -133,6 +132,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
 
     @Override
     public long nextId() {
+        int maxSequence = 1 << instanceIdShift;
         long timeStamp = currentTimeStamp();
         // 最新的时间戳
         long lts = latestTimeStamp.get();
@@ -159,13 +159,11 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
                 }
                 // 失败则循环
             }
-            // todo 判断是否用过
-            long currentSequence = node.sequence.getAndIncrement() & sequenceMask;
-            if (currentSequence != 0) {
-                return node.template | currentSequence;
+            long currentSequence = node.sequence.getAndIncrement();
+            if (currentSequence < maxSequence) {
+                return node.template | (currentSequence & sequenceMask);
             }
             // 超出单时间段内最大限制，说明该时间段内竞争非常激烈，使用下一时间段的数据，重置序列，防止重试了 buffer次，回来
-            node.sequence.set(0);
             timeStamp = timeStamp + 1;
         }
     }
@@ -197,7 +195,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      * - nextIds(4096)需要0.3s
      * 实际生产中，可以忽略
      *
-     * @param num 批量生成个数。若实现原子性批量生成方法，注意控制单次生成个数过多（可能引起阻塞其他线程等）
+     * @param num 批量生成个数。若实现原子性批量生成方法
      * @return guid
      */
     @Override
@@ -205,7 +203,8 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         int maxSequence = 1 << instanceIdShift;
 
         if (num < 1 || num > maxSequence) {
-            throw new IllegalArgumentException("num not allowed!");
+            // 控制单次生成个数，过多则更容易因为偶然并发耗尽当且毫秒数的序列号，本算法其实不会阻塞，仅做合理性限制
+            throw new IllegalArgumentException("num must less than maxSequence(" + maxSequence + ")!");
         }
         long[] result = new long[num];
         long timeStamp = currentTimeStamp();
@@ -218,52 +217,44 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
             onTimeBackTooMuch(timeStamp, latestTimeStamp.get(), minTs - timeStamp);
         }
 
-        AtomicInteger gotCounter = new AtomicInteger();
-        // 尝试拿 Node
+        int gotCounter = 0;
 
         while (true) {
-            final int got = gotCounter.get();
+            // 本次循环前获取到 id 的个数
             final long timeStampFinal = timeStamp;
-            int need = num - got;
+            int need = num - gotCounter;
             int index = ((int) (timeStampFinal)) & (bufferSize - 1);
             Node node = getNodeAt(index);
             if (timeStampFinal > node.timeStamp) {
                 // 该时间戳内第一次访问该 node，new 新的 CAS 替换，一次性获取剩余所需序列
-                Node newNode = new Node(timeStampFinal, num - got,
+                Node newNode = new Node(timeStampFinal, num - gotCounter,
                     ((timeStampFinal - timeEpoch) << timestampLeftShift) | (instanceId << instanceIdShift));
                 if (casNodeAt(index, node, newNode)) {
                     // 当且仅当没人更新时更新最新标记
                     latestTimeStamp.incrementAndGet();
                     // 生成剩余所需所有 id
-                    for (int i = 0; i < num - got; i++) {
-                        result[got + i] = newNode.template | i;
+                    for (int i = 0; i < num - gotCounter; i++) {
+                        result[gotCounter + i] = newNode.template | i;
                     }
                     return result;
                 }
             }
-            AtomicLong currentOldValue = new AtomicLong();
-            long gotSequence;
-            gotSequence = node.sequence.updateAndGet(oldValue -> {
-                    long newValue;
-                    currentOldValue.set(oldValue);
-                // todo 这个操作是否为原子
-                    return (newValue = (int) oldValue + need) < maxSequence ? newValue : maxSequence;
-                });
-            final long oldValue = currentOldValue.get();
-            int currentGotNum = (int) (gotSequence - oldValue);
-            if (currentGotNum != 0) {
-                gotCounter.addAndGet(currentGotNum);
-                // 成功，生成剩余所需所有 id
-                for (int i = 0; i < currentGotNum; i++) {
-                    result[got + i] = node.template | (oldValue + i);
-                }
-                // got = num;
-                if (got + currentGotNum == num) {
-                    return result;
+            // 高概率偶先重复
+            int currentWant = num - gotCounter;
+            for (long currentOldValue = node.sequence.get(); currentOldValue < maxSequence; currentOldValue = node.sequence.get()) {
+                long canGet = maxSequence - currentOldValue;
+                long tryGet = canGet > currentWant ? currentWant : canGet;
+                if (node.sequence.compareAndSet(currentOldValue, tryGet)) {
+                    // 成功拿到，生成拿到的 id
+                    for (int i = 0; i < tryGet; i++) {
+                        result[gotCounter + i] = node.template | (currentOldValue + i);
+                    }
+                    // got = num;
+                    if (gotCounter + tryGet == num) {
+                        return result;
+                    }
                 }
             }
-            // 超出单时间段内最大限制，说明该时间段内竞争非常激烈，使用下一时间段的数据
-            node.sequence.set(0);
             timeStamp = timeStamp + 1;
         }
     }
