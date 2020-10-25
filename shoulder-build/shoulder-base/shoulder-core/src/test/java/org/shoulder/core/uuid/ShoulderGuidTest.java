@@ -57,7 +57,8 @@ public class ShoulderGuidTest {
     public void testTwitter() {
         SnowFlakeIdGenerator snowFlakeIdGenerator = new SnowFlakeIdGenerator(1, 1);
         long start = System.currentTimeMillis();
-        for (int i = 0; i < GENERATE_NUM; i++) {
+        // 标准雪花算法不要使用 GENERATE_NUM，否则慢的离谱，这里只生成10w
+        for (int i = 0; i < 100_000; i++) {
             //System.out.println(generator.nextId());
             snowFlakeIdGenerator.nextId();
         }
@@ -97,9 +98,10 @@ public class ShoulderGuidTest {
         @Override
         public void run() {
             for (int i = 0; i < GENERATE_NUM; ) {
-                generator.nextId();
-                i++;
-                //int once = 100; generator.nextIds(once);i += 100;
+                //generator.nextId();i++;
+                int once = 2048;
+                generator.nextIds(once);
+                i += once;
 
             }
         }
@@ -114,7 +116,7 @@ public class ShoulderGuidTest {
     @Test
     public void testExtension_41_0_22() {
         LongGuidGenerator generator = new ShoulderGuidGenerator(
-            41, System.currentTimeMillis(), 0, 0, 22);
+            41, System.currentTimeMillis(), 0, 0, 22, 1);
         long start = System.currentTimeMillis();
         for (int i = 0; i < GENERATE_NUM; i++) {
             //System.out.println(generator.nextId());
@@ -133,7 +135,7 @@ public class ShoulderGuidTest {
         long instanceIdBits = 10;
         long instanceId = ThreadLocalRandom.current().nextInt(1 << instanceIdBits);
         LongGuidGenerator generator = new ShoulderGuidGenerator(
-            41, timeEpoch, instanceIdBits, instanceId, 12);
+            41, timeEpoch, instanceIdBits, instanceId, 12, 1);
 
         long sequence = 0;
         long id = generator.nextId();
