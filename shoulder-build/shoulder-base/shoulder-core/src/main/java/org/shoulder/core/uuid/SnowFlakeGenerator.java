@@ -31,10 +31,10 @@ public class SnowFlakeGenerator extends ShoulderGuidGenerator {
      * @param machineId    机器号
      */
     public SnowFlakeGenerator(long timeEpoch, long dataCenterId, long machineId) {
-        // snowflake 算法中包含 41 位时间戳，5位数据中心标识 5位机器标识 12 位自增序列号
+        // snowflake 算法中包含 41 位时间戳，5位数据中心标识 5位机器标识 12 位自增序列号，默认不对时间回退做处理
         super(41, timeEpoch,
             5 + 5, (dataCenterId << 5) | (machineId),
-            12);
+            12, 1);
     }
 
 }
