@@ -64,16 +64,6 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
 
     // ---------------------- 构造器 -------------------------
 
-    {
-        // todo 默认 1024，支持配置
-        bufferSize = 1024;
-        // 初始化缓冲区
-        buffer = new Node[bufferSize];
-        for (int i = 0; i < buffer.length; i++) {
-            buffer[i] = new Node(-1, 0);
-        }
-    }
-
     /**
      * 初始化 id 自增器格式
      *
@@ -82,10 +72,14 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      * @param instanceIdBits 应用实例标识（机器标识）位数 >= 0 todo 可以自动推断
      * @param instanceId     实例标识
      * @param sequenceBits   单位时间（时间戳相关）内自增序列bit位数 > 0
+     * @param bufferSize     缓冲区大小，用于抵抗时钟回拨，抵抗大小为[时间单位]*[bufferSize]；范围：[1, intMax]，1 时不能抵抗时钟回拨，但性能最高
+     *                       该值越小，则对时钟回拨处理能力越弱，在满负载生成时，性能越小
+     *                       该值越大，则对时钟回拨处理能力越强，越大在满负载生成时对性能有一定影响
+     *                       注意：参数设置合理时，几乎任何业务场景都不会触发满负载，无需关注性能问题
      */
     public ShoulderGuidGenerator(long timeStampBits, long timeEpoch,
                                  long instanceIdBits, long instanceId,
-                                 long sequenceBits) {
+                                 long sequenceBits, int bufferSize) {
         this.timeEpoch = timeEpoch;
         this.instanceId = instanceId;
 
@@ -118,6 +112,13 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         if (timeStampBits + instanceIdBits + sequenceBits != longBits) {
             throw new IllegalArgumentException("timeStampBits + instanceIdBits + sequenceBits != 63 must = 63. " +
                 "timeStampBits=" + timeStampBits + "instanceIdBits=" + instanceIdBits + "sequenceBits=" + sequenceBits);
+        }
+
+        // 初始化缓冲区
+        this.bufferSize = bufferSize;
+        this.buffer = new Node[bufferSize];
+        for (int i = 0; i < buffer.length; i++) {
+            buffer[i] = new Node(-1, 0);
         }
     }
 
