@@ -17,13 +17,13 @@ public class ShoulderGuidTest {
     /**
      * 生成 100w 次
      */
-    private static final int GENERATE_NUM = 1000000;
+    private static final int GENERATE_NUM = 100_000_000;
 
     /**
-     * 测试无重复
+     * 测试单次获取
      */
     @Test
-    public void testBaseUse() {
+    public void testSingle() {
         LongGuidGenerator generator = new SnowFlakeGenerator(1, 1);
         long start = System.currentTimeMillis();
         for (int i = 0; i < GENERATE_NUM; i++) {
@@ -34,7 +34,24 @@ public class ShoulderGuidTest {
     }
 
     /**
+     * 测试批量获取，
+     */
+    @Test
+    public void testMulti() {
+        LongGuidGenerator generator = new SnowFlakeGenerator(1, 1);
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < GENERATE_NUM; ) {
+            int getNum = 2048;
+            generator.nextIds(getNum);
+            i += getNum;
+        }
+        System.out.println("cost " + (System.currentTimeMillis() - start));
+    }
+
+    /**
      * 测试 twitter 的翻译实现，发现 shoulder 的生成速度是 twitterSnowFlakeIdGenerator.java 的近万倍！！
+     * 注意，该算法固定单个生成器，1s最多生产4096个！性能可估，故不要测试十万级别以上的数据！
      */
     @Test
     public void testTwitter() {
@@ -56,12 +73,14 @@ public class ShoulderGuidTest {
         LongGuidGenerator generator = new SnowFlakeGenerator(1, 1);
         int threadNum = 10;
         CountDownLatch latch = new CountDownLatch(threadNum);
+        long start = System.currentTimeMillis();
         for (int i = 0; i < threadNum; i++) {
             new Thread(Thread.currentThread().getThreadGroup(),
                 new Worker(generator, latch),
                 "worker-" + i).run();
         }
         latch.countDown();
+        System.out.println("cost " + (System.currentTimeMillis() - start));
     }
 
 
@@ -77,8 +96,11 @@ public class ShoulderGuidTest {
 
         @Override
         public void run() {
-            for (int i = 0; i < GENERATE_NUM; i++) {
-                System.out.println(generator.nextId());
+            for (int i = 0; i < GENERATE_NUM; ) {
+                generator.nextId();
+                i++;
+                //int once = 100; generator.nextIds(once);i += 100;
+
             }
         }
     }
