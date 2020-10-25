@@ -50,9 +50,6 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
 
     private final AtomicLong latestTimeStamp = new AtomicLong(-1);
 
-    //private volatile long latestTimeStamp;
-    private volatile int latestIndex;
-
     private final int bufferSize;
 
     /**
@@ -72,7 +69,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      * @param instanceIdBits 应用实例标识（机器标识）位数 >= 0 todo 可以自动推断
      * @param instanceId     实例标识
      * @param sequenceBits   单位时间（时间戳相关）内自增序列bit位数 > 0
-     * @param bufferSize     缓冲区大小，用于抵抗时钟回拨，抵抗大小为[时间单位]*[bufferSize]；范围：[1, intMax]，1 时不能抵抗时钟回拨，但性能最高
+     * @param bufferSize     缓冲区大小，用于抵抗时钟回拨，抵抗大小为[时间单位]*[bufferSize]；范围：[1, 1 << 30]，1 时不能抵抗时钟回拨，但性能最高
      *                       该值越小，则对时钟回拨处理能力越弱，在满负载生成时，性能越小
      *                       该值越大，则对时钟回拨处理能力越强，越大在满负载生成时对性能有一定影响
      *                       注意：参数设置合理时，几乎任何业务场景都不会触发满负载，无需关注性能问题
@@ -115,11 +112,21 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         }
 
         // 初始化缓冲区
-        this.bufferSize = bufferSize;
-        this.buffer = new Node[bufferSize];
+        this.bufferSize = bufferSizeFor(bufferSize);
+        this.buffer = new Node[this.bufferSize];
         for (int i = 0; i < buffer.length; i++) {
-            buffer[i] = new Node(-1, 0);
+            buffer[i] = new Node(-1, 0, -1);
         }
+    }
+
+    /**
+     * Returns a power of two table size for the given desired capacity.
+     */
+    private static final int bufferSizeFor(int s) {
+        // bufferSize
+        int maximumCapacity = 1 << 30;
+        int n = -1 >>> Integer.numberOfLeadingZeros(s - 1);
+        return (n < 0) ? 1 : (n >= maximumCapacity) ? maximumCapacity : n + 1;
     }
 
     // ---------------------- 核心实现 -------------------------
@@ -127,14 +134,9 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     @Override
     public long nextId() {
         long timeStamp = currentTimeStamp();
-        long lts;
-        int lIndex;
-        do {
-            lts = latestTimeStamp.get();
-            lIndex = latestIndex;
-        } while (lts != latestTimeStamp.get());
-
-        // 缓存中最旧的时间戳
+        // 最新的时间戳
+        long lts = latestTimeStamp.get();
+        // 最旧的时间戳
         final long minTs = lts - bufferSize;
         if (timeStamp < minTs) {
             // 时钟回拨过多，一般不会触发
@@ -143,37 +145,28 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
 
         // 尝试拿 Node
         while (true) {
-            // todo use mask
             final long timeStampFinal = timeStamp;
-            int index = (lIndex + (int) (lts - timeStampFinal)) % bufferSize;
-            index = index < 0 ? index + bufferSize : index;
+            int index = ((int) (timeStampFinal)) & (bufferSize - 1);
             Node node = getNodeAt(index);
-            if (node.timeStamp != timeStampFinal) {
+            if (timeStampFinal > node.timeStamp) {
+                // todo 处理超出过多?
                 // 该时间戳内第一次访问，new 新的 CAS 替换
                 Node newNode = new Node(timeStampFinal, 1, ((timeStampFinal - timeEpoch) << timestampLeftShift)
                     | (instanceId << instanceIdShift));
                 if (casNodeAt(index, node, newNode)) {
-                    // 当且仅当没人更新时更新
-                    long old = latestTimeStamp.getAndUpdate(o -> Math.max(timeStampFinal, o));
-                    // 判断是否更新过，替代 readWriteLock / DCL with sync
-                    boolean hasUpdateTimeStamp = timeStampFinal > old;
-                    if (hasUpdateTimeStamp) {
-                        // update index
-                        latestIndex = index;
-                    }
+                    latestTimeStamp.incrementAndGet();
                     return newNode.template;
                 }
-
                 // 失败则循环
-            } else {
-                // 该时间段内已经有其他线程已经设置过了
-                long currentSequence = node.sequence.getAndIncrement() & sequenceMask;
-                if (currentSequence != 0) {
-                    return node.template | currentSequence;
-                }
-                // 超出单时间段内最大限制，说明该时间段内竞争非常激烈，使用下一时间段的数据
-                timeStamp = timeStamp + 1;
             }
+            // todo 判断是否用过
+            long currentSequence = node.sequence.getAndIncrement() & sequenceMask;
+            if (currentSequence != 0) {
+                return node.template | currentSequence;
+            }
+            // 超出单时间段内最大限制，说明该时间段内竞争非常激烈，使用下一时间段的数据，重置序列，防止重试了 buffer次，回来
+            node.sequence.set(0);
+            timeStamp = timeStamp + 1;
         }
     }
 
@@ -216,12 +209,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         }
         long[] result = new long[num];
         long timeStamp = currentTimeStamp();
-        long lts;
-        int lIndex;
-        do {
-            lts = latestTimeStamp.get();
-            lIndex = latestIndex;
-        } while (lts != latestTimeStamp.get());
+        long lts = latestTimeStamp.get();
 
         // 缓存中最旧的时间戳
         final long minTs = lts - bufferSize;
@@ -237,55 +225,46 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
             final int got = gotCounter.get();
             final long timeStampFinal = timeStamp;
             int need = num - got;
-            int index = ((int) (lIndex + lts - timeStampFinal)) % bufferSize;
-            index = index < 0 ? index + bufferSize : index;
+            int index = ((int) (timeStampFinal)) & (bufferSize - 1);
             Node node = getNodeAt(index);
-            if (node.timeStamp != timeStampFinal) {
+            if (timeStampFinal > node.timeStamp) {
                 // 该时间戳内第一次访问该 node，new 新的 CAS 替换，一次性获取剩余所需序列
-                Node newNode = new Node(timeStampFinal, num - got);
+                Node newNode = new Node(timeStampFinal, num - got,
+                    ((timeStampFinal - timeEpoch) << timestampLeftShift) | (instanceId << instanceIdShift));
                 if (casNodeAt(index, node, newNode)) {
                     // 当且仅当没人更新时更新最新标记
-                    long old = latestTimeStamp.getAndUpdate(o -> Math.max(timeStampFinal, o));
-                    // 判断是否更新过，替代 readWriteLock / DCL with sync
-                    boolean hasUpdateTimeStamp = timeStampFinal > old;
-                    if (hasUpdateTimeStamp) {
-                        // update index
-                        latestIndex = index;
-                    }
+                    latestTimeStamp.incrementAndGet();
                     // 生成剩余所需所有 id
                     for (int i = 0; i < num - got; i++) {
-                        result[got + i] = ((timeStampFinal - timeEpoch) << timestampLeftShift)
-                            | (instanceId << instanceIdShift) | i;
+                        result[got + i] = newNode.template | i;
                     }
-                    // got = num;
                     return result;
                 }
-                // 失败则循环
-            } else {
-                // node.timeStamp == timeStamp，该时间段内已经有其他线程已经设置过了
-                AtomicLong currentOldValue = new AtomicLong();
-                long lastGotSequence = node.sequence.updateAndGet(oldValue -> {
+            }
+            AtomicLong currentOldValue = new AtomicLong();
+            long gotSequence;
+            gotSequence = node.sequence.updateAndGet(oldValue -> {
                     long newValue;
                     currentOldValue.set(oldValue);
+                // todo 这个操作是否为原子
                     return (newValue = (int) oldValue + need) < maxSequence ? newValue : maxSequence;
                 });
-                final long oldValue = currentOldValue.get();
-                int currentGotNum = (int) (lastGotSequence - oldValue);
-                if (currentGotNum != 0) {
-                    gotCounter.addAndGet(currentGotNum);
-                    // 成功，生成剩余所需所有 id
-                    for (int i = 0; i < currentGotNum; i++) {
-                        result[got + i] = ((timeStamp - timeEpoch) << timestampLeftShift)
-                            | (instanceId << instanceIdShift) | (oldValue + i);
-                    }
-                    // got = num;
-                    if (got + currentGotNum == num) {
-                        return result;
-                    }
+            final long oldValue = currentOldValue.get();
+            int currentGotNum = (int) (gotSequence - oldValue);
+            if (currentGotNum != 0) {
+                gotCounter.addAndGet(currentGotNum);
+                // 成功，生成剩余所需所有 id
+                for (int i = 0; i < currentGotNum; i++) {
+                    result[got + i] = node.template | (oldValue + i);
                 }
-                // 超出单时间段内最大限制，说明该时间段内竞争非常激烈，使用下一时间段的数据
-                timeStamp = timeStamp + 1;
+                // got = num;
+                if (got + currentGotNum == num) {
+                    return result;
+                }
             }
+            // 超出单时间段内最大限制，说明该时间段内竞争非常激烈，使用下一时间段的数据
+            node.sequence.set(0);
+            timeStamp = timeStamp + 1;
         }
     }
 
@@ -336,7 +315,9 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         //public volatile long padding1, padding2, padding3, padding4, padding5, padding6, padding7;
         // --------------- cacheLine ---------------
 
-        // 下一个可用的 sequence (并发竞争点)
+        /**
+         * 下一个可用的 sequence (并发竞争点)
+         */
         final AtomicLong sequence;
 
         public Node(long timeStamp, long sequence) {
