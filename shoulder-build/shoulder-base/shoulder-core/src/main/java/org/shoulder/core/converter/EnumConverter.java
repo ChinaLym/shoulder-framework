@@ -25,7 +25,7 @@ public class EnumConverter implements Converter<String, Enum> {
         if (source.isBlank()) {
             return missMatchHandler.handleNullSource(enumType);
         }
-        // 尝试用名称匹配。忽略大小写
+        // 尝试用名称匹配。忽略大小写 todo 支持设置大小写敏感
         Enum[] enums = enumType.getEnumConstants();
         for (Enum e : enums) {
             if (e.name().equalsIgnoreCase(source)) {

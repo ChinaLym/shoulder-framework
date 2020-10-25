@@ -1,10 +1,12 @@
 package org.shoulder.core.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +15,7 @@ import java.util.regex.Pattern;
  *
  * @author lym
  */
+@Slf4j
 public class IpUtils {
 
     /**
@@ -20,8 +23,8 @@ public class IpUtils {
      * https://www.safaribooksonline.com/library/view/regular-expressions-cookbook/9781449327453/ch08s16.html
      */
     private static final Pattern IPV4_PATTERN = Pattern.compile("^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$");
-    private static String LOCAL_IP = getIP();
-    private static String LOCAL_MAC = getMAC();
+    private static String LOCAL_IP_CACHE;
+    private static String LOCAL_MAC_CACHE;
 
     public static boolean validateIpv4(String ip) {
         if (StringUtils.isEmpty(ip)) {
@@ -31,46 +34,63 @@ public class IpUtils {
         return matcher.matches();
     }
 
+
     /**
      * 获取本机mac
      */
-    public static String getMACFromCache() {
-        return LOCAL_MAC;
+    public static String getMac() {
+        return LOCAL_MAC_CACHE;
     }
 
     /**
      * 获取本机IP
      */
-    public static String getIPFromCache() {
-        return LOCAL_IP;
+    public static String getIp() {
+        return LOCAL_IP_CACHE;
     }
 
-    /**
-     * 获取本机ip
-     *
-     * @return ip ：10.10.10.10
-     */
-    public static String getIP() {
+
+    static {
         try {
-            String address = InetAddress.getLocalHost().getHostAddress();
-            LOCAL_IP = address;
-            return address;
+            InetAddress inetAddress = getLocalNetAddress();
+            LOCAL_IP_CACHE = inetAddress.getHostAddress();
+            LOCAL_MAC_CACHE = getMac(inetAddress);
         } catch (Exception e) {
-            return "127.0.0.1";
+            log.warn("can't find local network address info.", e);
+            // 任意异常，使用 127.0.0.1
+            LOCAL_IP_CACHE = "127.0.0.1";
+            LOCAL_MAC_CACHE = "00-00-00-00-00-00";
         }
     }
 
     /**
-     * 获取本机主机名
+     * Retrieve the first validated local ip address(the Public and LAN ip addresses are validated).
      *
-     * @return xxxx
+     * @return the local address
+     * @throws SocketException the socket exception
      */
-    public static String getHostName() {
-        try {
-            return InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            return "unknown";
+    public static InetAddress getLocalNetAddress() throws SocketException {
+        // enumerates all network interfaces
+        Enumeration<NetworkInterface> enu = NetworkInterface.getNetworkInterfaces();
+
+        while (enu.hasMoreElements()) {
+            NetworkInterface ni = enu.nextElement();
+            if (ni.isLoopback()) {
+                // 本地环回地址
+                continue;
+            }
+            Enumeration<InetAddress> addressEnumeration = ni.getInetAddresses();
+            while (addressEnumeration.hasMoreElements()) {
+                InetAddress address = addressEnumeration.nextElement();
+                // ignores all invalidated addresses
+                if (address.isLinkLocalAddress() || address.isLoopbackAddress() || address.isAnyLocalAddress()) {
+                    continue;
+                }
+                return address;
+            }
         }
+
+        throw new RuntimeException("No validated local address!");
     }
 
     /**
@@ -78,9 +98,9 @@ public class IpUtils {
      *
      * @return mac：2C-4D-54-E5-86-0E
      */
-    private static String getMAC() {
+    private static String getMac(InetAddress inetAddress) {
         try {
-            byte[] mac = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress();
+            byte[] mac = NetworkInterface.getByInetAddress(inetAddress).getHardwareAddress();
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < mac.length; i++) {
                 if (i != 0) {
@@ -91,12 +111,11 @@ public class IpUtils {
                 sb.append(s.length() == 1 ? 0 + s : s);
             }
             String macAddress = sb.toString().toUpperCase();
-            LOCAL_MAC = macAddress;
+            LOCAL_MAC_CACHE = macAddress;
             return macAddress;
         } catch (Exception e) {
             return "00-00-00-00-00-00";
         }
     }
-
 
 }
