@@ -3,8 +3,8 @@ package org.shoulder.core.uuid;
 import org.junit.Test;
 import org.shoulder.core.util.JsonUtils;
 
+import java.util.BitSet;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ShoulderGuidTest {
 
     /**
-     * 生成 100w 次
+     * 生成 1亿次
      */
     private static final int GENERATE_NUM = 100_000_000;
 
@@ -33,11 +33,65 @@ public class ShoulderGuidTest {
         System.out.println("cost " + (System.currentTimeMillis() - start));
     }
 
+    @Test
+    public void testSingleNoRepeat() {
+        LongGuidGenerator generator = new ShoulderGuidGenerator(
+            41, System.currentTimeMillis(), 10, 0, 12, 1);
+        BitSet bitSet = new BitSet(GENERATE_NUM);
+        for (int i = 0; i < GENERATE_NUM; i++) {
+            long id = generator.nextId();
+            // must pressed！ or else will cause OOM crash! (pressed for stander snowflake: 10 bit time 12 bit sequence)
+            int pressedId = press(id);
+            bitSet.set(pressedId);
+        }
+        System.out.println(bitSet.cardinality());
+        assert GENERATE_NUM == bitSet.cardinality();
+    }
+
+    /**
+     * 压缩 long 为 int 方便统计是否重复
+     * 要求：starter snowflakes、元时间为最近时间，否则可能压缩失败
+     */
+    private static int press(long id) {
+        final long sequenceMask = ~(-1L << 12);
+        return (int) ((id >> 22 << 12) | (id & sequenceMask));
+    }
+
+
     /**
      * 测试批量获取，
      */
     @Test
     public void testMulti() {
+        LongGuidGenerator generator = new ShoulderGuidGenerator(
+            41, System.currentTimeMillis(), 10, 0, 12, 1);
+        BitSet bitSet = new BitSet(GENERATE_NUM);
+        long sequenceMask = ~(-1L << 12);
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (int i = 0; i < GENERATE_NUM; ) {
+            int getNum = 2048;
+            long[] ids = generator.nextIds(getNum);
+            for (int j = 0; j < ids.length; j++) {
+                long id = ids[j];
+                int pressedId = (int) ((id >> 22 << 12) | (id & sequenceMask));
+                if (bitSet.get(pressedId)) {
+                    System.out.println(generator.decode(id));
+                    System.out.println(bitSet.cardinality());
+                    throw new IllegalStateException("repeat!");
+                }
+                bitSet.set(pressedId);
+            }
+            i += getNum;
+        }
+        System.out.println(bitSet.cardinality());
+        assert GENERATE_NUM == bitSet.cardinality();
+    }
+
+    /**
+     * 测试批量获取，
+     */
+    @Test
+    public void testMultiNoRepeat() {
         LongGuidGenerator generator = new SnowFlakeGenerator(1, 1);
         ThreadLocalRandom random = ThreadLocalRandom.current();
         long start = System.currentTimeMillis();
@@ -71,40 +125,50 @@ public class ShoulderGuidTest {
      */
     @Test
     public void testHighPress() {
-        LongGuidGenerator generator = new SnowFlakeGenerator(1, 1);
-        int threadNum = 10;
-        CountDownLatch latch = new CountDownLatch(threadNum);
+        LongGuidGenerator generator = new ShoulderGuidGenerator(
+            41, System.currentTimeMillis(), 10, 0, 12, 1);
+        final int totalThreadNum = 10;
+
         long start = System.currentTimeMillis();
-        for (int i = 0; i < threadNum; i++) {
+        for (int threadNum = 0; threadNum < totalThreadNum; threadNum++) {
             new Thread(Thread.currentThread().getThreadGroup(),
-                new Worker(generator, latch),
-                "worker-" + i).run();
+                () -> {
+                    for (int i = 0; i < GENERATE_NUM / totalThreadNum; ) {
+                        generator.nextId();
+                        i++;
+                        //int once = 2048; generator.nextIds(once);i += once;
+                    }
+                },
+                "worker-" + threadNum).run();
         }
-        latch.countDown();
         System.out.println("cost " + (System.currentTimeMillis() - start));
     }
 
-
-    static class Worker implements Runnable {
-
-        LongGuidGenerator generator;
-        CountDownLatch latch;
-
-        public Worker(LongGuidGenerator generator, CountDownLatch latch) {
-            this.generator = generator;
-            this.latch = latch;
+    /**
+     * 测试多线程并发获取，也不会有重复的
+     */
+    @Test
+    public void testMultiThreadsHighPressNoRepeat() {
+        LongGuidGenerator generator = new ShoulderGuidGenerator(
+            41, System.currentTimeMillis(), 10, 0, 12, 1);
+        final int totalThreadNum = 10;
+        BitSet bitSet = new BitSet(GENERATE_NUM);
+        long start = System.currentTimeMillis();
+        for (int threadNum = 0; threadNum < totalThreadNum; threadNum++) {
+            new Thread(Thread.currentThread().getThreadGroup(),
+                () -> {
+                    for (int i = 0; i < GENERATE_NUM / totalThreadNum; ) {
+                        long id = generator.nextId();
+                        i++;
+                        bitSet.set(press(id));
+                        //int once = 2048; generator.nextIds(once);i += once;
+                    }
+                },
+                "worker-" + threadNum).run();
         }
-
-        @Override
-        public void run() {
-            for (int i = 0; i < GENERATE_NUM; ) {
-                //generator.nextId();i++;
-                int once = 2048;
-                generator.nextIds(once);
-                i += once;
-
-            }
-        }
+        System.out.println("cost " + (System.currentTimeMillis() - start));
+        System.out.println(bitSet.cardinality());
+        assert GENERATE_NUM == bitSet.cardinality();
     }
 
 
