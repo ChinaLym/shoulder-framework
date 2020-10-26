@@ -4,6 +4,14 @@ package org.shoulder.core.uuid;
  * SnowFlake 格式
  * 41 位时间戳，5位数据中心标识 5位机器标识 12 位自增序列号
  *
+ * <pre>{@code
+ * #=======#------+----------------------+------------+--------------+
+ * # total # sign |      time segment    | instanceId |   sequence   |
+ * #=======#------+----------------------+------------+--------------+
+ * # 64bit # 1bit |        41bits        |   10bits   |    12bits    |
+ * #=======#------+----------------------+------------+--------------+
+ * }</pre>
+ *
  * @author lym
  */
 public class SnowFlakeGenerator extends ShoulderGuidGenerator {
