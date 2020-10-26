@@ -12,6 +12,15 @@ import java.util.concurrent.atomic.AtomicLong;
  * 在解决了标准的 snowflake 的不足：兼容时钟回拨处理、序列号满阻塞、bit位可配置（调整时间单元大小、序列大小、机器号范围）；
  * 测试结果：不会因为线程数增加带来的并发冲突/内存共享失效，产生性能下降
  *
+ * 每个 id 有64bit，由时间段、实例标识、序列号 组成，各个部分长度可以自由配置，这里以 twitter 提出的雪花算法为例介绍 id 组成
+ * <pre>{@code
+ * #=======#------+----------------------+------------+--------------+
+ * # total # sign |      time segment    | instanceId |   sequence   |
+ * #=======#------+----------------------+------------+--------------+
+ * # 64bit # 1bit |        41bits        |   10bits   |    12bits    |
+ * #=======#------+----------------------+------------+--------------+
+ * }</pre>
+ *
  * @author lym
  */
 public class ShoulderGuidGenerator implements LongGuidGenerator {
@@ -103,7 +112,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
             throw new IllegalArgumentException("sequenceBits must > 0. sequenceBits=" + sequenceBits);
         }
 
-        // 可以使用的位数 long 类型去掉符号位
+        // 可以使用的位数 long 类型去掉符号位 todo 是否去掉该校验，以支持用户生成非 64bit的 long，如 js 只支持 53bit
         final int longBits = 64 - 1;
         if (timeStampBits + instanceIdBits + sequenceBits != longBits) {
             throw new IllegalArgumentException("timeStampBits + instanceIdBits + sequenceBits != 63 must = 63. " +
@@ -133,13 +142,13 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     @Override
     public long nextId() {
         int maxSequence = 1 << instanceIdShift;
-        long timeStamp = currentTimeStamp();
+        long timeStamp = currentTimeStamp() - timeEpoch;
         // 最新的时间戳
         long lts = latestTimeStamp.get();
         // 最旧的时间戳
         final long minTs = lts - bufferSize;
         if (timeStamp < minTs) {
-            // 时钟回拨过多，一般不会触发
+            // 时钟回拨过多，提前透支时间过多（>bufferSize）均会触发
             onTimeBackTooMuch(timeStamp, latestTimeStamp.get(), minTs - timeStamp);
         }
 
@@ -149,9 +158,9 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
             int index = ((int) (timeStampFinal)) & (bufferSize - 1);
             Node node = getNodeAt(index);
             if (timeStampFinal > node.timeStamp) {
-                // todo 处理超出过多?
+                // 处理预支时间超出当前时间过多? 默认不处理，除非使用者要求特殊限制，自行于 onTimeBackTooMuch 处理
                 // 该时间戳内第一次访问，new 新的 CAS 替换
-                Node newNode = new Node(timeStampFinal, 1, ((timeStampFinal - timeEpoch) << timestampLeftShift)
+                Node newNode = new Node(timeStampFinal, 1, (timeStampFinal << timestampLeftShift)
                     | (instanceId << instanceIdShift));
                 if (casNodeAt(index, node, newNode)) {
                     latestTimeStamp.incrementAndGet();
@@ -159,6 +168,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
                 }
                 // 失败则循环
             }
+            // 1. 上面竞争失败循环进入这里 2. 同一时间段（毫秒）内重复调用 3. 时间回拨 / 时间透支过多
             long currentSequence = node.sequence.getAndIncrement();
             if (currentSequence < maxSequence) {
                 return node.template | (currentSequence & sequenceMask);
@@ -171,8 +181,10 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     @Override
     public Map<String, String> decode(long snowflakeId) {
         Map<String, String> map = new HashMap<>(3);
-        long originTimestamp = (snowflakeId >> timestampLeftShift) + timeEpoch;
-        map.put("timestamp", String.valueOf(originTimestamp));
+        long logicalTimestamp = snowflakeId >> timestampLeftShift;
+        map.put("logicalTimestamp", String.valueOf(logicalTimestamp));
+
+        map.put("timestamp", String.valueOf(logicalTimestamp + timeEpoch));
 
         long sequence = snowflakeId & sequenceMask;
         map.put("sequence", String.valueOf(sequence));
@@ -183,14 +195,17 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     }
 
     /**
-     * 批量生成 ID（无法充分利用CPU特性，因此单次获取较少，如100个以下时，推荐使用循环获取单个，否则性能会急剧下降，另外使用长度为2的整数次幂时，性能会有明显提升）
-     * 测试发现，使用snowflakes默认格式，若总量需要1亿个
+     * 批量生成 ID
+     * 无法充分利用CPU特性，因此单次获取 num 较少，如100个以下时，推荐使用循环获取单个，否则性能会急剧下降
+     * num 越大性能越高，使用 maxSequence 作为 num 时，性能有数量级提升
+     *
+     * 测试发现，使用snowflakes默认格式，若总量需要1亿个 todo 经过改进设计后，性能已经大幅提升，注释需要同步修改
      * - nextId 方式需要1.8s
      * - nextIds(1) 方式需要 24s
      * - nextIds(32) 方式需要 18s
      * - nextIds(64) 方式需要 4.6s
      * - nextIds(100) 需要 1.6s
-     * - nextIds(128) 需要 1.2s 【比较给力一个值】
+     * - nextIds(128) 需要 1.2s 【单次获取的 num = 128 比较中庸】
      * - nextIds(1000)需要0.5s
      * - nextIds(4096)需要0.3s
      * 实际生产中，可以忽略
@@ -203,11 +218,10 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         int maxSequence = 1 << instanceIdShift;
 
         if (num < 1 || num > maxSequence) {
-            // 控制单次生成个数，过多则更容易因为偶然并发耗尽当且毫秒数的序列号，本算法其实不会阻塞，仅做合理性限制
             throw new IllegalArgumentException("num must less than maxSequence(" + maxSequence + ")!");
         }
         long[] result = new long[num];
-        long timeStamp = currentTimeStamp();
+        long timeStamp = currentTimeStamp() - timeEpoch;
         long lts = latestTimeStamp.get();
 
         // 缓存中最旧的时间戳
@@ -227,27 +241,26 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
             Node node = getNodeAt(index);
             if (timeStampFinal > node.timeStamp) {
                 // 该时间戳内第一次访问该 node，new 新的 CAS 替换，一次性获取剩余所需序列
-                Node newNode = new Node(timeStampFinal, num - gotCounter,
-                    ((timeStampFinal - timeEpoch) << timestampLeftShift) | (instanceId << instanceIdShift));
+                Node newNode = new Node(timeStampFinal, need,
+                    (timeStampFinal << timestampLeftShift) | (instanceId << instanceIdShift));
                 if (casNodeAt(index, node, newNode)) {
                     // 当且仅当没人更新时更新最新标记
                     latestTimeStamp.incrementAndGet();
                     // 生成剩余所需所有 id
-                    for (int i = 0; i < num - gotCounter; i++) {
-                        result[gotCounter + i] = newNode.template | i;
+                    for (int i = gotCounter; i < gotCounter + need; i++) {
+                        result[i] = newNode.template | i;
                     }
                     return result;
                 }
             }
             // 高概率偶先重复
-            int currentWant = num - gotCounter;
             for (long currentOldValue = node.sequence.get(); currentOldValue < maxSequence; currentOldValue = node.sequence.get()) {
                 long canGet = maxSequence - currentOldValue;
-                long tryGet = canGet > currentWant ? currentWant : canGet;
-                if (node.sequence.compareAndSet(currentOldValue, tryGet)) {
+                long tryGet = canGet > need ? need : canGet;
+                if (node.sequence.compareAndSet(currentOldValue, currentOldValue + tryGet)) {
                     // 成功拿到，生成拿到的 id
-                    for (int i = 0; i < tryGet; i++) {
-                        result[gotCounter + i] = node.template | (currentOldValue + i);
+                    for (int i = gotCounter; i < gotCounter + tryGet; i++) {
+                        result[i] = node.template | (i + currentOldValue);
                     }
                     // got = num;
                     if (gotCounter + tryGet == num) {
@@ -272,14 +285,18 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
 
 
     /**
-     * 时间回拨幅度过大
+     * 时间回拨幅度过大，或时间透支过多
+     * 默认不做任何处理，因为时间回滚后，将使用对应位置的timeStamp按正常流程尝试
+     *  若此时同时透支过多，则继续透支，绝大部分情况不会有问题，性能也最高
      *
      * @param timeStamp       本次使用的时间戳
      * @param latestTimeStamp 本生成器记录的回拨前最晚时间
      * @param minDuration     最少等待时间
      */
     protected void onTimeBackTooMuch(long timeStamp, long latestTimeStamp, long minDuration) {
-        throw new IllegalStateException("Clock moved backwards too much. cover in " + minDuration + "ms.");
+        // 该位置作为保留扩展点，使用者可以在这里可以做自己想做的事，如 自适应阻塞 / 抛异常处理 / 记录日志 / 指标监控 / 告警等
+        /*throw new IllegalStateException("Clock moved backwards or overdraft too much. " +
+            "It will auto cover in " + minDuration + "ms.");*/
     }
 
     private Node getNodeAt(int index) {
@@ -310,10 +327,6 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
          * 下一个可用的 sequence (并发竞争点)
          */
         final AtomicLong sequence;
-
-        public Node(long timeStamp, long sequence) {
-            this(timeStamp, sequence, 0);
-        }
 
         public Node(long timeStamp, long sequence, long template) {
             this.timeStamp = timeStamp;

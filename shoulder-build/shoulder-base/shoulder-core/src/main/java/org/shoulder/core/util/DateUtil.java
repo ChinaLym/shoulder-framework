@@ -5,7 +5,8 @@ public class DateUtil {
     private static volatile long mills;
 
     /**
-     * 与 System.currentTimeMillis() 相比提升 5% 性能
+     * 解决 linux 系统中高并发时 System.currentTimeMillis() 慢的问题（windows无影响）
+     * http://pzemtsov.github.io/2017/07/23/the-slow-currenttimemillis.html
      */
     public static long lazyCurrentMills() {
         return mills;
@@ -13,11 +14,12 @@ public class DateUtil {
 
     static {
         Thread thread = new Thread(() -> {
-            int time = 0;
             while (true) {
-                if (time % 1024 == 0) {
+                if ((mills & 1023) == 0) {
+                    // 每 1024ms 进行一次校准，避免时钟偏离
                     mills = System.currentTimeMillis();
                 } else {
+                    // 只有本线程写，故无需保证该操作原子
                     mills++;
                 }
                 try {
