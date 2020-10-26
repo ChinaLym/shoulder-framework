@@ -13,11 +13,11 @@
 
 这里引入了 shoulder-lombok ，在 lombok 的基础上扩展了 shoulder 日志注解 `SLog`，使用效果如图
 
-![@SLog示例](shoulder-lombok-SLog.png)
+![@SLog示例](img/shoulder-lombok-SLog.png)
 
 与 @Slf4j 类似，如果类内部已经定义，IDEA也会有提示，生成完整的类名如下
 
-![@SLog实例2](shoulder-lombok-Logger.png)
+![@SLog实例2](img/shoulder-lombok-Logger.png)
 
 日志logger默认变量名为 log，当然也可以修改，若想修改则新建 lombok.config 文件，写入 `lombok.log.fieldName=xxx` xxx 为自己希望的名字，如 logger
 
@@ -105,3 +105,98 @@ IDEA 自动提示需要安装 `shoulder-lombok-plugins`
 
 翻译场景推荐 注：Thymeleaf、FreeMark 等动态页面由后端翻译，html静态页面或前后分离时推荐由前端翻译
  * 若有大量重复 message 映射时，如多租户，每个租户可以定制自己的界面和提示信息，可采用继承方式简化多语言管理
+
+----
+
+# GUID（全局唯一标识符生成器）
+
+TODO shoulder-guid 文档补充
+
+## 各家类雪花算法性能对比
+
+参与对比的实现：`Shoulder-guid`、`百度的 uid-generator`、`美团的 leaf` / `网上流传最广的 "高性能雪花算法Java实现"`
+
+> [滴滴 tinyId](https://github.com/didi/tinyid.git) 仅实现了号段模式，更新号段依赖外部存储（默认 mysql），执行速度远远不如类雪花算法，不做比较。
+
+测试目标：比较类雪花算法的生成性能（网上流传版本/美团版本/百度魔改版本）。
+
+测试机器：对比环境均为 3700X 16G ddr4 3000。
+
+测试方式，去掉所有日志、统计等无关代码，仅保留原生代码，生成 1kw 条id，执行10次，非完全精确测试，所有测试均未预热。
+
+### [JDK-uuid]
+
+`UUID.randomUUID().toString().replace("-", "");` 单线程大概需要 5700ms，8线程需要 6214ms（少量竞争）
+
+
+### [美团-点评 leaf](https://github.com/Meituan-Dianping/Leaf) / 网上流传的最多`"高性能雪花算法java实现"`的代码
+
+美团开源项目中提供了 twitter 的雪花算法的Java实现，和网上流传的最多`"高性能雪花算法java实现"`的代码基本相同，由于未作预支策略，每秒生成固定为 4096。不支持配置。
+
+不支持时间回拨、生成 1kw 条需要半个多小时。
+
+#### 结论
+
+最广泛流传的版本最好理解，但性能有效，即使加上时间预支、使用逻辑时钟，其性能也因为同步、变量共享问题上不去，且未处理始终回拨。
+
+### [百度 uid](https://github.com/baidu/uid-generator)
+
+官方号称每秒生成接近 700w，由于我电脑配置好于标注的性能配置，我认为在我电脑上百度算法的性能会更高，在自己电脑测试大概为 `1100w/s`，具体见下。
+
+测试方式：使用官方号称最快的 CachedUidGenerator，去掉所有日志打印代码，去掉spring运行环境，只保留纯原生生成相关代码，序列位与标准雪花对齐，使用12bit
+
+#### baidu/uid-generator 实测结果：
+
+- 单线程运行需要 850-900ms 左右，且有概率因为获取过快出现异常（默认的逻辑，可自行改为阻塞）。
+
+![单线程测试代码](img/guid_baidu.png)
+
+- `8`线程生成时需要 2300-2350ms 左右（由于竞争带来的性能下降）
+
+#### baidu/uid-generator 测试结论
+
+百度提出了利用逻辑时钟 + 启动时机器号从外界获取不会重复唯一标识来解决时钟回拨，利用双 buffer，去伪共享，异步预填充机制降低并发读写同步带来地性能影响，保证了较高性能。
+
+### [ShoulderGuid](https://github.com/ChinaLym/Shoulder-Framework/blob/master/shoulder-build/shoulder-base/shoulder-core/src/main/java/org/shoulder/core/uuid/ShoulderGuidGenerator.java)
+
+测试代码见单元测试，与其他开源实现相比，除了提供 GUID的算法和文档外，shoulder还有完善的单元测试（性能、重复测试、扩展测试、多线程测试）
+
+#### ShoulderGuid 实测结果：
+
+采用标准的雪花算法模式，未选用性能更高的配置
+
+- 单线程运行需要 135ms 左右，性能是百度算法的 **300 %** 倍。
+![shoulder-guid 单线程测试](img/guid_single.png)
+
+- 单线程**批量生成**需要 55ms 左右，性能是百度算法的 **1800 %** 倍。
+![shoulder-guid 单线程批量获取测试](img/guid_multi.png)
+
+为了证明Shoulder是真正高性能而未投机取巧，附了 `shoulder-guid` 生成id是的`单调递增``无重复`的测试图，这1kw个id是无重复的，完全单调递增的！你可能 Shoulder-Guid 的高超性能感觉惊讶，学 Shoulder，带你认使高并发！
+![shoulder-guid 单线程批量获取测试-无重复-单调递增](img/guid_notRpeat_increasing.png)
+
+- `8`线程生成需要 335-360ms 左右（由于竞争带来的性能下降，CAS导致范围波地较大），性能是百度算法的 **660 %** 倍。
+![shoulder-guid 8线程测试](img/guid_single.png)
+
+- `8`线程**批量生成**需要 40ms 左右，性能是百度算法的 **5810 %** 倍。（虽然增加了并发冲突，单由于CAS冲突减少，且批量获取，多线程获取整体耗时减少）
+![shoulder-guid 8线程批量测试](img/guid_multi_threads.png)
+
+Shoulder 提供了**批量生成**方式，并对批量获取id做了额外的算法优化，使用时一般也会通过二级缓存调用批量方法，因此主要关注第 2/4次的测试结果即可。
+
+#### ShoulderGuid 测试结论
+
+shoulder 将各个段位支持可扩展，可以根据自己的业务场景变更 guid 格式，
+
+Shoulder 利用了时间预支解决了单时间段序列达到上限问题，利用 buffer 缓存解决时钟回拨问题，利用CPU cacheLine 减少内存访问，多个点巧妙利用 CAS 制去掉了锁，实现真正地无锁化、高性能！
+
+采用标准的雪花算法格式（未选用性能更高的配置）与其他实现做对比，就已经远超其他实现，成为当之无愧的 `GUID` 性能王！
+
+#### 补充
+
+在大多数业务场景下，不必过于在意guid 算法的性能，因为优化后的号段模式基本够用了，推荐对比他们对于序列超拿、时钟回拨的处理，可扩展性以及高可用方案。
+
+在海量日志分布式入库、大规模事件处理、分布式爬虫数据整理、大数据处理场景推荐使用 `shoulder-guid`，性能最高、扩展性最好、可自由处理时钟回拨策略，并留下了监控的扩展点。
+
+---
+
+
+
