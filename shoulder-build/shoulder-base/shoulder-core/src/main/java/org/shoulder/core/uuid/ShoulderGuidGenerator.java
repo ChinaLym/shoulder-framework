@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * <p>
  * 在解决了标准的 snowflake 的不足：兼容时钟回拨处理、序列号满阻塞、bit位可配置（调整时间单元大小、序列大小、机器号范围）；
  * 测试结果：不会因为线程数增加带来的并发冲突/内存共享失效，产生性能下降
- *
+ * <p>
  * 每个 id 有64bit，由时间段、实例标识、序列号 组成，各个部分长度可以自由配置，这里以 twitter 提出的雪花算法为例介绍 id 组成
  * <pre>{@code
  * #=======#------+----------------------+------------+--------------+
@@ -20,6 +20,11 @@ import java.util.concurrent.atomic.AtomicLong;
  * # 64bit # 1bit |        41bits        |   10bits   |    12bits    |
  * #=======#------+----------------------+------------+--------------+
  * }</pre>
+ * <p>
+ * 高性能：1. 序列号CAS自增；2. 时钟缓存；3. 线程id hash 映射取缓存减少竞争；4. 使用 CAS 替代加锁 5.合理利用 CPU cache；5. 位移替代加、减、取余
+ * Js 兼容：1. 字符串传输；2. 禁止将业务 id 传输给前端；3. 减少精度
+ * 可扩展：自定义各段数据长度、整体长度、时间精度、时钟回拨逻辑、串解析策略
+ * - 时钟回拨处理策略举例：1. 缓存生成历史【默认】；2. 机器标识减半； 3. 阻塞； 4. 记录日志、抛异常、告警...
  *
  * @author lym
  */
@@ -55,7 +60,6 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     /**
      * 最新的时间戳，位置，这两个要保证一起操作，这里使用 volatile 防止重排序、外加cas即可保证
      */
-
     private final AtomicLong latestTimeStamp = new AtomicLong(-1);
 
     private final int bufferSize;
@@ -181,36 +185,35 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     @Override
     public Map<String, String> decode(long snowflakeId) {
         Map<String, String> map = new HashMap<>(3);
-        long logicalTimestamp = snowflakeId >> timestampLeftShift;
-        map.put("logicalTimestamp", String.valueOf(logicalTimestamp));
+        long relativeTimeStamp = snowflakeId >> timestampLeftShift;
+        // 相对(元时间)时间戳
+        map.put("relativeTimeStamp", String.valueOf(relativeTimeStamp));
 
-        map.put("timestamp", String.valueOf(logicalTimestamp + timeEpoch));
+        // 生成该id时的时间戳
+        map.put("timestamp", String.valueOf(relativeTimeStamp + timeEpoch));
 
+        // 自增序列
         long sequence = snowflakeId & sequenceMask;
         map.put("sequence", String.valueOf(sequence));
 
+        // 实例标识
         long instanceId = snowflakeId >> instanceIdShift & ~(-1 << (timestampLeftShift - instanceIdShift));
         map.put("instanceId", String.valueOf(instanceId));
         return map;
     }
 
     /**
-     * 批量生成 ID
-     * 无法充分利用CPU特性，因此单次获取 num 较少，如100个以下时，推荐使用循环获取单个，否则性能会急剧下降
-     * num 越大性能越高，使用 maxSequence 作为 num 时，性能有数量级提升
-     *
-     * 测试发现，使用snowflakes默认格式，若总量需要1亿个 todo 经过改进设计后，性能已经大幅提升，注释需要同步修改
-     * - nextId 方式需要1.8s
-     * - nextIds(1) 方式需要 24s
-     * - nextIds(32) 方式需要 18s
-     * - nextIds(64) 方式需要 4.6s
-     * - nextIds(100) 需要 1.6s
-     * - nextIds(128) 需要 1.2s 【单次获取的 num = 128 比较中庸】
-     * - nextIds(1000)需要0.5s
-     * - nextIds(4096)需要0.3s
+     * 批量生成 ID，若每次获取均为相同的2的整数次幂，可以看作原子性批量生成（生成的id是紧凑连续的）
+     * num很小时（小于8）无法充分利用CPU特性。num 越大性能越高，使用 maxSequence 作为 num 时，性能有明显提升
+     * <p>
+     * 测试发现，使用snowflakes默认格式，若总量需要 1kw 个
+     * - nextId 方式需要 135ms
+     * - nextIds(1) 方式需要 225ms, 1 -> 8 所需时间减少
+     * - nextIds(16-4095) 方式需要 65ms 左右
+     * - nextIds(4096)需要 40 ms
      * 实际生产中，可以忽略
      *
-     * @param num 批量生成个数。若实现原子性批量生成方法
+     * @param num 批量生成个数，最大为 maxSequence todo 支持特大批次
      * @return guid
      */
     @Override
@@ -287,7 +290,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     /**
      * 时间回拨幅度过大，或时间透支过多
      * 默认不做任何处理，因为时间回滚后，将使用对应位置的timeStamp按正常流程尝试
-     *  若此时同时透支过多，则继续透支，绝大部分情况不会有问题，性能也最高
+     * 若此时同时透支过多，则继续透支，绝大部分情况不会有问题，性能也最高
      *
      * @param timeStamp       本次使用的时间戳
      * @param latestTimeStamp 本生成器记录的回拨前最晚时间
