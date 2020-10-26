@@ -20,31 +20,36 @@ public class CachingFastDateFormatter {
 
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
+    // todo 缓存最近 32ms 的时间模板，以满足大多 GC 时间
+    private volatile TimeFormatCache cache;
+
     public CachingFastDateFormatter(String pattern) {
         dateFormat = FastDateFormat.getInstance(pattern);
     }
 
     public final String format(long now) {
-        readWriteLock.readLock().lock();
-        long lastTimestamp = this.lastTimestamp;
-        String cachedStr = this.cachedStr;
-        readWriteLock.readLock().unlock();
-        if (lastTimestamp == now) {
-            return cachedStr;
+        TimeFormatCache lastCache = this.cache;
+        if (lastCache.timestamp == now) {
+            return lastCache.formatStr;
         }
         cachedStr = dateFormat.format(now);
-        if (this.lastTimestamp != lastTimestamp) {
-            return cachedStr;
-        }
-        readWriteLock.writeLock().lock();
-        if (this.lastTimestamp != lastTimestamp) {
-            readWriteLock.writeLock().unlock();
-            return cachedStr;
-        }
-        this.lastTimestamp = now;
-        this.cachedStr = cachedStr;
-        readWriteLock.writeLock().unlock();
+
+        // todo cas set cache
+
         return cachedStr;
+    }
+
+
+    public static class TimeFormatCache {
+
+        final long timestamp;
+
+        final String formatStr;
+
+        public TimeFormatCache(long timestamp, String formatStr) {
+            this.timestamp = timestamp;
+            this.formatStr = formatStr;
+        }
     }
 
 }
