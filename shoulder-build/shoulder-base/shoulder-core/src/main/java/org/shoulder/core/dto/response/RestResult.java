@@ -14,6 +14,7 @@ import java.io.Serializable;
  * Restful 风格返回值
  * <p>
  * 统一接口返回值格式，包含 code，msg，data
+ * 接口版本不兼容变更，需要约定返回版本号的位置，通常在响应头，以便于接收者感知处理
  *
  * @author lym
  */

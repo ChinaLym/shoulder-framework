@@ -107,7 +107,7 @@
     <artifactId>shoulder-core</artifactId>
 
     <description>
-        shoulder 核心模块，定义了一些规范，如错误码，异常，日志，统一 REST 返回值，提供了一些工具
+        shoulder 核心模块，提供了 shoulder 规范标准 Java 类（如错误码，异常，日志，统一 REST 返回值），提供了常用工具
     </description>
 
 
@@ -149,7 +149,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
 
-            <!-- for test -->
+            <!-- 自动生成错误码以及对应的翻译 -->
             <!--<plugin>
                 <groupId>cn.itlym.shoulder</groupId>
                 <artifactId>errcode-maven-plugin</artifactId>

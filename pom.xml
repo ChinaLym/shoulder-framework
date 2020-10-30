@@ -12,10 +12,10 @@
 
     <!-- mvn versions:set -DnewVersion=1.0.1-RELEASE、mvn versions:commit、mvn versions:revert -->
 
-    <!-- 简介 -->
+    <!-- 简介: 方便统一编译打包发布的模块，无源码 -->
     <name>shoulder Build</name>
     <description>Modules to centralize common resources and configuration for shoulder Maven builds.</description>
-    <url>https://github.com/ChinaLym/shoulder</url>
+    <url>https://github.com/ChinaLym/shoulder-framework</url>
 
     <!-- 开源组织 -->
     <organization>
@@ -25,9 +25,13 @@
 
     <!-- 模块 -->
     <modules>
+        <!-- 依赖管理 -->
         <module>shoulder-dependencies</module>
+        <!-- 各模块通用配置 -->
         <module>shoulder-parent</module>
+        <!-- 源码 -->
         <module>shoulder-build</module>
+        <!-- 骨架工程 -->
         <module>shoulder-archetype-simple</module>
     </modules>
 
@@ -40,6 +44,8 @@
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
+        <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
+        <clirr-maven-plugin.version>2.7</clirr-maven-plugin.version>
     </properties>
 
     <!--发布前检查编译测试无用依赖 mvn dependency:analyze-->
@@ -67,8 +73,7 @@
         <url>git@github.com:ChinaLym/shoulder-framework.git</url>
     </scm>
 
-    <!-- 许可 -->
-    <!--开源协议采用 Apache 2.0 协议-->
+    <!--开源许可协议采用 Apache 2.0 协议-->
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -140,19 +145,22 @@
                 <version>${maven-source-plugin.version}</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <!--<phase>package</phase>-->
+                        <phase>verify</phase>
                         <goals>
                             <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
             <!-- Javadoc -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
             </plugin>
+
             <!-- 测试覆盖率统计工具 -->
             <!-- <plugin>
                  <groupId>org.codehaus.mojo</groupId>
@@ -165,7 +173,7 @@
                  </configuration>
              </plugin>-->
 
-            <!-- maven 发布插件 -->
+            <!-- maven 发布插件 【注意：发布时要改成 verify 才能在发布前执行签名】 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
@@ -180,6 +188,86 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- 检测依赖库的开源许可协议，遵守开源协议 mvn license:aggregate-add-third-party -->
+            <!--官网：http://www.mojohaus.org/license-maven-plugin/examples/example-thirdparty.html#Merge_licenses-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${license-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <!-- license-list 列出可用的 license -->
+                            <!-- add-third-party 检测单个项目中的 license -->
+                            <!-- aggregate-add-third-party 检测多模块项目的 license -->
+                            <goal>aggregate-add-third-party</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <!-- 修改默认配置（可选） -->
+                <configuration>
+                    <!-- 设置检测结果文件的存放目录 -->
+                    <outputDirectory>${basedir}/target/generated-sources/license</outputDirectory>
+                    <!-- 设置检测结果文件，默认是 txt 文件 -->
+                    <thirdPartyFilename>LICENSE_THIRD_PARTY.csv</thirdPartyFilename>
+                    <!-- 设置检测结果文件样式。默认 txt 不方便查看，csv 文件的样式可 Excel 中进行分析；模板为 FreeMarker -->
+                    <fileTemplate>E:/files/code/git/shoulder/shoulder-framework/third-party-file.ftl</fileTemplate>
+                    <!-- mvn 命令会下载 license 文件，国内经常会出现请求超时，默认超时时间是 5 秒，改为 10 秒 -->
+                    <connectionRequestTimeout>10000</connectionRequestTimeout>
+                    <connectTimeout>10000</connectTimeout>
+                    <socketTimeout>10000</socketTimeout>
+                    <!-- 有些依赖可能检测不到 license、或有误，或需要对某些模块的 license 自己指定，将该配置设置为 true -->
+                    <!-- 默认配置在 ${basedir}/src/license/THIRD-PARTY.properties 文件中 -->
+                    <useMissingFile>false</useMissingFile>
+                    <!-- 跳过某些 groupId 的检测，如本项目的各个模块 -->
+                    <excludedGroups>cn\.itlym</excludedGroups>
+                    <!-- 由于不同依赖中使用的 license 名称不同，为便于分类管理，将同类合并。如将 Apache 系列的 license 都合并为 Apache -->
+                    <licenseMerges>
+                        <licenseMerge>Apache 2.0|ASL, version
+                            2|http://www.apache.org/licenses/LICENSE-2.0.txt|http://asm.ow2.org/license.html|The
+                            Apache License, Version 2.0|Apache License|Apache License Version 2|Apache License
+                            Version 2.0|Apache Software License - Version 2.0|Apache 2.0 License|Apache License
+                            2.0|ASL|Apache 2|Apache-2.0|the Apache License, ASL Version 2.0|The Apache Software
+                            License, Version 2.0|Apache License, Version 2.0|Apache Public License 2.0
+                        </licenseMerge>
+                        <licenseMerge>BSD|The BSD 3-Clause License|The BSD License|Modified BSD License|New BSD
+                            License|New BSD license|Two-clause BSD-style license|BSD licence|BSD New|The New BSD
+                            License|BSD 3-Clause|BSD 3-clause
+                        </licenseMerge>
+                        <licenseMerge>MIT|MIT License|The MIT License</licenseMerge>
+                        <licenseMerge>LGPL|LGPL, version 2.1|GNU Library or Lesser General Public License (LGPL)
+                            V2.1|GNU Lesser General Public License (LGPL), Version 2.1|GNU Lesser General Public
+                            License, Version 2.1|LGPL 2.1
+                        </licenseMerge>
+                        <licenseMerge>CDDL|CDDL+GPL|CDDL+GPL License|CDDL + GPLv2 with classpath exception|CDDL
+                            License|CDDL 1.0|CDDL 1.1|COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version
+                            1.0|Common Development and Distribution License (CDDL) v1.0
+                        </licenseMerge>
+                        <licenseMerge>EPL|Eclipse Public License - Version 1.0</licenseMerge>
+                        <licenseMerge>GPL|GPL2 w/ CPE|GPLv2+CE|GNU General Public Library</licenseMerge>
+                        <licenseMerge>MPL|MPL 1.1</licenseMerge>
+                        <licenseMerge>Public Domain</licenseMerge>
+                        <licenseMerge>Common Public License|Common Public License Version 1.0</licenseMerge>
+                        <licenseMerge>CC0|CC0 1.0 Universal|Public Domain, per Creative Commons CC0</licenseMerge>
+                        <licenseMerge>Unknown License|Unknown license</licenseMerge>
+                    </licenseMerges>
+                    <!-- failIfWarning 配合这两个属性使用 <includedLicenses> <excludedLicenses> -->
+                    <!-- <includedLicenses> 表示白名单，license 一定要在这个列表中 -->
+                    <!-- <excludedLicenses> 表示黑名单，这个列表中的 license 一定不能出现 -->
+                    <!-- 设为 true。license 不在白名单中、或在黑名单中，将构建失败。结合这个功能，非常方便看出项目中是否有非法 license -->
+                    <failIfWarning>true</failIfWarning>
+                </configuration>
+            </plugin>
+
+            <!-- 接口兼容性检测，避免发布接口的与之前版本不兼容 clirr:check 检查上个版本 -->
+            <!--不支持JDK8以上的版本 clirr failed: Invalid byte tag in constant pool: 18-->
+            <!--<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>clirr-maven-plugin</artifactId>
+                <version>${clirr-maven-plugin.version}</version>
+            </plugin>-->
 
             <!-- 修改父模块的版本之后，进入父模块的pom所在路径执行mvn命令：mvn -N versions:update-child-modules,即可自动修改所有子模块中的版本号 -->
             <!--<plugin>
