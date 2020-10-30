@@ -28,6 +28,8 @@
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
+        <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
+        <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
         <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
@@ -45,6 +47,40 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!-- 开发者 -->
+    <developers>
+        <developer>
+            <id>ChinaLym</id>
+            <name>cnlym</name>
+            <email>cn_lym@foxmail.com</email>
+            <organization>shoulder.</organization>
+            <organizationUrl>coming soon</organizationUrl>
+            <roles>
+                <role>CAFE BABE</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
+    <!-- 版本控制，供其他插件使用 -->
+    <scm>
+        <connection>scm:git@github.com:ChinaLym/shoulder-framework.git</connection>
+        <developerConnection>scm:git@github.com:ChinaLym/shoulder-framework.git</developerConnection>
+        <url>git@github.com:ChinaLym/shoulder-framework.git</url>
+    </scm>
+
+    <url>https://github.com/ChinaLym/shoulder-framework</url>
+
+    <!--开源许可协议采用 Apache 2.0 协议-->
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
 
     <build>
 
@@ -65,10 +101,11 @@
                     </configuration>
                 </plugin>
 
+                <!-- License Check And Sign 开原协议检查-->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>license-maven-plugin</artifactId>
-                    <version>1.13</version>
+                    <version>${license-maven-plugin.version}</version>
                     <configuration>
                         <!-- config for license:aggregate-add-third-party -->
                         <outputDirectory>${project.basedir}</outputDirectory>
@@ -161,8 +198,8 @@
                     <executions>
                         <execution>
                             <id>attach-sources</id>
-                            <!-- let it work when mvn package -->
-                            <phase>package</phase>
+                            <!--<phase>package</phase>-->
+                            <phase>verify</phase>
                             <goals>
                                 <goal>jar</goal>
                                 <goal>jar-no-fork</goal>
@@ -171,7 +208,7 @@
                     </executions>
                 </plugin>
 
-                <!-- Javadoc -->
+                <!-- 生成 Javadoc -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
@@ -209,11 +246,13 @@
                             <head>时间</head>
                         </tag>
                     </tags>-->
+
                     <!--网络不佳，snapshot仅发布jar以提高快照发布速度-->
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
-                            <phase>package</phase>
+                            <!--<phase>package</phase>-->
+                            <phase>verify</phase>
                             <goals>
                                 <goal>jar</goal>
                             </goals>
@@ -225,7 +264,7 @@
                     </executions>
                 </plugin>
 
-                <!-- GPG  maven中央仓库发布插件 -->
+                <!-- GPG  maven中央仓库发布安全签名插件 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
@@ -268,7 +307,6 @@
                     </configuration>
                 </plugin>
 
-
                 <!-- cobertura 单元测试覆盖率插件 -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -306,12 +344,11 @@
                     <version>3.7.0.1746</version>
                 </plugin>
 
-
                 <!-- 管理版本号 mvn versions:set -DnewVersion=1.1-SNAPSHOT -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.7</version>
+                    <version>${versions-maven-plugin}</version>
                 </plugin>
 
                 <!-- 编辑 MANIFEST.MF -->

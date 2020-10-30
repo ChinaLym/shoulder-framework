@@ -7,6 +7,8 @@ import ch.qos.logback.core.pattern.color.ForegroundCompositeConverterBase;
 import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
 
 /**
+ * Shoulder 定义的彩色日志转换器，专门为控制台中输出彩色日志做转换，比如 启动LOGO
+ *
  * @author lym
  */
 public class ShoulderClearCompositeConverter extends ForegroundCompositeConverterBase<ILoggingEvent> {

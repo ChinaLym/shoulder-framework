@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
  * 代码中可直接抛出该类异常，会通过统一异常处理将该错误信息捕获封装返回
  * <p>
  * 获取并填充异常信息 {@link ExceptionUtil#generateExceptionMessage}
+ * 当A服务被B服务完全替代后，错误码由于前缀必定不兼容，推荐调用者着重看错误码后几位，或由网关隔离，对系统外部调用者做兼容处理
  *
  * @author lym
  */

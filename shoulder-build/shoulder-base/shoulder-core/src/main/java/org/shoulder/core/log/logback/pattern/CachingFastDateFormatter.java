@@ -5,16 +5,20 @@ import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
+import java.text.Format;
+import java.util.Arrays;
 
 /**
  * 带缓存的时间格式化器，去掉了锁。LocalDateTime.ofInstant 替代 new Date
  *
- * @see CachingDateFormatter 可以对比 logback 的实现，logback中使用了 synchronized 代码块，而日志打印必定会有多个线程竞争，导致阻塞，Shoulder中去掉了锁
+ * @see CachingDateFormatter 可以对比 logback 的实现，logback中使用了 synchronized
+ * 代码块，而日志打印必定会有多个线程竞争，导致阻塞，测试验证发现确实如此（按 logback 同步写法，只更换日志格式化工具也会有问题）
+ * Shoulder中去掉了锁
  * @author lym
  */
 public class CachingFastDateFormatter {
 
-    private final FastDateFormat dateFormat;
+    private final Format dateFormat;
 
     /**
      * 缓存最近的时间戳模板，使用数组以避免YGC带来的缓存雪崩
@@ -29,7 +33,7 @@ public class CachingFastDateFormatter {
     }
 
     /**
-     * 构造
+     * 构造器，public 方便测试
      *
      * @param pattern   时间格式
      * @param cacheSize 缓存时间，通常为绝大多数 ygc 时间，2次幂
@@ -37,6 +41,7 @@ public class CachingFastDateFormatter {
     public CachingFastDateFormatter(String pattern, int cacheSize) {
         dateFormat = FastDateFormat.getInstance(pattern);
         cache = new TimeFormatCache[cacheSizeFor(cacheSize)];
+        Arrays.fill(cache, new TimeFormatCache(-1, null));
     }
 
     /**
@@ -71,8 +76,8 @@ public class CachingFastDateFormatter {
     /**
      * 弱 CAS，没有强制 happens before前后变量的可变性
      */
-    private boolean weakCasAt(int index, TimeFormatCache old, TimeFormatCache newValue) {
-        return cacheHandle.weakCompareAndSet(cache, index, old, newValue);
+    private void weakCasAt(int index, TimeFormatCache old, TimeFormatCache newValue) {
+        cacheHandle.weakCompareAndSet(cache, index, old, newValue);
     }
     
     public static class TimeFormatCache {
@@ -81,7 +86,7 @@ public class CachingFastDateFormatter {
 
         final String formatStr;
 
-        public TimeFormatCache(long timestamp, String formatStr) {
+        TimeFormatCache(long timestamp, String formatStr) {
             this.timestamp = timestamp;
             this.formatStr = formatStr;
         }
