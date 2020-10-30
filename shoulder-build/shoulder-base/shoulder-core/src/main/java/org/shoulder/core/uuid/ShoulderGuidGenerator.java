@@ -1,5 +1,7 @@
 package org.shoulder.core.uuid;
 
+import org.shoulder.core.util.PaddedAtomicLong;
+
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.util.HashMap;
@@ -25,12 +27,15 @@ import java.util.concurrent.atomic.AtomicLong;
  * Js 兼容：1. 字符串传输；2. 禁止将业务 id 传输给前端；3. 减少精度
  * 可扩展：自定义各段数据长度、整体长度、时间精度、时钟回拨逻辑、串解析策略
  * - 时钟回拨处理策略举例：1. 缓存生成历史【默认】；2. 机器标识减半； 3. 阻塞； 4. 记录日志、抛异常、告警...
+ * <p>
+ * 【该类为生成器框架，可以自行基础该类实现自己的生成器，在扩展同时，shoulder帮你实现了高并发的设计】
  *
  * @author lym
+ * @see SnowFlakeGenerator 提供了雪花算法格式的实现
  */
 public class ShoulderGuidGenerator implements LongGuidGenerator {
 
-    // ---------------------- Fields -------------------------
+    // ---------------------- Fields（7个不变的） -------------------------
 
     /**
      * 实例标识 左移位数，空出自增序列所占位
@@ -44,6 +49,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
 
     /**
      * 生成序列的掩码，保证序列安全生成，这里为4095 (0b111111111111=0xfff=4095)
+     * 可通过 ~(-1L << instanceIdShift) 计算得到，但这里充分利用一下 cacheLine，凑齐 7 个，后续若新增变量，可以将该属性去除
      */
     private final long sequenceMask;
 
@@ -58,18 +64,22 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     private long instanceId;
 
     /**
-     * 最新的时间戳，位置，这两个要保证一起操作，这里使用 volatile 防止重排序、外加cas即可保证
-     */
-    private final AtomicLong latestTimeStamp = new AtomicLong(-1);
-
-    private final int bufferSize;
-
-    /**
      * 每个 Node 存储了一个时间周期的数据（默认1ms）
      */
     private final Node[] buffer;
 
+    /**
+     * buffer handle
+     */
     private final VarHandle nodeHandle = MethodHandles.arrayElementVarHandle(Node[].class);
+
+    // ---------------------- cacheLine split -------------------------
+
+    /**
+     * 最新的时间戳
+     * 该变量需要CAS，还要保证附近代码防重排，因此选择 AtomicLong；最后再额外填充 6 个，补齐缓存行
+     */
+    private final AtomicLong latestTimeStamp = new PaddedAtomicLong(-1);
 
     // ---------------------- 构造器 -------------------------
 
@@ -78,7 +88,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      *
      * @param timeStampBits  时间戳所占位数 > 0
      * @param timeEpoch      元时间戳（位数必须与 timeStampBits 一致）
-     * @param instanceIdBits 应用实例标识（机器标识）位数 >= 0 todo 可以自动推断
+     * @param instanceIdBits 应用实例标识（机器标识）位数 >= 0，必填，因为后续可能不一定是64位，不使用 64 减其他位计算
      * @param instanceId     实例标识
      * @param sequenceBits   单位时间（时间戳相关）内自增序列bit位数 > 0
      * @param bufferSize     缓冲区大小，用于抵抗时钟回拨，抵抗大小为[时间单位]*[bufferSize]；范围：[1, 1 << 30]，1 时不能抵抗时钟回拨，但性能最高
@@ -116,7 +126,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
             throw new IllegalArgumentException("sequenceBits must > 0. sequenceBits=" + sequenceBits);
         }
 
-        // 可以使用的位数 long 类型去掉符号位 todo 是否去掉该校验，以支持用户生成非 64bit的 long，如 js 只支持 53bit
+        // 可以使用的位数 long 类型去掉符号位 todo 扩展性：是否去掉该校验，以支持用户生成非 64bit的 long，如 js 只支持 53bit
         final int longBits = 64 - 1;
         if (timeStampBits + instanceIdBits + sequenceBits != longBits) {
             throw new IllegalArgumentException("timeStampBits + instanceIdBits + sequenceBits != 63 must = 63. " +
@@ -124,8 +134,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         }
 
         // 初始化缓冲区
-        this.bufferSize = bufferSizeFor(bufferSize);
-        this.buffer = new Node[this.bufferSize];
+        this.buffer = new Node[bufferSizeFor(bufferSize)];
         for (int i = 0; i < buffer.length; i++) {
             buffer[i] = new Node(-1, 0, -1);
         }
@@ -135,7 +144,6 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      * Returns a power of two table size for the given desired capacity.
      */
     private static final int bufferSizeFor(int s) {
-        // bufferSize
         int maximumCapacity = 1 << 30;
         int n = -1 >>> Integer.numberOfLeadingZeros(s - 1);
         return (n < 0) ? 1 : (n >= maximumCapacity) ? maximumCapacity : n + 1;
@@ -150,7 +158,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         // 最新的时间戳
         long lts = latestTimeStamp.get();
         // 最旧的时间戳
-        final long minTs = lts - bufferSize;
+        final long minTs = lts - buffer.length;
         if (timeStamp < minTs) {
             // 时钟回拨过多，提前透支时间过多（>bufferSize）均会触发
             onTimeBackTooMuch(timeStamp, latestTimeStamp.get(), minTs - timeStamp);
@@ -159,7 +167,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         // 尝试拿 Node
         while (true) {
             final long timeStampFinal = timeStamp;
-            int index = ((int) (timeStampFinal)) & (bufferSize - 1);
+            int index = ((int) (timeStampFinal)) & (buffer.length - 1);
             Node node = getNodeAt(index);
             if (timeStampFinal > node.timeStamp) {
                 // 处理预支时间超出当前时间过多? 默认不处理，除非使用者要求特殊限制，自行于 onTimeBackTooMuch 处理
@@ -213,7 +221,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      * - nextIds(4096)需要 40 ms
      * 实际生产中，可以忽略
      *
-     * @param num 批量生成个数，最大为 maxSequence todo 支持特大批次
+     * @param num 批量生成个数，最大为 maxSequence todo 设计-待定 支持更大的批量获取数？还是使用
      * @return guid
      */
     @Override
@@ -228,7 +236,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         long lts = latestTimeStamp.get();
 
         // 缓存中最旧的时间戳
-        final long minTs = lts - bufferSize;
+        final long minTs = lts - buffer.length;
         if (timeStamp < minTs) {
             // 时钟回拨过多（极其少见）
             onTimeBackTooMuch(timeStamp, latestTimeStamp.get(), minTs - timeStamp);
@@ -240,7 +248,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
             // 本次循环前获取到 id 的个数
             final long timeStampFinal = timeStamp;
             int need = num - gotCounter;
-            int index = ((int) (timeStampFinal)) & (bufferSize - 1);
+            int index = ((int) (timeStampFinal)) & (buffer.length - 1);
             Node node = getNodeAt(index);
             if (timeStampFinal > node.timeStamp) {
                 // 该时间戳内第一次访问该 node，new 新的 CAS 替换，一次性获取剩余所需序列
@@ -297,7 +305,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      * @param minDuration     最少等待时间
      */
     protected void onTimeBackTooMuch(long timeStamp, long latestTimeStamp, long minDuration) {
-        // 该位置作为保留扩展点，使用者可以在这里可以做自己想做的事，如 自适应阻塞 / 抛异常处理 / 记录日志 / 指标监控 / 告警等
+        // 该位置作为保留扩展点，使用者可以在这里可以做自己想做的事，如 自适应阻塞 / 更换 instanceId/ 抛异常处理 / 记录日志 / 指标监控 / 告警等
         /*throw new IllegalStateException("Clock moved backwards or overdraft too much. " +
             "It will auto cover in " + minDuration + "ms.");*/
     }
