@@ -1,4 +1,4 @@
-package org.shoulder.core.uuid;
+package org.shoulder.core.guid;
 
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
@@ -42,4 +42,4 @@ public class AtomicBitSet {
         return sum;
     }
 
-}  
+}

@@ -1,4 +1,4 @@
-package org.shoulder.core.uuid;
+package org.shoulder.core.guid;
 
 
 import java.util.Map;
