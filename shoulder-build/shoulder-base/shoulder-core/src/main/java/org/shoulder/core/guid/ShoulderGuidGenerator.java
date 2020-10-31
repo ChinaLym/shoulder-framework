@@ -1,9 +1,10 @@
-package org.shoulder.core.uuid;
+package org.shoulder.core.guid;
 
 import org.shoulder.core.util.PaddedAtomicLong;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -48,8 +49,8 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     private final long timestampLeftShift;
 
     /**
-     * 生成序列的掩码，保证序列安全生成，这里为4095 (0b111111111111=0xfff=4095)
-     * 可通过 ~(-1L << instanceIdShift) 计算得到，但这里充分利用一下 cacheLine，凑齐 7 个，后续若新增变量，可以将该属性去除
+     * 生成序列的掩码，保证序列安全生成
+     * 可通过 ~(-1L << instanceIdShift) 计算得到，但这里充分利用一下为解决伪共享而填充的 cacheLine（后续若新增变量，可以将该属性去除）
      */
     private final long sequenceMask;
 
@@ -64,7 +65,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     private long instanceId;
 
     /**
-     * 每个 Node 存储了一个时间周期的数据（默认1ms）
+     * 每个 Node 存储了一个时间周期的数据
      */
     private final Node[] buffer;
 
@@ -135,9 +136,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
 
         // 初始化缓冲区
         this.buffer = new Node[bufferSizeFor(bufferSize)];
-        for (int i = 0; i < buffer.length; i++) {
-            buffer[i] = new Node(-1, 0, -1);
-        }
+        Arrays.fill(buffer, new Node(-1, 0, -1));
     }
 
     /**
@@ -264,7 +263,6 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
                     return result;
                 }
             }
-            // 高概率偶先重复
             for (long currentOldValue = node.sequence.get(); currentOldValue < maxSequence; currentOldValue = node.sequence.get()) {
                 long canGet = maxSequence - currentOldValue;
                 long tryGet = canGet > need ? need : canGet;

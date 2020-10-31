@@ -1,4 +1,4 @@
-package org.shoulder.core.uuid;
+package org.shoulder.core.guid;
 
 import org.junit.Test;
 import org.shoulder.core.util.JsonUtils;
