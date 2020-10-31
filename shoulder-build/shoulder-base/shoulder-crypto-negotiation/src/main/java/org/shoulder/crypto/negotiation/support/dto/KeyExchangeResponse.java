@@ -26,7 +26,7 @@ public class KeyExchangeResponse {
     private String publicKey;
 
     /**
-     * 本次会话 aes 算法
+     * 本次会话对称加密算法标识
      */
     private String aes;
 

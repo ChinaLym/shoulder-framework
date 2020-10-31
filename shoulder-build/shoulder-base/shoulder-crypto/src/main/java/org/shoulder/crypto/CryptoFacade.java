@@ -96,7 +96,7 @@ public interface CryptoFacade {
     boolean verifyAsymmetric(String text, String signature) throws CipherRuntimeException;
 
 
-    // ================================ todo 消息认证，用于接口验证（非加密） =====================================
+    // ================================ todo 新功能：消息认证，用于接口验证（非加密） =====================================
 
     // 可选方案：各个服务部署共同的密钥至服务器特定路径下，如 /etc/shoulder_security_root_data.json
 

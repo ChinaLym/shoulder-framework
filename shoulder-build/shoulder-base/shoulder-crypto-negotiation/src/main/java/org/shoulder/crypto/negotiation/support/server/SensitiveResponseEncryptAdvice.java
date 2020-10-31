@@ -59,8 +59,7 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
 
         // Controller 方法上必须要有 @Sensitive 注解
         Sensitive methodAnnotation = returnType.getMethodAnnotation(Sensitive.class);
-        boolean hasAnnotationOnMethod = methodAnnotation != null;
-        return hasAnnotationOnMethod;
+        return methodAnnotation != null;
     }
 
     /**
@@ -102,7 +101,7 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
         // 生成返回值加密的数据密钥，以加密要返回的敏感数据信息（请求和响应中使用的数据密钥不同）
         KeyExchangeResult cacheKeyExchangeResult = KeyNegotiationCache.SERVER_LOCAL_CACHE.get();
         if (cacheKeyExchangeResult == null) {
-            // todo 若在返回接口响应时过期，会导致本次接口失败。应使用线程变量中的
+            // todo 若在接口响应时过期，会导致本次接口失败。这里使用线程变量中的，规避处理过程中握手信息过期，同理客户端也是使用发出请求那一刻的密钥
 
             response.setStatusCode(HttpStatus.OK);
             response.getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
