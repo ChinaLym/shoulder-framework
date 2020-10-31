@@ -25,7 +25,7 @@ import java.io.IOException;
 
 /**
  * RestTemplate拦截器。
- * client 向 server 发出安全请求，在响应后解析响应头，将解密器放置于县城变量中
+ * client 向 server 发出安全请求，在响应后解析响应头，将解密器放置于线程变量中
  * <p>
  *
  * @author lym
@@ -50,6 +50,7 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
         // *************************** afterRequest ***************************
         if (response.getStatusCode() != HttpStatus.OK) {
             // todo 校验错误码，是否为协商的密钥过期
+            log.warn("sensitive request FAIL, responseStatus:" + response.getStatusText());
         }
 
         HttpHeaders headers = response.getHeaders();

@@ -54,8 +54,7 @@ public class SecurityRestTemplate extends RestTemplate {
     @Nullable
     protected <T> T doExecute(URI uri, @Nullable HttpMethod method, @Nullable RequestCallback requestCallback,
                               @Nullable ResponseExtractor<T> responseExtractor) throws RestClientException {
-        // 是否为密钥交换接口
-        // todo 如果标记为跳过（为协商 url、协商 param）则不需要握手
+        // 是否为密钥交换接口，如果标记为跳过（为协商 url、协商 param）则不需要握手
         if (transportNegotiationService.isNegotiationUrl(uri)) {
             // 不做任何处理
             return super.doExecute(uri, method, requestCallback, responseExtractor);

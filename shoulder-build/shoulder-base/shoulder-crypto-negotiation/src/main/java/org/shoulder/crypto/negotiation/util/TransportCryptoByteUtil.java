@@ -31,9 +31,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TransportCryptoByteUtil {
 
     /**
-     * 128/192/256
+     * 128/192/256，长度为 4 特用于优化随机数性能
      */
-    private static final int[] supportKeyLength = {16, 24, 32};
+    private static final int[] SUPPORT_KEY_LENGTH = {16, 16, 24, 32};
 
     private final AsymmetricCryptoProcessor eccProcessor;
 
@@ -219,7 +219,6 @@ public class TransportCryptoByteUtil {
      */
     public byte[] generateResponseToken(KeyExchangeResponse response) throws AsymmetricCryptoException {
         return eccProcessor.sign(response.getxSessionId(), getNeedToSign(response));
-
     }
 
     /**
@@ -260,8 +259,12 @@ public class TransportCryptoByteUtil {
         return eccProcessor.verify(xSessionId, toSin, signature);
     }
 
+    /**
+     * 简单随机算法，50% 128，25%192，25%256
+     *
+     * @return 128/192/256
+     */
     private static int randomKeyLength() {
-        return (ThreadLocalRandom.current().nextInt(256) & 1) == 0 ? 128 :
-            (ThreadLocalRandom.current().nextInt(256) & 1) == 0 ? 192 : 256;
+        return SUPPORT_KEY_LENGTH[ThreadLocalRandom.current().nextInt(SUPPORT_KEY_LENGTH.length)];
     }
 }

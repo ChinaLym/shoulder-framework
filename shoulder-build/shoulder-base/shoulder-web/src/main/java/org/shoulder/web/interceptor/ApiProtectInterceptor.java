@@ -65,7 +65,14 @@ public class ApiProtectInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private boolean checkToken(String token, String signOrign) {
+    /**
+     * 检查 token 是否合法
+     *
+     * @param token      token
+     * @param signOrigin 签名元数据
+     * @return token 是否合法
+     */
+    private boolean checkToken(String token, String signOrigin) {
         // todo 将签名验证失败错误转为 Token 认证错误码
         return true;
     }

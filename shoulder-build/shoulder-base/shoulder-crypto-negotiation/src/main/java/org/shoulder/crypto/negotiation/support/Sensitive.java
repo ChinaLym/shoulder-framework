@@ -18,7 +18,7 @@ import java.lang.annotation.*;
  * <p>
  * 加在 RestController 类上，标识该 Controller 中所有接口都需要加密增强，enhancer=false 的除外
  * <p>
- * todo 添加 ElementType.PARAMETER 以支持 GET
+ * todo 添加 ElementType.PARAMETER 以支持 GET，同时需要实现 Spring MVC 参数解析器
  *
  * @author lym
  */

@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 服务端敏感api接口拦截器
+ * 服务端敏感api接口拦截器 - 拦截带 @Sensitive 的接口，若请求头中不携带约定参数，则拒绝访问。
  * 只拦截握手完毕后的加密接口，即只拦截header中带 xSessionId 和 xDk 的请求。
  * order: 安全过滤/拦截器常设置为最早生效，如监控、日志拦截器之后，其他拦截器之前，具体顺序由具体场景决定
  *

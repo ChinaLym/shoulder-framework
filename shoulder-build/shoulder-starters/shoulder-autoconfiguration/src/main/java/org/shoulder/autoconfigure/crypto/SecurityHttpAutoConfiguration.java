@@ -45,7 +45,7 @@ public class SecurityHttpAutoConfiguration {
 
             if (CollectionUtils.isNotEmpty(toAdd)) {
                 List<ClientHttpRequestInterceptor> newInterceptors = new ArrayList<>(existConverters.size() + toAdd.size());
-                // 根据 order 排序
+                // 根据 order 排序，order 小的在前面
                 newInterceptors.add(new SensitiveResponseDecryptInterceptor(cryptoUtil));
                 newInterceptors.addAll(existConverters);
                 newInterceptors.addAll(toAdd);

@@ -22,7 +22,7 @@ import java.io.InputStreamReader;
 /**
  * 为 RestTemplate 增加记录日志的能力
  * 记录：方法调用位置、请求方式、地址、请求头、请求参数（默认最多记录2048）、返回值（默认最多记录2048）
- * 注意：由于这里类似于 MVC 的过滤器，而不是拦截器
+ * 注意：由于这里类似于 MVC 的过滤器，而不是拦截器，因此最先执行的的拦截器需要保证 body 可重复读，否则将无法重复读取 body
  *
  * @author lym
  * @see BufferingClientHttpRequestFactory 既然要读取记录日志，故 Response Body 必须使用带缓存，而非默认地只读一次
@@ -88,7 +88,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
 
     /**
      * 默认记录日志的优先级最高
-     * 也可能有更高的，如监控
+     * 也可能有更高的，如监控。一般推荐 日志|监控 < 安全 < 框架功能 < 用户自定义业务拦截器
      */
     @Override
     public int getOrder() {

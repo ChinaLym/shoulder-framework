@@ -54,6 +54,7 @@ public class SensitiveFieldCache {
                 }
                 continue;
             }
+            // 请求 / 响应时至少有一种情况需要加密
             boolean include = requestOrResponse ? requestSecret.sensitiveRequest() : requestSecret.sensitiveResponse();
             if (!include) {
                 continue;
@@ -62,6 +63,7 @@ public class SensitiveFieldCache {
             Class<?> fieldClass;
             if (!String.class.isAssignableFrom(fieldClass = field.getType())) {
                 // 如果是复杂变量还需要递归，可以通过加类注解减少递归复杂度，否则报错/警告，用法错误
+                // todo list？map？等集合
                 wrapper.addInternalFields(findSensitiveFields(fieldClass, requestOrResponse));
             }
             allSensitiveField.add(wrapper);
