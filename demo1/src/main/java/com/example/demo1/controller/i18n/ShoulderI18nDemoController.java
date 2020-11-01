@@ -75,7 +75,7 @@ public class ShoulderI18nDemoController {
     }
 
     /**
-     * <a href="http://localhost:8080/i18n/shoulder" />
+     * <a href="http://localhost:8080/i18n/1" />
      *
      * @return 翻译好的
      */
@@ -89,7 +89,7 @@ public class ShoulderI18nDemoController {
     }
 
     /**
-     * 翻译带填充参数的 <a href="http://localhost:8080/i18n/shoulder" />
+     * 翻译带填充参数的 <a href="http://localhost:8080/i18n/2" />
      *
      * @return 翻译好的
      */

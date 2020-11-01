@@ -1,6 +1,7 @@
 package com.example.demo1.controller.log;
 
 import lombok.extern.shoulder.SLog;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.web.annotation.SkipResponseWrap;
@@ -39,33 +40,37 @@ public class LoggerDemoController {
     private static final String TIP = "log is in your console.";
 
     /**
+     * <a href="http://localhost:8080/log/0" />
      * 普通打印日志，直接使用 Slf4j 定义的方法即可，不需要额外学习。
      * 无需定义 logback.xml，开箱即用，shoulder 提供了默认日志格式（见 shoulder-autoconfiguration 的 logback-spring.xml）
      * 使用彩色展示，优化了 logback 的性能
      */
     @GetMapping("0")
     public String notRecommended() {
-        log.info("this is a example log.");
+        log.info("this is a example log. 我是一条日志~~~~");
         return TIP;
     }
 
     /**
+     * <a href="http://localhost:8080/log/1" />
      * 打印带错误码的日志，目前只有 warn 和 error 级别提供了错误码（更推荐 {@link #case2} 的方式）
      */
     @GetMapping("1")
     public String case1() {
         String errorCode = "0xxxxx1";
-        log.warnWithErrorCode(errorCode, "This is a warn log with errorCode");
-        log.errorWithErrorCode(errorCode, "This is a error log with errorCode");
+        log.warnWithErrorCode(errorCode, "This is a warn log with errorCode. 我是一条警告日志~~~~");
+        log.errorWithErrorCode(errorCode, "This is a error log with errorCode. 我是一条错误日志~~~~");
         return TIP;
     }
 
     /**
-     * 记录错误码类
+     * <a href="http://localhost:8080/log/2" />
+     * 记录错误码类【推荐】
+     * 只需要记录 ErrorCode 接口即可
      */
     @GetMapping("2")
     public String case2() {
-
+        log.error(CommonErrorCodeEnum.AUTH_401_EXPIRED);
         return TIP;
     }
 
