@@ -10,7 +10,7 @@ import com.intellij.database.util.DasUtil
  *   FILES       files helper
  */
 
-packageName = "me.test.entity;"
+packageName = "cn.itlym.shoulder;"
 typeMapping = [
     (~/(?i)bigint/)                   : "Long",
     (~/(?i)tinyint/)                  : "Boolean",
