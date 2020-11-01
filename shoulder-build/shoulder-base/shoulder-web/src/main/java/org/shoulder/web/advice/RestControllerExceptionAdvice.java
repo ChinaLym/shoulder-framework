@@ -194,7 +194,12 @@ public class RestControllerExceptionAdvice {
      * 其他异常
      */
     @ExceptionHandler(Exception.class)
-    public RestResult otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) {
+    public RestResult otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (!StringUtils.containsIgnoreCase(response.getContentType(), "json")) {
+            // 不是 json 响应
+            log.error(CommonErrorCodeEnum.UNKNOWN.toException(e));
+            throw e;
+        }
         BaseRuntimeException ex;
         if (e instanceof ErrorCode) {
             // 符合规范定义的错误码，按照错误码日志级别记录

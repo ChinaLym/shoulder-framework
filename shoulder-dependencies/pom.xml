@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.4-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.4</version><!-- shoulder-version -->
         <!--<relativePath>../pom.xml</relativePath>-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -16,11 +16,11 @@
     <properties>
         <!-- shoulder framework bom -->
         <shoulder-lombok.version>0.1</shoulder-lombok.version>
-        <shoulder.version>0.4-SNAPSHOT</shoulder.version><!-- shoulder-version -->
+        <shoulder.version>0.4</shoulder.version><!-- shoulder-version -->
 
         <!-- dependencies bom -->
 
-        <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+        <spring-boot.version>2.3.5.RELEASE</spring-boot.version>
         <!-- 由于Spring Boot提供了Maven BOM来管理依赖版本，因此您无需指定版本 -->
         <!--<spring-security.version></spring-security.version>-->
 
@@ -35,7 +35,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- api-doc OPEN-API2 -->
-        <swagger.version>1.6.1</swagger.version>
+        <swagger.version>1.6.2</swagger.version>
         <!-- 使用 springfox 解析文档，管理 swagger2 的版本号 -->
         <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
         <!-- knife4j 前身是 swagger-bootstrap-ui，一个用于优化 swagger-ui 的项目，视觉效果更好 -->
@@ -81,22 +81,22 @@
 
 
         <!-- dataBase-->
-        <mysql.version>8.0.19</mysql.version>
+        <mysql.version>8.0.21</mysql.version>
         <h2.version>1.4.200</h2.version>
-        <druid.version>1.1.21</druid.version>
+        <druid.version>1.2.1</druid.version>
         <mybatis-plus.version>3.4.0</mybatis-plus.version>
         <pagehelper.version>5.2.0</pagehelper.version>
         <pagehelper-starter.version>1.3.0</pagehelper-starter.version>
-        <BeeCP.version>2.5.4.1</BeeCP.version>
+        <beecp.version>3.0.2</beecp.version>
         <p6spy.version>3.9.1</p6spy.version>
 
-        <micrometer.version>1.5.5</micrometer.version>
+        <micrometer.version>1.6.0</micrometer.version>
 
         <!-- test -->
         <mockito-all.version>1.10.19</mockito-all.version>
         <powermock.version>1.7.4</powermock.version>
 
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+
     </properties>
 
     <!--
@@ -494,8 +494,8 @@
             <!-- 数据库 连接池 默认使用高性能的 beecp （性能是 spring-boot 默认 hikairCP 的两倍，功能较少）-->
             <dependency>
                 <groupId>com.github.chris2018998</groupId>
-                <artifactId>BeeCP</artifactId>
-                <version>${BeeCP.version}</version>
+                <artifactId>beecp</artifactId>
+                <version>${beecp.version}</version>
             </dependency>
             <!-- 弥补 beecp 的功能缺失（SQL日志打印、监控） -->
             <dependency>
@@ -581,16 +581,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>${maven-gpg-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>deploy</phase><!-- gpg phase verify deploy -->
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

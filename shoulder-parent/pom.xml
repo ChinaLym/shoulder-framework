@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.4-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.4</version><!-- shoulder-version -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -32,7 +32,6 @@
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
-        <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
 
     </properties>
 
@@ -41,7 +40,7 @@
             <dependency>
                 <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-dependencies</artifactId>
-                <version>0.4-SNAPSHOT</version><!-- shoulder-version -->
+                <version>0.4</version><!-- shoulder-version -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -240,11 +239,6 @@
                             <placement>a</placement>
                             <head>时间</head>
                         </tag>
-                        <tag>
-                            <name>Date</name>
-                            <placement>a</placement>
-                            <head>时间</head>
-                        </tag>
                     </tags>-->
 
                     <!--网络不佳，snapshot仅发布jar以提高快照发布速度-->
@@ -265,20 +259,20 @@
                 </plugin>
 
                 <!-- GPG  maven中央仓库发布安全签名插件 -->
-                <plugin>
+                <!--<plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>${maven-gpg-plugin.version}</version>
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
-                            <phase>deploy</phase><!-- gpg phase verify deploy -->
+                            <phase>deploy</phase>&lt;!&ndash; gpg phase verify deploy &ndash;&gt;
                             <goals>
                                 <goal>sign</goal>
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
+                </plugin>-->
 
                 <!-- findbugs 检查代码问题 -->
                 <plugin>

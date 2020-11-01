@@ -1,6 +1,12 @@
 # 更新记录
 
 ## 0.5 （pre）
+
+- 批量业务抽象支持
+    - csv / excel 解析
+    - 批量校验、查询进度、导入、查询进度、查询导入历史、导入详情
+    - 导出
+
 - 全局id生成器
     - 提供db方式
     - 性能提升
@@ -13,29 +19,36 @@
 - 优化基础包中的非必选强依赖
     - 如 spring，降低最小使用依赖成本
 
+- 接口文档选型
+    - 注解同时支持 swagger3（主）/swagger2
+    - 注释支持 smartDoc
+    - 可视化界面默认使用 xxx
+    
+- ~~默认使用 `Undertow` 而非 `Tomcat`~~
+    - 取消各个模块对 tomcat 的依赖
+    - 注意 `undertow` 不支持jsp
+    - 实际未实现，默认 tomcat、若希望使用 undertow 使用者自行排除即可
+    
 ## 0.4 （doing）
 - 提供 starters
     - mysql
+    
 - 全局唯一标识生成器（分布式全局id）
     - 高性能可配置的全局递增唯一 id 生成器（单节点持续高压场景为 twitter 雪花算法**两百万倍+**、JDK UUID的百倍+！、百度开源算法的 **60 倍！**）。
     - 优雅处理时钟回拨，支持突发峰值、持续高压，支持扩展
     - todo 多实例小场景、分布式默认装配
+    
 - `operation-log` 模块
+
 - 完善安全认证实现
     - 重构安全认证模块
     - 支持自签 `Oauth2 JWT Token 认证`
     - session 支持集群模式
     - security 的全局异常处理器
     - successHandler 同时支持 session、token（`TokenAuthenticationSuccessHandler`）
+    
 - 接口响应自动包装支持配置排除路径
-- 接口文档选型
-    - 注解同时支持 swagger3（主）/swagger2
-    - 注释支持 smartDoc
-    - 可视化界面默认使用 xxx
-- ~~默认使用 `Undertow` 而非 `Tomcat`~~
-    - 取消各个模块对 tomcat 的依赖
-    - 注意 `undertow` 不支持jsp
-    - 实际未实现，默认 tomcat、若希望使用 undertow 使用者自行排除即可
+
 - 框架异常整理
     - 供使用者直接使用的工具
     - 抛出带错误码的 RuntimeException

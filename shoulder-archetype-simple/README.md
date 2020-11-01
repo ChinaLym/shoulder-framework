@@ -14,11 +14,11 @@
 
 第一次使用时需要添加，以后都不用这一步咯，除非调整 `version`
 
-本次以 `0.4-SNAPSHOT` 为例说明
+本次以 `0.4` 为例说明
 ```
 groupId     cn.itlym
 artifactId  shoulder-archetype-simple
-version     0.4-SNAPSHOT
+version     0.4
 ```
 
 ![添加 shoulder 的 archetype](../doc/img/archetype/idea/add.png)

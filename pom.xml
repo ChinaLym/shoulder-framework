@@ -5,7 +5,7 @@
 
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-framework</artifactId>
-    <version>0.4-SNAPSHOT</version><!-- shoulder-version -->
+    <version>0.4</version><!-- shoulder-version -->
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -46,6 +46,8 @@
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
         <clirr-maven-plugin.version>2.7</clirr-maven-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
     </properties>
 
     <!--发布前检查编译测试无用依赖 mvn dependency:analyze-->
@@ -125,41 +127,26 @@
         <profile>
             <id>release</id>-->
     <build>
+        <pluginManagement>
+            <plugins>
+                <!-- GPG  发布插件 【注意：发布时要改成 verify 才能在发布前执行签名】 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase><!-- gpg phase verify deploy -->
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
-            <!-- UTF8 coding -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-
-            <!-- jar包 包含源码 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven-source-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <!--<phase>package</phase>-->
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Javadoc -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
-            </plugin>
 
             <!-- 测试覆盖率统计工具 -->
             <!-- <plugin>
@@ -173,20 +160,10 @@
                  </configuration>
              </plugin>-->
 
-            <!-- maven 发布插件 【注意：发布时要改成 verify 才能在发布前执行签名】 -->
+            <!-- maven 发布插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>deploy</phase><!-- gpg phase verify deploy -->
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- 检测依赖库的开源许可协议，遵守开源协议 mvn license:aggregate-add-third-party -->
@@ -195,17 +172,17 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <version>${license-maven-plugin.version}</version>
-                <executions>
+                <!--<executions>
                     <execution>
                         <phase>test</phase>
                         <goals>
-                            <!-- license-list 列出可用的 license -->
-                            <!-- add-third-party 检测单个项目中的 license -->
-                            <!-- aggregate-add-third-party 检测多模块项目的 license -->
+                            &lt;!&ndash; license-list 列出可用的 license &ndash;&gt;
+                            &lt;!&ndash; add-third-party 检测单个项目中的 license &ndash;&gt;
+                            &lt;!&ndash; aggregate-add-third-party 检测多模块项目的 license &ndash;&gt;
                             <goal>aggregate-add-third-party</goal>
                         </goals>
                     </execution>
-                </executions>
+                </executions>-->
                 <!-- 修改默认配置（可选） -->
                 <configuration>
                     <!-- 设置检测结果文件的存放目录 -->

@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
     </parent>
 
     <groupId>${groupId}</groupId>
@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <shoulder.version>0.4-SNAPSHOT</shoulder.version>
+        <shoulder.version>0.4</shoulder.version>
     </properties>
 
     <dependencies>
