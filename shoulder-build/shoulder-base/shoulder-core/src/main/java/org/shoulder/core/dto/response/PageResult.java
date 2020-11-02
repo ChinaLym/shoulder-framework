@@ -61,6 +61,17 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
     public PageResult() {
     }
 
+    public static <T> PageResult<T> empty(int pageSize) {
+        PageResult<T> pageResult = new PageResult<>();
+        pageResult.firstPage = true;
+        pageResult.lastPage = true;
+        pageResult.totalPageNum = 0;
+        pageResult.size = 0;
+        pageResult.pageNum = 1;
+        pageResult.pageSize = pageSize;
+        return pageResult;
+    }
+
     public int getPageNum() {
         return pageNum;
     }
@@ -126,6 +137,10 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
     }
 
 
+    public static PageResultBuilder builder() {
+        return new PageResultBuilder();
+    }
+
     public static final class PageResultBuilder {
         boolean firstPage = false;
         private int pageNum;
@@ -143,7 +158,7 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
         private PageResultBuilder() {
         }
 
-        public static PageResultBuilder aPageResult() {
+        public static PageResultBuilder create() {
             return new PageResultBuilder();
         }
 
@@ -213,7 +228,6 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
             return pageResult;
         }
     }
-
 
     public static class PageInfoConverter {
         public static <T> PageResult<T> toResult(PageInfo<T> pageInfo) {
