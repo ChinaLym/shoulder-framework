@@ -49,7 +49,7 @@ public class LocalCryptoAutoConfiguration {
     /**
      * 本地加解密默认实现 Bean 注入
      *
-     * @param localCryptoInfoRepository 本地加解密中秘钥部件存储
+     * @param localCryptoInfoRepository 本地加解密中密钥部件存储
      * @param applicationName           应用唯一标识，不能为空
      * @return 本地加解密 Bean
      */

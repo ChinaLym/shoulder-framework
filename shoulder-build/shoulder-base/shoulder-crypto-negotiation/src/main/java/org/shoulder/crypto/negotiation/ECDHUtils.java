@@ -36,6 +36,8 @@ public class ECDHUtils {
     }
 
     /**
+     * 根据己方私钥 + 对方公钥得出 shareKey、shareIv
+     *
      * @param selfPrivateKey 己方的私钥
      * @param otherPublicKey 对方的公钥
      * @param keyLength      aes密钥长度除8：16/24/32
@@ -44,25 +46,33 @@ public class ECDHUtils {
      */
     public static List<byte[]> negotiationToKeyAndIv(byte[] selfPrivateKey, byte[] otherPublicKey, int keyLength) throws NegotiationException {
         try {
-            //初始化ecdh keyFactory
+            // 初始化ecdh keyFactory
             KeyFactory keyFactory = KeyFactory.getInstance(ECDH, PROVIDER);
-            //处理私钥
+            // 处理私钥
             PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(selfPrivateKey);
             PrivateKey ecPriKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
-            //处理公钥
+            // 处理公钥
             X509EncodedKeySpec pubX509 = new X509EncodedKeySpec(otherPublicKey);
             PublicKey ecPubKey = keyFactory.generatePublic(pubX509);
-            //秘钥磋商生成新的秘钥byte数组
+            // 密钥协商生成新的密钥byte数组
             KeyAgreement aKeyAgree = KeyAgreement.getInstance(ECDH, PROVIDER);
             aKeyAgree.init(ecPriKey);
             aKeyAgree.doPhase(ecPubKey, true);
             return generateLocalKeyAndIv(aKeyAgree.generateSecret(), keyLength);
         } catch (Exception e) {
-            logger.error("秘钥磋商出现异常", e);
-            throw new NegotiationException("秘钥磋商出现异常", e);
+            logger.error("密钥协商出现异常", e);
+            throw new NegotiationException("密钥协商出现异常", e);
         }
     }
 
+    /**
+     * 将 negotiationKey SHA256 -> 256bit，取前 keyLength 作为共享密钥，取后 16 bit作为 iv
+     * 由于双方 negotiationKey、keyLength 一样，故结果一样
+     *
+     * @param negotiationKey 协商出来的密钥
+     * @param keyLength 共享密钥长度
+     * @return 共享密钥、init-vector
+     */
     private static List<byte[]> generateLocalKeyAndIv(byte[] negotiationKey, int keyLength) {
         Assert.notNull(negotiationKey, "negotiationKey can't be null!");
         Assert.isTrue(negotiationKey.length == 32, "ECDH256 negotiationKey.length must be 32(256bit)!");
@@ -87,7 +97,7 @@ public class ECDHUtils {
      * 生成一次请求使用的数据密钥
      *
      * @param length 16/24/32
-     * @return 数据秘钥
+     * @return 数据密钥
      */
     private static byte[] newTempKey(int length) {
         return ByteUtils.randomBytes(length);

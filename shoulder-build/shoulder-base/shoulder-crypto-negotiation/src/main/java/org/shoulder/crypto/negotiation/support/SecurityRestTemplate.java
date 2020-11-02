@@ -82,7 +82,7 @@ public class SecurityRestTemplate extends RestTemplate {
 
 
     /**
-     * 确保完成已经完成秘钥协商，并在请求头中添加秘钥协商所需参数
+     * 确保完成已经完成密钥协商，并在请求头中添加密钥协商所需参数
      *
      * @author lym
      */

@@ -24,9 +24,9 @@ public interface KeyPairCache {
 
 
     /**
-     * 存储多个秘钥对
+     * 存储多个密钥对
      *
-     * @param keyPairDtoMap 秘钥对 map。key: id; value: keyPairDto
+     * @param keyPairDtoMap 密钥对 map。key: id; value: keyPairDto
      */
     default void set(Map<String, KeyPairDto> keyPairDtoMap) {
         if (MapUtils.isNotEmpty(keyPairDtoMap)) {

@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
 /**
  * 非对称的加解密以及签名工具实现。
  * 加解密实现为 AsymmetricCryptoProcessor，本类做字符串与 byte[] 的转换。
- * 同时支持默认秘钥，与多秘钥对
+ * 同时支持默认密钥，与多密钥对
  *
  * @author lym
  */
@@ -33,7 +33,7 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     private final AsymmetricCryptoProcessor processor;
 
     /**
-     * 秘钥对 id ：用于获取加解密的公钥私钥对。分布式时无需关心其他应用是否会有冲突
+     * 密钥对 id ：用于获取加解密的公钥私钥对。分布式时无需关心其他应用是否会有冲突
      */
     private final String defaultKeyPairId;
 

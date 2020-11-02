@@ -7,7 +7,7 @@ import org.springframework.lang.NonNull;
 
 /**
  * 非对称加解密：主要用于与前端交互
- * 【简单版】自己只有一个默认秘钥对，每次请求都使用这个一个
+ * 【简单版】自己只有一个默认密钥对，每次请求都使用这个一个
  * - 使用简单，容易上手
  * - 资源占用更少、性能更好
  * - 不同用户请求的都是一个 keyPair，这个keyPair一定是热点
@@ -74,7 +74,7 @@ public interface SingleKeyPairAsymmetricTextCipher extends TextCipher {
     boolean verify(String content, String signature) throws CipherRuntimeException;
 
     /**
-     * 使用 keyPairId 对应秘钥对的私钥【验证签名】，常用于校验 content 是否未被篡改
+     * 使用 keyPairId 对应密钥对的私钥【验证签名】，常用于校验 content 是否未被篡改
      *
      * @param content   原始内容，待签名数据
      * @param signature 签名

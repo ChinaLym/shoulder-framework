@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author lym
  */
+@SuppressWarnings("PMD.AbstractClassShouldStartWithAbstractNamingRule")
 public abstract class OperationLogOperatorInfoInterceptor implements HandlerInterceptor {
 
     /**

@@ -43,7 +43,7 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
      */
     private final String provider;
     /**
-     * 秘钥位数
+     * 密钥位数
      */
     private final int keyLength;
     /**

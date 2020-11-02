@@ -25,7 +25,20 @@ version     0.4
 
 ---
 
-### 基于 shoulder 提供的模板创建 maven 工程
+## 基于 shoulder 提供的模板创建 maven 工程
+
+### 方式一
+
+通过命令行快速创建
+
+```java
+
+```
+
+
+### 方式二
+
+通过 IDE 一步步创建
 
 #### 选择shoulder
 ![选择shoulder](../doc/img/archetype/idea/1.png)
@@ -46,7 +59,7 @@ version     0.4
 - 这一步可能会特别慢，原因：未设置maven本地缓存，访问官网下载大量文件。解决方式参考 [IDEA 创建maven工程 create from archetype 很慢](https://blog.csdn.net/qq_35425070/article/details/108958087)
 - 创建完毕后，我们需要 `reimport maven` 依赖，这里我们直接点击自动更新（`auto reimport`）
 
-#### 启动运行
+## 启动运行
 ![启动运行](../doc/img/archetype/idea/6.png)
 
 可以访问 DemoController [http://localhost:8080/demo/test](http://localhost:8080/demo/test) 查看一下

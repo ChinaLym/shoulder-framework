@@ -8,6 +8,11 @@ import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 
+/**
+ * 非对称加密测试-框架基础封装
+ *
+ * @author lym
+ */
 public class AsymmetricCipherTest {
 
     private AsymmetricCryptoProcessor ecc256 = DefaultAsymmetricCryptoProcessor.ecc256(new HashMapKeyPairCache());

@@ -1,7 +1,6 @@
 package org.shoulder.autoconfigure.condition;
+
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.annotation.MergedAnnotation;
@@ -14,8 +13,6 @@ import org.springframework.lang.NonNull;
  * @author lym
  */
 public class OnClusterCondition implements Condition {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public boolean matches(@NonNull ConditionContext conditionContext, @NonNull AnnotatedTypeMetadata annotatedTypeMetadata) {

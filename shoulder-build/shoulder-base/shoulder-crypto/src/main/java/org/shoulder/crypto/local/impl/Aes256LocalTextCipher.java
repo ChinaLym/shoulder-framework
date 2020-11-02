@@ -24,10 +24,10 @@ import java.util.*;
  * 加解密算法 密钥分级存储的 AES256，类型：AES/CBC/PKCS5Padding.
  *
  * <p> 理论：
- * 加解密：将 dataKey作为秘钥, dataIv作为偏移向量，使用 AES256 算法将敏感数据 data 加解密。即由本类职责。
+ * 加解密：将 dataKey作为密钥, dataIv作为偏移向量，使用 AES256 算法将敏感数据 data 加解密。即由本类职责。
  * 由上可知，加解密依赖 dataKey 和 dataIv	，因此需要保证每次启动时可以拿到 dataKey 与 dataIv，且dataKey必须被保护。
  * dataKey 与 dataIv 的存取方式：该职责由 {@link LocalCryptoInfoRepository} 和 {@link LocalCryptoInfoEntity}负责实现。
- * 数据秘钥 dataKey 的保护：Aes256(dataKey, SHA256(rootKey, random), rootKeyIv)，保护方式同敏感数据，由另一个秘钥 rootKey 和一个加密向量保护，同样为
+ * 数据密钥 dataKey 的保护：Aes256(dataKey, SHA256(rootKey, random), rootKeyIv)，保护方式同敏感数据，由另一个密钥 rootKey 和一个加密向量保护，同样为
  * Aes256算法。
  * rootKey、rootKeyIv 的保存一样由 {@link LocalCryptoInfoRepository} 和 {@link LocalCryptoInfoEntity}负责实现。
  * rootKey 的保护：持久化的值为 SHA256(rootKey, random) 而不是 rootKey 本身
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * <li>根密钥：用于保护数据密钥 —— 持久化数据密钥时，通过根密钥加密数据密钥。
  *
- * <li>密钥向量：用于加密数据秘钥、加密敏感数据
+ * <li>密钥向量：用于加密数据密钥、加密敏感数据
  * <p>
  * 改成 abstract 以更好的扩展？无需求，暂不
  *
@@ -59,19 +59,19 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
      */
     private static final byte[] DATA_KEY_IV = "shoulder:Cn-Lym!".getBytes(CHAR_SET);
     /**
-     * 根秘钥固定部分
+     * 根密钥固定部分
      */
     private static final byte[] ROOT_KEY_FINAL_PART = "shoulderFramework:CN-Lym".getBytes(CHAR_SET);
     /**
-     * Aes 秘钥长度
+     * Aes 密钥长度
      */
     private static final int AES_KEY_LENGTH = 256;
     /**
-     * 根秘钥随机部分长度
+     * 根密钥随机部分长度
      */
     private static final int ROOT_KEY_RANDOM_LENGTH = AES_KEY_LENGTH - ROOT_KEY_FINAL_PART.length;
     /**
-     * 秘钥持久化依赖：用于获取持久化的加密信息
+     * 密钥持久化依赖：用于获取持久化的加密信息
      */
     private final LocalCryptoInfoRepository aesInfoDao;
     private String appId;
@@ -112,7 +112,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     /**
      * 生成数据密钥
      *
-     * @return 数据秘钥
+     * @return 数据密钥
      */
     private static byte[] generateDataKey() {
         return ByteUtils.randomBytes(32);
@@ -183,7 +183,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
     /**
      * 确保加密前所需的变量已经初始化：检查加密配件缓存是否已经初始化
-     * 若内存{@code this.cache}中秘钥信息为空：
+     * 若内存{@code this.cache}中密钥信息为空：
      * 1. 尝试从数据库拿				 （非首次启动时）
      * 2. 若第一步没拿到则进行初始化，将必要信息保存至 DB （首次启动时）
      */
@@ -210,7 +210,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     }
 
     /**
-     * 加载持久化的加密所需信息（目前从数据库），会将解密秘钥，缓存至内存
+     * 加载持久化的加密所需信息（目前从数据库），会将解密密钥，缓存至内存
      *
      * @return 是否加载成功
      */
@@ -257,7 +257,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
      * 初始化 db 加密信息表
      * <p>
      * 向量以16进制字符串编码后持久化。
-     * 数据秘钥本质为随机数，但需要根秘钥、根加密向量的保护
+     * 数据密钥本质为随机数，但需要根密钥、根加密向量的保护
      *
      * @return 本应用加密记录
      */
@@ -265,7 +265,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         byte[] rootKeyRandomPart = ByteUtils.randomBytes(ROOT_KEY_RANDOM_LENGTH);
         String rootKeyRandomPartStr = ByteSpecification.encodeToString(rootKeyRandomPart);
         byte[] rootKey = generateDataKeyProtectKey(rootKeyRandomPart);
-        // 用于加密数据秘钥的 initVector 向量，写死
+        // 用于加密数据密钥的 initVector 向量，写死
         byte[] dataKey = generateDataKey();
         byte[] dataKeyIv = generateDataKeyIv();
         String dbDataKey = ByteSpecification.encodeToString(AesUtil.encrypt(dataKey, rootKey, DATA_KEY_IV));
@@ -285,7 +285,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     // ======================================== 缓存 =============================================
 
     /**
-     * 数据秘钥缓存
+     * 数据密钥缓存
      * 考虑是否默认去除缓存，以达到更好的安全性
      *
      * @author lym
@@ -351,7 +351,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
     public static class AesInfoCache {
         /**
-         * 缓存数据秘钥
+         * 缓存数据密钥
          */
         private byte[] dataKey;
         /**

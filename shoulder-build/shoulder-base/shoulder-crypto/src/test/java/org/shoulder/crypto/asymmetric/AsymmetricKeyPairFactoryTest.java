@@ -9,7 +9,7 @@ import org.shoulder.crypto.asymmetric.factory.AsymmetricKeyPairFactory;
 import java.security.KeyPair;
 
 /**
- * AsymmetricKeyPairFactoryTest
+ * 非对称加密测试-基础工厂密钥对测试
  *
  * @author lym
  */

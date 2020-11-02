@@ -16,7 +16,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 /**
- * RSA 秘钥存储-Redis 存储，适合应用支持集群部署的场景
+ * RSA 密钥对存储-Redis 存储，适合应用支持集群部署的场景
  * 如果不使用过期时间等redis特有操作，可以通过双层缓存优化访问速度
  *
  * @author lym

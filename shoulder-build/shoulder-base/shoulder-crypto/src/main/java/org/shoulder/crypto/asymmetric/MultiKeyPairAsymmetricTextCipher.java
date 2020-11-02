@@ -19,9 +19,9 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
     // ======================== 指定 keyPairId ======================
 
     /**
-     * 获取 keyPairId 对应秘钥对的公钥部分，若不存在则会新建
+     * 获取 keyPairId 对应密钥对的公钥部分，若不存在则会新建
      *
-     * @param keyPairId 秘钥对标识
+     * @param keyPairId 密钥对标识
      * @return 公钥
      * @throws CipherRuntimeException RsaKeyPairException
      */
@@ -29,9 +29,9 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
     String getPublicKey(String keyPairId) throws CipherRuntimeException;
 
     /**
-     * 使用 keyPairId 对应秘钥对的私钥【解密】cipher
+     * 使用 keyPairId 对应密钥对的私钥【解密】cipher
      *
-     * @param keyPairId 秘钥对标识
+     * @param keyPairId 密钥对标识
      * @param cipher    待解密的数据，密文
      * @return 解密后的
      * @throws CipherRuntimeException RsaCryptoException
@@ -41,7 +41,7 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
     /**
      * 解密
      *
-     * @param keyPairId 秘钥对标识
+     * @param keyPairId 密钥对标识
      * @param cipher    待解密的数据，密文
      * @return 解密后的
      * @throws CipherRuntimeException RsaCryptoException
@@ -49,9 +49,9 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
     byte[] decryptAsBytes(String keyPairId, String cipher) throws CipherRuntimeException;
 
     /**
-     * 使用 keyPairId 对应秘钥对的私钥【签名】
+     * 使用 keyPairId 对应密钥对的私钥【签名】
      *
-     * @param keyPairId 秘钥对标识
+     * @param keyPairId 密钥对标识
      * @param content   原始内容，待签名数据
      * @return 签名结果
      * @throws CipherRuntimeException 加解密出错
@@ -59,9 +59,9 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
     String sign(String keyPairId, String content) throws CipherRuntimeException;
 
     /**
-     * 使用 keyPairId 对应秘钥对的私钥【验证签名】，常用于校验 content 是否未被篡改
+     * 使用 keyPairId 对应密钥对的私钥【验证签名】，常用于校验 content 是否未被篡改
      *
-     * @param keyPairId 秘钥对标识
+     * @param keyPairId 密钥对标识
      * @param content   原始内容，待签名数据
      * @param signature 签名
      * @return signature 是否为 content 的签名
@@ -70,9 +70,9 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
     boolean verify(String keyPairId, String content, String signature) throws CipherRuntimeException;
 
     /**
-     * 使用 keyPairId 对应秘钥对的私钥【验证签名】，常用于校验 content 是否未被篡改
+     * 使用 keyPairId 对应密钥对的私钥【验证签名】，常用于校验 content 是否未被篡改
      *
-     * @param keyPairId 秘钥对标识
+     * @param keyPairId 密钥对标识
      * @param content   原始内容，待签名数据
      * @param signature 签名
      * @return signature 是否为 content 的签名

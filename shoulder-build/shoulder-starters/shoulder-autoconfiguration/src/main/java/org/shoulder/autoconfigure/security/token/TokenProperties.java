@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 public class TokenProperties {
 
     /**
-     * 使用jwt时为token签名的秘钥，重要！
+     * 使用jwt时，为token签名的密钥对标识，重要！
      */
     private String jwtSigningKey = "shoulder";
 
@@ -67,7 +67,10 @@ public class TokenProperties {
 
     /**
      * 作为客户端时的配置
+     *
+     * @author lym
      */
+    @SuppressWarnings("PMD.ClassNamingShouldBeCamelRule")
     public class OAuth2ClientProperties {
 
         /**

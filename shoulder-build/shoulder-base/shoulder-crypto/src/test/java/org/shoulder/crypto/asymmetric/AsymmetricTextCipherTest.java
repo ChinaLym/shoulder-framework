@@ -7,7 +7,7 @@ import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProc
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 
 /**
- * AsymmetricTextCipherTest
+ * 非对称加密测试-框架上层封装
  *
  * @author lym
  */

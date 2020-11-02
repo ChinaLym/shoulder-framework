@@ -5,8 +5,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * 线程相关的配置
@@ -20,14 +19,15 @@ public class ThreadAutoConfiguration {
     @ConditionalOnMissingBean(name = Threads.DEFAULT_THREAD_POOL_NAME)
     public ExecutorService shoulderThreadPool() {
         // 默认使用 5 个线程
-        ExecutorService executorService = Executors.newFixedThreadPool(5,
+        ExecutorService executorService = new ThreadPoolExecutor(5, 5,
+            60L, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(3000),
             r -> {
                 Thread thread = Executors.defaultThreadFactory().newThread(r);
                 thread.setDaemon(true);
                 thread.setName("shoulder");
                 return thread;
-            }
-        );
+            });
         Threads.setExecutorService(executorService);
         return executorService;
     }

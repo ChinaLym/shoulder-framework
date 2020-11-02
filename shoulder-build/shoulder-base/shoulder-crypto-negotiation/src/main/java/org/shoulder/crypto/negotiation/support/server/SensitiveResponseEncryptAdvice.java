@@ -32,7 +32,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import java.util.List;
 
 /**
- * 服务端敏感api响应自动加密，注意不要与统一拦截器顺序冲突
+ * 服务端敏感api响应自动加密，注意不要与统一返回值格式包装器顺序冲突
  *
  * @author lym
  */

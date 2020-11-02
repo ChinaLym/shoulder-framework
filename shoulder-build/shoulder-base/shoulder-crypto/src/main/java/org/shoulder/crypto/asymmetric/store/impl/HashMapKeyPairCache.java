@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * RSA 秘钥存储-本地存储，适合单机部署场景
+ * RSA 密钥对存储-本地存储，适合单机部署场景
  *
  * @author lym
  */
