@@ -47,7 +47,7 @@ public class Sha256Utils implements ByteSpecification {
      **/
     private static String byte2Hex(byte[] bytes) {
         StringBuilder stringBuffer = new StringBuilder();
-        String temp = null;
+        String temp;
         for (byte aByte : bytes) {
             temp = Integer.toHexString(aByte & 0xFF);
             if (temp.length() == 1) {
@@ -78,25 +78,5 @@ public class Sha256Utils implements ByteSpecification {
     public static boolean verify(String text, String cipher) {
         return verify(text.getBytes(ByteSpecification.STD_CHAR_SET), ByteSpecification.decodeToBytes(cipher));
     }
-
-    public static void main(String[] args) {
-
-		/*System.out.println("========== 测试多次调用，得到的hash值是否不同 ==========");
-		for (int i = 0; i < 30; i++) {
-			System.out.println("hashValue —— "+ Sha256Utils.digest("123"));
-		}
-
-		System.out.println("========== 测试byte进行hash后验证 ==========");
-		byte[] textBytes = "123".getBytes(ByteSpecification.STD_CHAR_SET);
-		byte[] cipherBytes = Sha256Utils.digest(textBytes);
-		System.out.println("是否成功：" + Sha256Utils.verify(textBytes, cipherBytes));
-
-		System.out.println("========== 测试字符串进行hash后验证 ==========");*/
-        String text = "1NFB1j7oJ2/gQ0tnF+kr15ehrCL9F3jFwbccKEBynsU=1bf8ae292ced446cb5d327cf68be9585";
-        String cipher = Sha256Utils.digest(text);
-        System.out.println("是否成功：" + Sha256Utils.verify(text, cipher));
-
-    }
-
 
 }

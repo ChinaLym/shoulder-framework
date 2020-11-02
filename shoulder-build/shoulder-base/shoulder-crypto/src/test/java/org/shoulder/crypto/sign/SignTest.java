@@ -5,6 +5,9 @@ import org.junit.Test;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 
+/**
+ * 签名工具类测试
+ */
 public class SignTest {
 
     private final Logger log = LoggerFactory.getLogger(getClass());

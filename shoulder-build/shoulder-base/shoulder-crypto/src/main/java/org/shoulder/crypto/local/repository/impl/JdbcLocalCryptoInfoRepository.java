@@ -132,7 +132,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     private static class AesInfoRowMapper implements RowMapper<LocalCryptoInfoEntity> {
 
         @Override
-        public LocalCryptoInfoEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+        public LocalCryptoInfoEntity mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
             LocalCryptoInfoEntity entity = new LocalCryptoInfoEntity();
             entity.setAppId(rs.getString(0));
             entity.setHeader(rs.getString(1));

@@ -7,7 +7,7 @@ import org.shoulder.crypto.local.impl.Aes256LocalTextCipher;
 import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
 
 /**
- * LocalCryptoInfoRepositoryTest
+ * 本地存储加解密测试
  *
  * @author lym
  */

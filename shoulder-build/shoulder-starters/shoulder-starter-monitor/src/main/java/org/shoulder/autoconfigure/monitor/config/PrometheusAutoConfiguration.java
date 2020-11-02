@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 
 /**
  * 指标监控装配，推荐依赖 MeterRegistry 而不是 prometheus 的 CollectorRegistry
@@ -47,7 +48,7 @@ public class PrometheusAutoConfiguration implements ApplicationContextAware {
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         String nameKey = "shoulder.metrics.threadPool.name";
         String threadPoolMetricsNamePrefix = applicationContext.getEnvironment()
             .getProperty(nameKey, AppInfo.appId() + "_thread_pool_");

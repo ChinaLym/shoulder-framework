@@ -1,9 +1,16 @@
 package org.shoulder.crypto.aes;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.shoulder.crypto.aes.exception.AesCryptoException;
 
 import java.nio.charset.StandardCharsets;
+
+/**
+ * Aes 对称加密测试
+ *
+ * @author lym
+ */
 public class AesUtilTest {
 
     /**
@@ -31,7 +38,7 @@ public class AesUtilTest {
 
     /**
      * 测试 aes 的参数校验
-     * 秘钥长度不符合标准 aes 的要求（必须为16/24/32）
+     * 密钥长度不符合标准 aes 的要求（必须为16/24/32）
      */
     @Test(expected = AesCryptoException.class)
     public void testAesKeyVerify() throws Exception {

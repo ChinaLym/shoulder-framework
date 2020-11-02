@@ -73,7 +73,7 @@ public class SignUtil {
 
             String dateOfSign = dataAndSign[dataAndSign.length - 2];
             // 校验时间戳有效
-            if (!"ignoreStamp".equals(System.getProperty("sign")) && checkTime) {
+            if (!"ignoreStamp".equals(System.getProperty("shoulder.crypto.sign")) && checkTime) {
                 final long signTimeStamp = ByteUtils.toLong(ByteSpecification.decodeToBytes(dateOfSign));
                 // 启动参数增加 -Dsign=ignoreStamp 不校验时间戳 （方便调试）
                 boolean timeEffective = System.currentTimeMillis() - signTimeStamp < effective;

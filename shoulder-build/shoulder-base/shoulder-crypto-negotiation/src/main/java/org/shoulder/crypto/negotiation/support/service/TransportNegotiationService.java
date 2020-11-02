@@ -14,8 +14,8 @@ import java.net.URI;
  * 安全会话，密钥协商逻辑抽象接口，供以下两处使用
  *
  * @author lym
- * @see SecurityRestTemplate 发起秘钥交换请求
- * @see NegotiationEndPoint  处理秘钥交换请求
+ * @see SecurityRestTemplate 发起密钥交换请求
+ * @see NegotiationEndPoint  处理密钥交换请求
  */
 public interface TransportNegotiationService {
 

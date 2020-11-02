@@ -39,7 +39,7 @@ public class CryptoProperties {
         private String algorithm = "EC";
 
         /**
-         * 秘钥位数
+         * 密钥位数
          */
         private int keyLength = 256;
 

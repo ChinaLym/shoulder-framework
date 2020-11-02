@@ -141,12 +141,10 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     MULTIPART_INVALID(324, "Request is not a validate multipart request, please check request or file size.", HttpStatus.BAD_REQUEST),
 
-    /**
-     * 无效的安全会话， xSessionId 不正确
-     */
-    SECURITY_SESSION_INVALID(303, "Security session invalid.", Level.INFO, HttpStatus.BAD_REQUEST),
+    // todo 数据已存在、不存在
     /**
      * 无效的签名
+     * @deprecated
      */
     SIGN_INVALID(303, "Security session invalid.", Level.INFO, HttpStatus.BAD_REQUEST),
 

@@ -27,7 +27,7 @@ import org.springframework.lang.NonNull;
 
 import java.util.Collection;
 import java.util.StringJoiner;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * This configuration class registers a {@link OperationLogger} able to logging operation-log.
@@ -59,18 +59,19 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
     public AsyncOperationLogger asyncOperationLogger(OperationLogFormatter operationLogFormatter) {
         int threadNum = operationLogProperties.getThreadNum();
         String threadName = operationLogProperties.getThreadName();
-
         log.info("OperationLogger-async=true,threadNum=" + threadNum + ",threadName=" + threadName);
+        // default rejectExecutionHandler is throw Ex, use ignore if opLog is not important.
+        ExecutorService opLogExecutorService = new ThreadPoolExecutor(1, 1,
+            60L, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(3000),
+            r -> {
+                Thread loggingThread = new Thread(new OpLogRunnable(r), threadName);
+                loggingThread.setDaemon(true);
+                return loggingThread;
+            });
+
         return new AsyncOperationLogger()
-            .setExecutor(Executors.newFixedThreadPool(threadNum,
-                r -> {
-                    Thread loggingThread = new Thread(
-                        new OpLogRunnable(r), threadName
-                    );
-                    loggingThread.setDaemon(true);
-                    return loggingThread;
-                }
-            ))
+            .setExecutor(opLogExecutorService)
             .setLogger(new Sl4jOperationLogger(operationLogFormatter));
     }
 

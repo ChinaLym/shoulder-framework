@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * AES加解密相关秘钥存储
+ * AES加解密相关密钥对存储
  *
  * @author lym
  */

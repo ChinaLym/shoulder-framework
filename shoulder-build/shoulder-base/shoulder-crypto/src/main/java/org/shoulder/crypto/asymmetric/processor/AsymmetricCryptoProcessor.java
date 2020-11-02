@@ -77,7 +77,7 @@ public interface AsymmetricCryptoProcessor {
     /**
      * 签名验证
      *
-     * @param id        秘钥对标识
+     * @param id        密钥对标识
      * @param content   内容
      * @param signature 签名
      * @return 是否正确
@@ -88,7 +88,7 @@ public interface AsymmetricCryptoProcessor {
     /**
      * 签名验证
      *
-     * @param publicKey 秘钥对标识
+     * @param publicKey 密钥对标识
      * @param content   内容
      * @param signature 签名
      * @return 是否正确

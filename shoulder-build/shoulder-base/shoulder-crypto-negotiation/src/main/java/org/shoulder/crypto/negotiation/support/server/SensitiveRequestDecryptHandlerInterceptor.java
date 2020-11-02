@@ -8,6 +8,7 @@ import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.exception.NegotiationErrorCodeEnum;
 import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             // 返回重新握手错误码
             response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            RestResult r = RestResult.error(CommonErrorCodeEnum.SECURITY_SESSION_INVALID);
+            RestResult r = RestResult.error(NegotiationErrorCodeEnum.NEGOTIATION_INVALID);
             response.getWriter().write(JsonUtils.toJson(r));
             return false;
         }

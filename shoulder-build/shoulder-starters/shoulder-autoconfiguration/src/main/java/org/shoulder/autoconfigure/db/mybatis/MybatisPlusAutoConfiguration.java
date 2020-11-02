@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * MybatisPlusConfig
+ * MybatisPlusConfig todo 根据 3.4 版本进行调整
  *
  * @author lym
  */

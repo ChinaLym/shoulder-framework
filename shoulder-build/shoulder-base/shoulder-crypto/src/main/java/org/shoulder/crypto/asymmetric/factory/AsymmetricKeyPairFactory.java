@@ -9,7 +9,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
- * 密钥对工厂，为 AsymmetricProcessor 服务
+ * 非对称密钥对工厂，为 AsymmetricProcessor 服务
  *
  * @author lym
  */
@@ -34,16 +34,16 @@ public class AsymmetricKeyPairFactory {
     private final String provider;
 
     /**
-     * 秘钥位数
+     * 密钥位数
      */
     private final int keyLength;
 
     /**
      * 初始化需要告知
-     * 父类算法名、提供商、秘钥长度
+     * 父类算法名、提供商、密钥长度
      *
      * @param algorithm 算法名，如 RSA
-     * @param keyLength 秘钥长度如 256
+     * @param keyLength 密钥长度如 256
      * @param provider  提供商，如 BC
      */
     public AsymmetricKeyPairFactory(String algorithm, int keyLength, String provider) {
