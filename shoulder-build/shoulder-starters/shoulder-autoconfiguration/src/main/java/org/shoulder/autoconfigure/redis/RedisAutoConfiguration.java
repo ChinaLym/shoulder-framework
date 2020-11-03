@@ -17,6 +17,9 @@ import org.springframework.util.StringUtils;
  * redis相关配置，提供 string 和 string-object 两种
  * 其中 redis 是否为集群是由 RedisConnectionFactory 决定的，spring boot 已经自动支持
  *
+ * 但需要注意，Lettuce 默认不会刷新集群拓补图【生成环境将是灾难的】：
+ * Redis集群服务某个主节点宕机，对应的从节点会迅速进行迁移升级为主节点（节点迁移期间Redis服务不可用）Jedis会在从节点晋升后正常工作，但 Lettuce不会。
+ *
  * @author lym
  */
 @Configuration(proxyBeanMethods = false)

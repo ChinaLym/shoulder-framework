@@ -28,7 +28,10 @@
     - 取消各个模块对 tomcat 的依赖
     - 注意 `undertow` 不支持jsp
     - 实际未实现，默认 tomcat、若希望使用 undertow 使用者自行排除即可
-    
+
+- RedisConnectionFactory 改造
+    - Spring Boot 默认的 Lettuce 工厂配置中，不支持 Redis 集群拓补变更，即：即使搭建并使用 Redis 集群，单个 redis 宕机，则对于应用，redis 不可以
+
 ## 0.4 （doing）
 - 提供 starters
     - mysql
