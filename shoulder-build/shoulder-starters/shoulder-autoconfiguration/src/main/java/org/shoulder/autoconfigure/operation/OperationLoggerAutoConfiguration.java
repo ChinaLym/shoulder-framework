@@ -66,12 +66,13 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
             new LinkedBlockingQueue<>(3000),
             r -> {
                 Thread loggingThread = new Thread(new OpLogRunnable(r), threadName);
+                // drop the opLog when application shutDown
                 loggingThread.setDaemon(true);
                 return loggingThread;
             });
 
         return new AsyncOperationLogger()
-            .setExecutor(opLogExecutorService)
+            .setExecutorService(opLogExecutorService)
             .setLogger(new Sl4jOperationLogger(operationLogFormatter));
     }
 

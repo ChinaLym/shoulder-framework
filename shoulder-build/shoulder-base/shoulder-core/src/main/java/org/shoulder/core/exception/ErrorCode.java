@@ -1,6 +1,7 @@
 package org.shoulder.core.exception;
 
 import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.i18.Translatable;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
@@ -121,6 +122,27 @@ public interface ErrorCode {
      */
     default void throwRuntime() throws BaseRuntimeException {
         throw new BaseRuntimeException(this);
+    }
+
+    /**
+     * 抛出运行异常
+     *
+     * @param args 用于填充翻译项，可以为普通字符串，也可以为 {@link Translatable}
+     * @throws BaseRuntimeException e
+     */
+    default void throwRuntime(Object... args) throws BaseRuntimeException {
+        throw new BaseRuntimeException(this, args);
+    }
+
+    /**
+     * 抛出运行异常
+     *
+     * @param t 上级异常（直接异常）
+     * @param args 用于填充翻译项，可以为普通字符串，也可以为 {@link Translatable}
+     * @throws BaseRuntimeException e
+     */
+    default void throwRuntime(Throwable t, Object... args) throws BaseRuntimeException {
+        throw new BaseRuntimeException(this, args);
     }
 
     /**

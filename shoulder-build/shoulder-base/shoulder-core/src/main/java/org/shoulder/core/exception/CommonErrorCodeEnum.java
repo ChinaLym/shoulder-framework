@@ -96,9 +96,9 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     DEPRECATED_NOT_SUPPORT(305, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
 
     /**
-     * 参数校验未通过，参数非法，校验框架抛出
+     * 参数校验未通过，参数非法（非业务代码 或 内部约定格式，非公开隐蔽接口，一般不使用）
      */
-    PARAM_NOT_VALID(314, "Parameter not valid. for %s", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_NOT_VALID(314, "Parameter not valid. for %s.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * 参数不能为空
      */
