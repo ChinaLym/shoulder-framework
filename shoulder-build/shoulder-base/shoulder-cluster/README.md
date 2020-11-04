@@ -66,4 +66,31 @@
 canal 等数据同步工具，读数据库日志，删缓存
 
 
+## Redis 集群客户端重连
+
+Jedis 自动支持
+
+Lettuce 需要配置刷新集群拓扑图
+
+* [集群说明](https://github.com/lettuce-io/lettuce-core/wiki/Redis-Cluster#Refreshing%20the%20cluster%20topology%20view)
+* [集群配置项](https://github.com/lettuce-io/lettuce-core/wiki/Client-options#Cluster-specific%20options)
+
+## redis Session 报错
+
+spring-data-session 在启动时会向 redis 中执行 config 命令，若是云厂商提供的redis，这一命令通常是禁止的，需要在控制台开启，且程序中注入取消操作的 Bean。
+
+```java
+
+@Configuration
+public class RedisSessionInitOpConfig {
+	
+	@Bean
+	public ConfigureRedisAction configureRedisAction() {
+		return ConfigureRedisAction.NO_OP;
+	}
+	
+}
+```
+ 
+
 
