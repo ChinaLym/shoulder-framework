@@ -7,7 +7,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.4-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.4</version><!-- shoulder-version -->
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -41,26 +41,31 @@
             <artifactId>shoulder-starter-beanmap</artifactId>
         </dependency>
 
+        <!-- session 方式认证 -->
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-security-browser</artifactId>
+            <artifactId>shoulder-starter-auth-session</artifactId>
         </dependency>
+
+        <!-- token 方式认证 -->
+<!--
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-auth-token</artifactId>
+        </dependency>
+-->
 
         <!-- 验证码框架，开启后可测试验证码，关闭后验证码功能将无效 -->
         <!--<dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-security-code</artifactId>
         </dependency>-->
-        <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>2.3.5.RELEASE</version>
-        </dependency>
 
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-data-db</artifactId>
         </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

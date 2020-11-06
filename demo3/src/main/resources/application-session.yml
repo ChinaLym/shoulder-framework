@@ -13,7 +13,7 @@ spring:
 shoulder:
   security:
     auth: # 如果使用者自行实现登录成功、退出成功处理器，则这些配置将失效，使用者实现的优先生效
-      type: TOKEN # 默认为 session，可设置为 token，设置后认为所有的登录请求为 ajax session 相关逻辑改为 token 处理
+      type: session # 默认为 session，可设置为 token，设置后认为所有的登录请求为 ajax session 相关逻辑改为 token 处理
       responseType: REDIRECT # 认证请求响应方式，默认为跳转（后端控制路由），可设置为 JSON 形式（前端控制路由），默认 REDIRECT
       signInPage: /signIn.html # 登录页面地址，默认 /signIn.html
       # singInSuccessUrl: about.html # 登陆成功时时跳转到哪。为空/不配置则尝试跳转到网站根路径，默认为空

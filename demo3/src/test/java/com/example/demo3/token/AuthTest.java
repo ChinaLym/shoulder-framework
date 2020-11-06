@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(classes = TestBeanConfiguration.class)
+//@SpringBootTest(classes = TestBeanConfiguration.class)
 public class AuthTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthTest.class);
