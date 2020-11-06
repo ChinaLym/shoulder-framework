@@ -70,7 +70,7 @@ canal 等数据同步工具，读数据库日志，删缓存
 
 Jedis 自动支持
 
-Lettuce 需要配置刷新集群拓扑图
+当 spring boot 版本低于 2.3 时，需要手动开启 Lettuce 刷新集群拓扑图
 
 * [集群说明](https://github.com/lettuce-io/lettuce-core/wiki/Redis-Cluster#Refreshing%20the%20cluster%20topology%20view)
 * [集群配置项](https://github.com/lettuce-io/lettuce-core/wiki/Client-options#Cluster-specific%20options)

@@ -198,7 +198,7 @@
                         <execution>
                             <id>attach-sources</id>
                             <!--<phase>package</phase>-->
-                            <phase>verify</phase>
+                            <phase>deploy</phase>
                             <goals>
                                 <goal>jar</goal>
                                 <goal>jar-no-fork</goal>
@@ -246,7 +246,7 @@
                         <execution>
                             <id>attach-javadocs</id>
                             <!--<phase>package</phase>-->
-                            <phase>verify</phase>
+                            <phase>deploy</phase>
                             <goals>
                                 <goal>jar</goal>
                             </goals>

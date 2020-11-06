@@ -13,6 +13,7 @@ import org.springframework.lang.NonNull;
  * 通常错误码枚举、自定义异常类实现该接口
  * <p>
  * 小提示：业务中可以按模块或按业务定义枚举 保存错误码、错误提示信息
+ * 详细的错误码规范见 <a href="https://spec.itlym.cn/specs/base/errorCode.html">错误码规范<a/>
  *
  * @author lym
  */
@@ -70,6 +71,11 @@ public interface ErrorCode {
 
     /**
      * 发生该错误时用什么级别记录日志【便于全局异常统一处理，非必需】
+     * 用户 / 开放接口易触发的错误定为 INFO，如填写参数错误
+     * 故意 / 无意未遵守交互约定、外部依赖偶现失败、的记录 WARN
+     * 核心业务失败，ERROR
+     * 强依赖的服务连接失败 FATAL
+     * 详细的日志级别建议见 <a href="https://spec.itlym.cn/specs/base/log.html">软件开发日志规范<a/> - 日志级别规范
      *
      * @return 日志级别
      */
@@ -116,43 +122,45 @@ public interface ErrorCode {
     }
 
     /**
-     * 抛出运行异常
+     * 快速转为异常
      *
-     * @throws BaseRuntimeException e
+     * @param args 用于填充翻译项: 可以是普通字符串，也可以为 {@link Translatable}
+     * @return 异常
      */
-    default void throwRuntime() throws BaseRuntimeException {
-        throw new BaseRuntimeException(this);
+    default BaseRuntimeException toException(Object... args) {
+        return new BaseRuntimeException(this, args);
+    }
+
+    /**
+     * 快速转为异常
+     *
+     * @param t 上级异常
+     * @param args 用于填充翻译项: 可以是普通字符串，也可以为 {@link Translatable}
+     * @return 异常
+     */
+    default BaseRuntimeException toException(Throwable t, Object... args) {
+        return new BaseRuntimeException(this, t, args);
     }
 
     /**
      * 抛出运行异常
      *
-     * @param args 用于填充翻译项，可以为普通字符串，也可以为 {@link Translatable}
+     * @param args 用于填充翻译项: 可以是普通字符串，也可以为 {@link Translatable}
      * @throws BaseRuntimeException e
      */
-    default void throwRuntime(Object... args) throws BaseRuntimeException {
-        throw new BaseRuntimeException(this, args);
+    default void throwEx(Object... args) throws BaseRuntimeException {
+        throw toException(args);
     }
 
     /**
      * 抛出运行异常
      *
      * @param t 上级异常（直接异常）
-     * @param args 用于填充翻译项，可以为普通字符串，也可以为 {@link Translatable}
+     * @param args 用于填充翻译项: 可以是普通字符串，也可以为 {@link Translatable}
      * @throws BaseRuntimeException e
      */
-    default void throwRuntime(Throwable t, Object... args) throws BaseRuntimeException {
-        throw new BaseRuntimeException(this, args);
-    }
-
-    /**
-     * 包装 t 并抛出运行异常
-     *
-     * @param t 异常
-     * @throws BaseRuntimeException e
-     */
-    default void throwRuntime(Throwable t) throws BaseRuntimeException {
-        throw new BaseRuntimeException(getCode(), getMessage(), t);
+    default void throwEx(Throwable t, Object... args) throws BaseRuntimeException {
+        throw toException(t, args);
     }
 
     /**
@@ -182,12 +190,12 @@ public interface ErrorCode {
         }
 
         @Override
-        public void throwRuntime() throws BaseRuntimeException {
+        public void throwEx(Object... args) throws BaseRuntimeException {
             // doNothing
         }
 
         @Override
-        public void throwRuntime(Throwable t) throws BaseRuntimeException {
+        public void throwEx(Throwable t, Object... args) throws BaseRuntimeException {
             // doNothing
         }
     }

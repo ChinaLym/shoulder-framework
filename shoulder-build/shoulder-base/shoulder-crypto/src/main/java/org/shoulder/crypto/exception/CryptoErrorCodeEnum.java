@@ -94,12 +94,14 @@ public enum CryptoErrorCodeEnum implements ErrorCode {
         return httpStatus;
     }
 
-    // 提供了两个生成异常的方法，可选择使用
+    // 改为 CipherRuntimeException
 
+    @Override
     public CipherRuntimeException toException(Object... args) {
         return new CipherRuntimeException(this, args);
     }
 
+    @Override
     public CipherRuntimeException toException(Throwable t, Object... args) {
         return new CipherRuntimeException(this, t, args);
     }

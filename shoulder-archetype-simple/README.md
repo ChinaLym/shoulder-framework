@@ -31,10 +31,16 @@ version     0.4
 
 通过命令行快速创建
 
-```java
-
+```bash
+mvn archetype:generate\
+    -DarchetypeGroupId=cn.itlym\
+    -DarchetypeArtifactId=shoulder-archetype-simple\
+    -DarchetypeVersion=0.4\
+    -DgroupId=com.foo -DartifactId=demo -DappId=demo\
+    -Dauthor=shoulder -Dversion=1.0.0-SNAPSHOT\
+    -B
 ```
-
+创建一个工程，groupId=com.foo artifactId=demo，其中 appId、author 可选。
 
 ### 方式二
 
