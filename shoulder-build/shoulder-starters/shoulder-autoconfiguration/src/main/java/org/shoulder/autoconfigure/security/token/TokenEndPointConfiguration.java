@@ -1,7 +1,9 @@
 package org.shoulder.autoconfigure.security.token;
 
 import com.nimbusds.jose.jwk.JWKSet;
+import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.security.SecurityConst;
+import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.endpoint.IntrospectEndpoint;
 import org.shoulder.security.authentication.endpoint.JwkSetEndpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -19,6 +21,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(SecurityConst.class)
 @ConditionalOnProperty(value = "shoulder.security.token.store", havingValue = "jwt", matchIfMissing = true)
+@ConditionalOnAuthType(type = AuthenticationType.TOKEN)
 public class TokenEndPointConfiguration {
 
     /**
