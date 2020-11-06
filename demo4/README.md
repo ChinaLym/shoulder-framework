@@ -1,4 +1,4 @@
-# 开始学习 [Shoulder - 应用监控](https://gitee.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-starters/shoulder-starter-monitor) ！
+# 开始学习 [Shoulder - micrometer 应用监控](https://gitee.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-starters/shoulder-starter-monitor) ！
 
 下载本项目
 
@@ -16,5 +16,5 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 
 建议根据以下的顺序了解 `Shoulder` 的使用
 
-- 阅读 [Shoulder - 应用监控技术选型](https://gitee.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-starters/shoulder-starter-monitor)
+- 阅读 [Shoulder - 应用监控技术选型](https://gitee.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-starters/shoulder-starter-monitor)，企业级选型：选用主流与标准。
 - 开箱即用的 `MonitorableThreadPool` 自动监控

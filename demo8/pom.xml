@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>demo5</artifactId>
+    <artifactId>demo8</artifactId>
 
     <dependencies>
 
@@ -19,12 +19,8 @@
             <artifactId>shoulder-starter-web</artifactId>
         </dependency>
 
-        <!-- 加密传输 -->
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-crypto-negotiation</artifactId>
-        </dependency>
 
     </dependencies>
+
 
 </project>

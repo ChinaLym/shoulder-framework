@@ -1,4 +1,4 @@
-# 开始学习 Shoulder - 安全与认证 ！
+# 开始学习 Shoulder - Spring Security 安全与认证 ！
 
 下载本项目
 
@@ -31,9 +31,9 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 
 
 ---
-### shoulder-starter-security-browser
+### shoulder-starter-auth-session
 
-实现这些能力仅仅是引入了 `shoulder-starter-security-browser` 这个 jar
+实现这些能力仅仅是引入了 `shoulder-starter-auth-session` 这个 jar
 
 当后端服务器是面向浏览器的 web 程序时候（如浏览器直接访问tomcat），引入这个包
 

@@ -2,6 +2,8 @@ package com.example.demo1;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 /**
  * shoulder-framework 实例工程
@@ -10,10 +12,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author lym
  */
 @SpringBootApplication
-public class Demo1Application {
-
+public class Demo1Application implements ApplicationListener<ContextRefreshedEvent> {
     public static void main(String[] args) {
         SpringApplication.run(Demo1Application.class, args);
     }
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        System.out.println("上下文加载完毕");
+    }
+
 
 }

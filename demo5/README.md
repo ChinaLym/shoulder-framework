@@ -1,4 +1,4 @@
-# **[shoulder-framework](https://gitee.com/ChinaLym/shoulder-framework)** 的示例工程
+# 学习 **[shoulder-framework](https://gitee.com/ChinaLym/shoulder-framework)** - ECDH 与安全通讯
 
 ## 模块功能
 

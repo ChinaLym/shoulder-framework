@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>demo5</artifactId>
+    <artifactId>demo7</artifactId>
 
     <dependencies>
 
@@ -19,12 +19,18 @@
             <artifactId>shoulder-starter-web</artifactId>
         </dependency>
 
-        <!-- 加密传输 -->
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-crypto-negotiation</artifactId>
+            <artifactId>shoulder-data-db</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
     </dependencies>
-
 </project>

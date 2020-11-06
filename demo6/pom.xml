@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.4-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.4</version><!-- shoulder-version -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,12 +13,54 @@
 
     <dependencies>
 
-        <!-- 包含了 spring-boot-starter-web，在其之上额外提供了更棒的能力 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-crypto</artifactId>
+        </dependency>
+        <!-- token 认证相关 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-auth-token</artifactId>
+        </dependency>
+        <!-- 认证服务器相关 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-auth-server</artifactId>
+        </dependency>
+        <!-- resourceServer -->
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>-->
 
+        <!-- spring security: oauth2-client -->
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>-->
+
+        <!-- spring security oauth : auth_server -->
+        <!--<dependency>
+            <groupId>org.springframework.security.oauth.boot</groupId>
+            <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+        </dependency>-->
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-data-db</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
 
     </dependencies>
 
