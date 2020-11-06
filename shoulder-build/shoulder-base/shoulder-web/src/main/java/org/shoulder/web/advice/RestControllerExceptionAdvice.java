@@ -7,6 +7,7 @@ import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
+import org.shoulder.validate.exception.ParamErrorCodeEnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -45,7 +46,7 @@ public class RestControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MissingServletRequestParameterException.class})
     public RestResult<Object[]> paramsMissingHandler(MissingServletRequestParameterException e) {
-        BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_BLANK, e, e.getParameterName());
+        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_BLANK, e, e.getParameterName());
         log.info(stdEx);
         return stdEx.toResponse();
     }
@@ -77,7 +78,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public RestResult<Object[]> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
-        BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_NOT_VALID, e, firstErrorInfo);
+        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_INVALID, e, firstErrorInfo);
         log.info(stdEx);
         return stdEx.toResponse();
     }
@@ -89,7 +90,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler({BindException.class})
     public RestResult<Object[]> bindExceptionHandler(BindException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
-        BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_NOT_VALID, e, firstErrorInfo);
+        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_INVALID, e, firstErrorInfo);
         log.info(stdEx);
         return stdEx.toResponse();
     }
@@ -102,7 +103,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public RestResult<Object[]> constraintViolationExceptionHandler(ConstraintViolationException e) {
         String firstErrorInfo = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).findFirst().orElse("");
-        BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_NOT_VALID, e, firstErrorInfo);
+        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_INVALID, e, firstErrorInfo);
         log.info(stdEx);
         return stdEx.toResponse();
     }
@@ -155,7 +156,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public RestResult methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
         BaseRuntimeException ex =
-            new BaseRuntimeException(CommonErrorCodeEnum.PARAM_TYPE_NOT_MATCH, e,
+            new BaseRuntimeException(ParamErrorCodeEnum.PARAM_TYPE_NOT_MATCH, e,
                 e.getName(), e.getValue(), e.getRequiredType() == null ? null : e.getRequiredType().getName());
         log.info(ex);
         return ex.toResponse();

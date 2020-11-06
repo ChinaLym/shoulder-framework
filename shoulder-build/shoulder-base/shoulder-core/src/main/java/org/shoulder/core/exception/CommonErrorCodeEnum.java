@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 
 /**
- * 通用错误（2^14以下框架使用）
+ * 通用错误（2^14以下框架使用）错误码标识 = 0 的那部分
  *
  * @author lym
  */
@@ -56,7 +56,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     // ------------- 发起网络请求时（作为服务消费者）该类错误一般不会直接抛出去，通常会再次捕获，包装后抛出业务异常 -------------
 
     /**
-     * 未知异常，对方未遵循标准格式，未返回错误码与信息，且响应不是 200。
+     * 未知异常，对方未遵循标准格式，未返回错误码与信息，且响应不是 200
      */
     RPC_UNKNOWN(200, "RPC error with none error code or msg.", Level.ERROR),
     /**
@@ -68,9 +68,9 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     REQUEST_METHOD_MISMATCH(202, "The request method can't be processed by the server.", Level.ERROR),
     /**
-     * 返回了错误码:xxx
+     * 调用 xxx 返回了错误码:xxx
      */
-    RPC_COMMON(203, "RPC error with error code '%s'."),
+    RPC_COMMON(203, "Invoke %s fail with error code '%s'."),
     /**
      * 请求错误：实体格式不支持
      */
@@ -79,11 +79,12 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     // ----------------------- 作为服务提供者（要处理的HTTP请求参数校验未通过） ----------------------
 
     /**
-     * 未知异常
+     * 未知异常，用于临时使用以打印错误码，正常来说不应该使用该错误码，不利于排查
      */
+    @Deprecated
     UNKNOWN(300, "Unknown error."),
     /**
-     * 响应超时
+     * 响应超时（对于网关）
      */
     SERVICE_RESPONSE_TIMEOUT(301, "Service response timeout.", HttpStatus.REQUEST_TIMEOUT),
     /**
@@ -96,42 +97,10 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     DEPRECATED_NOT_SUPPORT(305, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
 
     /**
-     * 参数校验未通过，参数非法（非业务代码 或 内部约定格式，非公开隐蔽接口，一般不使用）
-     */
-    PARAM_NOT_VALID(314, "Parameter not valid. for %s.", Level.INFO, HttpStatus.BAD_REQUEST),
-    /**
-     * 参数不能为空
-     */
-    PARAM_BLANK(315, "The required parameter %s is blank.", Level.INFO, HttpStatus.BAD_REQUEST),
-    /**
-     * 参数范围不正确，如年龄传入了负数
-     */
-    PARAM_OUT_RANGE(316, "The value of parameter %s is not in the right range.", Level.INFO, HttpStatus.BAD_REQUEST),
-    /**
-     * 参数格式不正确
-     */
-    PARAM_FORMAT_INVALID(317, "The format of parameter %s is not correct.", Level.INFO, HttpStatus.BAD_REQUEST),
-    /**
-     * 参数错误：返回报文过长，可能未指定分页大小 or 分页过大
-     */
-    PARAM_PAGE_SETTING_INVALID(318, "Return message is too long, please resize page and retry.", HttpStatus.BAD_REQUEST),
-    /**
-     * 参数不支持
-     */
-    PARAM_NOT_SUPPORT(319, "The parameter(%s) not supported.", Level.INFO, HttpStatus.BAD_REQUEST),
-    /**
-     * 参数内容长度超长，如用户名最大允许32个字符
-     */
-    PARAM_CONTENT_TOO_LONG(310, "The parameter(%s) content is out of limit.", Level.INFO, HttpStatus.BAD_REQUEST),
-    /**
      * 包装 HttpMessageNotReadableException,
      * 请求体读取失败，传过来的参数与你controller接收的参数类型不匹配。如 Post 请求缺少参数或者解析 json 时失败了
      */
     PARAM_BODY_NOT_READABLE(321, "HttpMessageNotReadable. %s", Level.INFO, HttpStatus.BAD_REQUEST),
-    /**
-     * 参数类型不匹配
-     */
-    PARAM_TYPE_NOT_MATCH(322, "MethodArgumentTypeMismatch. The value of %s(%s) resolved to %s fail.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * content-type 不正确
      */
@@ -140,13 +109,6 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      * 文件上传出错
      */
     MULTIPART_INVALID(324, "Request is not a validate multipart request, please check request or file size.", HttpStatus.BAD_REQUEST),
-
-    // todo 数据已存在、不存在
-    /**
-     * 无效的签名
-     * @deprecated
-     */
-    SIGN_INVALID(303, "Security session invalid.", Level.INFO, HttpStatus.BAD_REQUEST),
 
     // ----------------------- 与中间件操作异常，代码正确时，常发于中间件宕机 ----------------------
     // 一般要包含连接什么异常、什么操作时失败 error 级别 返回 500
@@ -163,10 +125,6 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     private Level logLevel;
 
     private HttpStatus httpStatus;
-
-    CommonErrorCodeEnum(String code) {
-        this.code = code;
-    }
 
     CommonErrorCodeEnum(long code, String message) {
         this(code, message, DEFAULT_LOG_LEVEL, DEFAULT_HTTP_STATUS_CODE);
@@ -205,16 +163,6 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     @Override
     public HttpStatus getHttpStatusCode() {
         return httpStatus;
-    }
-
-    // 提供了两个生成异常的方法，可选择使用
-
-    public BaseRuntimeException toException(Object... args) {
-        return new BaseRuntimeException(this, args);
-    }
-
-    public BaseRuntimeException toException(Throwable t, Object... args) {
-        return new BaseRuntimeException(this, t, args);
     }
 
 }
