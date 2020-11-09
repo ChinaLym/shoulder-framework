@@ -14,6 +14,9 @@ import java.util.Locale;
  * 在 spring 翻译的核心接口 {@link MessageSource} 基础上额外提供了两个使用的更简单方法
  * getMessage 时不再需要传语言标识，简化使用（默认语言标识为 {@link AppContext#getLocale}）
  *
+ * <a href="https://www.cnblogs.com/fsjohnhuang/p/4094777.html">String.format详解</>
+ * <a href="https://blog.csdn.net/jeamking/article/details/7226656">大括号以及单引号问题</>
+ *
  * @author lym
  * @see MessageSourceAccessor Spring 的该类也有类似的功能
  */
