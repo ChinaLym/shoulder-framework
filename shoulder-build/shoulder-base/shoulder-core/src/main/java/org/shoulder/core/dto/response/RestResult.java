@@ -9,6 +9,9 @@ import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.util.ExceptionUtil;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Restful 风格返回值
@@ -34,6 +37,11 @@ public class RestResult<T> implements Serializable {
     //@Schema(name = "传输的数据")
     private T data;
 
+    /**
+     * 预留的扩展属性
+     */
+    private Map<String, Object> ext = Collections.emptyMap();
+
     public RestResult() {
     }
 
@@ -47,6 +55,14 @@ public class RestResult<T> implements Serializable {
         setMsg(errorCode.getMessage());
     }
 
+    public RestResult<T> addExt(String key, Object value) {
+        if (this.ext == Collections.EMPTY_MAP) {
+            // 一般扩展属性不会太多，默认4
+            this.ext = new HashMap<>(4);
+        }
+        ext.put(key, value);
+        return this;
+    }
 
     /**
      * 构造器

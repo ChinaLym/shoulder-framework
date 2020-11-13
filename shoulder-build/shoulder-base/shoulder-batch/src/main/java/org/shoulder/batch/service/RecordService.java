@@ -1,9 +1,8 @@
 package org.shoulder.batch.service;
 
-import org.shoulder.batch.dto.ImportRecordDto;
-import org.shoulder.batch.enums.ImportResultEnum;
-import org.shoulder.batch.model.ImportRecord;
-import org.shoulder.batch.model.ImportRecordDetail;
+import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.model.BatchRecord;
+import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.core.dto.response.PageResult;
 
 import java.util.Arrays;
@@ -11,21 +10,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 导入记录
+ * 批量执行记录
  *
- * @author liuyanming
+ * @author lym
  */
 public interface RecordService {
 
 
     /**
-     * 根据导入标识获取导入记录详情，用于导入完毕查看结果以及将导入结果导出
+     * 根据任务标识获取批量执行记录详情，用于导入完毕查看结果以及将导入结果导出
      *
-     * @param importCode 导入编码
-     * @return ImportRecordDto
-     * @throws Exception 异常
+     * @param importCode 任务标识
+     * @return ImportRecord
      */
-    ImportRecord findRecordById(String importCode) throws Exception;
+    BatchRecord findRecordById(String importCode);
 
     /**
      * 分页获取导入列表（查询历史记录）
@@ -35,48 +33,46 @@ public interface RecordService {
      * @param pageSize        页数
      * @param currentUserName 当前用户
      * @return PageBean
-     * @throws Exception 异常
      */
-    PageResult<ImportRecordDto> pageQueryRecord(String tableName, Integer pageNum, Integer pageSize,
-                                                String currentUserName) throws Exception;
+    PageResult<BatchRecord> pageQueryRecord(String tableName, Integer pageNum, Integer pageSize,
+                                            String currentUserName);
 
     /**
-     * 获取某个用户的最后一次的导入记录
+     * 获取某个用户的最后一次的批量执行记录
      *
      * @param tableName       导入类型
      * @param currentUserName 当前用户
-     * @return ImportRecordDto
-     * @throws Exception 异常
+     * @return ImportRecord
      */
-    ImportRecordDto findLastRecord(String tableName, String currentUserName) throws Exception;
+    BatchRecord findLastRecord(String tableName, String currentUserName);
 
     /**
      * 分页获取导入列表，用于导入完毕查看结果以及将导入结果导出
      *
-     * @param code 导入编码
+     * @param taskId 任务标识
      * @return List<ImportRecordDetail>
      */
-    List<ImportRecordDetail> findAllImportDetail(String code);
+    List<BatchRecordDetail> findAllImportDetail(String taskId);
 
     /**
      * 分页获取需要的结果数据
      *
-     * @param code    导入编码
+     * @param taskId    任务标识
      * @param results 记录类型
      * @return List<ImportRecordDetail>
      */
-    default List<ImportRecordDetail> findRecordDetailsByResults(String code, ImportResultEnum... results) {
-        return findRecordDetailsByResults(code, Arrays.stream(results).collect(Collectors.toList()));
+    default List<BatchRecordDetail> findRecordDetailsByResults(String taskId, BatchResultEnum... results) {
+        return findRecordDetailsByResults(taskId, Arrays.stream(results).collect(Collectors.toList()));
     }
 
     /**
      * 分页获取需要的结果数据
      *
-     * @param processCode    导入编码
-     * @param results 记录类型
+     * @param taskId 任务标识
+     * @param results     记录类型
      * @return List<ImportRecordDetail>
      */
-    List<ImportRecordDetail> findRecordDetailsByResults(String processCode, List<ImportResultEnum> results);
+    List<BatchRecordDetail> findRecordDetailsByResults(String taskId, List<BatchResultEnum> results);
 
 
 }

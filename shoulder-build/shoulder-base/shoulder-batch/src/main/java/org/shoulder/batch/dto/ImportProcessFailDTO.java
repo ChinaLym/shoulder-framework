@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.List;
 import java.util.Objects;
 
-@Api("校验批量新增设备进度失败原因DTO")
+@Api("校验批量-失败原因DTO")
 @Data
 public class ImportProcessFailDTO {
 

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.shoulder.batch.repository.mapper.ImportRecordDetailMapper">
+
+    <sql id="detailSelectColumn">
+        detail_id detailId,
+        import_id importId,
+        import_result importResult,
+        line_num lineNum,
+        import_name importName,
+        fail_reason failReason,
+        data_source dataSource
+    </sql>
+
+
+    <insert id="batchInsertRecordDetail">
+
+        INSERT INTO tb_import_record_detail (
+        import_id,
+        import_result,
+        line_num,
+        fail_reason,
+        import_name,
+        data_source
+        )
+        VALUES
+        <foreach collection="list" item="record" separator=",">
+            (#{record.importId},
+            #{record.importResult},
+            #{record.lineNum},
+            #{record.failReason},
+            #{record.importName},
+            #{record.dataSource})
+        </foreach>
+
+    </insert>
+
+    <select id="findAllImportDetailByCode" resultType="org.shoulder.batch.model.BatchRecordDetail">
+        SELECT
+        <include refid="detailSelectColumn"/>
+        FROM
+        tb_import_record_detail
+        WHERE
+        import_id = #{recordId}
+        <if test="key != null">
+            AND import_result = #{result}
+        </if>
+        ORDER BY line_num
+    </select>
+
+</mapper>

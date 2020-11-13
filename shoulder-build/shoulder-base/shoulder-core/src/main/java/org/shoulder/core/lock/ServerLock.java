@@ -10,23 +10,29 @@ import java.time.Duration;
 public interface ServerLock {
 
     /**
-     * 尝试获取锁，若未获取到则直接返回 false
+     * 阻塞获取锁，直至成功
      *
-     * @param lockLife 锁的时间
-     * @return 是否获取到
+     * @param lockInfo 锁信息
      */
-    boolean tryLock(Duration lockLife);
-
+    void lock(LockInfo lockInfo);
 
     /**
-     * 尝试获取
+     * 阻塞获取锁，带超时时间
      *
-     * @param maxWait 最长等待时间
-     * @param lockLife 锁的时间
-     * @return 是否获取到
-     * @throws InterruptedException 等待获取锁时被其他线程显式中断了
+     * @param lockInfo     锁信息
+     * @param maxBlockTime 最大阻塞时长
+     * @return 是否获取到锁
+     * @throws InterruptedException 未获取到锁，被中断
      */
-    boolean tryLock(Duration maxWait, Duration lockLife) throws InterruptedException;
+    boolean lock(LockInfo lockInfo, Duration maxBlockTime) throws InterruptedException;
+
+    /**
+     * 尝试获取锁，若未获取到则直接返回 false
+     *
+     * @param lockInfo 锁
+     * @return 是否获取到
+     */
+    boolean tryLock(LockInfo lockInfo);
 
 
     /**
@@ -62,7 +68,6 @@ public interface ServerLock {
     boolean holdLock(String toLockResource, String valueEx);
 
 
-
     /**
      * 释放锁，若未持锁，则不做任何事情
      *
@@ -70,5 +75,5 @@ public interface ServerLock {
      * @param valueEx        d
      */
     void release(String toLockResource, String valueEx);
-    
+
 }
