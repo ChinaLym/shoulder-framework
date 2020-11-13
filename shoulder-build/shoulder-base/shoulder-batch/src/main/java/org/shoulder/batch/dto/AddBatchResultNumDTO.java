@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(description = "批量添加设备返回结果数量Dto")
+@ApiModel(description = "批量添加-结果DTO")
 public class AddBatchResultNumDTO {
 
     @ApiModelProperty(required = false, value = "总数", dataType = "Integer", example = "1", position = 1)

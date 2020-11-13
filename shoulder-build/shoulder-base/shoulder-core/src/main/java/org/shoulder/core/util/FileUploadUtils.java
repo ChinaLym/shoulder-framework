@@ -21,9 +21,9 @@ import java.util.UUID;
  */
 public class FileUploadUtils {
 
+    private final static Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
     public static final String UPLOAD_FILE_ROOT_PATH = "upload";
     public static final String COMMA_SEPARATOR = ",";
-    private final static Logger logger = LoggerFactory.getLogger(FileUploadUtils.class);
     private static final String TEMP_DIR_NAME = "temp";
     private static final String FILE_SEPARATOR = File.separator;
 

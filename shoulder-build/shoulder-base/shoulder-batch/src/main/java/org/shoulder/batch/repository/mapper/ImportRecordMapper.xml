@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.shoulder.batch.repository.mapper.ImportRecordMapper">
+
+    <sql id="selectColumns">
+        import_id importId,
+        import_type importType,
+        import_tbname tbName,
+        import_total_num importTotalNum,
+        import_success_num importSuccessNum,
+        import_fail_num importFailNum,
+        create_time createTime,
+        creator creator
+    </sql>
+
+    <select id="findById" resultType="org.shoulder.batch.model.BatchRecord">
+        SELECT
+        <include refid="selectColumns"/>
+        FROM tb_import_record
+        WHERE import_id = #{_parameter}
+    </select>
+
+    <select id="findLast" resultType="org.shoulder.batch.model.BatchRecord" parameterType="java.util.Map">
+        SELECT
+        <include refid="selectColumns"/>
+        FROM
+        tb_import_record
+        WHERE
+        import_type = #{importType}
+        <if test="userCode != null">
+            AND creator = #{userCode}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findByPage" resultType="org.shoulder.batch.model.BatchRecord" parameterType="java.util.Map">
+        SELECT
+        <include refid="selectColumns"/>
+        FROM
+        tb_import_record
+        WHERE
+        import_type = #{importType}
+        <if test="userCode != null">
+            AND creator = #{userCode}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <insert id="insert" parameterType="org.shoulder.batch.model.BatchRecord">
+        INSERT INTO tb_import_record(
+        import_id,
+        import_type,
+        import_tbname,
+        import_total_num,
+        import_success_num,
+        import_fail_num,
+        create_time,
+        creator
+        )
+        VALUES (
+        #{importId},
+        #{importType},
+        #{tbName},
+        #{importTotalNum},
+        #{importSuccessNum},
+        #{importFailNum},
+        #{createTime},
+        #{creator}
+        )
+    </insert>
+</mapper>

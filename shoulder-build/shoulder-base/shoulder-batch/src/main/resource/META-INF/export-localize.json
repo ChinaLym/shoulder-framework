@@ -1,0 +1,207 @@
+[
+    {
+        "languageId": "bg",
+        "encoding": "iso-8859-5",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "cs",
+        "encoding": "iso-8859-2",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "da",
+        "encoding": "iso-8859-1",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "de",
+        "encoding": "iso-8859-1",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "es",
+        "encoding": "iso-8859-1",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "fr",
+        "encoding": "iso-8859-15",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "hu",
+        "encoding": "iso-8859-2",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "it",
+        "encoding": "iso-8859-1",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "ja",
+        "encoding": "shift-jis",
+        "delimiter": ","
+    },
+    {
+        "languageId": "nl",
+        "encoding": "iso-8859-1",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "pl",
+        "encoding": "iso-8859-2",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "pt",
+        "encoding": "iso-8859-1",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "ru",
+        "encoding": "iso-8859-5",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "th",
+        "encoding": "iso-8859-11",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "tr",
+        "encoding": "iso-8859-3",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "zh-CN",
+        "encoding": "gb2312",
+        "delimiter": ","
+    },
+    {
+        "languageId": "zh_CN",
+        "encoding": "gb2312",
+        "delimiter": ","
+    },
+    {
+        "languageId": "zh",
+        "encoding": "gb2312",
+        "delimiter": ","
+    },
+    {
+        "languageId": "zh-TW",
+        "encoding": "big5",
+        "delimiter": ","
+    },
+    {
+        "languageId": "zh_TW",
+        "encoding": "big5",
+        "delimiter": ","
+    },
+    {
+        "languageId": "ko",
+        "encoding": "EUC-KR",
+        "delimiter": ","
+    },
+    {
+        "languageId": "fi",
+        "encoding": "iso-8859-15",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "vi",
+        "encoding": "Windows-1258",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "et",
+        "encoding": "iso-8859-4",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "el",
+        "encoding": "iso-8859-7",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "sk",
+        "encoding": "iso-8859-2",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "ro",
+        "encoding": "iso-8859-2",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "sv",
+        "encoding": "iso-8859-10",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "nb",
+        "encoding": "iso-8859-10",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "hr",
+        "encoding": "iso-8859-2",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "sl",
+        "encoding": "iso-8859-2",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "sr",
+        "encoding": "iso-8859-2",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "lv",
+        "encoding": "iso-8859-5",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "lt",
+        "encoding": "iso-8859-4",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "pt_br",
+        "encoding": "iso-8859-15",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "kk",
+        "encoding": "8859-5",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "ky",
+        "encoding": "8859-5",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "ar",
+        "encoding": "iso-8859-6",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "fa",
+        "encoding": "iso-8859-6",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "he",
+        "encoding": "iso-8859-8",
+        "delimiter": "\t"
+    },
+    {
+        "languageId": "uz",
+        "encoding": "8859-9",
+        "delimiter": "\t"
+    }
+]

@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.util.List;
 
-@ApiModel(description = "查询校验批量新增设备结果接口返回参数说明")
+@ApiModel(description = "查询批量校验结果接口-返回DTO")
 @Data
 public class ImportProcessDTO {
     @ApiModelProperty(required = true, value = "总数", dataType = "Integer", example = "1", position = 1)
@@ -19,7 +19,7 @@ public class ImportProcessDTO {
     private Integer timeLeft;
     @ApiModelProperty(required = true, value = "是否完成标识", dataType = "boolean", example = "true", position = 5)
     private Boolean finish;
-    @ApiModelProperty(required = true, value = "数据协议配置状态", dataType = "Integer", example = "1", position = 4)
+    @ApiModelProperty(required = true, value = "状态", dataType = "Integer", example = "1", position = 4)
     private Integer status;
     @ApiModelProperty(required = false, value = "失败原因集合", dataType = "list", example = "[{\"reason\":\"reason\"," +
             "\"row\":1,\"reasonParam\":[\"regionIndexCode\"]}]", position = 6)

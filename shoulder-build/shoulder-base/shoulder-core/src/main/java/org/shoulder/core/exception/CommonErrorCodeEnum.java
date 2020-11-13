@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 
 /**
  * 通用错误（2^14以下框架使用）错误码标识 = 0 的那部分
+ * 注意错误码不一定只给用户的，也可能是给其他服务用的。
+ * 给用户看的必须保证用户能看懂，如名称长度中不能含有非法字符，而服务超时、数据库连接异常、空指针等用户看不懂的展示时一律使用未知异常。
  *
  * @author lym
  */
@@ -95,6 +97,16 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      * 不再支持的接口（接口已废弃）
      */
     DEPRECATED_NOT_SUPPORT(305, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
+
+    /**
+     * 不应出现，出现则说明服务器配置文件有问题
+     */
+    CONFIGURATION_ERROR(306, "Configuration Error!", Level.ERROR, HttpStatus.NOT_IMPLEMENTED),
+
+    /**
+     * 存储空间不足（磁盘不足 / 触发限制）
+     */
+    STORAGE_SPACE_INSUFFICIENT(307, "Insufficient Storage!", Level.ERROR, HttpStatus.INSUFFICIENT_STORAGE),
 
     /**
      * 包装 HttpMessageNotReadableException,

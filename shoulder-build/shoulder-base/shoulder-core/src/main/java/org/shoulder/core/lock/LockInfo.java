@@ -1,6 +1,11 @@
 package org.shoulder.core.lock;
 
+import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.util.IpUtils;
+
+import java.time.Duration;
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * 通用锁信息定义
@@ -46,6 +51,22 @@ public class LockInfo {
 
 
     public LockInfo() {
+    }
+
+    public LockInfo(String lockId, Duration lockLife) {
+        this.resource = lockId;
+        // appId:instanceId:threadId 不用于区分是否唯一，token 需要唯一
+        this.owner = IpUtils.getIp() + ":" + AppInfo.appId() + ":" + Thread.currentThread().getId();
+        this.token = UUID.randomUUID().toString();
+        this.createTime = Instant.now();
+        this.ttl = createTime.plus(lockLife);
+    }
+
+    /**
+     * 默认锁 1 分钟
+     */
+    public LockInfo(String lockId) {
+        this(lockId, Duration.ofMinutes(1));
     }
 
     public String getResource() {

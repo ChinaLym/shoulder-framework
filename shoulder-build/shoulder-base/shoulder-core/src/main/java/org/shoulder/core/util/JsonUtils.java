@@ -1,5 +1,6 @@
 package org.shoulder.core.util;
 
+import cn.hutool.core.io.IoUtil;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
@@ -25,6 +26,8 @@ import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.JsonRuntimeException;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -133,6 +136,10 @@ public class JsonUtils {
         } catch (JsonProcessingException e) {
             throw new JsonRuntimeException(e);
         }
+    }
+
+    public static <T> T toObject(InputStream inputStream, TypeReference<T> type) throws IOException {
+        return toObject(IoUtil.read(inputStream, AppInfo.charset()), type);
     }
 
     public static void setJsonMapper(ObjectMapper jsonMapper) {

@@ -18,7 +18,7 @@ public class ImportCsvResultDto implements Serializable, Comparable<ImportCsvRes
 
     private Integer lineNum;
 
-    private Integer success;
+    private Integer result;
 
     private String reason;
 
@@ -36,10 +36,10 @@ public class ImportCsvResultDto implements Serializable, Comparable<ImportCsvRes
         super();
     }
 
-    public ImportCsvResultDto(Integer lineNum, Integer success, String reason) {
+    public ImportCsvResultDto(Integer lineNum, Integer result, String reason) {
         super();
         this.lineNum = lineNum;
-        this.success = success;
+        this.result = result;
         if (StringUtils.isEmpty(reason)) {
             this.reason = "";
         } else {
@@ -51,9 +51,9 @@ public class ImportCsvResultDto implements Serializable, Comparable<ImportCsvRes
         super();
         this.lineNum = lineNum;
         if (StringUtils.isEmpty(reason)) {
-            this.success = 3;
+            this.result = 3;
         } else {
-            this.success = 4;
+            this.result = 4;
         }
         if (StringUtils.isEmpty(reason)) {
             this.reason = "";
@@ -133,12 +133,12 @@ public class ImportCsvResultDto implements Serializable, Comparable<ImportCsvRes
         this.dataSource = dataSource;
     }
 
-    public Integer getSuccess() {
-        return success;
+    public Integer getResult() {
+        return result;
     }
 
-    public void setSuccess(Integer success) {
-        this.success = success;
+    public void setResult(Integer result) {
+        this.result = result;
     }
 
     @Override
@@ -147,7 +147,7 @@ public class ImportCsvResultDto implements Serializable, Comparable<ImportCsvRes
         builder.append("ImportCsvResultDto [lineNum=");
         builder.append(lineNum);
         builder.append(", success=");
-        builder.append(success);
+        builder.append(result);
         builder.append(", reason=");
         builder.append(reason);
         builder.append(", repeatData=");
