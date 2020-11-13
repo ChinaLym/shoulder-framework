@@ -30,6 +30,8 @@ public class FormAuthenticationSecurityConfig extends SecurityConfigurerAdapter<
 
     private List<LogoutHandler> logoutHandlers;
 
+    private String loginPageUrl;
+
     public FormAuthenticationSecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler,
                                             AuthenticationFailureHandler authenticationFailureHandler,
                                             LogoutSuccessHandler logoutSuccessHandler,
@@ -38,6 +40,7 @@ public class FormAuthenticationSecurityConfig extends SecurityConfigurerAdapter<
         this.authenticationFailureHandler = authenticationFailureHandler;
         this.logoutSuccessHandler = logoutSuccessHandler;
         this.logoutHandlers = logoutHandlers;
+        // 默认跳转到待认证处理器
     }
 
     @Override
@@ -45,8 +48,7 @@ public class FormAuthenticationSecurityConfig extends SecurityConfigurerAdapter<
         // @formatter:off
         http
             .formLogin()
-            //todo loginPage url 可配置
-                //.loginPage(SecurityConst.URL_REQUIRE_AUTHENTICATION)
+                .loginPage(loginPageUrl)
                 .loginProcessingUrl(SecurityConst.URL_AUTHENTICATION_FORM)
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(authenticationFailureHandler);
@@ -62,4 +64,7 @@ public class FormAuthenticationSecurityConfig extends SecurityConfigurerAdapter<
         }
     }
 
+    public void setLoginPageUrl(String loginPageUrl) {
+        this.loginPageUrl = loginPageUrl;
+    }
 }

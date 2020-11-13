@@ -76,6 +76,7 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
+        formAuthenticationSecurityConfig.setLoginPageUrl(browserSessionAuthProperties.getSignInPage());
         formAuthenticationSecurityConfig.configure(http);
 
         //apply 方法：<C extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>> C apply(C configurer)
