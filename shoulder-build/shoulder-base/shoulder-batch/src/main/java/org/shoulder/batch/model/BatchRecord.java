@@ -1,5 +1,6 @@
 package org.shoulder.batch.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
@@ -16,6 +17,7 @@ import java.util.List;
  */
 @Data
 @Builder
+@AllArgsConstructor
 public class BatchRecord implements Serializable {
 
     /**
