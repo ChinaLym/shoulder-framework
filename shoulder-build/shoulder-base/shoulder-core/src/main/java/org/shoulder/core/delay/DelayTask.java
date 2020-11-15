@@ -14,14 +14,14 @@ import java.util.concurrent.TimeUnit;
 public class DelayTask implements Delayed {
 
     /**
-     * 延迟执行的纳秒数
+     * 执行时机
      */
-    private final long time;
+    private final long executeInstant;
 
     /**
      * 要执行的任务
      */
-    private final Runnable task;
+    private Runnable task;
 
     /**
      * 运行该任务的线程池名称，如果设置该值将从 spring 上下文中寻找名为 threadPoolName 的线程池，未找到或不设置则使用默认的
@@ -34,22 +34,22 @@ public class DelayTask implements Delayed {
      * @param threadPoolName 线程池 bean 名称
      */
     private DelayTask(Runnable task, long nanoTimeOut, String threadPoolName) {
-        this.time = System.nanoTime() + nanoTimeOut;
+        this.executeInstant = System.nanoTime() + nanoTimeOut;
         this.task = task;
         this.threadPoolName = threadPoolName;
     }
 
     /**
      * @param task 要执行的任务
-     * @param time 多久后执行
+     * @param executeInstant 多久后执行
      * @param unit time的时间单位
      */
-    public DelayTask(Runnable task, long time, TimeUnit unit) {
-        this(task, TimeUnit.NANOSECONDS.convert(time, unit), (String) null);
+    public DelayTask(Runnable task, long executeInstant, TimeUnit unit) {
+        this(task, TimeUnit.NANOSECONDS.convert(executeInstant, unit), (String) null);
     }
 
-    public DelayTask(Runnable task, long time, TimeUnit unit, String threadPoolName) {
-        this(task, TimeUnit.NANOSECONDS.convert(time, unit), threadPoolName);
+    public DelayTask(Runnable task, long executeInstant, TimeUnit unit, String threadPoolName) {
+        this(task, TimeUnit.NANOSECONDS.convert(executeInstant, unit), threadPoolName);
     }
 
     /**
@@ -71,17 +71,31 @@ public class DelayTask implements Delayed {
 
     @Override
     public long getDelay(TimeUnit unit) {
-        return unit.convert(this.time - System.nanoTime(), TimeUnit.NANOSECONDS);
+        return unit.convert(this.executeInstant - System.nanoTime(), TimeUnit.NANOSECONDS);
     }
 
     public String getThreadPoolName() {
         return threadPoolName;
     }
 
+    public long getExecuteInstant() {
+        return executeInstant;
+    }
+
+    public boolean isCancel() {
+        return this.task == null;
+    }
+
+    public void setCancel(boolean cancel) {
+        if (cancel) {
+            this.task = null;
+        }
+    }
+
     @Override
     public int compareTo(@NonNull Delayed delayed) {
         DelayTask other = (DelayTask) delayed;
-        long diff = time - other.time;
+        long diff = executeInstant - other.executeInstant;
         if (diff > 0) {
             return 1;
         } else if (diff < 0) {

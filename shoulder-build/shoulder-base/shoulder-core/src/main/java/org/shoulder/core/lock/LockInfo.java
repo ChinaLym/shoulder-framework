@@ -30,36 +30,35 @@ public class LockInfo {
     private String token;
 
     /**
+     * 加锁时间，加锁时间
+     */
+    private Instant lockTime = Instant.now();
+
+    /**
      * 什么时候到期，可用于阻塞时间依据或
      */
-    private Instant ttl;
+    private Instant releaseTime;
 
     /**
      * 重入次数，用于可重入锁
      */
-    private int reenterCount;
+    private int reenterCount = 0;
 
     /**
      * 版本号，用于乐观锁
      */
-    private int version;
-
-    /**
-     * 创建时间，加锁时间
-     */
-    private Instant createTime;
-
+    private int version = 0;
 
     public LockInfo() {
     }
 
-    public LockInfo(String lockId, Duration lockLife) {
-        this.resource = lockId;
+    public LockInfo(String resource, Duration lockLife) {
+        this.resource = resource;
         // appId:instanceId:threadId 不用于区分是否唯一，token 需要唯一
         this.owner = IpUtils.getIp() + ":" + AppInfo.appId() + ":" + Thread.currentThread().getId();
         this.token = UUID.randomUUID().toString();
-        this.createTime = Instant.now();
-        this.ttl = createTime.plus(lockLife);
+        this.lockTime = Instant.now();
+        this.releaseTime = lockTime.plus(lockLife);
     }
 
     /**
@@ -93,12 +92,12 @@ public class LockInfo {
         this.token = token;
     }
 
-    public Instant getTtl() {
-        return ttl;
+    public Instant getReleaseTime() {
+        return releaseTime;
     }
 
-    public void setTtl(Instant ttl) {
-        this.ttl = ttl;
+    public void setReleaseTime(Instant releaseTime) {
+        this.releaseTime = releaseTime;
     }
 
     public int getReenterCount() {
@@ -117,12 +116,12 @@ public class LockInfo {
         this.version = version;
     }
 
-    public Instant getCreateTime() {
-        return createTime;
+    public Instant getLockTime() {
+        return lockTime;
     }
 
-    public void setCreateTime(Instant createTime) {
-        this.createTime = createTime;
+    public void setLockTime(Instant lockTime) {
+        this.lockTime = lockTime;
     }
 
     @Override
@@ -131,10 +130,10 @@ public class LockInfo {
             "resource='" + resource + '\'' +
             ", owner='" + owner + '\'' +
             ", token='" + token + '\'' +
-            ", ttl=" + ttl +
+            ", ttl=" + releaseTime +
             ", reenterCount=" + reenterCount +
             ", version=" + version +
-            ", createTime=" + createTime +
+            ", createTime=" + lockTime +
             '}';
     }
 }

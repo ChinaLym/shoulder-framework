@@ -1,5 +1,9 @@
 package org.shoulder.core.lock;
 
+import org.shoulder.core.lock.impl.MemoryLockAbstract;
+
+import java.time.Duration;
+
 /**
  * 集群锁代理
  * - 通过该代理获取集群锁，保证每个服务示例在获取同一个资源时，最多只有一个线程尝试获取集群锁，以减少并发时锁冲突
@@ -12,10 +16,38 @@ package org.shoulder.core.lock;
  */
 public class ServerLockAcquireProxy implements ServerLock {
 
+    /**
+     * 最多阻塞 1 分钟，1分钟后抛异常
+     */
+    public static final Duration DEFAULT_WAIT_DURATION = Duration.ofMillis(1);
+
     private ServerLock delegate;
 
-    public ServerLockAcquireProxy() {
+    private ServerLock memoryLock = new MemoryLockAbstract();
+
+    public ServerLockAcquireProxy(ServerLock delegate) {
 
     }
+
+    @Override
+    public boolean tryLock(LockInfo lockInfo, Duration maxBlockTime) throws InterruptedException {
+        return delegate.tryLock(lockInfo, maxBlockTime);
+    }
+
+    @Override
+    public boolean tryLock(LockInfo lockInfo) {
+        return delegate.tryLock(lockInfo);
+    }
+
+    @Override
+    public LockInfo getLockInfo(String resource) {
+        return delegate.getLockInfo(resource);
+    }
+
+    @Override
+    public void unlock(String resource, String token) {
+        delegate.unlock(resource, token);
+    }
+
 
 }
