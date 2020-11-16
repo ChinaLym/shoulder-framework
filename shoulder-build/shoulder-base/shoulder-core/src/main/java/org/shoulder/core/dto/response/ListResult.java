@@ -47,12 +47,12 @@ public class ListResult<T> implements Serializable {
 
     }
 
-    public ListResult(Collection<T> collection) {
+    public ListResult(Collection<? extends T> collection) {
         this.list = new ArrayList<>(collection);
         this.total = list.size();
     }
 
-    public static <T> ListResult<T> of(Collection<T> collection) {
+    public static <T> ListResult<T> of(Collection<? extends T> collection) {
         return new ListResult<>(collection);
     }
 }
