@@ -102,7 +102,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.4</version><!-- shoulder-version -->
+        <version>0.5-SNAPSHOT</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- 你的 groupId -->

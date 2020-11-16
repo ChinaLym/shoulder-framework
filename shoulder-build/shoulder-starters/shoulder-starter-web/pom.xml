@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.4</version><!-- shoulder-version -->
+        <version>0.5-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -30,9 +30,14 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-http</artifactId>
         </dependency>
+        <!-- 对象转换 -->
         <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-beanmap</artifactId>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
         </dependency>
 
     </dependencies>

@@ -20,8 +20,8 @@ public interface BatchModelConvert {
 
     BatchModelConvert CONVERT = Mappers.getMapper(BatchModelConvert.class);
 
-    @Mapping(expression = "java(model.calculateProcessedTime())", target = "timeConsumed")
-    @Mapping(expression = "java(model.calculateTimeLeft())", target = "timeLeft")
+    @Mapping(expression = "java((int) model.calculateProcessedTime())", target = "timeConsumed")
+    @Mapping(expression = "java((int) model.calculateTimeLeft())", target = "timeLeft")
     @Mapping(expression = "java(model.hasFinish())", target = "finish")
     BatchProcessResult toDTO(BatchProgress model);
 

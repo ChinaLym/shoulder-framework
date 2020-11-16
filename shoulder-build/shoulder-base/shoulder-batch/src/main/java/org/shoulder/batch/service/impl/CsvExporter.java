@@ -1,6 +1,5 @@
 package org.shoulder.batch.service.impl;
 
-import com.opencsv.CSVWriter;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 import org.shoulder.batch.enums.ExportConstants;
@@ -22,10 +21,10 @@ import java.util.List;
 public class CsvExporter implements DataExporter {
 
     // todo 可配置？ 跟随语言标识，使用地域默认
-    private char separator = CSVWriter.DEFAULT_SEPARATOR;
-    private char quote = CSVWriter.DEFAULT_QUOTE_CHARACTER;
-    private char escape = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
-    private String lineEnd = CSVWriter.DEFAULT_LINE_END;
+    private char separator = ',';
+    private char quote = '"';
+    private char escape = '"';
+    private String lineEnd = "\n";
 
     private ThreadLocal<CsvWriter> writeLocal = new ThreadLocal<>();
 

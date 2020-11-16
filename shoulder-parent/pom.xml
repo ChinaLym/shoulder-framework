@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.4</version><!-- shoulder-version -->
+        <version>0.5-SNAPSHOT</version><!-- shoulder-version -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -40,7 +40,7 @@
             <dependency>
                 <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-dependencies</artifactId>
-                <version>0.4</version><!-- shoulder-version -->
+                <version>0.5-SNAPSHOT</version><!-- shoulder-version -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -197,8 +197,8 @@
                     <executions>
                         <execution>
                             <id>attach-sources</id>
-                            <!--<phase>package</phase>-->
-                            <phase>deploy</phase>
+                            <!--<phase>package</phase>--><!-- docs / source -->
+                            <phase>deploy</phase><!-- docs / source -->
                             <goals>
                                 <goal>jar</goal>
                                 <goal>jar-no-fork</goal>
@@ -245,8 +245,8 @@
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
-                            <!--<phase>package</phase>-->
-                            <phase>deploy</phase>
+                            <!--<phase>package</phase>--><!-- docs / source -->
+                            <phase>deploy</phase><!-- docs / source -->
                             <goals>
                                 <goal>jar</goal>
                             </goals>
