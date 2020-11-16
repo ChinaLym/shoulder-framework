@@ -5,13 +5,19 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
+import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.enums.ExportConstants;
+import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchProgress;
+import org.shoulder.batch.model.BatchRecord;
+import org.shoulder.batch.model.BatchRecordDetail;
+import org.shoulder.batch.model.convert.BatchModelConvert;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
-import org.shoulder.core.dto.response.PageResult;
+import org.shoulder.core.context.AppContext;
+import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.dto.response.RestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 导入相关
@@ -57,7 +65,8 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public RestResult<String> doValidate(MultipartFile file, String charsetLanguage) throws Exception {
         // todo 解析文件，然后校验，返回校验任务标识
-        return batchService.doProcess(file);
+        String taskId = "doValidate";
+        return RestResult.success(taskId);
     }
 
 
@@ -67,8 +76,10 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public RestResult<String> doImport(@RequestBody ExecuteOperationParam executeOperationParam) {
         // todo 从缓存中拿出来校验结果，然后组装，执行导入
+
+        BatchData batchData = new BatchData();
         return RestResult.success(
-            batchService.doProcess(executeOperationParam)
+            batchService.doProcess(batchData)
         );
     }
 
@@ -79,7 +90,7 @@ public class ImportController implements ImportRestfulApi {
     public RestResult<BatchProcessResult> queryOperationProcess(String taskId) {
         BatchProgress process = batchService.queryBatchProgress(taskId);
         //todo 转换
-        return RestResult.success(process);
+        return RestResult.success(BatchModelConvert.CONVERT.toDTO(process));
     }
 
 
@@ -87,18 +98,25 @@ public class ImportController implements ImportRestfulApi {
      * 查询数据导入记录
      */
     @Override
-    public RestResult<PageResult<BatchProcessResult>> queryImportRecord() {
-        return RestResult.success(recordService.findLastRecord());
+    public RestResult<ListResult<BatchRecordResult>> queryImportRecord() {
+        return RestResult.success(
+            Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
+                .map(BatchModelConvert.CONVERT::toDTO).collect(Collectors.toList())
+        );
     }
 
     /**
      * 查询某次处理记录详情
      */
     @Override
-    public RestResult<BatchProcessResult> queryImportRecordDetail(
+    public RestResult<BatchRecordResult> queryImportRecordDetail(
         @RequestBody QueryImportResultDetailParam condition) {
+        BatchRecord record = recordService.findRecordById("xxx");
+        List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getTaskId());
+        record.setDetailList(details);
+        BatchRecordResult result = BatchModelConvert.CONVERT.toDTO(record);
         //todo 转换
-        return RestResult.success(recordService.findAllRecordDetail(condition.getTaskId()));
+        return RestResult.success(result);
     }
 
 
@@ -127,7 +145,7 @@ public class ImportController implements ImportRestfulApi {
      */
     //@Override
     public void export(HttpServletResponse response, String businessType) throws IOException {
-        exportService.export();
+        //exportService.export();
     }
 
 

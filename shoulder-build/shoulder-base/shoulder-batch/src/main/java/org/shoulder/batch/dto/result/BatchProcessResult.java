@@ -21,7 +21,7 @@ import java.util.List;
 public class BatchProcessResult {
 
     @ApiModelProperty(required = true, value = "总数", dataType = "Integer", example = "1", position = 1)
-    private Integer total;
+    private Integer totalNum;
 
     @ApiModelProperty(required = true, value = "已处理个数", dataType = "Integer", example = "1", position = 2)
     private Integer processed;
@@ -35,10 +35,10 @@ public class BatchProcessResult {
     @ApiModelProperty(required = false, value = "失败个数", dataType = "Integer", example = "1", position = 4)
     private Integer failNum;
 
-    @ApiModelProperty(required = true, value = "已执行时间", dataType = "Integer", example = "3", position = 5)
-    private Integer timeProcessed;
+    @ApiModelProperty(required = true, value = "已执行时间，毫秒", dataType = "Integer", example = "1234", position = 5)
+    private Integer timeConsumed;
 
-    @ApiModelProperty(required = true, value = "预估剩余时间", dataType = "Integer", example = "2", position = 6)
+    @ApiModelProperty(required = true, value = "预估剩余时间", dataType = "Integer", example = "1000", position = 6)
     private Integer timeLeft;
 
     @Deprecated
@@ -53,7 +53,7 @@ public class BatchProcessResult {
      */
     @ApiModelProperty(required = false, value = "失败原因集合", dataType = "list", example = "[{\"reason\":\"reason\"," +
         "\"row\":1,\"reasonParam\":[\"regionIndexCode\"]}]", position = 9)
-    private List<BatchProcessDetail> list;
+    private List<BatchProcessDetail> progressList;
 
 
 }

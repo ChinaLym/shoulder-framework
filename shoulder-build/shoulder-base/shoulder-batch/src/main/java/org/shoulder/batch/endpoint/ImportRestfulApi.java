@@ -7,7 +7,8 @@ import io.swagger.annotations.ApiOperation;
 import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
-import org.shoulder.core.dto.response.PageResult;
+import org.shoulder.batch.dto.result.BatchRecordResult;
+import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.dto.response.RestResult;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -90,14 +91,14 @@ public interface ImportRestfulApi {
     /**
      * 查询处理记录
      * 可用于界面展示，（当前用户）最近一次导入记录
-     * todo 查询条件
+     * todo 查询条件 暂不支持分页
      *
      * @return 分页-批量处理进度 / 结果
      */
-    @ApiOperation(value = "查询处理记录", notes = "支持分页", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE,
+    @ApiOperation(value = "查询处理记录", notes = "暂不支持分页", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE,
         produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "GET")
     @RequestMapping(value = "record/list", method = RequestMethod.GET)
-    RestResult<PageResult<BatchProcessResult>> queryImportRecord();
+    RestResult<ListResult<BatchRecordResult>> queryImportRecord();
 
 
     /**
@@ -111,7 +112,7 @@ public interface ImportRestfulApi {
     @ApiOperation(value = "查询某次处理记录详情", notes = "支持分页", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE
         , produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "POST")
     @RequestMapping(value = "record/detail", method = RequestMethod.POST)
-    RestResult<BatchProcessResult> queryImportRecordDetail(QueryImportResultDetailParam condition);
+    RestResult<BatchRecordResult> queryImportRecordDetail(QueryImportResultDetailParam condition);
 
     // ===================================  导出相关  =====================================
 

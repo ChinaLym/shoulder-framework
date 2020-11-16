@@ -34,14 +34,14 @@ public class BatchRecordDetail implements Serializable {
     private int rowNum;
 
     /**
-     * 结果 0 处理成功 1 校验失败、2 重复跳过、3 重复更新、4 处理失败
-     */
-    private int result;
-
-    /***
      * 操作类型
      */
     private String operation;
+
+    /**
+     * 处理结果状态 0 处理成功 1 校验失败、2 重复跳过、3 重复更新、4 处理失败
+     */
+    private int status;
 
     /**
      * 失败原因，推荐支持多语言
@@ -61,14 +61,14 @@ public class BatchRecordDetail implements Serializable {
     public BatchRecordDetail() {
     }
 
-    public BatchRecordDetail(int rowNum, int result) {
+    public BatchRecordDetail(int rowNum, int status) {
         this.rowNum = rowNum;
-        this.result = result;
+        this.status = status;
     }
 
-    public BatchRecordDetail(int rowNum, int result, String failReason) {
+    public BatchRecordDetail(int rowNum, int status, String failReason) {
         this.rowNum = rowNum;
-        this.result = result;
+        this.status = status;
         this.failReason = failReason;
     }
 }
