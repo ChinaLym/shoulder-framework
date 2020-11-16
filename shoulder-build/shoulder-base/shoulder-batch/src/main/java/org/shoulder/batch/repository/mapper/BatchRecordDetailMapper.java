@@ -5,27 +5,27 @@ import org.shoulder.batch.model.BatchRecordDetail;
 import java.util.List;
 
 /**
- * 批量执行记录详情 Mapper
+ * 批量处理记录详情 Mapper
  *
  * @author lym
  */
-public interface ImportRecordDetailMapper {
+public interface BatchRecordDetailMapper {
 
 
     /**
-     * 批量导入导入详情
+     * 批量新增处理详情
      *
      * @param batchRecordDetailList 要插入的记录
      */
     void batchInsertRecordDetail(List<BatchRecordDetail> batchRecordDetailList);
 
     /**
-     * 查询所有的批量执行记录
+     * 查询所有的批量处理记录
      *
      * @param recordId 记录标识
-     * @param result   结果状态
-     * @return 所有的批量执行记录
+     * @param resultList   结果状态
+     * @return 所有的批量处理记录
      */
-    List<BatchRecordDetail> findAllByResult(String recordId, String result);
+    List<BatchRecordDetail> findAllByResult(String recordId, List<Integer> resultList);
 
 }

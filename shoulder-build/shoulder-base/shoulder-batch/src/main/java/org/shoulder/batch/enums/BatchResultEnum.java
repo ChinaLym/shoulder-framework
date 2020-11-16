@@ -3,7 +3,7 @@ package org.shoulder.batch.enums;
 import java.util.Arrays;
 
 /**
- * 导入结果
+ * 处理结果
  * todo 码值
  *
  * @author lym
@@ -32,7 +32,7 @@ public enum BatchResultEnum {
     ALL("*", 0, BatchI18nEnum.RESULT_VAIDATE_FAILED.getCode()),
 
     /**
-     * 校验不通过（不能执行导入）
+     * 校验不通过（无法处理）
      */
     VALIDATE_FAILED("*", 0, BatchI18nEnum.RESULT_VAIDATE_FAILED.getCode()),
     /**
@@ -40,11 +40,11 @@ public enum BatchResultEnum {
      */
     SKIP_REPEAT("process_skip", 1, BatchI18nEnum.RESULT_IMPORT_SKIP.getCode()),
     /**
-     * 导入成功
+     * 处理成功
      */
     IMPORT_SUCCESS("process_success", 3, BatchI18nEnum.RESULT_IMPORT_SUCCESS.getCode()),
     /**
-     * 导入失败
+     * 处理失败
      */
     IMPORT_FAILED("process_failed", 4, BatchI18nEnum.RESULT_IMPORT_FAILED.getCode()),
     /**

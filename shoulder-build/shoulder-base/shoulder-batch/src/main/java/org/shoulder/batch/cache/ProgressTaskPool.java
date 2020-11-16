@@ -23,7 +23,7 @@ public class ProgressTaskPool {
      * @param task 需要被刷进度的 task
      */
     public static void triggerFlushProgress(ProgressAble task) {
-        importProgressCache.put(task.getTaskId(), task.getBatchProgress());
+        importProgressCache.put(task.getBatchProgress().getTaskId(), task.getBatchProgress());
         Threads.execute(genFlushProgressTask(task));
     }
 
@@ -41,14 +41,14 @@ public class ProgressTaskPool {
     /**
      * 创建一个刷进度的任务
      *
-     * @param task 需要被刷进度的导入 task
+     * @param task 需要被刷进度的任务
      * @return 刷进度的任务
      */
     private static Runnable genFlushProgressTask(ProgressAble task) {
         return () -> {
-            String id = task.getTaskId();
+            String id = task.getBatchProgress().getTaskId();
             if (!task.getBatchProgress().hasFinish()) {
-                // 未导入完毕，仍需要执行这个任务
+                // 未处理完毕，仍需要执行这个任务
                 Threads.delay(ProgressTaskPool.genFlushProgressTask(task), 1, TimeUnit.SECONDS);
             }
             importProgressCache.put(id, task.getBatchProgress());

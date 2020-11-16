@@ -31,7 +31,7 @@ public class ExportSupport {
 
     private static final Map<String, ExportLocalize> LOCALIZE_CACHE = new HashMap<>();
 
-    // todo put
+    // todo put 数据类型 - 导出配置
     private static final Map<String, ExportConfig> CONFIG_CACHE = new HashMap<>();
 
     static {

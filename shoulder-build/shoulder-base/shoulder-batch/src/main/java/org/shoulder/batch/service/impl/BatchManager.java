@@ -5,8 +5,8 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.model.*;
-import org.shoulder.batch.repository.mapper.ImportRecordDetailMapper;
-import org.shoulder.batch.repository.mapper.ImportRecordMapper;
+import org.shoulder.batch.repository.mapper.BatchRecordDetailMapper;
+import org.shoulder.batch.repository.mapper.BatchRecordMapper;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
@@ -23,7 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 导入管理员
+ * 批处理管理员
  * 负责分成小的任务，交给 Worker 执行
  *
  * @author lym
@@ -48,14 +48,14 @@ public class BatchManager implements Runnable, ProgressAble {
     private ExecutorService threadPool = SpringUtils.getBean("batchThreadPool");
 
     /**
-     * 批量执行记录
+     * 批量处理记录
      */
-    private ImportRecordMapper importRecordMapper = SpringUtils.getBean(ImportRecordMapper.class);
+    private BatchRecordMapper batchRecordMapper = SpringUtils.getBean(BatchRecordMapper.class);
 
     /**
-     * 导入详细
+     * 批处理记录详情
      */
-    private ImportRecordDetailMapper importRecordDetailMapper = SpringUtils.getBean(ImportRecordDetailMapper.class);
+    private BatchRecordDetailMapper batchRecordDetailMapper = SpringUtils.getBean(BatchRecordDetailMapper.class);
 
     // ------------------------------------------------
 
@@ -64,7 +64,7 @@ public class BatchManager implements Runnable, ProgressAble {
      */
     private Long userId;
     /**
-     * 语言标示
+     * 语言标识
      */
     private String languageId;
 
@@ -85,7 +85,7 @@ public class BatchManager implements Runnable, ProgressAble {
 
     /**
      * 任务队列，任务向这里丢
-     * todo 后续考虑共享队列，将属性抽出来，一个 manager 可以同时处理多次批处理任务
+     * todo 待定 后续考虑共享队列，将属性抽出来，一个 manager 可以同时处理多次批处理任务
      */
     private BlockingQueue<BatchDataSlice> jobQueue;
 
@@ -192,7 +192,7 @@ public class BatchManager implements Runnable, ProgressAble {
                     .setSource(convertObjectForExport(dataItem));
             }
         });
-        // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不导入的，校验失败无法导入的）
+        // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不处理的，校验失败无法处理的）
         for (DataItem dataItem : batchData.getSuccessList()) {
             result.getDetailList().get(dataItem.getRowNum())
                 .setSource(convertObjectForExport(dataItem))
@@ -227,7 +227,7 @@ public class BatchManager implements Runnable, ProgressAble {
 
 
     /**
-     * 把导入的原始数据转为 importRecordDetail 中的 source 字段
+     * 把原始数据转为 {@link BatchRecordDetail#setSource(String)} 字段
      * 筛选出部分字段，并脱敏等处理
      */
     private String convertObjectForExport(DataItem importData) {
@@ -342,14 +342,14 @@ public class BatchManager implements Runnable, ProgressAble {
     // ================================= 后置，如保存记录 ==================================
 
     /**
-     * 根据任务处理的总体结果，增加一条导入统计记录
+     * 根据任务处理的总体结果，增加一条处理记录
      */
     protected void persistentImportRecord() {
         try {
             result.setSuccessNum(progress.getSuccess());
             result.setFailNum(progress.getFail());
-            importRecordMapper.insert(result);
-            // todo 考虑是最后保存一次还是在 work 中同一事务执行（性能？一致性？）
+            batchRecordMapper.insert(result);
+            // todo 一致性/性能 最后保存一次？ 或在 work 中与批处理在同一事务进行保存？
             persistentBatchDetail();
         } catch (Exception e) {
             throw CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL.toException(e);
@@ -360,7 +360,7 @@ public class BatchManager implements Runnable, ProgressAble {
      * 填充操作日志
      */
     private void fillOperationLog() {
-        //对导入结果进行判断
+        // 根据处理结果判断总体结果
         OperationResult result = OperationResult.of(progress.getSuccess() > 0, progress.getFail() > 0);
         OpLogContextHolder.getLog().setResult(result)
             .addDetailItem(String.valueOf(progress.getSuccess()))
@@ -374,10 +374,9 @@ public class BatchManager implements Runnable, ProgressAble {
      * 持久化详情信息，注意批量插入分片保存，避免大事务
      */
     protected void persistentBatchDetail() {
-        importRecordDetailMapper.batchInsertRecordDetail(result.getDetailList());
+        batchRecordDetailMapper.batchInsertRecordDetail(result.getDetailList());
     }
 
-    @Override
     public String getTaskId() {
         return progress.getTaskId();
     }

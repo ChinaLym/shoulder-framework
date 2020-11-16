@@ -1,7 +1,7 @@
 package org.shoulder.batch.service;
 
 /**
- * 导入导出
+ * 批量 / 导出
  *
  * @author lym
  */

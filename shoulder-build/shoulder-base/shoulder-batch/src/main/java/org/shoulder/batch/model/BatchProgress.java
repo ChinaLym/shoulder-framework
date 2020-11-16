@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 
 /**
- * 批量执行进度模型
+ * 批量处理进度模型
  * <p>
  * 没有进度条、预计剩余时间，已使用时间的等，这些可以通过给的字段计算，因此不给
  *
@@ -20,7 +20,7 @@ public class BatchProgress implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 任务ID
+     * 任务标识
      */
     private String taskId;
 

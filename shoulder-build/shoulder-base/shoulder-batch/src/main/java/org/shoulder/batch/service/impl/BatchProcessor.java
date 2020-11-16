@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * 导入工人
+ * 批处理工人
+ * 实现了返回结果，具体操作还需要使用者实现 {@link BatchTaskSliceHandler}
  *
  * @author lym
  */

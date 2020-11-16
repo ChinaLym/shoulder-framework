@@ -25,13 +25,22 @@ public interface DataExporter {
 
 
     /**
-     * 输出
+     * 输出 头信息
      *
      * @param outputStream 输出流
-     * @param dataLine     一行数据
+     * @param headers      头信息
      * @throws IOException IO 异常
      */
-    void outputDataArray(OutputStream outputStream, List<String[]> dataLine) throws IOException;
+    void outputHeader(OutputStream outputStream, List<String[]> headers) throws IOException;
+
+    /**
+     * 输出 数据行
+     *
+     * @param outputStream 输出流
+     * @param dataLine     数据行
+     * @throws IOException IO 异常
+     */
+    void outputData(OutputStream outputStream, List<String[]> dataLine) throws IOException;
 
 
     /**

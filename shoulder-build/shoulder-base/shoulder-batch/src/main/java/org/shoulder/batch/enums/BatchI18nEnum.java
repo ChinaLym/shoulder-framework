@@ -5,7 +5,7 @@ import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.SpringUtils;
 
 /**
- * 导入导出国际化
+ * 批处理国际化
  *
  * @author lym
  */
@@ -46,9 +46,10 @@ public enum BatchI18nEnum {
 
 
     /**
-     * 导入时候有其他导入正在进行
+     * 当前执行任务较多，请稍后再试
      */
-    OTHER_IMPORTPROCESS("shoulder.batch.import.other.importProcess"),
+    OTHER_IMPORTPROCESS("shoulder.batch.import.busy"),
+
     // ============================== 上传导入文件提示 ==================================
     /**
      * 上传文件模板不正确
@@ -64,7 +65,7 @@ public enum BatchI18nEnum {
     UPLOADFILE_SIZE_LIMIT("shoulder.batch.upload.size.limit"),
 
 
-    // ============================== 导入结果 ==================================
+    // ============================== 处理结果 ==================================
     /**
      * @zh_CN 未知
      */
@@ -78,11 +79,11 @@ public enum BatchI18nEnum {
      */
     RESULT_VAIDATE_FAILED("shoulder.batch.result.validate.failed"),
     /**
-     * @zh_CN 导入成功
+     * @zh_CN 处理成功
      */
     RESULT_IMPORT_SUCCESS("shoulder.batch.result.import.success"),
     /**
-     * @zh_CN 导入失败
+     * @zh_CN 处理失败
      */
     RESULT_IMPORT_FAILED("shoulder.batch.result.import.failed"),
     /**
@@ -111,11 +112,11 @@ public enum BatchI18nEnum {
 
 
     /**
-     * 导入数量：%1，成功：%2，失败：%3
+     * 处理数量：%1，成功：%2，失败：%3
      */
     IMPORT_MESSAGE("shoulder.batch.import.detail"),
     /**
-     * 导出数量：%1
+     * 处理数量：%1
      */
     EXPORT_MESSAGE("shoulder.batch.export.detail"),
 

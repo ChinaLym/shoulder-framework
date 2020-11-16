@@ -17,8 +17,8 @@ import java.util.List;
 public class BatchDataSlice {
 
     /**
-     * 导入任务的任务id
-     * 其实可以通过 BatchDataWorker 来填充。未来可能调整，预留该字段
+     * 批处理任务标识
+     * 其实可通过 BatchDataWorker 来填充。未来可能调整，预留该字段
      */
     private String taskId;
 

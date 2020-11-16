@@ -9,8 +9,8 @@ import org.shoulder.batch.enums.BatchI18nEnum;
 import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.enums.ExportConstants;
 import org.shoulder.batch.model.*;
-import org.shoulder.batch.repository.mapper.ImportRecordDetailMapper;
-import org.shoulder.batch.repository.mapper.ImportRecordMapper;
+import org.shoulder.batch.repository.mapper.BatchRecordDetailMapper;
+import org.shoulder.batch.repository.mapper.BatchRecordMapper;
 import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.ext.BatchTaskSliceHandler;
 import org.shoulder.core.dto.response.PageResult;
@@ -28,19 +28,21 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * 导入导出门面
+ * 处理导出门面
  *
  * @author lym
  */
 @Service
 public class BatchExportServiceImpl implements BatchAndExportService {
 
+    // todo 记录日志
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
@@ -65,15 +67,15 @@ public class BatchExportServiceImpl implements BatchAndExportService {
     private List<DataExporter> dataExporterList;
 
     /**
-     * 批量执行记录
+     * 批量处理记录
      */
     @Autowired
-    private ImportRecordMapper importRecordMapper;
+    private BatchRecordMapper batchRecordMapper;
     /**
-     * 导入详细记录
+     * 处理详情
      */
     @Autowired
-    protected ImportRecordDetailMapper importRecordDetailMapper;
+    protected BatchRecordDetailMapper batchRecordDetailMapper;
 
     /**
      * 当前的导出器
@@ -86,7 +88,7 @@ public class BatchExportServiceImpl implements BatchAndExportService {
     private ThreadLocal<ExportConfig> exportConfigLocal = new ThreadLocal<>();
 
     /**
-     * 是否额外生成详情列（当且仅当导出批量执行结果时）
+     * 是否额外生成详情列（当且仅当导出批量处理结果时）
      */
     private ThreadLocal<Boolean> exportRecordLocal = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
@@ -96,13 +98,14 @@ public class BatchExportServiceImpl implements BatchAndExportService {
      * 导出
      *
      * @param outputStream     输出流
-     * @param exportModelId    导出数据标识
+     * @param templateId       导出数据模板标识
      * @param dataSupplierList 导出数据
      * @throws IOException IO
      */
     @Override
-    public void export(OutputStream outputStream, String exportType, List<Supplier<List<Map<String, String>>>> dataSupplierList,
-                       String exportModelId) throws IOException {
+    public void export(OutputStream outputStream, String exportType,
+                       List<Supplier<List<Map<String, String>>>> dataSupplierList,
+                       String templateId) throws IOException {
 
         // 初始化线程变量
         DataExporter dataExporter = dataExporterList.stream()
@@ -110,9 +113,9 @@ public class BatchExportServiceImpl implements BatchAndExportService {
             .findFirst().orElseThrow(() -> BatchErrorCodeEnum.EXPORT_TYPE_NOT_SUPPORT.toException(exportType));
         currentDataExporter.set(dataExporter);
 
-        ExportConfig exportConfig = ExportSupport.getConfigWithLocale(exportModelId);
+        ExportConfig exportConfig = ExportSupport.getConfigWithLocale(templateId);
         if (exportConfig == null) {
-            throw new BaseRuntimeException("exportModelId:" + exportModelId + " not existed! ");
+            throw new BaseRuntimeException("templateId:" + templateId + " not existed!");
         }
         exportConfigLocal.set(exportConfig);
         try {
@@ -157,7 +160,7 @@ public class BatchExportServiceImpl implements BatchAndExportService {
         heads.add(nameList.toArray(columnsName));
 
         currentDataExporter.get()
-            .outputDataArray(outputStream, heads);
+            .outputHeader(outputStream, heads);
     }
 
     /**
@@ -173,7 +176,7 @@ public class BatchExportServiceImpl implements BatchAndExportService {
             .map(this::toDataArray)
             .collect(Collectors.toList());
         currentDataExporter.get()
-            .outputDataArray(outputStream, dataLine);
+            .outputData(outputStream, dataLine);
     }
 
     /**
@@ -207,33 +210,33 @@ public class BatchExportServiceImpl implements BatchAndExportService {
 
 
     @Override
-    public void exportBatchDetail(OutputStream outputStream, String exportType, String exportModelId,
+    public void exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
                                   String taskId, List<BatchResultEnum> resultTypes) throws IOException {
         exportRecordLocal.set(Boolean.TRUE);
+        //认为单次批量操作一般有上限，如1000，这里直接单次全捞出来了
         export(outputStream, exportType, List.of(() -> {
-            // todo resultTypes 这里全都查出来了
-            List<BatchRecordDetail> recordDetailList = importRecordDetailMapper.findAllByResult(taskId, null);
+            List<BatchRecordDetail> recordDetailList = findRecordDetailsByResults(taskId, resultTypes);
             return recordDetailList.stream()
-                .map(importRecordDetail -> {
+                .map(batchRecordDetail -> {
                     @SuppressWarnings("unchecked")
                     Map<String, String> dataMap = JsonUtils.toObject(
-                        importRecordDetail.getSource(), Map.class, String.class, String.class);
+                        batchRecordDetail.getSource(), Map.class, String.class, String.class);
 
-                    dataMap.put(ExportConstants.ROW_NUM, BatchI18nEnum.SPECIAL_ROW.i18nValue(importRecordDetail.getRowNum()));
-                    dataMap.put(ExportConstants.RESULT, translator.getMessage(importRecordDetail.getFailReason(),
-                        BatchResultEnum.of(importRecordDetail.getResult()).getTip()));
-                    dataMap.put(ExportConstants.DETAIL, translator.getMessage(importRecordDetail.getFailReason()));
+                    dataMap.put(ExportConstants.ROW_NUM, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getRowNum()));
+                    dataMap.put(ExportConstants.RESULT, translator.getMessage(batchRecordDetail.getFailReason(),
+                        BatchResultEnum.of(batchRecordDetail.getResult()).getTip()));
+                    dataMap.put(ExportConstants.DETAIL, translator.getMessage(batchRecordDetail.getFailReason()));
                     return dataMap;
                 })
                 .collect(Collectors.toList());
-        }), exportModelId);
+        }), templateId);
     }
 
 
-    // *********************************  导入  **************************************
+    // *********************************  执行处理  **************************************
 
     /**
-     * 判断是否允许导入
+     * 判断是否允许处理
      *
      * @return boolean
      */
@@ -247,12 +250,13 @@ public class BatchExportServiceImpl implements BatchAndExportService {
      *
      * @param batchData             批处理数据入参
      * @param userId                用户信息
-     * @param languageId            语言标识
+     * @param locale                语言标识
      * @param batchTaskSliceHandler 特殊业务处理器
      * @return 任务标识
      */
     @Override
-    public String doProcess(BatchData batchData, String userId, String languageId, BatchTaskSliceHandler batchTaskSliceHandler) {
+    public String doProcess(BatchData batchData, String userId, Locale locale,
+                            BatchTaskSliceHandler batchTaskSliceHandler) {
         if (!canExecute()) {
             throw BatchErrorCodeEnum.IMPORT_BUSY.toException();
         } else {
@@ -260,20 +264,20 @@ public class BatchExportServiceImpl implements BatchAndExportService {
             //执行持久化
             ProgressTaskPool.triggerFlushProgress(batchManager);
             batchThreadPool.execute(batchManager);
-            return batchManager.getTaskId();
+            return batchManager.getBatchProgress().getTaskId();
         }
     }
 
-    // ------------------------  批量执行记录  --------------------
+    // ------------------------  批量处理记录  --------------------
 
     /**
-     * 获取导入进度与结果
+     * 获取处理进度与结果
      *
      * @param taskId 用户信息
-     * @return 导入进度或者结果
+     * @return 处理进度或者结果
      */
     @Override
-    public BatchProgress findImportResult(String taskId) {
+    public BatchProgress queryBatchProgress(String taskId) {
         BatchProgress result = ProgressTaskPool.getTaskProgress(taskId);
         if (result == null) {
             // 缓存过期无需从数据库中查，直接异常
@@ -283,18 +287,18 @@ public class BatchExportServiceImpl implements BatchAndExportService {
     }
 
     @Override
-    public PageResult<BatchRecord> pageQueryRecord(String tableName, Integer pageNum, Integer pageSize,
-                                                   String currentUserName) {
-        Map<String, Object> condition = generateCsvRecordMap(tableName);
+    public PageResult<BatchRecord> pageQueryRecord(String dataType, Integer pageNum, Integer pageSize,
+                                                   String currentUserCode) {
+        Map<String, Object> condition = generateCsvRecordMap(dataType);
         PageHelper.startPage(pageNum, pageSize);
-        PageInfo<BatchRecord> pageInfo = new PageInfo<>(importRecordMapper.findByPage(condition));
+        PageInfo<BatchRecord> pageInfo = new PageInfo<>(batchRecordMapper.findByPage(condition));
         return PageResult.PageInfoConverter.toResult(pageInfo);
     }
 
     @Override
-    public BatchRecord findLastRecord(String tableName, String currentUserName) {
-        Map<String, Object> condition = generateCsvRecordMap(tableName);
-        return importRecordMapper.findLast(condition);
+    public BatchRecord findLastRecord(String dataType, String currentUserName) {
+        Map<String, Object> condition = generateCsvRecordMap(dataType);
+        return batchRecordMapper.findLast(condition);
     }
 
     /**
@@ -307,41 +311,31 @@ public class BatchExportServiceImpl implements BatchAndExportService {
     }
 
     /**
-     * 根据任务标识获取批量执行记录详情，用于导入完毕查看结果以及将导入结果导出
+     * 根据任务标识获取批量处理记录详情，用于处理完毕查看结果以及将结果导出
      *
      * @param importCode 任务标识
      * @return ImportRecord
      */
     @Override
     public BatchRecord findRecordById(String importCode) {
-        return importRecordMapper.findById(importCode);
+        return batchRecordMapper.findById(importCode);
     }
 
 
-    // ------------------- todo 过滤结果状态查询 ------------------------------
+    // ------------------- 记录详情 ------------------------------
 
     @Override
-    public List<BatchRecordDetail> findAllImportDetail(String taskId) {
-        return importRecordDetailMapper.findAllByResult(taskId, null);
+    public List<BatchRecordDetail> findAllRecordDetail(String taskId) {
+        return batchRecordDetailMapper.findAllByResult(taskId, null);
     }
 
     @Override
     public List<BatchRecordDetail> findRecordDetailsByResults(String taskId, List<BatchResultEnum> results) {
-        // todo 这里查出了所有需要过滤条件
-        List<BatchRecordDetail> allBatchRecordDetails = importRecordDetailMapper.findAllByResult(taskId, null);
-
-        if (CollectionUtils.isEmpty(results)) {
-            return allBatchRecordDetails;
-        }
-        List<Integer> resultSet = results.stream()
-            .map(BatchResultEnum::getCode)
-            .collect(Collectors.toList());
-        if (resultSet.contains(BatchResultEnum.ALL.getCode())) {
-            return allBatchRecordDetails;
-        }
-        return allBatchRecordDetails.stream()
-            .filter(record -> resultSet.contains(record.getResult()))
-            .collect(Collectors.toList());
+        return CollectionUtils.isEmpty(results) ? findAllRecordDetail(taskId) :
+            batchRecordDetailMapper.findAllByResult(taskId, results.stream()
+                .map(BatchResultEnum::getCode)
+                .collect(Collectors.toList())
+            );
     }
 
 }

@@ -8,7 +8,7 @@
 * 校验解析的数据（提供异步实现、可查进度/结果、支持集群模式）
 * 对校验完毕的数据拆分处理，`MapReduce` 分成小任务并发处理（提供异步实现、任务划分、可查进度/结果、支持集群模式）
 * 对已经执行导入的任务记录操作日志
-* 提供查询历史批量执行记录、导入详情的功能
+* 提供查询历史批量处理记录、导入详情的功能
 * 支持限制单用户/总体 的 导入频次/线程数
 * 支持退出登录后，在进入时若有任务未完成，则继续展示
 
@@ -39,3 +39,54 @@
 
 
 
+------------------
+
+## 技术选型
+
+### CSV 
+
+ [2018 csv 开源工具比较](https://github.com/uniVocity/csv-parsers-comparison)
+
+- opencsv
+- univocity-parsers
+```xml
+        <!-- https://opencsv.sourceforge.net/ -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>4.1</version>
+            <optional>true</optional>
+        </dependency>
+        
+        <!-- https://github.com/uniVocity/univocity-parsers/releases -->
+        <dependency>
+            <groupId>com.univocity</groupId>
+            <artifactId>univocity-parsers</artifactId>
+            <version>2.9.0</version>
+            <optional>true</optional>
+        </dependency>
+            
+        <!-- https://github.com/apache/commons-csv/releases -->
+        <!--http://commons.apache.org/proper/commons-csv/user-guide.html-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.8</version>
+        </dependency>
+        
+```
+### EXCEL
+
+
+```xml
+        
+        <!-- =============================================================== -->
+        
+        <!-- https://github.com/alibaba/easyexcel/releases -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>2.2.6</version>
+        </dependency>
+        
+```
