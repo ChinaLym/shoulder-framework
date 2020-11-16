@@ -22,11 +22,6 @@ public class BatchData {
      */
     protected String dataType;
 
-    // @deprecated -----------------------
-    protected List<? extends DataItem> addList = new ArrayList<>();
-
-    protected List<? extends DataItem> updateList = new ArrayList<>();
-
     /**
      * 需要批量处理分类，通常只有一个键值对（一项业务）
      * 操作类型（如 ADD、UPDATE...） - 要处理的数据

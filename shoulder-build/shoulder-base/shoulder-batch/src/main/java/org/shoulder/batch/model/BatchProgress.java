@@ -47,12 +47,12 @@ public class BatchProgress implements Serializable {
     /**
      * 成功数
      */
-    private int success;
+    private int successNum;
 
     /**
      * 失败数
      */
-    private int fail;
+    private int failNum;
 
     /**
      * 状态：
@@ -142,12 +142,12 @@ public class BatchProgress implements Serializable {
     }
 
     public void addSuccess(int successNum) {
-        this.success += successNum;
+        this.successNum += successNum;
         addProcessed(successNum);
     }
 
     public void addFail(int failNum) {
-        this.success += failNum;
+        this.successNum += failNum;
         addProcessed(failNum);
     }
 

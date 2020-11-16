@@ -128,7 +128,7 @@ public class BatchManager implements Runnable, ProgressAble {
         jobQueue.addAll(taskSlice);
 
         // 安排工人
-        int needToBeProcessed = progress.getTotal() - progress.getSuccess() - progress.getFail();
+        int needToBeProcessed = progress.getTotal() - progress.getSuccessNum() - progress.getFailNum();
         int workerNum = decideWorkerNum(needToBeProcessed, jobSize);
         resultQueue = new LinkedBlockingQueue<>(needToBeProcessed);
         log.info("taskQueue.size={}, resultQueue.size={}, workers={}", jobQueue.size(), resultQueue.size(), workerNum);
@@ -188,7 +188,7 @@ public class BatchManager implements Runnable, ProgressAble {
             for (DataItem dataItem : dataList) {
                 // 这里认为 total 是所有校验的数据，若 total = 100，则不可能有 rowNum > 100 的数据
                 detailList.get(dataItem.getRowNum())
-                    .setResult(BatchResultEnum.VALIDATE_SUCCESS.getCode())
+                    .setStatus(BatchResultEnum.VALIDATE_SUCCESS.getCode())
                     .setSource(convertObjectForExport(dataItem));
             }
         });
@@ -196,13 +196,13 @@ public class BatchManager implements Runnable, ProgressAble {
         for (DataItem dataItem : batchData.getSuccessList()) {
             result.getDetailList().get(dataItem.getRowNum())
                 .setSource(convertObjectForExport(dataItem))
-                .setResult(BatchResultEnum.SKIP_REPEAT.getCode());
+                .setStatus(BatchResultEnum.SKIP_REPEAT.getCode());
         }
         for (DataItem dataItem : batchData.getFailList()) {
             // getFailReason 不可能为 null，否则就是使用者错误，未塞入错误原因
             result.getDetailList().get(dataItem.getRowNum())
                 .setSource(convertObjectForExport(dataItem))
-                .setResult(BatchResultEnum.SKIP_REPEAT.getCode())
+                .setStatus(BatchResultEnum.SKIP_REPEAT.getCode())
                 .setFailReason(batchData.getFailReason().get(dataItem.getRowNum()));
         }
         log.info("Directly: success:{}, fail:{}", batchData.getSuccessList().size(), batchData.getFailList().size());
@@ -311,7 +311,7 @@ public class BatchManager implements Runnable, ProgressAble {
              */
             BatchRecordDetail taskResultDetail = takeUnExceptInterrupted(resultQueue);
             if (taskResultDetail.isCalculateProgress()) {
-                boolean success = BatchResultEnum.IMPORT_SUCCESS.getCode() == taskResultDetail.getResult();
+                boolean success = BatchResultEnum.IMPORT_SUCCESS.getCode() == taskResultDetail.getStatus();
                 if (success) {
                     progress.addSuccess(1);
                 } else {
@@ -346,8 +346,8 @@ public class BatchManager implements Runnable, ProgressAble {
      */
     protected void persistentImportRecord() {
         try {
-            result.setSuccessNum(progress.getSuccess());
-            result.setFailNum(progress.getFail());
+            result.setSuccessNum(progress.getSuccessNum());
+            result.setFailNum(progress.getFailNum());
             batchRecordMapper.insert(result);
             // todo 一致性/性能 最后保存一次？ 或在 work 中与批处理在同一事务进行保存？
             persistentBatchDetail();
@@ -361,10 +361,10 @@ public class BatchManager implements Runnable, ProgressAble {
      */
     private void fillOperationLog() {
         // 根据处理结果判断总体结果
-        OperationResult result = OperationResult.of(progress.getSuccess() > 0, progress.getFail() > 0);
+        OperationResult result = OperationResult.of(progress.getSuccessNum() > 0, progress.getFailNum() > 0);
         OpLogContextHolder.getLog().setResult(result)
-            .addDetailItem(String.valueOf(progress.getSuccess()))
-            .addDetailItem(String.valueOf(progress.getFail()))
+            .addDetailItem(String.valueOf(progress.getSuccessNum()))
+            .addDetailItem(String.valueOf(progress.getFailNum()))
             .setObjectId(progress.getTaskId())
             .setObjectType(batchData.getDataType());
         OpLogContextHolder.enableAutoLog();

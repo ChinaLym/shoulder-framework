@@ -224,7 +224,7 @@ public class BatchExportServiceImpl implements BatchAndExportService {
 
                     dataMap.put(ExportConstants.ROW_NUM, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getRowNum()));
                     dataMap.put(ExportConstants.RESULT, translator.getMessage(batchRecordDetail.getFailReason(),
-                        BatchResultEnum.of(batchRecordDetail.getResult()).getTip()));
+                        BatchResultEnum.of(batchRecordDetail.getStatus()).getTip()));
                     dataMap.put(ExportConstants.DETAIL, translator.getMessage(batchRecordDetail.getFailReason()));
                     return dataMap;
                 })
