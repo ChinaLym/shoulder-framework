@@ -10,13 +10,6 @@ import org.shoulder.batch.model.BatchProgress;
 public interface ProgressAble {
 
     /**
-     * 任务标识
-     *
-     * @return taskId
-     */
-    String getTaskId();
-
-    /**
      * 任务进度
      *
      * @return 进度

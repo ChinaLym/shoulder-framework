@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.shoulder.batch.repository.mapper.ImportRecordDetailMapper">
+<mapper namespace="org.shoulder.batch.repository.mapper.BatchRecordDetailMapper">
 
     <sql id="detailSelectColumn">
         detail_id detailId,
@@ -35,7 +35,7 @@
 
     </insert>
 
-    <select id="findAllImportDetailByCode" resultType="org.shoulder.batch.model.BatchRecordDetail">
+    <select id="findAllByResult" resultType="org.shoulder.batch.model.BatchRecordDetail">
         SELECT
         <include refid="detailSelectColumn"/>
         FROM
@@ -43,7 +43,10 @@
         WHERE
         import_id = #{recordId}
         <if test="key != null">
-            AND import_result = #{result}
+            AND import_result IN
+            <foreach collection="resultList" item="result" index="index" open="(" close=")" separator=",">
+                #{result}
+            </foreach>
         </if>
         ORDER BY line_num
     </select>

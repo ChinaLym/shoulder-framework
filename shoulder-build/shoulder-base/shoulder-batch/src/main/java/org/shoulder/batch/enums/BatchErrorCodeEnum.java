@@ -17,7 +17,7 @@ public enum BatchErrorCodeEnum implements ErrorCode {
     TASK_ID_NOT_EXIST(0, "The task id not exist!"),
 
     /**
-     * 当前导入过多，拒绝处理
+     * 当前任务过多，拒绝处理
      */
     IMPORT_BUSY(0, "Import handler is busy, please retry later!"),
 
@@ -35,7 +35,6 @@ public enum BatchErrorCodeEnum implements ErrorCode {
      * 分片任务结果数不正确，可能未全部执行完便异常终止了
      */
     TASK_SLICE_RESULT_INVALID(0, "task slice result invalid, except %d but only %d"),
-
 
     ;
 

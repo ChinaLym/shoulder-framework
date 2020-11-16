@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * 批量执行记录详情-标准模型
+ * 批量处理记录详情-标准模型
  *
  * @author lym
  */
@@ -24,17 +24,17 @@ public class BatchRecordDetail implements Serializable {
     private Integer id;
 
     /**
-     * 批量执行记录表id
+     * 批量处理记录表id
      */
     private String recordId;
 
     /**
-     * 导入行号
+     * 本次批处理所在位置行号 / 索引 / 下标
      */
     private int rowNum;
 
     /**
-     * 结果 0 导入成功 1 校验失败、2 重复跳过、3 重复更新、4 导入失败
+     * 结果 0 处理成功 1 校验失败、2 重复跳过、3 重复更新、4 处理失败
      */
     private int result;
 
@@ -49,7 +49,7 @@ public class BatchRecordDetail implements Serializable {
     private String failReason;
 
     /**
-     * 导入的原数据
+     * 处理的原始数据
      */
     private String source;
 
