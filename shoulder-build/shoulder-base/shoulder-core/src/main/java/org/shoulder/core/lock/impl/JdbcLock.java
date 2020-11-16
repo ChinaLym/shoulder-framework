@@ -4,6 +4,7 @@ import org.shoulder.core.lock.LockInfo;
 import org.shoulder.core.lock.ServerLock;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.lang.NonNull;
@@ -16,6 +17,7 @@ import java.time.Duration;
 /**
  * 锁持久层
  * 数据库锁，解锁时应置为过期，而非删除记录
+ * 注意频繁增删元素，可能对索引结构造成一定影响
  *
  * @author lym
  */
@@ -60,9 +62,20 @@ public class JdbcLock implements ServerLock {
         + "where resource=? and release_time < ?";
 
 
+    /**
+     * jdbc 模板
+     */
     private JdbcTemplate jdbc;
 
+    /**
+     * 数据库 - DTO 转换
+     */
     private RowMapper<LockInfo> rowMapper = getRowMapper();
+
+    /**
+     * 最小阻塞时间
+     */
+    private Duration minBlockTime = Duration.ofMillis(10);
 
     @Override
     @Nullable
@@ -76,11 +89,11 @@ public class JdbcLock implements ServerLock {
 
     @Override
     public boolean tryLock(LockInfo lockInfo, Duration maxBlockTime) throws InterruptedException {
-        if (tryLock(lockInfo)) {
-            return true;
+        while (!tryLock(lockInfo)) {
+            // 阻塞，直至加锁成功
+            Thread.sleep(minBlockTime.toMillis());
         }
-        // todo 阻塞，直至加锁成功
-        return false;
+        return true;
     }
 
     @Override
@@ -92,14 +105,14 @@ public class JdbcLock implements ServerLock {
 
     @Override
     public boolean holdLock(String resource, String token) {
-        return false;
+        return StringUtils.equals(token,
+            jdbc.queryForObject("select token from server_lock where resource=?", String.class, resource));
     }
 
     @Override
     public void unlock(String resource, String token) {
         jdbc.update(RELEASE_LOCK_DELETE_STATEMENT, resource, token);
     }
-
 
     protected RowMapper<LockInfo> getRowMapper() {
         return new LockInfoRowMapper();
