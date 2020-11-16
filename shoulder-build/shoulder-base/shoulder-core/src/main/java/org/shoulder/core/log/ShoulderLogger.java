@@ -53,11 +53,12 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
      */
     protected final Logger delegateLogger;
 
-    public ShoulderLogger(Class<?> clazz) {
-        delegateLogger = LoggerFactory.getLogger(clazz);
-    }
-
-    public ShoulderLogger(String name) {
+    /**
+     * 构造器使用 {@link org.shoulder.core.log.LoggerFactory#getLogger}
+     *
+     * @param name 日志记录器名称
+     */
+    ShoulderLogger(String name) {
         delegateLogger = LoggerFactory.getLogger(name);
     }
 
@@ -415,6 +416,11 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
         });
     }
 
+    @Override
+    public void warn(ErrorCode errorCode, Throwable t) {
+        uniformLog(errorCode.getCode(), () -> delegateLogger.warn(errorCode.generateDetail(), t));
+    }
+
 
     @Override
     public void warnWithErrorCode(String errorCode, String msg) {
@@ -537,6 +543,11 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     }
 
     @Override
+    public void error(ErrorCode errorCode, Throwable t) {
+        uniformLog(errorCode.getCode(), () -> delegateLogger.error(errorCode.generateDetail(), t));
+    }
+
+    @Override
     public void errorWithErrorCode(String errorCode, String msg) {
         uniformLog(errorCode, () -> delegateLogger.error(msg));
     }
@@ -570,7 +581,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     /**
      * 统一格式打印日志
-     * 在第三方日志记录器的基础上封装一点信息，如调用链信息
+     * 在 slf4j 基础上封装一点信息，如调用链信息
      *
      * @param logger 第三方日志
      */
@@ -587,20 +598,13 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     /**
      * 统一格式打印日志
-     * 在第三方日志记录器的基础上封装一点信息，如调用链信息
+     * 在 slf4j 基础上封装一点信息，如调用链信息、错误码
      *
      * @param logger 第三方日志
      */
     private void uniformLog(String errorCode, GeneralLogger logger) {
         addErrorCodeInfo(errorCode);
-        String traceInfo = generateTraceInfo();
-        if (traceInfo != null) {
-            MDC.put(MDC_TRACE_NAME, traceInfo);
-        }
-        logger.log();
-        if (traceInfo != null) {
-            MDC.remove(MDC_TRACE_NAME);
-        }
+        uniformLog(logger);
         cleanErrorCodeInfo();
     }
 
@@ -610,7 +614,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
      * @param errorCode 错误码
      * @return [errorCodePrefix + errorCode]
      */
-    String generateErrorCode(String errorCode) {
+    private String generateErrorCode(String errorCode) {
         return SPACE + ERROR_CODE_PREFIX + ExceptionUtil.formatErrorCode(errorCode) + ERROR_CODE_SUFFIX;
     }
 
@@ -619,7 +623,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
      *
      * @return <traceId,spanId>
      */
-    String generateTraceInfo() {
+    private String generateTraceInfo() {
         String traceId = MDC.get(MDC_TRACE_ID);
         if (StringUtils.isEmpty(traceId)) {
             return null;
@@ -636,21 +640,27 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
      *
      * @param errorCode 错误码
      */
-    void addErrorCodeInfo(String errorCode) {
+    private void addErrorCodeInfo(String errorCode) {
         MDC.put(MDC_ERROR_CODE_NAME, generateErrorCode(errorCode));
     }
 
     /**
      * 清理错误码信息
      */
-    void cleanErrorCodeInfo() {
+    private void cleanErrorCodeInfo() {
         MDC.remove(MDC_ERROR_CODE_NAME);
     }
+
 
     /**
      * 一般为第三方的日志记录器，如 logback 等
      */
+    @FunctionalInterface
     interface GeneralLogger {
+
+        /**
+         * 记录日志
+         */
         void log();
     }
 }
