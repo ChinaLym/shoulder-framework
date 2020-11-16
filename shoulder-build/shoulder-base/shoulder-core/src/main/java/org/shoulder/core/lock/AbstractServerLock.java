@@ -1,8 +1,7 @@
 package org.shoulder.core.lock;
 
-import org.springframework.lang.Nullable;
-
 import javax.annotation.Nonnull;
+import javax.annotation.PreDestroy;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
@@ -23,6 +22,7 @@ public abstract class AbstractServerLock implements ServerLock {
      */
     private static final ConcurrentHashMap<Object, LockInfo> UNSAFE_FOR_JDK_SUPPORT = new ConcurrentHashMap<>();
 
+    private final ThreadLocal<String> OPERATION_TOKEN = ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
 
     @Override
     public void lock() {
@@ -54,22 +54,12 @@ public abstract class AbstractServerLock implements ServerLock {
     }
 
     /**
-     * 获取锁对应的信息，用于 JDK锁
-     *
-     * @return 锁信息
-     */
-    @Nullable
-    public LockInfo getLockInfo() {
-        return getThisLock();
-    }
-
-    /**
      * 获取当前锁对象，对应的锁
      *
      * @return 前锁对象，对应的锁
      */
     private LockInfo getThisLock() {
-        return UNSAFE_FOR_JDK_SUPPORT.computeIfAbsent(this, k -> new LockInfo(UUID.randomUUID().toString()));
+        return UNSAFE_FOR_JDK_SUPPORT.computeIfAbsent(this, k -> new LockInfo(OPERATION_TOKEN.get()));
     }
 
     private TemporalUnit toTemporalUnit(@Nonnull TimeUnit unit) {
@@ -92,4 +82,10 @@ public abstract class AbstractServerLock implements ServerLock {
                 throw new IllegalStateException();
         }
     }
+
+    @PreDestroy
+    public void preDestroy() {
+        OPERATION_TOKEN.remove();
+    }
+
 }
