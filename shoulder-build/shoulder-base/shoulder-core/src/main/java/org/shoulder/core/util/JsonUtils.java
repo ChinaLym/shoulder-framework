@@ -113,6 +113,19 @@ public class JsonUtils {
     /**
      * 反序列化 JSON 字符串为 Object
      */
+    public static <T> T toObject(String json) {
+
+        try {
+            return JSON_MAPPER.readValue(json, new TypeReference<T>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new JsonRuntimeException(e);
+        }
+    }
+
+    /**
+     * 反序列化 JSON 字符串为 Object
+     */
     public static <T> T toObject(String json, TypeReference<T> type) {
         try {
             return JSON_MAPPER.readValue(json, type);

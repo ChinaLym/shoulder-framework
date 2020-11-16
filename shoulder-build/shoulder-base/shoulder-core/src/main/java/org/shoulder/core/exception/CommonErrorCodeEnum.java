@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 
 /**
  * 通用错误（2^14以下框架使用）错误码标识 = 0 的那部分
- * 注意错误码不一定只给用户的，也可能是给其他服务用的。
- * 给用户看的必须保证用户能看懂，如名称长度中不能含有非法字符，而服务超时、数据库连接异常、空指针等用户看不懂的展示时一律使用未知异常。
  *
  * @author lym
  */
@@ -81,9 +79,8 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     // ----------------------- 作为服务提供者（要处理的HTTP请求参数校验未通过） ----------------------
 
     /**
-     * 未知异常，用于临时使用以打印错误码，正常来说不应该使用该错误码，不利于排查
+     * 未知异常，谨慎使用该错误码，不利于排查
      */
-    @Deprecated
     UNKNOWN(300, "Unknown error."),
     /**
      * 响应超时（对于网关）
@@ -99,16 +96,6 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     DEPRECATED_NOT_SUPPORT(305, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
 
     /**
-     * 不应出现，出现则说明服务器配置文件有问题
-     */
-    CONFIGURATION_ERROR(306, "Configuration Error!", Level.ERROR, HttpStatus.NOT_IMPLEMENTED),
-
-    /**
-     * 存储空间不足（磁盘不足 / 触发限制）
-     */
-    STORAGE_SPACE_INSUFFICIENT(307, "Insufficient Storage!", Level.ERROR, HttpStatus.INSUFFICIENT_STORAGE),
-
-    /**
      * 包装 HttpMessageNotReadableException,
      * 请求体读取失败，传过来的参数与你controller接收的参数类型不匹配。如 Post 请求缺少参数或者解析 json 时失败了
      */
@@ -122,7 +109,14 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     MULTIPART_INVALID(324, "Request is not a validate multipart request, please check request or file size.", HttpStatus.BAD_REQUEST),
 
+    // ----------------------- 并发、达到瓶颈 error 级别 返回 500 ----------------------
+
+    SERVER_BUSY(1, "server is busy, try again later.", Level.ERROR),
+
+
     // ----------------------- 与中间件操作异常，代码正确时，常发于中间件宕机 ----------------------
+
+
     // 一般要包含连接什么异常、什么操作时失败 error 级别 返回 500
     MID_WARE_CONNECT_FAIL(400, "Connect ", Level.ERROR),
 

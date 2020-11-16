@@ -18,7 +18,7 @@ public interface Logger extends org.slf4j.Logger {
      */
     void log(ErrorCode error);
 
-    // info/debug 级别日志一般不采集，这类日志带错误码对分析意义较小，但又消耗额外的资源（存储/计算/人力编码）可不带错误码
+    // info/debug 级别日志太多，一般不采集，这类日志带错误码对分析意义较小，但又消耗额外的资源（存储/计算/人力编码），故可不带错误码
 
     void info(ErrorCode errorCode);
 
@@ -27,9 +27,17 @@ public interface Logger extends org.slf4j.Logger {
     /**
      * 推荐的 warn 日志，带错误码
      *
-     * @param errorCode 带错误码和默认提示信息的异常
+     * @param errorCode 错误码类 / 枚举 / 异常
      */
     void warn(ErrorCode errorCode);
+
+    /**
+     * warn 级别带错误码
+     *
+     * @param errorCode 错误码类 / 枚举
+     * @param t         上级异常
+     */
+    void warn(ErrorCode errorCode, Throwable t);
 
     void warnWithErrorCode(String errorCode, String msg);
 
@@ -49,9 +57,17 @@ public interface Logger extends org.slf4j.Logger {
     /**
      * error 级别带错误码
      *
-     * @param errorCode 错误码
+     * @param errorCode 错误码类 / 枚举 / 异常
      */
     void error(ErrorCode errorCode);
+
+    /**
+     * error 级别带错误码
+     *
+     * @param errorCode 错误码类 / 枚举
+     * @param t         上级异常
+     */
+    void error(ErrorCode errorCode, Throwable t);
 
     void errorWithErrorCode(String errorCode, String msg);
 
