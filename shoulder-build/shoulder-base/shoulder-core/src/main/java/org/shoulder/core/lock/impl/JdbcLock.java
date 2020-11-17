@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -76,6 +77,10 @@ public class JdbcLock implements ServerLock {
      * 最小阻塞时间
      */
     private Duration minBlockTime = Duration.ofMillis(10);
+
+    public JdbcLock(DataSource dataSource) {
+        this.jdbc = new JdbcTemplate(dataSource);
+    }
 
     @Override
     @Nullable

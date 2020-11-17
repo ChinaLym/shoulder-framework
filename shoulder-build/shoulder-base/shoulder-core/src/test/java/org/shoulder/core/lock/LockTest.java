@@ -1,7 +1,7 @@
 package org.shoulder.core.lock;
 
 import org.junit.Test;
-import org.shoulder.core.lock.impl.MemoryLockAbstract;
+import org.shoulder.core.lock.impl.MemoryLock;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -15,7 +15,7 @@ public class LockTest {
      */
     @Test
     public void testMemoryLock() throws InterruptedException {
-        testExclusion(new MemoryLockAbstract());
+        testExclusion(new MemoryLock());
     }
 
 
