@@ -30,15 +30,6 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-http</artifactId>
         </dependency>
-        <!-- 对象转换 -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-        </dependency>
 
     </dependencies>
 

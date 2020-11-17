@@ -26,40 +26,45 @@ public class JdbcLock implements ServerLock {
     private static final Logger log = LoggerFactory.getLogger(JdbcLock.class);
 
 
-    private static final String INSERT_FIELDS = "resource, owner, token, lock_time, release_time";
+    private static final String INSERT_FIELDS = "resource, owner, token, version, lock_time, release_time";
 
     /**
      * 查询锁信息
      */
     private static final String BASE_QUERY_STATEMENT =
-        "select owner, token, version, lock_time, release_time, version from server_lock where resource=";
+        "select owner, token, version, lock_time, release_time, version from system_lock where resource=";
 
     /**
      * 悲观 创建锁- 插入
      */
-    private static final String CREATE_LOCK_STATEMENT = "insert into server_lock (" + INSERT_FIELDS
-        + ") values (?, ?, ?, ?, ?) where not exists (select resource from server_lock where resource=?";
+    private static final String CREATE_LOCK_STATEMENT =
+        "INSERT INTO system_lock (" + INSERT_FIELDS + ") " +
+            "SELECT ?, ?, ?, 0, ?, ? FROM DUAL " +
+            "WHERE NOT EXISTS(SELECT resource FROM system_lock WHERE resource = ?)";
+
 
     /**
      * 悲观 释放锁- 删除记录
      */
     private static final String RELEASE_LOCK_DELETE_STATEMENT =
-        "delete server_lock where resource=? and token=?";
+        "delete system_lock where resource=? and token=?";
 
 
     /**
      * 清理已经过期的锁
      */
-    private static final String CLEAN_LOCK_STATEMENT = "delete server_lock where release_time < now()";
+    private static final String CLEAN_LOCK_STATEMENT = "delete system_lock where release_time < now()";
 
     /**
      * 尝试加锁
-     *
-     * @deprecated 不使用更新，容易因为事务隔离机制导致意外结果
+     * @deprecated 不使用更新，容易因为事务隔离机制导致意外结果，且不同数据库支持情况不同
      */
-    private static final String UPDATE_LOCK_STATEMENT = "update server_lock set " +
-        "owner=? and token=? and  version=? and  lock_time=? and release_time=? "
-        + "where resource=? and release_time < ?";
+    private static final String UPDATE_LOCK_STATEMENT =
+        "INSERT INTO system_lock (" + INSERT_FIELDS + ") VALUES (?, ?, ?, 0, ?, ?) " +
+            "ON DUPLICATE KEY UPDATE owner=?, token=?, version=0, lock_time=now(), release_time=? where release_time < now()";
+    private static final String UPDATE_LOCK_BASE_ON_VERSION_STATEMENT =
+        "INSERT INTO system_lock (" + INSERT_FIELDS + ") VALUES (?, ?, ?, 0, ?, ?) " +
+            "ON DUPLICATE KEY UPDATE release_time < now()";
 
 
     /**
@@ -76,6 +81,10 @@ public class JdbcLock implements ServerLock {
      * 最小阻塞时间
      */
     private Duration minBlockTime = Duration.ofMillis(10);
+
+    public JdbcLock(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
 
     @Override
     @Nullable
@@ -106,7 +115,7 @@ public class JdbcLock implements ServerLock {
     @Override
     public boolean holdLock(String resource, String token) {
         return StringUtils.equals(token,
-            jdbc.queryForObject("select token from server_lock where resource=?", String.class, resource));
+            jdbc.queryForObject("select token from system_lock where resource=?", String.class, resource));
     }
 
     @Override
