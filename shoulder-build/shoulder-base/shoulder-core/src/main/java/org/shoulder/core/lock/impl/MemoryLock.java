@@ -9,13 +9,13 @@ import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 内存锁，并非分布式的
- * 1. 使用上与分布式一致，可以在中间版本使用
+ * 内存锁，并非分布式的，使用场景：
+ * 1. 预适配支持集群 / mock 本地调试
  * 2. 记录本进程获取的锁
  *
  * @author lym
  */
-public class MemoryLockAbstract extends AbstractServerLock {
+public class MemoryLock extends AbstractServerLock {
 
     /**
      * 持有的锁

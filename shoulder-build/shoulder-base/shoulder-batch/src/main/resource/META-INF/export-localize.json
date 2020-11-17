@@ -75,12 +75,7 @@
         "delimiter": "\t"
     },
     {
-        "languageId": "zh-CN",
-        "encoding": "gb2312",
-        "delimiter": ","
-    },
-    {
-        "languageId": "zh_CN",
+        "languageId": "zh_cn",
         "encoding": "gb2312",
         "delimiter": ","
     },
@@ -90,12 +85,7 @@
         "delimiter": ","
     },
     {
-        "languageId": "zh-TW",
-        "encoding": "big5",
-        "delimiter": ","
-    },
-    {
-        "languageId": "zh_TW",
+        "languageId": "zh_tw",
         "encoding": "big5",
         "delimiter": ","
     },
