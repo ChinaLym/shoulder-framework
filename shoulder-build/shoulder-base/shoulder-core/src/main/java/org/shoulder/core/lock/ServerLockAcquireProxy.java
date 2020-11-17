@@ -1,6 +1,6 @@
 package org.shoulder.core.lock;
 
-import org.shoulder.core.lock.impl.MemoryLockAbstract;
+import org.shoulder.core.lock.impl.MemoryLock;
 
 import java.time.Duration;
 
@@ -23,7 +23,7 @@ public class ServerLockAcquireProxy implements ServerLock {
 
     private ServerLock delegate;
 
-    private ServerLock memoryLock = new MemoryLockAbstract();
+    private ServerLock memoryLock = new MemoryLock();
 
     public ServerLockAcquireProxy(ServerLock delegate) {
 
