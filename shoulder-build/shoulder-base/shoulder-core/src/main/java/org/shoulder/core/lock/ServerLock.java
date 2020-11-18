@@ -12,6 +12,8 @@ import java.util.concurrent.locks.Lock;
 
 /**
  * 全局锁，以支持应用集群
+ * 兼容 JDK lock 接口。其中 unlock 方法若未锁定则不会执行任何事情，而不是抛异常
+ * 由于 Condition 操作需要通信，分布式场景中需要依赖特定的中间件提供的能力才可，默认未实现，通过 redis / zk 实现的锁中可选择实现
  *
  * @author lym
  */
