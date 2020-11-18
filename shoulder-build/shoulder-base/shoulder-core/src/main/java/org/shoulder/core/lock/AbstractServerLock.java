@@ -10,15 +10,29 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 全局锁抽象类，支持 jdk 的方法
+ * 通过线程变量，保存token，模拟 JDK 锁
  *
  * @author lym
  */
 @SuppressWarnings("PMD.AbstractClassShouldStartWithAbstractNamingRule")
 public abstract class AbstractServerLock implements ServerLock {
 
-    private final String lockId = UUID.randomUUID().toString();
+    /**
+     * 资源标识
+     */
+    private final String resource;
 
-    private final ThreadLocal<LockInfo> lockInfoLocal = ThreadLocal.withInitial(() -> new LockInfo(lockId));
+    private final ThreadLocal<LockInfo> lockInfoLocal;
+
+    public AbstractServerLock() {
+        this(UUID.randomUUID().toString());
+    }
+
+    public AbstractServerLock(String resource) {
+        this.resource = resource;
+        this.lockInfoLocal = ThreadLocal.withInitial(() -> new LockInfo(resource));
+    }
+
 
     @Override
     public void lock() {
@@ -84,4 +98,8 @@ public abstract class AbstractServerLock implements ServerLock {
         lockInfoLocal.remove();
     }
 
+
+    public String getResource() {
+        return resource;
+    }
 }

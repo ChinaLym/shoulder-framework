@@ -1,11 +1,9 @@
 package org.shoulder.core.lock.impl;
 
 import org.shoulder.core.exception.BaseRuntimeException;
-import org.shoulder.core.lock.AbstractServerLock;
+import org.shoulder.core.lock.AbstractDistributeLock;
 import org.shoulder.core.lock.LockInfo;
 import org.shoulder.core.lock.ServerLock;
-import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,21 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Duration;
-import java.time.Instant;
 
 /**
- * 锁持久层
- * 数据库锁，解锁时应置为过期，而非删除记录
- * 注意频繁增删元素，可能对索引结构造成一定影响
- * todo
+ * 基于 数据库 的分布式锁
+ * 可以根据自身使用情况合理调整，举例：频繁增删元素，可能对索引结构造成一定影响，若锁的key比较固定，则推荐解锁时采用更新而非删除
+ * 注意存在事务 / 嵌套事务的影响，数据交互耗时对阻塞最大时长的影响
  *
  * @author lym
  */
-public class JdbcLock extends AbstractServerLock implements ServerLock {
-
-    private static final Logger log = LoggerFactory.getLogger(JdbcLock.class);
-
+public class JdbcLock extends AbstractDistributeLock implements ServerLock {
 
     private static final String INSERT_FIELDS = "resource, owner, token, version, lock_time, release_time";
 
@@ -44,14 +36,14 @@ public class JdbcLock extends AbstractServerLock implements ServerLock {
     /**
      * 悲观 创建锁- 插入
      */
-    private static final String CREATE_LOCK_STATEMENT =
+    private static final String INSERT_STATEMENT =
         "INSERT INTO system_lock (" + INSERT_FIELDS + ") " +
             "VALUES (?, ?, ?, 0, now(), ?)";
 
     /**
      * 悲观 创建锁- 插入
      */
-    private static final String CREATE_IF_UNEXISTS_LOCK_STATEMENT =
+    private static final String INSERT_IF_NOT_EXISTS_STATEMENT =
         "INSERT INTO system_lock (" + INSERT_FIELDS + ") " +
             "SELECT ?, ?, ?, 0, ?, ? FROM DUAL " +
             "WHERE NOT EXISTS(SELECT resource FROM system_lock WHERE resource = ?)";
@@ -92,12 +84,6 @@ public class JdbcLock extends AbstractServerLock implements ServerLock {
      */
     private RowMapper<LockInfo> rowMapper = getRowMapper();
 
-    /**
-     * 重试等待时间间隔
-     * todo 可扩展 / 调整
-     */
-    private Duration retryBlockTime = Duration.ofMillis(20);
-
     public JdbcLock(DataSource dataSource) {
         this.jdbc = new JdbcTemplate(dataSource);
     }
@@ -134,40 +120,6 @@ public class JdbcLock extends AbstractServerLock implements ServerLock {
         return lockInfo;
     }
 
-    /**
-     * 【阻塞时间精确性注意】因为每次尝试都与数据库交互，故也是耗时的，尤其是数据库繁忙时，举例：
-     * 使用者期望最多阻塞5s，拿不到锁立即返回，结果阻塞5s加上轮询数据库耗时（不确定将阻塞多久，比如5s），导致总供阻塞了10s
-     * 这是使用者意料之外的，故需要统计该时间
-     * <p>
-     * 框架实现-最多阻塞 expectMaxBlockTime + 一次尝试获取时间
-     *
-     * @param lockInfo           锁信息
-     * @param exceptMaxBlockTime 等待获取锁最大阻塞时间，实际必然大于该值，框架实现尽量贴近该值
-     * @return 是否获取成功
-     * @throws InterruptedException 阻塞时被其他线程打断
-     */
-    @Override
-    public boolean tryLock(LockInfo lockInfo, Duration exceptMaxBlockTime) throws InterruptedException {
-        // 返回截止时间
-        Instant startTime = Instant.now();
-        Instant deadline = startTime.plus(exceptMaxBlockTime);
-        for (int tryTimes = 0; !tryLock(lockInfo); tryTimes++) {
-            // 剩余最长可等待时间
-            Duration maxBlockTime = Duration.between(Instant.now(), deadline);
-            if (maxBlockTime.isNegative() || maxBlockTime.isZero()) {
-                // 剩余可等待时间 <= 0：达到最大时间且没有获取到
-                log.info("try lock FAIL with {}! {}", exceptMaxBlockTime, lockInfo);
-                return false;
-            }
-            // 取较小的
-            Duration blockTime = retryBlockTime.compareTo(maxBlockTime) < 0 ? retryBlockTime : maxBlockTime;
-            log.trace("try lock {} for {} times.", lockInfo.getResource(), tryTimes);
-            // 阻塞，直至加锁成功
-            Thread.sleep(blockTime.toMillis());
-        }
-        log.debug("try lock SUCCESS cost {}! {}", Duration.between(startTime, Instant.now()), lockInfo);
-        return true;
-    }
 
     /**
      * 使用 REQUIRES_NEW 的原因：存在事务时加锁无效，其他线程无法感知已经加锁。举例：
@@ -184,21 +136,19 @@ public class JdbcLock extends AbstractServerLock implements ServerLock {
     public boolean tryLock(LockInfo lockInfo) {
         boolean locked = false;
         try {
+            // insert on unExists
             locked = jdbc.update(
-                CREATE_LOCK_STATEMENT,
-                lockInfo.getResource(), lockInfo.getOwner(), lockInfo.getToken(), lockInfo.getReleaseTime()) != 0;
+                INSERT_IF_NOT_EXISTS_STATEMENT,
+                lockInfo.getResource(), lockInfo.getOwner(), lockInfo.getToken(),
+                lockInfo.getLockTime(), lockInfo.getReleaseTime(), lockInfo.getResource()
+            ) != 0;
+            /*locked = jdbc.update(
+                INSERT_STATEMENT,
+                lockInfo.getResource(), lockInfo.getOwner(), lockInfo.getToken(), lockInfo.getReleaseTime()) != 0;*/
         } catch (DataAccessException ignored) {
             // DuplicateKeyException | DeadlockLoserDataAccessException
             // 已经存在：其他线程已经获取到锁
         }
-
-/* // insert on unExists
-        boolean locked = jdbc.update(
-            CREATE_LOCK_STATEMENT,
-            lockInfo.getResource(), lockInfo.getOwner(), lockInfo.getToken(),
-            lockInfo.getLockTime(), lockInfo.getReleaseTime(), lockInfo.getResource()
-        ) != 0;
-*/
         log.debug("try lock {}! {}", locked ? "SUCCESS" : "FAIL", lockInfo);
         return locked;
     }
