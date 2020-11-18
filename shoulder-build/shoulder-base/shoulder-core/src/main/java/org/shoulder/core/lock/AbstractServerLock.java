@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,12 +16,9 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("PMD.AbstractClassShouldStartWithAbstractNamingRule")
 public abstract class AbstractServerLock implements ServerLock {
 
-    /**
-     * 保存前锁对象，对应的锁，以支持 jdk 的方法，禁止使用者自行使用，否则不安全
-     */
-    private static final ConcurrentHashMap<Object, LockInfo> UNSAFE_FOR_JDK_SUPPORT = new ConcurrentHashMap<>();
+    private final String lockId = UUID.randomUUID().toString();
 
-    private final ThreadLocal<String> OPERATION_TOKEN = ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
+    private final ThreadLocal<LockInfo> lockInfoLocal = ThreadLocal.withInitial(() -> new LockInfo(lockId));
 
     @Override
     public void lock() {
@@ -59,7 +55,7 @@ public abstract class AbstractServerLock implements ServerLock {
      * @return 前锁对象，对应的锁
      */
     private LockInfo getThisLock() {
-        return UNSAFE_FOR_JDK_SUPPORT.computeIfAbsent(this, k -> new LockInfo(OPERATION_TOKEN.get()));
+        return lockInfoLocal.get();
     }
 
     private TemporalUnit toTemporalUnit(@Nonnull TimeUnit unit) {
@@ -85,7 +81,7 @@ public abstract class AbstractServerLock implements ServerLock {
 
     @PreDestroy
     public void preDestroy() {
-        OPERATION_TOKEN.remove();
+        lockInfoLocal.remove();
     }
 
 }

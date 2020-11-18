@@ -5,7 +5,7 @@ import org.shoulder.core.lock.LockInfo;
 import org.shoulder.core.util.StringUtils;
 
 import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -23,23 +23,23 @@ public class MemoryLock extends AbstractServerLock {
     private static ConcurrentHashMap<String, LockInfo> holdLocks = new ConcurrentHashMap<>();
 
     @Override
-    public boolean tryLock(LockInfo lockInfo, Duration maxBlockTime) throws InterruptedException {
-        Instant now = Instant.now();
-        Instant maxBlockInstant = now.plus(maxBlockTime);
+    public boolean tryLock(LockInfo lockInfo, Duration exceptMaxBlockTime) throws InterruptedException {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime maxBlockTime = now.plus(exceptMaxBlockTime);
         while (true) {
             LockInfo oldLock;
             if ((oldLock = holdLocks.putIfAbsent(lockInfo.getResource(), lockInfo)) == null) {
                 return true;
             }
-            Duration ttl = Duration.between(Instant.now(),
+            Duration ttl = Duration.between(LocalDateTime.now(),
                 // 取更小的
-                maxBlockInstant.compareTo(oldLock.getReleaseTime()) > 0 ? oldLock.getReleaseTime() : maxBlockInstant);
+                maxBlockTime.compareTo(oldLock.getReleaseTime()) > 0 ? oldLock.getReleaseTime() : maxBlockTime);
 
             synchronized (oldLock) {
                 oldLock.wait(ttl.toMillis());
             }
             // 有人释放，重新尝试获取锁
-            if (Instant.now().compareTo(maxBlockInstant) > 0) {
+            if (LocalDateTime.now().compareTo(maxBlockTime) > 0) {
                 // 达到最大阻塞时间加锁失败
                 return false;
             }
@@ -83,4 +83,6 @@ public class MemoryLock extends AbstractServerLock {
         }
         // token 不正确，无法释放
     }
+
+
 }
