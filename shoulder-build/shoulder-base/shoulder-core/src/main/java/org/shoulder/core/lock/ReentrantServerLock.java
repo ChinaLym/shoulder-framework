@@ -27,12 +27,12 @@ public class ReentrantServerLock implements ServerLock {
     }
 
     @Override
-    public boolean tryLock(LockInfo lockInfo, Duration maxBlockTime) throws InterruptedException {
+    public boolean tryLock(LockInfo lockInfo, Duration exceptMaxBlockTime) throws InterruptedException {
         if (delegate.holdLock(lockInfo)) {
             reentrantCountMap.get(lockInfo.getResource()).incrementAndGet();
             return true;
         } else {
-            boolean lock = delegate.tryLock(lockInfo, maxBlockTime);
+            boolean lock = delegate.tryLock(lockInfo, exceptMaxBlockTime);
             if (lock) {
                 reentrantCountMap.put(lockInfo.getResource(), new AtomicInteger(0));
             }

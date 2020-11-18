@@ -30,8 +30,8 @@ public class ServerLockAcquireProxy implements ServerLock {
     }
 
     @Override
-    public boolean tryLock(LockInfo lockInfo, Duration maxBlockTime) throws InterruptedException {
-        return delegate.tryLock(lockInfo, maxBlockTime);
+    public boolean tryLock(LockInfo lockInfo, Duration exceptMaxBlockTime) throws InterruptedException {
+        return delegate.tryLock(lockInfo, exceptMaxBlockTime);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.shoulder.core.lock;
 
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.lang.Nullable;
 
@@ -23,13 +24,16 @@ public interface ServerLock extends Lock {
      * @param lockInfo 锁信息
      */
     default void lock(LockInfo lockInfo) {
-        while (true) {
-            try {
-                if (tryLock(lockInfo, ChronoUnit.FOREVER.getDuration())) {
-                    return;
-                }
-            } catch (InterruptedException ignore) {
+        // 阻塞一小时还没获取到锁，返回
+        try {
+            if (tryLock(lockInfo, ChronoUnit.HOURS.getDuration())) {
+                return;
+            } else {
+                // 超时未获取到
+                throw CommonErrorCodeEnum.UNKNOWN.toException();
             }
+        } catch (InterruptedException e) {
+            throw CommonErrorCodeEnum.UNKNOWN.toException(e);
         }
     }
 
@@ -37,11 +41,11 @@ public interface ServerLock extends Lock {
      * 阻塞获取锁，带超时时间
      *
      * @param lockInfo     锁信息
-     * @param maxBlockTime 最大阻塞时长
+     * @param exceptMaxBlockTime 期望最大阻塞时长
      * @return 是否获取到锁
      * @throws InterruptedException 未获取到锁，被中断
      */
-    boolean tryLock(LockInfo lockInfo, Duration maxBlockTime) throws InterruptedException;
+    boolean tryLock(LockInfo lockInfo, Duration exceptMaxBlockTime) throws InterruptedException;
 
     /**
      * 尝试获取锁，若未获取到则直接返回 false
