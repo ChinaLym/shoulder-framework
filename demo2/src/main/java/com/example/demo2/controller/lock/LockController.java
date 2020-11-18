@@ -1,4 +1,4 @@
-package com.example.demo2.controller.base;
+package com.example.demo2.controller.lock;
 
 import com.example.demo2.entity.UserEntity;
 import com.example.demo2.service.IUserService;
@@ -112,6 +112,13 @@ public class LockController extends BaseController<IUserService, UserEntity> {
     @RequestMapping("jdk/lock")
     public boolean lock_jdk() {
         lock.lock();
+        try {
+            // 这10s内其他请求无法获取锁
+            Thread.sleep(10 * 1000);
+        } catch (InterruptedException ignored) {
+        } finally {
+            lock.unlock();
+        }
         return true;
     }
 
@@ -120,7 +127,15 @@ public class LockController extends BaseController<IUserService, UserEntity> {
      */
     @RequestMapping("jdk/tryLock")
     public boolean jdkTryLock() {
-        return lock.tryLock();
+        boolean locked = lock.tryLock();
+        try {
+            // 这10s内其他请求无法获取锁
+            Thread.sleep(10 * 1000);
+        } catch (InterruptedException ignored) {
+        } finally {
+            lock.unlock();
+        }
+        return locked;
     }
 
 
@@ -136,11 +151,22 @@ public class LockController extends BaseController<IUserService, UserEntity> {
     }
 
     /**
+     * 可重入测试
      * http://localhost:8080/lock/jdk/unlock
      */
     @RequestMapping("jdk/unlock")
-    public String unlock_jdk() {
-        lock.unlock();
+    public String reentrant_jdk() throws InterruptedException {
+        lock.lock();
+        try {
+            lock.lock();
+            try {
+                System.out.println("reentrant_jdk test");
+            } finally {
+                lock.unlock();
+            }
+        } finally {
+            lock.unlock();
+        }
         return "ok";
     }
 
