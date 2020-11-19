@@ -45,7 +45,7 @@ public class RedisLock extends AbstractDistributeLock implements ServerLock {
     }
 
     /**
-     * todo 这里为了保证最轻量化，只存储了部分信息，考虑改为使用 hash 存储
+     * todo 【功能】这里为了保证最轻量化，只存储了部分信息，考虑改为使用 hash 存储
      * @param resource 资源
      * @return 资源对应的锁信息
      */

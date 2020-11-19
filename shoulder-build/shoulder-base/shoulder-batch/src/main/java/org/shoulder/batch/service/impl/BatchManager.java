@@ -85,7 +85,7 @@ public class BatchManager implements Runnable, ProgressAble {
 
     /**
      * 任务队列，任务向这里丢
-     * todo 待定 后续考虑共享队列，将属性抽出来，一个 manager 可以同时处理多次批处理任务
+     * todo 【扩展性】后续考虑共享队列，将属性抽出来，一个 manager 可以同时处理多次批处理任务
      */
     private BlockingQueue<BatchDataSlice> jobQueue;
 
@@ -349,7 +349,7 @@ public class BatchManager implements Runnable, ProgressAble {
             result.setSuccessNum(progress.getSuccessNum());
             result.setFailNum(progress.getFailNum());
             batchRecordMapper.insert(result);
-            // todo 一致性/性能 最后保存一次？ 或在 work 中与批处理在同一事务进行保存？
+            // todo 【性能】一致性/性能 最后保存一次？ 或在 work 中与批处理在同一事务进行保存？
             persistentBatchDetail();
         } catch (Exception e) {
             throw CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL.toException(e);

@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ProgressTaskPool {
 
-    // todo 初始化
+    // todo 【开发】初始化
     private static Cache importProgressCache = null;
 
     /**

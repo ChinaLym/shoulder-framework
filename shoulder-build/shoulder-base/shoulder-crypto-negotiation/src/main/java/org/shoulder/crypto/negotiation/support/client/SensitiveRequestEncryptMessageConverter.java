@@ -58,7 +58,7 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
             // 参数需要加密，加密处理器必定不是 null
             Assert.notNull(requestEncryptCipher, "requestEncryptCipher must not be null " +
                 "when request param with sensitive fields");
-            // todo 这里深克隆了所有属性，应该只保存需要加密的字段，以提高性能
+            // todo 【性能】这里深克隆了所有属性，应该只保存需要加密的字段，以提高性能
             Object cloned = ObjectUtil.clone(object);
             if (cloned == null) {
                 //使用 json 方式（性能差一点，备选）

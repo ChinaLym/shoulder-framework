@@ -202,7 +202,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
             return response;
         } catch (AsymmetricCryptoException e) {
-            // todo 抛出带错误码的异常，方便客户端处理
+            // todo 【规范】抛出带错误码的异常，方便客户端处理
             throw new NegotiationException("Receive request, negotiate Fail!", e);
         }
     }
@@ -218,11 +218,11 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         response.setPublicKey(ByteSpecification.encodeToString(publicKey));
         response.setExpireTime((int) (keyExchangeResult.getExpireTime() - System.currentTimeMillis()));
         response.setKeyLength(keyExchangeResult.getKeyLength());
-        // todo 256 不应该写死
+        // todo 【使用范围】不应该写死256，支持的密钥长度
         response.setAes("256");
 
         response.setxSessionId(keyExchangeResult.getxSessionId());
-        // todo token 生成失败
+        // todo 【流程】处理 token 生成失败
         String token = transportCryptoUtil.generateResponseToken(response);
         response.setToken(token);
         return response;
@@ -243,7 +243,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         keyExchangeRequest.setToken(token);
 
         if (!transportCryptoUtil.verifyRequestToken(keyExchangeRequest)) {
-            // todo token 不合法，一般仅发生于网络通信被劫持且篡改时，回应 400 拒绝握手请求，记录不合法日志
+            // todo 【健壮性】token 不合法，一般仅发生于网络通信被劫持且篡改时，回应 400 拒绝握手请求，记录不合法日志
             throw new NegotiationException("token not validate!");
         }
         return keyExchangeRequest;

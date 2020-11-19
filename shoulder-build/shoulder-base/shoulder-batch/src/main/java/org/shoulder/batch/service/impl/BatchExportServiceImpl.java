@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 @Service
 public class BatchExportServiceImpl implements BatchAndExportService {
 
-    // todo 记录日志
+    // todo 【流程】记录日志
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
@@ -131,7 +131,7 @@ public class BatchExportServiceImpl implements BatchAndExportService {
             }
             // 刷入流
             flush(outputStream);
-            // todo 记录业务日志
+            // todo 【流程】记录业务日志
         } finally {
             cleanContext();
         }

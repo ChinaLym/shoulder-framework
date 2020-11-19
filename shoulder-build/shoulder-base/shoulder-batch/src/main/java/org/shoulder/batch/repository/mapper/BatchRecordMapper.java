@@ -29,7 +29,7 @@ public interface BatchRecordMapper {
 
     /**
      * 根据条件分页查询批处理记录
-     * todo 查询 DTO
+     * todo 【可读】使用 DTO 代替 Map
      *
      * @param condition tableName, userCode
      * @return 查询结果

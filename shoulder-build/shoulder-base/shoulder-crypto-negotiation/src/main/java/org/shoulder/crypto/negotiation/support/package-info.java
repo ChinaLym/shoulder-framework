@@ -3,7 +3,7 @@
  * {@link org.shoulder.crypto.negotiation.support.SecurityRestTemplate}
  * <p>
  * <p>
- * DTO定义、todo 错误码定义
+ * DTO定义、todo 【规范】错误码
  * 发起密钥协商
  * 处理密钥协商请求
  * 处理密钥协商失败

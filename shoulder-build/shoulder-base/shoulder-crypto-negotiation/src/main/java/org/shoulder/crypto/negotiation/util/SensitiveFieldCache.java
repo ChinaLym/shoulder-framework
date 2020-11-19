@@ -48,8 +48,9 @@ public class SensitiveFieldCache {
         for (Field field : fields) {
             Sensitive requestSecret = field.getAnnotation(Sensitive.class);
             if (requestSecret == null) {
-                if (field.getClass().isAssignableFrom(Object.class)) {
-                    // todo 处理特殊类：RestResult 这种带泛型的
+                // 没有加注解
+                if (field.getClass().equals(Object.class)) {
+                    // todo 【特殊处理】 RestResult 这种存在 Object 类型的对象的字段(带泛型的)
                     System.out.println("");
                 }
                 continue;
@@ -63,7 +64,7 @@ public class SensitiveFieldCache {
             Class<?> fieldClass;
             if (!String.class.isAssignableFrom(fieldClass = field.getType())) {
                 // 如果是复杂变量还需要递归，可以通过加类注解减少递归复杂度，否则报错/警告，用法错误
-                // todo list？map？等集合
+                // todo 【使用范围】 list？map？等集合暂不支持
                 wrapper.addInternalFields(findSensitiveFields(fieldClass, requestOrResponse));
             }
             allSensitiveField.add(wrapper);

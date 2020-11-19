@@ -127,7 +127,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
             throw new IllegalArgumentException("sequenceBits must > 0. sequenceBits=" + sequenceBits);
         }
 
-        // 可以使用的位数 long 类型去掉符号位 todo 扩展性：是否去掉该校验，以支持用户生成非 64bit的 long，如 js 只支持 53bit
+        // 可以使用的位数 long 类型去掉符号位 todo 【扩展性】 是否去掉该校验，以支持用户生成非 64bit的 long，如 js 只支持 53bit
         final int longBits = 64 - 1;
         if (timeStampBits + instanceIdBits + sequenceBits != longBits) {
             throw new IllegalArgumentException("timeStampBits + instanceIdBits + sequenceBits != 63 must = 63. " +
@@ -220,7 +220,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      * - nextIds(4096)需要 40 ms
      * 实际生产中，可以忽略
      *
-     * @param num 批量生成个数，最大为 maxSequence todo 设计-待定 支持更大的批量获取数？还是使用
+     * @param num 批量生成个数，最大为 maxSequence 【扩展性】是否考虑支持更大的批量获取数？
      * @return guid
      */
     @Override
