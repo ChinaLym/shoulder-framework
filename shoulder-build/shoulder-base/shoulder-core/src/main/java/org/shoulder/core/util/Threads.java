@@ -12,6 +12,7 @@ import java.util.concurrent.*;
  * 线程工具类
  * 提供延时任务和常用线程池拒绝策略的封装
  * 注意！该类必须设置线程池之后使用，否则 IllegalStateException！
+ * todo 【开发】添加调用栈信息日志
  *
  * @author lym
  */
@@ -19,14 +20,24 @@ public class Threads {
 
     private static final Logger log = LoggerFactory.getLogger(Threads.class);
 
+    /**
+     * shoulder 通用线程池名称
+     */
     public final static String DEFAULT_THREAD_POOL_NAME = "shoulderThreadPool";
 
-    private static ExecutorService DEFAULT_THREAD_POOL;
+    /**
+     * 通用线程池
+     */
+    private static ExecutorService SHOULDER_THREAD_POOL;
 
+    /**
+     * 延迟任务存放者
+     */
     private static DelayTaskHolder DELAY_TASK_HOLDER;
 
+
     public static void setExecutorService(ExecutorService executorService) {
-        Threads.DEFAULT_THREAD_POOL = executorService;
+        Threads.SHOULDER_THREAD_POOL = executorService;
         log.info("Threads' DEFAULT_THREAD_POOL has changed to " + executorService);
     }
 
@@ -65,10 +76,15 @@ public class Threads {
      * @param runnable 要执行的任务
      */
     public static void execute(Runnable runnable) {
-        if (DEFAULT_THREAD_POOL == null) {
-            throw new IllegalStateException("You must setExecutorService first.");
+        if (SHOULDER_THREAD_POOL == null) {
+            log.warn("not set threadPool fall back: use bean named '{}' in context.", DEFAULT_THREAD_POOL_NAME);
+            Object threadPoolBean = SpringUtils.getBean(DEFAULT_THREAD_POOL_NAME);
+            if (threadPoolBean instanceof ExecutorService) {
+                setExecutorService((ExecutorService) threadPoolBean);
+            }
+            throw new IllegalStateException("Need invoke setExecutorService first!");
         }
-        DEFAULT_THREAD_POOL.execute(runnable);
+        SHOULDER_THREAD_POOL.execute(runnable);
     }
 
     /**
@@ -78,12 +94,27 @@ public class Threads {
      * @return 当前任务执行的 Future
      */
     public static <T> Future<T> submit(Callable<T> callable) {
-        if (DEFAULT_THREAD_POOL == null) {
+        if (SHOULDER_THREAD_POOL == null) {
             throw new IllegalStateException("You must setExecutorService first.");
         }
-        return DEFAULT_THREAD_POOL.submit(callable);
+        return SHOULDER_THREAD_POOL.submit(callable);
     }
 
+
+    public static void shutDown() {
+        if (SHOULDER_THREAD_POOL == null) {
+            log.info("no threadPool need shutdown.");
+            return;
+        }
+        log.debug("shutdown start...");
+        try {
+            SHOULDER_THREAD_POOL.shutdown();
+        } catch (Exception e) {
+            // on shutDown 钩子可能抛异常
+            log.error("shutdown FAIL! - ", e);
+        }
+        log.info("shutdown SUCCESS.");
+    }
 
     // ------------------------ Shoulder 的线程池拒绝策略 ------------------------
 
