@@ -30,7 +30,7 @@ public class BatchProcessResult {
     private Integer successNum;
 
     /**
-     * todo repeatNum？
+     * todo 重复数目单独作为字段，还是包含在 fail？
      */
     @ApiModelProperty(required = false, value = "失败个数", dataType = "Integer", example = "1", position = 4)
     private Integer failNum;

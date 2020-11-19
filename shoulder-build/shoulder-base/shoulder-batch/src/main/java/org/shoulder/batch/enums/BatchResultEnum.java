@@ -13,15 +13,15 @@ public enum BatchResultEnum {
     /**
      * 待校验
      */
-    WAIT_VALIDATE("wait_validate", 0, BatchI18nEnum.RESULT_UNKNOWN.getCode()),
+    WAIT_VALIDATE("wait_validate", 1, BatchI18nEnum.RESULT_UNKNOWN.getCode()),
     /**
      * 校验通过
      */
-    VALIDATE_SUCCESS("validate—success", 0, BatchI18nEnum.RESULT_UNKNOWN.getCode()),
+    VALIDATE_SUCCESS("validate—success", 2, BatchI18nEnum.RESULT_UNKNOWN.getCode()),
     /**
      * 校验-数据重复
      */
-    VALIDATE_REPEAT("validate—fail", 0, BatchI18nEnum.RESULT_UNKNOWN.getCode()),
+    VALIDATE_REPEAT("validate—fail", 3, BatchI18nEnum.RESULT_UNKNOWN.getCode()),
 
 
     // ==================== 结束状态 =================
