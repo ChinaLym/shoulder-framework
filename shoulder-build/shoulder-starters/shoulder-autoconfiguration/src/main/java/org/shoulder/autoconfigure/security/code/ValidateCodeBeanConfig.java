@@ -79,7 +79,7 @@ public class ValidateCodeBeanConfig {
         return new SessionValidateCodeRepository();
     }
 
-    //todo 无法装配？待排查
+    //fixme 无法装配？待排查
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(RedisTemplate.class)
     @ConditionalOnAuthType(type = AuthenticationType.TOKEN)

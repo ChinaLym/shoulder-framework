@@ -29,7 +29,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * - 查询导入校验进度
  * - 批量操作
  * - 查询数据操作进度
- * - 数据导入记录，分页查询、导出 todo 数据类型、业务操作类型
+ * - 数据导入记录，分页查询、导出 todo 【开发】数据类型、业务操作类型
  *
  * @author lym
  */
@@ -73,7 +73,7 @@ public interface ImportRestfulApi {
     RestResult<String> doImport(ExecuteOperationParam executeOperationParam);
 
     /**
-     * 查询数据操作进度，todo 考虑 查进度和结果是否为同一个接口？进度不需要每行信息
+     * 查询数据操作进度，todo 【开发】考虑 查进度和结果是否为同一个接口？进度不需要每行信息
      *
      * @param taskId 任务标识
      * @return 操作进度 / 结果
@@ -91,7 +91,7 @@ public interface ImportRestfulApi {
     /**
      * 查询处理记录
      * 可用于界面展示，（当前用户）最近一次导入记录
-     * todo 查询条件 暂不支持分页
+     * todo 【开发】查询条件 暂不支持分页
      *
      * @return 分页-批量处理进度 / 结果
      */
@@ -120,7 +120,7 @@ public interface ImportRestfulApi {
     /**
      * 数据导入模板下载
      * <p>
-     * todo 数据类型、业务操作类型
+     * todo 【开发】数据类型、业务操作类型
      */
     @ApiOperation(value = "数据导入模板下载", consumes = "text/csv", httpMethod = "GET")
     @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",
@@ -146,7 +146,7 @@ public interface ImportRestfulApi {
 
     /**
      * 导出数据
-     * todo 查询条件 + Request
+     * todo 【开发】查询条件 + Request
      *
      * @throws IOException 数据流错误
      */

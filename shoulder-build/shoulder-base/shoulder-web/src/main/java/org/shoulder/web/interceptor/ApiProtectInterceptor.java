@@ -1,6 +1,7 @@
 package org.shoulder.web.interceptor;
 
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,8 @@ public class ApiProtectInterceptor implements HandlerInterceptor {
         try {
             checkToken(this.getToken(request), null);
         } catch (Exception e) {
-            throw new BaseRuntimeException(failedCodeString, e);
+            // todo 将签名验证失败错误转为 Token 认证错误码
+            throw CommonErrorCodeEnum.AUTH_403_TOKEN_INVALID.toException(e);
         }
         return true;
     }
@@ -73,7 +75,6 @@ public class ApiProtectInterceptor implements HandlerInterceptor {
      * @return token 是否合法
      */
     private boolean checkToken(String token, String signOrigin) {
-        // todo 将签名验证失败错误转为 Token 认证错误码
         return true;
     }
 

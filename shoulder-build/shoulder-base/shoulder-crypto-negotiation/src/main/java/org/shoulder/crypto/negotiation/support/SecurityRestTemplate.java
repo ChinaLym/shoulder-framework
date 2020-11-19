@@ -125,7 +125,7 @@ public class SecurityRestTemplate extends RestTemplate {
                 time++;
             }
 
-            // 创建本次请求的加密器 todo 小优化，如果请求不带（敏感）参数，则无需生成数据密钥 —— 1. 保存 keyChangeResult。2. 如何感知是否要加密
+            // 创建本次请求的加密器 todo 【性能】 小优化，如果请求不带（敏感）参数，则无需生成数据密钥 —— 1. 保存 keyChangeResult。2. 如何感知是否要加密
             byte[] requestDk = TransportCryptoUtil.generateDataKey(keyExchangeResult.getKeyLength());
             TransportTextCipher requestEncryptCipher = DefaultTransportCipher.buildEncryptCipher(keyExchangeResult, requestDk);
             TransportCipherHolder.setRequestCipher(requestEncryptCipher);

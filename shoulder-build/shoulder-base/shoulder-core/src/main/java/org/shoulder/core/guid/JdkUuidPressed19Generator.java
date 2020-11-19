@@ -3,7 +3,7 @@ package org.shoulder.core.guid;
 import java.util.UUID;
 
 /**
- * jdk uuid，并压缩为 19 位 todo
+ * jdk uuid，并压缩为 19 位 todo 【功能开发】
  *
  * @author lym
  */

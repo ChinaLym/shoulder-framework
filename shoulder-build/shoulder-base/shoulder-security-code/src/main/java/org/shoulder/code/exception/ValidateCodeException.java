@@ -3,7 +3,7 @@ package org.shoulder.code.exception;
 import org.shoulder.core.exception.BaseRuntimeException;
 
 /**
- * 验证码相关异常 todo interface Enum
+ * 验证码相关异常 todo 【规范】interface Enum
  *
  * @author lym
  */

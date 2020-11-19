@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 /**
  * 处理结果
- * todo 码值
+ * todo 【规范】码值
  *
  * @author lym
  */
