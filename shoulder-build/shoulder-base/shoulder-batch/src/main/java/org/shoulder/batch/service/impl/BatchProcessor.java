@@ -12,7 +12,7 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.SpringUtils;
+import org.shoulder.core.util.ContextUtils;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -43,7 +43,7 @@ public class BatchProcessor implements Runnable {
      * 数据处理器
      */
     private Collection<BatchTaskSliceHandler> batchTaskSliceHandlers =
-        SpringUtils.getBeansOfType(BatchTaskSliceHandler.class).values();
+        ContextUtils.getBeansOfType(BatchTaskSliceHandler.class).values();
 
     protected Translator translator;
 
@@ -54,7 +54,7 @@ public class BatchProcessor implements Runnable {
         this.name = name;
         this.taskQueue = taskQueue;
         this.resultQueue = resultQueue;
-        this.translator = SpringUtils.getBean(Translator.class);
+        this.translator = ContextUtils.getBean(Translator.class);
     }
 
     @Override

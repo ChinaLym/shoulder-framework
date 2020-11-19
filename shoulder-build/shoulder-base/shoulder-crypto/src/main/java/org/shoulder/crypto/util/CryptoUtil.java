@@ -1,7 +1,7 @@
 package org.shoulder.crypto.util;
 
 
-import org.shoulder.core.util.SpringUtils;
+import org.shoulder.core.util.ContextUtils;
 import org.shoulder.crypto.CryptoFacade;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.exception.CipherRuntimeException;
@@ -16,7 +16,7 @@ public final class CryptoUtil {
     private static CryptoFacade crypto;
 
     static {
-        crypto = SpringUtils.getBean(CryptoFacade.class);
+        crypto = ContextUtils.getBean(CryptoFacade.class);
     }
 
     // ================================ 存储加解密 =====================================

@@ -15,13 +15,14 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * 文件上传工具类
+ * 文件相关工具类
+ * todo 【功能】从 xml、json、yml、properties 文件读取成对象
  *
  * @author lym
  */
-public class FileUploadUtils {
+public class FileUtils {
 
-    private final static Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
+    private final static Logger log = LoggerFactory.getLogger(FileUtils.class);
     public static final String UPLOAD_FILE_ROOT_PATH = "upload";
     public static final String COMMA_SEPARATOR = ",";
     private static final String TEMP_DIR_NAME = "temp";

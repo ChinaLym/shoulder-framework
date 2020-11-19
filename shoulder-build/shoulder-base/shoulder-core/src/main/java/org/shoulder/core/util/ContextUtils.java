@@ -16,11 +16,12 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * spring工具类 方便获取bean
+ * 上下文工具类，方便获取bean
+ * 提供：从 Spring 环境中获取 Bean、配置信息、上下文路径、BeanFactory、应用上下文
  *
  * @author lym
  */
-public final class SpringUtils {
+public final class ContextUtils {
     /**
      * Spring应用 beanFactory，一般为 ConfigurableBeanFactory
      */
@@ -131,11 +132,11 @@ public final class SpringUtils {
     }
 
     public static void setBeanFactory(ConfigurableListableBeanFactory beanFactory) {
-        SpringUtils.beanFactory = beanFactory;
+        ContextUtils.beanFactory = beanFactory;
     }
 
     public static ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException {
-        ConfigurableListableBeanFactory tmp = SpringUtils.beanFactory;
+        ConfigurableListableBeanFactory tmp = ContextUtils.beanFactory;
         if (tmp == null) {
             throw new IllegalStateException("beanFactory has not set!");
         }
@@ -143,11 +144,11 @@ public final class SpringUtils {
     }
 
     public static void setApplicationContext(ApplicationContext applicationContext) {
-        SpringUtils.applicationContext = applicationContext;
+        ContextUtils.applicationContext = applicationContext;
     }
 
     public static ApplicationContext getApplicationContext() throws IllegalStateException {
-        ApplicationContext tmp = SpringUtils.applicationContext;
+        ApplicationContext tmp = ContextUtils.applicationContext;
         if (tmp == null) {
             throw new IllegalStateException("applicationContext has not set!");
         }

@@ -11,8 +11,8 @@ import org.shoulder.core.context.AppContext;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.core.util.SpringUtils;
 import org.shoulder.log.operation.enums.OperationResult;
 import org.shoulder.log.operation.util.OpLogContextHolder;
 
@@ -45,17 +45,17 @@ public class BatchManager implements Runnable, ProgressAble {
     /**
      * 线程池
      */
-    private ExecutorService threadPool = SpringUtils.getBean("batchThreadPool");
+    private ExecutorService threadPool = ContextUtils.getBean("batchThreadPool");
 
     /**
      * 批量处理记录
      */
-    private BatchRecordMapper batchRecordMapper = SpringUtils.getBean(BatchRecordMapper.class);
+    private BatchRecordMapper batchRecordMapper = ContextUtils.getBean(BatchRecordMapper.class);
 
     /**
      * 批处理记录详情
      */
-    private BatchRecordDetailMapper batchRecordDetailMapper = SpringUtils.getBean(BatchRecordDetailMapper.class);
+    private BatchRecordDetailMapper batchRecordDetailMapper = ContextUtils.getBean(BatchRecordDetailMapper.class);
 
     // ------------------------------------------------
 

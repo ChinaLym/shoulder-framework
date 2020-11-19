@@ -2,7 +2,7 @@ package org.shoulder.batch.enums;
 
 
 import org.shoulder.core.i18.Translator;
-import org.shoulder.core.util.SpringUtils;
+import org.shoulder.core.util.ContextUtils;
 
 /**
  * 批处理国际化
@@ -144,7 +144,7 @@ public enum BatchI18nEnum {
     }
 
     public String i18nValue(Object... args) {
-        return SpringUtils.getBean(Translator.class).getMessage(this.code, args);
+        return ContextUtils.getBean(Translator.class).getMessage(this.code, args);
     }
 
 

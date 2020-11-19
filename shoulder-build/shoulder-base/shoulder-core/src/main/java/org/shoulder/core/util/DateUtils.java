@@ -1,6 +1,6 @@
 package org.shoulder.core.util;
 
-public class DateUtil {
+public class DateUtils {
 
     private static volatile long mills;
 
