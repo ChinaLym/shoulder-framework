@@ -1,10 +1,15 @@
 package org.shoulder.cluster.lock.redis;
 
+import org.apache.commons.lang3.StringUtils;
 import org.shoulder.core.lock.AbstractDistributeLock;
 import org.shoulder.core.lock.LockInfo;
 import org.shoulder.core.lock.ServerLock;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.lang.Nullable;
+
+import java.util.Collections;
 
 /**
  * 基于 Redis 的分布式锁
@@ -26,35 +31,73 @@ public class RedisLock extends AbstractDistributeLock implements ServerLock {
         this.redis = redis;
     }
 
+    public static final String SPLIT = "__";
+
     /**
+     * 服务实例唯一标识
+     */
+    private String instanceId = null;
+
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
+        log.info("RedisLock SET currentInstanceId=" + instanceId);
+    }
+
+    /**
+     * todo 这里为了保证最轻量化，只存储了部分信息，考虑改为使用 hash 存储
      * @param resource 资源
      * @return 资源对应的锁信息
      */
     @Override
     @Nullable
     public LockInfo getLockInfo(String resource) {
-        // todo get
-        return null;
+        return new LockInfo(resource);
     }
 
     @Override
     public boolean tryLock(LockInfo lockInfo) {
-        boolean locked = false;
-        // todo lua 加锁脚本
-        //redis.exec();
-        log.debug("try lock {}! {}", locked ? "SUCCESS" : "FAIL", lockInfo);
-        return locked;
+        log.debug("Try lock [{}].", lockInfo.getResource());
+        boolean success = Boolean.TRUE.equals(redis.opsForValue().setIfAbsent(lockInfo.getResource(),
+            genLockValue(lockInfo.getToken()), lockInfo.getHoldTime()));
+        log.info("Lock [{}] {} for {}.", lockInfo.getResource(), lockInfo.getHoldTime(), success ? "SUCCESS" : "FAIL");
+        return success;
     }
 
     @Override
     public boolean holdLock(String resource, String token) {
-        // todo lua 查询
-        return false;
+        return genLockValue(token).equals(redis.opsForValue().get(resource));
     }
 
     @Override
     public void unlock(String resource, String token) {
-        // todo lua 释放
+        Long result = redis.execute(releaseLockScript(), Collections.singletonList(resource),
+            genLockValue(token));
+        if (result == null || 1 != result) {
+            log.debug("invalid release operation: resource={}, token={}", resource, token);
+        } else {
+            log.debug("Released lock [{}].", resource);
+        }
     }
 
+    /**
+     * 附带拥有者标识
+     *
+     * @param token 令牌
+     * @return 添加了实例标识
+     */
+    private String genLockValue(String token) {
+        return instanceId + SPLIT + (StringUtils.isNotBlank(token) ? token : "");
+    }
+
+    private RedisScript<Long> releaseLockScript() {
+        final String script = "local value = ARGV[1];\n" +
+            "if redis.call('GET', KEYS[1]) ~= value then \n" +
+            "\treturn -1; \n" +
+            "else \n" +
+            "\tredis.call('DEL', KEYS[1]);\n" +
+            "\treturn 1;\n" +
+            "\tend";
+        return new DefaultRedisScript<>(script, Long.class);
+    }
 }

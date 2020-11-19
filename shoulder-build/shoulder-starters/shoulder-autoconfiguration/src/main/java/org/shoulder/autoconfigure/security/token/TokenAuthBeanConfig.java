@@ -184,7 +184,7 @@ public class TokenAuthBeanConfig {
             }
 
             /**
-             * todo 从配置中拿
+             * todo jwk 如果配置配了，从配置中拿，而非随机生成，便于使用者使用固定的
              */
             @Bean
             @ConditionalOnMissingBean

@@ -71,7 +71,7 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
         AppInfo.initTimeZone(TimeZone.getTimeZone(environment.getProperty("shoulder.application.timeZone")));
 
         // -----
-        // todo token 认证响应必须为 json
+        // todo security token 认证响应默认为 json
 
         if (!shoulderProperties.isEmpty()) {
             environment.getPropertySources().addFirst(new PropertiesPropertySource(SHOULDER_PROPERTIES, shoulderProperties));

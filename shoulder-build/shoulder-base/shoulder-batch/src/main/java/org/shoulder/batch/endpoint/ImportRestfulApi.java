@@ -73,7 +73,7 @@ public interface ImportRestfulApi {
     RestResult<String> doImport(ExecuteOperationParam executeOperationParam);
 
     /**
-     * 查询数据操作进度，todo 考虑 查进度和结果是否为同一个接口？
+     * 查询数据操作进度，todo 考虑 查进度和结果是否为同一个接口？进度不需要每行信息
      *
      * @param taskId 任务标识
      * @return 操作进度 / 结果

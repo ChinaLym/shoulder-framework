@@ -75,7 +75,7 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     public RestResult<String> doImport(@RequestBody ExecuteOperationParam executeOperationParam) {
-        // todo 从缓存中拿出来校验结果，然后组装，执行导入
+        // todo 从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
 
         BatchData batchData = new BatchData();
         return RestResult.success(
@@ -89,7 +89,6 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public RestResult<BatchProcessResult> queryOperationProcess(String taskId) {
         BatchProgress process = batchService.queryBatchProgress(taskId);
-        //todo 转换
         return RestResult.success(BatchModelConvert.CONVERT.toDTO(process));
     }
 
@@ -115,7 +114,6 @@ public class ImportController implements ImportRestfulApi {
         List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getTaskId());
         record.setDetailList(details);
         BatchRecordResult result = BatchModelConvert.CONVERT.toDTO(record);
-        //todo 转换
         return RestResult.success(result);
     }
 
