@@ -2,11 +2,9 @@ package com.example.demo3.token;
 
 import org.junit.jupiter.api.*;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.security.authentication.handler.TokenAuthenticationSuccessHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;

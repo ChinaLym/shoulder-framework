@@ -13,7 +13,7 @@ import org.springframework.security.web.access.AccessDeniedHandlerImpl;
  * @see BeforeAuthEndpoint 认证前会跳到这里先
  * @author lym
  */
-@SpringBootApplication// 0.4版本 session 验证需要加这里 (exclude = {TokenEndPointConfiguration.class})
+@SpringBootApplication(exclude = {TokenEndPointConfiguration.class})
 public class Demo3Application {
 
     public static void main(String[] args) {

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo3.entity.UserEntity;
 import com.example.demo3.service.IUserService;
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.util.SpringUtils;
+import org.shoulder.core.util.ContextUtils;
 import org.shoulder.data.mybatis.base.controller.BaseController;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +38,7 @@ public class UserController extends BaseController<IUserService, UserEntity> {
     @RequestMapping("test")
     public String test() {
         // 自动根据当前 Controller 泛型注入对应的 IService（IUserService），可通过 bizService 调用
-        return SpringUtils.getApplicationContext().getMessage("aaa", null, AppInfo.defaultLocale());
+        return ContextUtils.getApplicationContext().getMessage("aaa", null, AppInfo.defaultLocale());
     }
 
     /**

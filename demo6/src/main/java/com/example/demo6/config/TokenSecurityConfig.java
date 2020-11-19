@@ -1,6 +1,5 @@
 package com.example.demo6.config;
 
-import org.shoulder.auth.uaa.annotation.EnableShoulderAuthServer;
 import org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
@@ -21,7 +20,6 @@ import java.security.KeyPair;
  *
  * @author lym
  */
-@EnableShoulderAuthServer
 @Configuration
 public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
