@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.core;
 
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.SpringUtils;
+import org.shoulder.core.util.ContextUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -26,10 +26,10 @@ public class SpringUtilAutoConfiguration implements BeanFactoryAware, BeanFactor
     @Override
     public void postProcessBeanFactory(@NonNull ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
         try {
-            SpringUtils.getBeanFactory();
+            ContextUtils.getBeanFactory();
         } catch (IllegalStateException e) {
             // BeanFactoryAware 类型转换失败了
-            SpringUtils.setBeanFactory(configurableListableBeanFactory);
+            ContextUtils.setBeanFactory(configurableListableBeanFactory);
         }
     }
 
@@ -39,7 +39,7 @@ public class SpringUtilAutoConfiguration implements BeanFactoryAware, BeanFactor
     @Override
     public void setBeanFactory(@NonNull BeanFactory beanFactory) throws BeansException {
         try {
-            SpringUtils.setBeanFactory((ConfigurableListableBeanFactory) beanFactory);
+            ContextUtils.setBeanFactory((ConfigurableListableBeanFactory) beanFactory);
         } catch (ClassCastException e) {
             LoggerFactory.getLogger(getClass()).debug("SpringUtils.setBeanFactory fail when BeanFactoryAware.", e);
         }
@@ -47,7 +47,7 @@ public class SpringUtilAutoConfiguration implements BeanFactoryAware, BeanFactor
 
     @Override
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
-        SpringUtils.setApplicationContext(applicationContext);
+        ContextUtils.setApplicationContext(applicationContext);
     }
 
 }

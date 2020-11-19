@@ -4,7 +4,7 @@ import ch.qos.logback.core.util.CachingDateFormatter;
 import org.junit.Test;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.logback.pattern.CachingFastDateFormatter;
-import org.shoulder.core.util.DateUtil;
+import org.shoulder.core.util.DateUtils;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -45,15 +45,15 @@ public class CachingFastDateFormatterTest {
     public void timer_format() {
         CachingDateFormatter logback = new CachingDateFormatter(AppInfo.UTC_DATE_FORMAT);
         CachingFastDateFormatter shoulder = new CachingFastDateFormatter(AppInfo.UTC_DATE_FORMAT);
-        DateUtil.lazyCurrentMills();
+        DateUtils.lazyCurrentMills();
         for (int i = 0; i < GENERATE_NUM; i++) {
-            long now = DateUtil.lazyCurrentMills();
+            long now = DateUtils.lazyCurrentMills();
             logback.format(now);
             //shoulder.format(now);
         }
         long start = System.currentTimeMillis();
         for (int i = 0; i < GENERATE_NUM; i++) {
-            long now = DateUtil.lazyCurrentMills();
+            long now = DateUtils.lazyCurrentMills();
             logback.format(now);
             //shoulder.format(now);
         }
@@ -71,14 +71,14 @@ public class CachingFastDateFormatterTest {
         CountDownLatch finishLatch = new CountDownLatch(totalThreadNum);
         CachingDateFormatter logback = new CachingDateFormatter(AppInfo.UTC_DATE_FORMAT);
         CachingFastDateFormatter shoulder = new CachingFastDateFormatter(AppInfo.UTC_DATE_FORMAT);
-        DateUtil.lazyCurrentMills();
+        DateUtils.lazyCurrentMills();
         for (int threadNum = 0; threadNum < totalThreadNum; threadNum++) {
             Thread t = new Thread(Thread.currentThread().getThreadGroup(),
                 () -> {
                     try {
                         startLatch.await();
                         for (int i = 0; i < GENERATE_NUM / totalThreadNum; i++) {
-                            long now = DateUtil.lazyCurrentMills();
+                            long now = DateUtils.lazyCurrentMills();
                             logback.format(now);
                             //shoulder.format(now);
                         }

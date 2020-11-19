@@ -78,7 +78,7 @@ public class Threads {
     public static void execute(Runnable runnable) {
         if (SHOULDER_THREAD_POOL == null) {
             log.warn("not set threadPool fall back: use bean named '{}' in context.", DEFAULT_THREAD_POOL_NAME);
-            Object threadPoolBean = SpringUtils.getBean(DEFAULT_THREAD_POOL_NAME);
+            Object threadPoolBean = ContextUtils.getBean(DEFAULT_THREAD_POOL_NAME);
             if (threadPoolBean instanceof ExecutorService) {
                 setExecutorService((ExecutorService) threadPoolBean);
             }

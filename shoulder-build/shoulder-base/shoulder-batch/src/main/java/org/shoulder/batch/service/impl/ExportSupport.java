@@ -6,8 +6,8 @@ import org.shoulder.core.context.AppContext;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.core.util.SpringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -88,10 +88,10 @@ public class ExportSupport {
         // 详情
         List<String> headers = new ArrayList<>();
         for (String header : exportConfig.getHeadersI18n()) {
-            headers.add(SpringUtils.getBean(Translator.class).getMessage(header));
+            headers.add(ContextUtils.getBean(Translator.class).getMessage(header));
         }
         for (ExportConfig.Column column : exportConfig.getColumns()) {
-            column.setColumnName(SpringUtils.getBean(Translator.class).getMessage(column.getColumnNameI18n()));
+            column.setColumnName(ContextUtils.getBean(Translator.class).getMessage(column.getColumnNameI18n()));
         }
         exportConfig.setHeaders(headers);
     }

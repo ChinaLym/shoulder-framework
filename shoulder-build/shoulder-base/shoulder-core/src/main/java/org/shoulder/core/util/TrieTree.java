@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 字典树
- * todo 低优先级 补充完善
+ * 字典树（未开发）
+ * todo 【功能】其他 jar 可能提供，暂无使用场景、低优先级
  *
  * @author lym
  * @deprecated 补充完善前不发布使用
