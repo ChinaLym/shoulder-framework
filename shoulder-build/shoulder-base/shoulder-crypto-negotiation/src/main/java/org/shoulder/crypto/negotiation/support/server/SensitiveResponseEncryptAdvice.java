@@ -23,12 +23,12 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -48,8 +48,8 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
     }
 
     @Override
-    public boolean supports(@NonNull MethodParameter returnType,
-                            @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
+    public boolean supports(@Nonnull MethodParameter returnType,
+                            @Nonnull Class<? extends HttpMessageConverter<?>> converterType) {
 
         boolean jsonType = MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
         // 返回值不是 json对象或为 Spring 框架的返回值
@@ -66,11 +66,11 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
      * 加密响应，抛出异常时，Spring 不会执行该方法
      */
     @Override
-    public Object beforeBodyWrite(@Nullable Object body, @NonNull MethodParameter returnType,
-                                  @NonNull MediaType selectedContentType,
-                                  @NonNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  @NonNull ServerHttpRequest request,
-                                  @NonNull ServerHttpResponse response) {
+    public Object beforeBodyWrite(@Nullable Object body, @Nonnull MethodParameter returnType,
+                                  @Nonnull MediaType selectedContentType,
+                                  @Nonnull Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                  @Nonnull ServerHttpRequest request,
+                                  @Nonnull ServerHttpResponse response) {
 
         if (body == null) {
             // 不应该出现的情况

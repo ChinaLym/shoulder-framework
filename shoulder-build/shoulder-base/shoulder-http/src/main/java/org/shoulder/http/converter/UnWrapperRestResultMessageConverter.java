@@ -5,9 +5,9 @@ import org.shoulder.core.dto.response.RestResult;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
@@ -26,9 +26,9 @@ public class UnWrapperRestResultMessageConverter extends MappingJackson2HttpMess
         super(objectMapper);
     }
 
-    @NonNull
+    @Nonnull
     @Override
-    public Object read(@NonNull Type type, @Nullable Class<?> contextClass, HttpInputMessage inputMessage)
+    public Object read(@Nonnull Type type, @Nullable Class<?> contextClass, HttpInputMessage inputMessage)
         throws IOException, HttpMessageNotReadableException {
 
         Object result = super.read(type, contextClass, inputMessage);

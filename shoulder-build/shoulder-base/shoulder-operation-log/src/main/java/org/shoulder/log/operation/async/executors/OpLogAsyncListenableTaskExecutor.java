@@ -3,9 +3,9 @@ package org.shoulder.log.operation.async.executors;
 import org.shoulder.log.operation.async.OpLogCallable;
 import org.shoulder.log.operation.async.OpLogRunnable;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
-import org.springframework.lang.NonNull;
 import org.springframework.util.concurrent.ListenableFuture;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
@@ -23,36 +23,36 @@ public class OpLogAsyncListenableTaskExecutor implements AsyncListenableTaskExec
     }
 
     @Override
-    public void execute(@NonNull Runnable task) {
+    public void execute(@Nonnull Runnable task) {
         this.delegate.execute(new OpLogRunnable(task));
     }
 
     @Override
-    public void execute(@NonNull Runnable task, long startTimeout) {
+    public void execute(@Nonnull Runnable task, long startTimeout) {
         this.delegate.execute((new OpLogRunnable(task)), startTimeout);
     }
 
-    @NonNull
+    @Nonnull
     @Override
-    public Future<?> submit(@NonNull Runnable task) {
+    public Future<?> submit(@Nonnull Runnable task) {
         return this.delegate.submit(new OpLogRunnable(task));
     }
 
-    @NonNull
+    @Nonnull
     @Override
-    public <T> Future<T> submit(@NonNull Callable<T> task) {
+    public <T> Future<T> submit(@Nonnull Callable<T> task) {
         return this.delegate.submit(new OpLogCallable<>(task));
     }
 
-    @NonNull
+    @Nonnull
     @Override
-    public ListenableFuture<?> submitListenable(@NonNull Runnable task) {
+    public ListenableFuture<?> submitListenable(@Nonnull Runnable task) {
         return this.delegate.submitListenable(new OpLogRunnable(task));
     }
 
-    @NonNull
+    @Nonnull
     @Override
-    public <T> ListenableFuture<T> submitListenable(@NonNull Callable<T> task) {
+    public <T> ListenableFuture<T> submitListenable(@Nonnull Callable<T> task) {
         return this.delegate.submitListenable(new OpLogCallable<>(task));
     }
 

@@ -3,7 +3,8 @@ package org.shoulder.crypto.exception;
 import org.shoulder.core.exception.ErrorCode;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
+
+import javax.annotation.Nonnull;
 
 
 /**
@@ -70,25 +71,25 @@ public enum CryptoErrorCodeEnum implements ErrorCode {
         this.httpStatus = httpStatus;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public String getCode() {
         return code;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public String getMessage() {
         return message;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public Level getLogLevel() {
         return logLevel;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public HttpStatus getHttpStatusCode() {
         return httpStatus;

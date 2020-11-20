@@ -13,10 +13,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
 import org.springframework.core.task.AsyncTaskExecutor;
-import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.Executor;
@@ -34,14 +34,14 @@ public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
     private static final Logger log = LoggerFactory.getLogger(OpLogExecutorBeanPostProcessor.class);
 
     @Override
-    public Object postProcessBeforeInitialization(@NonNull Object bean, String beanName)
+    public Object postProcessBeforeInitialization(@Nonnull Object bean, String beanName)
         throws BeansException {
         // do nothing
         return bean;
     }
 
     @Override
-    public Object postProcessAfterInitialization(@NonNull Object bean, String beanName)
+    public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName)
         throws BeansException {
         // 只处理 Executor
         if (bean instanceof Executor) {

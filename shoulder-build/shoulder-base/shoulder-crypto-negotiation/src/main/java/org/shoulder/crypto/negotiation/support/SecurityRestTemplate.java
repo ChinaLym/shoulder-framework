@@ -15,13 +15,13 @@ import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -66,16 +66,16 @@ public class SecurityRestTemplate extends RestTemplate {
         return result;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody) {
         return new EnsureNegotiatedRequestCallback(super.httpEntityCallback(requestBody),
             transportNegotiationService, cryptoUtil);
     }
 
-    @NonNull
+    @Nonnull
     @Override
-    public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody, @NonNull Type responseType) {
+    public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody, @Nonnull Type responseType) {
         return new EnsureNegotiatedRequestCallback(super.httpEntityCallback(requestBody, responseType),
             transportNegotiationService, cryptoUtil);
     }
@@ -101,7 +101,7 @@ public class SecurityRestTemplate extends RestTemplate {
         }
 
         @Override
-        public void doWithRequest(@NonNull ClientHttpRequest request) throws IOException {
+        public void doWithRequest(@Nonnull ClientHttpRequest request) throws IOException {
             try {
                 // 协商密钥并添加需要的请求头
                 HttpHeaders headers = negotiateBeforeExecute(URI_LOCAL.get());

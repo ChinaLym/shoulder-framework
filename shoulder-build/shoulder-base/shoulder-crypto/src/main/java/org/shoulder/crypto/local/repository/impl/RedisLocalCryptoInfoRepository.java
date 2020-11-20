@@ -3,9 +3,9 @@ package org.shoulder.crypto.local.repository.impl;
 import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.lang.NonNull;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
     }
 
     @Override
-    public void save(@NonNull LocalCryptoInfoEntity aesInfo) throws Exception {
+    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) throws Exception {
         boolean set = redisTemplate.opsForHash().putIfAbsent(getCacheId(aesInfo.getAppId()), aesInfo.getHeader(), aesInfo);
         if (!set) {
             throw new IllegalStateException("appId, markHeader exist, maybe another instance has init.");
@@ -39,7 +39,7 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
     }
 
     @Override
-    @NonNull
+    @Nonnull
     public List<LocalCryptoInfoEntity> get(String appId) throws Exception {
         List<Object> objects = redisTemplate.opsForHash().values(getCacheId(appId));
         if (CollectionUtils.isEmpty(objects)) {

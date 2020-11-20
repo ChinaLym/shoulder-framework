@@ -1,6 +1,6 @@
 package org.shoulder.core.converter;
 
-import org.springframework.lang.NonNull;
+import javax.annotation.Nonnull;
 
 /**
  * 默认的 String 转枚举失败时处理器，返回 null
@@ -14,7 +14,7 @@ public class DefaultEnumMissMatchHandler implements EnumMissMatchHandler {
     //private final String defaultMethodName = "default";
 
     @Override
-    public <T> T handleNullSource(@NonNull Class<? extends Enum> enumType) {
+    public <T> T handleNullSource(@Nonnull Class<? extends Enum> enumType) {
         return null;
     }
 
@@ -27,7 +27,7 @@ public class DefaultEnumMissMatchHandler implements EnumMissMatchHandler {
      * 尝试使用标识方法匹配，如统一比对 getCode 方法是否匹配
      */
     @Override
-    public <T> T handleMissMatch(@NonNull Class<? extends Enum> enumType, @NonNull String source) {
+    public <T> T handleMissMatch(@Nonnull Class<? extends Enum> enumType, @Nonnull String source) {
         return null;
     }
 

@@ -12,9 +12,9 @@ import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -119,7 +119,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     }
 
     @Override
-    public String encrypt(@NonNull String text) {
+    public String encrypt(@Nonnull String text) {
         ensureEncryption();
         AesInfoCache cacheInfo = CacheManager.getAesInfoCache(ALGORITHM_HEADER);
         try {
@@ -132,7 +132,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     }
 
     @Override
-    public String decrypt(@NonNull String cipherText) {
+    public String decrypt(@Nonnull String cipherText) {
         ensureEncryption();
         String[] cipherTextAndHeader = splitHeader(cipherText);
         String cipherTextHeader = cipherTextAndHeader[0];

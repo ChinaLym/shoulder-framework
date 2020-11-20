@@ -1,8 +1,9 @@
 package org.shoulder.log.operation.dto;
 
 import org.shoulder.log.operation.enums.TerminalType;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+
+import javax.annotation.Nonnull;
 
 /**
  * 操作者信息
@@ -17,7 +18,7 @@ public interface Operator {
      *
      * @return 用户标识
      */
-    @NonNull
+    @Nonnull
     String getUserId();
 
     /**
@@ -65,7 +66,7 @@ public interface Operator {
      *
      * @return 登录终端类型 【非空】
      */
-    @NonNull
+    @Nonnull
     default TerminalType getTerminalType() {
         return TerminalType.SYSTEM;
     }

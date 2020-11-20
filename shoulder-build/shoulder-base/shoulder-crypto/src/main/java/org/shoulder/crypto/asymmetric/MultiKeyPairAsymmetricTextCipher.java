@@ -3,7 +3,8 @@ package org.shoulder.crypto.asymmetric;
 
 import org.shoulder.crypto.TextCipher;
 import org.shoulder.crypto.exception.CipherRuntimeException;
-import org.springframework.lang.NonNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * 非对称加解密：主要用于与前端交互
@@ -25,7 +26,7 @@ public interface MultiKeyPairAsymmetricTextCipher extends TextCipher {
      * @return 公钥
      * @throws CipherRuntimeException RsaKeyPairException
      */
-    @NonNull
+    @Nonnull
     String getPublicKey(String keyPairId) throws CipherRuntimeException;
 
     /**

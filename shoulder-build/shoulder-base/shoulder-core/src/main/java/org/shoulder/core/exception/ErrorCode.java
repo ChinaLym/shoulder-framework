@@ -5,7 +5,8 @@ import org.shoulder.core.i18.Translatable;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * 表示错误的接口
@@ -39,7 +40,7 @@ public interface ErrorCode {
      *
      * @return 错误码
      */
-    @NonNull
+    @Nonnull
     String getCode();
 
     /**
@@ -79,7 +80,7 @@ public interface ErrorCode {
      *
      * @return 日志级别
      */
-    @NonNull
+    @Nonnull
     default Level getLogLevel() {
         return DEFAULT_LOG_LEVEL;
     }
@@ -89,7 +90,7 @@ public interface ErrorCode {
      *
      * @return httpStatusCode
      */
-    @NonNull
+    @Nonnull
     default HttpStatus getHttpStatusCode() {
         return DEFAULT_HTTP_STATUS_CODE;
     }
@@ -168,7 +169,7 @@ public interface ErrorCode {
      */
     class SuccessCode implements ErrorCode {
 
-        @NonNull
+        @Nonnull
         @Override
         public String getCode() {
             return "0";

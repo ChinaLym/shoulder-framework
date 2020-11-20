@@ -3,8 +3,8 @@ package org.shoulder.autoconfigure.core;
 import org.shoulder.core.constant.ShoulderFramework;
 import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.Properties;
 
 /**
@@ -15,7 +15,7 @@ import java.util.Properties;
 public class DefaultPropertiesStartingListener implements ApplicationListener<ApplicationStartingEvent> {
 
     @Override
-    public void onApplicationEvent(@NonNull ApplicationStartingEvent event) {
+    public void onApplicationEvent(@Nonnull ApplicationStartingEvent event) {
         // 注意：当应用中存在spring-cloud-context包时，这个事件将触发2次
         Properties properties = defaultConfigurationProperties();
         // 配置属性优先级：System > application.properties > SpringApplication

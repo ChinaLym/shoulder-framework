@@ -11,8 +11,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**
@@ -39,7 +39,7 @@ public class OperationLogParamConverterAutoConfiguration implements ApplicationC
      * 初始化 {@link OperationLogParamValueConverterHolder}
      */
     @Override
-    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@Nonnull ApplicationContext applicationContext) throws BeansException {
         Collection<OperationLogParamValueConverter> allConverters = applicationContext.getBeansOfType(OperationLogParamValueConverter.class).values();
         DefaultOperationLogParamValueConverter defaultConverter = applicationContext.getBean(DefaultOperationLogParamValueConverter.class);
         OperationLogParamValueConverterHolder.init(allConverters, defaultConverter);

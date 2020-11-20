@@ -1,8 +1,8 @@
 package org.shoulder.log.operation.async.executors;
 
 import org.shoulder.log.operation.async.OpLogRunnable;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.Executor;
 
 /**
@@ -19,7 +19,7 @@ public class OpLogExecutor implements Executor {
     }
 
     @Override
-    public void execute(@NonNull Runnable command) {
+    public void execute(@Nonnull Runnable command) {
         this.delegate.execute(new OpLogRunnable(command));
     }
 }

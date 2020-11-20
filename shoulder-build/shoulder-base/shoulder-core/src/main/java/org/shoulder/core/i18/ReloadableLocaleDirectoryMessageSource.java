@@ -6,8 +6,8 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,7 +61,7 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
      *
      * @return 多语言资源路径
      */
-    @NonNull
+    @Nonnull
     @Override
     protected List<String> calculateFilenamesForLocale(String basename, Locale locale) {
         // 先放入 super 的，优先级最低
@@ -97,7 +97,7 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
      * @param basename 多语言路径，如 classpath*:language
      * @return 举例 language/zh_CN、language/en_US
      */
-    @NonNull
+    @Nonnull
     private List<String> listLanguageSourceDir(String basename) {
         /*if(!basename.startsWith("classpath")){
             return Collections.emptyList();

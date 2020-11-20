@@ -1,9 +1,9 @@
 package org.shoulder.crypto.negotiation.cache;
 
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,7 +25,7 @@ public class LocalKeyNegotiationCache implements KeyNegotiationCache {
     private static Map<String, KeyExchangeResult> serverKeyExchangeResultMap = new ConcurrentHashMap<>(8);
 
     @Override
-    public void put(@NonNull String cacheKey, @NonNull KeyExchangeResult keyExchangeResult, boolean asClient) {
+    public void put(@Nonnull String cacheKey, @Nonnull KeyExchangeResult keyExchangeResult, boolean asClient) {
         Map<String, KeyExchangeResult> keyExchangeResultMap = asClient ?
             clientKeyExchangeResultMap : serverKeyExchangeResultMap;
         keyExchangeResultMap.put(cacheKey, keyExchangeResult);

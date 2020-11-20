@@ -19,12 +19,12 @@ import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.http.AppIdExtractor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.lang.NonNull;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
@@ -232,7 +232,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
      * 校验请求是否合法，token 部分
      * 并将 xSessionId、token 从请求头中放到返回值中
      */
-    private KeyExchangeRequest validateAndFill(@NonNull KeyExchangeRequest keyExchangeRequest) throws AsymmetricCryptoException, NegotiationException {
+    private KeyExchangeRequest validateAndFill(@Nonnull KeyExchangeRequest keyExchangeRequest) throws AsymmetricCryptoException, NegotiationException {
 
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
 
@@ -255,7 +255,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
      * @param appId 应用标识
      * @return negotiationUrl
      */
-    @NonNull
+    @Nonnull
     private String getNegotiationUrl(String appId) {
         return this.negotiationUrls.computeIfAbsent(appId, serviceIndex -> {
             log.warn("Not config [{}]'s negotiationUrl, will use default: " +
@@ -274,7 +274,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
     }
 
     @Override
-    public boolean isNegotiationUrl(@NonNull URI uri) {
+    public boolean isNegotiationUrl(@Nonnull URI uri) {
         String appId = appIdExtractor.extract(uri);
         return uri.getPath().equalsIgnoreCase(negotiationUrls.get(appId));
     }

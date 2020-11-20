@@ -4,7 +4,8 @@ import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.crypto.exception.CipherRuntimeException;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
+
+import javax.annotation.Nonnull;
 
 
 /**
@@ -26,7 +27,7 @@ public enum NegotiationErrorCodeEnum implements ErrorCode {
      * 协商失败
      */
     NEGATION_FAIL(5510, "negotiation fail.", Level.ERROR, HttpStatus.INTERNAL_SERVER_ERROR),
-    
+
     /**
      * Token无效
      */
@@ -69,25 +70,25 @@ public enum NegotiationErrorCodeEnum implements ErrorCode {
         this.httpStatus = httpStatus;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public String getCode() {
         return code;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public String getMessage() {
         return message;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public Level getLogLevel() {
         return logLevel;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public HttpStatus getHttpStatusCode() {
         return httpStatus;

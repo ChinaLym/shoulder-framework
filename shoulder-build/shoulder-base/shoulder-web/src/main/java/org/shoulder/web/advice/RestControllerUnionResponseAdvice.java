@@ -16,13 +16,13 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -57,8 +57,8 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
      * 方法或类上未添加 {@link SkipResponseWrap}
      */
     @Override
-    public boolean supports(@NonNull MethodParameter returnType,
-                            @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
+    public boolean supports(@Nonnull MethodParameter returnType,
+                            @Nonnull Class<? extends HttpMessageConverter<?>> converterType) {
 
         boolean jsonType = MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
         boolean stringType = StringHttpMessageConverter.class.isAssignableFrom(converterType);
@@ -91,11 +91,11 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
     }
 
     @Override
-    public Object beforeBodyWrite(@Nullable Object body, @NonNull MethodParameter returnType,
-                                  @NonNull MediaType selectedContentType,
-                                  @NonNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  @NonNull ServerHttpRequest request,
-                                  @NonNull ServerHttpResponse response) {
+    public Object beforeBodyWrite(@Nullable Object body, @Nonnull MethodParameter returnType,
+                                  @Nonnull MediaType selectedContentType,
+                                  @Nonnull Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                  @Nonnull ServerHttpRequest request,
+                                  @Nonnull ServerHttpResponse response) {
 
         if (MappingJackson2HttpMessageConverter.class.isAssignableFrom(selectedConverterType)) {
             if (body == null) {

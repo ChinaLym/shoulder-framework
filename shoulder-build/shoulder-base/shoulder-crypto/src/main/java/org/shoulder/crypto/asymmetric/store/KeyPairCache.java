@@ -3,8 +3,8 @@ package org.shoulder.crypto.asymmetric.store;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
 import org.shoulder.crypto.asymmetric.exception.NoSuchKeyPairException;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -20,7 +20,7 @@ public interface KeyPairCache {
      * @param id         id
      * @param keyPairDto 密钥对
      */
-    void set(String id, @NonNull KeyPairDto keyPairDto);
+    void set(String id, @Nonnull KeyPairDto keyPairDto);
 
 
     /**
@@ -41,7 +41,7 @@ public interface KeyPairCache {
      * @return 密钥对
      * @throws NoSuchKeyPairException 密钥对缺失
      */
-    @NonNull
+    @Nonnull
     KeyPairDto get(String id) throws NoSuchKeyPairException;
 
     /**

@@ -1,7 +1,6 @@
 package org.shoulder.core.util;
 
-import org.springframework.lang.NonNull;
-
+import javax.annotation.Nonnull;
 import java.util.stream.IntStream;
 
 import static org.shoulder.core.util.ColorString.*;
@@ -384,7 +383,7 @@ public class ColorStringBuilder implements CharSequence {
         return this;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public String toString() {
         return this.delegateBuilder.toString();

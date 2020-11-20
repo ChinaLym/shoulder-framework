@@ -2,7 +2,8 @@ package org.shoulder.crypto.local;
 
 
 import org.shoulder.crypto.TextCipher;
-import org.springframework.lang.NonNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * 本地数据加密解密：只能由本应用实现解密。
@@ -19,7 +20,7 @@ public interface LocalTextCipher extends TextCipher {
      * @return 参数 text 加密后的密文
      */
     @Override
-    String encrypt(@NonNull String text);
+    String encrypt(@Nonnull String text);
 
     /**
      * 以Aes256解密
@@ -28,7 +29,7 @@ public interface LocalTextCipher extends TextCipher {
      * @return 参数 cipherText 解密后的明文
      */
     @Override
-    String decrypt(@NonNull String cipherText);
+    String decrypt(@Nonnull String cipherText);
 
     /**
      * 确保加密功能正常使用

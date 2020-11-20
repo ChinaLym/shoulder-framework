@@ -4,8 +4,8 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.text.ParseException;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
@@ -47,7 +47,7 @@ public class DateConverter extends BaseDateConverter<Date> {
 
 
     @Override
-    protected Date parseDateOrTime(@NonNull String sourceDateString, String dateTimeTemplate) {
+    protected Date parseDateOrTime(@Nonnull String sourceDateString, String dateTimeTemplate) {
         try {
             return FastDateFormat.getInstance(dateTimeTemplate).parse(sourceDateString);
         } catch (ParseException e) {

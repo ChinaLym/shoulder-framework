@@ -2,8 +2,8 @@ package org.shoulder.autoconfigure.monitor.thread;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -165,7 +165,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
      *
      * @return 没有执行的任务
      */
-    @NonNull
+    @Nonnull
     @Override
     public List<Runnable> shutdownNow() {
         // 统计已执行任务、正在执行任务、未执行任务数量

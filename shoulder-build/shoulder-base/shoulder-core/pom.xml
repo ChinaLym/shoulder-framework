@@ -11,7 +11,7 @@
     </parent>
 
     <dependencies>
-        <!-- @NonNull / @Nullable 提示 -->
+        <!-- @Nonnull / @Nullable 提示 -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>

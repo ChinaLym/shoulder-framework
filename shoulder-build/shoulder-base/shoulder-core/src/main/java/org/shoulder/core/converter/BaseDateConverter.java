@@ -1,8 +1,8 @@
 package org.shoulder.core.converter;
 
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public abstract class BaseDateConverter<T> implements Converter<String, T> {
      * @return 转换后的对象
      */
     @Override
-    public T convert(@NonNull String source) {
+    public T convert(@Nonnull String source) {
         if (source.isEmpty()) {
             return null;
         }
@@ -55,6 +55,6 @@ public abstract class BaseDateConverter<T> implements Converter<String, T> {
      * @return 日期时间类对象
      * @throws DateTimeParseException 日期转换出错
      */
-    protected abstract T parseDateOrTime(@NonNull String sourceDateString, String dateTimeTemplate) throws DateTimeParseException;
+    protected abstract T parseDateOrTime(@Nonnull String sourceDateString, String dateTimeTemplate) throws DateTimeParseException;
 
 }

@@ -6,8 +6,9 @@ import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfigu
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
 import org.springframework.web.client.RestTemplate;
+
+import javax.annotation.Nonnull;
 
 /**
  * http（RestTemplate） 相关配置
@@ -21,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 public class HttpAutoConfiguration {
 
     @Bean
-    public RestTemplate restTemplate(@NonNull RestTemplateBuilder builder) {
+    public RestTemplate restTemplate(@Nonnull RestTemplateBuilder builder) {
         return builder.build();
     }
 

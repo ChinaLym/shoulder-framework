@@ -1,7 +1,6 @@
 package org.shoulder.core.converter;
 
-import org.springframework.lang.NonNull;
-
+import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
@@ -25,7 +24,7 @@ public class LocalDateTimeConverter extends BaseLocalDateTimeConverter<LocalDate
     }
 
     @Override
-    protected String toStandFormat(@NonNull String sourceDateString) {
+    protected String toStandFormat(@Nonnull String sourceDateString) {
         if (sourceDateString.length() == 19) {
             return sourceDateString;
         } else {

@@ -1,6 +1,6 @@
 package org.shoulder.core.converter;
 
-import org.springframework.lang.NonNull;
+import javax.annotation.Nonnull;
 
 /**
  * String 转枚举失败时处理器
@@ -16,7 +16,7 @@ public interface EnumMissMatchHandler {
      * @param <T>      任意枚举类型
      * @return 枚举
      */
-    <T> T handleNullSource(@NonNull Class<? extends Enum> enumType);
+    <T> T handleNullSource(@Nonnull Class<? extends Enum> enumType);
 
     /**
      * 处理转换失败
@@ -26,5 +26,5 @@ public interface EnumMissMatchHandler {
      * @param <T>      任意枚举类型
      * @return 枚举
      */
-    <T> T handleMissMatch(@NonNull Class<? extends Enum> enumType, @NonNull String source);
+    <T> T handleMissMatch(@Nonnull Class<? extends Enum> enumType, @Nonnull String source);
 }

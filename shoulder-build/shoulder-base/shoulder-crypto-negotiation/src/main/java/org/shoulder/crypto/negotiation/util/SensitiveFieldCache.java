@@ -5,8 +5,8 @@ import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
 import org.shoulder.crypto.negotiation.dto.SensitiveFieldWrapper;
 import org.shoulder.crypto.negotiation.support.Sensitive;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,13 +25,13 @@ public class SensitiveFieldCache {
 
     private static final ConcurrentMap<Class<?>, List<SensitiveFieldWrapper>> RESPONSE_FIELD_CACHE = new ConcurrentHashMap<>();
 
-    public static List<SensitiveFieldWrapper> findSensitiveRequestFieldInfo(@NonNull Class<?> clazz) {
+    public static List<SensitiveFieldWrapper> findSensitiveRequestFieldInfo(@Nonnull Class<?> clazz) {
         return REQUEST_FIELD_CACHE.computeIfAbsent(clazz,
             clz -> findSensitiveFields(clz, true)
         );
     }
 
-    public static List<SensitiveFieldWrapper> findSensitiveResponseFieldInfo(@NonNull Class<?> clazz) {
+    public static List<SensitiveFieldWrapper> findSensitiveResponseFieldInfo(@Nonnull Class<?> clazz) {
         return RESPONSE_FIELD_CACHE.computeIfAbsent(clazz,
             clz -> findSensitiveFields(clz, false)
         );
@@ -40,7 +40,7 @@ public class SensitiveFieldCache {
     /**
      * 反射找该类的所有敏感字段，包括父类，注意 getFields getDeclaredFields 都不行，需要递归父类
      */
-    private static List<SensitiveFieldWrapper> findSensitiveFields(@NonNull Class<?> aimClazz, boolean requestOrResponse) {
+    private static List<SensitiveFieldWrapper> findSensitiveFields(@Nonnull Class<?> aimClazz, boolean requestOrResponse) {
 
         List<SensitiveFieldWrapper> allSensitiveField = new LinkedList<>();
         Field[] fields = ReflectUtil.getFieldsDirectly(aimClazz, true);
@@ -82,8 +82,8 @@ public class SensitiveFieldCache {
      * @param sensitiveFields 所有需要处理的敏感字段信息
      * @param cipher          加密/解密
      */
-    public static void handleSensitiveData(@NonNull Object object, @NonNull List<SensitiveFieldWrapper> sensitiveFields,
-                                           @NonNull TransportTextCipher cipher) {
+    public static void handleSensitiveData(@Nonnull Object object, @Nonnull List<SensitiveFieldWrapper> sensitiveFields,
+                                           @Nonnull TransportTextCipher cipher) {
         try {
             // 不应该为空
             assert cipher != null;

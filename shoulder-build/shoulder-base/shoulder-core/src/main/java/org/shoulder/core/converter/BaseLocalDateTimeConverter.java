@@ -1,7 +1,6 @@
 package org.shoulder.core.converter;
 
-import org.springframework.lang.NonNull;
-
+import javax.annotation.Nonnull;
 import java.time.format.DateTimeFormatter;
 import java.util.function.BiFunction;
 
@@ -13,7 +12,7 @@ import java.util.function.BiFunction;
 public abstract class BaseLocalDateTimeConverter<T> extends BaseDateConverter<T> {
 
     @Override
-    protected T parseDateOrTime(@NonNull String sourceDateString, String dateTimeTemplate) {
+    protected T parseDateOrTime(@Nonnull String sourceDateString, String dateTimeTemplate) {
         return parseFunction().apply(toStandFormat(sourceDateString), DateTimeFormatter.ofPattern(dateTimeTemplate));
     }
 
@@ -23,8 +22,8 @@ public abstract class BaseLocalDateTimeConverter<T> extends BaseDateConverter<T>
      * @param sourceDateString 输入的时间字符串
      * @return 可解析的时间格式
      */
-    @NonNull
-    protected String toStandFormat(@NonNull String sourceDateString) {
+    @Nonnull
+    protected String toStandFormat(@Nonnull String sourceDateString) {
         return sourceDateString;
     }
 
@@ -42,7 +41,7 @@ public abstract class BaseLocalDateTimeConverter<T> extends BaseDateConverter<T>
      * @return 严格格式
      */
     @SuppressWarnings("PMD.LowerCamelCaseVariableNamingRule")
-    protected String toStandYearMonthDay(@NonNull String yyyyMMdd) {
+    protected String toStandYearMonthDay(@Nonnull String yyyyMMdd) {
         final int stdFormatLength = 10;
         if (yyyyMMdd.length() == stdFormatLength) {
             return yyyyMMdd;
@@ -74,7 +73,7 @@ public abstract class BaseLocalDateTimeConverter<T> extends BaseDateConverter<T>
      * @return 严格格式
      * @deprecated JDK 支持非严格格式，无需此方法
      */
-    /*protected String toStandHourMinuteSecond(@NonNull String HHmmss) {
+    /*protected String toStandHourMinuteSecond(@Nonnull String HHmmss) {
         final int stdFormatLength = 8;
         if(HHmmss.length() == stdFormatLength) {
             return HHmmss;

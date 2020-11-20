@@ -4,7 +4,8 @@ import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.type.AnnotatedTypeMetadata;
-import org.springframework.lang.NonNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * 判断认证方式
@@ -14,7 +15,7 @@ import org.springframework.lang.NonNull;
 public class OnAuthTypeCondition implements Condition {
 
     @Override
-    public boolean matches(@NonNull ConditionContext conditionContext, @NonNull AnnotatedTypeMetadata annotatedTypeMetadata) {
+    public boolean matches(@Nonnull ConditionContext conditionContext, @Nonnull AnnotatedTypeMetadata annotatedTypeMetadata) {
         MergedAnnotation<ConditionalOnAuthType> mergedAnnotation =
             annotatedTypeMetadata.getAnnotations().get(ConditionalOnAuthType.class);
         if (!mergedAnnotation.isPresent()) {

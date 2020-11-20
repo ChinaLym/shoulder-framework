@@ -6,9 +6,9 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 import org.shoulder.core.util.ColorString;
 import org.shoulder.core.util.StringUtils;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -103,7 +103,7 @@ public class HttpLogHelper {
      * @param stackTraceElement 方法调用栈
      * @return 可跳转的代码位置
      */
-    public static String genCodeLocationLinkFromStack(@NonNull StackTraceElement stackTraceElement) {
+    public static String genCodeLocationLinkFromStack(@Nonnull StackTraceElement stackTraceElement) {
         // DemoController.method(DemoControllerFileName.java:66)
         int lineNum = stackTraceElement.getLineNumber();
         String classFullName = stackTraceElement.getClassName();
@@ -113,7 +113,7 @@ public class HttpLogHelper {
         return classSimpleName + "." + methodName + "(" + fileName + ":" + lineNum + ")";
     }
 
-    public static String genCodeLocationLinkFromStack(@NonNull Class<?> clazz, @Nullable String aimMethodName) {
+    public static String genCodeLocationLinkFromStack(@Nonnull Class<?> clazz, @Nullable String aimMethodName) {
         StackTraceElement stack = findStackTraceElement(clazz, "", false);
         // 肯定会有一个，否则不应该触发该方法 null
         if (stack == null) {
@@ -135,7 +135,7 @@ public class HttpLogHelper {
      * @return 未找到返回 null
      */
     @Nullable
-    public static StackTraceElement findStackTraceElement(@NonNull Class<?> aimClass,
+    public static StackTraceElement findStackTraceElement(@Nonnull Class<?> aimClass,
                                                           @Nullable String aimMethodName, boolean ignoreSubClass) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         boolean foundAimClassFlag = false;
