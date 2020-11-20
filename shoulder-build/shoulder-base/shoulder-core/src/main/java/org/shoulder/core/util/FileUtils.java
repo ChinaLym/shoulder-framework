@@ -1,18 +1,18 @@
 package org.shoulder.core.util;
 
+import org.shoulder.core.exception.BaseRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nonnull;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 文件相关工具类
@@ -27,6 +27,11 @@ public class FileUtils {
     public static final String COMMA_SEPARATOR = ",";
     private static final String TEMP_DIR_NAME = "temp";
     private static final String FILE_SEPARATOR = File.separator;
+
+    /**
+     * 文件扩展名 - 数组
+     */
+    private static final Map<String, byte[]> FILE_HEADER_MAP = new ConcurrentHashMap<>();
 
     /**
      * 检查/创建文件在所的文件夹
@@ -105,6 +110,49 @@ public class FileUtils {
             throw new RuntimeException("load by csv fail from " + file.getAbsolutePath());
         }
         return dataList;
+    }
+
+
+    /**
+     * 校验文件头
+     *
+     * @param in      文件的输入流
+     * @param extName 文件扩展名，不带点
+     * @return 是否合法
+     * @throws IOException 流读取异常
+     */
+    public static boolean checkHeader(@Nonnull InputStream in, @Nonnull String extName) throws IOException {
+        String lowExtName = extName.toLowerCase();
+        if (FILE_HEADER_MAP.containsKey(lowExtName)) {
+            byte[] standHeaderBytes = FILE_HEADER_MAP.get(lowExtName);
+            int byteCount = standHeaderBytes.length;
+            byte[] headBytes = new byte[byteCount];
+            assert in.read(headBytes, 0, byteCount) == byteCount;
+            return Arrays.compare(headBytes, standHeaderBytes) == 0;
+        } else {
+            // 警告，不在里，未校验
+            throw new BaseRuntimeException("the extname '" + extName + "' is out of check bounds.");
+        }
+    }
+
+
+    private static void addFileHeader(@Nonnull Properties properties) {
+        properties.forEach((k, v) -> {
+            String standHeaderHex = (String) v;
+            log.info("stand file ");
+            if (standHeaderHex.startsWith("0x")) {
+                standHeaderHex = standHeaderHex.replaceAll("0x", "");
+            }
+            byte[] standHeaderBytes = new byte[standHeaderHex.length() / 2];
+            int j = 0;
+            for (int i = 0; i < standHeaderBytes.length; i++) {
+                byte high = (byte) (Character.digit(standHeaderHex.charAt(j), 16) & 0xff);
+                byte low = (byte) (Character.digit(standHeaderHex.charAt(j + 1), 16) & 0xff);
+                standHeaderBytes[i] = (byte) (high << 4 | low);
+                j += 2;
+            }
+            FILE_HEADER_MAP.put((String) k, standHeaderBytes);
+        });
     }
 
 }
