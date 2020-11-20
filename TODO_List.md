@@ -11,7 +11,6 @@
 - 通用简单业务代码
     - 简单增删改接口
     - 批量增删改
-    - 异步导入与导出（基于csv/excel）
     - 应用内部广播变更通知
 
 - api 带版本
@@ -46,17 +45,12 @@
 ## spring-cache
 使用 ConversionService 代替 StringRedisSerializer 支持枚举等，获得更好的编码体验
 
-## 安全
-
-文件上传过滤，统一
 
 ### spring security
 
-当前用户信息 DTO
-第三方登录等
+当前用户信息 AppContext | Spring Security 提供的上下文
+第三方登录等，暂未封装
 
-## 待定
-~~编写id 生成器~~ 引入第三方
 
 # 提供技术选型推荐
 
