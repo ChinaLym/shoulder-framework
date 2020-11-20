@@ -4,8 +4,8 @@ import org.shoulder.code.exception.NoSuchValidateCodeProcessorException;
 import org.shoulder.code.exception.ValidateCodeAuthenticationException;
 import org.shoulder.code.processor.ValidateCodeProcessor;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class ValidateCodeProcessorHolder implements InitializingBean {
      *
      * @throws ValidateCodeAuthenticationException 没有对应的验证码处理器
      */
-    @NonNull
+    @Nonnull
     public ValidateCodeProcessor getProcessor(String type) throws NoSuchValidateCodeProcessorException {
         ValidateCodeProcessor processor = processorMap.get(type);
         if (processor == null) {

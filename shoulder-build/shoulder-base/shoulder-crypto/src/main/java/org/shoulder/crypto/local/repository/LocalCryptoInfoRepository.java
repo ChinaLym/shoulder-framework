@@ -1,9 +1,9 @@
 package org.shoulder.crypto.local.repository;
 
 import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -20,7 +20,7 @@ public interface LocalCryptoInfoRepository {
      * @param aesInfo 待保存的的加密信息
      * @throws Exception when aesInfo persist fail.
      */
-    void save(@NonNull LocalCryptoInfoEntity aesInfo) throws Exception;
+    void save(@Nonnull LocalCryptoInfoEntity aesInfo) throws Exception;
 
     /**
      * 获取特定的加密信息
@@ -36,7 +36,7 @@ public interface LocalCryptoInfoRepository {
      *
      * @return List<AesInfoEntity>
      */
-    @NonNull
+    @Nonnull
     List<LocalCryptoInfoEntity> get(String appId) throws Exception;
 
 }

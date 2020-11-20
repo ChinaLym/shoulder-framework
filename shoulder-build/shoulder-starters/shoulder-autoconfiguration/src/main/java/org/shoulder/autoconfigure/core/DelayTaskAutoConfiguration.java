@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.Executor;
 
 /**
@@ -48,7 +48,7 @@ public class DelayTaskAutoConfiguration implements ApplicationListener<ContextRe
     }
 
     @Override
-    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
+    public void onApplicationEvent(@Nonnull ContextRefreshedEvent event) {
         delayTaskDispatcher.start();
     }
 

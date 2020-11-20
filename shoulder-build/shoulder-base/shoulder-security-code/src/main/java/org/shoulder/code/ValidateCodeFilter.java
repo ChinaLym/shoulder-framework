@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.code.processor.ValidateCodeProcessor;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.util.AntPathMatcher;
@@ -14,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Nonnull;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -89,8 +89,8 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain chain)
+    protected void doFilterInternal(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response,
+                                    @Nonnull FilterChain chain)
         throws ServletException, IOException {
 
         String type;

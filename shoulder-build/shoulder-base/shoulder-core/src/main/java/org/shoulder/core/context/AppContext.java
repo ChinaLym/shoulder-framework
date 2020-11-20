@@ -4,9 +4,9 @@ import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -101,7 +101,7 @@ public class AppContext {
      *
      * @param locale 语言标识
      */
-    public static void setLocale(@NonNull Locale locale) {
+    public static void setLocale(@Nonnull Locale locale) {
         log.trace("set Locale ({})", locale);
         set(ShoulderContextKey.Locale, locale.toString());
     }

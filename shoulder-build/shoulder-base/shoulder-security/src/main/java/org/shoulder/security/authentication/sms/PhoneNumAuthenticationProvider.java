@@ -1,11 +1,12 @@
 package org.shoulder.security.authentication.sms;
 
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.annotation.Nonnull;
 
 /**
  * 负责手机号认证处理，可以结合其他安全过滤器实现 手机号 + 短信验证码登录、手机号 + 密码登录、手机号 + 邮件验证码登录等。
@@ -16,7 +17,7 @@ public class PhoneNumAuthenticationProvider implements AuthenticationProvider {
 
     private PhoneNumAuthenticateService phoneNumAuthenticateService;
 
-    public PhoneNumAuthenticationProvider(@NonNull PhoneNumAuthenticateService phoneNumAuthenticateService) {
+    public PhoneNumAuthenticationProvider(@Nonnull PhoneNumAuthenticateService phoneNumAuthenticateService) {
         this.phoneNumAuthenticateService = phoneNumAuthenticateService;
     }
 

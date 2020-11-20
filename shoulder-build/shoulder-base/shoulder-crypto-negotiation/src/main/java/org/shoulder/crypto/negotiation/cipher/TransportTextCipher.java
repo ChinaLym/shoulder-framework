@@ -1,8 +1,9 @@
 package org.shoulder.crypto.negotiation.cipher;
 
-import lombok.NonNull;
 import org.shoulder.crypto.TextCipher;
 import org.shoulder.crypto.exception.CipherRuntimeException;
+
+import javax.annotation.Nonnull;
 
 /**
  * 传输加解密：仅用于传输
@@ -20,7 +21,7 @@ public interface TransportTextCipher extends TextCipher {
      * @throws CipherRuntimeException aes异常
      */
     @Override
-    String encrypt(@NonNull String text) throws CipherRuntimeException;
+    String encrypt(@Nonnull String text) throws CipherRuntimeException;
 
     /**
      * 解密
@@ -30,7 +31,7 @@ public interface TransportTextCipher extends TextCipher {
      * @throws CipherRuntimeException aes异常
      */
     @Override
-    String decrypt(@NonNull String cipherText) throws CipherRuntimeException;
+    String decrypt(@Nonnull String cipherText) throws CipherRuntimeException;
 
     /**
      * 加密或解密，根据实现类具体职责决定

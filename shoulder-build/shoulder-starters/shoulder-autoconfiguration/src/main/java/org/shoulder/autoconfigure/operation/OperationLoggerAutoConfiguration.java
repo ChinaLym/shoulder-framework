@@ -23,8 +23,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.StringJoiner;
 import java.util.concurrent.*;
@@ -105,7 +105,7 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
      * 2. support opLog interceptor.
      */
     @Override
-    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
+    public void onApplicationEvent(@Nonnull ContextRefreshedEvent event) {
         ApplicationContext applicationContext = event.getApplicationContext();
         OperationLogger operationLogger =
             applicationContext.getBean(OperationLogger.class);

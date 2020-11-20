@@ -1,6 +1,6 @@
 package org.shoulder.core.delay;
 
-import org.springframework.lang.NonNull;
+import javax.annotation.Nonnull;
 
 /**
  * 延时任务持有者
@@ -16,7 +16,7 @@ public interface DelayTaskHolder {
      *
      * @param delayTask 已被封装的延时任务
      */
-    void put(@NonNull DelayTask delayTask);
+    void put(@Nonnull DelayTask delayTask);
 
     /**
      * 获取要执行的任务
@@ -24,7 +24,7 @@ public interface DelayTaskHolder {
      * @return 可执行的任务
      * @throws Exception 取时可能会产生中断等候等异常
      */
-    @NonNull
+    @Nonnull
     DelayTask next() throws Exception;
 
 }

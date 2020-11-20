@@ -10,8 +10,8 @@ import org.shoulder.crypto.exception.CipherRuntimeException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 
 /**
@@ -53,7 +53,7 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     }
 
     @Override
-    @NonNull
+    @Nonnull
     public String getPublicKey() {
         return getPublicKey(defaultKeyPairId);
     }
@@ -91,7 +91,7 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     // ================== 多 keyPair =====================
 
     @Override
-    @NonNull
+    @Nonnull
     public String getPublicKey(String keyPairId) throws CipherRuntimeException {
         try {
             return processor.getPublicKeyString(this.defaultKeyPairId);

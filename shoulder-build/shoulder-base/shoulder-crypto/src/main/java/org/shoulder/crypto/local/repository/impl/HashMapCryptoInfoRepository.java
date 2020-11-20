@@ -2,9 +2,9 @@ package org.shoulder.crypto.local.repository.impl;
 
 import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
-import org.springframework.lang.NonNull;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class HashMapCryptoInfoRepository implements LocalCryptoInfoRepository {
     private final Map<String, List<LocalCryptoInfoEntity>> storage = new ConcurrentHashMap<>(1);
 
     @Override
-    public void save(@NonNull LocalCryptoInfoEntity aesInfo) {
+    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) {
         List<LocalCryptoInfoEntity> algorithmList = storage.computeIfAbsent(aesInfo.getAppId(),
             key -> new LinkedList<>());
         algorithmList.add(aesInfo);
@@ -43,7 +43,7 @@ public class HashMapCryptoInfoRepository implements LocalCryptoInfoRepository {
     }
 
     @Override
-    @NonNull
+    @Nonnull
     public List<LocalCryptoInfoEntity> get(String appId) {
         return storage.get(appId);
     }

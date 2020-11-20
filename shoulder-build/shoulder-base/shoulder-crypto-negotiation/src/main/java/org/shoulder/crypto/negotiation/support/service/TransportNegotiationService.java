@@ -6,8 +6,8 @@ import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
 import org.shoulder.crypto.negotiation.support.dto.KeyExchangeResponse;
 import org.shoulder.crypto.negotiation.support.endpoint.NegotiationEndPoint;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.net.URI;
 
 /**
@@ -44,5 +44,5 @@ public interface TransportNegotiationService {
      * @param uri uri
      * @return 是否为已经标识为密钥交换的地址
      */
-    boolean isNegotiationUrl(@NonNull URI uri);
+    boolean isNegotiationUrl(@Nonnull URI uri);
 }

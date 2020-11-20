@@ -9,8 +9,8 @@ import org.shoulder.core.util.StringUtils;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.enums.OperationResult;
 import org.shoulder.log.operation.enums.TerminalType;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -299,7 +299,7 @@ public class OperationLogDTO implements Cloneable {
     /**
      * 克隆日志实体
      */
-    public OperationLogDTO cloneTo(@NonNull OperationLogDTO clone) {
+    public OperationLogDTO cloneTo(@Nonnull OperationLogDTO clone) {
 
         clone.setUserId(userId);
         clone.setUserName(userName);

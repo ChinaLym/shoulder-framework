@@ -29,8 +29,8 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Collections;
@@ -177,7 +177,7 @@ public class OperationLogAspect {
     /**
      * 根据注解创建日志实体
      */
-    @NonNull
+    @Nonnull
     private OperationLogDTO createLog(ProceedingJoinPoint joinPoint, OperationLog methodAnnotation, OperationLogConfig classAnnotation) {
         // 创建日志实体
         OperationLogDTO entity =
@@ -220,7 +220,7 @@ public class OperationLogAspect {
      * @param joinPoint 连接点
      * @return 本方法中要记录的参数
      */
-    private List<OpLogParam> createOperationParams(@NonNull OperationLogDTO entity, ProceedingJoinPoint joinPoint) {
+    private List<OpLogParam> createOperationParams(@Nonnull OperationLogDTO entity, ProceedingJoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         List<OpLogParam> opLogParams = new LinkedList<>();

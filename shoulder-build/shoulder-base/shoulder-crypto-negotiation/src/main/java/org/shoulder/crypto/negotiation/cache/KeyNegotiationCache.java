@@ -1,8 +1,9 @@
 package org.shoulder.crypto.negotiation.cache;
 
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+
+import javax.annotation.Nonnull;
 
 /**
  * 密钥协商结果缓存
@@ -31,7 +32,7 @@ public interface KeyNegotiationCache {
      * @param appId             对方应用标识
      * @param keyExchangeResult 密钥协商结果
      */
-    default void putAsClient(@NonNull String appId, @NonNull KeyExchangeResult keyExchangeResult) {
+    default void putAsClient(@Nonnull String appId, @Nonnull KeyExchangeResult keyExchangeResult) {
         put(appId, keyExchangeResult, true);
     }
 
@@ -41,7 +42,7 @@ public interface KeyNegotiationCache {
      * @param xSessionId        客户端发来请求的 xSessionId
      * @param keyExchangeResult 密钥协商结果
      */
-    default void putAsServer(@NonNull String xSessionId, @NonNull KeyExchangeResult keyExchangeResult) {
+    default void putAsServer(@Nonnull String xSessionId, @Nonnull KeyExchangeResult keyExchangeResult) {
         put(xSessionId, keyExchangeResult, false);
     }
 
@@ -79,7 +80,7 @@ public interface KeyNegotiationCache {
      * @param keyExchangeResult 密钥协商结果
      * @param asClient          角色
      */
-    void put(@NonNull String cacheKey, @NonNull KeyExchangeResult keyExchangeResult, boolean asClient);
+    void put(@Nonnull String cacheKey, @Nonnull KeyExchangeResult keyExchangeResult, boolean asClient);
 
 
     /**

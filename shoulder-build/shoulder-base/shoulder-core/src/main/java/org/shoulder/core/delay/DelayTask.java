@@ -1,7 +1,6 @@
 package org.shoulder.core.delay;
 
-import org.springframework.lang.NonNull;
-
+import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
@@ -93,7 +92,7 @@ public class DelayTask implements Delayed {
     }
 
     @Override
-    public int compareTo(@NonNull Delayed delayed) {
+    public int compareTo(@Nonnull Delayed delayed) {
         DelayTask other = (DelayTask) delayed;
         long diff = executeInstant - other.executeInstant;
         if (diff > 0) {

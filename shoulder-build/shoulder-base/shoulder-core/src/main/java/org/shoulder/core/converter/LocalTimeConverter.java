@@ -1,8 +1,8 @@
 package org.shoulder.core.converter;
 
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -22,7 +22,7 @@ public class LocalTimeConverter extends BaseDateConverter<LocalTime> implements 
     }
 
     @Override
-    protected LocalTime parseDateOrTime(@NonNull String sourceDateString, String dateTimeTemplate) {
+    protected LocalTime parseDateOrTime(@Nonnull String sourceDateString, String dateTimeTemplate) {
         return LocalTime.parse(sourceDateString, DateTimeFormatter.ofPattern(dateTimeTemplate));
     }
 

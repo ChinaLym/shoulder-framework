@@ -7,11 +7,11 @@ import org.shoulder.core.lock.ServerLock;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -175,7 +175,7 @@ public class JdbcLock extends AbstractDistributeLock implements ServerLock {
     private static class LockInfoRowMapper implements RowMapper<LockInfo> {
 
         @Override
-        public LockInfo mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+        public LockInfo mapRow(@Nonnull ResultSet rs, int rowNum) throws SQLException {
             // owner, token, version, lock_time, release_time
             LockInfo entity = new LockInfo();
             entity.setOwner(rs.getString(0));

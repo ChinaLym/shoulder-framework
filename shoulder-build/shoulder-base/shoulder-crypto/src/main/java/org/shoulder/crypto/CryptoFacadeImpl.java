@@ -1,10 +1,11 @@
 package org.shoulder.crypto;
 
-import lombok.NonNull;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Nonnull;
 
 /**
  * 加解密门面
@@ -25,12 +26,12 @@ public class CryptoFacadeImpl implements CryptoFacade {
     }
 
     @Override
-    public String encryptLocal(@NonNull String text) {
+    public String encryptLocal(@Nonnull String text) {
         return local.encrypt(text);
     }
 
     @Override
-    public String decryptLocal(@NonNull String cipherText) {
+    public String decryptLocal(@Nonnull String cipherText) {
         return local.encrypt(cipherText);
     }
 

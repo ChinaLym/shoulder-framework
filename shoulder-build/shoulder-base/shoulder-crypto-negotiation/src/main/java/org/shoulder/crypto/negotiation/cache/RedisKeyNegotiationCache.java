@@ -3,9 +3,9 @@ package org.shoulder.crypto.negotiation.cache;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,7 +29,7 @@ public class RedisKeyNegotiationCache implements KeyNegotiationCache {
 
 
     @Override
-    public void put(@NonNull String cacheKey, @NonNull KeyExchangeResult keyExchangeResult, boolean asClient) {
+    public void put(@Nonnull String cacheKey, @Nonnull KeyExchangeResult keyExchangeResult, boolean asClient) {
         redisTemplate.opsForValue().set(
             (asClient ? clientKeyPrefix : serverKeyPrefix) + cacheKey,
             JsonUtils.toJson(keyExchangeResult),

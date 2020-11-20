@@ -6,7 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.lang.NonNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * 为 JsonUtils 设置，使得即使用户主动设置了 ObjectMapper ，则使用用户设置的格式
@@ -21,7 +22,7 @@ public class JacksonObjectMapperPostProcessor implements BeanPostProcessor {
      * 初始化前
      */
     @Override
-    public Object postProcessBeforeInitialization(@NonNull Object bean, String beanName)
+    public Object postProcessBeforeInitialization(@Nonnull Object bean, String beanName)
         throws BeansException {
         // do nothing
         return bean;
@@ -36,7 +37,7 @@ public class JacksonObjectMapperPostProcessor implements BeanPostProcessor {
      * @throws BeansException never throw
      */
     @Override
-    public Object postProcessAfterInitialization(@NonNull Object bean, String beanName)
+    public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName)
         throws BeansException {
         // 只处理 Executor
         if (bean instanceof ObjectMapper) {

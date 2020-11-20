@@ -2,8 +2,8 @@ package org.shoulder.core.delay;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.DelayQueue;
 
 /**
@@ -25,7 +25,7 @@ public class DelayQueueDelayTaskHolder implements DelayTaskHolder {
      * @param delayTask 已被封装的延时任务
      */
     @Override
-    public void put(@NonNull DelayTask delayTask) {
+    public void put(@Nonnull DelayTask delayTask) {
         DELAY_QUEUE.put(delayTask);
     }
 
@@ -35,7 +35,7 @@ public class DelayQueueDelayTaskHolder implements DelayTaskHolder {
      *
      * @return 可执行的任务
      */
-    @NonNull
+    @Nonnull
     @Override
     public DelayTask next() throws InterruptedException {
         return DELAY_QUEUE.take();

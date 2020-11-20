@@ -4,8 +4,8 @@ import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.util.OpLogContextHolder;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,7 +45,7 @@ public interface OperationLogger {
      *
      * @param opLogList 操作日志对象集合
      */
-    void log(@NonNull Collection<? extends OperationLogDTO> opLogList);
+    void log(@Nonnull Collection<? extends OperationLogDTO> opLogList);
 
     /**
      * 组装并记录多条操作日志
@@ -53,7 +53,7 @@ public interface OperationLogger {
      * @param opLog        记录模板
      * @param operableList 被操作对象集合
      */
-    void log(@NonNull OperationLogDTO opLog, List<? extends Operable> operableList);
+    void log(@Nonnull OperationLogDTO opLog, List<? extends Operable> operableList);
 
     /**
      * 注册拦截器

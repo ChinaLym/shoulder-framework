@@ -12,9 +12,9 @@ import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.lang.NonNull;
 import org.springframework.util.StopWatch;
 
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -49,9 +49,9 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
     }
 
     @Override
-    @NonNull
-    public ClientHttpResponse intercept(@NonNull HttpRequest request, @NonNull byte[] body,
-                                        @NonNull ClientHttpRequestExecution execution) throws IOException {
+    @Nonnull
+    public ClientHttpResponse intercept(@Nonnull HttpRequest request, @Nonnull byte[] body,
+                                        @Nonnull ClientHttpRequestExecution execution) throws IOException {
 
         StopWatch stopWatch = new StopWatch();
         RestRequestRecord record = RestRequestRecord.builder()
@@ -98,7 +98,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
     /**
      * 是否要记录响应体
      */
-    protected boolean needLogBody(@NonNull ClientHttpResponse response) {
+    protected boolean needLogBody(@Nonnull ClientHttpResponse response) {
         boolean needLogBody = false;
         MediaType contentType = response.getHeaders().getContentType();
         if (contentType != null) {

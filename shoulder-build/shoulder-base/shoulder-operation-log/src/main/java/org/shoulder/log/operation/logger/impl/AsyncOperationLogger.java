@@ -6,8 +6,8 @@ import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import java.util.Collection;
 import java.util.List;
@@ -46,12 +46,12 @@ public class AsyncOperationLogger implements OperationLogger {
      * 记录多条操作日志
      */
     @Override
-    public void log(@NonNull Collection<? extends OperationLogDTO> opLogList) {
+    public void log(@Nonnull Collection<? extends OperationLogDTO> opLogList) {
         executorService.execute(() -> delegate.log(opLogList));
     }
 
     @Override
-    public void log(@NonNull OperationLogDTO opLog, List<? extends Operable> operableList) {
+    public void log(@Nonnull OperationLogDTO opLog, List<? extends Operable> operableList) {
         executorService.execute(() -> delegate.log(opLog, operableList));
     }
 
@@ -60,7 +60,7 @@ public class AsyncOperationLogger implements OperationLogger {
         this.delegate.addInterceptor(logInterceptor);
     }
 
-    public AsyncOperationLogger setLogger(@NonNull OperationLogger delegate) {
+    public AsyncOperationLogger setLogger(@Nonnull OperationLogger delegate) {
         this.delegate = delegate;
         return this;
     }
@@ -73,7 +73,7 @@ public class AsyncOperationLogger implements OperationLogger {
         return executorService;
     }
 
-    public AsyncOperationLogger setExecutorService(@NonNull ExecutorService executorService) {
+    public AsyncOperationLogger setExecutorService(@Nonnull ExecutorService executorService) {
         this.executorService = executorService;
         return this;
     }

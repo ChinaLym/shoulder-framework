@@ -4,9 +4,9 @@ import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
-import org.springframework.lang.NonNull;
 import org.springframework.util.ClassUtils;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -51,7 +51,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    public void save(@NonNull LocalCryptoInfoEntity aesInfo) throws Exception {
+    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) throws Exception {
         String jsonStr = JsonUtils.toJson(aesInfo);
         Files.write(getFilePath(), jsonStr.getBytes(charset));
     }
@@ -64,7 +64,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    @NonNull
+    @Nonnull
     public List<LocalCryptoInfoEntity> get(String appId) throws Exception {
         return getAll().stream().filter(info -> appId.equals(info.getAppId())).collect(Collectors.toList());
     }

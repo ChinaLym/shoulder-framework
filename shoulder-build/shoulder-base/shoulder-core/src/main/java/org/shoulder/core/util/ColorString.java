@@ -1,8 +1,8 @@
 package org.shoulder.core.util;
 
 import org.shoulder.core.context.AppInfo;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -137,7 +137,7 @@ public class ColorString {
         return this;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public String toString() {
         return COLOR_PREFIX + style + ";" + color + "m" + content + RESET;

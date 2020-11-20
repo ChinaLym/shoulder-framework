@@ -5,7 +5,8 @@ import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.type.AnnotatedTypeMetadata;
-import org.springframework.lang.NonNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * 判断是否开启了集群模式
@@ -15,7 +16,7 @@ import org.springframework.lang.NonNull;
 public class OnClusterCondition implements Condition {
 
     @Override
-    public boolean matches(@NonNull ConditionContext conditionContext, @NonNull AnnotatedTypeMetadata annotatedTypeMetadata) {
+    public boolean matches(@Nonnull ConditionContext conditionContext, @Nonnull AnnotatedTypeMetadata annotatedTypeMetadata) {
         MergedAnnotation<ConditionalOnCluster> mergedAnnotation =
             annotatedTypeMetadata.getAnnotations().get(ConditionalOnCluster.class);
         if (!mergedAnnotation.isPresent()) {

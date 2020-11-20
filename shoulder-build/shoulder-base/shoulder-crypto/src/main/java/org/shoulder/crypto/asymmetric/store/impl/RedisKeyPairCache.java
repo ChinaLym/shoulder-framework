@@ -8,9 +8,9 @@ import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +52,7 @@ public class RedisKeyPairCache implements KeyPairCache {
     }
 
     @Override
-    public void set(String id, @NonNull KeyPairDto keyPairDto) {
+    public void set(String id, @Nonnull KeyPairDto keyPairDto) {
         String key = addRedisPrefix(id);
         try {
             // 为了安全和性能，仅将私钥加密，避免已知明文攻击
@@ -71,7 +71,7 @@ public class RedisKeyPairCache implements KeyPairCache {
         }
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public KeyPairDto get(String id) throws NoSuchKeyPairException {
         String key = addRedisPrefix(id);

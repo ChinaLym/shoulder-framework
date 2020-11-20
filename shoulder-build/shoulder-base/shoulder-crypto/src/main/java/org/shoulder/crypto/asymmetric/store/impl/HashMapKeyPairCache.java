@@ -4,8 +4,8 @@ import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
 import org.shoulder.crypto.asymmetric.exception.NoSuchKeyPairException;
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,12 +26,12 @@ public class HashMapKeyPairCache implements KeyPairCache {
     }
 
     @Override
-    public void set(String id, @NonNull KeyPairDto keyPair) {
+    public void set(String id, @Nonnull KeyPairDto keyPair) {
         store.put(id, keyPair);
     }
 
     @Override
-    @NonNull
+    @Nonnull
     public KeyPairDto get(String id) throws NoSuchKeyPairException {
         KeyPairDto keyPair = store.get(id);
         if (keyPair != null) {

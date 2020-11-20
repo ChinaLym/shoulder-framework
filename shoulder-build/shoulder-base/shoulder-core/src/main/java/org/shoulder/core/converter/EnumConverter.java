@@ -1,7 +1,8 @@
 package org.shoulder.core.converter;
 
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.lang.NonNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * 接口入参，枚举接收字符串，通用转换类
@@ -14,13 +15,13 @@ public class EnumConverter implements Converter<String, Enum> {
 
     private EnumMissMatchHandler missMatchHandler;
 
-    public EnumConverter(@NonNull Class<? extends Enum> enumType, EnumMissMatchHandler missMatchHandler) {
+    public EnumConverter(@Nonnull Class<? extends Enum> enumType, EnumMissMatchHandler missMatchHandler) {
         this.enumType = enumType;
         this.missMatchHandler = missMatchHandler;
     }
 
     @Override
-    public Enum convert(@NonNull String source) {
+    public Enum convert(@Nonnull String source) {
         // 处理空字符串
         if (source.isBlank()) {
             return missMatchHandler.handleNullSource(enumType);

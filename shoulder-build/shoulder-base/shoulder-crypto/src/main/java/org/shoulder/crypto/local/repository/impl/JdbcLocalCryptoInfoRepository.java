@@ -5,8 +5,8 @@ import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -84,7 +84,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    public void save(@NonNull LocalCryptoInfoEntity aesInfo) throws Exception {
+    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) throws Exception {
         // 使用唯一索引保证一致性
         jdbcTemplate.update(insertSql, getAllFields(aesInfo));
     }
@@ -101,7 +101,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
 
     @Override
-    @NonNull
+    @Nonnull
     public List<LocalCryptoInfoEntity> get(String appId) {
         try {
             Object[] whereFields = new Object[]{appId};
@@ -132,7 +132,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     private static class AesInfoRowMapper implements RowMapper<LocalCryptoInfoEntity> {
 
         @Override
-        public LocalCryptoInfoEntity mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+        public LocalCryptoInfoEntity mapRow(@Nonnull ResultSet rs, int rowNum) throws SQLException {
             LocalCryptoInfoEntity entity = new LocalCryptoInfoEntity();
             entity.setAppId(rs.getString(0));
             entity.setHeader(rs.getString(1));

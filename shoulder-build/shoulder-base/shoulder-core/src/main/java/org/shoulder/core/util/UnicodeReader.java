@@ -1,7 +1,6 @@
 package org.shoulder.core.util;
 
-import org.springframework.lang.NonNull;
-
+import javax.annotation.Nonnull;
 import java.io.*;
 
 /**
@@ -101,7 +100,7 @@ public class UnicodeReader extends Reader {
     }
 
     @Override
-    public int read(@NonNull char[] charBuffer, int off, int len) throws IOException {
+    public int read(@Nonnull char[] charBuffer, int off, int len) throws IOException {
         init();
         return internalIn2.read(charBuffer, off, len);
     }

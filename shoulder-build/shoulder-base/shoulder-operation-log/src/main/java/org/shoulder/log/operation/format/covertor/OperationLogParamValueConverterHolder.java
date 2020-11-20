@@ -1,8 +1,8 @@
 package org.shoulder.log.operation.format.covertor;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class OperationLogParamValueConverterHolder {
      * @param converterList  所有的参数转换器
      * @param defaultConvert 默认的转换器
      */
-    public static void init(@NonNull Collection<OperationLogParamValueConverter> converterList, OperationLogParamValueConverter defaultConvert) {
+    public static void init(@Nonnull Collection<OperationLogParamValueConverter> converterList, OperationLogParamValueConverter defaultConvert) {
         boolean hasConverter = CollectionUtils.isNotEmpty(converterList);
         converterMap = new HashMap<>(converterList.size());
 

@@ -3,7 +3,8 @@ package org.shoulder.core.converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
-import org.springframework.lang.NonNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * 枚举转换工厂
@@ -19,8 +20,8 @@ public class EnumConverterFactory implements ConverterFactory<String, Enum> {
 
     @SuppressWarnings("unchecked")
     @Override
-    @NonNull
-    public <T extends Enum> Converter<String, T> getConverter(@NonNull Class<T> targetType) {
+    @Nonnull
+    public <T extends Enum> Converter<String, T> getConverter(@Nonnull Class<T> targetType) {
         return (Converter<String, T>) new EnumConverter(targetType, missMatchHandler);
     }
 }

@@ -1,8 +1,8 @@
 package org.shoulder.http;
 
 import org.shoulder.http.exception.ResolveFailException;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.net.URI;
 
 /**
@@ -19,7 +19,7 @@ public interface AppIdExtractor {
      * @return 应用标识，如 order
      * @throws ResolveFailException 解析失败，一般情况，只要合法就不会发生
      */
-    @NonNull
+    @Nonnull
     String extract(URI uri) throws ResolveFailException;
 
 }

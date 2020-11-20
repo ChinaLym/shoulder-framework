@@ -7,8 +7,8 @@ import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.shoulder.log.operation.util.OperationLogBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,7 +48,7 @@ public abstract class AbstractOperationLogger implements OperationLogger {
      * todo 【性能】【扩展】 目前单条循环，考虑支持批量操作，以及批量前后置处理器
      */
     @Override
-    public void log(@NonNull Collection<? extends OperationLogDTO> opLogList) {
+    public void log(@Nonnull Collection<? extends OperationLogDTO> opLogList) {
         // 如果过多，需要考虑多线程
         opLogList.forEach(this::log);
     }
@@ -57,7 +57,7 @@ public abstract class AbstractOperationLogger implements OperationLogger {
      * 拼装循环记录多条操作日志
      */
     @Override
-    public void log(@NonNull OperationLogDTO opLog, List<? extends Operable> operableList) {
+    public void log(@Nonnull OperationLogDTO opLog, List<? extends Operable> operableList) {
         // 组装前
         operableList = beforeAssembleBatchLogs(opLog, operableList);
         // 组装批量操作日志

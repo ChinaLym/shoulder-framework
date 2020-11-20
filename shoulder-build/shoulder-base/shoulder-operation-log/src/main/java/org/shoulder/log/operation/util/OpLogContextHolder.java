@@ -8,10 +8,10 @@ import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.springframework.beans.BeansException;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,7 +62,7 @@ public class OpLogContextHolder {
     /**
      * 获取当前上下文，并检查状态
      */
-    @NonNull
+    @Nonnull
     public static OpLogContext getContextOrException() {
         OpLogContext context = currentOpLogContext.get();
         if (context == null) {
