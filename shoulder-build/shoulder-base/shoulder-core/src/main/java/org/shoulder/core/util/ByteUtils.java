@@ -1,5 +1,8 @@
 package org.shoulder.core.util;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -37,6 +40,35 @@ public class ByteUtils {
         byte[] cloneBytes = new byte[limit];
         System.arraycopy(source, index, cloneBytes, 0, limit);
         return cloneBytes;
+    }
+
+    /**
+     * byte 数组转 16 进制字符串
+     *
+     * @param bArr byte Array
+     * @return 16 进制字符串
+     */
+    public String toHexString(byte[] bArr) {
+        StringBuilder sb = new StringBuilder(bArr.length);
+        String sTmp;
+        for (byte b : bArr) {
+            sTmp = Integer.toHexString(0xFF & b);
+            if (sTmp.length() < 2) {
+                sb.append(0);
+            }
+            sb.append(sTmp.toUpperCase());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 将16进制字符串转换为byte数组
+     *
+     * @param hexStr 16进制字符串
+     * @return bytes
+     */
+    public static byte[] hexStringToBytes(String hexStr) throws DecoderException {
+        return Hex.decodeHex(hexStr);
     }
 
     /**

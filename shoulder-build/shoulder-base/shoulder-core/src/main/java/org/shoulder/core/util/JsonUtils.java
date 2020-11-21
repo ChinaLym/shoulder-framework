@@ -26,7 +26,6 @@ import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.JsonRuntimeException;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -151,8 +150,9 @@ public class JsonUtils {
         }
     }
 
-    public static <T> T toObject(InputStream inputStream, TypeReference<T> type) throws IOException {
-        return toObject(IoUtil.read(inputStream, AppInfo.charset()), type);
+    public static <T> T toObject(InputStream inputStream) {
+        return toObject(IoUtil.read(inputStream, AppInfo.charset()), new TypeReference<>() {
+        });
     }
 
     public static void setJsonMapper(ObjectMapper jsonMapper) {
