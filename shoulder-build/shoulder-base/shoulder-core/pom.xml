@@ -184,6 +184,7 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>shoulder-version.txt</include>
+                    <include>META-INF/*</include>
                 </includes>
             </resource>
         </resources>

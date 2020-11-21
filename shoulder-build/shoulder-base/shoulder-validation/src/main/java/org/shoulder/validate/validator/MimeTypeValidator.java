@@ -1,6 +1,7 @@
 package org.shoulder.validate.validator;
 
 import org.apache.tika.Tika;
+import org.shoulder.core.util.FileUtils;
 import org.shoulder.validate.annotation.MimeType;
 import org.shoulder.validate.consant.MIMEEnum;
 import org.slf4j.Logger;
@@ -36,10 +37,16 @@ public class MimeTypeValidator implements ConstraintValidator<MimeType, Multipar
         String mimeType = tika.detect(fileName);
         log.debug("mimeType is {}", mimeType);
 
-        for (MIMEEnum mimeEnum : mimeTypeArray) {
-            if (mimeEnum.getMimeType().equals(mimeType)) {
-                return true;
+        try {
+            for (MIMEEnum mimeEnum : mimeTypeArray) {
+                if (mimeEnum.getMimeType().equals(mimeType)) {
+                    // 不仅仅是文件名要符合限制，还需要满足文件头限制，避免恶意文件上传
+                    return FileUtils.checkHeader(multipartFile.getInputStream(), mimeEnum.getSuffix(), true);
+                }
             }
+        } catch (Exception e) {
+            log.warn("validate mimeType fail", e);
+            return false;
         }
         return false;
     }

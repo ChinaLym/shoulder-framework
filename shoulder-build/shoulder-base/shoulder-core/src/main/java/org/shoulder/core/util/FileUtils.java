@@ -1,6 +1,7 @@
 package org.shoulder.core.util;
 
-import org.shoulder.core.exception.BaseRuntimeException;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,11 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 文件相关工具类
- * todo 【功能】从 xml、json、yml、properties 文件读取成对象
  *
  * @author lym
  */
-public class FileUtils {
+public class FileUtils extends FileUtil {
 
     private final static Logger log = LoggerFactory.getLogger(FileUtils.class);
     public static final String UPLOAD_FILE_ROOT_PATH = "upload";
@@ -32,6 +32,54 @@ public class FileUtils {
      * 文件扩展名 - 数组
      */
     private static final Map<String, byte[]> FILE_HEADER_MAP = new ConcurrentHashMap<>();
+
+    static {
+        final String fileHeaderPath = "META-INF/file_header_allow_list.properties";
+        try (InputStream inputStream = FileUtils.class.getClassLoader().getResourceAsStream(fileHeaderPath)) {
+            readProperties(inputStream).forEach((k, v) -> {
+                addFileHeader((String) k, (String) v);
+            });
+        } catch (IOException e) {
+            log.warn("init file_header_allow_list from " + fileHeaderPath + "fail", e);
+        }
+
+    }
+
+
+    /**
+     * 获取文件的扩展名小写
+     *
+     * @param fileName 文件名 xxx.xxx
+     * @return 若没有则返回空字符串
+     */
+    public static String getExtName(@Nonnull String fileName) {
+        int pos = fileName.lastIndexOf(".");
+        if (pos > -1) {
+            return fileName.substring(pos + 1).toLowerCase();
+        } else {
+            return "";
+        }
+    }
+
+
+    public static Properties readProperties(InputStream inputStream) throws IOException {
+        Properties config = new Properties();
+        config.load(inputStream);
+        return config;
+    }
+
+    public static <T> T readJson(InputStream inputStream) {
+        return JsonUtils.toObject(inputStream);
+    }
+
+    // Xstream
+    public static <T> T readXml(InputStream inputStream) {
+        return null;
+    }
+
+    public static <T> T readYaml(InputStream inputStream) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * 检查/创建文件在所的文件夹
@@ -67,7 +115,7 @@ public class FileUtils {
     /**
      * 将multipartFile文件转换为file
      *
-     * @param file
+     * @param file 上传文件
      */
     public static File getFileFromMultiPartFile(MultipartFile file) throws Exception {
         File goalFile = new File(new File(getUploadFileTempPath()), UUID.randomUUID().toString());
@@ -79,11 +127,10 @@ public class FileUtils {
     /**
      * 把数据导出到指定文件
      */
-    public static boolean exportDataToCsv(OutputStream os, String charSet, String csvHeader, List<String> dataList) {
+    public static boolean writeLines(OutputStream os, String charSet, List<String> dataList) {
         try {
             OutputStreamWriter osw = new OutputStreamWriter(os, charSet);
             BufferedWriter bfw = new BufferedWriter(osw);
-            bfw.append(csvHeader).append("\r");
             if (dataList != null && !dataList.isEmpty()) {
                 for (String data : dataList) {
                     bfw.append(data).append("\r");
@@ -99,7 +146,7 @@ public class FileUtils {
     /**
      * 导入指定文件的数据
      */
-    public static List<String> importDataFromCsv(File file) {
+    public static List<String> readLines(File file) {
         List<String> dataList = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -121,38 +168,30 @@ public class FileUtils {
      * @return 是否合法
      * @throws IOException 流读取异常
      */
-    public static boolean checkHeader(@Nonnull InputStream in, @Nonnull String extName) throws IOException {
+    public static boolean checkHeader(@Nonnull InputStream in, @Nonnull String extName, boolean allowUnKnown) throws IOException {
         String lowExtName = extName.toLowerCase();
-        if (FILE_HEADER_MAP.containsKey(lowExtName)) {
-            byte[] standHeaderBytes = FILE_HEADER_MAP.get(lowExtName);
+        byte[] standHeaderBytes = FILE_HEADER_MAP.get(lowExtName);
+        if (standHeaderBytes != null) {
             int byteCount = standHeaderBytes.length;
             byte[] headBytes = new byte[byteCount];
             assert in.read(headBytes, 0, byteCount) == byteCount;
             return Arrays.compare(headBytes, standHeaderBytes) == 0;
         } else {
             // 警告，不在里，未校验
-            throw new BaseRuntimeException("the extname '" + extName + "' is out of check bounds.");
+            return allowUnKnown;
         }
     }
 
+    public static Map<String, byte[]> getFileHeaders() {
+        return FILE_HEADER_MAP;
+    }
 
-    private static void addFileHeader(@Nonnull Properties properties) {
-        properties.forEach((k, v) -> {
-            String standHeaderHex = (String) v;
-            log.info("stand file ");
-            if (standHeaderHex.startsWith("0x")) {
-                standHeaderHex = standHeaderHex.replaceAll("0x", "");
-            }
-            byte[] standHeaderBytes = new byte[standHeaderHex.length() / 2];
-            int j = 0;
-            for (int i = 0; i < standHeaderBytes.length; i++) {
-                byte high = (byte) (Character.digit(standHeaderHex.charAt(j), 16) & 0xff);
-                byte low = (byte) (Character.digit(standHeaderHex.charAt(j + 1), 16) & 0xff);
-                standHeaderBytes[i] = (byte) (high << 4 | low);
-                j += 2;
-            }
-            FILE_HEADER_MAP.put((String) k, standHeaderBytes);
-        });
+    public static void addFileHeader(@Nonnull String extName, @Nonnull String standHeaderHex) {
+        log.debug("use stand file({}) with header({})", extName, standHeaderHex);
+        if (standHeaderHex.startsWith("0x")) {
+            standHeaderHex = standHeaderHex.replaceAll("0x", "");
+        }
+        FILE_HEADER_MAP.put(extName, HexUtil.decodeHex(standHeaderHex));
     }
 
 }

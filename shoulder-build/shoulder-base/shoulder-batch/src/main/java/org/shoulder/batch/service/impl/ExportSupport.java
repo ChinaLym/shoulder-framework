@@ -1,6 +1,5 @@
 package org.shoulder.batch.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.shoulder.batch.model.ExportConfig;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.i18.Translator;
@@ -37,8 +36,7 @@ public class ExportSupport {
     static {
         Resource resource = new ClassPathResource(LOCALIZE_FILE_PATH);
         try (InputStream inputStream = resource.getInputStream()) {
-            List<ExportLocalize> exportLocalizeList = JsonUtils.toObject(inputStream, new TypeReference<>() {
-            });
+            List<ExportLocalize> exportLocalizeList = JsonUtils.toObject(inputStream);
             for (ExportLocalize exportLocalize : exportLocalizeList) {
                 LOCALIZE_CACHE.put(exportLocalize.getLanguageId(), exportLocalize);
             }
