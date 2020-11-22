@@ -382,16 +382,8 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
         }
     }
 
-    @Override
-    public void info(ErrorCode errorCode) {
-        uniformLog(errorCode.getCode(), () -> {
-            if (errorCode instanceof Throwable) {
-                delegateLogger.info(errorCode.generateDetail(), (Throwable) errorCode);
-            } else {
-                delegateLogger.info(errorCode.generateDetail());
-            }
-        });
-    }
+
+    // ----------------------------------- debug --------------------------------------
 
     @Override
     public void debug(ErrorCode errorCode) {
@@ -404,6 +396,94 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
         });
     }
 
+
+    @Override
+    public void debug(ErrorCode errorCode, Throwable t) {
+        uniformLog(errorCode.getCode(), () -> delegateLogger.debug(errorCode.generateDetail(), t));
+    }
+
+
+    @Override
+    public void debugWithErrorCode(String errorCode, String msg) {
+        uniformLog(errorCode, () -> delegateLogger.debug(msg));
+    }
+
+
+    @Override
+    public void debugWithErrorCode(String errorCode, String format, Object arg) {
+        uniformLog(errorCode, () -> delegateLogger.debug(format, arg));
+    }
+
+
+    @Override
+    public void debugWithErrorCode(String errorCode, String format, Object... arguments) {
+        uniformLog(errorCode, () -> delegateLogger.debug(format, arguments));
+
+    }
+
+
+    @Override
+    public void debugWithErrorCode(String errorCode, String format, Object arg1, Object arg2) {
+        uniformLog(errorCode, () -> delegateLogger.debug(format, arg1, arg2));
+    }
+
+
+    @Override
+    public void debugWithErrorCode(String errorCode, String msg, Throwable t) {
+        uniformLog(errorCode, () -> delegateLogger.debug(msg, t));
+    }
+
+
+    // ----------------------------------- info --------------------------------------
+
+    @Override
+    public void info(ErrorCode errorCode) {
+        uniformLog(errorCode.getCode(), () -> {
+            if (errorCode instanceof Throwable) {
+                delegateLogger.info(errorCode.generateDetail(), (Throwable) errorCode);
+            } else {
+                delegateLogger.info(errorCode.generateDetail());
+            }
+        });
+    }
+
+    @Override
+    public void info(ErrorCode errorCode, Throwable t) {
+        uniformLog(errorCode.getCode(), () -> delegateLogger.info(errorCode.generateDetail(), t));
+    }
+
+
+    @Override
+    public void infoWithErrorCode(String errorCode, String msg) {
+        uniformLog(errorCode, () -> delegateLogger.info(msg));
+    }
+
+
+    @Override
+    public void infoWithErrorCode(String errorCode, String format, Object arg) {
+        uniformLog(errorCode, () -> delegateLogger.info(format, arg));
+    }
+
+
+    @Override
+    public void infoWithErrorCode(String errorCode, String format, Object... arguments) {
+        uniformLog(errorCode, () -> delegateLogger.info(format, arguments));
+
+    }
+
+
+    @Override
+    public void infoWithErrorCode(String errorCode, String format, Object arg1, Object arg2) {
+        uniformLog(errorCode, () -> delegateLogger.info(format, arg1, arg2));
+    }
+
+
+    @Override
+    public void infoWithErrorCode(String errorCode, String msg, Throwable t) {
+        uniformLog(errorCode, () -> delegateLogger.info(msg, t));
+    }
+
+    // ----------------------------------- warn --------------------------------------
 
     @Override
     public void warn(ErrorCode errorCode) {

@@ -194,4 +194,13 @@ public class FileUtils extends FileUtil {
         FILE_HEADER_MAP.put(extName, HexUtil.decodeHex(standHeaderHex));
     }
 
+    /**
+     * 将文件大小的数字转换成可读的字符串(如1GB)
+     *
+     * @param size byte 大小
+     * @return 可读字符串
+     */
+    public static String byteCountToDisplay(long size) {
+        return org.apache.commons.io.FileUtils.byteCountToDisplaySize(size);
+    }
 }
