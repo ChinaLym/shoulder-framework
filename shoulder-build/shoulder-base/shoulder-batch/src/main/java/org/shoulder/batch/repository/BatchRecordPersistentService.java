@@ -1,6 +1,6 @@
-package org.shoulder.batch.repository.mapper;
+package org.shoulder.batch.repository;
 
-import org.shoulder.batch.model.BatchRecord;
+import org.shoulder.batch.repository.po.BatchRecordPO;
 
 import java.util.List;
 import java.util.Map;
@@ -10,14 +10,14 @@ import java.util.Map;
  *
  * @author lym
  */
-public interface BatchRecordMapper {
+public interface BatchRecordPersistentService {
 
     /**
      * 单条插入
      *
      * @param record 批量处理记录
      */
-    void insert(BatchRecord record);
+    void insert(BatchRecordPO record);
 
     /**
      * 根据 任务标识 获取批处理记录
@@ -25,15 +25,16 @@ public interface BatchRecordMapper {
      * @param importId 主键
      * @return 记录
      */
-    BatchRecord findById(String importId);
+    BatchRecordPO findById(String importId);
 
     /**
      * 根据条件分页查询批处理记录
+     * todo 【可读】使用 DTO 代替 Map
      *
      * @param condition tableName, userCode
      * @return 查询结果
      */
-    List<BatchRecord> findByPage(Map<String, Object> condition);
+    List<BatchRecordPO> findByPage(Map<String, Object> condition);
 
     /**
      * 根据用户编码查询最近批处理的记录
@@ -41,6 +42,6 @@ public interface BatchRecordMapper {
      * @param condition tableName, userCode, flag
      * @return 上次批量处理记录
      */
-    BatchRecord findLast(Map<String, Object> condition);
+    BatchRecordPO findLast(Map<String, Object> condition);
 
 }

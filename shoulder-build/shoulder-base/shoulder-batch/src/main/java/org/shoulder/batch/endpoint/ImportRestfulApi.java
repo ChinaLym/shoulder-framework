@@ -2,7 +2,6 @@ package org.shoulder.batch.endpoint;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
@@ -32,6 +31,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * - 数据导入记录，分页查询、导出 todo 【开发】数据类型、业务操作类型
  *
  * @author lym
+ * @deprecated 不作为框架默认实现的一部分，将移动至 platform 中
  */
 @Api(tags = {"数据批量操作"})
 @RequestMapping("batch")
@@ -42,13 +42,9 @@ public interface ImportRestfulApi {
      * 上传数据导入文件 / 提交校验
      */
     @ApiOperation(value = "上传数据导入文件", consumes = "text/html", httpMethod = "POST")
-    @ApiImplicitParams({
-        @ApiImplicitParam(value = "对应的区域ID", name = "regionIndexCode", example = "312312312312",
-            defaultValue = "3123412312321", required = true, paramType = "body"),
-        @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",
-            defaultValue = "gbk", required = true, paramType = "body")
-    })
-    @RequestMapping(value = "template/upload", method = {RequestMethod.POST})
+    @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",
+        defaultValue = "gbk", required = true, paramType = "body")
+    //@RequestMapping(value = "template/upload", method = {RequestMethod.POST})
     RestResult<String> doValidate(MultipartFile file,
                                   @RequestParam(name = "charsetLanguage", required = false) String charsetLanguage)
         throws Exception;
@@ -69,7 +65,7 @@ public interface ImportRestfulApi {
      * @return result
      */
     @ApiOperation(value = "批量操作", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "POST")
-    @RequestMapping(value = "import", method = RequestMethod.POST)
+    //@RequestMapping(value = "import", method = RequestMethod.POST)
     RestResult<String> doImport(ExecuteOperationParam executeOperationParam);
 
     /**
@@ -125,7 +121,7 @@ public interface ImportRestfulApi {
     @ApiOperation(value = "数据导入模板下载", consumes = "text/csv", httpMethod = "GET")
     @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",
         defaultValue = "gbk", required = true, paramType = "query")
-    @RequestMapping(value = "template/{businessType}/download", method = RequestMethod.GET)
+    //@RequestMapping(value = "template/{businessType}/download", method = RequestMethod.GET)
     void exportImportTemplate(HttpServletResponse response,
                               @PathVariable(value = "businessType") String businessType) throws IOException;
 

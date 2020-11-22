@@ -12,17 +12,25 @@ import java.util.concurrent.TimeUnit;
  *
  * @author lym
  */
-public class ProgressTaskPool {
+public class DefaultBatchProgressCache implements BatchProgressCache {
 
-    // todo 【开发】初始化
-    private static Cache importProgressCache = null;
+    /**
+     * 允许进度以多种方式保存在其他地方，如 redis
+     */
+    private final Cache importProgressCache;
+
+    public DefaultBatchProgressCache(Cache importProgressCache) {
+        // new ConcurrentMapCache("importProgressCache")
+        this.importProgressCache = importProgressCache;
+    }
 
     /**
      * 触发异步刷进度
      *
      * @param task 需要被刷进度的 task
      */
-    public static void triggerFlushProgress(ProgressAble task) {
+    @Override
+    public void triggerFlushProgress(ProgressAble task) {
         importProgressCache.put(task.getBatchProgress().getTaskId(), task.getBatchProgress());
         Threads.execute(genFlushProgressTask(task));
     }
@@ -33,7 +41,8 @@ public class ProgressTaskPool {
      * @param id taskId
      * @return 任务
      */
-    public static BatchProgress getTaskProgress(String id) {
+    @Override
+    public BatchProgress getTaskProgress(String id) {
         Cache.ValueWrapper valueWrapper = importProgressCache.get(id);
         return valueWrapper == null ? null : (BatchProgress) valueWrapper.get();
     }
@@ -44,12 +53,12 @@ public class ProgressTaskPool {
      * @param task 需要被刷进度的任务
      * @return 刷进度的任务
      */
-    private static Runnable genFlushProgressTask(ProgressAble task) {
+    private Runnable genFlushProgressTask(ProgressAble task) {
         return () -> {
             String id = task.getBatchProgress().getTaskId();
             if (!task.getBatchProgress().hasFinish()) {
                 // 未处理完毕，仍需要执行这个任务
-                Threads.delay(ProgressTaskPool.genFlushProgressTask(task), 1, TimeUnit.SECONDS);
+                Threads.delay(genFlushProgressTask(task), 1, TimeUnit.SECONDS);
             }
             importProgressCache.put(id, task.getBatchProgress());
         };

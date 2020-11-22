@@ -2,8 +2,6 @@ package org.shoulder.crypto;
 
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.local.LocalTextCipher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 
@@ -12,15 +10,14 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-@Service
-public class CryptoFacadeImpl implements CryptoFacade {
+public class DefaultCryptoFacade implements CryptoFacade {
 
     private final LocalTextCipher local;
 
     private final AsymmetricTextCipher asymmetric;
 
-    @Autowired
-    public CryptoFacadeImpl(LocalTextCipher local, AsymmetricTextCipher asymmetric) {
+
+    public DefaultCryptoFacade(LocalTextCipher local, AsymmetricTextCipher asymmetric) {
         this.local = local;
         this.asymmetric = asymmetric;
     }

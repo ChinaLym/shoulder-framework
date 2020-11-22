@@ -183,6 +183,12 @@
 
             <dependency>
                 <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-batch</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-security</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>

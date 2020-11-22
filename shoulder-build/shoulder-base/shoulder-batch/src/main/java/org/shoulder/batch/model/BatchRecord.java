@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.batch.repository.po.BatchRecordPO;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -68,6 +69,30 @@ public class BatchRecord implements Serializable {
     private List<BatchRecordDetail> detailList;
 
     public BatchRecord() {
+    }
+
+    public BatchRecord(BatchRecordPO po) {
+        id = po.getId();
+        dataType = po.getDataType();
+        operation = po.getOperation();
+        totalNum = po.getTotalNum();
+        successNum = po.getSuccessNum();
+        failNum = po.getFailNum();
+        creator = po.getCreator();
+        createTime = po.getCreateTime();
+    }
+
+    public BatchRecordPO toPersistent() {
+        return BatchRecordPO.builder()
+            .id(id)
+            .dataType(dataType)
+            .operation(operation)
+            .totalNum(totalNum)
+            .successNum(successNum)
+            .failNum(failNum)
+            .creator(creator)
+            .createTime(createTime)
+            .build();
     }
 
     public void addDetail(List<BatchRecordDetail> detailList) {

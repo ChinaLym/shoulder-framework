@@ -1,4 +1,4 @@
 /**
- * todo 【开发】隔离层接口
+ * todo 【开发】实现隔离层、jdbc
  */
 package org.shoulder.batch.repository;
