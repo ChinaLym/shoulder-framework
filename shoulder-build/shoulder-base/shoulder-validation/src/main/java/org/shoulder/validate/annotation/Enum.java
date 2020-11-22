@@ -1,6 +1,6 @@
 package org.shoulder.validate.annotation;
 
-import org.shoulder.validate.validator.NoForbiddenCharValidator;
+import org.shoulder.validate.validator.EnumValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = {NoForbiddenCharValidator.class})
+@Constraint(validatedBy = {EnumValidator.class})
 public @interface Enum {
 
     /**

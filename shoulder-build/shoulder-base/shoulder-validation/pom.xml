@@ -31,6 +31,8 @@
             <artifactId>tika-core</artifactId>
         </dependency>
 
+        <!-- jmimemagic -->
+
         <!--<dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>

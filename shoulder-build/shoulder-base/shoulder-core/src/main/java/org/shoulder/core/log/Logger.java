@@ -20,9 +20,44 @@ public interface Logger extends org.slf4j.Logger {
 
     // info/debug 级别日志太多，一般不采集，这类日志带错误码对分析意义较小，但又消耗额外的资源（存储/计算/人力编码），故可不带错误码
 
+    void debug(ErrorCode errorCode);
+
+    void debug(ErrorCode errorCode, Throwable t);
+
+    void debugWithErrorCode(String errorCode, String msg);
+
+
+    void debugWithErrorCode(String errorCode, String format, Object arg);
+
+
+    void debugWithErrorCode(String errorCode, String format, Object... arguments);
+
+
+    void debugWithErrorCode(String errorCode, String format, Object arg1, Object arg2);
+
+
+    void debugWithErrorCode(String errorCode, String msg, Throwable t);
+
+
+
     void info(ErrorCode errorCode);
 
-    void debug(ErrorCode errorCode);
+    void info(ErrorCode errorCode, Throwable t);
+
+    void infoWithErrorCode(String errorCode, String msg);
+
+
+    void infoWithErrorCode(String errorCode, String format, Object arg);
+
+
+    void infoWithErrorCode(String errorCode, String format, Object... arguments);
+
+
+    void infoWithErrorCode(String errorCode, String format, Object arg1, Object arg2);
+
+
+    void infoWithErrorCode(String errorCode, String msg, Throwable t);
+
 
     /**
      * 推荐的 warn 日志，带错误码

@@ -5,12 +5,11 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.util.ColorString;
-import org.shoulder.core.util.ColorStringBuilder;
-import org.shoulder.core.util.JsonUtils;
-import org.shoulder.core.util.ServletUtil;
+import org.shoulder.core.util.*;
 import org.shoulder.http.util.HttpLogHelper;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
@@ -138,13 +137,23 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         for (int i = 0; i < parameters.length; i++) {
             Class<?> argType = parameters[i].getType();
             if (args[i] instanceof ServletResponse || args[i] instanceof ServletRequest ||
-                args[i] instanceof InputStream || args[i] instanceof OutputStream) {
+                args[i] instanceof InputStream || args[i] instanceof OutputStream
+            ) {
                 // 流类型，或者带有流属性的DTO跳过
                 continue;
             }
-            String argName = parameterNames[i];
-            String argValue = JsonUtils.toJson(args[i]);
 
+            String argValue;
+            if (args[i] instanceof InputStreamSource) {
+                if (!(args[i] instanceof MultipartFile)) {
+                    continue;
+                }
+                // 专门记录 Multipart
+                argValue = genMultiPartFileInfo((MultipartFile) args[i]);
+            } else {
+                argValue = JsonUtils.toJson(args[i]);
+            }
+            String argName = parameterNames[i];
             requestInfo
                 .newLine().tab()
                 .lBlue(argType.getSimpleName())
@@ -161,6 +170,13 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         log.debug(requestInfo.toString());
 
         requestTimeLocal.set(System.currentTimeMillis());
+    }
+
+    private String genMultiPartFileInfo(MultipartFile arg) {
+        if (arg == null) {
+            return "null";
+        }
+        return new MultiFileInfo(arg).toString();
     }
 
 
@@ -235,6 +251,78 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
     private void cleanLocal() {
         requestTimeLocal.remove();
         codeLocationLocal.remove();
+    }
+
+    public static class MultiFileInfo {
+
+        private String name;
+        private String originalFilename;
+        private String contentType;
+        private long size;
+        private boolean empty;
+
+        public MultiFileInfo() {
+        }
+
+        public MultiFileInfo(MultipartFile multipartFile) {
+            this.name = multipartFile.getName();
+            this.originalFilename = multipartFile.getOriginalFilename();
+            this.contentType = multipartFile.getContentType();
+            this.size = multipartFile.getSize();
+            this.empty = multipartFile.isEmpty();
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getOriginalFilename() {
+            return originalFilename;
+        }
+
+        public void setOriginalFilename(String originalFilename) {
+            this.originalFilename = originalFilename;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        public long getSize() {
+            return size;
+        }
+
+        public void setSize(long size) {
+            this.size = size;
+        }
+
+        public boolean isEmpty() {
+            return empty;
+        }
+
+        public void setEmpty(boolean empty) {
+            this.empty = empty;
+        }
+
+        @Override
+        public String toString() {
+            return "{" +
+                "name='" + name + '\'' +
+                ", originalFilename='" + originalFilename + '\'' +
+                ", contentType='" + contentType + '\'' +
+                ", size=" + size + "byte (" + FileUtils.byteCountToDisplay(size) +
+                "), empty=" + empty +
+                '}';
+        }
+
     }
 
 }

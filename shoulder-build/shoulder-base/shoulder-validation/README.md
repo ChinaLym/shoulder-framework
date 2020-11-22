@@ -45,7 +45,18 @@
 
 常用正则表达式参见开源的 `any-rule`。
 
+### 二次封装
+
+参见 `org.shoulder.web.advice.RestControllerExceptionAdvice#constraintViolationExceptionHandler`
+`shoulder-web` 中会统一处理所有校验异常，封装为参数异常
+
+### Spring是怎么做校验的逻辑？
+- Spring会为Controller添加一个拦截器 `MethodValidationInterceptor`
+- 当请求数据时, 会经过拦截器, 拦截器判断 `Çlass` 或者 方法上是否标记有 `@Validated` 注解
+- 当请求被AOP拦截并执行校验逻辑, 并存在校验不通过情况时, 则会抛出 `ConstraintViolationException` 异常
+
 
 ## 推荐阅读：
 
 - [Spring Validation最佳实践与实现原理](https://zhuanlan.zhihu.com/p/205151764)
+
