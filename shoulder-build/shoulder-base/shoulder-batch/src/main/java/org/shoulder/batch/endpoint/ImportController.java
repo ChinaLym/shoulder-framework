@@ -60,22 +60,22 @@ public class ImportController implements ImportRestfulApi {
 
 
     /**
-     * 上传数据导入文件
+     * 实现举例：上传数据导入文件
      */
     @Override
     public RestResult<String> doValidate(MultipartFile file, String charsetLanguage) throws Exception {
-        // todo 【开发】解析文件，然后校验，返回校验任务标识
+        // 示例：解析文件，然后校验，返回校验任务标识
         String taskId = "doValidate";
         return RestResult.success(taskId);
     }
 
 
     /**
-     * 批量导入
+     * 实现举例：批量导入
      */
     @Override
     public RestResult<String> doImport(@RequestBody ExecuteOperationParam executeOperationParam) {
-        // todo 【开发】从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
+        // 示例：从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
 
         BatchData batchData = new BatchData();
         return RestResult.success(
@@ -120,7 +120,7 @@ public class ImportController implements ImportRestfulApi {
 
     /**
      * 数据导入模板下载
-     * todo 【开发】导出 导入模板
+     * 示例： 导出 导入数据模板
      */
     @Override
     public void exportImportTemplate(HttpServletResponse response, String businessType) throws IOException {

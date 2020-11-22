@@ -4,7 +4,6 @@ import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 import org.shoulder.batch.enums.ExportConstants;
 import org.shoulder.core.context.AppInfo;
-import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -17,10 +16,9 @@ import java.util.List;
  *
  * @author lym
  */
-@Service
 public class CsvExporter implements DataExporter {
 
-    // todo 可配置？ 跟随语言标识，使用地域默认
+    // todo 【兼容性】 跟随语言标识，使用地域默认
     private char separator = ',';
     private char quote = '"';
     private char escape = '"';
@@ -66,7 +64,7 @@ public class CsvExporter implements DataExporter {
     public void outputData(OutputStream outputStream, List<String[]> dataLine) throws IOException {
 
         dataLine.forEach(writeLocal.get()::writeRow);
-        // todo flush ?
+        // todo 【性能】 是否调用 flush
         writeLocal.get().flush();
     }
 

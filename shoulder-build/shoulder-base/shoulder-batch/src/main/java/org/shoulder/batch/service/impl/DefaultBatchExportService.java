@@ -3,14 +3,16 @@ package org.shoulder.batch.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.batch.cache.ProgressTaskPool;
+import org.shoulder.batch.cache.BatchProgressCache;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.BatchI18nEnum;
 import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.enums.ExportConstants;
 import org.shoulder.batch.model.*;
-import org.shoulder.batch.repository.mapper.BatchRecordDetailMapper;
-import org.shoulder.batch.repository.mapper.BatchRecordMapper;
+import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
+import org.shoulder.batch.repository.BatchRecordPersistentService;
+import org.shoulder.batch.repository.po.BatchRecordDetailPO;
+import org.shoulder.batch.repository.po.BatchRecordPO;
 import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.ext.BatchTaskSliceHandler;
 import org.shoulder.core.dto.response.PageResult;
@@ -22,7 +24,6 @@ import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,8 +40,7 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
-@Service
-public class BatchExportServiceImpl implements BatchAndExportService {
+public class DefaultBatchExportService implements BatchAndExportService {
 
     // todo 【流程】记录日志
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -70,12 +70,16 @@ public class BatchExportServiceImpl implements BatchAndExportService {
      * 批量处理记录
      */
     @Autowired
-    private BatchRecordMapper batchRecordMapper;
+    private BatchRecordPersistentService batchRecordPersistentService;
+
     /**
      * 处理详情
      */
     @Autowired
-    protected BatchRecordDetailMapper batchRecordDetailMapper;
+    protected BatchRecordDetailPersistentService batchRecordDetailPersistentService;
+
+    @Autowired
+    protected BatchProgressCache batchProgressCache;
 
     /**
      * 当前的导出器
@@ -262,7 +266,7 @@ public class BatchExportServiceImpl implements BatchAndExportService {
         } else {
             BatchManager batchManager = new BatchManager(batchData);
             //执行持久化
-            ProgressTaskPool.triggerFlushProgress(batchManager);
+            batchProgressCache.triggerFlushProgress(batchManager);
             batchThreadPool.execute(batchManager);
             return batchManager.getBatchProgress().getTaskId();
         }
@@ -278,7 +282,7 @@ public class BatchExportServiceImpl implements BatchAndExportService {
      */
     @Override
     public BatchProgress queryBatchProgress(String taskId) {
-        BatchProgress result = ProgressTaskPool.getTaskProgress(taskId);
+        BatchProgress result = batchProgressCache.getTaskProgress(taskId);
         if (result == null) {
             // 缓存过期无需从数据库中查，直接异常
             throw BatchErrorCodeEnum.TASK_ID_NOT_EXIST.toException(taskId);
@@ -291,14 +295,15 @@ public class BatchExportServiceImpl implements BatchAndExportService {
                                                    String currentUserCode) {
         Map<String, Object> condition = generateCsvRecordMap(dataType);
         PageHelper.startPage(pageNum, pageSize);
-        PageInfo<BatchRecord> pageInfo = new PageInfo<>(batchRecordMapper.findByPage(condition));
+        List<BatchRecordPO> poList = batchRecordPersistentService.findByPage(condition);
+        PageInfo<BatchRecord> pageInfo = new PageInfo<>(poList.stream().map(BatchRecord::new).collect(Collectors.toList()));
         return PageResult.PageInfoConverter.toResult(pageInfo);
     }
 
     @Override
     public BatchRecord findLastRecord(String dataType, String currentUserName) {
         Map<String, Object> condition = generateCsvRecordMap(dataType);
-        return batchRecordMapper.findLast(condition);
+        return new BatchRecord(batchRecordPersistentService.findLast(condition));
     }
 
     /**
@@ -318,7 +323,7 @@ public class BatchExportServiceImpl implements BatchAndExportService {
      */
     @Override
     public BatchRecord findRecordById(String importCode) {
-        return batchRecordMapper.findById(importCode);
+        return new BatchRecord(batchRecordPersistentService.findById(importCode));
     }
 
 
@@ -326,16 +331,21 @@ public class BatchExportServiceImpl implements BatchAndExportService {
 
     @Override
     public List<BatchRecordDetail> findAllRecordDetail(String taskId) {
-        return batchRecordDetailMapper.findAllByResult(taskId, null);
+        return batchRecordDetailPersistentService.findAllByResult(taskId, null).stream()
+            .map(BatchRecordDetail::new).collect(Collectors.toList());
     }
 
     @Override
     public List<BatchRecordDetail> findRecordDetailsByResults(String taskId, List<BatchResultEnum> results) {
-        return CollectionUtils.isEmpty(results) ? findAllRecordDetail(taskId) :
-            batchRecordDetailMapper.findAllByResult(taskId, results.stream()
+        if (CollectionUtils.isEmpty(results)) {
+            return findAllRecordDetail(taskId);
+        }
+        List<BatchRecordDetailPO> poList =
+            batchRecordDetailPersistentService.findAllByResult(taskId, results.stream()
                 .map(BatchResultEnum::getCode)
                 .collect(Collectors.toList())
             );
+        return poList.stream().map(BatchRecordDetail::new).collect(Collectors.toList());
     }
 
 }

@@ -30,7 +30,7 @@ public class BatchProcessResult {
     private Integer successNum;
 
     /**
-     * todo 【开发】重复数目单独作为字段，还是包含在 fail？
+     * 重复数目未单独作为字段，在 fail 中
      */
     @ApiModelProperty(required = false, value = "失败个数", dataType = "Integer", example = "1", position = 4)
     private Integer failNum;
@@ -52,7 +52,7 @@ public class BatchProcessResult {
      * 查进度时暂不返回
      */
     @ApiModelProperty(required = false, value = "失败原因集合", dataType = "list", example = "[{\"reason\":\"reason\"," +
-        "\"row\":1,\"reasonParam\":[\"regionIndexCode\"]}]", position = 9)
+        "\"row\":1,\"reasonParam\":[\"xxx\"]}]", position = 9)
     private List<BatchProcessDetail> progressList;
 
 
