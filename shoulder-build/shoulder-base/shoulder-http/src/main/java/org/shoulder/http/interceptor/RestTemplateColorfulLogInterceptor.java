@@ -5,6 +5,7 @@ import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ColorString;
 import org.shoulder.core.util.ColorStringBuilder;
 import org.shoulder.core.util.JsonUtils;
+import org.shoulder.core.util.LogHelper;
 import org.shoulder.http.util.HttpLogHelper;
 import org.springframework.web.client.RestTemplate;
 
@@ -46,13 +47,13 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
             .cyan(" (" + SELF_CLASS_NAME + ")")
             .cyan(" --------------------- ");
 
-        StackTraceElement stack = HttpLogHelper.findStackTraceElement(RestTemplate.class, "", true);
+        StackTraceElement stack = LogHelper.findStackTraceElement(RestTemplate.class, "", true);
         // 肯定会有一个，否则不应该触发该方法 null
         if (stack == null) {
             throw new IllegalCallerException("Current StackTrack not contains any RestTemplate's method call!");
         }
         Logger logger = useCallerLogger ? LoggerFactory.getLogger(stack.getClassName()) : log;
-        String codeLocation = HttpLogHelper.genCodeLocationLinkFromStack(stack);
+        String codeLocation = LogHelper.genCodeLocationLinkFromStack(stack);
 
         builder
             .newLine(BOUNDARY_LEFT)

@@ -4,6 +4,7 @@ package org.shoulder.core.util;
  * 当前用户解析器
  *
  * @author lym
+ * todo @deprecated use AppContext
  */
 public interface CurrentUserHandler {
 
