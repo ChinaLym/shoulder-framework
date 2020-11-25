@@ -324,6 +324,8 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
         return data;
     }
 
+    // todo subArray 支持基本类型
+
     public static <T> T[] subArray(T[] array, int endIndexExclusive) {
         return subArray(array, 0, endIndexExclusive);
     }
@@ -332,8 +334,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      * 泛型的subArray
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T> T[] subArray(T[] array, int startIndexInclusive,
-                                   int endIndexExclusive) {
+    public static <T> T[] subArray(T[] array, int startIndexInclusive, int endIndexExclusive) {
         if (array == null) {
             return null;
         }

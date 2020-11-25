@@ -12,7 +12,7 @@ import java.util.concurrent.*;
  * 线程工具类
  * 提供延时任务和常用线程池拒绝策略的封装
  * 注意！该类必须设置线程池之后使用，否则 IllegalStateException！
- * todo 【开发】添加调用栈信息日志
+ * todo 【可读性】重复代码抽取
  *
  * @author lym
  */
@@ -52,9 +52,21 @@ public class Threads {
      * @param runnable 要延时执行的事情
      * @param time     延时时间
      * @param unit     time 的单位
+     * @see #delay(Runnable, Duration) 推荐使用 jdk8 的时间
      */
     public static void delay(Runnable runnable, long time, TimeUnit unit) {
         DelayTask task = new DelayTask(runnable, time, unit);
+        delay(task);
+    }
+
+    /**
+     * 使用该方法包装线程类，将自动将线程放入延迟队列并延时执行
+     *
+     * @param runnable  要延时执行的事情
+     * @param delayTime 延时时间
+     */
+    public static void delay(Runnable runnable, Duration delayTime) {
+        DelayTask task = new DelayTask(runnable, delayTime);
         delay(task);
     }
 
@@ -66,6 +78,11 @@ public class Threads {
     public static void delay(DelayTask delayTask) {
         if (DELAY_TASK_HOLDER == null) {
             throw new IllegalStateException("You must setDelayTaskHolder first.");
+        }
+        if (log.isDebugEnabled()) {
+            StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "delay", true);
+            String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
+            log.debug("{} creat delay task will run after {}", callerName);
         }
         DELAY_TASK_HOLDER.put(delayTask);
     }
@@ -84,6 +101,11 @@ public class Threads {
             }
             throw new IllegalStateException("Need invoke setExecutorService first!");
         }
+        if (log.isDebugEnabled()) {
+            StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "delay", true);
+            String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
+            log.debug("{} creat delay task will run after {}", callerName);
+        }
         SHOULDER_THREAD_POOL.execute(runnable);
     }
 
@@ -96,6 +118,11 @@ public class Threads {
     public static <T> Future<T> submit(Callable<T> callable) {
         if (SHOULDER_THREAD_POOL == null) {
             throw new IllegalStateException("You must setExecutorService first.");
+        }
+        if (log.isDebugEnabled()) {
+            StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "delay", true);
+            String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
+            log.debug("{} creat delay task will run after {}", callerName);
         }
         return SHOULDER_THREAD_POOL.submit(callable);
     }

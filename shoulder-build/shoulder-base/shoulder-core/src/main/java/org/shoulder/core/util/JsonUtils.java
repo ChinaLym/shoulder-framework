@@ -111,11 +111,15 @@ public class JsonUtils {
 
     /**
      * 反序列化 JSON 字符串为 Object
+     * 语法糖方法，但使用范围受 Java 泛型影响。泛型推断不能推断泛型参数类型，如 List<T>、Map<K, V> 这种
+     * 错误使用后果：可能导致 ClassCastException: LinkedHashMap cannot be cast to class xxx
+     * 因为本方法签名中返回值的为 T，未指明泛型参数，泛型参数将被抹为 Object，Jackson碰到 Object 将使用 LinkedHashMap
+     *
+     * @see #toObject(String, TypeReference) 该方法中可以在使用除传入 new TypeReference<>() {} 能利用到java泛型自动推断
      */
     public static <T> T toObject(String json) {
-
         try {
-            return JSON_MAPPER.readValue(json, new TypeReference<T>() {
+            return JSON_MAPPER.readValue(json, new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
             throw new JsonRuntimeException(e);
@@ -150,9 +154,15 @@ public class JsonUtils {
         }
     }
 
-    public static <T> T toObject(InputStream inputStream) {
-        return toObject(IoUtil.read(inputStream, AppInfo.charset()), new TypeReference<>() {
-        });
+    /**
+     * 第一次调用时可能较慢（申请堆外内存，加载更多的类）
+     */
+    public static <T> T toObject(InputStream inputStream, Class<T> clazz, Class<?>... paramClasses) {
+        return toObject(IoUtil.read(inputStream, AppInfo.charset()), clazz, paramClasses);
+    }
+
+    public static <T> T toObject(InputStream inputStream, TypeReference<T> type) {
+        return toObject(IoUtil.read(inputStream, AppInfo.charset()), type);
     }
 
     public static void setJsonMapper(ObjectMapper jsonMapper) {
@@ -216,9 +226,12 @@ public class JsonUtils {
     /**
      * 解决常见序列化失败问题：java 8 时间、Long 序列化，如果不加入，则可能需要这么写：
      *
+     * <code>
+     *
      * @author lym
      * @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
      * LocalDateTime time;
+     * </code>
      */
     public static class DateEnhancerJacksonModule extends SimpleModule {
 

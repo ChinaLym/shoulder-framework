@@ -217,3 +217,16 @@ shoulder-guid 利用了时间预支解决了单时间段序列达到上限问题
 
 
 
+## 工具包
+
+优先 `apache-commons`、其次 Spring 的工具类、`google` 的 `guava`、第三方的，如 `hutools` 等
+
+文档解析工具：
+
+JSON，采用 jackson，比 fastJson 更安全，同时性能基本无差别。
+
+XML，可选依赖：Xstream：API简单，使用方便（这里适合读取配置文件，而非作为传输体请求/响应界别的频繁读写的场景，更快的选型可考虑 `Toplink JAXB` 等）
+
+
+
+

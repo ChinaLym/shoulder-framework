@@ -15,6 +15,7 @@
     
 - 日志框架
     - 为 debug、info、warn 级别增加类似 errorWitErrorCode 的方法，支持更低级别打印错误码
+    - core 中提供 LogHelper 用于生成方法栈目标栈的跳转链接（从 http 的 HttpLogHelper 迁移）
   
 - web 
     - 全局异常拦截：现在会对 JSR303 校验框架抛出的异常做详细日志记录以及返回值封装

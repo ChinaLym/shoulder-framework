@@ -81,7 +81,7 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
             return;
         }
 
-        String codeLocation = HttpLogHelper.genCodeLocationLink(method);
+        String codeLocation = LogHelper.genCodeLocationLink(method);
         codeLocationLocal.set(codeLocation);
         // 记录请求方法、路径，Controller 信息与代码位置
         HttpServletRequest request = ServletUtil.getRequest();
@@ -120,13 +120,7 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         requestInfo
             .green("Headers   :", ColorString.Style.BOLD);
 
-        Map<String, String> headers = ServletUtil.getRequestHeaders();
-        headers.forEach((headerName, headerValue) -> requestInfo
-            .newLine().tab()
-            .lGreen(headerName)
-            .tab()
-            .blue(": ")
-            .cyan(headerValue));
+        HttpLogHelper.appendHeader(requestInfo, ServletUtil.getRequestHeaders());
 
         // 记录 Controller 入参
         if (parameters.length > 0) {

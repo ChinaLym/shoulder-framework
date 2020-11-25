@@ -219,7 +219,7 @@ public class RestControllerExceptionAdvice {
 
     /**
      * 其他异常
-     * todo ClientAbortException tomcat —— 客户端连接断开，如浏览器请求了，还没响应就关闭了，服务器返回时发现response不能写
+     * todo 【可选】ClientAbortException tomcat中客户端连接断开，如浏览器请求了，还没响应就关闭了，服务器返回时发现response不能写
      */
     @ExceptionHandler(Exception.class)
     public RestResult otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -254,7 +254,7 @@ public class RestControllerExceptionAdvice {
      * SQLException
      * 开发者配置信息不全，完整性（必填为空），唯一性约束（主键不完整）
      * DataIntegrityViolationException
-     * todo DataAccessException spring 的数据持久层异常基类（依赖数据库）
+     * todo 【可选】DataAccessException spring 的数据持久层异常基类（依赖数据库）
      */
     /**
      * 数据库保存失败

@@ -184,7 +184,8 @@ public class TokenAuthBeanConfig {
             }
 
             /**
-             * todo 【开发】jwk 如果配置配了，从配置中拿，而非随机生成，便于使用者使用固定的，目前不支持配置
+             * todo 【开发】jwk 如果配置配了，从配置中拿，而非随机生成，便于使用者使用固定的
+             * 目前不支持配置，但使用者可以通过注入 TokenStore 来实现自己的方案
              */
             @Bean
             @ConditionalOnMissingBean

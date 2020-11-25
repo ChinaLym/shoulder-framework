@@ -61,7 +61,7 @@ public class ApiProtectInterceptor implements HandlerInterceptor {
         try {
             checkToken(this.getToken(request), null);
         } catch (Exception e) {
-            // todo 将签名验证失败错误转为 Token 认证错误码
+            // todo 【规范】将签名验证失败错误转为 Token 认证错误码
             throw CommonErrorCodeEnum.AUTH_403_TOKEN_INVALID.toException(e);
         }
         return true;

@@ -2,6 +2,7 @@ package org.shoulder.core.util;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.HexUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -36,13 +37,10 @@ public class FileUtils extends FileUtil {
     static {
         final String fileHeaderPath = "META-INF/file_header_allow_list.properties";
         try (InputStream inputStream = FileUtils.class.getClassLoader().getResourceAsStream(fileHeaderPath)) {
-            readProperties(inputStream).forEach((k, v) -> {
-                addFileHeader((String) k, (String) v);
-            });
+            readProperties(inputStream).forEach((k, v) -> addFileHeader((String) k, (String) v));
         } catch (IOException e) {
             log.warn("init file_header_allow_list from " + fileHeaderPath + "fail", e);
         }
-
     }
 
 
@@ -68,8 +66,8 @@ public class FileUtils extends FileUtil {
         return config;
     }
 
-    public static <T> T readJson(InputStream inputStream) {
-        return JsonUtils.toObject(inputStream);
+    public static <T> T readJson(InputStream inputStream, TypeReference<T> type) {
+        return JsonUtils.toObject(inputStream, type);
     }
 
     // Xstream
