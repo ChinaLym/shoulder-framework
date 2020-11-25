@@ -19,8 +19,12 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      */
     private final Cache importProgressCache;
 
+    /**
+     * 缓存名
+     */
+    public static final String CACHE_NAME = "importProgressCache";
+
     public DefaultBatchProgressCache(Cache importProgressCache) {
-        // new ConcurrentMapCache("importProgressCache")
         this.importProgressCache = importProgressCache;
     }
 

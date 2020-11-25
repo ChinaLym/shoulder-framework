@@ -3,12 +3,13 @@ package org.shoulder.batch.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.shoulder.core.context.AppInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 导出配置
+ * 导出配置（头部信息）
  *
  * @author lym
  */
@@ -17,23 +18,17 @@ import java.util.List;
 @NoArgsConstructor
 public class ExportConfig {
 
+    // ---------------- 导出模板配置 ----------------------
+
     /**
      * 配置标识
      */
     private String id;
 
     /**
-     * 导出转换扩展点
+     * 导出转换扩展点 【暂未使用】
      */
     private String exportMapping;
-    /**
-     * 分隔符
-     */
-    private char separator;
-    /**
-     * 编码
-     */
-    private String encode;
 
     /**
      * 头部信息 - 多语言key
@@ -41,7 +36,7 @@ public class ExportConfig {
     private List<String> headersI18n;
 
     /**
-     * 国际化处理后的头部信息
+     * 国际化处理后的头部信息（框架会根据当前语言环境自动填充）
      */
     private List<String> headers;
 
@@ -50,13 +45,40 @@ public class ExportConfig {
      */
     private List<Column> columns;
 
+    // ---------------- 导出配置 （框架会根据当前语言环境自动填充）----------------------
+
+    /**
+     * 编码
+     */
+    private String encode;
+    /**
+     * 同行不同字段分隔符
+     * 英语单词：separator 中表示多个单次的分割，delimiter 表示每个单次后面加一个分隔符
+     */
+    private char separator = ',';
+    /**
+     * 行分隔符
+     */
+    private String lineSeparator = "\n";
+    /**
+     * 注释标识
+     */
+    private char comment = '#';
+    /**
+     * 引号
+     */
+    private char quote = '"';
+    /**
+     * 引号逃逸时
+     */
+    private char quoteEscape = '"';
+
 
     public ExportConfig(String exportMapping) {
-        this.encode = "utf-8";
+        this.encode = AppInfo.charset().name();
         this.headers = new ArrayList<>();
         this.columns = new ArrayList<>();
         this.exportMapping = exportMapping;
-        this.separator = ',';
     }
 
     public ExportConfig(Character separator, String encode, String exportMapping) {
@@ -81,33 +103,39 @@ public class ExportConfig {
 
     public static class Column {
 
-        public Column(String columnName, String desc) {
-            this.columnName = columnName;
-            this.desc = desc;
-        }
-
-        public Column() {
-        }
-
         /**
-         * 模型名称
+         * 业务/领域模型字段名称，如 Person 类的 name 字段需要对应该列，则会有一个 Column 的 modelName=name
          */
         private String modelName;
 
         /**
-         * 国际化处理后的的列名
-         */
-        private transient String columnName;
-
-        /**
-         * 列名 - 多语言key
+         * 列名 - 多语言key，使用者定义
          */
         private String columnNameI18n;
 
         /**
-         * 列信息描述
+         * 国际化处理后的的列名，用于导出时展示
          */
-        private String desc;
+        private transient String columnName;
+
+        /**
+         * 列信息描述 - 多语言key
+         */
+        private String descriptionI18n;
+
+        /**
+         * 列信息描述，用于导出时展示
+         */
+        private String description;
+
+
+        public Column() {
+        }
+
+        public Column(String columnName, String description) {
+            this.columnName = columnName;
+            this.description = description;
+        }
 
         public String getModelName() {
             return modelName;
@@ -133,21 +161,28 @@ public class ExportConfig {
             this.columnNameI18n = columnNameI18n;
         }
 
-        public String getDesc() {
-            return desc;
+        public String getDescription() {
+            return description;
         }
 
-        public void setDesc(String desc) {
-            this.desc = desc;
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getDescriptionI18n() {
+            return descriptionI18n;
+        }
+
+        public void setDescriptionI18n(String descriptionI18n) {
+            this.descriptionI18n = descriptionI18n;
         }
 
         @Override
         public String toString() {
             return "Column{" +
                 "modelName='" + modelName + '\'' +
-                ", columnName='" + columnName + '\'' +
                 ", columnNameI18n='" + columnNameI18n + '\'' +
-                ", desc='" + desc + '\'' +
+                ", descriptionI18n='" + descriptionI18n + '\'' +
                 '}';
         }
     }

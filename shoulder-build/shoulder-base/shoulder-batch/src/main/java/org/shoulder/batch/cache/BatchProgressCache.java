@@ -5,7 +5,6 @@ import org.shoulder.batch.service.impl.ProgressAble;
 
 /**
  * 任务进度存储
- * todo 【扩展性】 允许进度以多种方式保存在其他地方，如 redis
  *
  * @author lym
  */

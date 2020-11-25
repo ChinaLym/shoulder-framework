@@ -3,10 +3,11 @@ package org.shoulder.batch.service.impl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.shoulder.batch.enums.BatchConstants;
 import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.model.*;
-import org.shoulder.batch.repository.mapper.BatchRecordDetailMapper;
-import org.shoulder.batch.repository.mapper.BatchRecordMapper;
+import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
+import org.shoulder.batch.repository.BatchRecordPersistentService;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
@@ -45,17 +46,19 @@ public class BatchManager implements Runnable, ProgressAble {
     /**
      * 线程池
      */
-    private ExecutorService threadPool = ContextUtils.getBean("batchThreadPool");
+    private ExecutorService threadPool = ContextUtils.getBean(BatchConstants.THREAD_NAME);
 
     /**
      * 批量处理记录
      */
-    private BatchRecordMapper batchRecordMapper = ContextUtils.getBean(BatchRecordMapper.class);
+    private BatchRecordPersistentService batchRecordPersistentService =
+        ContextUtils.getBean(BatchRecordPersistentService.class);
 
     /**
      * 批处理记录详情
      */
-    private BatchRecordDetailMapper batchRecordDetailMapper = ContextUtils.getBean(BatchRecordDetailMapper.class);
+    private BatchRecordDetailPersistentService batchRecordDetailPersistentService =
+        ContextUtils.getBean(BatchRecordDetailPersistentService.class);
 
     // ------------------------------------------------
 
@@ -348,7 +351,7 @@ public class BatchManager implements Runnable, ProgressAble {
         try {
             result.setSuccessNum(progress.getSuccessNum());
             result.setFailNum(progress.getFailNum());
-            batchRecordMapper.insert(result);
+            batchRecordPersistentService.insert(result);
             // todo 【性能】一致性/性能 最后保存一次？ 或在 work 中与批处理在同一事务进行保存？
             persistentBatchDetail();
         } catch (Exception e) {
@@ -374,7 +377,7 @@ public class BatchManager implements Runnable, ProgressAble {
      * 持久化详情信息，注意批量插入分片保存，避免大事务
      */
     protected void persistentBatchDetail() {
-        batchRecordDetailMapper.batchInsertRecordDetail(result.getDetailList());
+        batchRecordDetailPersistentService.batchInsertRecordDetail(result.getDetailList());
     }
 
     public String getTaskId() {

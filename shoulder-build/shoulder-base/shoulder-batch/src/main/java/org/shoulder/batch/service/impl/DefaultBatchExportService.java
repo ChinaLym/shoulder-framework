@@ -1,18 +1,14 @@
 package org.shoulder.batch.service.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.batch.cache.BatchProgressCache;
+import org.shoulder.batch.enums.BatchConstants;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.BatchI18nEnum;
 import org.shoulder.batch.enums.BatchResultEnum;
-import org.shoulder.batch.enums.ExportConstants;
 import org.shoulder.batch.model.*;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
-import org.shoulder.batch.repository.po.BatchRecordDetailPO;
-import org.shoulder.batch.repository.po.BatchRecordPO;
 import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.ext.BatchTaskSliceHandler;
 import org.shoulder.core.dto.response.PageResult;
@@ -42,7 +38,6 @@ import java.util.stream.Collectors;
  */
 public class DefaultBatchExportService implements BatchAndExportService {
 
-    // todo 【流程】记录日志
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
@@ -54,7 +49,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
      * 批处理线程池
      */
     @Autowired
-    @Qualifier("batchThreadPool")
+    @Qualifier(BatchConstants.THREAD_NAME)
     private ThreadPoolExecutor batchThreadPool;
 
     @Autowired
@@ -117,32 +112,43 @@ public class DefaultBatchExportService implements BatchAndExportService {
             .findFirst().orElseThrow(() -> BatchErrorCodeEnum.EXPORT_TYPE_NOT_SUPPORT.toException(exportType));
         currentDataExporter.set(dataExporter);
 
+        log.debug("find exporter {}", dataExporter);
+
         ExportConfig exportConfig = ExportSupport.getConfigWithLocale(templateId);
         if (exportConfig == null) {
-            throw new BaseRuntimeException("templateId:" + templateId + " not existed!");
+            // 编码问题，未提供配置，需先调用 ExportSupport.putConfig 方法设置输出配置
+            throw new BaseRuntimeException("templateId:" + templateId + " not existed! " +
+                "Must invoke ExportSupport.putConfig before export");
         }
         exportConfigLocal.set(exportConfig);
         try {
+            // 准备输出
+            dataExporter.prepare(outputStream, exportConfig);
             // 输出头部信息
-            outputHeader(outputStream);
-
+            outputHeader();
+            log.trace("output headers finished.");
             // 输出数据
-            for (Supplier<List<Map<String, String>>> dataSupplier : dataSupplierList) {
+            log.debug("output data total turn: {}", dataSupplierList.size());
+            for (int i = 0; i < dataSupplierList.size(); i++) {
+                Supplier<List<Map<String, String>>> dataSupplier = dataSupplierList.get(i);
                 List<Map<String, String>> exportDataList = dataSupplier.get();
+                log.trace("output data turn {}", i);
                 if (CollectionUtils.isNotEmpty(exportDataList)) {
-                    outputData(outputStream, exportDataList);
+                    outputData(exportDataList);
                 }
             }
+            log.trace("output data finished.");
             // 刷入流
-            flush(outputStream);
+            dataExporter.flush();
             // todo 【流程】记录业务日志
         } finally {
+            // 清理上下文
             cleanContext();
         }
     }
 
 
-    private void outputHeader(OutputStream outputStream) throws IOException {
+    private void outputHeader() throws IOException {
         // 生成表头
         ExportConfig exportConfig = exportConfigLocal.get();
         if (CollectionUtils.isEmpty(exportConfig.getHeaders()) || CollectionUtils.isEmpty(exportConfig.getColumns())) {
@@ -164,23 +170,21 @@ public class DefaultBatchExportService implements BatchAndExportService {
         heads.add(nameList.toArray(columnsName));
 
         currentDataExporter.get()
-            .outputHeader(outputStream, heads);
+            .outputHeader(heads);
     }
 
     /**
      * 导出数据，不关闭流
      *
-     * @param outputStream 输出流
      * @param data         要导出的数据
      * @throws IOException IO异常
      */
-    private void outputData(OutputStream outputStream, List<Map<String, String>> data) throws IOException {
+    private void outputData(List<Map<String, String>> data) throws IOException {
         // 格式转换
         List<String[]> dataLine = data.stream()
             .map(this::toDataArray)
             .collect(Collectors.toList());
-        currentDataExporter.get()
-            .outputData(outputStream, dataLine);
+        currentDataExporter.get().outputData(dataLine);
     }
 
     /**
@@ -200,10 +204,6 @@ public class DefaultBatchExportService implements BatchAndExportService {
         return dataArray;
     }
 
-
-    private void flush(OutputStream outputStream) throws IOException {
-        currentDataExporter.get().flush(outputStream);
-    }
 
     private void cleanContext() {
         currentDataExporter.get().cleanContext();
@@ -226,10 +226,10 @@ public class DefaultBatchExportService implements BatchAndExportService {
                     Map<String, String> dataMap = JsonUtils.toObject(
                         batchRecordDetail.getSource(), Map.class, String.class, String.class);
 
-                    dataMap.put(ExportConstants.ROW_NUM, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getRowNum()));
-                    dataMap.put(ExportConstants.RESULT, translator.getMessage(batchRecordDetail.getFailReason(),
+                    dataMap.put(BatchConstants.ROW_NUM, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getRowNum()));
+                    dataMap.put(BatchConstants.RESULT, translator.getMessage(batchRecordDetail.getFailReason(),
                         BatchResultEnum.of(batchRecordDetail.getStatus()).getTip()));
-                    dataMap.put(ExportConstants.DETAIL, translator.getMessage(batchRecordDetail.getFailReason()));
+                    dataMap.put(BatchConstants.DETAIL, translator.getMessage(batchRecordDetail.getFailReason()));
                     return dataMap;
                 })
                 .collect(Collectors.toList());
@@ -293,17 +293,19 @@ public class DefaultBatchExportService implements BatchAndExportService {
     @Override
     public PageResult<BatchRecord> pageQueryRecord(String dataType, Integer pageNum, Integer pageSize,
                                                    String currentUserCode) {
-        Map<String, Object> condition = generateCsvRecordMap(dataType);
-        PageHelper.startPage(pageNum, pageSize);
-        List<BatchRecordPO> poList = batchRecordPersistentService.findByPage(condition);
-        PageInfo<BatchRecord> pageInfo = new PageInfo<>(poList.stream().map(BatchRecord::new).collect(Collectors.toList()));
-        return PageResult.PageInfoConverter.toResult(pageInfo);
+        List<BatchRecord> dataList = batchRecordPersistentService.findByPage(dataType, pageNum, pageSize,
+            currentUserCode);
+        return PageResult.builder()
+            .pageNum(pageNum)
+            .pageSize(pageSize)
+            .list(dataList)
+            .build();
+
     }
 
     @Override
     public BatchRecord findLastRecord(String dataType, String currentUserName) {
-        Map<String, Object> condition = generateCsvRecordMap(dataType);
-        return new BatchRecord(batchRecordPersistentService.findLast(condition));
+        return batchRecordPersistentService.findLast(dataType, currentUserName);
     }
 
     /**
@@ -323,7 +325,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
      */
     @Override
     public BatchRecord findRecordById(String importCode) {
-        return new BatchRecord(batchRecordPersistentService.findById(importCode));
+        return batchRecordPersistentService.findById(importCode);
     }
 
 
@@ -331,8 +333,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
     @Override
     public List<BatchRecordDetail> findAllRecordDetail(String taskId) {
-        return batchRecordDetailPersistentService.findAllByResult(taskId, null).stream()
-            .map(BatchRecordDetail::new).collect(Collectors.toList());
+        return batchRecordDetailPersistentService.findAllByResult(taskId, null);
     }
 
     @Override
@@ -340,12 +341,10 @@ public class DefaultBatchExportService implements BatchAndExportService {
         if (CollectionUtils.isEmpty(results)) {
             return findAllRecordDetail(taskId);
         }
-        List<BatchRecordDetailPO> poList =
-            batchRecordDetailPersistentService.findAllByResult(taskId, results.stream()
+        return batchRecordDetailPersistentService.findAllByResult(taskId, results.stream()
                 .map(BatchResultEnum::getCode)
                 .collect(Collectors.toList())
             );
-        return poList.stream().map(BatchRecordDetail::new).collect(Collectors.toList());
     }
 
 }
