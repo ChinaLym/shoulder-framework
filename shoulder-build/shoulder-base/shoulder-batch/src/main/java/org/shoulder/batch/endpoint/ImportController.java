@@ -6,8 +6,8 @@ import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
+import org.shoulder.batch.enums.BatchConstants;
 import org.shoulder.batch.enums.BatchResultEnum;
-import org.shoulder.batch.enums.ExportConstants;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchProgress;
 import org.shoulder.batch.model.BatchRecord;
@@ -124,7 +124,7 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     public void exportImportTemplate(HttpServletResponse response, String businessType) throws IOException {
-        exportService.export(response.getOutputStream(), ExportConstants.CSV, Collections.emptyList(), businessType);
+        exportService.export(response.getOutputStream(), BatchConstants.CSV, Collections.emptyList(), businessType);
 
     }
 
@@ -133,7 +133,7 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     public void exportRecordDetail(HttpServletResponse response, QueryImportResultDetailParam condition) throws IOException {
-        exportService.exportBatchDetail(response.getOutputStream(), ExportConstants.CSV, condition.getBusinessType(),
+        exportService.exportBatchDetail(response.getOutputStream(), BatchConstants.CSV, condition.getBusinessType(),
             condition.getTaskId(), CollectionUtils.emptyIfNull(condition.getStatusList())
                 .stream().map(BatchResultEnum::of).collect(Collectors.toList()));
     }

@@ -5,7 +5,12 @@ package org.shoulder.batch.enums;
  *
  * @author lym
  */
-public interface ExportConstants {
+public interface BatchConstants {
+
+    /**
+     * 批处理专用线程池名
+     */
+    String THREAD_NAME = "shoulderBatchThreadPool";
 
     String CSV = "csv";
 

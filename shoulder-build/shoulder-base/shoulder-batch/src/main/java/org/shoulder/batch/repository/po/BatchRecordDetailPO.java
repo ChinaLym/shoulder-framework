@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.shoulder.batch.model.BatchRecordDetail;
 
 import java.io.Serializable;
 
@@ -66,4 +67,30 @@ public class BatchRecordDetailPO implements Serializable {
         this.status = status;
         this.failReason = failReason;
     }
+
+
+    public BatchRecordDetailPO(BatchRecordDetail model) {
+        id = model.getId();
+        recordId = model.getRecordId();
+        rowNum = model.getRowNum();
+        operation = model.getOperation();
+        status = model.getStatus();
+        failReason = model.getFailReason();
+        source = model.getSource();
+    }
+
+    public BatchRecordDetail toModel() {
+        return BatchRecordDetail.builder()
+            .id(id)
+            .recordId(recordId)
+            .rowNum(rowNum)
+            .operation(operation)
+            .operation(operation)
+            .status(status)
+            .failReason(failReason)
+            .source(source)
+            .build();
+    }
+
+
 }

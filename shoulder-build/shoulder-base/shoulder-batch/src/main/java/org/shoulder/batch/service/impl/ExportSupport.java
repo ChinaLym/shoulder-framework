@@ -1,5 +1,6 @@
 package org.shoulder.batch.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.shoulder.batch.model.ExportConfig;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.i18.Translator;
@@ -7,8 +8,6 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.JsonUtils;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,15 +27,21 @@ public class ExportSupport {
 
     private static final String LOCALIZE_FILE_PATH = "META-INF/export-localize.json";
 
+    /**
+     * 数据类型 - 导出配置 - 语言标识, 编码/分隔符映射
+     */
     private static final Map<String, ExportLocalize> LOCALIZE_CACHE = new HashMap<>();
 
-    // todo put 数据类型 - 导出配置
+    /**
+     * 数据类型 - 导出配置
+     * 使用者来调用 {@link #putConfig} 方法填充
+     */
     private static final Map<String, ExportConfig> CONFIG_CACHE = new HashMap<>();
 
     static {
-        Resource resource = new ClassPathResource(LOCALIZE_FILE_PATH);
-        try (InputStream inputStream = resource.getInputStream()) {
-            List<ExportLocalize> exportLocalizeList = JsonUtils.toObject(inputStream);
+        try (InputStream inputStream = ExportSupport.class.getClassLoader().getResourceAsStream(LOCALIZE_FILE_PATH)) {
+            List<ExportLocalize> exportLocalizeList = JsonUtils.toObject(inputStream, new TypeReference<>() {
+            });
             for (ExportLocalize exportLocalize : exportLocalizeList) {
                 LOCALIZE_CACHE.put(exportLocalize.getLanguageId(), exportLocalize);
             }

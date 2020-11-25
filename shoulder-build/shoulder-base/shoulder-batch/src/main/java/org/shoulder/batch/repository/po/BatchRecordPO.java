@@ -3,6 +3,7 @@ package org.shoulder.batch.repository.po;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.shoulder.batch.model.BatchRecord;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -61,5 +62,30 @@ public class BatchRecordPO implements Serializable {
 
     public BatchRecordPO() {
     }
+
+    public BatchRecordPO(BatchRecord model) {
+        id = model.getId();
+        dataType = model.getDataType();
+        operation = model.getOperation();
+        totalNum = model.getTotalNum();
+        successNum = model.getSuccessNum();
+        failNum = model.getFailNum();
+        creator = model.getCreator();
+        createTime = model.getCreateTime();
+    }
+
+    public BatchRecord toModel() {
+        return BatchRecord.builder()
+            .id(id)
+            .dataType(dataType)
+            .operation(operation)
+            .totalNum(totalNum)
+            .successNum(successNum)
+            .failNum(failNum)
+            .creator(creator)
+            .createTime(createTime)
+            .build();
+    }
+
 
 }

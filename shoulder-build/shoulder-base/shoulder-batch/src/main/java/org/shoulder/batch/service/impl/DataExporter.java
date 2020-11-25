@@ -1,5 +1,7 @@
 package org.shoulder.batch.service.impl;
 
+import org.shoulder.batch.model.ExportConfig;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -23,6 +25,15 @@ public interface DataExporter {
         return false;
     }
 
+    /**
+     * 输出数据前准备操作
+     *
+     * @param outputStream 输出流
+     * @param exportConfig 输出配置
+     * @throws IOException IO 异常
+     */
+    void prepare(OutputStream outputStream, ExportConfig exportConfig) throws IOException;
+
 
     /**
      * 输出 头信息
@@ -31,28 +42,27 @@ public interface DataExporter {
      * @param headers      头信息
      * @throws IOException IO 异常
      */
-    void outputHeader(OutputStream outputStream, List<String[]> headers) throws IOException;
+    void outputHeader(List<String[]> headers) throws IOException;
+
 
     /**
      * 输出 数据行
      *
-     * @param outputStream 输出流
      * @param dataLine     数据行
      * @throws IOException IO 异常
      */
-    void outputData(OutputStream outputStream, List<String[]> dataLine) throws IOException;
+    void outputData(List<String[]> dataLine) throws IOException;
 
 
     /**
      * 刷入输出流
      *
-     * @param outputStream 输出流
      * @throws IOException io
      */
-    void flush(OutputStream outputStream) throws IOException;
+    void flush() throws IOException;
 
     /**
-     * 清理上下文
+     * 清理上下文，结束本次输出
      */
     default void cleanContext() {
     }
