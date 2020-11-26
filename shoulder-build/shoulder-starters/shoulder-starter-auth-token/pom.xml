@@ -48,6 +48,12 @@
             <artifactId>nimbus-jose-jwt</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-crypto</artifactId>
+        </dependency>
+
         <!-- resourceServer -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

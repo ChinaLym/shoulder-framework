@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.security.code;
 
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
+import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.code.ValidateCodeFilter;
 import org.shoulder.code.ValidateCodeProcessorHolder;
 import org.shoulder.code.consts.ValidateCodeConsts;
@@ -13,7 +14,10 @@ import org.shoulder.code.store.impl.SessionValidateCodeRepository;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.security.authentication.AuthenticationType;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -81,6 +85,7 @@ public class ValidateCodeBeanConfig {
 
     //fixme 无法装配？待排查
     @Configuration(proxyBeanMethods = false)
+    @ConditionalOnCluster
     @ConditionalOnClass(RedisTemplate.class)
     @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
     public static class RedisValidateCodeStoreConfiguration {
@@ -93,9 +98,8 @@ public class ValidateCodeBeanConfig {
         }
     }
 
-    //@Deprecated
+    @ConditionalOnCluster(cluster = false)
     @Configuration(proxyBeanMethods = false)
-    @ConditionalOnMissingClass(value = "org.springframework.data.redis.core.RedisTemplate")
     @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
     public static class MemoryValidateCodeStoreConfiguration {
 

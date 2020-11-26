@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.crypto;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
@@ -10,7 +11,6 @@ import org.shoulder.crypto.local.impl.LocalTextCipherManager;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.FileLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -55,8 +55,8 @@ public class LocalCryptoAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(JudgeAbleLocalTextCipher.class)
-    public JudgeAbleLocalTextCipher shoulderLocalCrypto(LocalCryptoInfoRepository localCryptoInfoRepository, @Value("${spring.application.name") String applicationName) {
-        return new Aes256LocalTextCipher(localCryptoInfoRepository, applicationName);
+    public JudgeAbleLocalTextCipher shoulderLocalCrypto(LocalCryptoInfoRepository localCryptoInfoRepository) {
+        return new Aes256LocalTextCipher(localCryptoInfoRepository, AppInfo.appId());
     }
 
     /**

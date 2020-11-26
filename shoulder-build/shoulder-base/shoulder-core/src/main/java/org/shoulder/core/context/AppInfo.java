@@ -3,7 +3,9 @@ package org.shoulder.core.context;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
+import org.springframework.util.Assert;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -99,17 +101,20 @@ public class AppInfo {
         return timeZone;
     }
 
-    public static void initAppId(String appId) {
+    public static void initAppId(@Nonnull String appId) {
+        Assert.notNull(appId, "appId can't be null");
         AppInfo.appId = appId;
         log.info("initAppId: " + appId);
     }
 
-    public static void initErrorCodePrefix(String errorCodePrefix) {
+    public static void initErrorCodePrefix(@Nonnull String errorCodePrefix) {
+        Assert.notNull(errorCodePrefix, "errorCodePrefix can't be null");
         AppInfo.errorCodePrefix = errorCodePrefix;
         log.info("initErrorCodePrefix: " + errorCodePrefix);
     }
 
-    public static void initVersion(String version) {
+    public static void initVersion(@Nonnull String version) {
+        Assert.notNull(version, "version can't be null");
         AppInfo.version = version;
         log.info("initVersion: " + version);
     }
@@ -120,12 +125,14 @@ public class AppInfo {
     }
 
 
-    public static void initDateFormat(String dateFormat) {
+    public static void initDateFormat(@Nonnull String dateFormat) {
+        Assert.notNull(dateFormat, "dateFormat can't be null");
         AppInfo.dateFormat = dateFormat;
         log.info("initDateFormat: " + dateFormat);
     }
 
-    public static void initCharset(String charset) {
+    public static void initCharset(@Nonnull String charset) {
+        Assert.notNull(charset, "charset can't be null");
         AppInfo.charset = StringUtils.isNotEmpty(charset) && Charset.isSupported(charset) ?
             Charset.forName(charset) : StandardCharsets.UTF_8;
         log.info("initCharset: " + charset);
