@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.redis;
 
 import org.shoulder.cluster.redis.annotation.AppExclusive;
-import org.springframework.beans.factory.annotation.Value;
+import org.shoulder.core.context.AppInfo;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,18 +26,12 @@ import org.springframework.util.StringUtils;
 @ConditionalOnClass(RedisTemplate.class)
 public class RedisAutoConfiguration {
 
-    /**
-     * 必须设置应用名称
-     */
-    @Value("${spring.application.name}")
-    private String applicationName;
-
     /*@SuppressWarnings("unchecked")
     @Bean
     @ConditionalOnMissingBean
     public GlobalLock globalLock(StringRedisTemplate redisTemplate){
         RedisSimpleGlobalLock lock = new RedisSimpleGlobalLock(redisTemplate);
-        lock.setAppName(getAppName());
+        lock.setAppName(AppInfo.appId());
         return lock;
     }*/
 
@@ -78,7 +72,7 @@ public class RedisAutoConfiguration {
      * 获取应用标识
      */
     private String getKeyPrefix() {
-        return applicationName + ":";
+        return AppInfo.appId() + ":";
     }
 
     /**

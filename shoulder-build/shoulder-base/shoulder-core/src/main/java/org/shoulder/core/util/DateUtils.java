@@ -1,8 +1,17 @@
 package org.shoulder.core.util;
 
+import java.time.Instant;
+
+/**
+ * 日期工具
+ *
+ * @author lym
+ */
 public class DateUtils {
 
     private static volatile long mills;
+
+    private static volatile Instant instant;
 
     /**
      * 解决 linux 系统中高并发时 System.currentTimeMillis() 慢的问题（windows无影响：已经做了类似本类的事情）
@@ -13,16 +22,37 @@ public class DateUtils {
         return mills;
     }
 
+    /**
+     * 当前秒钟
+     *
+     * @return 当前秒数
+     */
+    public static long lazyCurrentSecond() {
+        return instant.getEpochSecond();
+    }
+
+    /**
+     * 当前时间
+     *
+     * @return 当前秒数
+     */
+    public static Instant lazyInstant() {
+        return instant;
+    }
+
     static {
         Thread thread = new Thread(() -> {
             while (true) {
-                if ((mills & 1023) == 0) {
-                    // 每 1024ms 进行一次校准，避免时钟偏离
-                    mills = System.currentTimeMillis();
+                instant = Instant.now();
+                mills = instant.toEpochMilli();
+                /*if ((mills & 31) == 0) {
+                    // 每 32ms 进行一次校准，避免时钟偏离
+
+                    mills = instant.toEpochMilli();
                 } else {
                     // 只有本线程写，故无需保证该操作原子
                     mills++;
-                }
+                }*/
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {

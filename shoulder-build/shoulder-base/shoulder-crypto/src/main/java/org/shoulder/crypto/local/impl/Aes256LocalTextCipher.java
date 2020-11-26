@@ -73,12 +73,13 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     /**
      * 密钥持久化依赖：用于获取持久化的加密信息
      */
-    private final LocalCryptoInfoRepository aesInfoDao;
+    private final LocalCryptoInfoRepository aesInfoRepository;
+
     private String appId;
 
 
     public Aes256LocalTextCipher(LocalCryptoInfoRepository aesInfoRepository, String appId) {
-        this.aesInfoDao = aesInfoRepository;
+        this.aesInfoRepository = aesInfoRepository;
         this.appId = appId;
     }
 
@@ -218,7 +219,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         List<LocalCryptoInfoEntity> aesInfos;
         try {
             // get All aesInfo
-            aesInfos = aesInfoDao.get(appId);
+            aesInfos = aesInfoRepository.get(appId);
             if (CollectionUtils.isEmpty(aesInfos)) {
                 log.info("LocalCrypto-load fail for load nothing. Maybe this is the app first launch.");
                 return false;
@@ -244,7 +245,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         try {
             log.info("LocalCrypto-init:Try create new LocalCrypto BaseInfo...");
             LocalCryptoInfoEntity localCryptoInfoEntity = generateSecurity();
-            aesInfoDao.save(localCryptoInfoEntity);
+            aesInfoRepository.save(localCryptoInfoEntity);
             CacheManager.addToCacheMap(localCryptoInfoEntity);
             log.info("LocalCrypto-init:Create new LocalCrypto BaseInfo success!");
         } catch (Exception e) {

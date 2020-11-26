@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 /**
  * 字典树
  * todo 【性能】 substring 会有 new char[] 的操作，递归时可以通过共用 char[] + 下标来实现
+ *  【性能】递归替换为循环
+ *  【性能|扩展】由于该数据结构大部分应用场景是海量数据，对内存十分敏感、故不作过多扩展性设计
  * @author lym
  */
 public class TrieTree<V> {
