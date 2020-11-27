@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 使用 redis 作为存储
- * 适合只加解密运行时数据或者 redis 中数据，sdk 中会使用该实现
+ * 适合只加解密运行时数据或者 redis 中数据，大多数情况下加密元数据最好要持久化存储 {@link JdbcLocalCryptoInfoRepository}
  *
  * @author lym
  */

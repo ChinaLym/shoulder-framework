@@ -35,5 +35,5 @@ public interface LocalTextCipher extends TextCipher {
      * 确保加密功能正常使用
      * 可在项目启动后调用，以优化第一次加解密性能。
      */
-    void ensureEncryption();
+    void ensureInit();
 }

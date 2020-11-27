@@ -121,7 +121,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
     @Override
     public String encrypt(@Nonnull String text) {
-        ensureEncryption();
+        ensureInit();
         AesInfoCache cacheInfo = CacheManager.getAesInfoCache(ALGORITHM_HEADER);
         try {
             byte[] encryptResult = AesUtil.encrypt(text.getBytes(CHAR_SET), cacheInfo.dataKey,
@@ -134,7 +134,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
     @Override
     public String decrypt(@Nonnull String cipherText) {
-        ensureEncryption();
+        ensureInit();
         String[] cipherTextAndHeader = splitHeader(cipherText);
         String cipherTextHeader = cipherTextAndHeader[0];
         String realCipherText = cipherTextAndHeader[1];
@@ -189,7 +189,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
      * 2. 若第一步没拿到则进行初始化，将必要信息保存至 DB （首次启动时）
      */
     @Override
-    public void ensureEncryption() {
+    public void ensureInit() {
         if (CacheManager.initialized) {
             return;
         }
