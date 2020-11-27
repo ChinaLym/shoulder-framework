@@ -34,7 +34,7 @@ public class DefaultCryptoFacade implements CryptoFacade {
 
     @Override
     public void initLocal() {
-        local.ensureEncryption();
+        local.ensureInit();
     }
 
     // ================================ 传输加解密（如前后交互） =====================================

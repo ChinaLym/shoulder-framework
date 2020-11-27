@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * 支持多版本并存的本地存储方案（无感知切换加密方案）
- * todo 【流程】检查异常在这里转为运行异常
+ * todo 【流程】检查异常在这里转为运行异常，确保加密放到 manager
  *
  * @author lym
  */
@@ -46,6 +46,7 @@ public class LocalTextCipherManager implements LocalTextCipher {
     public String decrypt(@Nonnull String cipherText) {
         // 遍历所有加密器，这里认为每个加密器是互斥的，因为一般来说 a 加密器无法解密由 b 加密器加密过的数据，因此直接交给第一个能解密的加密器进行解密
         for (JudgeAbleLocalTextCipher cipher : ciphers) {
+            cipher.ensureInit();
             if (cipher.support(cipherText)) {
                 return cipher.decrypt(cipherText);
             }
@@ -54,8 +55,8 @@ public class LocalTextCipherManager implements LocalTextCipher {
     }
 
     @Override
-    public void ensureEncryption() {
-        ciphers.forEach(JudgeAbleLocalTextCipher::ensureEncryption);
+    public void ensureInit() {
+        ciphers.forEach(JudgeAbleLocalTextCipher::ensureInit);
     }
 
     public void addCipher(JudgeAbleLocalTextCipher localTextCipher) {
