@@ -50,7 +50,7 @@
 
 当前用户信息 AppContext | Spring Security 提供的上下文
 第三方登录等，暂未封装
-
+**支持 token 认证**
 
 # 提供技术选型推荐
 

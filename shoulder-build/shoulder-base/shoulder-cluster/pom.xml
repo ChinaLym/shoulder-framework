@@ -23,6 +23,8 @@
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
             <version>3.13.6</version>
+            <optional>true</optional>
+            <!--<version>3.14.0</version>-->
         </dependency>
 
         <dependency>

@@ -23,7 +23,10 @@ import java.util.Base64;
 import java.util.Collections;
 
 /**
- * APP环境下认证成功处理器（基于 Oauth2）
+ * 授权Token环境下认证成功处理器（基于 Oauth2）
+ * 流程：C端输入用户名密码，至NodeJs，附带AppId、AppSecret（用于标识门户信息）
+ * 后端接收到请求后，经过表单登录认证处理器，认证通过后，在这里颁发授权token，返回给 NodeJs
+ * nodeJs 将认证token保存在 session 中，每次使用 session 中的 token 来调用后端 api
  *
  * @author lym
  */
@@ -69,9 +72,11 @@ public class TokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
                                         Authentication authentication) throws IOException, ServletException {
 
         log.info("login success");
-
+        // Tomcat Http11InputBuffer   829-831 行，header key 自动转为小写
         String header = request.getHeader("Authorization");
-
+        if (header == null) {
+            header = request.getHeader("authorization");
+        }
         if (header == null || !header.startsWith("Basic ")) {
             // 请求头中无client信息
             throw new UnapprovedClientAuthenticationException("Missing client info in request headers.");
@@ -83,6 +88,7 @@ public class TokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
         String clientId = tokens[0];
         String clientSecret = tokens[1];
+        // 这里可以增加校验时间戳
 
         /*BaseClientDetails mockDetail = new BaseClientDetails();
         mockDetail.setScope(Collections.singleton("all"));

@@ -25,23 +25,17 @@
             <artifactId>shoulder-security</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>2.3.5.RELEASE</version>
-        </dependency>
-
         <!-- 授权服务器 -->
         <dependency>
             <groupId>org.springframework.security.oauth.boot</groupId>
             <artifactId>spring-security-oauth2-autoconfigure</artifactId>
             <!-- 安全漏洞，特升级至 2.3.5 -->
-            <exclusions>
+            <!--<exclusions>
                 <exclusion>
                     <groupId>org.springframework.security.oauth</groupId>
                     <artifactId>spring-security-oauth2</artifactId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
         </dependency>
         <dependency>
             <groupId>com.nimbusds</groupId>
