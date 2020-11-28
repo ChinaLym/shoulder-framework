@@ -84,13 +84,13 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) throws Exception {
+    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) {
         // 使用唯一索引保证一致性
         jdbcTemplate.update(insertSql, getAllFields(aesInfo));
     }
 
     @Override
-    public LocalCryptoInfoEntity get(String appId, String markHeader) throws Exception {
+    public LocalCryptoInfoEntity get(String appId, String markHeader) {
         try {
             Object[] whereFields = new Object[]{appId, markHeader};
             return jdbcTemplate.queryForObject(selectSingleSql, rowMapper, whereFields);

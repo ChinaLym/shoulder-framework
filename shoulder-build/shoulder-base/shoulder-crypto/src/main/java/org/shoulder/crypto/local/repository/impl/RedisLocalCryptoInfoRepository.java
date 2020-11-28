@@ -26,7 +26,7 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
     }
 
     @Override
-    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) throws Exception {
+    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) {
         boolean set = redisTemplate.opsForHash().putIfAbsent(getCacheId(aesInfo.getAppId()), aesInfo.getHeader(), aesInfo);
         if (!set) {
             throw new IllegalStateException("appId, markHeader exist, maybe another instance has init.");
@@ -34,13 +34,13 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
     }
 
     @Override
-    public LocalCryptoInfoEntity get(String appId, String markHeader) throws Exception {
+    public LocalCryptoInfoEntity get(String appId, String markHeader) {
         return (LocalCryptoInfoEntity) redisTemplate.opsForHash().get(getCacheId(appId), markHeader);
     }
 
     @Override
     @Nonnull
-    public List<LocalCryptoInfoEntity> get(String appId) throws Exception {
+    public List<LocalCryptoInfoEntity> get(String appId) {
         List<Object> objects = redisTemplate.opsForHash().values(getCacheId(appId));
         if (CollectionUtils.isEmpty(objects)) {
             return Collections.emptyList();
