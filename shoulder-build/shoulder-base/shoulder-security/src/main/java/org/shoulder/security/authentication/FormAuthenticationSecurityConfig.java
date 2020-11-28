@@ -45,6 +45,11 @@ public class FormAuthenticationSecurityConfig extends SecurityConfigurerAdapter<
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        if (loginPageUrl == null) {
+            // throw new IllegalStateException("please invoke setLoginPageUrl before configure.");
+            // fallback to default
+            loginPageUrl = SecurityConst.URL_REQUIRE_AUTHENTICATION;
+        }
         // @formatter:off
         http
             .formLogin()

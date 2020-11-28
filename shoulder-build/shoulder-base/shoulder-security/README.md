@@ -71,3 +71,66 @@ Token（JWT）：
     - 解决：静态资源不要拦截，如 css、jpg、js 等，保证请求一个页面时仅发生一次过滤即可。其他：该情况经常在启动后第一次访问，连续刷新页面时发生。
     
 
+---
+
+# 流程
+
+- **认证**：AbstractAuthenticationProcessingFilter#doFilter
+    - 是否进行认证 RequestMatcher
+    - 根据子类的 attemptAuthentication 处理认证
+        - UsernamePasswordAuthenticationFilter【以该实现为例】
+            - 从请求中获取参数
+            - 验证参数是否合法
+            - 组装成 AuthenticationToken
+            - 为 AuthenticationToken 设置（请求）详情（如 sessionId、remoteAddress等、根据请求 request）
+            - 调用 AuthenticationManager#authenticate(AuthenticationToken)【默认是 ProviderManager】
+                - 根据 AuthenticationToken.getClass() 找到对应的 AuthenticationProvider（根据 supports 遍历）
+                - **进行认证： 调用 authenticate(Authentication) 并返回一个 Authentication result**
+                - 复制详情
+                - 若发生认证异常（AccountStatusException | InternalAuthenticationServiceException） 调用 prepareException（上下文中发送认证失败通知）并向上抛出
+                - 若未能处理认证 / 处理结果为 null，则尝试调用父类的再次尝试处理
+                - 认证成功：擦除认证Token中凭证信息（如密码），发送认证成功通知
+        - OAuth2ClientAuthenticationProcessingFilter
+        - ...
+    - 未通过认证：
+        - RememberMeServices#loginFail
+        - AuthenticationFailureHandler
+    - 通过认证
+        - SessionAuthenticationStrategy#onAuthentication
+        - RememberMeServices
+        - AuthenticationSuccessHandler
+        
+- **鉴权**：
+
+类介绍
+- AbstractSecurityInterceptor
+    - FilterSecurityInterceptor 适用于 web 中对请求鉴权
+    - MethodSecurityInterceptor 基于 Spring AOP，适用于只对 Service 方法鉴权
+    - AspectJMethodSecurityInterceptor 适用于对 Service 方法、甚至可以做到领域对象鉴权
+    
+通常的做法是使用Filter对Web请求进行一个比较粗略的鉴权，辅以使用Spring AOP对Service层的方法进行较细粒度的鉴权。
+
+AbstractSecurityInterceptor 逻辑（`org.springframework.security.web.access.intercept.FilterSecurityInterceptor.invoke`）
+1. 先将正在请求调用的受保护对象传递给 `beforeInvocation()` 方法进行权限鉴定（权限鉴定失败就直接抛出异常了）
+2. 调用完成后，无论成功还是抛异常，执行 `finallyInvocation()`
+3. 未抛异常，则调用 `afterInvocation()`
+
+
+
+三、Security 入门总结
+
+1. WebSecurityConfiguration 类是如何根据 Spring Security DSL 创建 SpringSecurityFilterChain 中各个过滤器的只需了解即可。不要太过关注。
+2. 重点记忆 创建认证令牌 UsernamePasswordAuthenticationFilter，ExceptionTranslationFilter，FilterSecurityInterceptor 这三个过滤器的作用及源码分析。
+3. 重要记忆 处理认证结果 Authentication，AuthenticationManager，ProviderManager，AuthenticationProvider，UserDetailsService，UserDetails这些类的作用及源码分析。
+4. 重点记忆 调用鉴权 FilterInvocation，SecurityMetadataSource，AccessDecisionManager 的作用。
+5. 将这些类理解的关键是建立起关联，建立起关联的方式就是跟着本节中的案例走下去，一步步看代码如何实现的。
+
+
+- [OAuth2 oauth_client_details表字段的详细说明](https://blog.csdn.net/wangxuelei036/article/details/109491215)
+- spring security 核心类讲解（主要看第四篇。前三篇无干货）
+    - 1: spring security简短介绍 https://www.cnblogs.com/wutianqi/p/9174227.html
+    - 2: 模块介绍，demo创建 https://www.cnblogs.com/wutianqi/archive/2004/01/13/9177516.html
+    - 3: spring security 过滤器的创建原理 https://www.cnblogs.com/wutianqi/p/9185266.html
+    - [4: spring security 认证和授权原理（AbstractSecurityInterceptor）](https://www.cnblogs.com/wutianqi/p/9186645.html)
+
+- [Spring Security 鉴权简介](https://www.cnblogs.com/fenglan/p/5913387.html)

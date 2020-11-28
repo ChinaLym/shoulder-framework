@@ -73,7 +73,7 @@
 
 - 完善安全认证实现
     - 重构安全认证模块
-    - 支持自签 `Oauth2 JWT Token 认证`
+    - 支持自签 `Oauth2 JWT Token 授权`
     - session 支持集群模式
     - security 的全局异常处理器
     - successHandler 同时支持 session、token（`TokenAuthenticationSuccessHandler`）
