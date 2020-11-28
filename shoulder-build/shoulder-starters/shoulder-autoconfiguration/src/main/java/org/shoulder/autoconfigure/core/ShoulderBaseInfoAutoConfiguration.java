@@ -61,8 +61,11 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
                 log.error("both of '" + appIdKey + "' and '" + springAppNameKey +
                     "' are empty! set value please!");
             }
+        } else {
+            shoulderProperties.setProperty(appIdKey, environment.getProperty(appIdKey));
         }
         AppInfo.initAppId(shoulderProperties.getProperty(appIdKey));
+        // 这些设置了默认值，不必担心为 null
         AppInfo.initErrorCodePrefix(environment.getProperty("shoulder.application.errorCodePrefix"));
         AppInfo.initVersion(environment.getProperty("shoulder.application.version"));
         AppInfo.initDateFormat(environment.getProperty("shoulder.application.dateFormat"));
