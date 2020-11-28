@@ -1,6 +1,7 @@
 package org.shoulder.crypto.local.repository.impl;
 
 import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
     public static final String DEFAULT_FILE_NAME = "_shoulder_aesInfo.json";
+
     /**
      * 存储文件名称
      */
@@ -51,13 +53,13 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) throws Exception {
+    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) throws IOException {
         String jsonStr = JsonUtils.toJson(aesInfo);
         Files.write(getFilePath(), jsonStr.getBytes(charset));
     }
 
     @Override
-    public LocalCryptoInfoEntity get(String appId, String markHeader) throws Exception {
+    public LocalCryptoInfoEntity get(String appId, String markHeader) {
         return getAll().stream()
             .filter(info -> appId.equals(info.getAppId()) && markHeader.equals(info.getHeader()))
             .findFirst().orElse(null);
@@ -65,7 +67,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     @Override
     @Nonnull
-    public List<LocalCryptoInfoEntity> get(String appId) throws Exception {
+    public List<LocalCryptoInfoEntity> get(String appId) {
         return getAll().stream().filter(info -> appId.equals(info.getAppId())).collect(Collectors.toList());
     }
 
@@ -78,9 +80,14 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @SuppressWarnings("unchecked")
-    public List<LocalCryptoInfoEntity> getAll() throws Exception {
-        String jsonStr = Files.readString(getFilePath(), charset);
-        return (List<LocalCryptoInfoEntity>) JsonUtils.toObject(jsonStr, List.class, LocalCryptoInfoEntity.class);
+    public List<LocalCryptoInfoEntity> getAll() {
+        try {
+            String jsonStr = Files.readString(getFilePath(), charset);
+            return (List<LocalCryptoInfoEntity>) JsonUtils.toObject(jsonStr, List.class, LocalCryptoInfoEntity.class);
+        } catch (IOException e) {
+            // 大概率文件路径有问题，不可读
+            throw new BaseRuntimeException(e);
+        }
     }
 
 
