@@ -101,9 +101,8 @@ public class LogHelper {
      *
      * @param aimClass       目标类
      * @param aimMethodName  目标类方法，若 null 则忽略方法校验
-     * @param ignoreSubClass 忽略子类
+     * @param ignoreSubClass 忽略目标类以及目标类的子类
      * @return 未找到返回 null
-     * todo 【扩展性】未找到，默认值。搜索方式
      */
     @Nullable
     public static StackTraceElement findStackTraceElement(@Nonnull Class<?> aimClass,

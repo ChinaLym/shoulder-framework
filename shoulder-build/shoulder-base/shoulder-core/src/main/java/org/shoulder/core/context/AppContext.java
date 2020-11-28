@@ -14,6 +14,7 @@ import java.util.Map;
 /**
  * 当前应用（请求）上下文中的值，作为 Holder 的角色，维护当前请求中一些常用的数据。
  * 推荐在调用的地方记录 debug 日志
+ * todo 是否实现自动跨线程，如何实现
  *
  * @author lym
  */

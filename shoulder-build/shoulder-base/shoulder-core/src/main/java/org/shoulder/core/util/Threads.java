@@ -12,7 +12,6 @@ import java.util.concurrent.*;
  * 线程工具类
  * 提供延时任务和常用线程池拒绝策略的封装
  * 注意！该类必须设置线程池之后使用，否则 IllegalStateException！
- * todo 【可读性】重复代码抽取
  *
  * @author lym
  */
@@ -104,7 +103,7 @@ public class Threads {
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "delay", true);
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
-            log.debug("{} creat delay task will run after {}", callerName);
+            log.debug("{} create a new Thread.", callerName);
         }
         SHOULDER_THREAD_POOL.execute(runnable);
     }
@@ -122,7 +121,7 @@ public class Threads {
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "delay", true);
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
-            log.debug("{} creat delay task will run after {}", callerName);
+            log.debug("{} submit a new callable.", callerName);
         }
         return SHOULDER_THREAD_POOL.submit(callable);
     }

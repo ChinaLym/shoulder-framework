@@ -14,6 +14,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,7 +47,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCodeDTO> i
             final String errorMsg = "such type of validateCode only support POST.";
             try {
                 Objects.requireNonNull(request.getResponse()).sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, errorMsg);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 throw new IllegalStateException(errorMsg, e);
             }
         }
