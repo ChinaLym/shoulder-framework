@@ -18,16 +18,22 @@ import java.util.List;
  */
 public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
-    private static final String KEY_PREFIX = "aesInfo";
+    private final String keyPrefix;
+
     private RedisTemplate<String, Object> redisTemplate;
 
     public RedisLocalCryptoInfoRepository(RedisTemplate<String, Object> redisTemplate) {
+        this(redisTemplate, "crypto:local:");
+    }
+
+    public RedisLocalCryptoInfoRepository(RedisTemplate<String, Object> redisTemplate, String keyPrefix) {
         this.redisTemplate = redisTemplate;
+        this.keyPrefix = keyPrefix;
     }
 
     @Override
     public void save(@Nonnull LocalCryptoInfoEntity aesInfo) {
-        boolean set = redisTemplate.opsForHash().putIfAbsent(getCacheId(aesInfo.getAppId()), aesInfo.getHeader(), aesInfo);
+        boolean set = redisTemplate.opsForHash().putIfAbsent(getCacheId(), aesInfo.getHeader(), aesInfo);
         if (!set) {
             throw new IllegalStateException("appId, markHeader exist, maybe another instance has init.");
         }
@@ -35,13 +41,13 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
 
     @Override
     public LocalCryptoInfoEntity get(String appId, String markHeader) {
-        return (LocalCryptoInfoEntity) redisTemplate.opsForHash().get(getCacheId(appId), markHeader);
+        return (LocalCryptoInfoEntity) redisTemplate.opsForHash().get(getCacheId(), markHeader);
     }
 
     @Override
     @Nonnull
     public List<LocalCryptoInfoEntity> get(String appId) {
-        List<Object> objects = redisTemplate.opsForHash().values(getCacheId(appId));
+        List<Object> objects = redisTemplate.opsForHash().values(getCacheId());
         if (CollectionUtils.isEmpty(objects)) {
             return Collections.emptyList();
         }
@@ -54,8 +60,8 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
     }
 
 
-    public String getCacheId(String appId) {
-        return KEY_PREFIX + "." + appId;
+    public String getCacheId() {
+        return keyPrefix;
     }
 
 }

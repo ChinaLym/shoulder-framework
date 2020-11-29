@@ -42,7 +42,7 @@ public class RedisKeyPairCache implements KeyPairCache {
     private final LocalTextCipher localTextCipher;
 
     public RedisKeyPairCache(StringRedisTemplate redisTemplate, LocalTextCipher localTextCipher) {
-        this(redisTemplate, localTextCipher, "crypto-asymmetric:");
+        this(redisTemplate, localTextCipher, "crypto:asymmetric:");
     }
 
     public RedisKeyPairCache(StringRedisTemplate redisTemplate, LocalTextCipher localTextCipher, String keyPrefix) {
