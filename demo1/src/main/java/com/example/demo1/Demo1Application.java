@@ -22,5 +22,4 @@ public class Demo1Application implements ApplicationListener<ContextRefreshedEve
         System.out.println("上下文加载完毕");
     }
 
-
 }
