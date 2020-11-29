@@ -2,6 +2,8 @@ package org.shoulder.autoconfigure.security.token;
 
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
@@ -57,6 +59,12 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired(required = false)
     AccessDeniedHandler accessDeniedHandler;
 
+    public TokenSecurityConfig() {
+        // 提示使用了默认的，一般都是自定义
+        Logger log = LoggerFactory.getLogger(getClass());
+        log.warn("use default TokenSecurityConfig, csrf protect was closed.");
+    }
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         // @formatter:off
@@ -104,6 +112,12 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
                 )
                 .permitAll()
 
+                // 其余请求全部开启认证（需要登录）
+                .anyRequest().authenticated()
+
+            .and()
+                .csrf()
+            .disable()
         ;
 
         // @formatter:on
