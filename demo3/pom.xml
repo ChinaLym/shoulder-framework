@@ -41,31 +41,11 @@
             <artifactId>shoulder-starter-beanmap</artifactId>
         </dependency>
 
-        <!-- session 方式认证 -->
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-auth-session</artifactId>
-        </dependency>
-
-        <!-- token 方式认证 -->
-<!--
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-auth-token</artifactId>
-        </dependency>
--->
-
-        <!-- 验证码框架，开启后可测试验证码，关闭后验证码功能将无效 -->
-        <!--<dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-security-code</artifactId>
-        </dependency>-->
-
+        <!--  ======================== db ===========================  -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-data-db</artifactId>
         </dependency>
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -75,9 +55,32 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- ======================== 认证 ============================== -->
+
+        <!-- session 方式认证 -->
+        <!--
+                <dependency>
+                    <groupId>cn.itlym</groupId>
+                    <artifactId>shoulder-starter-auth-session</artifactId>
+                </dependency>
+        -->
+        <!-- 验证码框架，开启后可测试验证码，关闭后验证码功能将无效 -->
+        <!--        <dependency>
+                    <groupId>cn.itlym</groupId>
+                    <artifactId>shoulder-starter-security-code</artifactId>
+                </dependency>-->
+
+
+        <!-- token 方式认证 -->
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-beanmap</artifactId>
+            <artifactId>shoulder-starter-auth-token</artifactId>
         </dependency>
 
         <!-- shoulder 继承了 spring boot 的所有特性，引入 spring boot 的jar 一样不需要写版本号 -->

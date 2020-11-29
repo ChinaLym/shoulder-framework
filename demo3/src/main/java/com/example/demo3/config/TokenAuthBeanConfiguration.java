@@ -1,29 +1,28 @@
-package com.example.demo6;
+package com.example.demo3.config;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.security.oauth2.provider.client.InMemoryClientDetailsService;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * shoulder-framework 实例工程
- * TIP：运行后（默认为本机8080端口），进入 controller 目录（已按照功能分类），点击方法上的超链接（IDE支持），即可快速查看效果
+ * 该类仅为 Token 认证提供
+ * <p>
+ * Session 方式认证需要注释 / 删除该类
  *
  * @author lym
  */
-@SpringBootApplication
-public class Demo6Application {
-
-    public static void main(String[] args) {
-        SpringApplication.run(Demo6Application.class, args);
-    }
+@Configuration
+public class TokenAuthBeanConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ClientDetailsService.class)
@@ -39,4 +38,22 @@ public class Demo6Application {
         service.setClientDetailsStore(clientDetailsStore);
         return service;
     }
+
+    @Bean
+    public DefaultTokenServices defaultTokenServices(InMemoryTokenStore tokenStore) {
+        DefaultTokenServices tokenServices = new DefaultTokenServices();
+        tokenServices.setTokenStore(tokenStore);
+        return tokenServices;
+    }
+
+    @Bean
+    public InMemoryTokenStore inMemoryTokenStore() {
+        return new InMemoryTokenStore();
+    }
+
+    @Bean
+    public OpaqueTokenAuthenticationProvider opaqueTokenAuthenticationProvider(MyTokenIntrospector myTokenIntrospector) {
+        return new OpaqueTokenAuthenticationProvider(myTokenIntrospector);
+    }
+
 }
