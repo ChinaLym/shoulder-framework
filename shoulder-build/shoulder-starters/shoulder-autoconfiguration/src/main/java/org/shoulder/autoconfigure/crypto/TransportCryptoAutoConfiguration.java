@@ -3,7 +3,6 @@ package org.shoulder.autoconfigure.crypto;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.autoconfigure.http.HttpAutoConfiguration;
 import org.shoulder.autoconfigure.redis.RedisAutoConfiguration;
-import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.asymmetric.annotation.Ecc;
@@ -84,7 +83,7 @@ public class TransportCryptoAutoConfiguration {
         @Bean
         public KeyNegotiationCache redisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate) {
 
-            RedisKeyNegotiationCache keyNegotiationCache = new RedisKeyNegotiationCache(redisTemplate, AppInfo.appId());
+            RedisKeyNegotiationCache keyNegotiationCache = new RedisKeyNegotiationCache(redisTemplate);
             log.info("KeyNegotiationCache-redis init.");
             return keyNegotiationCache;
         }
