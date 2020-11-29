@@ -22,6 +22,9 @@ public class PhoneNumAuthenticationToken extends AbstractAuthenticationToken {
     // 实例属性
     // ================================================================================================
 
+    /**
+     * 认证凭证标识，这里是 UserDetails，为空时说明只是创建了 token、未认证
+     */
     private final Object principal;
 
     // 构造器
@@ -40,7 +43,7 @@ public class PhoneNumAuthenticationToken extends AbstractAuthenticationToken {
      * 创建一个认证过的 token。该方法只应被
      * {@link AuthenticationManager} 或 {@link AuthenticationProvider} 的实现类调用
      *
-     * @param principal   用户信息
+     * @param principal   用户信息 UserDetails
      * @param authorities 授权信息
      */
     public PhoneNumAuthenticationToken(Object principal,

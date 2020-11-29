@@ -3,6 +3,8 @@ package org.shoulder.autoconfigure.security.browser;
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationBeanConfig;
 import org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.SecurityConst.DefaultPage;
 import org.shoulder.security.authentication.AuthenticationType;
@@ -72,6 +74,14 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Autowired(required = false)
     private PersistentTokenRepository persistentTokenRepository;
+
+
+    public BrowserSecurityConfiguration() {
+        // 提示使用了默认的，一般都是自定义
+        Logger log = LoggerFactory.getLogger(getClass());
+        log.warn("use default BrowserSecurityConfiguration, csrf protect was closed.");
+    }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
