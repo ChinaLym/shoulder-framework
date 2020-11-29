@@ -23,8 +23,8 @@ public class RedisKeyNegotiationCache implements KeyNegotiationCache {
 
     public RedisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        clientKeyPrefix = ".negotiation:asClient:";
-        serverKeyPrefix = ".negotiation:asServer:";
+        clientKeyPrefix = "negotiation:asClient:";
+        serverKeyPrefix = "negotiation:asServer:";
     }
 
 
