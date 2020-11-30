@@ -94,7 +94,7 @@ public class AppContext {
      * @return 语言标识
      */
     public static Locale getLocale() {
-        return StringUtils.parseLocale(get(ShoulderContextKey.Locale));
+        return StringUtils.parseLocale(get(ShoulderContextKey.LOCALE));
     }
 
     /**
@@ -103,8 +103,8 @@ public class AppContext {
      * @param locale 语言标识
      */
     public static void setLocale(@Nonnull Locale locale) {
-        log.trace("set Locale ({})", locale);
-        set(ShoulderContextKey.Locale, locale.toString());
+        log.trace("setLocale ({})", locale);
+        set(ShoulderContextKey.LOCALE, locale.toString());
     }
 
     /**

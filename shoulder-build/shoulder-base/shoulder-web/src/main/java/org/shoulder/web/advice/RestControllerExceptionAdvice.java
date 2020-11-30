@@ -56,7 +56,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MissingServletRequestParameterException.class})
-    public RestResult<Object[]> paramsMissingHandler(MissingServletRequestParameterException e) {
+    public RestResult paramsMissingHandler(MissingServletRequestParameterException e) {
         BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_BLANK, e, e.getParameterName());
         log.info(stdEx);
         return stdEx.toResponse();
@@ -67,7 +67,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public RestResult<Object[]> messageNotReadableHandler(HttpMessageNotReadableException e) {
+    public RestResult messageNotReadableHandler(HttpMessageNotReadableException e) {
         final String springErrorTipHeader = "Could not read document:";
         final String errorStackSplit = " at ";
         String message = e.getMessage();
@@ -87,7 +87,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public RestResult<Object[]> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+    public RestResult methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
         BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_INVALID, e, firstErrorInfo);
         log.info(stdEx);
@@ -99,7 +99,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BindException.class})
-    public RestResult<Object[]> bindExceptionHandler(BindException e) {
+    public RestResult bindExceptionHandler(BindException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
         BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_INVALID, e, firstErrorInfo);
         log.info(stdEx);
@@ -112,7 +112,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {ConstraintViolationException.class})
-    public RestResult<Object[]> constraintViolationExceptionHandler(ConstraintViolationException e) {
+    public RestResult constraintViolationExceptionHandler(ConstraintViolationException e) {
         // 这里取了第一个错误作为校验错误原因，且默认使用 hibernate，未做其他实现判断
         ConstraintViolationImpl firstConstraintViolation = (ConstraintViolationImpl) e.getConstraintViolations()
             .stream().findFirst().orElse(null);
