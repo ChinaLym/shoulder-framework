@@ -5,6 +5,7 @@ import org.shoulder.core.i18.Translatable;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
 
@@ -18,7 +19,7 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-public interface ErrorCode {
+public interface ErrorCode extends Translatable {
 
     /**
      * 默认错误码、异常类日志记录级别为 warn
@@ -50,6 +51,26 @@ public interface ErrorCode {
      */
     String getMessage();
 
+    // --------------------------- 【用于支持多语言】 -----------------------------
+
+    @Override
+    default String getI18nKey() {
+        return "err." + getCode() + ".desc";
+    }
+
+    @Override
+    @Nullable
+    default Object[] getArguments() {
+        return getArgs();
+    }
+
+    @Override
+    @Nullable
+    default String getDefaultMessage() {
+        return getMessage();
+    }
+
+
     // --------------------------- 【便于全局异常统一处理的方法】 -----------------------------
 
     /**
@@ -66,9 +87,10 @@ public interface ErrorCode {
      *
      * @param args 用于填充错误信息的数据
      */
-    default void setArgs(Object... args) {
+    /*default void setArgs(Object... args) {
         throw new UnsupportedOperationException("not support set args");
     }
+*/
 
     /**
      * 发生该错误时用什么级别记录日志【便于全局异常统一处理，非必需】
@@ -104,12 +126,15 @@ public interface ErrorCode {
      * @param args 填充异常信息的参数
      * @return api 返回值
      */
-    default RestResult<Object[]> toResponse(Object... args) {
-        return new RestResult<>(
-            this.getCode(),
-            this.getMessage(),
-            args == null ? getArgs() : args
-        );
+    default RestResult<Object> toResponse(Object... args) {
+        if (args != null && args.length == 1) {
+            return new RestResult<>(this.getCode(), this.getMessage(), null);
+        }
+        Object[] argArr = args == null ? getArgs() : args;
+        if (argArr == null || argArr.length == 0) {
+            return new RestResult<>(this.getCode(), this.getMessage(), null);
+        }
+        return new RestResult<>(this.getCode(), this.getMessage(), argArr);
     }
 
     /**
@@ -135,7 +160,7 @@ public interface ErrorCode {
     /**
      * 快速转为异常
      *
-     * @param t 上级异常
+     * @param t    上级异常
      * @param args 用于填充翻译项: 可以是普通字符串，也可以为 {@link Translatable}
      * @return 异常
      */
@@ -143,26 +168,6 @@ public interface ErrorCode {
         return new BaseRuntimeException(this, t, args);
     }
 
-    /**
-     * 抛出运行异常
-     *
-     * @param args 用于填充翻译项: 可以是普通字符串，也可以为 {@link Translatable}
-     * @throws BaseRuntimeException e
-     */
-    default void throwEx(Object... args) throws BaseRuntimeException {
-        throw toException(args);
-    }
-
-    /**
-     * 抛出运行异常
-     *
-     * @param t 上级异常（直接异常）
-     * @param args 用于填充翻译项: 可以是普通字符串，也可以为 {@link Translatable}
-     * @throws BaseRuntimeException e
-     */
-    default void throwEx(Throwable t, Object... args) throws BaseRuntimeException {
-        throw toException(t, args);
-    }
 
     /**
      * --------------------------- 【标识处理成功的返回值】 -----------------------------
@@ -190,15 +195,30 @@ public interface ErrorCode {
             return HttpStatus.OK;
         }
 
+
+        /**
+         * 快速转为异常
+         *
+         * @param args 用于填充翻译项: 可以是普通字符串，也可以为 {@link Translatable}
+         * @return 异常
+         */
         @Override
-        public void throwEx(Object... args) throws BaseRuntimeException {
-            // doNothing
+        public BaseRuntimeException toException(Object... args) {
+            throw new IllegalCallerException("SuccessCode can't convert to an exception!");
         }
 
+        /**
+         * 快速转为异常
+         *
+         * @param t    上级异常
+         * @param args 用于填充翻译项: 可以是普通字符串，也可以为 {@link Translatable}
+         * @return 异常
+         */
         @Override
-        public void throwEx(Throwable t, Object... args) throws BaseRuntimeException {
-            // doNothing
+        public BaseRuntimeException toException(Throwable t, Object... args) {
+            throw new IllegalCallerException("SuccessCode can't convert to an exception!");
         }
+
     }
 
 

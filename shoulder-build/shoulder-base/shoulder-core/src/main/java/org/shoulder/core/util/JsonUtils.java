@@ -23,7 +23,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.exception.JsonRuntimeException;
+import org.shoulder.core.exception.SerialException;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
@@ -55,7 +55,7 @@ public class JsonUtils {
         try {
             return JSON_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new JsonRuntimeException(e);
+            throw new SerialException(e);
         }
     }
 
@@ -105,7 +105,7 @@ public class JsonUtils {
                 .setFilterProvider(createIgnorePropertiesProvider("_temp_ignore", ignoreProperties))
                 .writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new JsonRuntimeException(e);
+            throw new SerialException(e);
         }
     }
 
@@ -122,7 +122,7 @@ public class JsonUtils {
             return JSON_MAPPER.readValue(json, new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
-            throw new JsonRuntimeException(e);
+            throw new SerialException(e);
         }
     }
 
@@ -133,7 +133,7 @@ public class JsonUtils {
         try {
             return JSON_MAPPER.readValue(json, type);
         } catch (JsonProcessingException e) {
-            throw new JsonRuntimeException(e);
+            throw new SerialException(e);
         }
     }
 
@@ -150,7 +150,7 @@ public class JsonUtils {
         try {
             return mapper.readValue(json, javaType);
         } catch (JsonProcessingException e) {
-            throw new JsonRuntimeException(e);
+            throw new SerialException(e);
         }
     }
 

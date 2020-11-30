@@ -28,7 +28,7 @@ public class ExceptionUtil {
 
     /**
      * 格式化异常 msg 信息，一般用于记录日志、api接口出错时使用，返回给前端不需要格式化，而是交给前端格式化
-     * 若频繁使用，为了更好的性能：可缓存 MessageFormat
+     * 若频繁使用，为了更好的性能：可缓存 MessageFormat。注意：这里是格式化，填充参数，并不是多语言。
      *
      * @param message 错误信息
      * @param args    参数
