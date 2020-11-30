@@ -5,6 +5,8 @@ import lombok.extern.shoulder.SLog;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -22,6 +24,8 @@ import java.io.PrintWriter;
  */
 @SLog
 public class Restful401AuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {

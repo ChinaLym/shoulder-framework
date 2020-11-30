@@ -21,7 +21,6 @@ import java.util.Map;
  */
 public class ParamCheck {
 
-
     // ------------------------ 传入参数为空 ParamErrorCodeEnum.PARAM_BLANK -------------------
 
     /**
@@ -33,7 +32,7 @@ public class ParamCheck {
      */
     public static void notNull(Object param, Object... paramName) throws BaseRuntimeException {
         if (param == null) {
-            ParamErrorCodeEnum.PARAM_BLANK.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
     }
 
@@ -46,7 +45,7 @@ public class ParamCheck {
      */
     public static <T> void notEmpty(Collection<T> coll, Object... paramName) throws BaseRuntimeException {
         if (CollectionUtils.isEmpty(coll)) {
-            ParamErrorCodeEnum.PARAM_BLANK.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
     }
 
@@ -60,7 +59,7 @@ public class ParamCheck {
      */
     public static Object[] notEmpty(Object[] array, Object... paramName) throws BaseRuntimeException {
         if (array == null || array.length == 0) {
-            ParamErrorCodeEnum.PARAM_BLANK.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
         return array;
     }
@@ -76,7 +75,7 @@ public class ParamCheck {
      */
     public static <T> T[] noNullElements(T[] array, Object... paramName) throws BaseRuntimeException {
         if (ArrayUtil.hasNull(array)) {
-            ParamErrorCodeEnum.PARAM_BLANK.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
         return array;
     }
@@ -93,7 +92,7 @@ public class ParamCheck {
     @SuppressWarnings("unchecked")
     public static <T> Collection<T> noNullElements(Collection<T> coll, Object... paramName) throws BaseRuntimeException {
         if (CollectionUtils.containsAny(coll, (T) null)) {
-            ParamErrorCodeEnum.PARAM_BLANK.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
         return coll;
     }
@@ -111,7 +110,7 @@ public class ParamCheck {
      */
     public static <K, V> Map<K, V> notEmpty(Map<K, V> map, Object... paramName) throws BaseRuntimeException {
         if (MapUtils.isEmpty(map)) {
-            ParamErrorCodeEnum.PARAM_BLANK.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
         return map;
     }
@@ -174,7 +173,7 @@ public class ParamCheck {
      * @param min       最小
      * @param paramName 参数名
      * @param <T>       泛型 Comparable
-     * @return param 
+     * @return param
      */
     @SuppressWarnings("unchecked")
     public static <T extends Comparable> T eGreater(T param, T min, Object... paramName) throws BaseRuntimeException {
@@ -196,7 +195,7 @@ public class ParamCheck {
     @SuppressWarnings("unchecked")
     public static <T extends Comparable> T greater(T param, T min, Object... paramName) throws BaseRuntimeException {
         if (param != null && param.compareTo(min) <= 0) {
-            ParamErrorCodeEnum.PARAM_OUT_RANGE.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_OUT_RANGE.toException(paramName);
         }
         return param;
     }
@@ -214,7 +213,7 @@ public class ParamCheck {
     @SuppressWarnings("unchecked")
     public static <T extends Comparable> T assertBetween(T param, T min, T max, Object... paramName) throws BaseRuntimeException {
         if (param != null && (min.compareTo(param) > 0 || max.compareTo(param) < 0)) {
-            ParamErrorCodeEnum.PARAM_OUT_RANGE.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_OUT_RANGE.toException(paramName);
         }
         return param;
     }
@@ -245,10 +244,10 @@ public class ParamCheck {
      */
     public static void isNull(Object object, Object... paramName) throws BaseRuntimeException {
         if (object != null) {
-            ParamErrorCodeEnum.PARAM_INVALID.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_INVALID.toException(paramName);
         }
     }
-    
+
     /**
      * 校验数据个数是否超过限制
      *
@@ -260,7 +259,7 @@ public class ParamCheck {
         if (size > 0 && size <= limit) {
             return;
         }
-        ParamErrorCodeEnum.PARAM_INVALID.throwEx(paramName);
+        throw ParamErrorCodeEnum.PARAM_INVALID.toException(paramName);
     }
 
 
@@ -284,7 +283,7 @@ public class ParamCheck {
      */
     public static <T> T assertIn(T param, Collection<? extends T> allowData, Object... paramName) throws BaseRuntimeException {
         if (CollectionUtils.isEmpty(allowData) || !allowData.contains(param)) {
-            ParamErrorCodeEnum.PARAM_INVALID.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_INVALID.toException(paramName);
         }
         return param;
     }
@@ -298,7 +297,7 @@ public class ParamCheck {
 
     // ------------ 参数类型检查 ParamErrorCodeEnum.PARAM_TYPE_NOT_MATCH -----------
 
-    
+
     /**
      * 校验updateTime是否晚于或等于createTime
      *
@@ -308,12 +307,11 @@ public class ParamCheck {
      */
     public static void dateLater(Date createTime, Date updateTime, Object... paramName) throws BaseRuntimeException {
         if (createTime != null && updateTime != null && updateTime.before(createTime)) {
-            ParamErrorCodeEnum.PARAM_INVALID.throwEx(paramName);
+            throw ParamErrorCodeEnum.PARAM_INVALID.toException(paramName);
         }
     }
 
-    
-    
+
     /**
      * obj 必须为 clazz 类型的实例
      *
