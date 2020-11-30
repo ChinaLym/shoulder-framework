@@ -120,3 +120,35 @@ TODO
 *** `OperationResult`
 *** `TerminalType`
 
+
+## 业务传播：处理注解方法嵌套调用
+
+目前操作日志推荐加在最外层，如 ControllerImpl、ListenerImpl、ScheduleImpl ，避免业务嵌套
+
+如何处理业务传播与覆盖？参考Spring 的事务传播 `TransactionDefinition`
+
+```
+- 同时记录父子业务
+    - 为子业务创建一个新的业务上下文，分别记录父子业务
+    - 在当前业务基础上创建一个子业务上下文，分别记录父子业务（场景暂无？）
+- 忽略子业务
+    - 如果存在父级业务，则忽略本次业务，仅记录最外层业务，不需要关心和记录子业务
+- 直接使用父业务（不建议，会污染父业务中的值）
+```
+
+```java
+    // int PROPAGATION_REQUIRED = 0; 必须要有，有则复用、否则新建
+    int PROPAGATION_SUPPORTS = 1;
+    int PROPAGATION_MANDATORY = 2;
+    int PROPAGATION_REQUIRES_NEW = 3;
+    int PROPAGATION_NOT_SUPPORTED = 4;
+    int PROPAGATION_NEVER = 5;
+    int PROPAGATION_NESTED = 6;
+```
+- 有则复用、否则新建 【无需支持，禁止复用】
+- 不需要，如果有则使用，没有不报错。【少数情况】
+- 必须要有，没有则报错【少数情况】
+- 必定新建，若有则暂时挂起 【次要，父子业务】
+- 不需要，有也不使用【无需支持】
+- 不能有，有则报错【无需支持】
+- 嵌套，如果有，则创建子业务【嵌套业务，不必支持】

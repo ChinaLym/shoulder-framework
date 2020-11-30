@@ -95,3 +95,5 @@ public class RedisSessionInitOpConfig {
 
 
 - [redis分布式锁和lua脚本](https://www.cnblogs.com/number7/p/8320259.html)
+- [redis 可视化工具-Redily官网](https://www.electronjs.org/releases/stable) [github 发布地址](https://github.com/electron/electron/releases)
+- [redis 可视化工具-RedisManager]()
