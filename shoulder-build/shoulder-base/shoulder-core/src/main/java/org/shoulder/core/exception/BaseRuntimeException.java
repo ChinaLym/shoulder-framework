@@ -1,5 +1,6 @@
 package org.shoulder.core.exception;
 
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
@@ -85,6 +86,16 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
         setHttpStatus(error.getHttpStatusCode());
     }
 
+
+    /**
+     * 根据定义的错误码直接抛出运行异常（推荐）
+     *
+     * @param msg 自定义信息
+     */
+    public BaseRuntimeException(ErrorCode error, String msg) {
+        this(error.getCode(), msg);
+    }
+
     /**
      * 根据定义的错误码直接抛出运行异常（推荐）
      *
@@ -165,7 +176,6 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
         return args == null ? null : args.clone();
     }
 
-    @Override
     public void setArgs(Object... args) {
         this.args = args == null ? null : args.clone();
     }
@@ -191,4 +201,23 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
     public void setHttpStatus(HttpStatus httpStatus) {
         this.httpStatus = httpStatus;
     }
+
+    // ----------------------------------------------------------
+
+
+    /**
+     * 转化为 api 返回值
+     *
+     * @param args 填充异常信息的参数
+     * @return api 返回值
+     */
+    public RestResult<Object> toResponse(Object... args) {
+        return new RestResult<>(
+            this.getCode(),
+            this.getMessage(),
+            args == null ? getArgs() : args
+        );
+    }
+
+
 }

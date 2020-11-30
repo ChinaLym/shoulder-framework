@@ -31,7 +31,7 @@ public interface ShoulderContextKey {
     /**
      * 语言标识
      */
-    String Locale = "locale";
+    String LOCALE = "locale";
 
 
     /**
