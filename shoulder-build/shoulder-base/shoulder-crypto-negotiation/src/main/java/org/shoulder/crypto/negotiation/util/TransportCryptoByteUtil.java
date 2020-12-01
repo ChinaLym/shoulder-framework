@@ -153,7 +153,7 @@ public class TransportCryptoByteUtil {
         final int keyBitLength = randomKeyLength();
         response.setAes(String.valueOf(keyBitLength));
         // 需要除 8
-        response.setKeyLength(keyBitLength >> 3);
+        response.setKeyLength(keyBitLength << 3);
         response.setExpireTime(KeyExchangeConstants.EXPIRE_TIME);
         response.setPublicKey(ByteSpecification.encodeToString(selfPublicKey));
 
