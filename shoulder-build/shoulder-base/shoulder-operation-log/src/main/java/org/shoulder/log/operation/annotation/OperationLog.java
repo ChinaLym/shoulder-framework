@@ -77,7 +77,7 @@ public @interface OperationLog {
     TerminalType terminalType() default TerminalType.BROWSER;
 
     /**
-     * 加了该注解的方法 A 调用 加了该注解的方法 B 时，日志上下文创建策略
+     * 加了该注解的方法 A 中调用 加了该注解的方法 B 时，日志上下文创建策略
      * 默认，如果不存在嵌套调用，则新建一个上下文。若执行该方法时已经存在日志上下文，则不记录该方法的日志。
      */
     OperationContextStrategyEnum strategy() default OperationContextStrategyEnum.USE_DEFAULT;

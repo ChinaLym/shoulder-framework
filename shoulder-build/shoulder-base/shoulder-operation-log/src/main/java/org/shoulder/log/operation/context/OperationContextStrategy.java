@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 /**
  * shoulder 定义的业务，传播
  *
+ * @see OperationContextStrategyEnum 默认实现了几种
  * @author lym
  */
 public interface OperationContextStrategy {
