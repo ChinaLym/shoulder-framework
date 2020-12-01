@@ -1,5 +1,6 @@
 package org.shoulder.security.authentication.handler.json;
 
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.JsonUtils;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class JsonLogoutSuccessHandler implements LogoutSuccessHandler {
         log.trace("logout SUCCESS.");
 
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        response.getWriter().write(JsonUtils.toJson(CommonErrorCodeEnum.AUTH_401_EXPIRED.toResponse()));
+        response.getWriter().write(JsonUtils.toJson(RestResult.error(CommonErrorCodeEnum.AUTH_401_EXPIRED)));
     }
 
 }

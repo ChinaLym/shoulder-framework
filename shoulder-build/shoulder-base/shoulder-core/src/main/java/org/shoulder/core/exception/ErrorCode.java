@@ -1,6 +1,5 @@
 package org.shoulder.core.exception;
 
-import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.i18.Translatable;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
@@ -8,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+
 
 /**
  * 表示错误的接口
@@ -37,7 +37,7 @@ public interface ErrorCode extends Translatable {
     SuccessCode SUCCESS = new SuccessCode();
 
     /**
-     * 获取错误码（不带前缀）
+     * 获取完整错误码
      *
      * @return 错误码
      */
@@ -45,7 +45,7 @@ public interface ErrorCode extends Translatable {
     String getCode();
 
     /**
-     * 获取错误信息
+     * 获取错误信息【非该错误码对应的翻译，而是错误提示，用于日志输出】
      *
      * @return 错误信息，支持 %s、{} 这种带占位符的消息
      */
@@ -119,23 +119,6 @@ public interface ErrorCode extends Translatable {
 
 
     // --------------------------- 【语法糖方法】 -----------------------------
-
-    /**
-     * 转化为 api 返回值
-     *
-     * @param args 填充异常信息的参数
-     * @return api 返回值
-     */
-    default RestResult<Object> toResponse(Object... args) {
-        if (args != null && args.length == 1) {
-            return new RestResult<>(this.getCode(), this.getMessage(), null);
-        }
-        Object[] argArr = args == null ? getArgs() : args;
-        if (argArr == null || argArr.length == 0) {
-            return new RestResult<>(this.getCode(), this.getMessage(), null);
-        }
-        return new RestResult<>(this.getCode(), this.getMessage(), argArr);
-    }
 
     /**
      * 生成详情
