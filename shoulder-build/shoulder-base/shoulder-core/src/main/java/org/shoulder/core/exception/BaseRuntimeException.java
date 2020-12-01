@@ -1,6 +1,8 @@
 package org.shoulder.core.exception;
 
 import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.i18.Translator;
+import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
@@ -208,15 +210,25 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
     /**
      * 转化为 api 返回值
      *
-     * @param args 填充异常信息的参数
+     * @param data 填充异常信息的参数
      * @return api 返回值
      */
-    public RestResult<Object> toResponse(Object... args) {
-        return new RestResult<>(
-            this.getCode(),
-            this.getMessage(),
-            args == null ? getArgs() : args
-        );
+    public RestResult<Object> toResponse(Object data) {
+        return new RestResult<>(this.getCode(), this.getMessage(), data);
+    }
+
+    /**
+     * 转化为 api 返回值
+     *
+     * @return api 返回值
+     */
+    public RestResult<Object> toResponse() {
+        return new RestResult<>(this.getCode(), this.getMessage(), getArgs());
+    }
+
+    @Override
+    public String getLocalizedMessage() {
+        return ContextUtils.getBean(Translator.class).getMessage(this);
     }
 
 

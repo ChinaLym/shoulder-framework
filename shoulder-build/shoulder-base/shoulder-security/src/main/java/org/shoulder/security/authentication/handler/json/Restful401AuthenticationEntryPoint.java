@@ -30,7 +30,7 @@ public class Restful401AuthenticationEntryPoint implements AuthenticationEntryPo
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.debug("need auth 401 for: " + authException.getMessage(), authException);
-        RestResult result = CommonErrorCodeEnum.AUTH_401_NEED_AUTH.toResponse();
+        RestResult result = RestResult.error(CommonErrorCodeEnum.AUTH_401_EXPIRED);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         response.setCharacterEncoding(AppInfo.charset().toString());

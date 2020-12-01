@@ -13,7 +13,15 @@ public class ShoulderFramework {
 
     public static final long SERIAL_ID = 666L;
 
+    /**
+     * 当前框架版本
+     */
     public static String VERSION;
+
+    /**
+     * 框架错误码-模块前缀
+     */
+    public static String SHOULDER_ERRORCODE_MODEULE_PREFIX = "";
 
     static {
         try (InputStream in = ShoulderFramework.class.getClassLoader().getResourceAsStream("shoulder-version.txt")) {
@@ -25,6 +33,8 @@ public class ShoulderFramework {
             if (val != null && !versionPlaceholder.equals(val)) {
                 VERSION = val;
             }
+            val = props.getProperty("errorCodePrefix");
+            SHOULDER_ERRORCODE_MODEULE_PREFIX = val;
         } catch (Exception e) {
             e.printStackTrace();
         }
