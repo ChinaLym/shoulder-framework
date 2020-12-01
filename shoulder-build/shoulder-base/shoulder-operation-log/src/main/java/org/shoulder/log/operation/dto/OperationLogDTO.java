@@ -68,7 +68,7 @@ public class OperationLogDTO implements Cloneable {
     /**
      * 操作者终端类型 （必填）
      */
-    protected TerminalType terminalType = TerminalType.SYSTEM;
+    protected TerminalType terminalType = TerminalType.UNKNOWN;
 
     /**
      * IP （选填）

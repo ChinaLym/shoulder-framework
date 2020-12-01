@@ -32,6 +32,11 @@ public enum TerminalType {
      */
     MINA(4),
 
+    /**
+     * 未知
+     */
+    UNKNOWN(-1),
+
     ;
 
     private int code;

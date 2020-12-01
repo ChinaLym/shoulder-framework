@@ -1,9 +1,10 @@
 package org.shoulder.log.operation.annotation;
 
+import org.shoulder.log.operation.context.OpLogContextHolder;
+import org.shoulder.log.operation.context.OperationContextStrategyEnum;
+import org.shoulder.log.operation.context.OperationLogFactory;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.enums.TerminalType;
-import org.shoulder.log.operation.util.OpLogContextHolder;
-import org.shoulder.log.operation.util.OperationLogBuilder;
 
 import java.lang.annotation.*;
 
@@ -11,7 +12,7 @@ import java.lang.annotation.*;
  * 创建操作日志注解
  * 将该注解加在业务方法上，可以在被注解的方法执行前创建一个操作日志对象，在该方法、调用方法、以及他们创建的线程中使用用 {@link OpLogContextHolder}修改日志。并在该方法执行结束自动记录日志
  * 该注解中的值后续可以修改
- * 无法使用注解时，可以使用 {@link OperationLogBuilder#newLog}
+ * 无法使用注解时，可以使用 {@link OperationLogFactory#create}
  * <p>
  * 【操作日志框架原理： Spring AOP（spring boot 1.4之后 Spring AOP 的默认实现为 cglib）】
  * <p>
@@ -74,6 +75,12 @@ public @interface OperationLog {
      * 【推荐：在类注解 {@link OperationLogConfig} 上描述该值，便不必在每个方法上填充】
      */
     TerminalType terminalType() default TerminalType.BROWSER;
+
+    /**
+     * 加了该注解的方法 A 调用 加了该注解的方法 B 时，日志上下文创建策略
+     * 默认，如果不存在嵌套调用，则新建一个上下文。若执行该方法时已经存在日志上下文，则不记录该方法的日志。
+     */
+    OperationContextStrategyEnum strategy() default OperationContextStrategyEnum.USE_DEFAULT;
 
     /**
      * 一些通用的操作，用于填充 Operation

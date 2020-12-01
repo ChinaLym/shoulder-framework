@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.operation;
 
+import org.shoulder.log.operation.context.OpLogContext;
 import org.shoulder.log.operation.dto.Operator;
-import org.shoulder.log.operation.util.OpLogContext;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
