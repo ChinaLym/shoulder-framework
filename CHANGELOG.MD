@@ -1,6 +1,13 @@
 # 更新记录
 
-## 0.5 （doing）
+## 0.6 （pre）
+
+- 接口文档选型
+    - 注解同时支持 swagger3（主）/swagger2
+    - 注释支持 smartDoc
+    - 可视化界面默认使用 xxx
+
+## 0.5 （测试中 && 待发布）
 
 - 批量业务抽象支持
     - csv / excel 解析
@@ -36,16 +43,11 @@
         
 - 优化基础包中的非必选强依赖
     - 如 spring，降低最小使用依赖成本
-
-- 接口文档选型
-    - 注解同时支持 swagger3（主）/swagger2
-    - 注释支持 smartDoc
-    - 可视化界面默认使用 xxx
     
 - ~~默认使用 `Undertow` 而非 `Tomcat`~~
-    - 取消各个模块对 tomcat 的依赖
+    - 取消各个模块对 `tomcat` 的依赖
     - 注意 `undertow` 不支持jsp
-    - 实际未实现，默认 tomcat、若希望使用 undertow 使用者自行排除即可
+    - 废弃该需求，不实现：默认 `tomcat`、若希望使用 `undertow` 使用者自行排除即可
 
 - 分布式锁
     - 提供锁的概念、接口定义
@@ -55,10 +57,17 @@
         - 基于数据库（依赖了数据库则默认使用该方式）
         - 基于 Redis
 
-- 基于 Session 认证 Demo
+- 安全与认证
+    - 密钥交换修复密钥长度错误bug
+    - 提供 Token 认证方式默认实现和装配
+    - 完善 session 认证中条件装配
+    - 添加基于 Session 认证 Demo
+    - 添加基于 Token 认证 Demo
 
-- 异常使用简化
-    - 增加快速转为异常、抛出异常的语法糖方法
+- 操作日志框架
+    - 支持加了该注解的方法 A 中调用 加了该注解的方法 B 时
+    - 支持自定义业务传播行为（日志上下文创建策略），接口：OperationContextStrategy
+    - 调整日志上下文的包名、创建器类名 `OperationLogBuilder` -> `OperationLogFactory`
 
 ## 0.4 （stable）
 - 提供 starters
