@@ -1,10 +1,10 @@
 package org.shoulder.log.operation.logger.impl;
 
+import org.shoulder.log.operation.context.OperationLogFactory;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
-import org.shoulder.log.operation.util.OperationLogBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,8 @@ public abstract class AbstractOperationLogger implements OperationLogger {
 
     /**
      * 记录多条操作日志
-     * todo 【性能】【扩展】 目前单条循环，考虑支持批量操作，以及批量前后置处理器
+     * 【性能】默认单条循环，扩展时可考虑覆盖默认实现，支持真正的批量操作
+     * 【扩展】自行实现时，也可自己定义批量记录前后置处理器
      */
     @Override
     public void log(@Nonnull Collection<? extends OperationLogDTO> opLogList) {
@@ -61,7 +62,7 @@ public abstract class AbstractOperationLogger implements OperationLogger {
         // 组装前
         operableList = beforeAssembleBatchLogs(opLog, operableList);
         // 组装批量操作日志
-        List<? extends OperationLogDTO> opLogs = OperationLogBuilder.newLogsFrom(opLog, operableList);
+        List<? extends OperationLogDTO> opLogs = OperationLogFactory.createFromTemplate(opLog, operableList);
         // 组装后
         opLogs = afterAssembleBatchLogs(opLogs);
 

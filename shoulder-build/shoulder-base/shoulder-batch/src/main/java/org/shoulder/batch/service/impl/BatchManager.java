@@ -14,8 +14,8 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.JsonUtils;
+import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.enums.OperationResult;
-import org.shoulder.log.operation.util.OpLogContextHolder;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;

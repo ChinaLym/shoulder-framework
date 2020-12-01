@@ -68,7 +68,7 @@ public interface Operator {
      */
     @Nonnull
     default TerminalType getTerminalType() {
-        return TerminalType.SYSTEM;
+        return TerminalType.UNKNOWN;
     }
 
     /**

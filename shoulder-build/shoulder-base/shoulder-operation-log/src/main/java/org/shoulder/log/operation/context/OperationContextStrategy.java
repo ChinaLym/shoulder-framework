@@ -1,6 +1,6 @@
-package org.shoulder.log.operation;
+package org.shoulder.log.operation.context;
 
-import org.shoulder.log.operation.util.OpLogContext;
+import javax.annotation.Nonnull;
 
 /**
  * shoulder 定义的业务，传播
@@ -18,16 +18,19 @@ public interface OperationContextStrategy {
     /**
      * 当前线程没有操作日志上下文信息时策略
      *
-     * @return 返回的日志上下文，若返回 null，即不创建，忽略该上下文中所有日志工具相关方法
+     * @return 返回的日志上下文
      */
+    @Nonnull
     OpLogContext onMissingContext();
 
 
     /**
      * 当前线程有操作日志上下文信息时策略
      *
-     * @return 返回的日志上下文，若返回 null，即不创建，忽略该上下文中所有日志工具相关方法
+     * @param existed 当前线程中的日志上下文
+     * @return 返回的日志上下文
      */
+    @Nonnull
     OpLogContext onExistContext(OpLogContext existed);
 
 }

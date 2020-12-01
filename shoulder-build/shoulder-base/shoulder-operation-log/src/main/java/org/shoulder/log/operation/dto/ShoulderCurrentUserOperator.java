@@ -1,7 +1,10 @@
 package org.shoulder.log.operation.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.shoulder.log.operation.enums.TerminalType;
 
 import java.io.Serializable;
 
@@ -12,6 +15,8 @@ import java.io.Serializable;
  * @implSpec 该类针对 shoulder 系统中单点登录用户信息进行封装
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 public class ShoulderCurrentUserOperator implements Serializable, Operator {
     private static final long serialVersionUID = 1429478242021042150L;
@@ -19,24 +24,15 @@ public class ShoulderCurrentUserOperator implements Serializable, Operator {
     protected String userId;
     protected String userRealName;
     protected String ip;
+    protected TerminalType terminalType = TerminalType.UNKNOWN;
     protected String terminalId;
-    protected String tgc;
-    protected String languageId;
+    protected String terminalInfo;
 
     /**
      * userId 必填
      */
     public ShoulderCurrentUserOperator(String userId) {
         this.userId = userId;
-    }
-
-    public ShoulderCurrentUserOperator(String userId, String userRealName, String ip, String terminalId, String tgc, String languageId) {
-        this.userId = userId;
-        this.userRealName = userRealName;
-        this.ip = ip;
-        this.terminalId = terminalId;
-        this.tgc = tgc;
-        this.languageId = languageId;
     }
 
 }

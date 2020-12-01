@@ -14,6 +14,8 @@ import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -37,9 +39,11 @@ import java.sql.SQLException;
 
 /**
  * RestController 全局异常处理器 - 请求方错误，提供默认统一场景错误返回值
+ * 不同 RestControllerAdvice 类中的异常处理器优先级：与 @Order 接口定义有关，默认最低，用户可以定义，以覆盖框架实现
  *
  * @author lym
  */
+@Order(Ordered.LOWEST_PRECEDENCE)
 @RestControllerAdvice
 public class RestControllerExceptionAdvice {
 
@@ -254,8 +258,9 @@ public class RestControllerExceptionAdvice {
      * SQLException
      * 开发者配置信息不全，完整性（必填为空），唯一性约束（主键不完整）
      * DataIntegrityViolationException
-     * todo 【可选】DataAccessException spring 的数据持久层异常基类（依赖数据库）
+     * todo 【可选】DataAccessException spring 的数据持久层异常基类（依赖数据库） 新建 RestControllerAdvice 加 ConditionalOnClass
      */
+
     /**
      * 数据库保存失败
      */

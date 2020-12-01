@@ -1,5 +1,4 @@
-package org.shoulder.log.operation.util;
-
+package org.shoulder.log.operation.context;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.context.AppInfo;
@@ -20,7 +19,7 @@ import java.util.List;
  *
  * @author lym
  */
-public class OperationLogBuilder {
+public class OperationLogFactory {
 
     /**
      * 创建一条操作日志
@@ -28,8 +27,8 @@ public class OperationLogBuilder {
      * 2. 填充为内部任务日志
      * 3. 若上下文存在登录的用户则将其当做操作者
      */
-    public static OperationLogDTO newLog(String operation) {
-        Operator currentOperator = OpLogContextHolder.getCurrentOperator();
+    public static OperationLogDTO create(String operation) {
+        Operator currentOperator = OpLogContext.getCurrentOperator();
         return new OperationLogDTO(operation)
             .setOperator(currentOperator)
             .setAppId(AppInfo.appId());
@@ -45,8 +44,8 @@ public class OperationLogBuilder {
      * @param operableList         被操作对象集合
      * @return 多条填充完毕的日志对象，至少返回包含一条日志的 List
      */
-    public static List<OperationLogDTO> newLogsFrom(OperationLogDTO operationLogTemplate,
-                                                    @Nullable Collection<? extends Operable> operableList) {
+    public static List<OperationLogDTO> createFromTemplate(OperationLogDTO operationLogTemplate,
+                                                           @Nullable Collection<? extends Operable> operableList) {
         if (operationLogTemplate == null || CollectionUtils.isEmpty(operableList)) {
             return Collections.singletonList(operationLogTemplate);
         }

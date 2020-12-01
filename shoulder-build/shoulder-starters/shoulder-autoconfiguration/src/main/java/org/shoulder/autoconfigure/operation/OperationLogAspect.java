@@ -12,14 +12,15 @@ import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.annotation.OperationLogParam;
+import org.shoulder.log.operation.context.OpLogContext;
+import org.shoulder.log.operation.context.OpLogContextHolder;
+import org.shoulder.log.operation.context.OperationContextStrategyEnum;
+import org.shoulder.log.operation.context.OperationLogFactory;
 import org.shoulder.log.operation.dto.OpLogParam;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
-import org.shoulder.log.operation.util.OpLogContext;
-import org.shoulder.log.operation.util.OpLogContextHolder;
-import org.shoulder.log.operation.util.OperationLogBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -31,6 +32,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Collections;
@@ -60,6 +62,7 @@ public class OperationLogAspect {
      * 保存操作日志上次的上下文
      */
     private static ThreadLocal<OpLogContext> lastOpLogContext = new ThreadLocal<>();
+
     @Autowired
     private OperationLogProperties operationLogProperties;
 
@@ -145,18 +148,23 @@ public class OperationLogAspect {
             }
 
         }
+        // 上下文创建策略
+        OperationContextStrategyEnum strategy;
+        if ((strategy = methodAnnotation.strategy()) == OperationContextStrategyEnum.USE_DEFAULT) {
+            if (classAnnotation != null && classAnnotation.strategy() != OperationContextStrategyEnum.USE_DEFAULT) {
+                strategy = classAnnotation.strategy();
+            }
+        }
+        // 根据创建策略创建日志实体
+        OpLogContext context = lastOpLogContext.get() == null ? strategy.onMissingContext()
+            : strategy.onExistContext(lastOpLogContext.get());
 
         // 创建日志
         OperationLogDTO entity = createLog(joinPoint, methodAnnotation, classAnnotation);
-
+        context.setOperationLog(entity);
         if (log.isDebugEnabled()) {
             log.debug("auto create a OperationLog: " + entity);
         }
-
-        OpLogContext context = OpLogContext.create(lastOpLogContext.get()).setOperationLog(entity);
-
-        // 是否在抛出异常后自动记录日志
-
         OpLogContextHolder.setContext(context);
     }
 
@@ -171,6 +179,7 @@ public class OperationLogAspect {
         } else {
             OpLogContextHolder.clean();
         }
+        // 清理线程变量
         lastOpLogContext.remove();
     }
 
@@ -178,10 +187,11 @@ public class OperationLogAspect {
      * 根据注解创建日志实体
      */
     @Nonnull
-    private OperationLogDTO createLog(ProceedingJoinPoint joinPoint, OperationLog methodAnnotation, OperationLogConfig classAnnotation) {
+    private OperationLogDTO createLog(ProceedingJoinPoint joinPoint,
+                                      OperationLog methodAnnotation, @Nullable OperationLogConfig classAnnotation) {
         // 创建日志实体
         OperationLogDTO entity =
-            OperationLogBuilder.newLog(methodAnnotation.operation());
+            OperationLogFactory.create(methodAnnotation.operation());
 
         // objectType
         if (StringUtils.isNotEmpty(methodAnnotation.objectType())) {

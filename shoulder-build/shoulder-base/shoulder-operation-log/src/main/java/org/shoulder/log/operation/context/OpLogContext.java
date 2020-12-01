@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.util;
+package org.shoulder.log.operation.context;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +26,32 @@ public class OpLogContext {
      */
     private static ThreadLocal<Operator> currentOperatorThreadLocal = new ThreadLocal<>();
 
+    public static void setDefaultOperator(Operator operator) {
+        currentOperatorThreadLocal.set(operator);
+    }
+
+    public static Operator getCurrentOperator() {
+        return currentOperatorThreadLocal.get();
+    }
+
+    /**
+     * 清理线程变量
+     * 推荐由拦截器负责，使用者不要在业务代码中调用该方法，除非你很清楚日志框架的原理
+     */
+    public static void cleanDefaultOperator() {
+        currentOperatorThreadLocal.remove();
+    }
+
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * 上級上下文
+     */
+    private OpLogContext parent = null;
+
+    /**
+     * 操作日志對象
+     */
     private OperationLogDTO operationLog;
 
     /**
@@ -34,9 +60,9 @@ public class OpLogContext {
     private List<Operable> operableObjects;
 
     /**
-     * 触发当前业务的用户信息
+     * 触发本业务的操作者信息
      */
-    private Operator currentOperator;
+    private Operator operator;
 
     /**
      * 是否在方法正常结束后自动记录日志
@@ -49,35 +75,23 @@ public class OpLogContext {
     private boolean logWhenThrow = true;
 
     OpLogContext() {
+        Operator operator = currentOperatorThreadLocal.get();
+        setOperator(operator != null ? operator : SystemOperator.getInstance());
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static OpLogContext create(OpLogContext lastOpLogContext) {
+    public static OpLogContext copy(OpLogContext lastOpLogContext) {
         if (lastOpLogContext != null) {
             return new OpLogContext()
-                .setCurrentOperator(lastOpLogContext.getCurrentOperator())
+                .setOperator(lastOpLogContext.getOperator())
                 .setAutoLog(lastOpLogContext.isAutoLog())
                 .setLogWhenThrow(lastOpLogContext.isLogWhenThrow());
         } else {
-            Operator operator = currentOperatorThreadLocal.get();
-            return new OpLogContext()
-                .setCurrentOperator(operator != null ? operator : SystemOperator.getInstance());
+            return new OpLogContext();
         }
-    }
-
-    public static void setDefaultOperator(Operator operator) {
-        currentOperatorThreadLocal.set(operator);
-    }
-
-    /**
-     * 清理线程变量
-     * 推荐由拦截器负责，使用者不要在业务代码中调用该方法，除非你很清楚日志框架的原理
-     */
-    public static void cleanDefaultOperator() {
-        currentOperatorThreadLocal.remove();
     }
 
     public static final class Builder {
@@ -91,6 +105,11 @@ public class OpLogContext {
             return new Builder();
         }
 
+        public Builder parent(OpLogContext parent) {
+            opLogContext.setParent(parent);
+            return this;
+        }
+
         public Builder operationLog(OperationLogDTO operationLog) {
             opLogContext.setOperationLog(operationLog);
             return this;
@@ -102,7 +121,7 @@ public class OpLogContext {
         }
 
         public Builder currentOperator(Operator currentOperator) {
-            opLogContext.setCurrentOperator(currentOperator);
+            opLogContext.setOperator(currentOperator);
             return this;
         }
 
@@ -117,7 +136,7 @@ public class OpLogContext {
         }
 
         public OpLogContext build() {
-            Assert.notNull(opLogContext.getCurrentOperator(), "currentOperator can't be null!");
+            Assert.notNull(opLogContext.getOperator(), "currentOperator can't be null!");
             return opLogContext;
         }
     }

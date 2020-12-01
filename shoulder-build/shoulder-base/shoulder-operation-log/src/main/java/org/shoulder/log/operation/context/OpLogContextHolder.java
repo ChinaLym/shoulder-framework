@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.util;
+package org.shoulder.log.operation.context;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -112,15 +112,15 @@ public class OpLogContextHolder {
     /**
      * @return 日志上下文中 当前用户
      */
-    public static Operator getCurrentOperator() {
-        return getContextOrException().getCurrentOperator();
+    public static Operator getOperator() {
+        return getContextOrException().getOperator();
     }
 
     /**
      * 设置用户信息
      */
-    public static void setCurrentOperator(Operator entity) {
-        getContextOrException().setCurrentOperator(entity);
+    public static void setOperator(Operator entity) {
+        getContextOrException().setOperator(entity);
     }
 
     // ============================ 批量被操作对象（用于一个方法记录多条操作日志） =======================
