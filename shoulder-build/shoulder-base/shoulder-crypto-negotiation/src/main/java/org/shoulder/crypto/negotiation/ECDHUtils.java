@@ -23,6 +23,7 @@ import java.util.List;
  *
  * @author lym
  */
+@SuppressWarnings("PMD.ClassNamingShouldBeCamelRule")
 public class ECDHUtils {
 
     private final static String PROVIDER = "BC";
@@ -40,11 +41,11 @@ public class ECDHUtils {
      *
      * @param selfPrivateKey 己方的私钥
      * @param otherPublicKey 对方的公钥
-     * @param keyLength      aes密钥长度除8：16/24/32
+     * @param keyBytes      aes密钥长度除8：16/24/32
      * @return keyAndIv                 sessionAesKey, sessionAesIv
      * @throws NegotiationException 密钥协商出错
      */
-    public static List<byte[]> negotiationToKeyAndIv(byte[] selfPrivateKey, byte[] otherPublicKey, int keyLength) throws NegotiationException {
+    public static List<byte[]> negotiationToKeyAndIv(byte[] selfPrivateKey, byte[] otherPublicKey, int keyBytes) throws NegotiationException {
         try {
             // 初始化ecdh keyFactory
             KeyFactory keyFactory = KeyFactory.getInstance(ECDH, PROVIDER);
@@ -58,7 +59,7 @@ public class ECDHUtils {
             KeyAgreement aKeyAgree = KeyAgreement.getInstance(ECDH, PROVIDER);
             aKeyAgree.init(ecPriKey);
             aKeyAgree.doPhase(ecPubKey, true);
-            return generateLocalKeyAndIv(aKeyAgree.generateSecret(), keyLength);
+            return generateLocalKeyAndIv(aKeyAgree.generateSecret(), keyBytes);
         } catch (Exception e) {
             logger.error("密钥协商出现异常", e);
             throw new NegotiationException("密钥协商出现异常", e);
@@ -70,16 +71,15 @@ public class ECDHUtils {
      * 由于双方 negotiationKey、keyLength 一样，故结果一样
      *
      * @param negotiationKey 协商出来的密钥
-     * @param keyLength 共享密钥长度
+     * @param keyBytes 共享密钥长度（字节数，非bit数）
      * @return 共享密钥、init-vector
      */
-    private static List<byte[]> generateLocalKeyAndIv(byte[] negotiationKey, int keyLength) {
+    private static List<byte[]> generateLocalKeyAndIv(byte[] negotiationKey, int keyBytes) {
         Assert.notNull(negotiationKey, "negotiationKey can't be null!");
         Assert.isTrue(negotiationKey.length == 32, "ECDH256 negotiationKey.length must be 32(256bit)!");
         byte[] temp = Sha256Utils.digest(negotiationKey);
-
-        byte[] localKey = new byte[keyLength];
-        System.arraycopy(temp, 0, localKey, 0, keyLength);
+        byte[] localKey = new byte[keyBytes];
+        System.arraycopy(temp, 0, localKey, 0, keyBytes);
 
         final int ivLength = 16;
         byte[] localIv = new byte[ivLength];

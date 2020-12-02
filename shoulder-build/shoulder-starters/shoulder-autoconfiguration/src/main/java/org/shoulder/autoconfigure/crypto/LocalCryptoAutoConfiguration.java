@@ -97,6 +97,7 @@ public class LocalCryptoAutoConfiguration {
     @ConditionalOnCluster(cluster = false)
     @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
     @AutoConfigureAfter(TempFileLocalCryptoInfoRepositoryAutoConfiguration.class)
+    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "memory")
     public static class HashMapLocalCryptoInfoRepositoryAutoConfiguration {
         /**
          * 使用了 hashMap，仅供演示。重启后，密钥对将丢失，加密过的数据无法解密！

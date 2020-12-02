@@ -23,7 +23,7 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
     private RedisTemplate<String, Object> redisTemplate;
 
     public RedisLocalCryptoInfoRepository(RedisTemplate<String, Object> redisTemplate) {
-        this(redisTemplate, "crypto:local:");
+        this(redisTemplate, "crypto:local");
     }
 
     public RedisLocalCryptoInfoRepository(RedisTemplate<String, Object> redisTemplate, String keyPrefix) {
