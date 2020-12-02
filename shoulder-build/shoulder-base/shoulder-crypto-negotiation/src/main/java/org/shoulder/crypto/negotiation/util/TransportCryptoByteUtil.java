@@ -33,7 +33,7 @@ public class TransportCryptoByteUtil {
     /**
      * 128/192/256，长度为 4 特用于优化随机数性能
      */
-    private static final int[] SUPPORT_KEY_LENGTH = {16, 16, 24, 32};
+    private static final int[] SUPPORT_KEY_BYTE_LENGTH = {16, 16, 24, 32};
 
     private final AsymmetricCryptoProcessor eccProcessor;
 
@@ -83,11 +83,11 @@ public class TransportCryptoByteUtil {
     }
 
     /**
-     * 创建一个请求
+     * 创建一个协商请求
      */
     public KeyExchangeRequest createRequest() throws AsymmetricCryptoException {
         KeyExchangeRequest request = new KeyExchangeRequest();
-        // 1. 生成会话唯一标识
+        // 生成会话唯一标识
         String clientSessionId = UUID.randomUUID().toString().replaceAll("-", "");
         request.setxSessionId(clientSessionId);
         eccProcessor.buildKeyPair(clientSessionId, negotiationDuration);
@@ -98,62 +98,39 @@ public class TransportCryptoByteUtil {
     }
 
     /**
-     * 创建一个响应
-     */
-    public KeyExchangeResponse createResponse(KeyExchangeRequest keyExchangeRequest) throws KeyPairException {
-        KeyExchangeResponse response = new KeyExchangeResponse();
-        // 1. 验证签名
-        // 2. 构建密钥对
-        // 3. 选择临时算法
-        // ---------------------------- 可异步 --------------------------
-        // 4. 协商密钥，生成 shareKey （临时）
-        // 5. 根据 shareKey 生成 localKey，localIv
-        String xSessionId = keyExchangeRequest.getxSessionId();
-        eccProcessor.buildKeyPair(xSessionId, negotiationDuration);
-
-        response.setxSessionId(xSessionId);
-        response.setPublicKey(eccProcessor.getPublicKeyString(xSessionId));
-        return response;
-    }
-
-    /**
      * 协商密钥交换响应
      * 主要是获得密钥与 iv
      */
     public KeyExchangeResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
-        byte[] privateKey = eccProcessor.getPrivateKey(keyExchangeResponse.getxSessionId()).getEncoded();
-        byte[] publicKey = ByteSpecification.decodeToBytes(keyExchangeResponse.getPublicKey());
-        List<byte[]> keyAndIv = ECDHUtils.negotiationToKeyAndIv(privateKey, publicKey, keyExchangeResponse.getKeyLength());
+        byte[] selfPrivateKey = eccProcessor.getPrivateKey(keyExchangeResponse.getxSessionId()).getEncoded();
+        byte[] otherPublicKey = ByteSpecification.decodeToBytes(keyExchangeResponse.getPublicKey());
+        List<byte[]> keyAndIv = ECDHUtils.negotiationToKeyAndIv(selfPrivateKey, otherPublicKey, keyExchangeResponse.getKeyBytesLength());
 
         KeyExchangeResult result = new KeyExchangeResult();
         result.setLocalKey(keyAndIv.get(0));
         result.setLocalIv(keyAndIv.get(1));
-        result.setPublicKey(publicKey);
+        result.setPublicKey(otherPublicKey);
         result.setxSessionId(keyExchangeResponse.getxSessionId());
-        result.setKeyLength(keyExchangeResponse.getKeyLength());
-        long expireTimePoint = System.currentTimeMillis() + keyExchangeResponse.getExpireTime() * 9 / 10;
+        result.setKeyLength(keyExchangeResponse.getKeyBytesLength());
+        long expireTimePoint = System.currentTimeMillis() + keyExchangeResponse.getExpireTime();
         result.setExpireTime(expireTimePoint);
         return result;
     }
 
     /**
-     * 协商密钥交换请求
-     * 主要是获得密钥与 iv
+     * 根据协商请求准备协商参数：确定加密算法、密钥长度、协商有效期
      */
-    public KeyExchangeResponse negotiation(KeyExchangeRequest keyExchangeRequest) throws AsymmetricCryptoException, NegotiationException {
+    public KeyExchangeResponse prepareNegotiation(KeyExchangeRequest keyExchangeRequest) throws AsymmetricCryptoException {
         // 这时候还没有缓存，因此需要生成
         String xSessionId = keyExchangeRequest.getxSessionId();
         eccProcessor.buildKeyPair(xSessionId, negotiationDuration);
-        byte[] selfPrivateKey = eccProcessor.getPrivateKey(xSessionId).getEncoded();
         byte[] selfPublicKey = eccProcessor.getPublicKey(xSessionId).getEncoded();
-        byte[] otherPublicKey = ByteSpecification.decodeToBytes(keyExchangeRequest.getPublicKey());
 
         KeyExchangeResponse response = new KeyExchangeResponse();
 
-        final int keyBitLength = randomKeyLength();
-        response.setAes(String.valueOf(keyBitLength));
-        // 需要除 8
-        response.setKeyLength(keyBitLength << 3);
+        final int keyByteLength = randomKeyLength();
+        response.setAes(String.valueOf(keyByteLength));
+        response.setKeyBytesLength(keyByteLength);
         response.setExpireTime(KeyExchangeConstants.EXPIRE_TIME);
         response.setPublicKey(ByteSpecification.encodeToString(selfPublicKey));
 
@@ -209,7 +186,7 @@ public class TransportCryptoByteUtil {
         byte[] xSessionIdBytes = response.getxSessionId().getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] publicKeyBytes = ByteSpecification.decodeToBytes(response.getPublicKey());
         byte[] aesBytes = response.getAes().getBytes(ByteSpecification.STD_CHAR_SET);
-        byte[] aesKeyLength = ByteUtils.intToBytes(response.getKeyLength());
+        byte[] aesKeyLength = ByteUtils.intToBytes(response.getKeyBytesLength());
         byte[] expireTimeBytes = ByteUtils.intToBytes(response.getExpireTime());
         return ByteUtils.compound(Arrays.asList(xSessionIdBytes, publicKeyBytes, aesBytes, aesKeyLength, expireTimeBytes));
     }
@@ -253,10 +230,10 @@ public class TransportCryptoByteUtil {
      * @param xDk        临时数据密钥密文
      * @param signature  签名
      */
-    public boolean verifyToken(String xSessionId, byte[] xDk, byte[] signature) throws AsymmetricCryptoException {
+    public boolean verifyToken(String xSessionId, byte[] xDk, byte[] signature, byte[] otherPublicKey) throws AsymmetricCryptoException {
         byte[] xSessionIdBytes = xSessionId.getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] toSin = ByteUtils.compound(Arrays.asList(xSessionIdBytes, xDk));
-        return eccProcessor.verify(xSessionId, toSin, signature);
+        return eccProcessor.verify(otherPublicKey, toSin, signature);
     }
 
     /**
@@ -265,6 +242,6 @@ public class TransportCryptoByteUtil {
      * @return 128/192/256
      */
     private static int randomKeyLength() {
-        return SUPPORT_KEY_LENGTH[ThreadLocalRandom.current().nextInt(SUPPORT_KEY_LENGTH.length)];
+        return SUPPORT_KEY_BYTE_LENGTH[ThreadLocalRandom.current().nextInt(SUPPORT_KEY_BYTE_LENGTH.length)];
     }
 }

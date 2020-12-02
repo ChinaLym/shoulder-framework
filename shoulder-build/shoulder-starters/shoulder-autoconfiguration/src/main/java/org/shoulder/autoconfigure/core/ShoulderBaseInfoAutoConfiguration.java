@@ -47,24 +47,22 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
 
         Properties shoulderProperties = new Properties();
 
-        String appIdKey = "shoulder.application.id";
-        if (StringUtils.isEmpty(environment.getProperty(appIdKey))) {
+        String shoulderAppIdKey = "shoulder.application.id";
+        String springAppNameKey = "spring.application.name";
+        String appName = environment.getProperty(shoulderAppIdKey);
+        if (StringUtils.isEmpty(appName)) {
             // appId 如果为空则采用 spring.application.name
-            String springAppNameKey = "spring.application.name";
-            log.debug(appIdKey + " is empty, fallback to use " + springAppNameKey);
-
-            String appName = environment.getProperty(springAppNameKey);
-            if (StringUtils.isNotEmpty(appName)) {
-                shoulderProperties.setProperty(appIdKey, appName);
-            } else {
+            log.info(shoulderAppIdKey + " is empty, fallback to use " + springAppNameKey);
+            appName = environment.getProperty(springAppNameKey);
+            if (StringUtils.isEmpty(appName)) {
+                appName = "unknown";
                 // spring.application.name 或 shoulder.application.id 不能同时为空
-                log.error("both of '" + appIdKey + "' and '" + springAppNameKey +
+                log.error("both of '" + shoulderAppIdKey + "' and '" + springAppNameKey +
                     "' are empty! set value please!");
             }
-        } else {
-            shoulderProperties.setProperty(appIdKey, environment.getProperty(appIdKey));
         }
-        AppInfo.initAppId(shoulderProperties.getProperty(appIdKey));
+        shoulderProperties.setProperty(shoulderAppIdKey, appName);
+        AppInfo.initAppId(shoulderProperties.getProperty(shoulderAppIdKey));
         // 这些设置了默认值，不必担心为 null
         AppInfo.initErrorCodePrefix(environment.getProperty("shoulder.application.errorCodePrefix"));
         AppInfo.initVersion(environment.getProperty("shoulder.application.version"));

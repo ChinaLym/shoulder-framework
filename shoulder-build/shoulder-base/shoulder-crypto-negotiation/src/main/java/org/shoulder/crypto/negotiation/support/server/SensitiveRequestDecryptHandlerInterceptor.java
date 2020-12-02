@@ -1,7 +1,6 @@
 package org.shoulder.crypto.negotiation.support.server;
 
 import org.shoulder.core.dto.response.RestResult;
-import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -69,11 +68,17 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
         if (StringUtils.isEmpty(xSessionId) || StringUtils.isEmpty(xDk) || StringUtils.isEmpty(token)) {
             // xSessionId 没有说明不是一个 ecdh 请求；没有 xDk 仅出现在密钥协商阶段；没有 token不能保证安全
             log.debug("reject for invalid security headers.");
+            response.setStatus(NegotiationErrorCodeEnum.MISSING_REQUIRED_PARAM.getHttpStatusCode().value());
+            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            RestResult r = RestResult.error(NegotiationErrorCodeEnum.MISSING_REQUIRED_PARAM);
+            response.getWriter().write(JsonUtils.toJson(r));
             return false;
         }
 
         KeyExchangeResult cacheKeyExchangeResult = keyNegotiationCache.getAsServer(xSessionId);
         if (cacheKeyExchangeResult == null) {
+            // 恶意调用 / 本服务缓存丢失（如重启导致）
+            log.debug("cache missing, xSessionId:{}", xSessionId);
             // 返回重新握手错误码
             response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
@@ -84,8 +89,12 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
         KeyNegotiationCache.SERVER_LOCAL_CACHE.set(cacheKeyExchangeResult);
 
         // 校验token是否正确
-        if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token)) {
-            log.debug("Token({}) invalid!", token);
+        if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, cacheKeyExchangeResult.getPublicKey())) {
+            log.debug("Token({}) invalid! xSessionId={}", token, xSessionId);
+            response.setStatus(HttpStatus.OK.value());
+            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            RestResult r = RestResult.error(NegotiationErrorCodeEnum.TOKEN_INVALID);
+            response.getWriter().write(JsonUtils.toJson(r));
             return false;
         }
 

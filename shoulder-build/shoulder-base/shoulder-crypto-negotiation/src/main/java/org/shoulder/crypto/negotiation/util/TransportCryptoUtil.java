@@ -29,6 +29,8 @@ public class TransportCryptoUtil {
         this.adapter = adapter;
     }
 
+    // =========================== 加解密算法相关 ==================================
+
     /**
      * 生成数据密钥
      */
@@ -68,65 +70,96 @@ public class TransportCryptoUtil {
         return new String(TransportCryptoByteUtil.decrypt(keyExchangeResult, dataKey, ByteSpecification.decodeToBytes(cipherText)), ByteSpecification.STD_CHAR_SET);
     }
 
+
+    // =========================== 握手相关 ==================================
+
     /**
-     * 创建一个请求
+     * 创建一个协商请求（客户端调用）
+     *
+     * @return 协商请求体、请求头中需要的内容
      */
     public KeyExchangeRequest createRequest() throws AsymmetricCryptoException {
         return adapter.createRequest();
     }
 
+
     /**
-     * 创建一个响应
+     * 验证 token（服务端处理协商请求前）
+     *
+     * @param request 待校验的请求：{@link #createRequest} 方法生成结果
      */
-    public KeyExchangeResponse createResponse(KeyExchangeRequest keyExchangeRequest) throws Exception {
-        return adapter.createResponse(keyExchangeRequest);
+    public boolean verifyToken(KeyExchangeRequest request) throws AsymmetricCryptoException {
+        return adapter.verifyRequestToken(request);
     }
 
     /**
-     * 协商密钥与 iv
+     * 根据协商请求准备协商参数：确定加密算法、密钥长度、协商有效期（服务端调用）
+     *
+     * @param keyExchangeRequest 待协商的请求：{@link #createRequest} 方法生成结果
+     * @return 协商参数 {@link #negotiation} 方法的入参
+     */
+    public KeyExchangeResponse prepareNegotiation(KeyExchangeRequest keyExchangeRequest) throws AsymmetricCryptoException {
+        return adapter.prepareNegotiation(keyExchangeRequest);
+    }
+
+    /**
+     * 协商密钥与 iv（客户端、服务端都会调）
+     * 生成 shareKey、根据 shareKey 生成 localKey，localIv
+     *
+     * @param keyExchangeResponse 协商参数 {@link #prepareNegotiation} 方法的返回值
+     * @return 密钥协商结果
      */
     public KeyExchangeResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
         return adapter.negotiation(keyExchangeResponse);
     }
 
-    public KeyExchangeResponse negotiation(KeyExchangeRequest keyExchangeRequest) throws NegotiationException, AsymmetricCryptoException {
-        return adapter.negotiation(keyExchangeRequest);
-    }
-
-
-    // =========================== TOKEN ==================================
-
     /**
-     * 生成 token（发起协商请求时）
+     * 根据缓存内容生成握手响应
+     *
+     * @param keyExchangeResult 密钥交换的缓存结果
+     * @return 服务端返回给客户端的响应，同 {@link #prepareNegotiation}
      */
-    public String generateRequestToken(KeyExchangeRequest request) throws AsymmetricCryptoException {
-        return ByteSpecification.encodeToString(adapter.generateRequestToken(request));
+    public KeyExchangeResponse createResponse(KeyExchangeResult keyExchangeResult) throws AsymmetricCryptoException {
+        KeyExchangeResponse response = new KeyExchangeResponse();
+
+        byte[] publicKey = keyExchangeResult.getPublicKey();
+
+        response.setPublicKey(ByteSpecification.encodeToString(publicKey));
+        response.setExpireTime((int) (keyExchangeResult.getExpireTime() - System.currentTimeMillis()));
+        response.setKeyBytesLength(keyExchangeResult.getKeyLength());
+        // todo 【使用范围】不应该写死256，而是支持的密钥算法，如 aes、sm4
+        response.setAes("256");
+
+        response.setxSessionId(keyExchangeResult.getxSessionId());
+        // todo 【流程】处理 token 生成失败
+        String token = generateResponseToken(response);
+        response.setToken(token);
+        return response;
     }
 
     /**
-     * 验证 token（处理协商请求前）
-     */
-    public boolean verifyRequestToken(KeyExchangeRequest request) throws AsymmetricCryptoException {
-        return adapter.verifyRequestToken(request);
-    }
-
-    // -------------------------------
-
-    /**
-     * 生成 token（发起协商响应时生成）
+     * 生成 token（服务端返回协商响应时生成）todo【封装】考虑放到 {@link #prepareNegotiation} 内实现？
+     *
+     * @param response {@link #prepareNegotiation} 方法返回值
+     * @return token，用于保证 response 不被篡改
      */
     public String generateResponseToken(KeyExchangeResponse response) throws AsymmetricCryptoException {
         return ByteSpecification.encodeToString(adapter.generateResponseToken(response));
     }
 
+
     /**
-     * 验证 token（确认协商响应请求时）
+     * 验证 token（客户端接收服务端返回的协商参数响应前）
+     *
+     * @param response 客户端收到的，由服务端调用 {@link #prepareNegotiation} 方法的返回值
+     * @return 是否合法
      */
-    public boolean verifyResponseToken(KeyExchangeResponse response) throws AsymmetricCryptoException {
+    public boolean verifyToken(KeyExchangeResponse response) throws AsymmetricCryptoException {
         return adapter.verifyResponseToken(response);
     }
 
-    // -------------------------------
+
+    // ----------------------------------------- 协商完毕 -------------------------------------------------------------
 
     /**
      * 生成 token（协商完毕，每次发送安全会话请求时）
@@ -140,10 +173,10 @@ public class TransportCryptoUtil {
     }
 
     /**
-     * 验证 token（协商完毕，每次处理请求时）
+     * 验证 token（协商完毕，客户端验证服务端响应结果）
      */
-    public boolean verifyToken(String xSessionId, String xDk, String token) throws AsymmetricCryptoException {
-        return adapter.verifyToken(xSessionId, ByteSpecification.decodeToBytes(xDk), ByteSpecification.decodeToBytes(token));
+    public boolean verifyToken(String xSessionId, String xDk, String token, byte[] otherPublicKey) throws AsymmetricCryptoException {
+        return adapter.verifyToken(xSessionId, ByteSpecification.decodeToBytes(xDk), ByteSpecification.decodeToBytes(token), otherPublicKey);
     }
 
     /**

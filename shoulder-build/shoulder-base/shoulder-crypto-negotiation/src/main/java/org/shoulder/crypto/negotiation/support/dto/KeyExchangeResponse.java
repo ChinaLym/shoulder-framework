@@ -8,7 +8,7 @@ import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
  *
  * @author lym
  */
-public class KeyExchangeResponse {
+public class KeyExchangeResponse implements Cloneable {
 
     /**
      * Header 中 会话标识
@@ -21,7 +21,7 @@ public class KeyExchangeResponse {
     private transient String token;
 
     /**
-     * 服务端的公钥
+     * 对方的公钥
      */
     private String publicKey;
 
@@ -31,9 +31,9 @@ public class KeyExchangeResponse {
     private String aes;
 
     /**
-     * 算法密钥长度 256/8=32
+     * 算法密钥字节数，注意非 bit 位数，如 256/8=32，192/8=24，128/8=16
      */
-    private Integer keyLength = 32;
+    private Integer keyBytesLength = 32;
 
     /**
      * 多少毫秒之后本次协商过期
@@ -72,12 +72,12 @@ public class KeyExchangeResponse {
         this.aes = aes;
     }
 
-    public Integer getKeyLength() {
-        return keyLength;
+    public Integer getKeyBytesLength() {
+        return keyBytesLength;
     }
 
-    public void setKeyLength(Integer keyLength) {
-        this.keyLength = keyLength;
+    public void setKeyBytesLength(Integer keyBytesLength) {
+        this.keyBytesLength = keyBytesLength;
     }
 
     public int getExpireTime() {
@@ -87,4 +87,17 @@ public class KeyExchangeResponse {
     public void setExpireTime(int expireTime) {
         this.expireTime = expireTime;
     }
+
+    @Override
+    public KeyExchangeResponse clone() {
+        KeyExchangeResponse cloned = new KeyExchangeResponse();
+        cloned.xSessionId = this.xSessionId;
+        cloned.token = this.token;
+        cloned.publicKey = this.publicKey;
+        cloned.aes = this.aes;
+        cloned.keyBytesLength = this.keyBytesLength;
+        cloned.expireTime = this.expireTime;
+        return cloned;
+    }
+
 }

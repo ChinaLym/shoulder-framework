@@ -66,7 +66,7 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
         // 确定为加密的响应拦截
         // 1. 验证服务端签名
         try {
-            if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token)) {
+            if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, KeyNegotiationCache.CLIENT_LOCAL_CACHE.get().getPublicKey())) {
                 throw new RuntimeException("security token validate fail!");
             }
 

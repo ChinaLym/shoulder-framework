@@ -1,7 +1,6 @@
 package org.shoulder.crypto.negotiation.support.service.impl;
 
 import cn.hutool.core.lang.Assert;
-import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -154,7 +153,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         keyExchangeResponse.setxSessionId(xSessionId);
         keyExchangeResponse.setToken(token);
 
-        if (!transportCryptoUtil.verifyResponseToken(keyExchangeResponse)) {
+        if (!transportCryptoUtil.verifyToken(keyExchangeResponse)) {
             throw new NegotiationException("token not validate!");
         }
 
@@ -173,22 +172,24 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
      */
     @Override
     public KeyExchangeResponse handleNegotiate(KeyExchangeRequest keyExchangeRequest) throws NegotiationException {
-        KeyExchangeResult keyExchangeResult = null;
-        // 校验
+        KeyExchangeResult keyExchangeResult;
         try {
+            // 验证协商的参数与签名
             validateAndFill(keyExchangeRequest);
             if (!keyExchangeRequest.isRefresh()) {
                 //不强制刷新 尝试走缓存
                 keyExchangeResult = keyNegotiationCache.getAsServer(keyExchangeRequest.getxSessionId());
                 if (keyExchangeResult != null) {
-                    return generateResponse(keyExchangeResult);
+                    return transportCryptoUtil.createResponse(keyExchangeResult);
                 }
             }
 
-            // 交换密钥
-            KeyExchangeResponse response = transportCryptoUtil.negotiation(keyExchangeRequest);
-
-            KeyExchangeResult result = transportCryptoUtil.negotiation(response);
+            // 准备协商
+            KeyExchangeResponse response = transportCryptoUtil.prepareNegotiation(keyExchangeRequest);
+            KeyExchangeResponse negotiationParam = response.clone();
+            negotiationParam.setPublicKey(keyExchangeRequest.getPublicKey());
+            // 协商密钥，生成 shareKey、根据 shareKey 生成 localKey，localIv
+            KeyExchangeResult result = transportCryptoUtil.negotiation(negotiationParam);
             long expireTime = result.getExpireTime();
             // 放缓存 (作为响应方 协商缓存失效时间加1分钟，以尽量保证比对方提前过期，避免临界时大量请求失败)
             result.setExpireTime(expireTime + 60 * 1000);
@@ -207,26 +208,6 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         }
     }
 
-    /**
-     * 根据缓存内容生成握手响应
-     */
-    private KeyExchangeResponse generateResponse(KeyExchangeResult keyExchangeResult) throws AsymmetricCryptoException {
-        KeyExchangeResponse response = new KeyExchangeResponse();
-
-        byte[] publicKey = keyExchangeResult.getPublicKey();
-
-        response.setPublicKey(ByteSpecification.encodeToString(publicKey));
-        response.setExpireTime((int) (keyExchangeResult.getExpireTime() - System.currentTimeMillis()));
-        response.setKeyLength(keyExchangeResult.getKeyLength());
-        // todo 【使用范围】不应该写死256，支持的密钥长度
-        response.setAes("256");
-
-        response.setxSessionId(keyExchangeResult.getxSessionId());
-        // todo 【流程】处理 token 生成失败
-        String token = transportCryptoUtil.generateResponseToken(response);
-        response.setToken(token);
-        return response;
-    }
 
     /**
      * 校验请求是否合法，token 部分
@@ -242,7 +223,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         keyExchangeRequest.setxSessionId(xSessionId);
         keyExchangeRequest.setToken(token);
 
-        if (!transportCryptoUtil.verifyRequestToken(keyExchangeRequest)) {
+        if (!transportCryptoUtil.verifyToken(keyExchangeRequest)) {
             // todo 【健壮性】token 不合法，一般仅发生于网络通信被劫持且篡改时，回应 400 拒绝握手请求，记录不合法日志
             throw new NegotiationException("token not validate!");
         }

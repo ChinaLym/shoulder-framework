@@ -22,6 +22,7 @@ public enum NegotiationErrorCodeEnum implements ErrorCode {
     /**
      * 参数错误:参数Secusid 为空未传...
      */
+    MISSING_REQUIRED_PARAM(5501, "negotiation param missing", Level.WARN, HttpStatus.BAD_REQUEST),
 
     /**
      * 协商失败
