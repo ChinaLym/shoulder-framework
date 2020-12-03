@@ -1,11 +1,15 @@
-package org.shoulder.core.util;
+package org.shoulder.core.concurrent;
 
-import org.shoulder.core.delay.DelayTask;
-import org.shoulder.core.delay.DelayTaskHolder;
+import org.shoulder.core.concurrent.delay.DelayTask;
+import org.shoulder.core.concurrent.delay.DelayTaskHolder;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.beautify.LogHelper;
+import org.shoulder.core.util.ContextUtils;
+import org.springframework.lang.NonNull;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.concurrent.*;
 
 /**
@@ -107,6 +111,34 @@ public class Threads {
         }
         SHOULDER_THREAD_POOL.execute(runnable);
     }
+
+    /**
+     * 提交线程池内一批任务，且阻塞至所有的任务执行完毕
+     *
+     * @param tasks runnable
+     * @throws InterruptedException runnable
+     */
+    public static void executeAndWait(@NonNull Collection<? extends Runnable> tasks) throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(tasks.size());
+        tasks.forEach(r -> execute(new NotifyOnFinishRunnable(r, latch::countDown)));
+        latch.await();
+    }
+
+    /**
+     * 提交线程池内一批任务，且阻塞至所有的任务执行完毕
+     *
+     * @param tasks   executeAndWait
+     * @param timeout executeAndWait
+     * @return true: 已经全部完成； false: 未全部完成
+     * @throws InterruptedException executeAndWait
+     */
+    public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout)
+        throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(tasks.size());
+        tasks.forEach(r -> execute(new NotifyOnFinishRunnable(r, latch::countDown)));
+        return latch.await(timeout.getNano(), TimeUnit.NANOSECONDS);
+    }
+
 
     /**
      * 放入线程池执行

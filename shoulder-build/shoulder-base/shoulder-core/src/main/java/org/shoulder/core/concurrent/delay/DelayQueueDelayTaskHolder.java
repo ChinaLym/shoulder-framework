@@ -1,4 +1,4 @@
-package org.shoulder.core.delay;
+package org.shoulder.core.concurrent.delay;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;

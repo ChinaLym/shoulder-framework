@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.monitor.config;
 
 import org.shoulder.autoconfigure.monitor.thread.MonitorableThreadPool;
-import org.shoulder.core.util.Threads;
+import org.shoulder.core.concurrent.Threads;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

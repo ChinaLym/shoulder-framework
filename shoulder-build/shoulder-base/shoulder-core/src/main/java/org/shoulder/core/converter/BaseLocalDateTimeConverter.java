@@ -71,7 +71,7 @@ public abstract class BaseLocalDateTimeConverter<T> extends BaseDateConverter<T>
      * 转为标准的 HH:mm:ss
      * @param HHmmss 非严格格式的时间字符串
      * @return 严格格式
-     * @deprecated JDK 支持非严格格式，无需此方法
+     * @note JDK 支持非严格格式，无需此方法
      */
     /*protected String toStandHourMinuteSecond(@Nonnull String HHmmss) {
         final int stdFormatLength = 8;

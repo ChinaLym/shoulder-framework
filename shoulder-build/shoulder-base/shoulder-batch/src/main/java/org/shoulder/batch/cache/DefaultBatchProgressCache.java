@@ -2,7 +2,7 @@ package org.shoulder.batch.cache;
 
 import org.shoulder.batch.model.BatchProgress;
 import org.shoulder.batch.service.impl.ProgressAble;
-import org.shoulder.core.util.Threads;
+import org.shoulder.core.concurrent.Threads;
 import org.springframework.cache.Cache;
 
 import java.util.concurrent.TimeUnit;

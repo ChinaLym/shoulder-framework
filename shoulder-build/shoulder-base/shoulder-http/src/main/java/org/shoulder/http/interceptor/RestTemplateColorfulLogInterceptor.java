@@ -2,10 +2,10 @@ package org.shoulder.http.interceptor;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.ColorString;
-import org.shoulder.core.util.ColorStringBuilder;
+import org.shoulder.core.log.beautify.ColorString;
+import org.shoulder.core.log.beautify.ColorStringBuilder;
+import org.shoulder.core.log.beautify.LogHelper;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.core.util.LogHelper;
 import org.shoulder.http.util.HttpLogHelper;
 import org.springframework.web.client.RestTemplate;
 

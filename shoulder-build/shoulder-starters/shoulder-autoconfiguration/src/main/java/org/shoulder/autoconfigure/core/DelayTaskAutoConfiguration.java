@@ -1,9 +1,9 @@
 package org.shoulder.autoconfigure.core;
 
-import org.shoulder.core.delay.DelayQueueDelayTaskHolder;
-import org.shoulder.core.delay.DelayTaskDispatcher;
-import org.shoulder.core.delay.DelayTaskHolder;
-import org.shoulder.core.util.Threads;
+import org.shoulder.core.concurrent.Threads;
+import org.shoulder.core.concurrent.delay.DelayQueueDelayTaskHolder;
+import org.shoulder.core.concurrent.delay.DelayTaskDispatcher;
+import org.shoulder.core.concurrent.delay.DelayTaskHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
