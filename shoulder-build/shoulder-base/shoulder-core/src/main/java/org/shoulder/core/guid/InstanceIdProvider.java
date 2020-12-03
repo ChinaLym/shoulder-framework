@@ -13,7 +13,7 @@ public interface InstanceIdProvider {
     /**
      * 获取本应用/服务进程的 instanceId
      *
-     * @return guid 通常为较小正整数
+     * @return 实例编号 通常为较小正整数
      */
     long getCurrentInstanceId();
 

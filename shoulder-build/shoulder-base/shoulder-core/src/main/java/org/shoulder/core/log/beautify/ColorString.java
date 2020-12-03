@@ -1,4 +1,4 @@
-package org.shoulder.core.util;
+package org.shoulder.core.log.beautify;
 
 import org.shoulder.core.context.AppInfo;
 

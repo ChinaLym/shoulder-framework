@@ -21,7 +21,8 @@ import java.util.Objects;
  *
  * @author lym
  */
-public final class ContextUtils {
+public class ContextUtils {
+
     /**
      * Spring应用 beanFactory，一般为 ConfigurableBeanFactory
      */

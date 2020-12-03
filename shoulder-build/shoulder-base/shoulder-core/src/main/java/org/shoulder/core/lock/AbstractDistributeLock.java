@@ -60,7 +60,7 @@ public abstract class AbstractDistributeLock extends AbstractServerLock {
             Duration blockTime = retryBlockTime.compareTo(maxBlockTime) < 0 ? retryBlockTime : maxBlockTime;
             log.trace("try lock {} for {} times.", lockInfo.getResource(), tryTimes);
             // 阻塞，直至加锁成功
-            Thread.sleep(blockTime.toMillis());
+            Thread.sleep(blockTime.toMillis()); //NOSONAR
         }
         log.debug("try lock SUCCESS cost {}! {}", Duration.between(startTime, Instant.now()), lockInfo);
         return true;

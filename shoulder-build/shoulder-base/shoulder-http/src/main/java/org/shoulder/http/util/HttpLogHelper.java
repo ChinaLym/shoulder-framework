@@ -1,7 +1,7 @@
 package org.shoulder.http.util;
 
-import org.shoulder.core.util.ColorString;
-import org.shoulder.core.util.ColorStringBuilder;
+import org.shoulder.core.log.beautify.ColorString;
+import org.shoulder.core.log.beautify.ColorStringBuilder;
 
 import java.util.Map;
 

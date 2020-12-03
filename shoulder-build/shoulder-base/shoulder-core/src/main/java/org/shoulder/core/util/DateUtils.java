@@ -54,7 +54,7 @@ public class DateUtils {
                     mills++;
                 }*/
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(1); //NOSONAR
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

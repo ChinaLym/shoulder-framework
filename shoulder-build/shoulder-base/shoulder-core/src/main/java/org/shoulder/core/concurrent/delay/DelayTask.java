@@ -1,4 +1,4 @@
-package org.shoulder.core.delay;
+package org.shoulder.core.concurrent.delay;
 
 import javax.annotation.Nonnull;
 import java.time.Duration;

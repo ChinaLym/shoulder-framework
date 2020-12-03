@@ -1,9 +1,10 @@
-package org.shoulder.core.util;
+package org.shoulder.core.log.beautify;
 
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import org.shoulder.core.util.StringUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
@@ -11,7 +12,8 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 
 /**
- * 请求日志美化
+ * 在当前方法调用栈中寻找目标方法
+ * 在日志中打印目标方法位置，暗示 IDE 生成带跳转的 link
  *
  * @author lym
  */

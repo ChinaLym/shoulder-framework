@@ -1,9 +1,9 @@
-package org.shoulder.core.util;
+package org.shoulder.core.log.beautify;
 
 import javax.annotation.Nonnull;
 import java.util.stream.IntStream;
 
-import static org.shoulder.core.util.ColorString.*;
+import static org.shoulder.core.log.beautify.ColorString.*;
 
 /**
  * 带颜色的 StringBuilder

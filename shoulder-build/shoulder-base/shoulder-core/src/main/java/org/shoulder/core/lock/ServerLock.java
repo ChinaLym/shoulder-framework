@@ -193,7 +193,7 @@ public interface ServerLock extends Lock {
      */
     @Override
     default Condition newCondition() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Conditions are not supported");
     }
 
 }

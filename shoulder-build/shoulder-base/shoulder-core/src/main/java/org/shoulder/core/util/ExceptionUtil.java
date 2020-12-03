@@ -16,7 +16,7 @@ import java.text.MessageFormat;
 public class ExceptionUtil {
 
     /**
-     * 获取 exception 堆栈的详细错误信息。
+     * 获取 exception 堆栈的详细错误信息
      *
      * @param e 抛出的异常
      */
