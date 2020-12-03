@@ -59,11 +59,11 @@
         </dependency>
 
         <!-- oauth2 资源服务器相关依赖 -->
-        <!--<dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
             <optional>true</optional>
-        </dependency>-->
+        </dependency>
         <!-- oauth2 客户端 相关依赖 -->
         <!--<dependency>
             <groupId>org.springframework.boot</groupId>

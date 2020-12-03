@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationHandlerConfig;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
@@ -13,6 +14,7 @@ import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.BeforeAuthEndpoint;
 import org.shoulder.security.authentication.handler.json.TokenAuthenticationSuccessHandler;
+import org.shoulder.security.authentication.token.SimpleTokenIntrospector;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -26,15 +28,14 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
+import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
+import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
+import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.sql.DataSource;
@@ -71,10 +72,45 @@ public class TokenAuthBeanConfig {
      * ClientDetailsService、AuthorizationServerTokenServices 由 {@link EnableAuthorizationServer} 提供
      */
     @Bean
-    @ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
+    @ConditionalOnMissingBean
     public AuthenticationSuccessHandler tokenAuthenticationSuccessHandler(ClientDetailsService clientDetailsService,
                                                                           AuthorizationServerTokenServices authorizationServerTokenServices) {
         return new TokenAuthenticationSuccessHandler(clientDetailsService, authorizationServerTokenServices);
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DefaultTokenServices defaultTokenServices(TokenStore tokenStore) {
+        DefaultTokenServices tokenServices = new DefaultTokenServices();
+        tokenServices.setTokenStore(tokenStore);
+        return tokenServices;
+    }
+
+
+    /**
+     * token 认证器
+     *
+     * @param opaqueTokenIntrospector 具体的认证逻辑
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public OpaqueTokenAuthenticationProvider opaqueTokenAuthenticationProvider(OpaqueTokenIntrospector opaqueTokenIntrospector) {
+        return new OpaqueTokenAuthenticationProvider(opaqueTokenIntrospector);
+    }
+
+    /**
+     * 默认 token 认证逻辑
+     *
+     * @param tokenServices        tokenService {@link #defaultTokenServices(TokenStore)}
+     * @param clientDetailsService 由使用者注入
+     * @return token 认证默认实现
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public SimpleTokenIntrospector simpleTokenIntrospector(ResourceServerTokenServices tokenServices, ClientDetailsService clientDetailsService) {
+        LoggerFactory.getLogger(getClass()).warn("use SimpleTokenIntrospector, recommend inject a customized OpaqueTokenIntrospector");
+        return new SimpleTokenIntrospector(tokenServices, clientDetailsService);
     }
 
 
@@ -121,7 +157,8 @@ public class TokenAuthBeanConfig {
          */
         @Configuration(proxyBeanMethods = false)
         @ConditionalOnMissingBean(TokenStore.class)
-        @ConditionalOnProperty(prefix = "shoulder.security.token", name = "store", havingValue = "memory")
+        @ConditionalOnProperty(prefix = "shoulder.security.token", name = "store", havingValue = "memory",
+            matchIfMissing = true)
         public static class InMemoryTokenStoreConfig {
             @Bean
             public TokenStore inMemoryTokenStore() {
