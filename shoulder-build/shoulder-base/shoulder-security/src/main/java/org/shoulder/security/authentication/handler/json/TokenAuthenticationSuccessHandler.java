@@ -73,17 +73,20 @@ public class TokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
         log.info("login SUCCESS");
         // Tomcat Http11InputBuffer   829-831 行，header key 自动转为小写
-        String header = request.getHeader("Authorization");
-        if (header == null) {
-            header = request.getHeader("authorization");
+        String authorizationInHeader = request.getHeader("Authorization");
+        if (authorizationInHeader == null) {
+            authorizationInHeader = request.getHeader("authorization");
         }
-        if (header == null || !header.startsWith("Basic ")) {
+
+        if (authorizationInHeader == null) {
             // 请求头中无client信息
             throw new UnapprovedClientAuthenticationException("Missing client info in request headers.");
+        } else if (!authorizationInHeader.startsWith("Basic ")) {
+            throw new UnapprovedClientAuthenticationException("Client info in request headers is not valid(not start with 'Basic ')!");
         }
 
         //解码
-        String[] tokens = extractAndDecodeHeader(header, request);
+        String[] tokens = extractAndDecodeHeader(authorizationInHeader, request);
         assert tokens.length == 2;
 
         String clientId = tokens[0];
@@ -119,6 +122,7 @@ public class TokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
     /**
      * 将请求头中的 Authorization 字段解码，返回用户名、密码（clientId、clientSecret）
+     * 默认认为格式类似 Basic c2hvdWxkZXI6c2hvdWxkZXI=
      */
     private String[] extractAndDecodeHeader(String header, HttpServletRequest request) throws IOException {
 
