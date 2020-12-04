@@ -24,7 +24,8 @@ public class TokenProperties {
     private String store = "jwt";
 
     /**
-     * jwt/jwk
+     * 是否对颁发的 jwt 进行签名，若签名则验签时无需再次向授权服务器校验 token 合法性
+     * 当 store 为 jwt才会生效，否则无用
      */
     private boolean jwk = true;
 

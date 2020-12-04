@@ -29,7 +29,7 @@ public class Restful403AccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.debug("accessDenied 403 for: " + accessDeniedException.getMessage(), accessDeniedException);
+        log.info("accessDenied 403 for: " + accessDeniedException.getMessage(), accessDeniedException);
         RestResult result = RestResult.error(CommonErrorCodeEnum.AUTH_403_FORBIDDEN,
             accessDeniedException.getMessage());
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
