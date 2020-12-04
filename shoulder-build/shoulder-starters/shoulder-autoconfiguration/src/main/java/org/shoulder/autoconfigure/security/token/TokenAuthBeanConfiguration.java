@@ -54,7 +54,7 @@ import java.util.List;
 @AutoConfigureBefore(AuthenticationHandlerConfig.class)
 @EnableConfigurationProperties(TokenProperties.class)
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
-public class TokenAuthBeanConfig {
+public class TokenAuthBeanConfiguration {
 
     /**
      * 待认证请求处理器

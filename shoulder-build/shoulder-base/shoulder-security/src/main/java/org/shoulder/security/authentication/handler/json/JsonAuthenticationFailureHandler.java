@@ -23,7 +23,7 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
-        log.debug("authentication FAIL.", exception);
+        log.info("authentication FAIL.", exception);
         AuthResponseUtil.authFail(response, exception, CommonErrorCodeEnum.AUTH_401_UNAUTHORIZED);
     }
 

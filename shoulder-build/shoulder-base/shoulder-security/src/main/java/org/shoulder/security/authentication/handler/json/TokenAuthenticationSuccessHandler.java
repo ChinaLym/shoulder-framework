@@ -71,7 +71,7 @@ public class TokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        log.info("login success");
+        log.info("login SUCCESS");
         // Tomcat Http11InputBuffer   829-831 行，header key 自动转为小写
         String header = request.getHeader("Authorization");
         if (header == null) {

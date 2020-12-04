@@ -22,7 +22,7 @@ public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        log.trace("login success");
+        log.debug("login success");
         AuthResponseUtil.success(response);
     }
 }

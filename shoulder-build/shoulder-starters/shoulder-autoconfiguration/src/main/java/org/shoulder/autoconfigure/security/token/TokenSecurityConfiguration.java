@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
@@ -37,11 +38,11 @@ import javax.servlet.http.HttpServletRequest;
 @EnableWebSecurity// 就算不写 spring boot 也会自动识别。WebSecurityEnablerConfiguration
 @Configuration
 @ConditionalOnClass(SecurityConst.class)
-@AutoConfigureAfter(value = TokenAuthBeanConfig.class)
+@AutoConfigureAfter(value = TokenAuthBeanConfiguration.class)
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
 @ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
 @ConditionalOnProperty(name = "shoulder.security.auth.token.default-config", havingValue = "enable", matchIfMissing = true)
-public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
+public class TokenSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -69,10 +70,21 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired(required = false)
     private OpaqueTokenAuthenticationProvider tokenAuthenticationProvider;
 
-    public TokenSecurityConfig() {
+    public TokenSecurityConfiguration() {
         // 提示使用了默认的，一般都是自定义
         Logger log = LoggerFactory.getLogger(getClass());
-        log.warn("use default TokenSecurityConfig, csrf protect was closed.");
+        log.warn("use default TokenSecurityConfiguration, csrf protect was closed.");
+    }
+
+    /**
+     * 看父类的注释上可以看到说明，父类的该方法可以作为 Bean 暴露出去
+     * 且是推荐的做法
+     */
+    @Override
+    @Bean
+    @ConditionalOnMissingBean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override
