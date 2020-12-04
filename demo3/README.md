@@ -33,9 +33,16 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 ---
 ### shoulder-starter-auth-session
 
-实现这些能力仅仅是引入了 `shoulder-starter-auth-session` 这个 jar
+当后端服务器是面向浏览器的 web 程序时候（如供用户通过浏览器/手机浏览器访问）
 
-当后端服务器是面向浏览器的 web 程序时候（如浏览器直接访问tomcat），引入这个包
+引入 `shoulder-starter-auth-session`
+
+```xml
+<dependency>
+    <groupId>cn.itlym</groupId>
+    <artifactId>shoulder-starter-auth-session</artifactId>
+</dependency>
+```          
 
 对浏览器的额外支持如下：
 - 基本的认证页面（登录页面）
@@ -49,4 +56,47 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 以上部分均支持使用者自行替换，如自定义各种页面（如登录、注册、退出等）、各类请求url、请求页面参数、会话过期时间等
 
 
-TODO 添加验证码使用、扩展教程
+### 添加验证码使用、扩展教程
+
+引入
+
+```xml
+<dependency>
+    <groupId>cn.itlym</groupId>
+    <artifactId>shoulder-starter-security-code</artifactId>
+</dependency>
+```
+
+配置需要检查验证码的请求，默认提供了两种：图片验证码、短信验证码
+
+假如登录(/login)、修改密码请求(/changePwd)需要校验图片验证码，只需配置
+
+`shoulder.security.validate-code.image.urls=/login,/changePwd`
+
+假如手机号登录(`/login/phone`)、修改身份证号(`/changeIdCard`)需要校验短信验证码，只需配置
+
+`shoulder.security.validate-code.sms.urls=/login/phone,/changeIdCard`
+
+当新的业务需要校验验证码时，只需要配一下即可。
+
+- 更多配置:
+    - 图片验证码相关配置，如希望修改图片尺寸、字符个数等
+        - `org.shoulder.security.code.img.config.ImageCodeProperties` 
+    - 短信验证码相关配置，如希望修改短信长度等
+        - `org.shoulder.security.code.sms.config.SmsCodeProperties`
+
+扩展说明：
+> shoulder 默认提供的两种验证码框架都是基于 `shoulder-security-code` 进行二次开发的，实际业务中可能有更多验证码的设计方式，
+使用者可以基于 `shoulder-security-code` 可以快速地定制一套自己的、可扩展性强的验证码框架~
+
+
+---
+
+### shoulder-starter-auth-token
+
+引入 `shoulder-starter-auth-token` 后，只需要注入自己的 `ClientDetailsService` 即可，shoulder 会自动识别，并根据此来进行认证、授权
+
+与 session 相似的，仍然可以使用 `http://localhost:8080/authentication/form` 来完成认证（登录）
+
+不一样的是：session为生成sessionId，请求时会根据sessionId取用户信息；而token是生成token，请求时，请求头中必须修携带token字段
+

@@ -1,40 +1,38 @@
 package com.example.demo3.token;
 
-import org.junit.jupiter.api.*;
+import com.example.demo3.entity.UserEntity;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.util.JsonUtils;
+import org.shoulder.security.authentication.handler.json.TokenAuthenticationSuccessHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.http.*;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @deprecated 认证是在过滤器中执行的，这里是测的 mvc
+ * 认证是在过滤器中执行的，这里是测的 mvc，因此无法使用 MockMvc 测试
+ * SpringBoot使用MockMvc：https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-testing-with-mock-environment
+ *
+ * 使用MockMvc对象进行请求，不会进行一个完整的请求(就是说不会经过过滤器，异常处理等操作)
+ *
+ * 需要完整的请求请按  https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-testing-with-running-server  这个文档使用即可
  */
-//@SpringBootTest(classes = TestBeanConfiguration.class)
 public class AuthTest {
 
     private static final Logger log = LoggerFactory.getLogger(AuthTest.class);
 
-    private MockMvc mockMvc;
-
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+    private RestTemplate restTemplate = new RestTemplate();
 
 
     @Test
@@ -45,12 +43,6 @@ public class AuthTest {
     @BeforeAll
     public static void beforeAll() {
         log.info("AuthTest START.....");
-    }
-
-    @BeforeEach
-    public void beforeEach() {
-        log.info("beforeEach");  //mockMvc = MockMvcBuilders.standaloneSetup(new IndexController()).build();
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @AfterEach
@@ -65,31 +57,60 @@ public class AuthTest {
 
     /**
      * 测试认证接口
-     * @see TokenAuthenticationSuccessHandler
+     *
+     * @see TokenAuthenticationSuccessHandler 认证成功发 token
      */
     @Test
     public void testAuth() throws Exception {
-        Map<String, String> body = new HashMap<>(2);
-        // 用户名
-        body.put("username", "shoulder");
-        // 密码
-        body.put("password", "shoulder");
-        String authorization = Base64.getEncoder().encodeToString("Basic shoulder:shoulder".getBytes());
-        String response = restTemplate.postForObject("http://localhost:8080/authentication/form", body, String.class);
-        RequestBuilder request = MockMvcRequestBuilders.post("/authentication/form")
-                .header("Authorization", authorization)
-                //请求类型 JSON
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtils.toJson(body))
-                .accept(MediaType.APPLICATION_JSON);
+        Map<String, Object> accessToken = getAccessToken();
+        assert accessToken.get("access_token") != null;
+        assert "bearer".equals(accessToken.get("token_type"));
+        assert ((int) accessToken.get("expires_in")) > 0;
+        assert "scopes".equals(accessToken.get("scope"));
 
-        MvcResult mvcResult = mockMvc.perform(request)
-                .andExpect(MockMvcResultMatchers.status().isOk())     //期望的结果状态 200
-                .andDo(MockMvcResultHandlers.print())                 //添加ResultHandler结果处理器，比如调试时 打印结果(print方法)到控制台
-                .andReturn();                                         //返回验证成功后的MvcResult；用于自定义验证/下一步的异步处理；
-        int status = mvcResult.getResponse().getStatus();                 //得到返回代码
-        String content = mvcResult.getResponse().getContentAsString();    //得到返回结果
-        log.info("status:" + status + ",content:" + content);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> getAccessToken() {
+        String url = "http://localhost:8080/authentication/form";
+        String authorization = "Basic " + Base64.getEncoder().encodeToString("shoulder:shoulder".getBytes());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.add("Authorization", authorization);
+
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("username", "shoulder");
+        formData.add("password", "shoulder");
+        HttpEntity requestBody = new HttpEntity<>(formData, headers);
+
+        ResponseEntity<RestResult> responseEntity = restTemplate.postForEntity(url, requestBody, RestResult.class);
+        assert responseEntity.getStatusCode() == HttpStatus.OK;
+        RestResult authResult = responseEntity.getBody();
+        log.info("status:" + responseEntity.getStatusCodeValue() + ",content:" + JsonUtils.toJson(authResult));
+        assert authResult != null;
+        return (Map<String, Object>) authResult.getData();
+    }
+
+    /**
+     * 测试认证后调用接口
+     *
+     * @see ProviderManager 根据传入的token认证
+     * @see OpaqueTokenAuthenticationProvider 实际认证处理器
+     * @see org.springframework.security.web.access.intercept.FilterSecurityInterceptor
+     */
+    @Test
+    public void testGetResource() throws Exception {
+        String url = "http://localhost:8080//user/1";
+        String token = (String) getAccessToken().get("access_token");
+        String authorization = "Bearer " + token;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", authorization);
+        HttpEntity requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<UserEntity> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, UserEntity.class);
+
+        log.info(JsonUtils.toJson(response));
     }
 
 }

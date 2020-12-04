@@ -1,22 +1,17 @@
 package com.example.demo3.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.security.oauth2.provider.client.InMemoryClientDetailsService;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
-import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 该类仅为 Token 认证提供
- * <p>
  * Session 方式认证需要注释 / 删除该类
  *
  * @author lym
@@ -24,8 +19,11 @@ import java.util.Map;
 @Configuration
 public class TokenAuthBeanConfiguration {
 
+    /**
+     * 自定义 token 认证中复用 spring security oauth server 的部分逻辑
+     * 这里的信息会作为授权用户信息
+     */
     @Bean
-    @ConditionalOnMissingBean(ClientDetailsService.class)
     public ClientDetailsService clientDetailsService() {
         InMemoryClientDetailsService service = new InMemoryClientDetailsService();
 
@@ -37,23 +35,6 @@ public class TokenAuthBeanConfiguration {
 
         service.setClientDetailsStore(clientDetailsStore);
         return service;
-    }
-
-    @Bean
-    public DefaultTokenServices defaultTokenServices(InMemoryTokenStore tokenStore) {
-        DefaultTokenServices tokenServices = new DefaultTokenServices();
-        tokenServices.setTokenStore(tokenStore);
-        return tokenServices;
-    }
-
-    @Bean
-    public InMemoryTokenStore inMemoryTokenStore() {
-        return new InMemoryTokenStore();
-    }
-
-    @Bean
-    public OpaqueTokenAuthenticationProvider opaqueTokenAuthenticationProvider(MyTokenIntrospector myTokenIntrospector) {
-        return new OpaqueTokenAuthenticationProvider(myTokenIntrospector);
     }
 
 }

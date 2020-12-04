@@ -1,12 +1,9 @@
 package com.example.demo3;
 
-import org.shoulder.autoconfigure.security.token.TokenEndPointConfiguration;
 import org.shoulder.security.authentication.BeforeAuthEndpoint;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.oauth2.authserver.OAuth2AuthorizationServerConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 
 /**
@@ -15,8 +12,7 @@ import org.springframework.security.web.access.AccessDeniedHandlerImpl;
  * @see BeforeAuthEndpoint 认证前会跳到这里先
  * @author lym
  */
-@Import(OAuth2AuthorizationServerConfiguration.class)
-@SpringBootApplication(exclude = {TokenEndPointConfiguration.class})
+@SpringBootApplication
 public class Demo3Application {
 
     public static void main(String[] args) {
@@ -27,4 +23,5 @@ public class Demo3Application {
     AccessDeniedHandlerImpl accessDeniedHandler(){
         return new AccessDeniedHandlerImpl();
 
-    }}
+    }
+}

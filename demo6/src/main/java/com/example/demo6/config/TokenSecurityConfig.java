@@ -48,8 +48,6 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired(required = false)
     AccessDeniedHandler accessDeniedHandler;
 
-
-
     @Autowired
     private KeyPair keyPair;
 
