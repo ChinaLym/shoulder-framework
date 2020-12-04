@@ -25,6 +25,12 @@
             <artifactId>shoulder-crypto-negotiation</artifactId>
         </dependency>
 
+        <!-- 测试集群支持 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

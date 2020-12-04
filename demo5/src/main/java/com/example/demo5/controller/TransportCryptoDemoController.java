@@ -38,7 +38,7 @@ public class TransportCryptoDemoController {
     private String port;
 
     /**
-     * 测试发起  <a href="http://localhost:80/simple/send"/>
+     * 测试对另一个服务发起加密请求，自动进行密钥交换并加密传输  <a href="http://localhost:80/simple/send"/>
      *
      * @see SensitiveRequestEncryptMessageConverter#writeInternal 观察参数确实是自动加密处理的
      * @see SensitiveRequestEncryptMessageConverter#read 观察返回值确实是密文
