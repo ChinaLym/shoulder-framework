@@ -29,7 +29,13 @@ public class TokenAuthBeanConfiguration {
 
         Map<String, ClientDetails> clientDetailsStore = new HashMap<>();
         //String clientId, String resourceIds, String scopes, String grantTypes, String authorities
-        BaseClientDetails details = new BaseClientDetails("shoulder", "oauth2-resource", "scopes", "grantTypes", "authorities");
+        BaseClientDetails details = new BaseClientDetails(
+                "shoulder",
+                "oauth2-resource", // 资源标识，可以使用 appId（服务标识）、或具体资源标识，如用户信息、用户组信息、动态
+                "scopes", // 客户端申请的权限范围,可选值包括read,write,trust;若有多个权限范围用逗号(,)分隔
+                // @EnableGlobalMethodSecurity(prePostEnabled = true)启用方法级权限控制，方法上@PreAuthorize("#oauth2.hasScope('read')")
+                "grantTypes",// 指定客户端支持的grant_type,可选值包括authorization_code,password,refresh_token,implicit,client_credentials, 若支持多个grant_type用逗号(,)
+                "authorities");
         details.setClientSecret("shoulder");
         clientDetailsStore.put(details.getClientId(), details);
 
