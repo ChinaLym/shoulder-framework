@@ -14,6 +14,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @Configuration
 @EnableRedisHttpSession
 public class SessionConfig {
+
     @Bean
     public RedisHttpSessionConfiguration redisHttpSessionConfiguration() {
         RedisHttpSessionConfiguration redisHttpSessionConfiguration = new RedisHttpSessionConfiguration();

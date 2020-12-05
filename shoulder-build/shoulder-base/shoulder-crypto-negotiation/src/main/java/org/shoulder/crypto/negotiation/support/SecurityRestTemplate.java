@@ -8,7 +8,7 @@ import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
@@ -118,23 +118,23 @@ public class SecurityRestTemplate extends RestTemplate {
          */
         private HttpHeaders negotiateBeforeExecute(URI uri) throws AesCryptoException, AsymmetricCryptoException {
             int time = 0;
-            KeyExchangeResult keyExchangeResult = null;
-            while (keyExchangeResult == null) {
-                keyExchangeResult = negotiate(uri, time);
-                KeyNegotiationCache.CLIENT_LOCAL_CACHE.set(keyExchangeResult);
+            NegotiationResult negotiationResult = null;
+            while (negotiationResult == null) {
+                negotiationResult = negotiate(uri, time);
+                KeyNegotiationCache.CLIENT_LOCAL_CACHE.set(negotiationResult);
                 time++;
             }
 
             // 创建本次请求的加密器 todo 【性能】 小优化，如果请求不带（敏感）参数，则无需生成数据密钥 —— 1. 保存 keyChangeResult。2. 如何感知是否要加密
-            byte[] requestDk = TransportCryptoUtil.generateDataKey(keyExchangeResult.getKeyLength());
-            TransportTextCipher requestEncryptCipher = DefaultTransportCipher.buildEncryptCipher(keyExchangeResult, requestDk);
+            byte[] requestDk = TransportCryptoUtil.generateDataKey(negotiationResult.getKeyLength());
+            TransportTextCipher requestEncryptCipher = DefaultTransportCipher.buildEncryptCipher(negotiationResult, requestDk);
             TransportCipherHolder.setRequestCipher(requestEncryptCipher);
 
-            return cryptoUtil.generateHeaders(keyExchangeResult, requestDk);
+            return cryptoUtil.generateHeaders(negotiationResult, requestDk);
 
         }
 
-        private KeyExchangeResult negotiate(URI uri, int time) {
+        private NegotiationResult negotiate(URI uri, int time) {
 
             // 限制协商尝试次数（2）。超过抛异常
             final int negotiationMaxTimes = 2;

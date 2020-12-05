@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.cache;
 
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
@@ -17,27 +17,25 @@ public class LocalKeyNegotiationCache implements KeyNegotiationCache {
     /**
      * 客户端缓存，key为对方应用标识
      */
-    private static Map<String, KeyExchangeResult> clientKeyExchangeResultMap = new ConcurrentHashMap<>(8);
+    private static Map<String, NegotiationResult> clientKeyExchangeResultMap = new ConcurrentHashMap<>(8);
 
     /**
      * 作为服务方缓存，key为 xSessionId
      */
-    private static Map<String, KeyExchangeResult> serverKeyExchangeResultMap = new ConcurrentHashMap<>(8);
+    private static Map<String, NegotiationResult> serverKeyExchangeResultMap = new ConcurrentHashMap<>(8);
 
     @Override
-    public void put(@Nonnull String cacheKey, @Nonnull KeyExchangeResult keyExchangeResult, boolean asClient) {
-        Map<String, KeyExchangeResult> keyExchangeResultMap = asClient ?
-            clientKeyExchangeResultMap : serverKeyExchangeResultMap;
-        keyExchangeResultMap.put(cacheKey, keyExchangeResult);
+    public void put(@Nonnull String cacheKey, @Nonnull NegotiationResult negotiationResult, boolean asClient) {
+        Map<String, NegotiationResult> keyExchangeResultMap = getKeyExchangeCacheMap(asClient);
+        keyExchangeResultMap.put(cacheKey, negotiationResult);
     }
 
     @Override
     @Nullable
-    public KeyExchangeResult get(String cacheKey, boolean asClient) {
-        Map<String, KeyExchangeResult> keyExchangeResultMap = asClient ?
-            clientKeyExchangeResultMap : serverKeyExchangeResultMap;
+    public NegotiationResult get(String cacheKey, boolean asClient) {
+        Map<String, NegotiationResult> keyExchangeResultMap = getKeyExchangeCacheMap(asClient);
         long now = System.currentTimeMillis();
-        KeyExchangeResult cacheResult = keyExchangeResultMap.get(cacheKey);
+        NegotiationResult cacheResult = keyExchangeResultMap.get(cacheKey);
         if (cacheResult == null) {
             // 不存在
             return null;
@@ -52,5 +50,15 @@ public class LocalKeyNegotiationCache implements KeyNegotiationCache {
         }
     }
 
+    @Override
+    public void delete(String cacheKey, boolean asClient) {
+        Map<String, NegotiationResult> keyExchangeCache = getKeyExchangeCacheMap(asClient);
+        keyExchangeCache.remove(cacheKey);
+    }
+
+
+    private Map<String, NegotiationResult> getKeyExchangeCacheMap(boolean asClient) {
+        return asClient ? clientKeyExchangeResultMap : serverKeyExchangeResultMap;
+    }
 
 }

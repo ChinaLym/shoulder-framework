@@ -1,5 +1,6 @@
 package org.shoulder.core.lock;
 
+import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.lang.Nullable;
@@ -26,14 +27,12 @@ public interface ServerLock extends Lock {
      * @param lockInfo 锁信息
      */
     default void lock(LockInfo lockInfo) {
-        // 阻塞一小时还没获取到锁，返回
         try {
-            if (tryLock(lockInfo, ChronoUnit.HOURS.getDuration())) {
-                return;
-            } else {
-                // 超时未获取到
-                throw CommonErrorCodeEnum.UNKNOWN.toException();
+            if (!tryLock(lockInfo, ChronoUnit.DAYS.getDuration())) {
+                // 阻塞一小时还没获取到锁，抛一个异常
+                throw new BaseRuntimeException(CommonErrorCodeEnum.UNKNOWN, "lock fail: blocking time is too long!");
             }
+            // 获取到，返回
         } catch (InterruptedException e) {
             throw CommonErrorCodeEnum.UNKNOWN.toException(e);
         }

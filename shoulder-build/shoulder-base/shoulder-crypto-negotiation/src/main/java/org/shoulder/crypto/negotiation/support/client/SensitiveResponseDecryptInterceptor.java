@@ -6,22 +6,24 @@ import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
-import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
+import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
+import org.shoulder.http.AppIdExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * RestTemplate拦截器。
@@ -37,8 +39,16 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
 
     private TransportCryptoUtil transportCryptoUtil;
 
-    public SensitiveResponseDecryptInterceptor(TransportCryptoUtil transportCryptoUtil) {
+    private KeyNegotiationCache keyNegotiationCache;
+
+    private final AppIdExtractor appIdExtractor;
+
+
+    public SensitiveResponseDecryptInterceptor(TransportCryptoUtil transportCryptoUtil,
+                                               KeyNegotiationCache keyNegotiationCache, AppIdExtractor appIdExtractor) {
         this.transportCryptoUtil = transportCryptoUtil;
+        this.keyNegotiationCache = keyNegotiationCache;
+        this.appIdExtractor = appIdExtractor;
     }
 
     @Override
@@ -48,15 +58,24 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
         ClientHttpResponse response = execution.execute(request, requestBody);
 
         // *************************** afterRequest ***************************
-        if (response.getStatusCode() != HttpStatus.OK) {
-            // todo 【健壮性】校验错误码，是否为协商的密钥过期（在使用框架时，按理说仅发生在服务提供方密钥缓存在内存，且发生重启等导致提前过期）注意，应该要支持多种方式判断，如多个错误码
+        // 若包含协商缓存无效 / 过期的标记，则清理缓存（服务提供方发生重启等导致密钥缓存提前过期）注意，应该要支持多种方式判断，如多个错误码，响应 httpCode 等
+        List<String> negotiationInvalidHeader = response.getHeaders().get(NegotiationConstants.NEGOTIATION_INVALID_TAG);
+        if (!CollectionUtils.isEmpty(negotiationInvalidHeader)) {
+            //if (negotiationInvalidHeader.contains(NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode())) {
+            String aimServiceAppId = appIdExtractor.extract(request.getURI());
+            keyNegotiationCache.delete(aimServiceAppId, true);
+            KeyNegotiationCache.CLIENT_LOCAL_CACHE.remove();
             log.warn("sensitive request FAIL, responseStatus:" + response.getStatusText());
+            //} else {
+            // 对方未遵守约定，只返回了标记，未返回错误码
+            //    log.warn("invalid response");
+            //}
         }
 
         HttpHeaders headers = response.getHeaders();
-        String token = headers.getFirst(KeyExchangeConstants.TOKEN);
-        String xSessionId = headers.getFirst(KeyExchangeConstants.SECURITY_SESSION_ID);
-        String xDk = headers.getFirst(KeyExchangeConstants.SECURITY_DATA_KEY);
+        String token = headers.getFirst(NegotiationConstants.TOKEN);
+        String xSessionId = headers.getFirst(NegotiationConstants.SECURITY_SESSION_ID);
+        String xDk = headers.getFirst(NegotiationConstants.SECURITY_DATA_KEY);
 
         // 只对标志为加密的响应拦截
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(xSessionId) || StringUtils.isEmpty(xDk)) {
@@ -71,7 +90,7 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
             }
 
             // 2. 获取本次请求真正的数据密钥
-            KeyExchangeResult keyExchangeInfo = KeyNegotiationCache.CLIENT_LOCAL_CACHE.get();
+            NegotiationResult keyExchangeInfo = KeyNegotiationCache.CLIENT_LOCAL_CACHE.get();
             if (keyExchangeInfo == null) {
                 throw new IllegalStateException("keyExchangeInfo can't be null!");
             }

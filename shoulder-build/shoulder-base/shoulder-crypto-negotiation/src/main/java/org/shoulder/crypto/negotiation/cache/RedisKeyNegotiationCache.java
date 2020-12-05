@@ -1,7 +1,7 @@
 package org.shoulder.crypto.negotiation.cache;
 
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
 
@@ -17,40 +17,61 @@ public class RedisKeyNegotiationCache implements KeyNegotiationCache {
 
     private RedisTemplate<String, Object> redisTemplate;
 
-    private String clientKeyPrefix;
+    private static final String DEFAULT_CLIENT_KEY_PREFIX = "negotiation:asClient:";
+    private static final String DEFAULT_SERVER_KEY_PREFIX = "negotiation:asServer:";
 
-    private String serverKeyPrefix;
+    /**
+     * 客户端存储安全会话信息缓存的key前缀
+     */
+    private final String clientKeyPrefix;
+
+    /**
+     * 服务端存储安全会话信息缓存的key前缀
+     */
+    private final String serverKeyPrefix;
 
     public RedisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-        clientKeyPrefix = "negotiation:asClient:";
-        serverKeyPrefix = "negotiation:asServer:";
+        this(redisTemplate, DEFAULT_CLIENT_KEY_PREFIX, DEFAULT_SERVER_KEY_PREFIX);
     }
 
+    public RedisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate,
+                                    String clientKeyPrefix, String serverKeyPrefix) {
+        this.redisTemplate = redisTemplate;
+        this.clientKeyPrefix = clientKeyPrefix;
+        this.serverKeyPrefix = serverKeyPrefix;
+    }
 
     @Override
-    public void put(@Nonnull String cacheKey, @Nonnull KeyExchangeResult keyExchangeResult, boolean asClient) {
+    public void put(@Nonnull String cacheKey, @Nonnull NegotiationResult negotiationResult, boolean asClient) {
+        String key = buildCacheKey(cacheKey, asClient);
         redisTemplate.opsForValue().set(
-            (asClient ? clientKeyPrefix : serverKeyPrefix) + cacheKey,
-            JsonUtils.toJson(keyExchangeResult),
-            keyExchangeResult.getExpireTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS
+            key, JsonUtils.toJson(negotiationResult),
+            negotiationResult.getExpireTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS
         );
     }
 
 
     @Override
     @Nullable
-    public KeyExchangeResult get(String cacheKey, boolean asClient) {
-        String keyPrefix = asClient ?
-            clientKeyPrefix : serverKeyPrefix;
-        String key = keyPrefix + cacheKey;
+    public NegotiationResult get(String cacheKey, boolean asClient) {
+        String key = buildCacheKey(cacheKey, asClient);
 
         Object obj = redisTemplate.opsForValue().get(key);
         if (obj == null) {
             return null;
         }
-        return JsonUtils.toObject(String.valueOf(obj), KeyExchangeResult.class);
+        return JsonUtils.toObject(String.valueOf(obj), NegotiationResult.class);
     }
 
+    @Override
+    public void delete(String cacheKey, boolean asClient) {
+        String key = buildCacheKey(cacheKey, asClient);
+        redisTemplate.delete(key);
+    }
+
+
+    private String buildCacheKey(String cacheKey, boolean asClient) {
+        return (asClient ? clientKeyPrefix : serverKeyPrefix) + cacheKey;
+    }
 
 }

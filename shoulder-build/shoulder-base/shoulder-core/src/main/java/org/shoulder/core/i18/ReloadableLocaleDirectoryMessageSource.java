@@ -116,10 +116,11 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
             return Collections.emptyList();
         }
         return Arrays.stream(resources)
-            .map(r -> {
+            .map(res -> {
                 try {
-                    return r.getURI().toString();
+                    return res.getURI().toString();
                 } catch (IOException e) {
+                    // 如果异常，说明无法读取，返回空即可
                     return "";
                 }
             })

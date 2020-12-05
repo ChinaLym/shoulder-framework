@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author lym
  */
-public class KeyExchangeResult implements Serializable {
+public class NegotiationResult implements Serializable {
 
     /**
      * 对方的公钥
@@ -39,10 +39,10 @@ public class KeyExchangeResult implements Serializable {
      */
     private long expireTime;
 
-    public KeyExchangeResult() {
+    public NegotiationResult() {
     }
 
-    public KeyExchangeResult(String xSessionId, byte[] localKey, byte[] localIv, int keyLength, int expireTime) {
+    public NegotiationResult(String xSessionId, byte[] localKey, byte[] localIv, int keyLength, int expireTime) {
         this.xSessionId = xSessionId;
 
         setLocalKey(localKey);

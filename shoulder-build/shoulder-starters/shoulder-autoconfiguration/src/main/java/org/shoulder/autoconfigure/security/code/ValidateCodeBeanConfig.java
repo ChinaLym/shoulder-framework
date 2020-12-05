@@ -83,7 +83,6 @@ public class ValidateCodeBeanConfig {
         return new SessionValidateCodeRepository();
     }
 
-    //fixme 无法装配？待排查
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnCluster
     @ConditionalOnClass(RedisTemplate.class)

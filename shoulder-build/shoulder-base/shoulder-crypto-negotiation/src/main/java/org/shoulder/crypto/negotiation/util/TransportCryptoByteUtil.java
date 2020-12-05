@@ -10,8 +10,8 @@ import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.negotiation.ECDHUtils;
-import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
+import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
 import org.shoulder.crypto.negotiation.support.dto.KeyExchangeResponse;
@@ -55,8 +55,8 @@ public class TransportCryptoByteUtil {
     /**
      * 生成数据密钥的密文（DK）
      */
-    public static byte[] encryptDk(KeyExchangeResult keyExchangeResult, byte[] dataKey) throws AesCryptoException {
-        return AesUtil.encrypt(dataKey, keyExchangeResult.getLocalKey(), keyExchangeResult.getLocalIv());
+    public static byte[] encryptDk(NegotiationResult negotiationResult, byte[] dataKey) throws AesCryptoException {
+        return AesUtil.encrypt(dataKey, negotiationResult.getLocalKey(), negotiationResult.getLocalIv());
     }
 
     /**
@@ -64,22 +64,22 @@ public class TransportCryptoByteUtil {
      *
      * @return dataKey
      */
-    public static byte[] decryptDk(KeyExchangeResult keyExchangeResult, byte[] xDk) throws SymmetricCryptoException {
-        return AesUtil.decrypt(xDk, keyExchangeResult.getLocalKey(), keyExchangeResult.getLocalIv());
+    public static byte[] decryptDk(NegotiationResult negotiationResult, byte[] xDk) throws SymmetricCryptoException {
+        return AesUtil.decrypt(xDk, negotiationResult.getLocalKey(), negotiationResult.getLocalIv());
     }
 
     /**
      * 加密数据
      */
-    public static byte[] encrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, byte[] toCipher) throws AesCryptoException {
-        return AesUtil.encrypt(toCipher, dataKey, keyExchangeResult.getLocalIv());
+    public static byte[] encrypt(NegotiationResult negotiationResult, byte[] dataKey, byte[] toCipher) throws AesCryptoException {
+        return AesUtil.encrypt(toCipher, dataKey, negotiationResult.getLocalIv());
     }
 
     /**
      * 解密数据
      */
-    public static byte[] decrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, byte[] cipherText) throws AesCryptoException {
-        return AesUtil.decrypt(cipherText, dataKey, keyExchangeResult.getLocalIv());
+    public static byte[] decrypt(NegotiationResult negotiationResult, byte[] dataKey, byte[] cipherText) throws AesCryptoException {
+        return AesUtil.decrypt(cipherText, dataKey, negotiationResult.getLocalIv());
     }
 
     /**
@@ -101,12 +101,12 @@ public class TransportCryptoByteUtil {
      * 协商密钥交换响应
      * 主要是获得密钥与 iv
      */
-    public KeyExchangeResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
+    public NegotiationResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
         byte[] selfPrivateKey = eccProcessor.getPrivateKey(keyExchangeResponse.getxSessionId()).getEncoded();
         byte[] otherPublicKey = ByteSpecification.decodeToBytes(keyExchangeResponse.getPublicKey());
         List<byte[]> keyAndIv = ECDHUtils.negotiationToKeyAndIv(selfPrivateKey, otherPublicKey, keyExchangeResponse.getKeyBytesLength());
 
-        KeyExchangeResult result = new KeyExchangeResult();
+        NegotiationResult result = new NegotiationResult();
         result.setLocalKey(keyAndIv.get(0));
         result.setLocalIv(keyAndIv.get(1));
         result.setPublicKey(otherPublicKey);
@@ -131,7 +131,7 @@ public class TransportCryptoByteUtil {
         final int keyByteLength = randomKeyLength();
         response.setAes(String.valueOf(keyByteLength));
         response.setKeyBytesLength(keyByteLength);
-        response.setExpireTime(KeyExchangeConstants.EXPIRE_TIME);
+        response.setExpireTime(NegotiationConstants.EXPIRE_TIME);
         response.setPublicKey(ByteSpecification.encodeToString(selfPublicKey));
 
         response.setxSessionId(xSessionId);

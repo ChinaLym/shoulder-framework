@@ -1,7 +1,6 @@
 package org.shoulder.autoconfigure.operation;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.log.operation.async.OpLogRunnable;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
@@ -23,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -61,15 +61,11 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
         String threadName = operationLogProperties.getThreadName();
         log.info("OperationLogger-async=true,threadNum=" + threadNum + ",threadName=" + threadName);
         // default rejectExecutionHandler is throw Ex, use ignore if opLog is not important.
+        CustomizableThreadFactory opLogThreadFactory = new CustomizableThreadFactory("shoulder");
+        // 可以设置为 true，因为操作日志一般并不是非记录不可
+        // opLogThreadFactory.setDaemon(true);
         ExecutorService opLogExecutorService = new ThreadPoolExecutor(1, 1,
-            60L, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>(3000),
-            r -> {
-                Thread loggingThread = new Thread(new OpLogRunnable(r), threadName);
-                // drop the opLog when application shutDown
-                loggingThread.setDaemon(true);
-                return loggingThread;
-            });
+            60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000), opLogThreadFactory);
 
         return new AsyncOperationLogger()
             .setExecutorService(opLogExecutorService)

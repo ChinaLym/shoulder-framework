@@ -2,7 +2,7 @@ package org.shoulder.crypto.negotiation.cipher;
 
 import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 
 /**
@@ -12,7 +12,7 @@ import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
  */
 public class DefaultTransportCipher implements TransportTextCipher {
 
-    private KeyExchangeResult keyExchangeResult;
+    private NegotiationResult negotiationResult;
 
     /**
      * 数据密钥明文
@@ -20,8 +20,8 @@ public class DefaultTransportCipher implements TransportTextCipher {
     private byte[] dk;
 
 
-    private DefaultTransportCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
-        this.keyExchangeResult = keyExchangeInfo;
+    private DefaultTransportCipher(NegotiationResult keyExchangeInfo, byte[] dk) {
+        this.negotiationResult = keyExchangeInfo;
         this.dk = dk;
     }
 
@@ -32,7 +32,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
      * @param dk              数据密钥明文
      * @return 解密器
      */
-    public static DecryptCipher buildDecryptCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
+    public static DecryptCipher buildDecryptCipher(NegotiationResult keyExchangeInfo, byte[] dk) {
         return new DecryptCipher(keyExchangeInfo, dk);
     }
 
@@ -42,7 +42,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
      * @param keyExchangeInfo 密钥协商结果信息
      * @return 加密器
      */
-    public static EncryptCipher buildEncryptCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
+    public static EncryptCipher buildEncryptCipher(NegotiationResult keyExchangeInfo, byte[] dk) {
         return new EncryptCipher(keyExchangeInfo, dk);
     }
 
@@ -56,7 +56,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
     @Override
     public String encrypt(String toCipher) {
         try {
-            return TransportCryptoUtil.encrypt(keyExchangeResult, dk, toCipher);
+            return TransportCryptoUtil.encrypt(negotiationResult, dk, toCipher);
         } catch (AesCryptoException e) {
             throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
         }
@@ -71,7 +71,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
     @Override
     public String decrypt(String cipherText) {
         try {
-            return TransportCryptoUtil.decrypt(keyExchangeResult, dk, cipherText);
+            return TransportCryptoUtil.decrypt(negotiationResult, dk, cipherText);
         } catch (AesCryptoException e) {
             throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
         }
@@ -92,7 +92,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
      */
     private static class EncryptCipher extends DefaultTransportCipher {
 
-        private EncryptCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
+        private EncryptCipher(NegotiationResult keyExchangeInfo, byte[] dk) {
             super(keyExchangeInfo, dk);
         }
 
@@ -116,7 +116,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
      */
     private static class DecryptCipher extends DefaultTransportCipher {
 
-        private DecryptCipher(KeyExchangeResult keyExchangeInfo, byte[] dk) {
+        private DecryptCipher(NegotiationResult keyExchangeInfo, byte[] dk) {
             super(keyExchangeInfo, dk);
         }
 

@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.support.dto;
 
-import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
+import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 
 /**
  * 服务端者返回参数
@@ -38,7 +38,7 @@ public class KeyExchangeResponse implements Cloneable {
     /**
      * 多少毫秒之后本次协商过期
      */
-    private int expireTime = KeyExchangeConstants.EXPIRE_TIME;
+    private int expireTime = NegotiationConstants.EXPIRE_TIME;
 
     public String getxSessionId() {
         return xSessionId;

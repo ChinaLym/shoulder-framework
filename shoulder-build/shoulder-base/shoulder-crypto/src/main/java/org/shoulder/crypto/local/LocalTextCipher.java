@@ -1,6 +1,5 @@
 package org.shoulder.crypto.local;
 
-
 import org.shoulder.crypto.TextCipher;
 
 import javax.annotation.Nonnull;
@@ -33,7 +32,7 @@ public interface LocalTextCipher extends TextCipher {
 
     /**
      * 确保加密功能正常使用
-     * 可在项目启动后调用，以优化第一次加解密性能。
+     * 默认懒加载，第一次加解密时初始化，若希望优化第一次加解密时的性能损耗，在项目启动后调用即可
      */
     void ensureInit();
 }
