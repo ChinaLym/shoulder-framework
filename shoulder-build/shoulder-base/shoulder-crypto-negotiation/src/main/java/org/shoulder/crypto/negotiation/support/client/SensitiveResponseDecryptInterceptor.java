@@ -49,7 +49,7 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
 
         // *************************** afterRequest ***************************
         if (response.getStatusCode() != HttpStatus.OK) {
-            // todo 【健壮性】校验错误码，是否为协商的密钥过期（在使用框架时，按理说仅发生在服务提供方密钥缓存在内存，且发送重启等导致提前过期）
+            // todo 【健壮性】校验错误码，是否为协商的密钥过期（在使用框架时，按理说仅发生在服务提供方密钥缓存在内存，且发生重启等导致提前过期）注意，应该要支持多种方式判断，如多个错误码
             log.warn("sensitive request FAIL, responseStatus:" + response.getStatusText());
         }
 

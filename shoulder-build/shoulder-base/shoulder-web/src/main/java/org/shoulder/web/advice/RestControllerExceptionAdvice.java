@@ -223,6 +223,7 @@ public class RestControllerExceptionAdvice {
 
     /**
      * 其他异常
+     * 对于这类不明确的异常，原始报错消息改成未知异常，日志打印详细内容并使用未知错误码，以避免暴露堆栈信息等
      * todo 【可选】ClientAbortException tomcat中客户端连接断开，如浏览器请求了，还没响应就关闭了，服务器返回时发现response不能写
      */
     @ExceptionHandler(Exception.class)
