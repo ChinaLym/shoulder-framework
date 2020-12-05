@@ -138,6 +138,7 @@ public class TokenSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
 
             .and()
+            // csrf 在开发阶段不友好，默认关闭
                 .csrf()
             .disable()
         ;

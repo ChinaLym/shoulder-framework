@@ -168,7 +168,7 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // 其余请求全部开启认证（需要登录）
                 .anyRequest().authenticated()
             .and()
-
+            // csrf 在开发阶段不友好，默认关闭
                 .csrf()
             .disable()
             // 关闭 csrf
