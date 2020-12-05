@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -96,7 +95,7 @@ public class AuthTest {
      * 测试认证后调用接口
      *
      * @see ProviderManager 根据传入的token认证
-     * @see OpaqueTokenAuthenticationProvider 实际认证处理器
+     * @see org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider 实际认证处理器
      * @see org.springframework.security.web.access.intercept.FilterSecurityInterceptor
      */
     @Test

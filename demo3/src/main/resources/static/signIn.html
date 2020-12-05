@@ -7,7 +7,7 @@
 <body>
 <h2>demo3 的统一认证页面</h2>
 <small>
-    未登录时，访问任何地址（登录/注册/退出登录等页面除外）均会自动跳转到本页面，<a href="index.html">访问主页 index.html 试试</a><br>
+    <b>未登录时，访问任何地址（登录/注册/退出登录等页面除外）均会自动跳转到本页面，<a href="index.html">访问主页 index.html 试试</a>，发现只有登录成功后才能打开~</b><br>
     如何自定义登录页面？<br>
     方式1： 在项目目录工程的静态资源路径中添加名称为 signIn.html 的 html；<br>
     方式2： 修改 shoulder.security.browser.signInPage=xxx.html，然后在资源路径中添加 xxx.html<br>
@@ -43,7 +43,7 @@
             <td colspan='2'>
                 <!-- name 固定，spring-security 定义 -->
                 <input name="remember-me" type="checkbox" value="true"/>记住我
-                <small>（勾选该项后，即使关闭浏览器，在1个月内，不必认证也可以直接访问，即自动登录）</small>
+                <small>（勾选该项后，即使关闭浏览器，在1个月内，不必认证也可以直接访问，即自动登录，勾上然后重启服务器测试一下吧~）</small>
             </td>
         </tr>
         <tr>

@@ -7,7 +7,7 @@ spring:
     password: ${MYSQL_PWD} # 这里使用了系统的环境变量，参见 spring boot 的特性
 
   profiles:
-    active: token
+    active: session # token / session
 
 shoulder:
   application:
