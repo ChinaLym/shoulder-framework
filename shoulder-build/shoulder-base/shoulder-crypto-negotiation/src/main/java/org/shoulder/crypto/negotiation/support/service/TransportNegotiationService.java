@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.support.service;
 
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
@@ -26,7 +26,7 @@ public interface TransportNegotiationService {
      * @return 是否协商成功
      * @throws NegotiationException 密钥协商异常
      */
-    KeyExchangeResult requestForNegotiate(URI uri) throws NegotiationException;
+    NegotiationResult requestForNegotiate(URI uri) throws NegotiationException;
 
 
     /**

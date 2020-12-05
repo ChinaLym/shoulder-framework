@@ -2,8 +2,7 @@
  * 简化在 Spring 中的使用，减少学习成本，编码量：只需要关注 {@link org.shoulder.crypto.negotiation.support.Sensitive}、
  * {@link org.shoulder.crypto.negotiation.support.SecurityRestTemplate}
  * <p>
- * <p>
- * DTO定义、todo 【规范】错误码
+ * DTO定义、
  * 发起密钥协商
  * 处理密钥协商请求
  * 处理密钥协商失败

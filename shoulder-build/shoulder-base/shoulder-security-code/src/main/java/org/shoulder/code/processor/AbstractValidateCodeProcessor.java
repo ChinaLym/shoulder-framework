@@ -112,7 +112,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCodeDTO> i
 
         // 验证码的值不能为空
         if (StringUtils.isBlank(codeInRequest)) {
-            throw new ValidateCodeAuthenticationException(codeType + "validate-code is empty(" + codeType + ")");
+            throw new ValidateCodeAuthenticationException(codeType + " validate-code is empty(" + codeType + ")");
         }
 
         // 期望的值
@@ -121,12 +121,12 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCodeDTO> i
         // 验证码不存在 或 已过期
         if (exceptCode == null || exceptCode.isExpire()) {
             validateCodeStore.remove(request, codeType);
-            throw new ValidateCodeAuthenticationException(codeType + "validate-code is expire, please retry!");
+            throw new ValidateCodeAuthenticationException(codeType + " validate-code is expire, please retry!");
         }
 
         // 验证码不匹配（验证码不正确）
         if (!StringUtils.equalsIgnoreCase(exceptCode.getCode(), codeInRequest)) {
-            throw new ValidateCodeAuthenticationException(codeType + "validate-code not correct!");
+            throw new ValidateCodeAuthenticationException(codeType + " validate-code not correct!");
         }
 
         validateCodeStore.remove(request, codeType);

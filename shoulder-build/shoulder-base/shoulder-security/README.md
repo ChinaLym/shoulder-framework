@@ -201,6 +201,11 @@ Token（JWT）：
 小结：要增加认证方式，需要认证服务器 **可以认证 `申请认证凭证请求`** 、**签发凭证**（、**认证凭证**），还需要资源服务器能够 **认证（认证服务器签发的）凭证**。
 
 
+Authentication.Detail
+- `PreAuthenticatedAuthenticationTokenDeserializer`
+- 
+
+
 ## Spring Security 入门总结
 
 1. WebSecurityConfiguration 类是如何根据 Spring Security DSL 创建 SpringSecurityFilterChain 中各个过滤器的只需了解即可。不要太过关注。

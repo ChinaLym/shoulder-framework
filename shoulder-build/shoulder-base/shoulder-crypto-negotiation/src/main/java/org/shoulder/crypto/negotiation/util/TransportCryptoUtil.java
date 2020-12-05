@@ -7,8 +7,8 @@ import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
-import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
+import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
 import org.shoulder.crypto.negotiation.support.dto.KeyExchangeResponse;
@@ -43,8 +43,8 @@ public class TransportCryptoUtil {
      *
      * @return xDk
      */
-    public static String encryptDk(KeyExchangeResult keyExchangeResult, byte[] dataKey) throws AesCryptoException {
-        return ByteSpecification.encodeToString(TransportCryptoByteUtil.encryptDk(keyExchangeResult, dataKey));
+    public static String encryptDk(NegotiationResult negotiationResult, byte[] dataKey) throws AesCryptoException {
+        return ByteSpecification.encodeToString(TransportCryptoByteUtil.encryptDk(negotiationResult, dataKey));
     }
 
     /**
@@ -52,22 +52,22 @@ public class TransportCryptoUtil {
      *
      * @return dataKey
      */
-    public static byte[] decryptDk(KeyExchangeResult keyExchangeResult, String xDk) throws SymmetricCryptoException {
-        return TransportCryptoByteUtil.decryptDk(keyExchangeResult, ByteSpecification.decodeToBytes(xDk));
+    public static byte[] decryptDk(NegotiationResult negotiationResult, String xDk) throws SymmetricCryptoException {
+        return TransportCryptoByteUtil.decryptDk(negotiationResult, ByteSpecification.decodeToBytes(xDk));
     }
 
     /**
      * 加密数据
      */
-    public static String encrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, String toCipher) throws AesCryptoException {
-        return ByteSpecification.encodeToString(TransportCryptoByteUtil.encrypt(keyExchangeResult, dataKey, toCipher.getBytes(ByteSpecification.STD_CHAR_SET)));
+    public static String encrypt(NegotiationResult negotiationResult, byte[] dataKey, String toCipher) throws AesCryptoException {
+        return ByteSpecification.encodeToString(TransportCryptoByteUtil.encrypt(negotiationResult, dataKey, toCipher.getBytes(ByteSpecification.STD_CHAR_SET)));
     }
 
     /**
      * 解密数据
      */
-    public static String decrypt(KeyExchangeResult keyExchangeResult, byte[] dataKey, String cipherText) throws AesCryptoException {
-        return new String(TransportCryptoByteUtil.decrypt(keyExchangeResult, dataKey, ByteSpecification.decodeToBytes(cipherText)), ByteSpecification.STD_CHAR_SET);
+    public static String decrypt(NegotiationResult negotiationResult, byte[] dataKey, String cipherText) throws AesCryptoException {
+        return new String(TransportCryptoByteUtil.decrypt(negotiationResult, dataKey, ByteSpecification.decodeToBytes(cipherText)), ByteSpecification.STD_CHAR_SET);
     }
 
 
@@ -109,28 +109,28 @@ public class TransportCryptoUtil {
      * @param keyExchangeResponse 协商参数 {@link #prepareNegotiation} 方法的返回值
      * @return 密钥协商结果
      */
-    public KeyExchangeResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
+    public NegotiationResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
         return adapter.negotiation(keyExchangeResponse);
     }
 
     /**
      * 根据缓存内容生成握手响应
      *
-     * @param keyExchangeResult 密钥交换的缓存结果
+     * @param negotiationResult 密钥交换的缓存结果
      * @return 服务端返回给客户端的响应，同 {@link #prepareNegotiation}
      */
-    public KeyExchangeResponse createResponse(KeyExchangeResult keyExchangeResult) throws AsymmetricCryptoException {
+    public KeyExchangeResponse createResponse(NegotiationResult negotiationResult) throws AsymmetricCryptoException {
         KeyExchangeResponse response = new KeyExchangeResponse();
 
-        byte[] publicKey = keyExchangeResult.getPublicKey();
+        byte[] publicKey = negotiationResult.getPublicKey();
 
         response.setPublicKey(ByteSpecification.encodeToString(publicKey));
-        response.setExpireTime((int) (keyExchangeResult.getExpireTime() - System.currentTimeMillis()));
-        response.setKeyBytesLength(keyExchangeResult.getKeyLength());
+        response.setExpireTime((int) (negotiationResult.getExpireTime() - System.currentTimeMillis()));
+        response.setKeyBytesLength(negotiationResult.getKeyLength());
         // todo 【使用范围】不应该写死256，而是支持的密钥算法，如 aes、sm4
         response.setAes("256");
 
-        response.setxSessionId(keyExchangeResult.getxSessionId());
+        response.setxSessionId(negotiationResult.getxSessionId());
         // todo 【流程】处理 token 生成失败
         String token = generateResponseToken(response);
         response.setToken(token);
@@ -182,31 +182,31 @@ public class TransportCryptoUtil {
     /**
      * 发起请求前，生成头部信息【请求中不带敏感信息】
      *
-     * @param keyExchangeResult 密钥交换结果
+     * @param negotiationResult 密钥交换结果
      * @return 请求头
      * @throws AsymmetricCryptoException 签名出错
      * @throws AesCryptoException 加密 dataKey 出错
      */
-    public HttpHeaders generateHeaders(KeyExchangeResult keyExchangeResult) throws AsymmetricCryptoException, AesCryptoException {
-        return generateHeaders(keyExchangeResult, null);
+    public HttpHeaders generateHeaders(NegotiationResult negotiationResult) throws AsymmetricCryptoException, AesCryptoException {
+        return generateHeaders(negotiationResult, null);
     }
 
     /**
      * 发起请求前，生成头部信息
      *
-     * @param keyExchangeResult 密钥交换结果
+     * @param negotiationResult 密钥交换结果
      * @param dataKey           数据密钥明文，如果为 null 表示请求中不带敏感信息，发起请求或收到请求时无需加密或解密
      * @return 请求头
      * @throws AsymmetricCryptoException 签名出错
      * @throws AesCryptoException 加密 dataKey 出错
      */
-    public HttpHeaders generateHeaders(KeyExchangeResult keyExchangeResult, @Nullable byte[] dataKey) throws AsymmetricCryptoException, AesCryptoException {
-        String xDk = encryptDk(keyExchangeResult, dataKey);
+    public HttpHeaders generateHeaders(NegotiationResult negotiationResult, @Nullable byte[] dataKey) throws AsymmetricCryptoException, AesCryptoException {
+        String xDk = encryptDk(negotiationResult, dataKey);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(KeyExchangeConstants.TOKEN, generateToken(keyExchangeResult.getxSessionId(), xDk));
-        headers.add(KeyExchangeConstants.SECURITY_SESSION_ID, keyExchangeResult.getxSessionId());
+        headers.add(NegotiationConstants.TOKEN, generateToken(negotiationResult.getxSessionId(), xDk));
+        headers.add(NegotiationConstants.SECURITY_SESSION_ID, negotiationResult.getxSessionId());
         if (ByteUtils.isNotEmpty(dataKey)) {
-            headers.add(KeyExchangeConstants.SECURITY_DATA_KEY, xDk);
+            headers.add(NegotiationConstants.SECURITY_DATA_KEY, xDk);
         }
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         return headers;

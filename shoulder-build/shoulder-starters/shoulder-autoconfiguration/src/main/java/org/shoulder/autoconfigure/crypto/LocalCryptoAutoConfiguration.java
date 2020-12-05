@@ -2,6 +2,7 @@ package org.shoulder.autoconfigure.crypto;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
+import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -19,9 +20,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
 
@@ -48,6 +51,19 @@ public class LocalCryptoAutoConfiguration {
             Security.addProvider(new BouncyCastleProvider());
             log.debug("Loaded BouncyCastle as crypto provider.");
         }
+    }
+
+    @Bean
+    public ApplicationListener<ContextRefreshedEvent> localCryptoPreInit() {
+        return contextRefreshedEvent -> {
+            Runnable preInitLocalCrypto = () -> {
+                LocalTextCipher localTextCipher = contextRefreshedEvent.getApplicationContext().getBean(LocalTextCipher.class);
+                localTextCipher.ensureInit();
+                log.info("localTextCipher init.");
+            };
+            // 异步初始化本地存储加解密相关 bean
+            Threads.execute(preInitLocalCrypto);
+        };
     }
 
     /**

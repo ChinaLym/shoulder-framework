@@ -5,8 +5,8 @@ import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
-import org.shoulder.crypto.negotiation.constant.KeyExchangeConstants;
-import org.shoulder.crypto.negotiation.dto.KeyExchangeResult;
+import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
+import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationErrorCodeEnum;
 import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
@@ -58,9 +58,9 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             return true;
         }
 
-        String xSessionId = request.getHeader(KeyExchangeConstants.SECURITY_SESSION_ID);
-        String xDk = request.getHeader(KeyExchangeConstants.SECURITY_DATA_KEY);
-        String token = request.getHeader(KeyExchangeConstants.TOKEN);
+        String xSessionId = request.getHeader(NegotiationConstants.SECURITY_SESSION_ID);
+        String xDk = request.getHeader(NegotiationConstants.SECURITY_DATA_KEY);
+        String token = request.getHeader(NegotiationConstants.TOKEN);
         if (log.isDebugEnabled()) {
             // 记录请求中这几个重要地参数，便于排查问题
             log.debug("xSessionId: {}, xDk: {}, token: {}.", xSessionId, xDk, token);
@@ -75,21 +75,22 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             return false;
         }
 
-        KeyExchangeResult cacheKeyExchangeResult = keyNegotiationCache.getAsServer(xSessionId);
-        if (cacheKeyExchangeResult == null) {
+        NegotiationResult cacheNegotiationResult = keyNegotiationCache.getAsServer(xSessionId);
+        if (cacheNegotiationResult == null) {
             // 恶意调用 / 本服务缓存丢失（如重启导致）
             log.debug("cache missing, xSessionId:{}", xSessionId);
             // 返回重新握手错误码
+            response.setHeader(NegotiationConstants.NEGOTIATION_INVALID_TAG, NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode());
             response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             RestResult r = RestResult.error(NegotiationErrorCodeEnum.NEGOTIATION_INVALID);
             response.getWriter().write(JsonUtils.toJson(r));
             return false;
         }
-        KeyNegotiationCache.SERVER_LOCAL_CACHE.set(cacheKeyExchangeResult);
+        KeyNegotiationCache.SERVER_LOCAL_CACHE.set(cacheNegotiationResult);
 
         // 校验token是否正确
-        if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, cacheKeyExchangeResult.getPublicKey())) {
+        if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, cacheNegotiationResult.getPublicKey())) {
             log.debug("Token({}) invalid! xSessionId={}", token, xSessionId);
             response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
@@ -99,9 +100,9 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
         }
 
         // 解密本次会话的数据密钥
-        byte[] requestDk = TransportCryptoUtil.decryptDk(cacheKeyExchangeResult, xDk);
+        byte[] requestDk = TransportCryptoUtil.decryptDk(cacheNegotiationResult, xDk);
         // 缓存请求解密处理器
-        DefaultTransportCipher requestDecryptCipher = DefaultTransportCipher.buildDecryptCipher(cacheKeyExchangeResult, requestDk);
+        DefaultTransportCipher requestDecryptCipher = DefaultTransportCipher.buildDecryptCipher(cacheNegotiationResult, requestDk);
         TransportCipherHolder.setRequestCipher(requestDecryptCipher);
 
         return true;

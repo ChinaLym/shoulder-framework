@@ -3,6 +3,8 @@ package org.shoulder.autoconfigure.operation;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.dto.ShoulderCurrentUserOperator;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +24,11 @@ public class CurrentContextOperatorInfoInterceptor extends OperationLogOperatorI
     protected Operator resolveOperator(HttpServletRequest request) {
         ShoulderCurrentUserOperator operator = new ShoulderCurrentUserOperator(AppContext.getUserId());
         // todo 设置客户端信息
+        Object details = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        if (details instanceof WebAuthenticationDetails) {
+            String remoteAddress = ((WebAuthenticationDetails) details).getRemoteAddress();
+
+        }
         operator.setTerminalInfo(String.valueOf(AppContext.getLocale()));
         return operator;
     }

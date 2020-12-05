@@ -120,7 +120,7 @@ public class Threads {
      */
     public static void executeAndWait(@NonNull Collection<? extends Runnable> tasks) throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(tasks.size());
-        tasks.forEach(r -> execute(new NotifyOnFinishRunnable(r, latch::countDown)));
+        tasks.forEach(runnable -> execute(new NotifyOnFinishRunnable(runnable, latch::countDown)));
         latch.await();
     }
 
@@ -135,7 +135,7 @@ public class Threads {
     public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout)
         throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(tasks.size());
-        tasks.forEach(r -> execute(new NotifyOnFinishRunnable(r, latch::countDown)));
+        tasks.forEach(runnable -> execute(new NotifyOnFinishRunnable(runnable, latch::countDown)));
         return latch.await(timeout.getNano(), TimeUnit.NANOSECONDS);
     }
 

@@ -51,7 +51,7 @@ public class SimpleTokenIntrospector implements OpaqueTokenIntrospector {
         checkClientDetails(auth);
         Map<String, Object> attributes = new HashMap<>();
         Authentication userAuthentication = auth.getUserAuthentication();
-        // todo 获取 userAuthentication 所有字段，放入 attributes
+        // todo 【默认实现增强】获取 userAuthentication 所有字段，放入 attributes（可能要放到 platform ）
         attributes.put("name", auth.getUserAuthentication().getName());
         return new DefaultOAuth2User(auth.getAuthorities(), attributes, "name");
     }

@@ -6,16 +6,7 @@ package org.shoulder.crypto.negotiation.constant;
  *
  * @author lym
  */
-public class KeyExchangeConstants {
-
-    /**
-     * 服务端存储安全会话信息缓存的key前缀
-     */
-    public static final String SERVER_CACHE_PREFIX = "server.";
-    /**
-     * 客户端存储安全会话信息缓存的key前缀
-     */
-    public static final String CLIENT_CACHE_PREFIX = "client.";
+public class NegotiationConstants {
 
     /**
      * 请求head中的会话标识
@@ -29,6 +20,12 @@ public class KeyExchangeConstants {
      * 请求head中的数据密钥密文
      */
     public static final String SECURITY_DATA_KEY = "xDk";
+
+    /**
+     * 服务器缓存密钥过期头部响应标识
+     */
+    public static final String NEGOTIATION_INVALID_TAG = "Negotiation-Invalid-Tag";
+
 
     /**
      * 协商的过期时间

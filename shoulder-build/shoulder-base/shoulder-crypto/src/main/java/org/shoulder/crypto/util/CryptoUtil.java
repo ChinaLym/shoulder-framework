@@ -2,24 +2,19 @@ package org.shoulder.crypto.util;
 
 
 import org.shoulder.core.util.ContextUtils;
-import org.shoulder.crypto.CryptoFacade;
+import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.exception.CipherRuntimeException;
+import org.shoulder.crypto.local.LocalTextCipher;
 
 /**
- * 加解密工具门面
+ * 加解密工具
  *
  * @author lym
  */
 public final class CryptoUtil {
 
-    private static CryptoFacade crypto;
-
-    static {
-        crypto = ContextUtils.getBean(CryptoFacade.class);
-    }
-
-    // ================================ 存储加解密 =====================================
+    // ================================ 本地存储加解密 =====================================
 
     /**
      * 本地存储加密
@@ -28,8 +23,8 @@ public final class CryptoUtil {
      * @return 参数 text 加密后的密文
      * @throws CipherRuntimeException 加密异常
      */
-    public static String encryptAes(String text) throws CipherRuntimeException {
-        return crypto.encryptLocal(text);
+    public static String localEncrypt(String text) throws CipherRuntimeException {
+        return getLocal().encrypt(text);
     }
 
     /**
@@ -39,16 +34,8 @@ public final class CryptoUtil {
      * @return 参数 cipherText 解密后的明文
      * @throws CipherRuntimeException 加密异常
      */
-    public static String decryptAes(String cipherText) throws CipherRuntimeException {
-        return crypto.decryptLocal(cipherText);
-    }
-
-    /**
-     * 确保本地加密功能正常使用
-     * 推荐初始化时调用，可优化第一次加解密性能。
-     */
-    public static void initAes() {
-        crypto.initLocal();
+    public static String localDecrypt(String cipherText) throws CipherRuntimeException {
+        return getLocal().decrypt(cipherText);
     }
 
     // ================================ 传输加解密（如前后交互） =====================================
@@ -58,8 +45,8 @@ public final class CryptoUtil {
      *
      * @return 公钥
      */
-    public static String getPk() throws KeyPairException {
-        return crypto.getPk();
+    public static String getPublicKey() throws KeyPairException {
+        return getAsymmetric().getPublicKey();
     }
 
     /**
@@ -69,8 +56,8 @@ public final class CryptoUtil {
      * @return 加密后的
      * @throws CipherRuntimeException RsaCryptoException
      */
-    public static String encryptRsa(String text) throws CipherRuntimeException {
-        return crypto.encryptAsymmetric(text);
+    public static String asymmetricEncrypt(String text) throws CipherRuntimeException {
+        return getAsymmetric().encrypt(text);
     }
 
     /**
@@ -80,8 +67,8 @@ public final class CryptoUtil {
      * @return 解密后的
      * @throws CipherRuntimeException RsaCryptoException
      */
-    public static String decryptRsa(String cipherText) throws CipherRuntimeException {
-        return crypto.decryptAsymmetric(cipherText);
+    public static String asymmetricDecrypt(String cipherText) throws CipherRuntimeException {
+        return getAsymmetric().decrypt(cipherText);
     }
 
 
@@ -93,8 +80,8 @@ public final class CryptoUtil {
      * @return 密文
      * @throws CipherRuntimeException 加解密出错
      */
-    public String encryptRsa(String text, String publicKey) throws CipherRuntimeException {
-        return crypto.encryptAsymmetric(text, publicKey);
+    public String asymmetricEncrypt(String text, String publicKey) throws CipherRuntimeException {
+        return getAsymmetric().encrypt(text, publicKey);
     }
 
     /**
@@ -104,8 +91,8 @@ public final class CryptoUtil {
      * @return 签名结果
      * @throws CipherRuntimeException 加解密出错
      */
-    public String signRsa(String text) throws CipherRuntimeException {
-        return crypto.signAsymmetric(text);
+    public String sign(String text) throws CipherRuntimeException {
+        return getAsymmetric().sign(text);
     }
 
     /**
@@ -116,8 +103,26 @@ public final class CryptoUtil {
      * @return 是否合法
      * @throws CipherRuntimeException 加解密出错
      */
-    public boolean verifyRsa(String text, String signature) throws CipherRuntimeException {
-        return crypto.verifyAsymmetric(text, signature);
+    public boolean verify(String text, String signature) throws CipherRuntimeException {
+        return getAsymmetric().verify(text, signature);
+    }
+
+    // ------------------------- singleTon holder --------------------------
+
+    private static LocalTextCipher getLocal() {
+        return LocalTextCipherHolder.INSTANCE;
+    }
+
+    private static AsymmetricTextCipher getAsymmetric() {
+        return AsymmetricCipherHolder.INSTANCE;
+    }
+
+    private static class LocalTextCipherHolder {
+        private static final LocalTextCipher INSTANCE = ContextUtils.getBean(LocalTextCipher.class);
+    }
+
+    private static class AsymmetricCipherHolder {
+        private static final AsymmetricTextCipher INSTANCE = ContextUtils.getBean(AsymmetricTextCipher.class);
     }
 
 }
