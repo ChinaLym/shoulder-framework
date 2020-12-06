@@ -5,10 +5,11 @@ mvn clean deploy -p oss -Dmaven.test.skip=true
 # 适当增加内存 -Xms1g -Xmx1g -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256M
 # -Dmaven.test.skip=true 跳过测试
 # 发布前修改版本号
-# <version>0.5-SNAPSHOT</version><!-- shoulder-version -->
-# <shoulder.version>0.5-SNAPSHOT</shoulder.version><!-- shoulder-version -->
+# <version>0.5</version><!-- shoulder-version -->
+# <shoulder.version>0.5</shoulder.version><!-- shoulder-version -->
 # 开启部署前签名
 # 修改 <phase>verify</phase><!-- gpg phase verify deploy --> 至少提前至 verify 才可以保证发布前签名已经存在
+# 放开 gpg 插件的注释
 
 # ------------------
 # 新版本时，修改版本号
