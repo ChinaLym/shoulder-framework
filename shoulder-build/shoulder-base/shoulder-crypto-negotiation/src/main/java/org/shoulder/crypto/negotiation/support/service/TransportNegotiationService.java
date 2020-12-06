@@ -3,8 +3,8 @@ package org.shoulder.crypto.negotiation.support.service;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
-import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
-import org.shoulder.crypto.negotiation.support.dto.KeyExchangeResponse;
+import org.shoulder.crypto.negotiation.support.dto.NegotiationRequest;
+import org.shoulder.crypto.negotiation.support.dto.NegotiationResponse;
 import org.shoulder.crypto.negotiation.support.endpoint.NegotiationEndPoint;
 
 import javax.annotation.Nonnull;
@@ -32,11 +32,11 @@ public interface TransportNegotiationService {
     /**
      * 处理其他服务发起的密钥交换请求
      *
-     * @param keyExchangeRequest 请求参数
+     * @param negotiationRequest 请求参数
      * @return 是否协商成功
      * @throws NegotiationException 密钥协商异常
      */
-    KeyExchangeResponse handleNegotiate(KeyExchangeRequest keyExchangeRequest) throws NegotiationException;
+    NegotiationResponse handleNegotiate(NegotiationRequest negotiationRequest) throws NegotiationException;
 
     /**
      * 判断一个 url 是否为密钥交换的地址

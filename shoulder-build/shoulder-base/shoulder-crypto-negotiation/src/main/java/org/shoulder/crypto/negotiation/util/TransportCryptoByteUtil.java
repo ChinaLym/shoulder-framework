@@ -13,8 +13,8 @@ import org.shoulder.crypto.negotiation.ECDHUtils;
 import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
-import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
-import org.shoulder.crypto.negotiation.support.dto.KeyExchangeResponse;
+import org.shoulder.crypto.negotiation.support.dto.NegotiationRequest;
+import org.shoulder.crypto.negotiation.support.dto.NegotiationResponse;
 import org.springframework.lang.Nullable;
 
 import java.time.Duration;
@@ -85,8 +85,8 @@ public class TransportCryptoByteUtil {
     /**
      * 创建一个协商请求
      */
-    public KeyExchangeRequest createRequest() throws AsymmetricCryptoException {
-        KeyExchangeRequest request = new KeyExchangeRequest();
+    public NegotiationRequest createRequest() throws AsymmetricCryptoException {
+        NegotiationRequest request = new NegotiationRequest();
         // 生成会话唯一标识
         String clientSessionId = UUID.randomUUID().toString().replaceAll("-", "");
         request.setxSessionId(clientSessionId);
@@ -101,18 +101,18 @@ public class TransportCryptoByteUtil {
      * 协商密钥交换响应
      * 主要是获得密钥与 iv
      */
-    public NegotiationResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
-        byte[] selfPrivateKey = eccProcessor.getPrivateKey(keyExchangeResponse.getxSessionId()).getEncoded();
-        byte[] otherPublicKey = ByteSpecification.decodeToBytes(keyExchangeResponse.getPublicKey());
-        List<byte[]> keyAndIv = ECDHUtils.negotiationToKeyAndIv(selfPrivateKey, otherPublicKey, keyExchangeResponse.getKeyBytesLength());
+    public NegotiationResult negotiation(NegotiationResponse negotiationResponse) throws KeyPairException, NegotiationException {
+        byte[] selfPrivateKey = eccProcessor.getPrivateKey(negotiationResponse.getxSessionId()).getEncoded();
+        byte[] otherPublicKey = ByteSpecification.decodeToBytes(negotiationResponse.getPublicKey());
+        List<byte[]> keyAndIv = ECDHUtils.negotiationToKeyAndIv(selfPrivateKey, otherPublicKey, negotiationResponse.getKeyBytesLength());
 
         NegotiationResult result = new NegotiationResult();
         result.setLocalKey(keyAndIv.get(0));
         result.setLocalIv(keyAndIv.get(1));
         result.setPublicKey(otherPublicKey);
-        result.setxSessionId(keyExchangeResponse.getxSessionId());
-        result.setKeyLength(keyExchangeResponse.getKeyBytesLength());
-        long expireTimePoint = System.currentTimeMillis() + keyExchangeResponse.getExpireTime();
+        result.setxSessionId(negotiationResponse.getxSessionId());
+        result.setKeyLength(negotiationResponse.getKeyBytesLength());
+        long expireTimePoint = System.currentTimeMillis() + negotiationResponse.getExpireTime();
         result.setExpireTime(expireTimePoint);
         return result;
     }
@@ -120,13 +120,13 @@ public class TransportCryptoByteUtil {
     /**
      * 根据协商请求准备协商参数：确定加密算法、密钥长度、协商有效期
      */
-    public KeyExchangeResponse prepareNegotiation(KeyExchangeRequest keyExchangeRequest) throws AsymmetricCryptoException {
+    public NegotiationResponse prepareNegotiation(NegotiationRequest negotiationRequest) throws AsymmetricCryptoException {
         // 这时候还没有缓存，因此需要生成
-        String xSessionId = keyExchangeRequest.getxSessionId();
+        String xSessionId = negotiationRequest.getxSessionId();
         eccProcessor.buildKeyPair(xSessionId, negotiationDuration);
         byte[] selfPublicKey = eccProcessor.getPublicKey(xSessionId).getEncoded();
 
-        KeyExchangeResponse response = new KeyExchangeResponse();
+        NegotiationResponse response = new NegotiationResponse();
 
         final int keyByteLength = randomKeyLength();
         response.setAes(String.valueOf(keyByteLength));
@@ -149,7 +149,7 @@ public class TransportCryptoByteUtil {
      * @param request 协商请求
      * @return 需要签名的数据
      */
-    private byte[] getNeedToSign(KeyExchangeRequest request) {
+    private byte[] getNeedToSign(NegotiationRequest request) {
         byte[] xSessionIdBytes = request.getxSessionId().getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] publicKeyBytes = ByteSpecification.decodeToBytes(request.getPublicKey());
         return ByteUtils.compound(Arrays.asList(xSessionIdBytes, publicKeyBytes));
@@ -158,14 +158,14 @@ public class TransportCryptoByteUtil {
     /**
      * 生成 token（发起协商请求时）
      */
-    public byte[] generateRequestToken(KeyExchangeRequest request) throws AsymmetricCryptoException {
+    public byte[] generateRequestToken(NegotiationRequest request) throws AsymmetricCryptoException {
         return eccProcessor.sign(request.getxSessionId(), getNeedToSign(request));
     }
 
     /**
      * 验签，防篡改（处理协商请求时）
      */
-    public boolean verifyRequestToken(KeyExchangeRequest request) throws AsymmetricCryptoException {
+    public boolean verifyRequestToken(NegotiationRequest request) throws AsymmetricCryptoException {
         byte[] signature = ByteSpecification.decodeToBytes(request.getToken());
         return eccProcessor.verify(
             ByteSpecification.decodeToBytes(request.getPublicKey()),
@@ -182,7 +182,7 @@ public class TransportCryptoByteUtil {
      * @param response 响应
      * @return 需要签名的数据
      */
-    private byte[] getNeedToSign(KeyExchangeResponse response) {
+    private byte[] getNeedToSign(NegotiationResponse response) {
         byte[] xSessionIdBytes = response.getxSessionId().getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] publicKeyBytes = ByteSpecification.decodeToBytes(response.getPublicKey());
         byte[] aesBytes = response.getAes().getBytes(ByteSpecification.STD_CHAR_SET);
@@ -194,14 +194,14 @@ public class TransportCryptoByteUtil {
     /**
      * 生成 token（协商响应时）
      */
-    public byte[] generateResponseToken(KeyExchangeResponse response) throws AsymmetricCryptoException {
+    public byte[] generateResponseToken(NegotiationResponse response) throws AsymmetricCryptoException {
         return eccProcessor.sign(response.getxSessionId(), getNeedToSign(response));
     }
 
     /**
      * 验签，防篡改（确认协商响应请求时）
      */
-    public boolean verifyResponseToken(KeyExchangeResponse response) throws AsymmetricCryptoException {
+    public boolean verifyResponseToken(NegotiationResponse response) throws AsymmetricCryptoException {
         byte[] signature = ByteSpecification.decodeToBytes(response.getToken());
         return eccProcessor.verify(
             ByteSpecification.decodeToBytes(response.getPublicKey()),

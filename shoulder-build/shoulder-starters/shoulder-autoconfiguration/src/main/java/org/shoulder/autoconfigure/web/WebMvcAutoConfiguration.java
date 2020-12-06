@@ -1,6 +1,6 @@
 package org.shoulder.autoconfigure.web;
 
-import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationCache;
 import org.shoulder.crypto.negotiation.support.server.SensitiveRequestDecryptHandlerInterceptor;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.web.interceptor.BaseRejectRepeatSubmitInterceptor;
@@ -40,11 +40,11 @@ public class WebMvcAutoConfiguration {
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(SensitiveRequestDecryptHandlerInterceptor.class)
-    protected static class ExchangeKeyInterceptorWebConfig implements WebMvcConfigurer {
+    protected static class NegotiationInterceptorWebConfig implements WebMvcConfigurer {
 
         @Lazy
         @Autowired
-        private KeyNegotiationCache keyNegotiationCache;
+        private NegotiationCache negotiationCache;
 
         @Lazy
         @Autowired
@@ -52,7 +52,7 @@ public class WebMvcAutoConfiguration {
 
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
-            registry.addInterceptor(new SensitiveRequestDecryptHandlerInterceptor(keyNegotiationCache, transportCryptoUtil)).order(Ordered.HIGHEST_PRECEDENCE);
+            registry.addInterceptor(new SensitiveRequestDecryptHandlerInterceptor(negotiationCache, transportCryptoUtil)).order(Ordered.HIGHEST_PRECEDENCE);
             WebMvcConfigurer.super.addInterceptors(registry);
         }
     }

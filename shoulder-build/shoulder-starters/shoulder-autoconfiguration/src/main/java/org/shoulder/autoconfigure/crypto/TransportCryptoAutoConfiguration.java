@@ -9,9 +9,9 @@ import org.shoulder.crypto.asymmetric.annotation.Ecc;
 import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
-import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
-import org.shoulder.crypto.negotiation.cache.LocalKeyNegotiationCache;
-import org.shoulder.crypto.negotiation.cache.RedisKeyNegotiationCache;
+import org.shoulder.crypto.negotiation.cache.LocalNegotiationCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationCache;
+import org.shoulder.crypto.negotiation.cache.RedisNegotiationCache;
 import org.shoulder.crypto.negotiation.support.endpoint.NegotiationEndPoint;
 import org.shoulder.crypto.negotiation.support.server.SensitiveRequestDecryptAdvance;
 import org.shoulder.crypto.negotiation.support.server.SensitiveResponseEncryptAdvice;
@@ -67,23 +67,23 @@ public class TransportCryptoAutoConfiguration {
      */
     @Bean
     public TransportNegotiationService transportNegotiationService(TransportCryptoUtil transportCryptoUtil,
-                                                                   RestTemplate restTemplate, KeyNegotiationCache keyNegotiationCache, AppIdExtractor appIdExtractor) {
-        return new TransportNegotiationServiceImpl(transportCryptoUtil, restTemplate, keyNegotiationCache, appIdExtractor);
+                                                                   RestTemplate restTemplate, NegotiationCache negotiationCache, AppIdExtractor appIdExtractor) {
+        return new TransportNegotiationServiceImpl(transportCryptoUtil, restTemplate, negotiationCache, appIdExtractor);
     }
 
     /**
      * 密钥协商结果缓存（支持集群）
      */
-    @ConditionalOnMissingBean(value = KeyNegotiationCache.class)
+    @ConditionalOnMissingBean(value = NegotiationCache.class)
     @AutoConfigureAfter(RedisAutoConfiguration.class)
     @ConditionalOnCluster
     @ConditionalOnClass(RestTemplate.class)
     public static class KeyNegotiationCacheClusterAutoConfiguration {
 
         @Bean
-        public KeyNegotiationCache redisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate) {
+        public NegotiationCache redisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate) {
 
-            RedisKeyNegotiationCache keyNegotiationCache = new RedisKeyNegotiationCache(redisTemplate);
+            RedisNegotiationCache keyNegotiationCache = new RedisNegotiationCache(redisTemplate);
             log.info("KeyNegotiationCache-redis init.");
             return keyNegotiationCache;
         }
@@ -92,14 +92,14 @@ public class TransportCryptoAutoConfiguration {
     /**
      * 密钥协商结果缓存（内存缓存）
      */
-    @ConditionalOnMissingBean(value = KeyNegotiationCache.class)
+    @ConditionalOnMissingBean(value = NegotiationCache.class)
     @AutoConfigureAfter(RedisAutoConfiguration.class)
     @ConditionalOnCluster(cluster = false)
     public static class KeyNegotiationCacheLocalAutoConfiguration {
 
         @Bean
-        public KeyNegotiationCache localKeyNegotiationCache() {
-            return new LocalKeyNegotiationCache();
+        public NegotiationCache localKeyNegotiationCache() {
+            return new LocalNegotiationCache();
         }
     }
 

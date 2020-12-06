@@ -6,7 +6,7 @@ package org.shoulder.crypto.negotiation.support.dto;
  *
  * @author lym
  */
-public class KeyExchangeRequest {
+public class NegotiationRequest {
 
     /**
      * Header 中 会话标识

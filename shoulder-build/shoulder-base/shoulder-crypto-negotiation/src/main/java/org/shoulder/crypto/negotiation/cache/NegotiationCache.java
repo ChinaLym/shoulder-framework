@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-public interface KeyNegotiationCache {
+public interface NegotiationCache {
 
     // =========== 线程缓存，在 getAsXxx 时放缓存，在处理响应时要从这里拿，因为在响应过程中密钥可能会恰巧过期 ==============
 

@@ -10,8 +10,8 @@ import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
-import org.shoulder.crypto.negotiation.support.dto.KeyExchangeRequest;
-import org.shoulder.crypto.negotiation.support.dto.KeyExchangeResponse;
+import org.shoulder.crypto.negotiation.support.dto.NegotiationRequest;
+import org.shoulder.crypto.negotiation.support.dto.NegotiationResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -78,7 +78,7 @@ public class TransportCryptoUtil {
      *
      * @return 协商请求体、请求头中需要的内容
      */
-    public KeyExchangeRequest createRequest() throws AsymmetricCryptoException {
+    public NegotiationRequest createRequest() throws AsymmetricCryptoException {
         return adapter.createRequest();
     }
 
@@ -88,29 +88,29 @@ public class TransportCryptoUtil {
      *
      * @param request 待校验的请求：{@link #createRequest} 方法生成结果
      */
-    public boolean verifyToken(KeyExchangeRequest request) throws AsymmetricCryptoException {
+    public boolean verifyToken(NegotiationRequest request) throws AsymmetricCryptoException {
         return adapter.verifyRequestToken(request);
     }
 
     /**
      * 根据协商请求准备协商参数：确定加密算法、密钥长度、协商有效期（服务端调用）
      *
-     * @param keyExchangeRequest 待协商的请求：{@link #createRequest} 方法生成结果
+     * @param negotiationRequest 待协商的请求：{@link #createRequest} 方法生成结果
      * @return 协商参数 {@link #negotiation} 方法的入参
      */
-    public KeyExchangeResponse prepareNegotiation(KeyExchangeRequest keyExchangeRequest) throws AsymmetricCryptoException {
-        return adapter.prepareNegotiation(keyExchangeRequest);
+    public NegotiationResponse prepareNegotiation(NegotiationRequest negotiationRequest) throws AsymmetricCryptoException {
+        return adapter.prepareNegotiation(negotiationRequest);
     }
 
     /**
      * 协商密钥与 iv（客户端、服务端都会调）
      * 生成 shareKey、根据 shareKey 生成 localKey，localIv
      *
-     * @param keyExchangeResponse 协商参数 {@link #prepareNegotiation} 方法的返回值
+     * @param negotiationResponse 协商参数 {@link #prepareNegotiation} 方法的返回值
      * @return 密钥协商结果
      */
-    public NegotiationResult negotiation(KeyExchangeResponse keyExchangeResponse) throws KeyPairException, NegotiationException {
-        return adapter.negotiation(keyExchangeResponse);
+    public NegotiationResult negotiation(NegotiationResponse negotiationResponse) throws KeyPairException, NegotiationException {
+        return adapter.negotiation(negotiationResponse);
     }
 
     /**
@@ -119,8 +119,8 @@ public class TransportCryptoUtil {
      * @param negotiationResult 密钥交换的缓存结果
      * @return 服务端返回给客户端的响应，同 {@link #prepareNegotiation}
      */
-    public KeyExchangeResponse createResponse(NegotiationResult negotiationResult) throws AsymmetricCryptoException {
-        KeyExchangeResponse response = new KeyExchangeResponse();
+    public NegotiationResponse createResponse(NegotiationResult negotiationResult) throws AsymmetricCryptoException {
+        NegotiationResponse response = new NegotiationResponse();
 
         byte[] publicKey = negotiationResult.getPublicKey();
 
@@ -143,7 +143,7 @@ public class TransportCryptoUtil {
      * @param response {@link #prepareNegotiation} 方法返回值
      * @return token，用于保证 response 不被篡改
      */
-    public String generateResponseToken(KeyExchangeResponse response) throws AsymmetricCryptoException {
+    public String generateResponseToken(NegotiationResponse response) throws AsymmetricCryptoException {
         return ByteSpecification.encodeToString(adapter.generateResponseToken(response));
     }
 
@@ -154,7 +154,7 @@ public class TransportCryptoUtil {
      * @param response 客户端收到的，由服务端调用 {@link #prepareNegotiation} 方法的返回值
      * @return 是否合法
      */
-    public boolean verifyToken(KeyExchangeResponse response) throws AsymmetricCryptoException {
+    public boolean verifyToken(NegotiationResponse response) throws AsymmetricCryptoException {
         return adapter.verifyResponseToken(response);
     }
 

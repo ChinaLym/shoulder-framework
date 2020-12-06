@@ -23,6 +23,7 @@ public class NegotiationConstants {
 
     /**
      * 服务器缓存密钥过期头部响应标识
+     * 目前仅用于服务端响应时携带暗示客户端删除密钥交换缓存，重新握手
      */
     public static final String NEGOTIATION_INVALID_TAG = "Negotiation-Invalid-Tag";
 
