@@ -8,13 +8,11 @@ import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.service.ext.BatchTaskSliceHandler;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.JsonUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 处理人员校验
@@ -25,8 +23,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PersonBatchTaskSliceHandler implements BatchTaskSliceHandler {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private static final AtomicInteger idGenerator = new AtomicInteger(0);
 
     @SneakyThrows
     @SuppressWarnings("unchecked")
@@ -42,14 +38,11 @@ public class PersonBatchTaskSliceHandler implements BatchTaskSliceHandler {
 
             // 设置每条处理结果信息
             BatchRecordDetail result = new BatchRecordDetail();
-            result.setId(idGenerator.getAndIncrement())
-                    .setOperation(task.getOperationType())
-                    .setRecordId(UUID.randomUUID().toString())
-                    .setSource(JsonUtils.toJson(personRecord))
-                    .setRowNum(personRecord.getRowNum())
-                    .setStatus(BatchResultEnum.VALIDATE_SUCCESS.getCode());
+            result.setStatus(BatchResultEnum.IMPORT_SUCCESS.getCode());
+            // todo 目前还需要使用者设置，需要优化
+            result.setRowNum(personRecord.getRowNum());
 
-            if ((result.getId() % 3) == 0) {
+            if (ThreadLocalRandom.current().nextInt(4) % 3 == 0) {
                 result.setFailReason("随机失败几个");
                 result.setStatus(BatchResultEnum.VALIDATE_FAILED.getCode());
             }

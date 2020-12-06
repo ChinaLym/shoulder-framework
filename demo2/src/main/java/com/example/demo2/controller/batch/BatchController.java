@@ -1,6 +1,5 @@
-package com.example.demo2.controller;
+package com.example.demo2.controller.batch;
 
-import com.example.demo2.controller.batch.DemoBatchConstants;
 import com.example.demo2.dto.PersonRecord;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.batch.dto.param.ExecuteOperationParam;
@@ -17,8 +16,8 @@ import org.shoulder.batch.service.RecordService;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.dto.response.RestResult;
-import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +36,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  *
  * @author lym
  */
-@SkipResponseWrap // 跳过包装方便演示
 @RestController
 @RequestMapping("batch")
 public class BatchController {
@@ -69,12 +67,14 @@ public class BatchController {
 
         BatchData batchData = new BatchData();
         Map<String, List<? extends DataItem>> allWantProcessData = new HashMap<>();
-        batchData.setDataType(DemoBatchConstants.DATA_TYPE_PERSON);
         allWantProcessData.put(DemoBatchConstants.OPERATION_VALIDATE, mockUploadData);
+        batchData.setDataType(DemoBatchConstants.DATA_TYPE_PERSON);
+        batchData.setOperation(DemoBatchConstants.OPERATION_VALIDATE);
         batchData.setBatchListMap(allWantProcessData);
 
         // 示例：解析文件，然后校验，返回校验任务标识
         String taskId = batchService.doProcess(batchData);
+        System.out.println("可以在这里查询批处理进度:  http://localhost:8080/batch/progress?taskId=" + taskId);
         return RestResult.success(taskId);
     }
 
@@ -83,9 +83,9 @@ public class BatchController {
         for (int i = 0; i < num; i++) {
             PersonRecord fakerData = new PersonRecord();
             fakerData.setRowNum(i);
-            fakerData.setName(UUID.randomUUID().toString());
+            fakerData.setName(UUID.randomUUID().toString().substring(0, 6));
             fakerData.setAge(ThreadLocalRandom.current().nextInt(30) + 10);
-            fakerData.setSex((ThreadLocalRandom.current().nextInt(10) ^ 1) == 0 ? "男" : "女");
+            fakerData.setSex((ThreadLocalRandom.current().nextInt(10) % 2) == 0 ? "男" : "女");
             randomDataList.add(fakerData);
         }
         return randomDataList;
@@ -107,10 +107,10 @@ public class BatchController {
 
     /**
      * 查询数据导入进度
-     * http://localhost:8080/batch/validate?taskId=
+     * http://localhost:8080/batch/progress?taskId=
      */
     @RequestMapping(value = "progress", method = GET)
-    public RestResult<BatchProcessResult> queryOperationProcess(String taskId) {
+    public RestResult<BatchProcessResult> queryOperationProcess(@Nullable String taskId) {
         BatchProgress process = batchService.queryBatchProgress(taskId);
         return RestResult.success(BatchModelConvert.CONVERT.toDTO(process));
     }
@@ -122,7 +122,7 @@ public class BatchController {
 
     public RestResult<ListResult<BatchRecordResult>> queryImportRecord() {
         return RestResult.success(
-                Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
+                Stream.of(recordService.findLastRecord("dataType", AppContext.getUserName()))
                         .map(BatchModelConvert.CONVERT::toDTO).collect(Collectors.toList())
         );
     }
