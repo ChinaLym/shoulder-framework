@@ -28,6 +28,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableConfigurationProperties(OperationLogProperties.class)
 public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private OperationLogProperties operationLogProperties;
 
@@ -44,7 +46,6 @@ public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
             registry.addInterceptor(operationLogOperatorInfoInterceptor)
                 .order(operationLogProperties.getInterceptorOrder());
         } else {
-            Logger log = LoggerFactory.getLogger(getClass());
             log.warn("no found any OperationLogOperatorInfoInterceptor, " +
                 "will always use application.name as default operator.");
         }
@@ -59,6 +60,7 @@ public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
     @ConditionalOnProperty(name = "shoulder.log.operation.defaultOperatorInterceptor", havingValue = "enable",
         matchIfMissing = true)
     public OperationLogOperatorInfoInterceptor operationLogOperatorInfoInterceptor() {
+        log.info("use default operatorResolver: doNothing");
         return new CurrentContextOperatorInfoInterceptor();
     }
 }

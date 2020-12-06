@@ -15,13 +15,20 @@ public class SystemOperator implements Operator {
 
     // 系统用户各个字段不允许修改
 
-    private final String userId;
-    private final String ip;
+    private final String systemUserId;
+    private final String hostAddress;
     private final String mac;
 
-    private SystemOperator(String userId, String ip, String mac) {
-        this.userId = userId;
-        this.ip = ip;
+    /**
+     * 构造器
+     *
+     * @param systemUserId 服务标识
+     * @param hostAddress  本机地址
+     * @param mac          本机 MAC 地址
+     */
+    private SystemOperator(String systemUserId, String hostAddress, String mac) {
+        this.systemUserId = systemUserId;
+        this.hostAddress = hostAddress;
         this.mac = mac;
     }
 
@@ -37,12 +44,12 @@ public class SystemOperator implements Operator {
     @Nonnull
     @Override
     public String getUserId() {
-        return userId;
+        return systemUserId;
     }
 
     @Override
-    public String getIp() {
-        return ip;
+    public String getRemoteAddress() {
+        return hostAddress;
     }
 
     @Override

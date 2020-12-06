@@ -67,7 +67,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
         assertLengthLimit(log.getUserOrgId(), 128, "userOrgId");
         assertLengthLimit(log.getUserId(), 128, "userId");
         assertLengthLimit(log.getUserName(), 128, "userName");
-        assertLengthLimit(log.getIp(), 255, "ip");
+        assertLengthLimit(log.getRemoteAddress(), 255, "remoteAddress");
         assertLengthLimit(log.getTerminalId(), 128, "terminalId");
         assertLengthLimit(log.getObjectType(), 128, "objectType");
         assertLengthLimit(log.getObjectId(), 128, "objectId");

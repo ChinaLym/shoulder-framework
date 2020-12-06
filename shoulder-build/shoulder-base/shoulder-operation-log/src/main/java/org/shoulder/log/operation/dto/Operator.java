@@ -77,7 +77,7 @@ public interface Operator {
      * @return 处理机器/服务/docker 标识
      */
     @Nullable
-    default String getIp() {
+    default String getRemoteAddress() {
         return null;
     }
 
