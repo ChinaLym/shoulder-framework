@@ -258,13 +258,17 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.1</version>
+                <version>1.6.7</version>
                 <extensions>true</extensions>
 
                 <configuration>
                     <serverId>oss</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <stagingProfileId>xxx</stagingProfileId>
+                    <!--国内发布网络容易超时，设置长一点，1小时-->
+                    <stagingProgressTimeoutMinutes>60</stagingProgressTimeoutMinutes>
+                    <stagingDescription>preRelease</stagingDescription>
+                    <!-- 目标仓库 -->
+                    <!--<stagingRepositoryId>1078</stagingRepositoryId>-->
                     <!--<stagingDescription>preRelease</stagingDescription>-->
                 </configuration>
             </plugin>
