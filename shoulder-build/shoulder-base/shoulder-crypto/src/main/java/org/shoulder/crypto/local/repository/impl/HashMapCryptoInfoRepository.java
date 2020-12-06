@@ -1,14 +1,11 @@
 package org.shoulder.crypto.local.repository.impl;
 
-import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
+import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Nonnull;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 使用 hashMap 作为存储
@@ -19,33 +16,22 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HashMapCryptoInfoRepository implements LocalCryptoInfoRepository {
 
-    private final Map<String, List<LocalCryptoInfoEntity>> storage = new ConcurrentHashMap<>(1);
+    private volatile LocalCryptoMetaInfo tempLocalCryptoMetaInfo = null;
 
     @Override
-    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) {
-        List<LocalCryptoInfoEntity> algorithmList = storage.computeIfAbsent(aesInfo.getAppId(),
-            key -> new LinkedList<>());
-        algorithmList.add(aesInfo);
+    public void save(@Nonnull LocalCryptoMetaInfo aesInfo) {
+        tempLocalCryptoMetaInfo = aesInfo;
     }
 
     @Override
-    public LocalCryptoInfoEntity get(String appId, String markHeader) {
-        List<LocalCryptoInfoEntity> algorithmList = storage.get(appId);
-        if (CollectionUtils.isEmpty(algorithmList)) {
-            return null;
-        }
-        for (LocalCryptoInfoEntity localCryptoInfoEntity : algorithmList) {
-            if (localCryptoInfoEntity.getHeader().equals(markHeader)) {
-                return localCryptoInfoEntity;
-            }
-        }
-        return null;
+    public LocalCryptoMetaInfo get(String appId, String markHeader) {
+        return tempLocalCryptoMetaInfo;
     }
 
     @Override
     @Nonnull
-    public List<LocalCryptoInfoEntity> get(String appId) {
-        return storage.get(appId);
+    public List<LocalCryptoMetaInfo> get(String appId) {
+        return tempLocalCryptoMetaInfo == null ? Collections.emptyList() : Collections.singletonList(tempLocalCryptoMetaInfo);
     }
 
 }

@@ -21,10 +21,23 @@ public class CryptoProperties {
     private Map<String, KeyPairDto> keyPair;
 
     /**
+     * 对称加密相关配置
+     * todo 【扩展】本地存储加密元信息
+     */
+    private LocalCryptoProperties local;
+
+    /**
      * @deprecated 不支持也不推荐使用配置方式，推荐使用 @Bean 注入方式
      */
     private List<AsymmetricCryptoProperties> asymmetric;
 
+    @Data
+    public static class LocalCryptoProperties {
+        /**
+         * 加密元数据存储位置
+         */
+        private String metaInfoPath;
+    }
 
     @Data
     public static class AsymmetricCryptoProperties {

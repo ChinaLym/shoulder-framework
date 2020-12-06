@@ -21,7 +21,6 @@ public class CurrentContextOperatorInfoInterceptor extends OperationLogOperatorI
     @Override
     protected Operator resolveOperator(HttpServletRequest request) {
         ShoulderCurrentUserOperator operator = new ShoulderCurrentUserOperator(AppContext.getUserId());
-        // todo 设置客户端信息
         operator.setTerminalInfo(String.valueOf(AppContext.getLocale()));
         return operator;
     }

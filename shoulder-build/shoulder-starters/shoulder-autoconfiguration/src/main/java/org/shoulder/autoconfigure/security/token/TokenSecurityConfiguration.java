@@ -4,7 +4,6 @@ import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.ContextUtils;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
@@ -16,8 +15,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -26,8 +25,6 @@ import org.springframework.security.oauth2.server.resource.authentication.Opaque
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * token 模式下安全配置主类
@@ -70,6 +67,10 @@ public class TokenSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired(required = false)
     private OpaqueTokenAuthenticationProvider tokenAuthenticationProvider;
 
+    @Lazy
+    @Autowired
+    private AuthenticationManager authenticationManager = null;
+
     public TokenSecurityConfiguration() {
         // 提示使用了默认的，一般都是自定义
         Logger log = LoggerFactory.getLogger(getClass());
@@ -84,7 +85,7 @@ public class TokenSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     @ConditionalOnMissingBean
     public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+        return authenticationManager = super.authenticationManagerBean();
     }
 
     @Override
@@ -145,9 +146,7 @@ public class TokenSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // @formatter:on
         if (tokenAuthenticationProvider != null) {
-            // todo resolver 的解析方式
-            AuthenticationManagerResolver<HttpServletRequest> resolver = httpServletRequest -> ContextUtils.getBean(AuthenticationManager.class);
-            http.addFilter(new BearerTokenAuthenticationFilter(resolver))
+            http.addFilter(new BearerTokenAuthenticationFilter(authenticationManager))
                 .authenticationProvider(tokenAuthenticationProvider);
 
         }
