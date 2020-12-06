@@ -1,6 +1,5 @@
 package com.example.demo4;
 
-import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.autoconfigure.monitor.thread.MonitorableThreadPool;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author lym
  */
-@SpringBootApplication(exclude = I18nAutoConfiguration.class)
+@SpringBootApplication
 public class Demo4Application {
 
     public static void main(String[] args) {

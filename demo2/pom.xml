@@ -7,7 +7,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.5</version><!-- shoulder-version -->
+        <version>0.6-SNAPSHOT</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.example</groupId>
@@ -36,6 +36,11 @@
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-crypto</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-batch</artifactId>
         </dependency>
 
         <dependency>
