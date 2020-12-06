@@ -8,7 +8,7 @@ import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
  *
  * @author lym
  */
-public class KeyExchangeResponse implements Cloneable {
+public class NegotiationResponse implements Cloneable {
 
     /**
      * Header 中 会话标识
@@ -89,8 +89,8 @@ public class KeyExchangeResponse implements Cloneable {
     }
 
     @Override
-    public KeyExchangeResponse clone() {
-        KeyExchangeResponse cloned = new KeyExchangeResponse();
+    public NegotiationResponse clone() {
+        NegotiationResponse cloned = new NegotiationResponse();
         cloned.xSessionId = this.xSessionId;
         cloned.token = this.token;
         cloned.publicKey = this.publicKey;

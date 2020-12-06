@@ -169,3 +169,16 @@ class SendRequest {
 实现简单，但这种方案会造成序列化时都会触发，且依赖 `jackson`，若使用者未清楚定义 DTO 等类的职责可能会因json序列化/反序列化意外触发加解密
 
 ---
+
+拓展：
+
+- consultation 和 negotiation 和 discussion 有什么区别？
+    - consultation: 偏正式场所，正式协商或讨论的行动或过程，尤至诊所。
+    - negotiation: 谈判，谈论目标，且产生`双方都认可的结果`(`agreement`)，如砍价。
+    - discussion: 商讨，说出每个人不同的的观点、想法，如开会讨论、探讨。
+
+- 为什么一些地方也叫 key agreement、key negotiation？
+    - key agreement，协商的密钥，尤其至协商完毕的共识密钥。
+    - key negotiation，密钥协商的过程。
+
+

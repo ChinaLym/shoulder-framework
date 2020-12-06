@@ -25,7 +25,6 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.crypto.LocalCryptoAutoConfiguration,\
   org.shoulder.autoconfigure.crypto.AsymmetricCryptoAutoConfiguration,\
   org.shoulder.autoconfigure.crypto.TransportCryptoAutoConfiguration, \
-  org.shoulder.autoconfigure.crypto.CryptoFacadeAutoConfiguration, \
   org.shoulder.autoconfigure.crypto.SecurityHttpAutoConfiguration, \
   \
   org.shoulder.autoconfigure.db.mybatis.MybatisPlusAutoConfiguration, \

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author lym
  */
-public class RedisKeyNegotiationCache implements KeyNegotiationCache {
+public class RedisNegotiationCache implements NegotiationCache {
 
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -30,12 +30,12 @@ public class RedisKeyNegotiationCache implements KeyNegotiationCache {
      */
     private final String serverKeyPrefix;
 
-    public RedisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate) {
+    public RedisNegotiationCache(RedisTemplate<String, Object> redisTemplate) {
         this(redisTemplate, DEFAULT_CLIENT_KEY_PREFIX, DEFAULT_SERVER_KEY_PREFIX);
     }
 
-    public RedisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate,
-                                    String clientKeyPrefix, String serverKeyPrefix) {
+    public RedisNegotiationCache(RedisTemplate<String, Object> redisTemplate,
+                                 String clientKeyPrefix, String serverKeyPrefix) {
         this.redisTemplate = redisTemplate;
         this.clientKeyPrefix = clientKeyPrefix;
         this.serverKeyPrefix = serverKeyPrefix;

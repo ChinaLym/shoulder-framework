@@ -4,18 +4,22 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
+import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
+import org.shoulder.http.AppIdExtractor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.lang.Nullable;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
@@ -26,6 +30,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 安全的 restTemplate，用于安全传输带私密字段的请求
@@ -39,15 +44,21 @@ public class SecurityRestTemplate extends RestTemplate {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityRestTemplate.class);
 
+    private static final ThreadLocal<URI> URI_LOCAL = new ThreadLocal<>();
+
     private final TransportNegotiationService transportNegotiationService;
 
     private final TransportCryptoUtil cryptoUtil;
 
-    private static final ThreadLocal<URI> URI_LOCAL = new ThreadLocal<>();
+    private final NegotiationCache negotiationCache;
 
-    public SecurityRestTemplate(TransportNegotiationService transportNegotiationService, TransportCryptoUtil cryptoUtil) {
+    private final AppIdExtractor appIdExtractor;
+
+    public SecurityRestTemplate(TransportNegotiationService transportNegotiationService, TransportCryptoUtil cryptoUtil, NegotiationCache negotiationCache, AppIdExtractor appIdExtractor) {
         this.transportNegotiationService = transportNegotiationService;
         this.cryptoUtil = cryptoUtil;
+        this.negotiationCache = negotiationCache;
+        this.appIdExtractor = appIdExtractor;
     }
 
     @Override
@@ -62,6 +73,22 @@ public class SecurityRestTemplate extends RestTemplate {
         // 确保已经交换密钥，增强
         URI_LOCAL.set(uri);
         T result = super.doExecute(uri, method, requestCallback, responseExtractor);
+        if (result instanceof ResponseEntity) {
+            HttpHeaders responseHeaders = ((ResponseEntity) result).getHeaders();
+            List<String> negotiationInvalidHeader = responseHeaders.get(NegotiationConstants.NEGOTIATION_INVALID_TAG);
+            if (!CollectionUtils.isEmpty(negotiationInvalidHeader)) {
+                // 若包含协商缓存无效 / 过期的标记，则清理缓存，并重新发送请求
+                //negotiationInvalidHeader.contains(NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode());
+                String aimServiceAppId = appIdExtractor.extract(uri);
+                // 仅删除密钥交换缓存即可，因为加密器缓存已经在请求前清理。SensitiveRequestDecryptHandlerInterceptor 中有删除，这里也执行，因为删除是幂等的
+                negotiationCache.delete(aimServiceAppId, true);
+                NegotiationCache.CLIENT_LOCAL_CACHE.remove();
+                NegotiationCache.CLIENT_LOCAL_CACHE.remove();
+                log.info("sensitive request FAIL for response with a invalid negotiation(xSessionId) mark, negotiate and retry once.");
+                // 重新执行一次即可，此时已经将密钥交换缓存删除，将发起密钥交换
+                result = super.doExecute(uri, method, requestCallback, responseExtractor);
+            }
+        }
         URI_LOCAL.remove();
         return result;
     }
@@ -121,7 +148,7 @@ public class SecurityRestTemplate extends RestTemplate {
             NegotiationResult negotiationResult = null;
             while (negotiationResult == null) {
                 negotiationResult = negotiate(uri, time);
-                KeyNegotiationCache.CLIENT_LOCAL_CACHE.set(negotiationResult);
+                NegotiationCache.CLIENT_LOCAL_CACHE.set(negotiationResult);
                 time++;
             }
 

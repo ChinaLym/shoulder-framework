@@ -2,7 +2,7 @@ package org.shoulder.autoconfigure.crypto;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.autoconfigure.http.HttpAutoConfiguration;
-import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationCache;
 import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.support.client.SensitiveRequestEncryptMessageConverter;
 import org.shoulder.crypto.negotiation.support.client.SensitiveResponseDecryptInterceptor;
@@ -37,9 +37,9 @@ public class SecurityHttpAutoConfiguration {
     public SecurityRestTemplate securityRestTemplate(TransportNegotiationService transportNegotiationService,
                                                      TransportCryptoUtil cryptoUtil,
                                                      @Nullable List<ClientHttpRequestInterceptor> interceptors,
-                                                     KeyNegotiationCache keyNegotiationCache, AppIdExtractor appIdExtractor) {
+                                                     NegotiationCache negotiationCache, AppIdExtractor appIdExtractor) {
 
-        SecurityRestTemplate securityRestTemplate = new SecurityRestTemplate(transportNegotiationService, cryptoUtil);
+        SecurityRestTemplate securityRestTemplate = new SecurityRestTemplate(transportNegotiationService, cryptoUtil, negotiationCache, appIdExtractor);
         // ClientHttpRequestInterceptor
         if (CollectionUtils.isNotEmpty(interceptors)) {
             List<ClientHttpRequestInterceptor> existConverters = securityRestTemplate.getInterceptors();
@@ -49,7 +49,7 @@ public class SecurityHttpAutoConfiguration {
             if (CollectionUtils.isNotEmpty(toAdd)) {
                 List<ClientHttpRequestInterceptor> newInterceptors = new ArrayList<>(existConverters.size() + toAdd.size());
                 // 根据 order 排序，order 小的在前面
-                newInterceptors.add(new SensitiveResponseDecryptInterceptor(cryptoUtil, keyNegotiationCache, appIdExtractor));
+                newInterceptors.add(new SensitiveResponseDecryptInterceptor(cryptoUtil, negotiationCache, appIdExtractor));
                 newInterceptors.addAll(existConverters);
                 newInterceptors.addAll(toAdd);
                 newInterceptors.sort((interceptor1, interceptor2) -> {

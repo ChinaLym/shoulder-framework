@@ -2,7 +2,7 @@ package org.shoulder.crypto.negotiation.support.client;
 
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.negotiation.cache.KeyNegotiationCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
@@ -37,17 +37,17 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
 
     private static final Logger log = LoggerFactory.getLogger(SensitiveResponseDecryptInterceptor.class);
 
-    private TransportCryptoUtil transportCryptoUtil;
+    private final TransportCryptoUtil transportCryptoUtil;
 
-    private KeyNegotiationCache keyNegotiationCache;
+    private final NegotiationCache negotiationCache;
 
     private final AppIdExtractor appIdExtractor;
 
 
     public SensitiveResponseDecryptInterceptor(TransportCryptoUtil transportCryptoUtil,
-                                               KeyNegotiationCache keyNegotiationCache, AppIdExtractor appIdExtractor) {
+                                               NegotiationCache negotiationCache, AppIdExtractor appIdExtractor) {
         this.transportCryptoUtil = transportCryptoUtil;
-        this.keyNegotiationCache = keyNegotiationCache;
+        this.negotiationCache = negotiationCache;
         this.appIdExtractor = appIdExtractor;
     }
 
@@ -61,15 +61,15 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
         // 若包含协商缓存无效 / 过期的标记，则清理缓存（服务提供方发生重启等导致密钥缓存提前过期）注意，应该要支持多种方式判断，如多个错误码，响应 httpCode 等
         List<String> negotiationInvalidHeader = response.getHeaders().get(NegotiationConstants.NEGOTIATION_INVALID_TAG);
         if (!CollectionUtils.isEmpty(negotiationInvalidHeader)) {
-            //if (negotiationInvalidHeader.contains(NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode())) {
+            // if (negotiationInvalidHeader.contains(NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode())) {
             String aimServiceAppId = appIdExtractor.extract(request.getURI());
-            keyNegotiationCache.delete(aimServiceAppId, true);
-            KeyNegotiationCache.CLIENT_LOCAL_CACHE.remove();
-            log.warn("sensitive request FAIL, responseStatus:" + response.getStatusText());
-            //} else {
+            negotiationCache.delete(aimServiceAppId, true);
+            NegotiationCache.CLIENT_LOCAL_CACHE.remove();
+            log.warn("sensitive request FAIL for response with a invalid negotiation(xSessionId) mark, clean the negotiation cache.");
+            // } else {
             // 对方未遵守约定，只返回了标记，未返回错误码
-            //    log.warn("invalid response");
-            //}
+            //     log.warn("invalid response");
+            // }
         }
 
         HttpHeaders headers = response.getHeaders();
@@ -85,12 +85,12 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
         // 确定为加密的响应拦截
         // 1. 验证服务端签名
         try {
-            if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, KeyNegotiationCache.CLIENT_LOCAL_CACHE.get().getPublicKey())) {
+            if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, NegotiationCache.CLIENT_LOCAL_CACHE.get().getPublicKey())) {
                 throw new RuntimeException("security token validate fail!");
             }
 
             // 2. 获取本次请求真正的数据密钥
-            NegotiationResult keyExchangeInfo = KeyNegotiationCache.CLIENT_LOCAL_CACHE.get();
+            NegotiationResult keyExchangeInfo = NegotiationCache.CLIENT_LOCAL_CACHE.get();
             if (keyExchangeInfo == null) {
                 throw new IllegalStateException("keyExchangeInfo can't be null!");
             }
@@ -107,7 +107,7 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
             throw new RuntimeException("Decrypt xDk fail!", e);
         } finally {
             // 清理线程变量
-            KeyNegotiationCache.CLIENT_LOCAL_CACHE.remove();
+            NegotiationCache.CLIENT_LOCAL_CACHE.remove();
         }
         return response;
     }
