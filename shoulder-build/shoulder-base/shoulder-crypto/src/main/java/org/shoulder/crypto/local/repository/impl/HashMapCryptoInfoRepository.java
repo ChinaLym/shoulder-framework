@@ -19,18 +19,22 @@ public class HashMapCryptoInfoRepository implements LocalCryptoInfoRepository {
     private volatile LocalCryptoMetaInfo tempLocalCryptoMetaInfo = null;
 
     @Override
-    public void save(@Nonnull LocalCryptoMetaInfo aesInfo) {
-        tempLocalCryptoMetaInfo = aesInfo;
+    public void save(@Nonnull LocalCryptoMetaInfo localCryptoMetaInfo) {
+        tempLocalCryptoMetaInfo = localCryptoMetaInfo;
     }
 
     @Override
-    public LocalCryptoMetaInfo get(String appId, String markHeader) {
-        return tempLocalCryptoMetaInfo;
+    public LocalCryptoMetaInfo get(@Nonnull String appId, @Nonnull String markHeader) {
+        if (tempLocalCryptoMetaInfo != null && tempLocalCryptoMetaInfo.getHeader().equals(markHeader)) {
+            return tempLocalCryptoMetaInfo;
+        }
+        // 其实不可能走到这步
+        return null;
     }
 
     @Override
     @Nonnull
-    public List<LocalCryptoMetaInfo> get(String appId) {
+    public List<LocalCryptoMetaInfo> get(@Nonnull String appId) {
         return tempLocalCryptoMetaInfo == null ? Collections.emptyList() : Collections.singletonList(tempLocalCryptoMetaInfo);
     }
 

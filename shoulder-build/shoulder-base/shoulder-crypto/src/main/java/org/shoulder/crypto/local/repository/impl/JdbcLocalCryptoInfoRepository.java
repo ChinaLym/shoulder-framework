@@ -84,13 +84,13 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    public void save(@Nonnull LocalCryptoMetaInfo aesInfo) {
+    public void save(@Nonnull LocalCryptoMetaInfo localCryptoMetaInfo) {
         // 使用唯一索引保证一致性
-        jdbcTemplate.update(insertSql, getAllFields(aesInfo));
+        jdbcTemplate.update(insertSql, getAllFields(localCryptoMetaInfo));
     }
 
     @Override
-    public LocalCryptoMetaInfo get(String appId, String markHeader) {
+    public LocalCryptoMetaInfo get(@Nonnull String appId, @Nonnull String markHeader) {
         try {
             Object[] whereFields = new Object[]{appId, markHeader};
             return jdbcTemplate.queryForObject(selectSingleSql, rowMapper, whereFields);
@@ -102,7 +102,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     @Override
     @Nonnull
-    public List<LocalCryptoMetaInfo> get(String appId) {
+    public List<LocalCryptoMetaInfo> get(@Nonnull String appId) {
         try {
             Object[] whereFields = new Object[]{appId};
             return jdbcTemplate.query(selectBatchSql, rowMapper, whereFields);

@@ -17,10 +17,10 @@ public interface LocalCryptoInfoRepository {
     /**
      * 保存加密信息
      *
-     * @param aesInfo 待保存的的加密信息
-     * @throws Exception when aesInfo persist fail.
+     * @param localCryptoMetaInfo 待保存的的加密信息
+     * @throws Exception when localCryptoMetaInfo persist fail.
      */
-    void save(@Nonnull LocalCryptoMetaInfo aesInfo) throws Exception;
+    void save(@Nonnull LocalCryptoMetaInfo localCryptoMetaInfo) throws Exception;
 
     /**
      * 获取特定的加密信息
@@ -28,7 +28,7 @@ public interface LocalCryptoInfoRepository {
      * @return AesInfoEntity
      */
     @Nullable
-    LocalCryptoMetaInfo get(String appId, String markHeader) throws Exception;
+    LocalCryptoMetaInfo get(@Nonnull String appId, @Nonnull String markHeader) throws Exception;
 
     /**
      * 获取加密信息
@@ -37,6 +37,6 @@ public interface LocalCryptoInfoRepository {
      * @return List<AesInfoEntity>
      */
     @Nonnull
-    List<LocalCryptoMetaInfo> get(String appId) throws Exception;
+    List<LocalCryptoMetaInfo> get(@Nonnull String appId) throws Exception;
 
 }
