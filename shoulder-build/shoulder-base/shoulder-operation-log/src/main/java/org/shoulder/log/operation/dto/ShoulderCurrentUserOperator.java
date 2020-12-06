@@ -23,7 +23,7 @@ public class ShoulderCurrentUserOperator implements Serializable, Operator {
 
     protected String userId;
     protected String userRealName;
-    protected String ip;
+    protected String remoteAddress;
     protected TerminalType terminalType = TerminalType.UNKNOWN;
     protected String terminalId;
     protected String terminalInfo;
