@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * AES加解密相关密钥对存储
+ * 本地存储加解密-元信息，包含根密钥等
  *
  * @author lym
  */
-public class LocalCryptoInfoEntity implements Serializable {
+public class LocalCryptoMetaInfo implements Serializable {
 
     /**
      * 应用标识
@@ -40,11 +40,11 @@ public class LocalCryptoInfoEntity implements Serializable {
      */
     private Date createTime;
 
-    public LocalCryptoInfoEntity() {
+    public LocalCryptoMetaInfo() {
     }
 
-    public LocalCryptoInfoEntity(String appId, String dataKey, String rootKeyPart, String vector,
-                                 String header, Date createTime) {
+    public LocalCryptoMetaInfo(String appId, String dataKey, String rootKeyPart, String vector,
+                               String header, Date createTime) {
         this.appId = appId;
         this.dataKey = dataKey;
         this.rootKeyPart = rootKeyPart;

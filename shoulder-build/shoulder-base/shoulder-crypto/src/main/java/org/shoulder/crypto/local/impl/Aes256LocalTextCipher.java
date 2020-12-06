@@ -8,7 +8,7 @@ import org.shoulder.crypto.digest.Sha256Utils;
 import org.shoulder.crypto.exception.CipherRuntimeException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
-import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
+import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +26,10 @@ import java.util.*;
  * <p> 理论：
  * 加解密：将 dataKey作为密钥, dataIv作为偏移向量，使用 AES256 算法将敏感数据 data 加解密。即由本类职责。
  * 由上可知，加解密依赖 dataKey 和 dataIv	，因此需要保证每次启动时可以拿到 dataKey 与 dataIv，且dataKey必须被保护。
- * dataKey 与 dataIv 的存取方式：该职责由 {@link LocalCryptoInfoRepository} 和 {@link LocalCryptoInfoEntity}负责实现。
+ * dataKey 与 dataIv 的存取方式：该职责由 {@link LocalCryptoInfoRepository} 和 {@link LocalCryptoMetaInfo}负责实现。
  * 数据密钥 dataKey 的保护：Aes256(dataKey, SHA256(rootKey, random), rootKeyIv)，保护方式同敏感数据，由另一个密钥 rootKey 和一个加密向量保护，同样为
  * Aes256算法。
- * rootKey、rootKeyIv 的保存一样由 {@link LocalCryptoInfoRepository} 和 {@link LocalCryptoInfoEntity}负责实现。
+ * rootKey、rootKeyIv 的保存一样由 {@link LocalCryptoInfoRepository} 和 {@link LocalCryptoMetaInfo}负责实现。
  * rootKey 的保护：持久化的值为 SHA256(rootKey, random) 而不是 rootKey 本身
  * rootKey 的生成：32个字符即 256位，详见 {@link Aes256LocalTextCipher#generateDataKeyProtectKey}
  *
@@ -216,7 +216,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
      * @return 是否加载成功
      */
     private boolean loadSecurityInfo() throws AesCryptoException {
-        List<LocalCryptoInfoEntity> aesInfos;
+        List<LocalCryptoMetaInfo> aesInfos;
         try {
             // get All aesInfo
             aesInfos = aesInfoRepository.get(appId);
@@ -244,9 +244,9 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
     private void initSecurityInfo() throws Exception {
         try {
             log.info("LocalCrypto-init:Try create new LocalCrypto BaseInfo...");
-            LocalCryptoInfoEntity localCryptoInfoEntity = generateSecurity();
-            aesInfoRepository.save(localCryptoInfoEntity);
-            CacheManager.addToCacheMap(localCryptoInfoEntity);
+            LocalCryptoMetaInfo localCryptoMetaInfo = generateSecurity();
+            aesInfoRepository.save(localCryptoMetaInfo);
+            CacheManager.addToCacheMap(localCryptoMetaInfo);
             log.info("LocalCrypto-init:Create new LocalCrypto BaseInfo success!");
         } catch (Exception e) {
             log.error("LocalCrypto-init:Persistent BaseInfo Fail!", e);
@@ -262,7 +262,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
      *
      * @return 本应用加密记录
      */
-    private LocalCryptoInfoEntity generateSecurity() throws AesCryptoException {
+    private LocalCryptoMetaInfo generateSecurity() throws AesCryptoException {
         byte[] rootKeyRandomPart = ByteUtils.randomBytes(ROOT_KEY_RANDOM_LENGTH);
         String rootKeyRandomPartStr = ByteSpecification.encodeToString(rootKeyRandomPart);
         byte[] rootKey = generateDataKeyProtectKey(rootKeyRandomPart);
@@ -272,7 +272,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         String dbDataKey = ByteSpecification.encodeToString(AesUtil.encrypt(dataKey, rootKey, DATA_KEY_IV));
         String initVector = ByteSpecification.encodeToString(dataKeyIv);
 
-        LocalCryptoInfoEntity entity = new LocalCryptoInfoEntity();
+        LocalCryptoMetaInfo entity = new LocalCryptoMetaInfo();
         entity.setAppId(appId);
         entity.setHeader(ALGORITHM_HEADER);
         entity.setDataKey(dbDataKey);
@@ -317,7 +317,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
          * @param aesInfoEntity 不为 null
          * @throws AesCryptoException 转化失败
          */
-        private static void addToCacheMap(LocalCryptoInfoEntity aesInfoEntity) throws AesCryptoException {
+        private static void addToCacheMap(LocalCryptoMetaInfo aesInfoEntity) throws AesCryptoException {
             addToCacheMap(Collections.singletonList(aesInfoEntity));
         }
 
@@ -327,8 +327,8 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
          * @param aesInfoList 不为空
          * @throws AesCryptoException 转化失败
          */
-        private static void addToCacheMap(List<LocalCryptoInfoEntity> aesInfoList) throws AesCryptoException {
-            for (LocalCryptoInfoEntity aesInfo : aesInfoList) {
+        private static void addToCacheMap(List<LocalCryptoMetaInfo> aesInfoList) throws AesCryptoException {
+            for (LocalCryptoMetaInfo aesInfo : aesInfoList) {
                 cacheMap.put(aesInfo.getHeader(), convertToCache(aesInfo));
             }
             initialized = true;
@@ -336,7 +336,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
         // keep singleTon ------------------------
 
-        private static AesInfoCache convertToCache(LocalCryptoInfoEntity entity) throws AesCryptoException {
+        private static AesInfoCache convertToCache(LocalCryptoMetaInfo entity) throws AesCryptoException {
             String rootKeyRandomPartStr = entity.getRootKeyPart();
             byte[] rootKeyRandomPart = ByteSpecification.decodeToBytes(rootKeyRandomPartStr);
 

@@ -1,13 +1,17 @@
 package org.shoulder.crypto.local.repository.impl;
 
-import org.shoulder.core.context.AppInfo;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
+import org.shoulder.core.util.StringUtils;
+import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.springframework.util.ClassUtils;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -23,12 +27,10 @@ import java.util.stream.Collectors;
  */
 public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
-    public static final String DEFAULT_FILE_NAME = "_shoulder_aesInfo.json";
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-    /**
-     * 存储文件名称
-     */
-    private final String fileName;
+    private static final String DEFAULT_FILE_NAME = "_shoulder_aesInfo.json";
+
     /**
      * 存储文件字符集
      */
@@ -36,30 +38,46 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     /**
      * 文件存储路径
      */
-    private String aesInfoPath;
+    private String rootKeyInfoPath;
 
-    public FileLocalCryptoInfoRepository() {
-        this(
-            ClassUtils.getDefaultClassLoader().getResource("").getPath(),
-            DEFAULT_FILE_NAME,
-            AppInfo.charset()
-        );
-    }
 
-    public FileLocalCryptoInfoRepository(String aesInfoPath, String fileName, Charset charset) {
-        this.aesInfoPath = aesInfoPath;
-        this.fileName = fileName;
+    public FileLocalCryptoInfoRepository(String rootKeyInfoPath, Charset charset) {
+        this.rootKeyInfoPath = StringUtils.isEmpty(rootKeyInfoPath) ? getDefaultFilePath() : rootKeyInfoPath;
         this.charset = charset;
     }
 
+    private String getDefaultFilePath() {
+        String defaultPath = ClassUtils.getDefaultClassLoader().getResource("").getPath() + DEFAULT_FILE_NAME;
+        log.warn("no available localCrypto.MetaInfoFilePath config config, use default: {}. ", defaultPath);
+        // windows 系统下，去掉 '/c:/xx' 前缀，改为 'c:/xx'，避免 Path.class 不支持的情况
+        return new File(defaultPath).getAbsolutePath();
+    }
+
     @Override
-    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) throws IOException {
-        String jsonStr = JsonUtils.toJson(aesInfo);
+    public synchronized void save(@Nonnull LocalCryptoMetaInfo aesInfo) throws IOException {
+        // 先取出所有
+        List<LocalCryptoMetaInfo> allExists = getAll();
+        boolean add = true;
+        // 如果存在则更新
+        for (int i = 0; i < allExists.size(); i++) {
+            LocalCryptoMetaInfo existsMetaInfo = allExists.get(i);
+            if (existsMetaInfo.getAppId().equals(aesInfo.getAppId()) && existsMetaInfo.getHeader().equals(aesInfo.getHeader())) {
+                allExists.set(i, aesInfo);
+                add = false;
+                break;
+            }
+        }
+        // 不存在则添加
+        if (add) {
+            allExists.add(aesInfo);
+        }
+        // 整体保存
+        String jsonStr = JsonUtils.toJson(allExists);
         Files.write(getFilePath(), jsonStr.getBytes(charset));
     }
 
     @Override
-    public LocalCryptoInfoEntity get(String appId, String markHeader) {
+    public LocalCryptoMetaInfo get(String appId, String markHeader) {
         return getAll().stream()
             .filter(info -> appId.equals(info.getAppId()) && markHeader.equals(info.getHeader()))
             .findFirst().orElse(null);
@@ -67,23 +85,30 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     @Override
     @Nonnull
-    public List<LocalCryptoInfoEntity> get(String appId) {
-        return getAll().stream().filter(info -> appId.equals(info.getAppId())).collect(Collectors.toList());
+    public List<LocalCryptoMetaInfo> get(String appId) {
+        return getAll().stream()
+            .filter(info -> appId.equals(info.getAppId()))
+            .collect(Collectors.toList());
     }
 
     private Path getFilePath() throws IOException {
-        Path fileLocation = Paths.get(aesInfoPath);
+        Path fileLocation = Paths.get(rootKeyInfoPath);
         if (Files.notExists(fileLocation)) {
-            Files.createDirectories(fileLocation);
+            synchronized (this) {
+                if (Files.notExists(fileLocation)) {
+                    Files.createFile(fileLocation);
+                }
+            }
         }
-        return fileLocation.resolve(fileName);
+        return fileLocation;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<LocalCryptoInfoEntity> getAll() {
+    private List<LocalCryptoMetaInfo> getAll() {
         try {
-            String jsonStr = Files.readString(getFilePath(), charset);
-            return (List<LocalCryptoInfoEntity>) JsonUtils.toObject(jsonStr, List.class, LocalCryptoInfoEntity.class);
+            Path path = getFilePath();
+            String jsonStr = Files.readString(path, charset);
+            return JsonUtils.toObject(jsonStr, new TypeReference<>() {
+            });
         } catch (IOException e) {
             // 大概率文件路径有问题，不可读
             throw new BaseRuntimeException(e);

@@ -1,6 +1,6 @@
 package org.shoulder.crypto.local.repository.impl;
 
-import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
+import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -51,7 +51,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     private JdbcTemplate jdbcTemplate;
 
-    private RowMapper<LocalCryptoInfoEntity> rowMapper = new AesInfoRowMapper();
+    private RowMapper<LocalCryptoMetaInfo> rowMapper = new AesInfoRowMapper();
 
     private String selectBatchSql = SELECT_BATCH_STATEMENT;
 
@@ -67,7 +67,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void setRowMapper(RowMapper<LocalCryptoInfoEntity> rowMapper) {
+    public void setRowMapper(RowMapper<LocalCryptoMetaInfo> rowMapper) {
         this.rowMapper = rowMapper;
     }
 
@@ -84,13 +84,13 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) {
+    public void save(@Nonnull LocalCryptoMetaInfo aesInfo) {
         // 使用唯一索引保证一致性
         jdbcTemplate.update(insertSql, getAllFields(aesInfo));
     }
 
     @Override
-    public LocalCryptoInfoEntity get(String appId, String markHeader) {
+    public LocalCryptoMetaInfo get(String appId, String markHeader) {
         try {
             Object[] whereFields = new Object[]{appId, markHeader};
             return jdbcTemplate.queryForObject(selectSingleSql, rowMapper, whereFields);
@@ -102,7 +102,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     @Override
     @Nonnull
-    public List<LocalCryptoInfoEntity> get(String appId) {
+    public List<LocalCryptoMetaInfo> get(String appId) {
         try {
             Object[] whereFields = new Object[]{appId};
             return jdbcTemplate.query(selectBatchSql, rowMapper, whereFields);
@@ -111,7 +111,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         }
     }
 
-    protected Object[] getAllFields(LocalCryptoInfoEntity aesInfo) {
+    protected Object[] getAllFields(LocalCryptoMetaInfo aesInfo) {
         return new Object[]{
             aesInfo.getAppId(),
             aesInfo.getHeader(),
@@ -122,18 +122,18 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         };
     }
 
-    protected Object[] getWhereFields(LocalCryptoInfoEntity aesInfo) {
+    protected Object[] getWhereFields(LocalCryptoMetaInfo aesInfo) {
         return new Object[]{
             aesInfo.getAppId(),
             aesInfo.getHeader()
         };
     }
 
-    private static class AesInfoRowMapper implements RowMapper<LocalCryptoInfoEntity> {
+    private static class AesInfoRowMapper implements RowMapper<LocalCryptoMetaInfo> {
 
         @Override
-        public LocalCryptoInfoEntity mapRow(@Nonnull ResultSet rs, int rowNum) throws SQLException {
-            LocalCryptoInfoEntity entity = new LocalCryptoInfoEntity();
+        public LocalCryptoMetaInfo mapRow(@Nonnull ResultSet rs, int rowNum) throws SQLException {
+            LocalCryptoMetaInfo entity = new LocalCryptoMetaInfo();
             entity.setAppId(rs.getString(0));
             entity.setHeader(rs.getString(1));
             entity.setDataKey(rs.getString(2));

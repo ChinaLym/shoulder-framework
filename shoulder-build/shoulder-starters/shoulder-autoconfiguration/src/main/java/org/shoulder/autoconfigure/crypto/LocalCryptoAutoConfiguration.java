@@ -15,6 +15,7 @@ import org.shoulder.crypto.local.repository.impl.FileLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.JdbcLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.RedisLocalCryptoInfoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -90,9 +91,13 @@ public class LocalCryptoAutoConfiguration {
         return new LocalTextCipherManager(judgeAbleLocalTextCiphers);
     }
 
+    @EnableConfigurationProperties(CryptoProperties.class)
     @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
     @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "file", matchIfMissing = true)
     public static class TempFileLocalCryptoInfoRepositoryAutoConfiguration {
+
+        @Autowired
+        private CryptoProperties cryptoProperties;
 
         /**
          * 默认使用启动路径下的文件作为密钥部件存储
@@ -101,12 +106,15 @@ public class LocalCryptoAutoConfiguration {
          */
         @Bean
         public LocalCryptoInfoRepository fileLocalCryptoInfoRepository() {
-            log.warn("No LocalCryptoInfoRepository available,  fallback to FileLocalCryptoInfoRepository, " +
-                    "storage in your project path, file named {}. " +
-                    "Consider create a bean(JdbcLocalCryptoInfoRepository.class) for better security.",
-                FileLocalCryptoInfoRepository.DEFAULT_FILE_NAME);
-
-            return new FileLocalCryptoInfoRepository();
+            CryptoProperties.LocalCryptoProperties localProperties = cryptoProperties.getLocal();
+            String fileDir = null;
+            if (localProperties != null) {
+                fileDir = localProperties.getMetaInfoPath();
+            } else {
+                log.warn("No LocalCryptoInfoRepository available,  fallback to FileLocalCryptoInfoRepository. " +
+                    "Consider create a bean(JdbcLocalCryptoInfoRepository.class) for better persistent and security.");
+            }
+            return new FileLocalCryptoInfoRepository(fileDir, AppInfo.charset());
         }
     }
 

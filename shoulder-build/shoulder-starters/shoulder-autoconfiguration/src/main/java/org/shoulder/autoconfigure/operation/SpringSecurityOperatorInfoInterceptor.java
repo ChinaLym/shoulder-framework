@@ -3,6 +3,7 @@ package org.shoulder.autoconfigure.operation;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.dto.ShoulderCurrentUserOperator;
+import org.shoulder.log.operation.dto.SystemOperator;
 import org.shoulder.log.operation.enums.TerminalType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,8 +26,10 @@ public class SpringSecurityOperatorInfoInterceptor extends OperationLogOperatorI
     @Override
     protected Operator resolveOperator(HttpServletRequest request) {
         ShoulderCurrentUserOperator operator = new ShoulderCurrentUserOperator();
-        // todo 设置客户端信息
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return SystemOperator.getInstance();
+        }
         operator.setUserId(authentication.getName());
         operator.setUserRealName(authentication.getName());
         Object details = authentication.getDetails();

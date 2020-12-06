@@ -1,6 +1,6 @@
 package org.shoulder.crypto.local.repository.impl;
 
-import org.shoulder.crypto.local.entity.LocalCryptoInfoEntity;
+import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.CollectionUtils;
@@ -32,7 +32,7 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
     }
 
     @Override
-    public void save(@Nonnull LocalCryptoInfoEntity aesInfo) {
+    public void save(@Nonnull LocalCryptoMetaInfo aesInfo) {
         boolean set = redisTemplate.opsForHash().putIfAbsent(getCacheId(), aesInfo.getHeader(), aesInfo);
         if (!set) {
             throw new IllegalStateException("appId, markHeader exist, maybe another instance has init.");
@@ -40,23 +40,23 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
     }
 
     @Override
-    public LocalCryptoInfoEntity get(String appId, String markHeader) {
-        return (LocalCryptoInfoEntity) redisTemplate.opsForHash().get(getCacheId(), markHeader);
+    public LocalCryptoMetaInfo get(String appId, String markHeader) {
+        return (LocalCryptoMetaInfo) redisTemplate.opsForHash().get(getCacheId(), markHeader);
     }
 
     @Override
     @Nonnull
-    public List<LocalCryptoInfoEntity> get(String appId) {
+    public List<LocalCryptoMetaInfo> get(String appId) {
         List<Object> objects = redisTemplate.opsForHash().values(getCacheId());
         if (CollectionUtils.isEmpty(objects)) {
             return Collections.emptyList();
         }
-        List<LocalCryptoInfoEntity> localCryptoInfoEntityList = new LinkedList<>();
+        List<LocalCryptoMetaInfo> localCryptoMetaInfoList = new LinkedList<>();
         for (Object obj : objects) {
-            LocalCryptoInfoEntity aesInfo = (LocalCryptoInfoEntity) obj;
-            localCryptoInfoEntityList.add(aesInfo);
+            LocalCryptoMetaInfo aesInfo = (LocalCryptoMetaInfo) obj;
+            localCryptoMetaInfoList.add(aesInfo);
         }
-        return localCryptoInfoEntityList;
+        return localCryptoMetaInfoList;
     }
 
 
