@@ -27,6 +27,7 @@ import java.util.Map;
  *
  * 需要完整的请求请按  https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-testing-with-running-server  这个文档使用即可
  */
+//@SpringBootTest // 测试前注意：为了提高测试类启动速度，默认未启动上下文，推荐另外运行一个服务，也方便debug
 public class AuthTest {
 
     private static final Logger log = LoggerFactory.getLogger(AuthTest.class);
@@ -92,7 +93,7 @@ public class AuthTest {
     }
 
     /**
-     * 测试认证后调用接口
+     * 测试认证后调用访问资源接口
      *
      * @see ProviderManager 根据传入的token认证
      * @see org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider 实际认证处理器

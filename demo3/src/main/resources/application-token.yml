@@ -3,9 +3,10 @@
 spring:
   application:
     name: demo3-token
-  redis:
-    host: ${REDIS_ADDR}
-    password: ${REDIS_PWD}
+
+#  redis:  # redis 地址，测试支持集群情况 cluster: false 时不需要
+#    host: ${REDIS_ADDR}     # 127.0.0.1:3306
+#    password: ${REDIS_PWD}  # xxx
 
 
 shoulder:
@@ -15,7 +16,11 @@ shoulder:
       responseType: json
 
     token:
-      store: jdbc  # token 放哪里
+      store: memory  # token 放哪里，支持 jdbc/redis/memory
 
   application:
-    cluster: true
+    cluster: false
+
+#  crypto:
+#    local:
+#      repository: redis # 将加密元数据放入 redis，避免集群情况下（cluster: true），每次重启导致非对称密钥对的解密失败
