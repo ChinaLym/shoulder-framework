@@ -7,6 +7,7 @@ import org.shoulder.core.util.StringUtils;
 import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -22,13 +23,13 @@ public class AppContext {
 
     private static final Logger log = LoggerFactory.getLogger(AppContext.class);
 
-    private static final ThreadLocal<Map<String, String>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(ShoulderContextKey.KEY_NUM));
+    private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(ShoulderContextKey.KEY_NUM));
 
     /**
-     * userId
+     * 获取 用户标识
      */
-    public static String getUserId() {
-        return get(ShoulderContextKey.JWT_KEY_USER_ID);
+    public static String getUserIdAsString() {
+        return (String) get(ShoulderContextKey.USER_ID);
     }
 
     /**
@@ -38,44 +39,17 @@ public class AppContext {
      */
     public static void setUserId(Object userId) {
         log.trace("setUserId ({})", userId);
-        set(ShoulderContextKey.JWT_KEY_USER_ID, String.valueOf(userId));
+        set(ShoulderContextKey.USER_ID, String.valueOf(userId));
     }
 
-    /**
-     * 设置用户标识
-     *
-     * @param userId 用户标识
-     */
-    public static void setUserId(String userId) {
-        set(ShoulderContextKey.JWT_KEY_USER_ID, userId);
-    }
-
-    /**
-     * 用户名 name
-     *
-     * @return 账户信息
-     */
-    public static String getAccount() {
-        return get(ShoulderContextKey.JWT_KEY_ACCOUNT);
-    }
-
-    /**
-     * 设用户账户
-     *
-     * @param account 设用户账户
-     */
-    public static void setAccount(String account) {
-        log.trace("setAccount ({})", account);
-        set(ShoulderContextKey.JWT_KEY_ACCOUNT, account);
-    }
 
     /**
      * 当前用户名称
      *
      * @return 账户信息
      */
-    public static String getName() {
-        return get(ShoulderContextKey.JWT_KEY_NAME);
+    public static String getUserName() {
+        return (String) get(ShoulderContextKey.USER_NAME);
     }
 
     /**
@@ -83,10 +57,31 @@ public class AppContext {
      *
      * @param name 用户名称
      */
-    public static void setName(String name) {
+    public static void setUserName(String name) {
         log.trace("setName ({})", name);
-        set(ShoulderContextKey.JWT_KEY_NAME, name);
+        set(ShoulderContextKey.USER_NAME, name);
     }
+
+
+    /**
+     * 获取认证凭证
+     *
+     * @return 认证凭证
+     */
+    public static Principal getAuthentication() {
+        return (Principal) get(ShoulderContextKey.AUTHENTICATION);
+    }
+
+    /**
+     * 设置认证凭证
+     *
+     * @param principal 认证凭证
+     */
+    public static void setAuthentication(Principal principal) {
+        log.trace("setToken ({})", principal);
+        set(ShoulderContextKey.AUTHENTICATION, principal);
+    }
+
 
     /**
      * 获取语言标识
@@ -94,7 +89,7 @@ public class AppContext {
      * @return 语言标识
      */
     public static Locale getLocale() {
-        return StringUtils.parseLocale(get(ShoulderContextKey.LOCALE));
+        return (Locale) get(ShoulderContextKey.LOCALE);
     }
 
     /**
@@ -104,26 +99,7 @@ public class AppContext {
      */
     public static void setLocale(@Nonnull Locale locale) {
         log.trace("setLocale ({})", locale);
-        set(ShoulderContextKey.LOCALE, locale.toString());
-    }
-
-    /**
-     * 获取认证 token
-     *
-     * @return token
-     */
-    public static String getToken() {
-        return get(ShoulderContextKey.HEADER_TOKEN);
-    }
-
-    /**
-     * 设置认证 token
-     *
-     * @param token 认证 token
-     */
-    public static void setToken(String token) {
-        log.trace("setToken ({})", token);
-        set(ShoulderContextKey.HEADER_TOKEN, token);
+        set(ShoulderContextKey.LOCALE, locale);
     }
 
     /**
@@ -132,7 +108,7 @@ public class AppContext {
      * @return 租户标识
      */
     public static String getTenantId() {
-        return get(ShoulderContextKey.TENANT);
+        return (String) get(ShoulderContextKey.TENANT);
     }
 
     /**
@@ -152,7 +128,7 @@ public class AppContext {
      * @return traceId
      */
     public static String getTranceId() {
-        return get(ShoulderContextKey.GRAY_VERSION);
+        return (String) get(ShoulderContextKey.TRACE_ID);
     }
 
     /**
@@ -161,7 +137,7 @@ public class AppContext {
      * @param tranceId 链路追踪标识
      */
     public static void setTranceId(String tranceId) {
-        set(ShoulderContextKey.GRAY_VERSION, tranceId);
+        set(ShoulderContextKey.TRACE_ID, tranceId);
     }
 
     /**
@@ -171,9 +147,9 @@ public class AppContext {
      * @return 值
      */
     @Nullable
-    public static String get(String key) {
-        Map<String, String> map = THREAD_LOCAL.get();
-        if (MapUtils.isNotEmpty(map)) {
+    public static Object get(String key) {
+        Map<String, Object> map = THREAD_LOCAL.get();
+        if (MapUtils.isEmpty(map)) {
             return null;
         }
         return map.get(key);
@@ -185,11 +161,11 @@ public class AppContext {
      * @param key   key，若 key 为空，则直接返回
      * @param value value
      */
-    public static void set(String key, @Nullable String value) {
+    public static void set(String key, @Nullable Object value) {
         if (StringUtils.isEmpty(key)) {
             return;
         }
-        Map<String, String> map = THREAD_LOCAL.get();
+        Map<String, Object> map = THREAD_LOCAL.get();
         if (map == null) {
             map = new HashMap<>();
             THREAD_LOCAL.set(map);
@@ -207,7 +183,7 @@ public class AppContext {
     /**
      * 清理上下文信息
      */
-    public static String remove(String key) {
+    public static Object remove(String key) {
         return THREAD_LOCAL.get() == null ? null : THREAD_LOCAL.get().remove(key);
     }
 
@@ -216,7 +192,7 @@ public class AppContext {
      *
      * @param contextMap 上下文属性
      */
-    public static void setAttributes(Map<String, String> contextMap) {
+    public static void setAttributes(Map<String, Object> contextMap) {
         THREAD_LOCAL.set(contextMap);
     }
 

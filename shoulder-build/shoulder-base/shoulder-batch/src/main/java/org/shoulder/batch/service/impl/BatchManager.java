@@ -99,7 +99,8 @@ public class BatchManager implements Runnable, ProgressAble {
 
 
     public BatchManager(BatchData batchData) {
-        this.userId = Long.valueOf(AppContext.getUserId());
+        String currentUserId = AppContext.getUserIdAsString();
+        this.userId = currentUserId == null ? 0 : Long.parseLong(currentUserId);
         this.languageId = AppContext.getLocale().toString();
         this.batchData = batchData;
         this.batchData.setSuccessList(ListUtils.emptyIfNull(batchData.getSuccessList()));
@@ -169,6 +170,7 @@ public class BatchManager implements Runnable, ProgressAble {
         this.result = BatchRecord.builder()
             .id(getTaskId())
             .dataType(batchData.getDataType())
+            .operation(batchData.getOperation())
             .totalNum(total)
             .createTime(new Date())
             .creator(userId)
@@ -182,7 +184,7 @@ public class BatchManager implements Runnable, ProgressAble {
                 .rowNum(i)
                 .build();
             // 这里认为 rowNum 唯一的，所以是 set，而非 add
-            detailList.set(i, detailItem);
+            detailList.add(detailItem);
         }
         this.result.setDetailList(detailList);
 
@@ -191,21 +193,30 @@ public class BatchManager implements Runnable, ProgressAble {
             for (DataItem dataItem : dataList) {
                 // 这里认为 total 是所有校验的数据，若 total = 100，则不可能有 rowNum > 100 的数据
                 detailList.get(dataItem.getRowNum())
+                    .setRowNum(dataItem.getRowNum())
+                    .setRecordId(getTaskId())
+                    .setOperation(operationType)
                     .setStatus(BatchResultEnum.VALIDATE_SUCCESS.getCode())
                     .setSource(convertObjectForExport(dataItem));
             }
         });
-        // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不处理的，校验失败无法处理的）
+        // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不处理的，校验失败无法处理的） todo 跳过状态定义
         for (DataItem dataItem : batchData.getSuccessList()) {
             result.getDetailList().get(dataItem.getRowNum())
+                .setRecordId(getTaskId())
+                .setRowNum(dataItem.getRowNum())
+                .setOperation(batchData.getOperation())
                 .setSource(convertObjectForExport(dataItem))
                 .setStatus(BatchResultEnum.SKIP_REPEAT.getCode());
         }
         for (DataItem dataItem : batchData.getFailList()) {
             // getFailReason 不可能为 null，否则就是使用者错误，未塞入错误原因
             result.getDetailList().get(dataItem.getRowNum())
+                .setRecordId(getTaskId())
+                .setRowNum(dataItem.getRowNum())
+                .setOperation(batchData.getOperation())
                 .setSource(convertObjectForExport(dataItem))
-                .setStatus(BatchResultEnum.SKIP_REPEAT.getCode())
+                .setStatus(BatchResultEnum.VALIDATE_FAILED.getCode())
                 .setFailReason(batchData.getFailReason().get(dataItem.getRowNum()));
         }
         log.info("Directly: success:{}, fail:{}", batchData.getSuccessList().size(), batchData.getFailList().size());
@@ -320,7 +331,10 @@ public class BatchManager implements Runnable, ProgressAble {
                 } else {
                     progress.addFail(1);
                 }
-                result.getDetailList().set(taskResultDetail.getRowNum(), taskResultDetail);
+                // 使用者只能修改处理结果和原因
+                result.getDetailList().get(taskResultDetail.getRowNum())
+                    .setStatus(taskResultDetail.getStatus())
+                    .setFailReason(taskResultDetail.getFailReason());
             }
         }
         if (!jobQueue.isEmpty()) {
@@ -364,8 +378,12 @@ public class BatchManager implements Runnable, ProgressAble {
      */
     private void fillOperationLog() {
         // 根据处理结果判断总体结果
-        OperationResult result = OperationResult.of(progress.getSuccessNum() > 0, progress.getFailNum() > 0);
-        OpLogContextHolder.getLog().setResult(result)
+        OperationResult opResult = OperationResult.of(progress.getSuccessNum() > 0, progress.getFailNum() > 0);
+        if (OpLogContextHolder.getContext() == null || OpLogContextHolder.getLog() == null) {
+            // 当前没有上下文
+            return;
+        }
+        OpLogContextHolder.getLog().setResult(opResult)
             .addDetailItem(String.valueOf(progress.getSuccessNum()))
             .addDetailItem(String.valueOf(progress.getFailNum()))
             .setObjectId(progress.getTaskId())

@@ -12,22 +12,18 @@ public interface ShoulderContextKey {
     int KEY_NUM = 9;
 
     /**
-     * 认证标识 (accessToken)
+     * 认证标识 Authentication / Principal (如 accessToken / userInfo)
      */
-    String HEADER_TOKEN = "Authentication";
+    String AUTHENTICATION = "Authentication";
 
     /**
      * 用户id
      */
-    String JWT_KEY_USER_ID = "uid";
+    String USER_ID = "user-id";
     /**
      * 用户名称
      */
-    String JWT_KEY_NAME = "name";
-    /**
-     * 用户账号
-     */
-    String JWT_KEY_ACCOUNT = "account";
+    String USER_NAME = "user-name";
     /**
      * 语言标识
      */
@@ -41,7 +37,7 @@ public interface ShoulderContextKey {
     /**
      * traceId
      */
-    String MDC_TRACE_ID = "traceId";
+    String TRACE_ID = "traceId";
 
     /**
      * 租户标识
@@ -50,7 +46,7 @@ public interface ShoulderContextKey {
     /**
      * 灰度发布版本号
      */
-    String GRAY_VERSION = "grayversion";
+    String GRAY_VERSION = "app-version";
 
 
 }

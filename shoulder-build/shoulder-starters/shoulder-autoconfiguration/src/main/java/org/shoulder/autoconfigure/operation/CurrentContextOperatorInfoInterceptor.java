@@ -20,7 +20,7 @@ public class CurrentContextOperatorInfoInterceptor extends OperationLogOperatorI
      */
     @Override
     protected Operator resolveOperator(HttpServletRequest request) {
-        ShoulderCurrentUserOperator operator = new ShoulderCurrentUserOperator(AppContext.getUserId());
+        ShoulderCurrentUserOperator operator = new ShoulderCurrentUserOperator(AppContext.getUserIdAsString());
         operator.setTerminalInfo(String.valueOf(AppContext.getLocale()));
         return operator;
     }
