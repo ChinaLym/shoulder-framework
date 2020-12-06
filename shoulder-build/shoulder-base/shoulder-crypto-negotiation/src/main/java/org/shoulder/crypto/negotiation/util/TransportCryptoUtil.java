@@ -138,7 +138,7 @@ public class TransportCryptoUtil {
     }
 
     /**
-     * 生成 token（服务端返回协商响应时生成）todo【封装】考虑放到 {@link #prepareNegotiation} 内实现？
+     * 生成 token（服务端返回协商响应时生成）todo【可读性】考虑放到 {@link #prepareNegotiation} 内实现？
      *
      * @param response {@link #prepareNegotiation} 方法返回值
      * @return token，用于保证 response 不被篡改

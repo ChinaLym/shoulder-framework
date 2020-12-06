@@ -1,7 +1,5 @@
 package org.shoulder.log.operation.context;
 
-import org.shoulder.log.operation.dto.SystemOperator;
-
 import javax.annotation.Nonnull;
 
 /**
@@ -74,7 +72,7 @@ public enum OperationContextStrategyEnum implements OperationContextStrategy {
         DEFAULT = defaultStrategy;
     }
 
-    // ----------------------- 策略 todo 获取当前操作用户 -----------------------------
+    // ----------------------- 策略 -----------------------------
 
     @Nonnull
     @Override
@@ -82,11 +80,11 @@ public enum OperationContextStrategyEnum implements OperationContextStrategy {
         switch (onMissingContext) {
             case CREATE_NEW:
                 return OpLogContext.builder()
-                    .currentOperator(SystemOperator.getInstance())
+                    .currentOperator(OpLogContext.getCurrentOperator())
                     .build();
             case IGNORE:
                 return OpLogContext.builder()
-                    .currentOperator(SystemOperator.getInstance())
+                    .currentOperator(OpLogContext.getCurrentOperator())
                     .autoLog(false)
                     .logWhenThrow(false)
                     .build();
@@ -106,11 +104,11 @@ public enum OperationContextStrategyEnum implements OperationContextStrategy {
         switch (onExistContext) {
             case CREATE_NEW:
                 return OpLogContext.builder()
-                    .currentOperator(SystemOperator.getInstance())
+                    .currentOperator(OpLogContext.getCurrentOperator())
                     .build();
             case IGNORE:
                 return OpLogContext.builder()
-                    .currentOperator(SystemOperator.getInstance())
+                    .currentOperator(OpLogContext.getCurrentOperator())
                     .autoLog(false)
                     .logWhenThrow(false)
                     .build();
