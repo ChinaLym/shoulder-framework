@@ -1,6 +1,7 @@
 package org.shoulder.crypto.local.repository.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -17,6 +18,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,22 +56,26 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    public synchronized void save(@Nonnull LocalCryptoMetaInfo aesInfo) throws IOException {
+    public synchronized void save(@Nonnull LocalCryptoMetaInfo localCryptoMetaInfo) throws IOException {
         // 先取出所有
         List<LocalCryptoMetaInfo> allExists = getAll();
-        boolean add = true;
-        // 如果存在则更新
-        for (int i = 0; i < allExists.size(); i++) {
-            LocalCryptoMetaInfo existsMetaInfo = allExists.get(i);
-            if (existsMetaInfo.getAppId().equals(aesInfo.getAppId()) && existsMetaInfo.getHeader().equals(aesInfo.getHeader())) {
-                allExists.set(i, aesInfo);
-                add = false;
-                break;
+        if (CollectionUtils.isNotEmpty(allExists)) {
+            boolean add = true;
+            // 如果存在则更新
+            for (int i = 0; i < allExists.size(); i++) {
+                LocalCryptoMetaInfo existsMetaInfo = allExists.get(i);
+                if (existsMetaInfo.getAppId().equals(localCryptoMetaInfo.getAppId()) && existsMetaInfo.getHeader().equals(localCryptoMetaInfo.getHeader())) {
+                    allExists.set(i, localCryptoMetaInfo);
+                    add = false;
+                    break;
+                }
             }
-        }
-        // 不存在则添加
-        if (add) {
-            allExists.add(aesInfo);
+            // 不存在则添加
+            if (add) {
+                allExists.add(localCryptoMetaInfo);
+            }
+        } else {
+            allExists = Collections.singletonList(localCryptoMetaInfo);
         }
         // 整体保存
         String jsonStr = JsonUtils.toJson(allExists);
@@ -77,7 +83,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    public LocalCryptoMetaInfo get(String appId, String markHeader) {
+    public LocalCryptoMetaInfo get(@Nonnull String appId, @Nonnull String markHeader) {
         return getAll().stream()
             .filter(info -> appId.equals(info.getAppId()) && markHeader.equals(info.getHeader()))
             .findFirst().orElse(null);
@@ -85,7 +91,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     @Override
     @Nonnull
-    public List<LocalCryptoMetaInfo> get(String appId) {
+    public List<LocalCryptoMetaInfo> get(@Nonnull String appId) {
         return getAll().stream()
             .filter(info -> appId.equals(info.getAppId()))
             .collect(Collectors.toList());
@@ -107,6 +113,9 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         try {
             Path path = getFilePath();
             String jsonStr = Files.readString(path, charset);
+            if (StringUtils.isBlank(jsonStr)) {
+                return Collections.emptyList();
+            }
             return JsonUtils.toObject(jsonStr, new TypeReference<>() {
             });
         } catch (IOException e) {
