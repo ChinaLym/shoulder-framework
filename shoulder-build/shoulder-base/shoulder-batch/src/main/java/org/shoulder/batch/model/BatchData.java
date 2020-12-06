@@ -22,6 +22,8 @@ public class BatchData {
      */
     protected String dataType;
 
+    protected String operation;
+
     /**
      * 需要批量处理分类，通常只有一个键值对（一项业务）
      * 操作类型（如 ADD、UPDATE...） - 要处理的数据

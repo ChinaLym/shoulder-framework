@@ -24,7 +24,7 @@ import java.util.concurrent.Executor;
  * @author lym
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(name = "shoulder.delayTask.enable", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "shoulder.delayTask.enable", havingValue = "true", matchIfMissing = true)
 public class DelayTaskAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
 
     @Lazy

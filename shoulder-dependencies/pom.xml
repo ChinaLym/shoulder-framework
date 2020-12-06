@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.5</version><!-- shoulder-version -->
+        <version>0.6-SNAPSHOT</version><!-- shoulder-version -->
         <!--<relativePath>../pom.xml</relativePath>-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
     <properties>
         <!-- shoulder framework bom -->
         <shoulder-lombok.version>0.1</shoulder-lombok.version>
-        <shoulder.version>0.5</shoulder.version><!-- shoulder-version -->
+        <shoulder.version>0.6-SNAPSHOT</shoulder.version><!-- shoulder-version -->
 
         <!-- dependencies bom -->
 

@@ -147,7 +147,7 @@ public class BatchProgress implements Serializable {
     }
 
     public void addFail(int failNum) {
-        this.successNum += failNum;
+        this.failNum += failNum;
         addProcessed(failNum);
     }
 

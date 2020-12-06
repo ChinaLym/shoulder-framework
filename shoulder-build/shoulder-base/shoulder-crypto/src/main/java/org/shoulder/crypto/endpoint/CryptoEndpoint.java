@@ -51,7 +51,7 @@ public class CryptoEndpoint {
 
 
     protected String getCurrentKeyPairId() {
-        String currentUserId = AppContext.getUserId();
+        String currentUserId = AppContext.getUserIdAsString();
         return StringUtils.isEmpty(currentUserId) ? "" :
             Md5Crypt.md5Crypt(currentUserId.getBytes(AppInfo.charset()))
                 .substring(0, 3);

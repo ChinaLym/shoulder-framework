@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 public class JdbcBatchRecordDetailPersistentService implements BatchRecordDetailPersistentService {
 
 
-    private static String ALL_COLUMNS = "id, recordId, rowNum, operation, status, failReason, source";
+    private static String ALL_COLUMNS = "id, record_id, row_num, operation, status, fail_reason, source";
 
     private static String BATCH_INSERT = "INSERT INTO batch_record_detail (" + ALL_COLUMNS + ") " +
         "VALUES (?,?,?,?,?,?,?)";
 
     private static String QUERY_FIND_ALL = "SELECT " + ALL_COLUMNS +
-        " FROM batch_record_detail WHERE recordId=?, AND status in (?)";
+        " FROM batch_record_detail WHERE record_id=?, AND status in (?)";
 
 
     private final JdbcTemplate jdbc;
