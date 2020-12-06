@@ -262,7 +262,7 @@
                 <extensions>true</extensions>
 
                 <configuration>
-                    <serverId>nexus</serverId>
+                    <serverId>oss</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <stagingProfileId>xxx</stagingProfileId>
                     <!--<stagingDescription>preRelease</stagingDescription>-->

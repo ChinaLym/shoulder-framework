@@ -20,7 +20,7 @@
 
         <!-- dependencies bom -->
 
-        <spring-boot.version>2.3.5.RELEASE</spring-boot.version>
+        <spring-boot.version>2.3.6.RELEASE</spring-boot.version>
         <!-- 由于Spring Boot提供了Maven BOM来管理依赖版本，因此您无需指定版本 -->
         <!--<spring-security.version>2.3.5</spring-security.version>-->
 
@@ -89,8 +89,6 @@
         <pagehelper-starter.version>1.3.0</pagehelper-starter.version>
         <beecp.version>3.0.2</beecp.version>
         <p6spy.version>3.9.1</p6spy.version>
-
-        <micrometer.version>1.6.0</micrometer.version>
 
         <!-- test -->
         <mockito-all.version>1.10.19</mockito-all.version>
@@ -557,15 +555,6 @@
                 <version>${pagehelper-starter.version}</version>
             </dependency>
             <!-- db end -->
-
-
-            <!-- monitor -->
-            <dependency>
-                <groupId>io.micrometer</groupId>
-                <artifactId>micrometer-registry-prometheus</artifactId>
-                <version>${micrometer.version}</version>
-            </dependency>
-            <!-- monitor end -->
 
             <!-- test -->
             <dependency>

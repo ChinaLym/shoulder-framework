@@ -29,7 +29,10 @@ public interface BatchRecordPersistentService {
     /**
      * 根据条件分页查询批处理记录
      *
-     * @param condition tableName, userCode
+     * @param dataType        查询条件
+     * @param pageNum         查询条件
+     * @param pageSize        查询条件
+     * @param currentUserCode 查询条件
      * @return 查询结果
      */
     List<BatchRecord> findByPage(String dataType, Integer pageNum, Integer pageSize, String currentUserCode);
