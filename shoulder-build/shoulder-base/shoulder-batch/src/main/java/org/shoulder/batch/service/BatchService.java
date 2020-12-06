@@ -27,8 +27,6 @@ public interface BatchService {
      * 批量信息
      *
      * @param batchData 批量/更新
-     * @param userId    用户信息
-     * @param locale    语言标识
      * @return 批量任务标识
      */
     default String doProcess(BatchData batchData) {

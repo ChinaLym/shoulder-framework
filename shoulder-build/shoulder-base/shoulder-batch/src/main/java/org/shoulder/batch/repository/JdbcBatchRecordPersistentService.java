@@ -35,7 +35,6 @@ public class JdbcBatchRecordPersistentService implements BatchRecordPersistentSe
         " FROM batch_record_detail WHERE recordId=?, AND status in (?)";
 
 
-    
     private final JdbcTemplate jdbc;
 
     private RowMapper<BatchRecord> mapper = new BatchRecordRowMapper();
@@ -87,7 +86,10 @@ public class JdbcBatchRecordPersistentService implements BatchRecordPersistentSe
     /**
      * 根据条件分页查询批处理记录
      *
-     * @param condition tableName, userCode
+     * @param dataType        查询条件
+     * @param pageNum         查询条件
+     * @param pageSize        查询条件
+     * @param currentUserCode 查询条件
      * @return 查询结果
      */
     @Override

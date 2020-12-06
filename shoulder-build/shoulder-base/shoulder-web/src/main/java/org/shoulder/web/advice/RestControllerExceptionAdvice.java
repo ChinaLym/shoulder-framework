@@ -11,6 +11,7 @@ import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.ExceptionUtil;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class RestControllerExceptionAdvice {
 
     private static final String GLOBAL_EXCEPTION_HANDLER_TIP = "RestControllerExceptionAdvice - ";
 
-    @Autowired
+    @Autowired(required = false)
     private Translator translator;
 
 
@@ -129,7 +130,12 @@ public class RestControllerExceptionAdvice {
         String msg = StringUtils.isEmpty(msgInAnnotation) ? ParamErrorCodeEnum.PARAM_INVALID.getMessage() : msgInAnnotation;
         Logger logger = LoggerFactory.getLogger(firstConstraintViolation.getRootBeanClass().getName());
         if (logger.isInfoEnabled()) {
-            String logMessage = translator.getMessage(msg, paramName, AppInfo.defaultLocale());
+            String logMessage = null;
+            if (translator == null) {
+                logMessage = ExceptionUtil.generateExceptionMessage(msg, paramName);
+            } else {
+                translator.getMessage(msg, paramName, AppInfo.defaultLocale());
+            }
             // 这里堆栈信息不必打印
             logger.infoWithErrorCode(ParamErrorCodeEnum.PARAM_INVALID.getCode(), GLOBAL_EXCEPTION_HANDLER_TIP + logMessage);
         }
