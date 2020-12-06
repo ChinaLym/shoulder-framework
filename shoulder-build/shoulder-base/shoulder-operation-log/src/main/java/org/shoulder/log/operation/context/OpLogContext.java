@@ -31,7 +31,8 @@ public class OpLogContext {
     }
 
     public static Operator getCurrentOperator() {
-        return currentOperatorThreadLocal.get();
+        Operator operator = currentOperatorThreadLocal.get();
+        return operator == null ? SystemOperator.getInstance() : operator;
     }
 
     /**
