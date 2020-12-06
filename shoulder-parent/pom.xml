@@ -309,7 +309,7 @@
                 </plugin>
 
                 <!-- 自动生成文档 支持 JSR-303 Bean Validation -->
-                <plugin>
+                <!--<plugin>
                     <groupId>org.springdoc</groupId>
                     <artifactId>springdoc-openapi-maven-plugin</artifactId>
                     <version>${springdoc-openapi-maven-plugin.version}</version>
@@ -322,14 +322,14 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <!--访问json格式文档的URL， 默认路径：*http://localhost:8080/v3/api-docs*-->
+                        &lt;!&ndash;访问json格式文档的URL， 默认路径：*http://localhost:8080/v3/api-docs*&ndash;&gt;
                         <apiDocsUrl>http://localhost:8080/v3/api-docs</apiDocsUrl>
-                        <!--存放定义的路径, 默认为： openapi.json-->
+                        &lt;!&ndash;存放定义的路径, 默认为： openapi.json&ndash;&gt;
                         <outputFileName>openApi.json</outputFileName>
-                        <!--文档存放的绝对路径–默认为： ${project.build.directory}-->
+                        &lt;!&ndash;文档存放的绝对路径–默认为： ${project.build.directory}&ndash;&gt;
                         <outputDir>${project.build.directory}</outputDir>
                     </configuration>
-                </plugin>
+                </plugin>-->
 
                 <!-- sonar 代码检查插件 -->
                 <plugin>
