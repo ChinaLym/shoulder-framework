@@ -184,7 +184,7 @@ public class JsonUtils {
         objectMapper.setTimeZone(AppInfo.timeZone());
 
         // 设置序列化日期为配置的统一时间格式
-        objectMapper.setDateFormat(new SimpleDateFormat(AppInfo.dateFormat(), AppInfo.defaultLocale()));
+        objectMapper.setDateFormat(new SimpleDateFormat(AppInfo.dateTimeFormat(), AppInfo.defaultLocale()));
         // 反序列化时，允许存在 tab、换行符、结束语符、注释符等控制字符
         objectMapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
         // 反序列化时，可解析反斜杠引用的所有字符

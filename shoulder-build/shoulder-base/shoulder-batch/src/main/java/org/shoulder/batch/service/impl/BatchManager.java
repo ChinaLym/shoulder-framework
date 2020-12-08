@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class BatchManager implements Runnable, ProgressAble {
 
-    private final static Logger log = LoggerFactory.getLogger(BatchManager.class);
+    protected final static Logger log = LoggerFactory.getLogger(BatchManager.class);
 
     /**
      * 添加数据默认单次处理最大数目
@@ -46,18 +46,18 @@ public class BatchManager implements Runnable, ProgressAble {
     /**
      * 线程池
      */
-    private ExecutorService threadPool = ContextUtils.getBean(BatchConstants.THREAD_NAME);
+    protected ExecutorService threadPool = ContextUtils.getBean(BatchConstants.THREAD_NAME);
 
     /**
      * 批量处理记录
      */
-    private BatchRecordPersistentService batchRecordPersistentService =
+    protected BatchRecordPersistentService batchRecordPersistentService =
         ContextUtils.getBean(BatchRecordPersistentService.class);
 
     /**
      * 批处理记录详情
      */
-    private BatchRecordDetailPersistentService batchRecordDetailPersistentService =
+    protected BatchRecordDetailPersistentService batchRecordDetailPersistentService =
         ContextUtils.getBean(BatchRecordDetailPersistentService.class);
 
     // ------------------------------------------------
@@ -65,37 +65,37 @@ public class BatchManager implements Runnable, ProgressAble {
     /**
      * 操作用户
      */
-    private Long userId;
+    protected Long userId;
     /**
      * 语言标识
      */
-    private String languageId;
+    protected String languageId;
 
     /**
      * 本次要批量处理的数据
      */
-    private BatchData batchData;
+    protected BatchData batchData;
 
     /**
      * 当前进度
      */
-    private BatchProgress progress;
+    protected BatchProgress progress;
 
     /**
      * 本次任务结果汇总
      */
-    private BatchRecord result;
+    protected BatchRecord result;
 
     /**
      * 任务队列，任务向这里丢
      * todo 【扩展性】后续考虑共享队列，将属性抽出来，一个 manager 可以同时处理多次批处理任务
      */
-    private BlockingQueue<BatchDataSlice> jobQueue;
+    protected BlockingQueue<BatchDataSlice> jobQueue;
 
     /**
      * 结果队列，结果从这里取
      */
-    private BlockingQueue<BatchRecordDetail> resultQueue;
+    protected BlockingQueue<BatchRecordDetail> resultQueue;
 
 
     public BatchManager(BatchData batchData) {
@@ -140,7 +140,7 @@ public class BatchManager implements Runnable, ProgressAble {
         // 开始分配任务
         for (int i = 0; i < workerNum - 1; i++) {
             BatchProcessor worker = new BatchProcessor(getTaskId(), jobQueue, resultQueue);
-            if (!employWorker(worker)) {
+            if (!canEmployWorker(worker)) {
                 // 提交失败，说明当且服务器较忙，无法雇佣工人，因此中断委派，转由当前线程执行全部任务
                 log.warnWithErrorCode(CommonErrorCodeEnum.SERVER_BUSY.getCode(),
                     "employ workers fail, fail back to execute by current, it may cost more time.");
@@ -154,6 +154,8 @@ public class BatchManager implements Runnable, ProgressAble {
         // 阻塞式处理结果
         handleResult(needToBeProcessed);
         progress.finish();
+        result.setSuccessNum(progress.getSuccessNum());
+        result.setFailNum(progress.getFailNum());
         persistentImportRecord();
         fillOperationLog();
         log.info("batch task finished.");
@@ -197,7 +199,7 @@ public class BatchManager implements Runnable, ProgressAble {
                     .setRecordId(getTaskId())
                     .setOperation(operationType)
                     .setStatus(BatchResultEnum.VALIDATE_SUCCESS.getCode())
-                    .setSource(convertObjectForExport(dataItem));
+                    .setSource(serializeSource(dataItem));
             }
         });
         // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不处理的，校验失败无法处理的） todo 跳过状态定义
@@ -206,7 +208,7 @@ public class BatchManager implements Runnable, ProgressAble {
                 .setRecordId(getTaskId())
                 .setRowNum(dataItem.getRowNum())
                 .setOperation(batchData.getOperation())
-                .setSource(convertObjectForExport(dataItem))
+                .setSource(serializeSource(dataItem))
                 .setStatus(BatchResultEnum.SKIP_REPEAT.getCode());
         }
         for (DataItem dataItem : batchData.getFailList()) {
@@ -215,7 +217,7 @@ public class BatchManager implements Runnable, ProgressAble {
                 .setRecordId(getTaskId())
                 .setRowNum(dataItem.getRowNum())
                 .setOperation(batchData.getOperation())
-                .setSource(convertObjectForExport(dataItem))
+                .setSource(serializeSource(dataItem))
                 .setStatus(BatchResultEnum.VALIDATE_FAILED.getCode())
                 .setFailReason(batchData.getFailReason().get(dataItem.getRowNum()));
         }
@@ -244,7 +246,7 @@ public class BatchManager implements Runnable, ProgressAble {
      * 把原始数据转为 {@link BatchRecordDetail#setSource(String)} 字段
      * 筛选出部分字段，并脱敏等处理
      */
-    private String convertObjectForExport(DataItem importData) {
+    private String serializeSource(DataItem importData) {
         // 这里直接 json
         return JsonUtils.toJson(importData);
     }
@@ -260,7 +262,7 @@ public class BatchManager implements Runnable, ProgressAble {
      * @param jobSize           需要处理的任务大小
      * @return 决定需要多少任务线程
      */
-    private int decideWorkerNum(int needToBeProcessed, int jobSize) {
+    protected int decideWorkerNum(int needToBeProcessed, int jobSize) {
         // 若总数量小于默认单次处理量，则单线程处理，否则按 min(job 分片数目 / 最大工人数)
         return needToBeProcessed < DEFAULT_MAX_TASK_SLICE_NUM ? 1 :
             Integer.min(MAX_WORKER_SIZE, jobSize);
@@ -282,7 +284,7 @@ public class BatchManager implements Runnable, ProgressAble {
         batchData.getBatchListMap().forEach((operationType, dataList) -> {
             List<? extends DataItem> toProcessedData = new ArrayList<>(dataList);
             // 切片
-            List<? extends List<? extends DataItem>> pages = ListUtils.partition(toProcessedData, DEFAULT_MAX_TASK_SLICE_NUM);
+            List<? extends List<? extends DataItem>> pages = ListUtils.partition(toProcessedData, getTaskSliceNum(batchData));
             for (List<? extends DataItem> page : pages) {
                 if (CollectionUtils.isNotEmpty(page)) {
                     tasks.add(new BatchDataSlice(getTaskId(), sequence.getAndIncrement(),
@@ -294,12 +296,16 @@ public class BatchManager implements Runnable, ProgressAble {
         return tasks;
     }
 
+    protected int getTaskSliceNum(BatchData batchData) {
+        return DEFAULT_MAX_TASK_SLICE_NUM;
+    }
+
     /**
      * 雇佣工人（提交到线程池）
      *
      * @param worker 工作线程
      */
-    private boolean employWorker(BatchProcessor worker) {
+    private boolean canEmployWorker(BatchProcessor worker) {
         try {
             threadPool.execute(worker);
             return true;
@@ -362,13 +368,15 @@ public class BatchManager implements Runnable, ProgressAble {
      * 根据任务处理的总体结果，增加一条处理记录
      */
     protected void persistentImportRecord() {
+        if (!batchData.isPersistentRecord()) {
+            return;
+        }
         try {
-            result.setSuccessNum(progress.getSuccessNum());
-            result.setFailNum(progress.getFailNum());
             batchRecordPersistentService.insert(result);
-            // todo 【性能】一致性/性能 最后保存一次？ 或在 work 中与批处理在同一事务进行保存？
-            persistentBatchDetail();
+            // 性能： 最后保存一次。一致性： worker 中与批处理在同一事务进行，避免大事务
+            batchRecordDetailPersistentService.batchSave(result.getId(), result.getDetailList());
         } catch (Exception e) {
+            log.warnWithErrorCode(CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL.getCode(), "persistentImportRecord fail", e);
             throw CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL.toException(e);
         }
     }
@@ -389,13 +397,6 @@ public class BatchManager implements Runnable, ProgressAble {
             .setObjectId(progress.getTaskId())
             .setObjectType(batchData.getDataType());
         OpLogContextHolder.enableAutoLog();
-    }
-
-    /**
-     * 持久化详情信息，注意批量插入分片保存，避免大事务
-     */
-    protected void persistentBatchDetail() {
-        batchRecordDetailPersistentService.batchInsertRecordDetail(result.getDetailList());
     }
 
     public String getTaskId() {

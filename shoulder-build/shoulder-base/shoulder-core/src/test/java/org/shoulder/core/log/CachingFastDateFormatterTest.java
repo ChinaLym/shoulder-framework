@@ -43,8 +43,8 @@ public class CachingFastDateFormatterTest {
      */
     @Test
     public void timer_format() {
-        CachingDateFormatter logback = new CachingDateFormatter(AppInfo.UTC_DATE_FORMAT);
-        CachingFastDateFormatter shoulder = new CachingFastDateFormatter(AppInfo.UTC_DATE_FORMAT);
+        CachingDateFormatter logback = new CachingDateFormatter(AppInfo.UTC_DATE_TIME_FORMAT);
+        CachingFastDateFormatter shoulder = new CachingFastDateFormatter(AppInfo.UTC_DATE_TIME_FORMAT);
         DateUtils.lazyCurrentMills();
         for (int i = 0; i < GENERATE_NUM; i++) {
             long now = DateUtils.lazyCurrentMills();
@@ -69,8 +69,8 @@ public class CachingFastDateFormatterTest {
         final int totalThreadNum = THREADS;
         CountDownLatch startLatch = new CountDownLatch(totalThreadNum);
         CountDownLatch finishLatch = new CountDownLatch(totalThreadNum);
-        CachingDateFormatter logback = new CachingDateFormatter(AppInfo.UTC_DATE_FORMAT);
-        CachingFastDateFormatter shoulder = new CachingFastDateFormatter(AppInfo.UTC_DATE_FORMAT);
+        CachingDateFormatter logback = new CachingDateFormatter(AppInfo.UTC_DATE_TIME_FORMAT);
+        CachingFastDateFormatter shoulder = new CachingFastDateFormatter(AppInfo.UTC_DATE_TIME_FORMAT);
         DateUtils.lazyCurrentMills();
         for (int threadNum = 0; threadNum < totalThreadNum; threadNum++) {
             Thread t = new Thread(Thread.currentThread().getThreadGroup(),

@@ -3,7 +3,7 @@
 <mapper namespace="org.shoulder.batch.repository.mapper.BatchRecordMapper">
 
     <sql id="selectColumns">
-        import_id importId,
+        import_id recordId,
         import_type importType,
         import_tbname tbName,
         import_total_num importTotalNum,
@@ -58,7 +58,7 @@
         creator
         )
         VALUES (
-        #{importId},
+        #{recordId},
         #{importType},
         #{tbName},
         #{importTotalNum},

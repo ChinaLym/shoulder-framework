@@ -1,5 +1,6 @@
 package org.shoulder.batch.repository;
 
+import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.model.BatchRecordDetail;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface BatchRecordDetailPersistentService {
      *
      * @param batchRecordDetailList 要插入的记录
      */
-    void batchInsertRecordDetail(List<BatchRecordDetail> batchRecordDetailList);
+    void batchSave(String recordId, List<BatchRecordDetail> batchRecordDetailList);
 
     /**
      * 查询所有的批量处理记录
@@ -24,9 +25,16 @@ public interface BatchRecordDetailPersistentService {
      * @param recordId   记录标识
      * @param resultList 结果状态
      * @return 所有的批量处理记录
+     */
+    List<BatchRecordDetail> findAllByResult(String recordId, List<BatchResultEnum> resultList);
+
+    /**
+     * 查询所有的批量处理记录
+     *
+     * @param recordId   记录标识
      * @return 所有的批量处理记录
      */
-    List<BatchRecordDetail> findAllByResult(String recordId, List<Integer> resultList);
+    List<BatchRecordDetail> findAllByResult(String recordId);
 
 
 }

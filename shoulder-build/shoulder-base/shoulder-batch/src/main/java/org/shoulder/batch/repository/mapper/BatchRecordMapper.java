@@ -22,10 +22,10 @@ public interface BatchRecordMapper {
     /**
      * 根据 任务标识 获取批处理记录
      *
-     * @param importId 主键
+     * @param recordId 主键
      * @return 记录
      */
-    BatchRecord findById(String importId);
+    BatchRecord findById(String recordId);
 
     /**
      * 根据条件分页查询批处理记录

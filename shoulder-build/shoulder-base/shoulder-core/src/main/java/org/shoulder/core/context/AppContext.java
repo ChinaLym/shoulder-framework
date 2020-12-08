@@ -107,7 +107,7 @@ public class AppContext {
      *
      * @return 租户标识
      */
-    public static String getTenantId() {
+    public static String getTenantCode() {
         return (String) get(ShoulderContextKey.TENANT);
     }
 
@@ -116,7 +116,7 @@ public class AppContext {
      *
      * @param tenantId 租户标识
      */
-    public static void setTenant(String tenantId) {
+    public static void setTenantCode(String tenantId) {
         log.trace("setTenant ({})", tenantId);
         set(ShoulderContextKey.TENANT, tenantId);
     }
