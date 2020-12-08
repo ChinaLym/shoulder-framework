@@ -1,5 +1,7 @@
 package org.shoulder.batch.repository;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.repository.po.BatchRecordDetailPO;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,8 +27,11 @@ public class JdbcBatchRecordDetailPersistentService implements BatchRecordDetail
     private static String BATCH_INSERT = "INSERT INTO batch_record_detail (" + ALL_COLUMNS + ") " +
         "VALUES (?,?,?,?,?,?,?)";
 
-    private static String QUERY_FIND_ALL = "SELECT " + ALL_COLUMNS +
+    private static String QUERY_ALL_WITH_CONDITION = "SELECT " + ALL_COLUMNS +
         " FROM batch_record_detail WHERE record_id=?, AND status in (?)";
+
+    private static String QUERY_ALL = "SELECT " + ALL_COLUMNS +
+        " FROM batch_record_detail WHERE record_id=?";
 
 
     private final JdbcTemplate jdbc;
@@ -48,7 +53,7 @@ public class JdbcBatchRecordDetailPersistentService implements BatchRecordDetail
      * @param batchRecordDetailList 要插入的记录
      */
     @Override
-    public void batchInsertRecordDetail(List<BatchRecordDetail> batchRecordDetailList) {
+    public void batchSave(String recordId, List<BatchRecordDetail> batchRecordDetailList) {
         jdbc.batchUpdate(BATCH_INSERT, flatFieldsToArray(batchRecordDetailList));
     }
 
@@ -76,9 +81,21 @@ public class JdbcBatchRecordDetailPersistentService implements BatchRecordDetail
      * @return 所有的批量处理记录
      */
     @Override
-    public List<BatchRecordDetail> findAllByResult(String recordId, List<Integer> resultList) {
-        return jdbc.queryForList(QUERY_FIND_ALL, BatchRecordDetailPO.class, recordId, resultList).stream()
-            .map(BatchRecordDetailPO::toModel).collect(Collectors.toList());
+    public List<BatchRecordDetail> findAllByResult(String recordId, List<BatchResultEnum> resultList) {
+        return jdbc.queryForList(QUERY_ALL_WITH_CONDITION, BatchRecordDetailPO.class, recordId,
+            CollectionUtils.emptyIfNull(resultList).stream()
+                .map(BatchResultEnum::getCode)
+                .collect(Collectors.toList())
+        ).stream()
+            .map(BatchRecordDetailPO::toModel)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BatchRecordDetail> findAllByResult(String recordId) {
+        return jdbc.queryForList(QUERY_ALL, BatchRecordDetailPO.class, recordId).stream()
+            .map(BatchRecordDetailPO::toModel)
+            .collect(Collectors.toList());
     }
 
 

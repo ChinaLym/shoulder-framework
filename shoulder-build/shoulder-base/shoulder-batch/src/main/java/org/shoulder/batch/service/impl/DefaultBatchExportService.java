@@ -333,7 +333,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
     @Override
     public List<BatchRecordDetail> findAllRecordDetail(String taskId) {
-        return batchRecordDetailPersistentService.findAllByResult(taskId, null);
+        return batchRecordDetailPersistentService.findAllByResult(taskId);
     }
 
     @Override
@@ -341,10 +341,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         if (CollectionUtils.isEmpty(results)) {
             return findAllRecordDetail(taskId);
         }
-        return batchRecordDetailPersistentService.findAllByResult(taskId, results.stream()
-                .map(BatchResultEnum::getCode)
-                .collect(Collectors.toList())
-            );
+        return batchRecordDetailPersistentService.findAllByResult(taskId, results);
     }
 
 }

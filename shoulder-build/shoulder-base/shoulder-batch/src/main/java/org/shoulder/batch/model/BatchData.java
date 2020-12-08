@@ -22,6 +22,9 @@ public class BatchData {
      */
     protected String dataType;
 
+    /**
+     * 操作类型
+     */
     protected String operation;
 
     /**
@@ -48,6 +51,10 @@ public class BatchData {
      */
     protected Map<Integer, String> failReason = new HashMap<>();
 
+    /**
+     * 保存这次操作记录
+     */
+    protected boolean persistentRecord = true;
 
     public BatchData() {
     }

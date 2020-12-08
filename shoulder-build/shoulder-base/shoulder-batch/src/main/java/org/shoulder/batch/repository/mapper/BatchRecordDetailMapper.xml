@@ -4,7 +4,7 @@
 
     <sql id="detailSelectColumn">
         detail_id detailId,
-        import_id importId,
+        import_id recordId,
         import_result importResult,
         line_num lineNum,
         import_name importName,
@@ -25,7 +25,7 @@
         )
         VALUES
         <foreach collection="list" item="record" separator=",">
-            (#{record.importId},
+            (#{record.recordId},
             #{record.importResult},
             #{record.lineNum},
             #{record.failReason},

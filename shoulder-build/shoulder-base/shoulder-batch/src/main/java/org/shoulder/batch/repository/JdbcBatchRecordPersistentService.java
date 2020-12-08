@@ -75,12 +75,12 @@ public class JdbcBatchRecordPersistentService implements BatchRecordPersistentSe
     /**
      * 根据 任务标识 获取批处理记录
      *
-     * @param importId 主键
+     * @param recordId 主键
      * @return 记录
      */
     @Override
-    public BatchRecord findById(String importId) {
-        return jdbc.queryForObject(QUERY_BY_ID, mapper, importId);
+    public BatchRecord findById(String recordId) {
+        return jdbc.queryForObject(QUERY_BY_ID, mapper, recordId);
     }
 
     /**

@@ -40,7 +40,7 @@ public class MemoryValidateCodeRepository implements ValidateCodeStore {
      * 验证码放入 session 的 key
      */
     protected String buildCacheKey(String validateCodeType) {
-        return AppContext.getTenantId() + ":" + AppContext.getUserIdAsString() + ":" + validateCodeType.toUpperCase();
+        return AppContext.getTenantCode() + ":" + AppContext.getUserIdAsString() + ":" + validateCodeType.toUpperCase();
     }
 
 }

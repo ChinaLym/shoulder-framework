@@ -36,7 +36,7 @@ public class DateConverter extends BaseDateConverter<Date> {
         formatMap.put("yyyy-MM-dd HH:mm", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}$");
         formatMap.put("yyyy-MM-dd HH:mm:ss", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$");
         // UTC: yyyy-MM-dd'T'HH:mm:ss.SSSXXX  yyyy-MM-dd'T'HH:mm:ss.SSS Z
-        formatMap.put(AppInfo.UTC_DATE_FORMAT, "^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{1,2}:\\d{1,2}");
+        formatMap.put(AppInfo.UTC_DATE_TIME_FORMAT, "^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{1,2}:\\d{1,2}");
         formatMap.put("yyyy/MM", "^\\d{4}/\\d{1,2}$");
         formatMap.put("yyyy/MM/dd", "^\\d{4}/\\d{1,2}/\\d{1,2}$");
         formatMap.put("yyyy/MM/dd HH", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}");

@@ -21,7 +21,7 @@ public class AppInfo {
 
     private static final Logger log = LoggerFactory.getLogger(AppInfo.class);
 
-    public static final String UTC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
+    public static final String UTC_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
 
     /**
      * 应用标识
@@ -47,7 +47,7 @@ public class AppInfo {
     /**
      * 全局统一日期格式，默认世界标准时间格式
      */
-    private static String dateFormat = UTC_DATE_FORMAT;
+    private static String dateTimeFormat = UTC_DATE_TIME_FORMAT;
 
     /**
      * 全局统一字符集，默认 UTF-8
@@ -80,8 +80,8 @@ public class AppInfo {
         return cluster;
     }
 
-    public static String dateFormat() {
-        return dateFormat;
+    public static String dateTimeFormat() {
+        return dateTimeFormat;
     }
 
     public static Charset charset() {
@@ -125,9 +125,9 @@ public class AppInfo {
     }
 
 
-    public static void initDateFormat(@Nonnull String dateFormat) {
+    public static void initDateTimeFormat(@Nonnull String dateFormat) {
         Assert.notNull(dateFormat, "dateFormat can't be null");
-        AppInfo.dateFormat = dateFormat;
+        AppInfo.dateTimeFormat = dateFormat;
         log.info("initDateFormat: " + dateFormat);
     }
 
