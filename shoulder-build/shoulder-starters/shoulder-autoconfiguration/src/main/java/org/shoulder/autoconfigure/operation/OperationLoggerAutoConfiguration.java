@@ -7,11 +7,14 @@ import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.format.impl.ShoulderOpLogFormatter;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.logger.impl.AsyncOperationLogger;
-import org.shoulder.log.operation.logger.impl.Sl4jOperationLogger;
+import org.shoulder.log.operation.logger.impl.JdbcOperationLogger;
+import org.shoulder.log.operation.logger.impl.LogOperationLogger;
 import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,14 +23,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Role;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import javax.annotation.Nonnull;
+import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.StringJoiner;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This configuration class registers a {@link OperationLogger} able to logging operation-log.
@@ -47,42 +53,55 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
         this.operationLogProperties = operationLogProperties;
     }
 
-    /**
-     * Provided a singleThread executor {@link Executors#newSingleThreadExecutor} for default.
-     * {@link AsyncOperationLogger} entrust {@link ShoulderOpLogFormatter} as a delegator with log.
-     *
-     * @return {@link AsyncOperationLogger}
-     */
     @Bean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @ConditionalOnProperty(value = "shoulder.log.operation.logger.async", havingValue = "true", matchIfMissing = true)
-    public AsyncOperationLogger asyncOperationLogger(OperationLogFormatter operationLogFormatter) {
-        int threadNum = operationLogProperties.getThreadNum();
-        String threadName = operationLogProperties.getThreadName();
-        log.info("OperationLogger-async=true,threadNum=" + threadNum + ",threadName=" + threadName);
-        // default rejectExecutionHandler is throw Ex, use ignore if opLog is not important.
-        CustomizableThreadFactory opLogThreadFactory = new CustomizableThreadFactory("shoulder");
-        // 可以设置为 true，因为操作日志一般并不是非记录不可
-        // opLogThreadFactory.setDaemon(true);
-        ExecutorService opLogExecutorService = new ThreadPoolExecutor(1, 1,
-            60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000), opLogThreadFactory);
+    public BeanPostProcessor asyncLoggerBeanPostProcessor() {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName) throws BeansException {
+                if (!(bean instanceof OperationLogger)) {
+                    return bean;
+                }
+                int threadNum = operationLogProperties.getLogger().getThreadNum();
+                String threadName = operationLogProperties.getLogger().getThreadName();
+                log.info("OperationLogger-async=true,threadNum=" + threadNum + ",threadName=" + threadName);
+                // default rejectExecutionHandler is throw Ex, use ignore if opLog is not important.
+                CustomizableThreadFactory opLogThreadFactory = new CustomizableThreadFactory("shoulder");
+                // 可以设置为 true，因为操作日志一般并不是非记录不可
+                // opLogThreadFactory.setDaemon(true);
+                ExecutorService opLogExecutorService = new ThreadPoolExecutor(threadNum, threadNum,
+                    60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000), opLogThreadFactory);
 
-        return new AsyncOperationLogger()
-            .setExecutorService(opLogExecutorService)
-            .setLogger(new Sl4jOperationLogger(operationLogFormatter));
+                return new AsyncOperationLogger()
+                    .setExecutorService(opLogExecutorService)
+                    .setLogger((OperationLogger) bean);
+            }
+        };
     }
 
-
     /**
-     * Provide a sync logger for default.
+     * Provide a slf4j logger for default.
      *
-     * @see Sl4jOperationLogger
+     * @see LogOperationLogger
      */
     @Bean
     @ConditionalOnMissingBean(value = {OperationLogger.class})
+    @ConditionalOnProperty(name = "shoulder.log.operation.logger.type", havingValue = "logger", matchIfMissing = true)
     public OperationLogger operationLogger(OperationLogFormatter operationLogFormatter) {
-        log.info("OperationLogger-async=false");
-        return new Sl4jOperationLogger(operationLogFormatter);
+        return new LogOperationLogger(operationLogFormatter);
+    }
+
+    /**
+     * Provide a jdbc logger for default.
+     *
+     * @see JdbcOperationLogger
+     */
+    @Bean
+    @ConditionalOnBean(DataSource.class)
+    @ConditionalOnProperty(name = "shoulder.log.operation.logger.type", havingValue = "jdbc")
+    @ConditionalOnMissingBean(value = {OperationLogger.class})
+    public OperationLogger operationLogger(DataSource dataSource) {
+        return new JdbcOperationLogger(dataSource);
     }
 
     /**

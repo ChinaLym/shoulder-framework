@@ -39,7 +39,7 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
 
     /**
      * 初始化应用信息
-     *
+     * @see DefaultPropertiesStartingListener#defaultConfigurationProperties 会设置默认值
      * @param environment 环境与配置
      */
     private void initApplicationInfo(ConfigurableEnvironment environment) {
@@ -66,7 +66,7 @@ public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcess
         // 这些设置了默认值，不必担心为 null
         AppInfo.initErrorCodePrefix(environment.getProperty("shoulder.application.errorCodePrefix"));
         AppInfo.initVersion(environment.getProperty("shoulder.application.version"));
-        AppInfo.initDateFormat(environment.getProperty("shoulder.application.dateFormat"));
+        AppInfo.initDateTimeFormat(environment.getProperty("shoulder.application.dateTimeFormat"));
         AppInfo.initCharset(environment.getProperty("shoulder.application.charset"));
         AppInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
         AppInfo.initDefaultLocale(StringUtils.parseLocale(environment.getProperty("shoulder.application.defaultLocale")));

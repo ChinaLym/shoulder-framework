@@ -25,7 +25,7 @@ public @interface OperationLogParam {
     /**
      * 参数是否支持多语言，默认为不支持多语言
      */
-    boolean supportI18n();
+    boolean supportI18n() default false;
 
     /**
      * 参数名称，默认取变量名，

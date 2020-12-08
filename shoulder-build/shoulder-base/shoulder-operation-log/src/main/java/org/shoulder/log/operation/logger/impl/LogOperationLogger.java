@@ -1,24 +1,24 @@
 package org.shoulder.log.operation.logger.impl;
 
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.logger.OperationLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * 以 Sl4j 的接口记录操作日志记录，并以 {@link OperationLogFormatter} 作为日志格式。后续由日志采集器收集、处理、转发至日志中心。
+ * 以日志文件记录操作日志，并以 {@link OperationLogFormatter} 作为日志格式。后续可由日志采集器收集、处理、转发至日志中心。
  * <p>
- * 注意：使用前需要保证 loggerName 对应的日志记录器存在。
+ * 注意：使用前需要保证 logback.xml 中 loggerName 对应的日志记录器存在。
  *
  * @author lym
  */
-public class Sl4jOperationLogger extends AbstractOperationLogger implements OperationLogger {
+public class LogOperationLogger extends AbstractOperationLogger implements OperationLogger {
 
-    private static final Logger log = LoggerFactory.getLogger(Sl4jOperationLogger.class);
+    private static final Logger log = LoggerFactory.getLogger(LogOperationLogger.class);
 
     /**
-     * logback.xml / log4j.xml 中用于记录操作日志的 logger 的名称默认值
+     * todo 【功能】logback.xml / log4j.xml 中用于记录操作日志的 logger 的名称默认值
      */
     private static final String DEFAULT_OPERATION_LOGGER_NAME = "OPERATION_LOGGER";
 
@@ -26,11 +26,11 @@ public class Sl4jOperationLogger extends AbstractOperationLogger implements Oper
 
     private final Logger opLogger;
 
-    public Sl4jOperationLogger(OperationLogFormatter operationLogFormatter) {
+    public LogOperationLogger(OperationLogFormatter operationLogFormatter) {
         this(operationLogFormatter, DEFAULT_OPERATION_LOGGER_NAME);
     }
 
-    public Sl4jOperationLogger(OperationLogFormatter operationLogFormatter, String loggerName) {
+    public LogOperationLogger(OperationLogFormatter operationLogFormatter, String loggerName) {
         this.operationLogFormatter = operationLogFormatter;
         this.opLogger = getOperationLogger(loggerName);
     }

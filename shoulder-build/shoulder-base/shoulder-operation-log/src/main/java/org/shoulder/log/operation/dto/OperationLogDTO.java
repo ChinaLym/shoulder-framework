@@ -11,7 +11,7 @@ import org.shoulder.log.operation.enums.OperationResult;
 import org.shoulder.log.operation.enums.TerminalType;
 
 import javax.annotation.Nonnull;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -101,12 +101,12 @@ public class OperationLogDTO implements Cloneable {
     /**
      * 操作发生时间
      */
-    protected LocalDateTime operationTime = LocalDateTime.now();
+    protected Instant operationTime = Instant.now();
 
     /**
      * 操作结束时间
      */
-    protected LocalDateTime endTime;
+    protected Instant endTime;
 
     /**
      * 操作参数，记录业务操作的参数信息，用于操作审计和分析 （选填）
@@ -173,6 +173,11 @@ public class OperationLogDTO implements Cloneable {
      * 上传新头像、确定修改个人信息也可以有相同的业务标识
      */
     protected String businessId;
+
+    /**
+     * 租户编码
+     */
+    protected String tenantCode;
 
     /**
      * 应用标识 （必填） 默认取 `spring.application.name`
@@ -254,6 +259,9 @@ public class OperationLogDTO implements Cloneable {
 
     public OperationLogDTO addDetailItem(String detailItem) {
         if (detailItem != null) {
+            if (this.detailItems == null) {
+                this.detailItems = new LinkedList<>();
+            }
             this.detailItems.add(detailItem);
         }
         return this;
@@ -325,6 +333,7 @@ public class OperationLogDTO implements Cloneable {
         clone.setDetail(detail);
         clone.setErrorCode(errorCode);
 
+        clone.setTenantCode(tenantCode);
         clone.setAppId(appId);
         clone.setTraceId(traceId);
         clone.setBusinessId(businessId);

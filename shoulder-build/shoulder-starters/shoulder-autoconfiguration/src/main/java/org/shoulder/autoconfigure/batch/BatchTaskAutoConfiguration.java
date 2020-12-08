@@ -13,6 +13,7 @@ import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.impl.CsvExporter;
 import org.shoulder.batch.service.impl.DefaultBatchExportService;
 import org.shoulder.core.concurrent.Threads;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -91,6 +92,7 @@ public class BatchTaskAutoConfiguration {
          * jdbc
          */
         @Bean
+        @ConditionalOnBean(DataSource.class)
         @ConditionalOnMissingBean
         public BatchRecordPersistentService batchRecordPersistentService(DataSource dataSource) {
             return new JdbcBatchRecordPersistentService(dataSource);
@@ -100,6 +102,7 @@ public class BatchTaskAutoConfiguration {
          * jdbc
          */
         @Bean
+        @ConditionalOnBean(DataSource.class)
         @ConditionalOnMissingBean
         public BatchRecordDetailPersistentService batchRecordDetailPersistentService(DataSource dataSource) {
             return new JdbcBatchRecordDetailPersistentService(dataSource);

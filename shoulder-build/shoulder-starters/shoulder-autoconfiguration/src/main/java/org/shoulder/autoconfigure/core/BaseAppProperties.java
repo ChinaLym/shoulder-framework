@@ -33,7 +33,7 @@ public class BaseAppProperties {
     /**
      * 全局统一日期格式，默认为UTC时间格式: yyyy-MM-dd'T'HH:mm:ss.SSS Z
      */
-    private String dateFormat = AppInfo.UTC_DATE_FORMAT;
+    private String dateTimeFormat = AppInfo.UTC_DATE_TIME_FORMAT;
 
     /**
      * 全局统一字符集，默认为 UTF-8

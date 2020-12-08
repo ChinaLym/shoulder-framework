@@ -38,13 +38,13 @@
         <logger name="org.apache.zookeeper.ClientCnxn" level="ERROR"/>
         <logger name="org.springframework" level="INFO"/>
         <logger name="org.springframework.web" level="INFO"/>
-        <logger name="org.springframework.boot" level="WARN"/>
-        <logger name="org.springframework.boot.web.filter" level="WARN"/>
+        <logger name="org.springframework.boot" level="INFO"/>
+        <logger name="org.springframework.boot.web.filter" level="INFO"/>
         <logger name="org.shoulder.http.interceptor.RestTemplateJsonLogInterceptor" level="DEBUG"/>
         <logger name="org.shoulder.web.advice.BaseRestControllerLogAspect" level="DEBUG"/>
 
         <!-- shoulder 框架中日志的默认输出级别 WARN additivity="false" 可以修改日志文件 -->
-        <logger name="org.shoulder" level="INFO"/>
+        <logger name="org.shoulder" level="DEBUG"/>
         <!-- shoulder 框架配置模块日志的打印级别为 INFO -->
         <logger name="org.shoulder.autoconfigure" level="INFO"/>
 

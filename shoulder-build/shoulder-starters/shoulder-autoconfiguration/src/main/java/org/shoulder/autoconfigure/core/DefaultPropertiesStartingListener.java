@@ -37,7 +37,7 @@ public class DefaultPropertiesStartingListener implements ApplicationListener<Ap
         properties.put("shoulder.application.errorCodePrefix", "0");
         properties.put("shoulder.application.version", "v1");
         properties.put("shoulder.application.cluster", "false");
-        properties.put("shoulder.application.dateFormat", "yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+        properties.put("shoulder.application.dateTimeFormat", "yyyy-MM-dd'T'HH:mm:ss.SSS Z");
         properties.put("shoulder.application.charset", "UTF-8");
         properties.put("shoulder.application.defaultLocale", "zh_CN");
         properties.put("shoulder.application.timeZone", "GMT+8:00");
