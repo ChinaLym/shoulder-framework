@@ -1,6 +1,7 @@
 package org.shoulder.log.operation.context;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperationLogDTO;
@@ -31,6 +32,7 @@ public class OperationLogFactory {
         Operator currentOperator = OpLogContext.getCurrentOperator();
         return new OperationLogDTO(operation)
             .setOperator(currentOperator)
+            .setTenantCode(AppContext.getTenantCode())
             .setAppId(AppInfo.appId());
     }
 

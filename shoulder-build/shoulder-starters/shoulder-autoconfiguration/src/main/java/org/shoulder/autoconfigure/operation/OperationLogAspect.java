@@ -35,6 +35,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -98,6 +99,7 @@ public class OperationLogAspect {
         log.debug("OperationLogUtils.autoLog={}", OpLogContextHolder.isEnableAutoLog());
 
         // 方法执行后： 记录日志 并清除 threadLocal
+        OpLogContextHolder.getLog().setEndTime(Instant.now());
         if (OpLogContextHolder.isEnableAutoLog()) {
             OpLogContextHolder.log();
         }
@@ -115,7 +117,9 @@ public class OperationLogAspect {
     @AfterThrowing(pointcut = "methodAnnotatedByOperationLog()")
     public void doAfterThrowing() {
         if (OpLogContextHolder.isEnableAutoLog() && OpLogContextHolder.isLogWhenThrow()) {
-            OpLogContextHolder.getLog().setResultFail();
+            OpLogContextHolder.getLog()
+                .setEndTime(Instant.now())
+                .setResultFail();
             OpLogContextHolder.log();
         }
 

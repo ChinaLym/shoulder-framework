@@ -3,7 +3,6 @@ package org.shoulder.log.operation.format.impl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.log.operation.dto.OpLogParam;
@@ -11,6 +10,8 @@ import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 
 import java.lang.reflect.Field;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +30,7 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
     /**
      * 日期格式化:高性能线程安全
      */
-    private static FastDateFormat fastDateFormat = FastDateFormat.getInstance(AppInfo.dateFormat());
+    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(AppInfo.dateTimeFormat(), AppInfo.defaultLocale());
 
     /**
      * {@link OperationLogDTO} 类中所有 String 类型的字段
@@ -39,7 +40,8 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
     static {
         // 反射获取所有文本字段并设置可访问
         opLogStrFields = Arrays.stream(OperationLogDTO.class.getDeclaredFields())
-            .filter(field -> CharSequence.class.isAssignableFrom(field.getClass()))
+            // CharSequence
+            .filter(field -> CharSequence.class.isAssignableFrom(field.getType()))
             .peek(field -> field.setAccessible(true))
             .collect(Collectors.toList());
         // 包含 String、枚举、List、Map、OpLogParam
@@ -68,6 +70,7 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
     @Override
     public String format(OperationLogDTO opLog) {
 
+        // todo 好多变量没有记录
         KeyValueContextBuilder builder = new KeyValueContextBuilder();
         // 反射拼接所有 String 类型
         opLogStrFields.forEach(field -> {
@@ -86,9 +89,10 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
         builder
             .add("terminalType", String.valueOf(opLog.getTerminalType().getCode()))
             .add("result", String.valueOf(opLog.getResult().getCode()))
-            .add("operationTime", fastDateFormat.format(opLog.getOperationTime()))
-            .add("endTime", fastDateFormat.format(opLog.getEndTime()))
-        ;
+            .add("operationTime", dateTimeFormatter.format(ZonedDateTime.ofInstant(opLog.getOperationTime(), AppInfo.timeZone().toZoneId())));
+        if (opLog.getEndTime() != null) {
+            builder.add("endTime", dateTimeFormatter.format(ZonedDateTime.ofInstant(opLog.getEndTime(), AppInfo.timeZone().toZoneId())));
+        }
 
         // 拼接 List 类型（json格式）
         if (CollectionUtils.isNotEmpty(opLog.getDetailItems())) {
