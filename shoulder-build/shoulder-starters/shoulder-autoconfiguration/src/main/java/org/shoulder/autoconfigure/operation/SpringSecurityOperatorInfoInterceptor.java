@@ -7,6 +7,7 @@ import org.shoulder.log.operation.dto.SystemOperator;
 import org.shoulder.log.operation.enums.TerminalType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +33,13 @@ public class SpringSecurityOperatorInfoInterceptor extends OperationLogOperatorI
         }
         operator.setUserId(authentication.getName());
         operator.setUserRealName(authentication.getName());
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            operator.setUserId(userDetails.getUsername());
+        }
+
         Object details = authentication.getDetails();
         if (details instanceof WebAuthenticationDetails) {
             operator.setTerminalType(TerminalType.BROWSER);

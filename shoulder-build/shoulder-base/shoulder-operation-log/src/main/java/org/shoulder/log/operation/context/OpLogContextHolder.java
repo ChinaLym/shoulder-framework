@@ -125,6 +125,15 @@ public class OpLogContextHolder {
 
     // ============================ 批量被操作对象（用于一个方法记录多条操作日志） =======================
 
+
+    /**
+     * 批量设置被操作对象
+     */
+    public static void setOperableObject(Operable operableObj) {
+        getContextOrException().getOperationLog().setOperableObject(operableObj);
+    }
+
+
     /**
      * 获取日志上下文中所有被操作对象
      */

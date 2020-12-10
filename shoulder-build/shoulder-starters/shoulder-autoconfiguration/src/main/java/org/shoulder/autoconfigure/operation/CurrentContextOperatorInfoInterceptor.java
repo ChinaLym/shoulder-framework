@@ -1,8 +1,10 @@
 package org.shoulder.autoconfigure.operation;
 
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.dto.ShoulderCurrentUserOperator;
+import org.shoulder.log.operation.dto.SystemOperator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,6 +22,10 @@ public class CurrentContextOperatorInfoInterceptor extends OperationLogOperatorI
      */
     @Override
     protected Operator resolveOperator(HttpServletRequest request) {
+        String userId = AppContext.getUserIdAsString();
+        if (StringUtils.isEmpty(userId)) {
+            return SystemOperator.getInstance();
+        }
         ShoulderCurrentUserOperator operator = new ShoulderCurrentUserOperator(AppContext.getUserIdAsString());
         operator.setTerminalInfo(String.valueOf(AppContext.getLocale()));
         return operator;
