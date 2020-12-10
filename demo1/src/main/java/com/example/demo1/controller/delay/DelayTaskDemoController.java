@@ -1,12 +1,11 @@
 package com.example.demo1.controller.delay;
 
 import lombok.extern.shoulder.SLog;
-import org.shoulder.core.delay.DelayTask;
-import org.shoulder.core.delay.DelayTaskDispatcher;
-import org.shoulder.core.delay.DelayTaskHolder;
+import org.shoulder.core.concurrent.Threads;
+import org.shoulder.core.concurrent.delay.DelayTask;
+import org.shoulder.core.concurrent.delay.DelayTaskHolder;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.Threads;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

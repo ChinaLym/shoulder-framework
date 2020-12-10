@@ -71,6 +71,8 @@ public class BatchController {
         batchData.setDataType(DemoBatchConstants.DATA_TYPE_PERSON);
         batchData.setOperation(DemoBatchConstants.OPERATION_VALIDATE);
         batchData.setBatchListMap(allWantProcessData);
+        // 只放到内存，不做持久化
+        batchData.setPersistentRecord(false);
 
         // 示例：解析文件，然后校验，返回校验任务标识
         String taskId = batchService.doProcess(batchData);

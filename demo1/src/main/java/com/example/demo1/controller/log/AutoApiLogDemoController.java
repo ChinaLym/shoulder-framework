@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 自动记录 http 接口日志示例
+ * 自动记录 api 接口日志示例
  * 自动打印入参出参，不需要手动打印。
  *
  * @author lym

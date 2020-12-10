@@ -17,6 +17,11 @@ shoulder:
     id: ${spring.application.name}
 
 
+  log:
+    operation:
+      logger:
+        type: jdbc
+
 logging:
   level:
     org:
