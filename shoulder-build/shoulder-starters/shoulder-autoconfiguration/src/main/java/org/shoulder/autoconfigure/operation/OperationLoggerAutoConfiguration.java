@@ -87,7 +87,7 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
     @Bean
     @ConditionalOnMissingBean(value = {OperationLogger.class})
     @ConditionalOnProperty(name = "shoulder.log.operation.logger.type", havingValue = "logger", matchIfMissing = true)
-    public OperationLogger operationLogger(OperationLogFormatter operationLogFormatter) {
+    public LogOperationLogger logOperationLogger(OperationLogFormatter operationLogFormatter) {
         return new LogOperationLogger(operationLogFormatter);
     }
 
@@ -100,7 +100,7 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
     @ConditionalOnBean(DataSource.class)
     @ConditionalOnProperty(name = "shoulder.log.operation.logger.type", havingValue = "jdbc")
     @ConditionalOnMissingBean(value = {OperationLogger.class})
-    public OperationLogger operationLogger(DataSource dataSource) {
+    public JdbcOperationLogger jdbcOperationLogger(DataSource dataSource) {
         return new JdbcOperationLogger(dataSource);
     }
 

@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.annotation.Nonnull;
 import javax.sql.DataSource;
-import java.time.Duration;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +48,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
     @Override
     public void log(@Nonnull Collection<? extends OperationLogDTO> opLogList) {
         // 如果过多，需要考虑多线程/分片，默认使用批量插入
-        jdbcTemplate.update(BATCH_INSERT, flatFieldsToArray(opLogList));
+        jdbcTemplate.batchUpdate(BATCH_INSERT, flatFieldsToArray(opLogList));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[6] = opLog.getUserOrgName();
         fields[7] = opLog.getRemoteAddress();
         fields[8] = opLog.getTerminalId();
-        fields[9] = opLog.getTerminalType();
+        fields[9] = opLog.getTerminalType().getCode();
         fields[10] = opLog.getTerminalInfo();
 
         fields[11] = opLog.getObjectType();
@@ -84,11 +84,11 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[17] = opLog.getDetailKey();
         fields[18] = JsonUtils.toJson(opLog.getDetailItems());
 
-        fields[19] = opLog.getResult();
+        fields[19] = opLog.getResult().getCode();
         fields[20] = opLog.getErrorCode();
-        fields[21] = opLog.getOperationTime();
-        fields[22] = opLog.getEndTime();
-        fields[23] = Duration.between(opLog.getOperationTime(), opLog.getEndTime());
+        fields[21] = Timestamp.from(opLog.getOperationTime());
+        fields[22] = Timestamp.from(opLog.getEndTime());
+        fields[23] = null;//Duration.between(opLog.getOperationTime(), opLog.getEndTime());
         fields[24] = opLog.getTraceId();
         fields[25] = null;// relation_id
         fields[26] = null;// tenant_code

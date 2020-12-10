@@ -12,10 +12,7 @@ import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.annotation.OperationLogParam;
-import org.shoulder.log.operation.context.OpLogContext;
-import org.shoulder.log.operation.context.OpLogContextHolder;
-import org.shoulder.log.operation.context.OperationContextStrategyEnum;
-import org.shoulder.log.operation.context.OperationLogFactory;
+import org.shoulder.log.operation.context.*;
 import org.shoulder.log.operation.dto.OpLogParam;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
@@ -153,10 +150,12 @@ public class OperationLogAspect {
 
         }
         // 上下文创建策略
-        OperationContextStrategyEnum strategy;
+        OperationContextStrategy strategy;
         if ((strategy = methodAnnotation.strategy()) == OperationContextStrategyEnum.USE_DEFAULT) {
             if (classAnnotation != null && classAnnotation.strategy() != OperationContextStrategyEnum.USE_DEFAULT) {
                 strategy = classAnnotation.strategy();
+            } else {
+                strategy = OperationContextStrategyEnum.getDefault();
             }
         }
         // 根据创建策略创建日志实体
