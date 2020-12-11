@@ -48,7 +48,7 @@
             <artifactId>shoulder-operation-log</artifactId>
         </dependency>
 
-        <dependency>
+		<dependency>
 			<groupId>cn.itlym</groupId>
 			<artifactId>shoulder-starter-beanmap</artifactId>
 		</dependency>

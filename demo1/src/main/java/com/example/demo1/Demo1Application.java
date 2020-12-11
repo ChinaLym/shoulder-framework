@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * shoulder-framework 实例工程
@@ -11,6 +12,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
  *
  * @author lym
  */
+@EnableScheduling
 @SpringBootApplication
 public class Demo1Application implements ApplicationListener<ContextRefreshedEvent> {
     public static void main(String[] args) {

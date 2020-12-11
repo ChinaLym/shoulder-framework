@@ -26,7 +26,7 @@ import java.util.Date;
 /**
  * 操作日志使用示例
  * <p>
- * 通过 @OperationLog、BusinessLogUtils —— 两个类完成操作日志
+ * 通过 @OperationLog、OpLogContextHolder —— 两个类完成操作日志
  *
  * @author lym
  */
