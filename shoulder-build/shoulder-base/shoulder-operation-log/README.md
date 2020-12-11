@@ -93,7 +93,16 @@ public class UserServiceImpl implements IUserSerivce {
 
 # 操作日志框架设计思想与原理
 
-TODO
+
+## 设计
+
+
+- 使用者在业务方法上添加 `@OperationLog` 
+注解，框架根据注解生成日志上下文（`OpLogContext`），填充操作日志（`OperationLogDTO`）相关信息，如当前操作者信息（有个默认拦截器，从请求中解析），放于`OpLogContextHolder` 的线程变量中待使用者进一步填充；
+- 使用者在业务方法内，从当前操作日志上下文中取出日志，填充当前被操作对象信息；
+- 执行完该方法后，框架根据是否抛异常自动记录一条成功 / 失败操作日志。
+
+
 
 ## 目录结构
 ```
@@ -109,7 +118,7 @@ TODO
 ├─logger                日志记录相关（用于自定义输出方式）
 │  ├─impl                   日志记录器实现
 │  └─intercept              在日志记录拦截器前后可以做一些事情
-└─util                  日志相关工具
+└─context               日志上下文相关：暂存日志、上下文传递策略
 ```
 
 * 核心类：

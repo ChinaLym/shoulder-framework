@@ -20,7 +20,7 @@ public class OperationLogProperties {
     /**
      * 参数值为 null 时的输出样式，一般取值为 '' 或 'null' 等
      */
-    private String nullParamOutput = "";
+    private String nullParamOutput = "null";
 
     /**
      * 用户信息拦截器，顺序，若自定义用户信息，且较晚才能获取到，则适当调大

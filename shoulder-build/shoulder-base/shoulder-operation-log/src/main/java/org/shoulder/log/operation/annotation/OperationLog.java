@@ -1,5 +1,6 @@
 package org.shoulder.log.operation.annotation;
 
+import org.shoulder.log.operation.context.OpLogContext;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.context.OperationContextStrategyEnum;
 import org.shoulder.log.operation.context.OperationLogFactory;
@@ -77,10 +78,17 @@ public @interface OperationLog {
     TerminalType terminalType() default TerminalType.BROWSER;
 
     /**
-     * 加了该注解的方法 A 中调用 加了该注解的方法 B 时，日志上下文创建策略
+     * 日志上下文传播 / 创建策略：当在加了该注解的方法 A 中调用 加了该注解的方法 B 时，如何引导框架记录希望的操作记录
      * 默认，如果不存在嵌套调用，则新建一个上下文。若执行该方法时已经存在日志上下文，则不记录该方法的日志。
+     * 参考了 Spring Data 的事务传播
      */
     OperationContextStrategyEnum strategy() default OperationContextStrategyEnum.USE_DEFAULT;
+
+    /**
+     * 在创建子线程 / 提交线程池时，将日志上下文拷贝到新的线程中，默认不传播
+     * 传播后，若当前线程不需要记录日志（因为被操作对象信息可能不完整），需要 {@link OpLogContext#setAutoLog)} false
+     */
+    boolean enableCrossThread() default false;
 
     /**
      * 一些通用的操作，用于填充 Operation

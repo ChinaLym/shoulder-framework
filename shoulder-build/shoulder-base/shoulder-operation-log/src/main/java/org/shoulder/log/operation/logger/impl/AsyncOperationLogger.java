@@ -5,7 +5,7 @@ import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.logger.OperationLogger;
-import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
+import org.shoulder.log.operation.logger.OperationLoggerInterceptor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;

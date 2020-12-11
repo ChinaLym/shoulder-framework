@@ -1,6 +1,7 @@
 package org.shoulder.log.operation.format.covertor;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.log.operation.format.OperationLogParamValueConverter;
 
 import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
@@ -19,6 +20,7 @@ public class OperationLogParamValueConverterHolder {
 
     private static OperationLogParamValueConverter defaultConvert;
 
+    @Nonnull
     public static OperationLogParamValueConverter getConvert(Class<? extends OperationLogParamValueConverter> convertClazz) {
         return converterMap.getOrDefault(convertClazz, defaultConvert);
     }
@@ -35,6 +37,9 @@ public class OperationLogParamValueConverterHolder {
 
         if (hasConverter) {
             converterList.forEach(OperationLogParamValueConverterHolder::addConverter);
+        }
+        if (defaultConvert == null) {
+            throw new IllegalArgumentException("defaultConvert can't be null!");
         }
         OperationLogParamValueConverterHolder.defaultConvert = defaultConvert;
     }

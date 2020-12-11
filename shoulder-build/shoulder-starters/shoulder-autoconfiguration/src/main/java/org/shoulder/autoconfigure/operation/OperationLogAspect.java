@@ -15,8 +15,8 @@ import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.*;
 import org.shoulder.log.operation.dto.OpLogParam;
 import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.format.OperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
-import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -290,7 +290,7 @@ public class OperationLogAspect {
 
                 }
             } catch (Exception e) {
-                log.info("try convert FAIL, but ignored by replace with default value(null). class:'" +
+                log.warn("try convert FAIL, fallBack with default value(null). class:'" +
                     method.getDeclaringClass().getName() +
                     "', method:'" + method.getName() +
                     "', paramName=" + parameterNames[i], e);
