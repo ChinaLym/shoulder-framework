@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.format;
+package org.shoulder.log.operation.logger.intercept;
 
 import org.shoulder.log.operation.dto.OperationLogDTO;
 

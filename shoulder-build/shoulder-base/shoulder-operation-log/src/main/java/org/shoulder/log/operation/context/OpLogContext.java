@@ -9,10 +9,13 @@ import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.dto.SystemOperator;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * 操作日志上下文
+ * 这些参数决定本次操作日志如何记录
  *
  * @author lym
  */
@@ -95,6 +98,12 @@ public class OpLogContext {
         }
     }
 
+    public void setOperableObjects(Collection<? extends Operable> operableObjs) {
+        if (operableObjs != null) {
+            this.operableObjects = new ArrayList<>(operableObjs);
+        }
+    }
+
     public static final class Builder {
         private OpLogContext opLogContext;
 
@@ -116,7 +125,7 @@ public class OpLogContext {
             return this;
         }
 
-        public Builder operableObjects(List<Operable> operableObjects) {
+        public Builder operableObjects(Collection<? extends Operable> operableObjects) {
             opLogContext.setOperableObjects(operableObjects);
             return this;
         }

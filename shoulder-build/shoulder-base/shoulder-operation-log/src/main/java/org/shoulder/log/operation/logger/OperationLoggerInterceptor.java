@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.logger.intercept;
+package org.shoulder.log.operation.logger;
 
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperationLogDTO;
@@ -18,6 +18,7 @@ import java.util.List;
  *
  * @author lym
  * @implSpec 该类覆盖了所有操作日志可以拦截的时刻，默认实现为什么都不做
+ * @see AbstractOperationLogger 为抽象日志记录器服务
  */
 public interface OperationLoggerInterceptor {
 

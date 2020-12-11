@@ -3,7 +3,6 @@ package org.shoulder.log.operation.logger;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.dto.Operable;
 import org.shoulder.log.operation.dto.OperationLogDTO;
-import org.shoulder.log.operation.logger.intercept.OperationLoggerInterceptor;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -13,6 +12,7 @@ import java.util.List;
  * 操作日志记录器
  * 子类要求：不能抛出异常，遇到异常需要 logger处理。因为抛出异常可能导致上层业务失败
  *
+ * @see AbstractOperationLogger 一个基本模板实现
  * @author lym
  */
 public interface OperationLogger {

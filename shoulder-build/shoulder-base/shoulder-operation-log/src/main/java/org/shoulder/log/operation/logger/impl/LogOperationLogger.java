@@ -4,6 +4,7 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
+import org.shoulder.log.operation.logger.AbstractOperationLogger;
 import org.shoulder.log.operation.logger.OperationLogger;
 
 /**
