@@ -38,7 +38,7 @@ public interface OperationLogger {
      *
      * @param opLog 操作日志对象
      */
-    void log(OperationLogDTO opLog);
+    void log(@Nonnull OperationLogDTO opLog);
 
     /**
      * 记录多条操作日志

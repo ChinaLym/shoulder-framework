@@ -8,6 +8,7 @@ import org.shoulder.log.operation.format.impl.ShoulderOpLogFormatter;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.logger.OperationLoggerInterceptor;
 import org.shoulder.log.operation.logger.impl.AsyncOperationLogger;
+import org.shoulder.log.operation.logger.impl.BufferedOperationLogger;
 import org.shoulder.log.operation.logger.impl.JdbcOperationLogger;
 import org.shoulder.log.operation.logger.impl.LogOperationLogger;
 import org.slf4j.Logger;
@@ -24,16 +25,14 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.StringJoiner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * This configuration class registers a {@link OperationLogger} able to logging operation-log.
@@ -54,6 +53,7 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
     }
 
     @Bean
+    @Order(0)
     @ConditionalOnProperty(value = "shoulder.log.operation.logger.async", havingValue = "true", matchIfMissing = true)
     public BeanPostProcessor asyncLoggerBeanPostProcessor() {
         return new BeanPostProcessor() {
@@ -64,9 +64,9 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
                 }
                 int threadNum = operationLogProperties.getLogger().getThreadNum();
                 String threadName = operationLogProperties.getLogger().getThreadName();
-                log.info("OperationLogger-async=true,threadNum=" + threadNum + ",threadName=" + threadName);
+                log.debug("OperationLogger-async=true,threadNum=" + threadNum + ",threadName=" + threadName);
                 // default rejectExecutionHandler is throw Ex, use ignore if opLog is not important.
-                CustomizableThreadFactory opLogThreadFactory = new CustomizableThreadFactory("shoulder");
+                CustomizableThreadFactory opLogThreadFactory = new CustomizableThreadFactory(threadName);
                 // 可以设置为 true，因为操作日志一般并不是非记录不可
                 // opLogThreadFactory.setDaemon(true);
                 ExecutorService opLogExecutorService = new ThreadPoolExecutor(threadNum, threadNum,
@@ -75,6 +75,29 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
                 return new AsyncOperationLogger()
                     .setExecutorService(opLogExecutorService)
                     .setLogger((OperationLogger) bean);
+            }
+        };
+    }
+
+    @Bean
+    @Order(1)
+    @ConditionalOnProperty(value = "shoulder.log.operation.logger.buffered", havingValue = "true")
+    public BeanPostProcessor bufferedLoggerBeanPostProcessor() {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName) throws BeansException {
+                if (!(bean instanceof OperationLogger)) {
+                    return bean;
+                }
+                String threadName = operationLogProperties.getLogger().getThreadName();
+                ScheduledExecutorService scheduledExecutorService =
+                    Executors.newScheduledThreadPool(1, new CustomizableThreadFactory(threadName));
+
+                long flushInterval = operationLogProperties.getLogger().getFlushInterval().toMillis();
+                int flushThreshold = operationLogProperties.getLogger().getFlushThreshold();
+                int perFlushMax = operationLogProperties.getLogger().getPerFlushMax();
+                return new BufferedOperationLogger(new ConcurrentLinkedQueue<>(), (OperationLogger) bean, scheduledExecutorService,
+                    flushInterval, flushThreshold, perFlushMax);
             }
         };
     }

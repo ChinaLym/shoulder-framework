@@ -22,8 +22,8 @@
 - 操作日志框架重构
     - 日志上下文增加语法糖
     - 包结构调整
-    - logger 接口重构
-
+    - logger 增加 bufferedLogger，优化以 HTTP / MQ / Jdbc 形式记录日志的频繁写入性能 
+    - 当 @OperationLog 所在方法抛出异常时，若为 ErrorCode 及其子类，则自动记录错误码
 
     
 ## 0.5 （2020年12月6日 发布）

@@ -3,6 +3,8 @@ package org.shoulder.autoconfigure.operation;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.time.Duration;
+
 /**
  * 操作日志相关配置
  *
@@ -49,7 +51,29 @@ public class OperationLogProperties {
         /**
          * 异步记录日志线程的名称
          */
-        private String threadName = "shoulder-async-operation-logger";
+        private String threadName = "shoulder-opLogger";
+
+        /**
+         * 是否添加缓冲池，针对频繁单次记录做优化，如：需存数据库，每 0.2s 插入一次数据库 -> 每隔一段时间批量插入数据库
+         * 默认 false，开启后可能无法查看到实时操作日志
+         */
+        private boolean buffered = false;
+
+        /**
+         * buffer 日志记录器，每隔多少秒刷一次
+         */
+        private Duration flushInterval = Duration.ofSeconds(10);
+
+        /**
+         * 当积攒的 buffer 中日志数达到 flushThreshold 条触发一次批量记录，不影响固定扫描间隔
+         */
+        private Integer flushThreshold = 10;
+
+        /**
+         * 每次批量刷日志最大条数
+         * 推荐根据表结构定制。如统计 Mysql单页可以存几条数据，取该值buffer
+         */
+        private Integer perFlushMax = 20;
 
 
         public Integer getThreadNum() {

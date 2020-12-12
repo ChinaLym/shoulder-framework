@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.log.operation.annotation.OperationLog;
@@ -111,12 +112,19 @@ public class OperationLogAspect {
      * 1. 记录日志
      * 2. 清除 threadLocal
      */
-    @AfterThrowing(pointcut = "methodAnnotatedByOperationLog()")
-    public void doAfterThrowing() {
+    @AfterThrowing(throwing = "ex", pointcut = "methodAnnotatedByOperationLog()")
+    public void doAfterThrowing(Throwable ex) {
         if (OpLogContextHolder.isEnableAutoLog() && OpLogContextHolder.isLogWhenThrow()) {
             OpLogContextHolder.getLog()
                 .setEndTime(Instant.now())
                 .setResultFail();
+            if (ex instanceof ErrorCode) {
+                ErrorCode errorCode = ((ErrorCode) ex);
+                OpLogContextHolder.getLog()
+                    .setErrorCode(errorCode.getCode())
+                    .setDetail(errorCode.getMessage())
+                ;
+            }
             OpLogContextHolder.log();
         }
 
