@@ -55,7 +55,7 @@ public class BatchTaskAutoConfiguration {
         // 默认使用 5 个线程
         ThreadPoolExecutor executorService = new ThreadPoolExecutor(5, 5,
             60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
-            new CustomizableThreadFactory("batch"));
+            new CustomizableThreadFactory("shoulder-batch"));
         Threads.setExecutorService(executorService);
         return executorService;
     }

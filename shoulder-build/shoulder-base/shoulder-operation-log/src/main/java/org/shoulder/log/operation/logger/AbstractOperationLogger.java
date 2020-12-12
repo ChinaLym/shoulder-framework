@@ -30,7 +30,7 @@ public abstract class AbstractOperationLogger implements OperationLogger {
      * 记录一条操作日志
      */
     @Override
-    public void log(OperationLogDTO opLog) {
+    public void log(@Nonnull OperationLogDTO opLog) {
         try {
             beforeLog(opLog);
             doLog(opLog);

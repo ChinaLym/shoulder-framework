@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -30,9 +31,9 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
     }
 
     private static final String ALL_INSERT_COLUMNS = "component_id, instance_id, " +
-        "user_id, user_name, user_real_name, user_org_id, user_org_name, ip, terminal_id, terminal_type, terminal_info, " +
-        "object_type, object_id, object_name, action_param, operation, detail, detail_key, detail_item, " +
-        "result, error_code, operation_time, end_time, last_time, trace_id, relation_id, tenant_code, extended_field0";
+        "user_id, user_name, user_real_name, user_org_id, user_org_name, terminal_type, remoteAddress, terminalId, terminal_info, " +
+        "operation, object_type, object_id, object_name, detail, detail_key, detail_item, operation_param" +
+        "result, error_code, operation_time, end_time, duration, trace_id, relation_id, tenant_code, extended_field0";
 
     private static final String VALUES = "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -71,28 +72,29 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[4] = opLog.getUserRealName();
         fields[5] = opLog.getUserOrgId();
         fields[6] = opLog.getUserOrgName();
-        fields[7] = opLog.getRemoteAddress();
-        fields[8] = opLog.getTerminalId();
-        fields[9] = opLog.getTerminalType().getCode();
+        fields[7] = opLog.getTerminalType().getCode();
+        fields[8] = opLog.getRemoteAddress();
+        fields[9] = opLog.getTerminalId();
         fields[10] = opLog.getTerminalInfo();
 
-        fields[11] = opLog.getObjectType();
-        fields[12] = opLog.getObjectId();
-        fields[13] = opLog.getObjectName();
-        fields[14] = JsonUtils.toJson(opLog.getDetailItems());//todo JsonUtils.toJson(opLog.getParams())
-        fields[15] = opLog.getOperation();
-        fields[16] = opLog.getDetail();
-        fields[17] = opLog.getDetailKey();
-        fields[18] = JsonUtils.toJson(opLog.getDetailItems());
+        fields[11] = opLog.getOperation();
+        fields[12] = opLog.getObjectType();
+        fields[13] = opLog.getObjectId();
+        fields[14] = opLog.getObjectName();
+        fields[15] = opLog.getDetail();
+        fields[16] = opLog.getDetailKey();
+        fields[17] = JsonUtils.toJson(opLog.getDetailItems());
+        fields[18] = JsonUtils.toJson(opLog.getParams());
 
         fields[19] = opLog.getResult().getCode();
         fields[20] = opLog.getErrorCode();
         fields[21] = Timestamp.from(opLog.getOperationTime());
         fields[22] = Timestamp.from(opLog.getEndTime());
-        fields[23] = null;//Duration.between(opLog.getOperationTime(), opLog.getEndTime());
+        // 持续时间 ms
+        fields[23] = Duration.between(opLog.getOperationTime(), opLog.getEndTime()).toMillis();
         fields[24] = opLog.getTraceId();
         fields[25] = null;// relation_id
-        fields[26] = null;// tenant_code
+        fields[26] = opLog.getTenantCode();
 
         fields[27] = JsonUtils.toJson(opLog.getExtFields());
 

@@ -53,17 +53,30 @@ public interface ErrorCode extends Translatable {
 
     // --------------------------- 【用于支持多语言】 -----------------------------
 
+    /**
+     * 错误码对应的翻译
+     *
+     * @return 错误码对应的翻译
+     */
     @Override
     default String getI18nKey() {
         return "err." + getCode() + ".desc";
     }
 
+    /**
+     * 补充翻译需要参数
+     * @return 翻译需要参数
+     */
     @Override
     @Nullable
     default Object[] getArguments() {
         return getArgs();
     }
 
+    /**
+     * 当翻译失败时，返回什么
+     * @return msg
+     */
     @Override
     @Nullable
     default String getDefaultMessage() {
