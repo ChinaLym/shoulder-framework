@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  * 以 jdbc 记录操作日志记录，直接保存至数据库。适合微小型项目中，日志中心与业务组件同数据库。
  * <p>
  * 注意：使用前需要保证对应的数据库表存在。
+ * 事务：由于认为该日志一般在异步线程中执行，shoulder 未显示控制事务
  *
  * @author lym
  */
@@ -31,8 +32,8 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
     }
 
     private static final String ALL_INSERT_COLUMNS = "component_id, instance_id, " +
-        "user_id, user_name, user_real_name, user_org_id, user_org_name, terminal_type, remoteAddress, terminalId, terminal_info, " +
-        "operation, object_type, object_id, object_name, detail, detail_key, detail_item, operation_param" +
+        "user_id, user_name, user_real_name, user_org_id, user_org_name, terminal_type, terminal_address, terminal_id, terminal_info, " +
+        "operation, object_type, object_id, object_name, detail, detail_key, detail_item, operation_param," +
         "result, error_code, operation_time, end_time, duration, trace_id, relation_id, tenant_code, extended_field0";
 
     private static final String VALUES = "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

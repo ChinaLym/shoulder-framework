@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
  *
  * 推荐使用 NEW_OR_IGNORE、ALWAYS_NEW
  *
+ * @see OperationContextStrategy 策略介绍
  * @author lym
  */
 public enum OperationContextStrategyEnum implements OperationContextStrategy {
@@ -15,8 +16,8 @@ public enum OperationContextStrategyEnum implements OperationContextStrategy {
     // ------------------------------ 可以加在独立的业务方法上（没有肯定要新建） -------------------------------
 
     /**
-     * 作为未设置的标识，使用 DEFAULT，不会直接应用，用户可以通过调用
-     * {@link #setDefault} 方法改变默认业务传播行为
+     * 取 DEFAULT 行为：不会直接应用，用户可以通过调用 {@link #setDefault} 方法改变默认业务传播行为
+     * @see #DEFAULT
      */
     USE_DEFAULT(-1, -1),
 
@@ -53,6 +54,9 @@ public enum OperationContextStrategyEnum implements OperationContextStrategy {
 
     ;
 
+    /**
+     * 默认行为
+     */
     public static OperationContextStrategy DEFAULT = NEW_OR_IGNORE;
 
     int onMissingContext;

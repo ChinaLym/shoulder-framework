@@ -11,12 +11,7 @@ import java.util.List;
 public class OpLogParam {
 
     /**
-     * 参数值是否支持多语言
-     */
-    protected boolean supportI18n = false;
-
-    /**
-     * 参数名称
+     * 参数名称，可以自动添加前后缀尝试匹配
      */
     protected String name;
 
@@ -24,6 +19,11 @@ public class OpLogParam {
      * 参数值
      */
     protected List<String> value = new LinkedList<>();
+
+    /**
+     * 参数值是否支持多语言
+     */
+    protected boolean supportI18n = false;
 
     public OpLogParam() {
     }
