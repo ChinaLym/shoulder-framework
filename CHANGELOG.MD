@@ -25,6 +25,8 @@
     - logger 增加 bufferedLogger，优化以 HTTP / MQ / Jdbc 形式记录日志的频繁写入性能 
     - 当 @OperationLog 所在方法抛出异常时，若为 ErrorCode 及其子类，则自动记录错误码
 
+- web
+    - 默认全局异常处理去掉非 json 响应的支持
     
 ## 0.5 （2020年12月6日 发布）
 

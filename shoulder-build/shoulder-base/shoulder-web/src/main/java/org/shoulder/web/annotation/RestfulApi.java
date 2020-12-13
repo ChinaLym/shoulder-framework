@@ -13,10 +13,11 @@ import java.lang.annotation.*;
  *
  * @author lym
  */
+@RestController
+@Inherited
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@RestController
 public @interface RestfulApi {
     @AliasFor(
         annotation = RestController.class

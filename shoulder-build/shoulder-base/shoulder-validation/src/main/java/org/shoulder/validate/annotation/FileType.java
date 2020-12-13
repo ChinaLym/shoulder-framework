@@ -15,6 +15,7 @@ import java.lang.annotation.*;
  *
  * @author lym
  */
+@Inherited
 @Documented
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
