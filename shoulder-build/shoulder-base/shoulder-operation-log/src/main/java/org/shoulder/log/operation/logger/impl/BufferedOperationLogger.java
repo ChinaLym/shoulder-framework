@@ -7,11 +7,13 @@ import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.logger.OperationLoggerInterceptor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.PreDestroy;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -34,12 +36,7 @@ public class BufferedOperationLogger implements OperationLogger {
     private final OperationLogger delegate;
 
     /**
-     * 固定每隔多久，刷一次
-     */
-    private final long flushInterval;
-
-    /**
-     * 定时消费日志
+     * 定时消费日志，定时器，在这里持有其引用
      */
     private ScheduledExecutorService scheduledExecutorService;
 
@@ -73,14 +70,9 @@ public class BufferedOperationLogger implements OperationLogger {
     public void log(@Nonnull OperationLogDTO opLog) {
         logBuffer.add(opLog);
         int current = logBuffer.size();
-        if (flushing.get()) {
-            // 正在刷，只扔到 buffer，不触发
-            return;
-        }
         if (current >= flushThreshold) {
-            if (flushing.compareAndSet(false, true)) {
-                consumerLog();
-            }
+            // 达到提前刷的积累数量，尝试触发刷日志
+            consumerLog();
         }
     }
 
@@ -89,9 +81,11 @@ public class BufferedOperationLogger implements OperationLogger {
         this.logBuffer = logBuffer;
         this.delegate = delegate;
         this.scheduledExecutorService = scheduledExecutorService;
-        this.flushInterval = flushInterval;
         this.flushThreshold = flushThreshold;
         this.perFlushMax = perFlushMax;
+
+        // 启动异步刷任务
+        scheduledExecutorService.scheduleAtFixedRate(this::consumerLog, flushInterval, flushInterval, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -118,6 +112,11 @@ public class BufferedOperationLogger implements OperationLogger {
 
 
     public void consumerLog() {
+        if (!flushing.compareAndSet(false, true)) {
+            // 已经有人在刷了，让他接着做
+            return;
+        }
+        // 只有一个线程可以运行到这
         OperationLogDTO temp;
         List<OperationLogDTO> opLogList = new LinkedList<>();
         while ((temp = logBuffer.poll()) != null) {
@@ -132,8 +131,13 @@ public class BufferedOperationLogger implements OperationLogger {
             delegate.log(opLogList);
             lastLogTime.set(System.currentTimeMillis());
         }
+        flushing.set(false);
     }
 
-
+    @PreDestroy
+    public void preDestroy() {
+        // Bean 注销前，消费掉累积的日志
+        consumerLog();
+    }
 
 }
