@@ -3,12 +3,14 @@ package com.example.demo1.controller.log;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.context.OpLogContextHolder;
+import org.shoulder.log.operation.logger.impl.LogOperationLogger;
+import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 操作日志入门 Demo2 —— 使用可选类注解 {@link OperationLogConfig} 进一步简化
+ * 操作日志入门 Demo2 —— 使用类注解 {@link OperationLogConfig} （可选）进一步简化方法注解
  *  使用 @OperationLogConfig 就不用再在每个方法上写 objectType=xxx strategy=xxx
  *
  *  通常情况下一个 Controller / Service 类中不同方法记录操作日志时，他们的操作的对象往往是相同的（模块内聚）
@@ -16,14 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lym
  */
+@SkipResponseWrap // 该类所有方法的返回值将不被包装
 @OperationLogConfig(objectType = "shop") //
 @RequestMapping("oplog/config")
 @RestController
-public class OpLogDemoController2 {
+public class OperationLogDemoController2 {
 
 
     /**
      * 当 OperationLog 注解中没有 moduleId、ObjectType，值时，会尝试使用类的 OperationLogConfig 中的值
+     * <a href="http://localhost:8080/oplog/config/1" />
      */
     @OperationLog(operation = "configTest")
     @GetMapping("1")
@@ -34,15 +38,22 @@ public class OpLogDemoController2 {
 
 
     /**
-     * 如果 OperationLog 注解中有 ObjectType，值时，就不会取类上的
+     * 如果 OperationLog 注解中有 ObjectType，值时，优先取方法上的
+     * <a href="http://localhost:8080/oplog/config/2" />
      */
     @OperationLog(operation = "configTest", objectType = "方法注解上的objectType")
     @GetMapping("2")
     public String test2() {
-        return OpLogContextHolder.getContextOrException().getOperationLog().toString();
+        // OpLogContextHolder.getLog() 相当于 OpLogContextHolder.getContextOrException().getOperationLog()
+        return OpLogContextHolder.getLog().getObjectType();
     }
 
-    /** 异步线程中也可以自动获取到父线程中的用户信息，而且会自动清理线程变量 ~ */
+    /**
+     * 异步线程中也可以自动获取到父线程中的用户信息，而且会自动清理线程变量 ~
+     * <a href="http://localhost:8080/oplog/config/3" />
+     *
+     * @see LogOperationLogger#doLog 在这里打断点，模拟记录日志耗时，发现是在异步线程记录的，故不会影响接口返回和响应
+     */
     @OperationLog(operation = "asyncLogger")
     @GetMapping("3")
     public String asyncLogger() {
@@ -59,7 +70,7 @@ public class OpLogDemoController2 {
                 .addDetailItem("shoulder.log.operation.interceptorOrder 解析当前操作者信息的拦截器在 Spring MVC中的顺序，默认0");
 
 
-        return "日志记录的过程并不在当前线程，在 DefaultOperationLogger 里添加断点，会发现接口仍然立即返回，shoulder 不会忘记高性能高并发。";
+        return "shoulder 助力高性能~";
     }
 
 

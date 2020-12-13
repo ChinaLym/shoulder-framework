@@ -70,10 +70,44 @@ public class LoggerDemoController {
      */
     @GetMapping("2")
     public String case2() {
-        log.error(CommonErrorCodeEnum.AUTH_401_EXPIRED);
+        log.error(CommonErrorCodeEnum.UNKNOWN);
         return TIP;
     }
 
-    // todo 补充记录异常、错误码
+    /**
+     * <a href="http://localhost:8080/log/3" />
+     * 记录错误码类【推荐】
+     * 只需要记录 ErrorCode 接口即可
+     */
+    @GetMapping("3")
+    public String case3() {
+        try {
+            String nullStr = null;
+            // 这里会抛 NPE
+            int a = nullStr.length();
+        } catch (NullPointerException e) {
+
+            // 记录堆栈：适用于捕获意料之外的错误，需要排差
+            log.error(CommonErrorCodeEnum.UNKNOWN, e);
+
+            // 不记录堆栈：适用于捕获意料之中的错误，不需要排差，程序中已经有处理措施，如读取配置时，发现无该配置，使用默认值
+            log.error(CommonErrorCodeEnum.UNKNOWN);
+
+            // 显示指定错误码
+            String errorCode = CommonErrorCodeEnum.UNKNOWN.getCode();
+            log.errorWithErrorCode(errorCode, "发生异常了");
+            log.info("=============================");
+            log.errorWithErrorCode(errorCode, "发生 {} 异常了", e.getClass().getSimpleName());
+            log.info("=============================");
+            log.errorWithErrorCode(errorCode, "发生 {} 异常了，message={}", e.getClass().getSimpleName(), e.getMessage());
+            log.info("=============================");
+            log.errorWithErrorCode(errorCode, "{} 发生 {} 异常了，message={}", "case3", e.getClass().getSimpleName(), e.getMessage());
+            log.info("=============================");
+            log.errorWithErrorCode(errorCode, "发生异常了", "case3", e);
+            log.info("==========================================================");
+        }
+
+        return TIP;
+    }
 
 }
