@@ -11,7 +11,7 @@ import java.util.Collection;
  *
  * @author lym
  */
-class MultiOperableDecorator extends OperableObject {
+public class MultiOperableDecorator extends OperableObject {
 
     /**
      * 省略符
