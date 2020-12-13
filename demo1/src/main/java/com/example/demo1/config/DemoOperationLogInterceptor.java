@@ -23,7 +23,6 @@ import java.util.List;
 @Component
 public class DemoOperationLogInterceptor implements OperationLoggerInterceptor {
 
-
     //@Autowired
     //JdbcTemplate jdbcTemplate;
     // *************************** 批量场景的拦截 ******************************
@@ -50,7 +49,7 @@ public class DemoOperationLogInterceptor implements OperationLoggerInterceptor {
 
     @Override
     public void beforeLog(OperationLogDTO opLog) {
-        log.info("框架准备校验操作日志，可以在这里继续填充一些值。不想看见我可以来 " + getClass().getSimpleName() + " 把我关了~ ");
+        log.info("记录操作日志前回调钩子： 可在这里进行校验格式 / 继续填充一些值。可在 " + getClass().getSimpleName() + "#beforeLog 关闭该输出~ ");
 
         // --------------- 这里可以做的事情举例 --------------------
         if (StringUtils.isEmpty(opLog.getObjectName())) {
@@ -65,7 +64,7 @@ public class DemoOperationLogInterceptor implements OperationLoggerInterceptor {
 
     @Override
     public void afterLog(OperationLogDTO opLog) {
-        log.info("感知到已经记录一条操作日志记录~  不想看见我就来 " + getClass().getSimpleName() + " 把我临时关了。");
+        log.info("记录操作日志后回调钩子：可在 " + getClass().getSimpleName() + "#afterLog 关闭该输出~ ");
 
         // 这里可以做的事情举例：
         // 
@@ -77,9 +76,7 @@ public class DemoOperationLogInterceptor implements OperationLoggerInterceptor {
 
         // 4. ...
 
-
     }
-
 
     private void fillMoreInfoFromDB(OperationLogDTO opLog) {
         String tableName = null;
@@ -112,4 +109,5 @@ public class DemoOperationLogInterceptor implements OperationLoggerInterceptor {
         // opLog.setObjectName(dbInfo.getObjectName());
 
     }
+
 }

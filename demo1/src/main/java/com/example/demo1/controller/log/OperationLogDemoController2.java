@@ -3,6 +3,8 @@ package com.example.demo1.controller.log;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.context.OpLogContextHolder;
+import org.shoulder.log.operation.logger.impl.AsyncOperationLogger;
+import org.shoulder.log.operation.logger.impl.BufferedOperationLogger;
 import org.shoulder.log.operation.logger.impl.LogOperationLogger;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lym
  */
 @SkipResponseWrap // 该类所有方法的返回值将不被包装
-@OperationLogConfig(objectType = "shop") //
+@OperationLogConfig(objectType = "类注解上的objectType") // 这里多了个 Config 注解！！！！
 @RequestMapping("oplog/config")
 @RestController
 public class OperationLogDemoController2 {
@@ -33,7 +35,8 @@ public class OperationLogDemoController2 {
     @GetMapping("1")
     public String test1() {
         // 从日志上下文中拿出日志 DTO，getObjectType 获取类型
-        return OpLogContextHolder.getContextOrException().getOperationLog().getObjectType();
+        return OpLogContextHolder.getContextOrException().getOperationLog()
+                .getObjectType();
     }
 
 
@@ -45,14 +48,16 @@ public class OperationLogDemoController2 {
     @GetMapping("2")
     public String test2() {
         // OpLogContextHolder.getLog() 相当于 OpLogContextHolder.getContextOrException().getOperationLog()
-        return OpLogContextHolder.getLog().getObjectType();
+        return OpLogContextHolder.getLog()
+                .getObjectType();
     }
 
     /**
-     * 异步线程中也可以自动获取到父线程中的用户信息，而且会自动清理线程变量 ~
+     * 异步记录操作日志
      * <a href="http://localhost:8080/oplog/config/3" />
      *
      * @see LogOperationLogger#doLog 在这里打断点，模拟记录日志耗时，发现是在异步线程记录的，故不会影响接口返回和响应
+     * @see AsyncOperationLogger 被该 logger 包装后，将在异步线程中记录
      */
     @OperationLog(operation = "asyncLogger")
     @GetMapping("3")
@@ -70,7 +75,27 @@ public class OperationLogDemoController2 {
                 .addDetailItem("shoulder.log.operation.interceptorOrder 解析当前操作者信息的拦截器在 Spring MVC中的顺序，默认0");
 
 
-        return "shoulder 助力高性能~";
+        return "shoulder asyncLogger 异步记录，合理利用多线程并发助力高性能~";
+    }
+
+    /**
+     * 缓冲日志记录器，记录单条操作日志时，不再立即输出，而是先缓冲，达到一定积累或一定时间后，一起记录，进一步减少因为频繁单次交互而带来的性能影响
+     * 当使用数据库 / MQ / HTTP 方式保存操作日志时，使用 buffer 可以在一定程度上减轻承载操作日志服务器的压力（DB\MQ\LogCenter）
+     * <a href="http://localhost:8080/oplog/config/4" />
+     *
+     * @see BufferedOperationLogger 被缓冲日志记录器包装后，单条记录时可能不再立即输出
+     */
+    @OperationLog(operation = "bufferedLogger")
+    @GetMapping("4")
+    public String bufferedLogger() {
+
+        OpLogContextHolder.getContextOrException().getOperationLog()
+                .addDetailItem("shoulder.log.operation.logger.buffered 是否启用缓冲池。优化频繁记录单条，默认 false，开启后可能无法查看到实时操作日志。场景：需将操作日志直接存数据库，每 0.2s 插入一次数据库 -> 每隔一段时间批量插入数据库。")
+                .addDetailItem("shoulder.log.operation.logger.flushInterval buffer 日志记录器，每隔多少秒刷一次，默认 10s")
+                .addDetailItem("shoulder.log.operation.logger.flushThreshold 当积攒的 buffer 中日志数达到 flushThreshold 条触发一次批量记录，默认 10")
+                .addDetailItem("shoulder.log.operation.logger.perFlushMax 每次批量刷日志最大条数，推荐根据实际情况定制。如存志数据库，则可统计 Mysql单页可以存几条数据，取该值作为单次保存量");
+
+        return "shoulder bufferedLogger 杜绝频繁小数据插入，批量优化助力高性能~";
     }
 
 

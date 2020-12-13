@@ -38,10 +38,10 @@ public class OperationLogDemoController4 {
     @GetMapping("1")
     public OperationLogDTO oneRecord() {
         int total = 20;
-        // 模拟前端传来的导入设备
-        List<UserInfo> importDevices = MockBusinessOperation.newRandomUsers(total);
-        // 模拟校验
-        List<OperationRecord<UserInfo>> operationRecords = MockBusinessOperation.process(importDevices);
+        // 模拟解析完上传的文件，包含多条用户信息
+        List<UserInfo> importUserInfo = MockBusinessOperation.newRandomUsers(total);
+        // 模拟校验校验这些信息
+        List<OperationRecord<UserInfo>> operationRecords = MockBusinessOperation.process(importUserInfo);
 
         // 计算成功多少条，失败多少条准备填充 detail
         List<String> actionDetails = Arrays.asList(
@@ -66,9 +66,8 @@ public class OperationLogDemoController4 {
     @GetMapping("2")
     public void allRecords() {
         int total = 20;
-        List<UserInfo> importDevices = MockBusinessOperation.newRandomUsers(total);
-        // 模拟校验
-        List<OperationRecord<UserInfo>> operationRecords = MockBusinessOperation.process(importDevices);
+        List<UserInfo> importUserInfo = MockBusinessOperation.newRandomUsers(total);
+        List<OperationRecord<UserInfo>> operationRecords = MockBusinessOperation.process(importUserInfo);
 
         OpLogContextHolder.setOperableObjects(operationRecords);
     }
@@ -84,9 +83,8 @@ public class OperationLogDemoController4 {
     @ApiOperation(value = "自定义策略", notes = "比如一条操作日志记录 5 次操作。若操作100条，记录20条操作日志。")
     public void customRecords() {
         int total = 20;
-        List<UserInfo> importDevices = MockBusinessOperation.newRandomUsers(total);
-        // 模拟校验
-        List<OperationRecord<UserInfo>> operationRecords = MockBusinessOperation.process(importDevices);
+        List<UserInfo> importUserInfo = MockBusinessOperation.newRandomUsers(total);
+        List<OperationRecord<UserInfo>> operationRecords = MockBusinessOperation.process(importUserInfo);
 
         OpLogContextHolder.setOperableObjects(operationRecords);
     }

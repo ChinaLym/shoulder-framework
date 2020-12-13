@@ -27,7 +27,7 @@ public class OperationLogTask implements InitializingBean {
     private final String TASK1_SCHEDULED = "0/20 * * * * *";
 
     /**
-     * 模拟设备注册补偿任务。
+     * 模拟给活跃用户奖励任务
      */
     @Scheduled(cron = TASK1_SCHEDULED)
     @OperationLog(operation = "task1")
@@ -35,10 +35,10 @@ public class OperationLogTask implements InitializingBean {
         System.out.println("操作日志-定时任务演示 1: 任务开始运行...");
 
         // 1. 模拟业务 从数据库中取出连续7天活跃的用户
-        List<UserInfo> registerFailedDevice = MockBusinessOperation.newRandomUsers(10);
+        List<UserInfo> activeUsers = MockBusinessOperation.newRandomUsers(10);
 
         // 2. 模拟业务 调用优惠券服务，给他们发优惠卷
-        List<OperationRecord<UserInfo>> result = MockBusinessOperation.process(registerFailedDevice);
+        List<OperationRecord<UserInfo>> result = MockBusinessOperation.process(activeUsers);
 
         // 3. 批量填充操作日志-被操作对象
         OpLogContextHolder.getContextOrException().setOperableObjects(result);

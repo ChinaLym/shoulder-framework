@@ -23,11 +23,11 @@ public class MockBusinessOperation {
     /**
      * 随机 xx 条失败。模拟各种业务
      */
-    public static List<OperationRecord<UserInfo>> process(List<UserInfo> deviceEntityList) {
+    public static List<OperationRecord<UserInfo>> process(List<UserInfo> userInfoList) {
         Random random = new Random();
 
-        List<OperationRecord<UserInfo>> recordList = new ArrayList<>(deviceEntityList.size());
-        deviceEntityList.forEach(userInfo -> {
+        List<OperationRecord<UserInfo>> recordList = new ArrayList<>(userInfoList.size());
+        userInfoList.forEach(userInfo -> {
                     OperationRecord<UserInfo> operateRecord = new OperationRecord<>(userInfo);
                     // 随机放一个结果
                     operateRecord.setSuccess(random.nextInt(10) > 3);

@@ -6,7 +6,6 @@ import com.example.demo1.util.MockBusinessOperation;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.log.operation.annotation.OperationLog;
-import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import java.util.concurrent.Executor;
  * @author lym
  */
 @SkipResponseWrap // 该类所有方法的返回值将不被包装
-@OperationLogConfig(objectType = "shop") //
 @RequestMapping("oplog/context")
 @RestController
 public class OperationLogDemoController3 {
@@ -37,8 +35,8 @@ public class OperationLogDemoController3 {
     @OperationLog(operation = "test_fail")
     @GetMapping("/testFail")
     public void testFail(Boolean fail) {
-        UserInfo device = MockBusinessOperation.newRandomUser();
-        OpLogContextHolder.setOperableObject(device);
+        UserInfo userInfo = MockBusinessOperation.newRandomUser();
+        OpLogContextHolder.setOperableObject(userInfo);
         if (fail) {
             // 自动记录失败日志，错误码，失败详情：可以看到，失败后，日志中 result:"1"，errorCode:"xxx"
             throw new BaseRuntimeException(CommonErrorCodeEnum.UNKNOWN);
