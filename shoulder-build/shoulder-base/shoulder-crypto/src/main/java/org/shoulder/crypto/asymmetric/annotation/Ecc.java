@@ -9,11 +9,11 @@ import java.lang.annotation.*;
  *
  * @author lym
  */
+@Qualifier
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Qualifier
 public @interface Ecc {
 
 }
