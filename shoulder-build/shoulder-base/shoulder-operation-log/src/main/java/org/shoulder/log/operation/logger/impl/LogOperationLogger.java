@@ -19,7 +19,7 @@ public class LogOperationLogger extends AbstractOperationLogger implements Opera
     private static final Logger log = LoggerFactory.getLogger(LogOperationLogger.class);
 
     /**
-     * todo 【功能】logback.xml / log4j.xml 中用于记录操作日志的 logger 的名称默认值
+     * logback.xml / log4j.xml 中用于记录操作日志的 logger 的名称 默认值
      */
     private static final String DEFAULT_OPERATION_LOGGER_NAME = "OPERATION_LOGGER";
 

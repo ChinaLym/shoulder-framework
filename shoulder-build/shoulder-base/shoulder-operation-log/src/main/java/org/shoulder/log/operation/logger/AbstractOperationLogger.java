@@ -19,7 +19,7 @@ import java.util.List;
  */
 public abstract class AbstractOperationLogger implements OperationLogger {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractOperationLogger.class);
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * 日志拦截器
