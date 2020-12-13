@@ -54,7 +54,7 @@ public class OperationLogProperties {
         private String threadName = "shoulder-opLogger";
 
         /**
-         * 是否添加缓冲池，针对频繁单次记录做优化，如：需存数据库，每 0.2s 插入一次数据库 -> 每隔一段时间批量插入数据库
+         * 是否启用缓冲池。优化频繁记录单条，如：需将操作日志直接存数据库，每 0.2s 插入一次数据库 -> 每隔一段时间批量插入数据库
          * 默认 false，开启后可能无法查看到实时操作日志
          */
         private boolean buffered = false;
@@ -71,7 +71,8 @@ public class OperationLogProperties {
 
         /**
          * 每次批量刷日志最大条数
-         * 推荐根据表结构定制。如统计 Mysql单页可以存几条数据，取该值buffer
+         * 推荐根据实际情况定制。如统计 Mysql单页可以存几条数据，取该值作为单次保存量
+         * 如调HTTP接口保存 / MQ保存，可以适量调大
          */
         private Integer perFlushMax = 20;
 
