@@ -5,7 +5,7 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.negotiation.cache.NegotiationCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
@@ -99,7 +99,7 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
         }
 
         // 生成返回值加密的数据密钥，以加密要返回的敏感数据信息（请求和响应中使用的数据密钥不同）
-        NegotiationResult cacheNegotiationResult = NegotiationCache.SERVER_LOCAL_CACHE.get();
+        NegotiationResult cacheNegotiationResult = NegotiationResultCache.SERVER_LOCAL_CACHE.get();
         // 若在接口响应时过期，会导致本次接口失败。这里使用线程变量中的，规避处理过程中握手信息过期，同理客户端也是使用发出请求那一刻的密钥
         if (cacheNegotiationResult == null) {
             // 按理说不会为 null，因为这里读取是时线程变量
@@ -129,7 +129,7 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
             throw new RuntimeException("encrypt dk fail!", e);
         } finally {
             // 清理线程变量
-            NegotiationCache.SERVER_LOCAL_CACHE.remove();
+            NegotiationResultCache.SERVER_LOCAL_CACHE.remove();
         }
         return body;
     }

@@ -2,7 +2,7 @@ package org.shoulder.crypto.negotiation.support.server;
 
 import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.crypto.negotiation.cache.NegotiationCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
@@ -33,12 +33,12 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
 
     private static final Logger log = LoggerFactory.getLogger(SensitiveRequestDecryptHandlerInterceptor.class);
 
-    private NegotiationCache negotiationCache;
+    private NegotiationResultCache negotiationResultCache;
 
     private TransportCryptoUtil transportCryptoUtil;
 
-    public SensitiveRequestDecryptHandlerInterceptor(NegotiationCache negotiationCache, TransportCryptoUtil transportCryptoUtil) {
-        this.negotiationCache = negotiationCache;
+    public SensitiveRequestDecryptHandlerInterceptor(NegotiationResultCache negotiationResultCache, TransportCryptoUtil transportCryptoUtil) {
+        this.negotiationResultCache = negotiationResultCache;
         this.transportCryptoUtil = transportCryptoUtil;
     }
 
@@ -75,7 +75,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             return false;
         }
 
-        NegotiationResult cacheNegotiationResult = negotiationCache.getAsServer(xSessionId);
+        NegotiationResult cacheNegotiationResult = negotiationResultCache.getAsServer(xSessionId);
         if (cacheNegotiationResult == null) {
             // 恶意调用 / 本服务缓存丢失（如重启导致）
             log.debug("cache missing, xSessionId:{}", xSessionId);
@@ -87,7 +87,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             response.getWriter().write(JsonUtils.toJson(r));
             return false;
         }
-        NegotiationCache.SERVER_LOCAL_CACHE.set(cacheNegotiationResult);
+        NegotiationResultCache.SERVER_LOCAL_CACHE.set(cacheNegotiationResult);
 
         // 校验token是否正确
         if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, cacheNegotiationResult.getPublicKey())) {
