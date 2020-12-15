@@ -90,7 +90,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             ResponseEntity<RestResult<NegotiationResponse>> httpResponse =
                 restTemplate.exchange(dslAimUrl, HttpMethod.POST, createKeyNegotiationHttpEntity(), responseType);
 
-            // 3. 校验密钥协商的结果
+            // 3. 提取并校验密钥协商响应
             NegotiationResponse negotiationResponse = validateAndFill(httpResponse);
 
             // 4. 交换密钥
@@ -145,10 +145,11 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         String token = httpResponse.getHeaders().getFirst(NegotiationConstants.TOKEN);
         String xSessionId = httpResponse.getHeaders().getFirst(NegotiationConstants.SECURITY_SESSION_ID);
         String publicKey = negotiationResponse.getPublicKey();
-        String aes = negotiationResponse.getAes();
+        String encryptionScheme = negotiationResponse.getEncryptionScheme();
 
         Assert.notEmpty(publicKey, "response.publicKey can't be empty");
-        Assert.notEmpty(aes, "response.aes can't be empty");
+        Assert.notEmpty(encryptionScheme, "response.encryptionScheme can't be empty");
+        // 校验报文加密算法自身支持，对方没有乱返回
 
         negotiationResponse.setxSessionId(xSessionId);
         negotiationResponse.setToken(token);

@@ -29,49 +29,7 @@ public class TransportCryptoUtil {
         this.adapter = adapter;
     }
 
-    // =========================== 加解密算法相关 ==================================
-
-    /**
-     * 生成数据密钥
-     */
-    public static byte[] generateDataKey(int size) {
-        return TransportCryptoByteUtil.generateDataKey(size);
-    }
-
-    /**
-     * 生成数据密钥的密文（用于协商完毕，每次请求中）
-     *
-     * @return xDk
-     */
-    public static String encryptDk(NegotiationResult negotiationResult, byte[] dataKey) throws AesCryptoException {
-        return ByteSpecification.encodeToString(TransportCryptoByteUtil.encryptDk(negotiationResult, dataKey));
-    }
-
-    /**
-     * 解密 xDk（用于协商完毕，每次请求中）
-     *
-     * @return dataKey
-     */
-    public static byte[] decryptDk(NegotiationResult negotiationResult, String xDk) throws SymmetricCryptoException {
-        return TransportCryptoByteUtil.decryptDk(negotiationResult, ByteSpecification.decodeToBytes(xDk));
-    }
-
-    /**
-     * 加密数据
-     */
-    public static String encrypt(NegotiationResult negotiationResult, byte[] dataKey, String toCipher) throws AesCryptoException {
-        return ByteSpecification.encodeToString(TransportCryptoByteUtil.encrypt(negotiationResult, dataKey, toCipher.getBytes(ByteSpecification.STD_CHAR_SET)));
-    }
-
-    /**
-     * 解密数据
-     */
-    public static String decrypt(NegotiationResult negotiationResult, byte[] dataKey, String cipherText) throws AesCryptoException {
-        return new String(TransportCryptoByteUtil.decrypt(negotiationResult, dataKey, ByteSpecification.decodeToBytes(cipherText)), ByteSpecification.STD_CHAR_SET);
-    }
-
-
-    // =========================== 握手相关 ==================================
+    // =========================== 协商阶段相关 ===========================
 
     /**
      * 创建一个协商请求（客户端调用）
@@ -128,7 +86,7 @@ public class TransportCryptoUtil {
         response.setExpireTime((int) (negotiationResult.getExpireTime() - System.currentTimeMillis()));
         response.setKeyBytesLength(negotiationResult.getKeyLength());
         // todo 【使用范围】不应该写死256，而是支持的密钥算法，如 aes、sm4
-        response.setAes("256");
+        response.setEncryptionScheme("256");
 
         response.setxSessionId(negotiationResult.getxSessionId());
         // todo 【流程】处理 token 生成失败
@@ -159,7 +117,65 @@ public class TransportCryptoUtil {
     }
 
 
-    // ----------------------------------------- 协商完毕 -------------------------------------------------------------
+    // =========================== 协商完毕，遵守 DH 协议 ===========================
+
+    /**
+     * 生成数据密钥（用于协商完毕，产生加密报文时使用）
+     *
+     * @return 数据密钥（真正加密数据的）
+     */
+    public static byte[] generateDataKey(int size) {
+        return TransportCryptoByteUtil.generateDataKey(size);
+    }
+
+    /**
+     * 生成数据密钥的密文（用于协商完毕，产生加密报文时使用，每次请求中）
+     *
+     * @param negotiationResult 密钥协商结果
+     * @param dataKey           数据密钥
+     * @return 数据密钥密文 xDk
+     */
+    public static String encryptDk(NegotiationResult negotiationResult, byte[] dataKey) throws AesCryptoException {
+        return ByteSpecification.encodeToString(TransportCryptoByteUtil.encryptDk(negotiationResult, dataKey));
+    }
+
+    /**
+     * 解密 xDk（处理加密报文时使用）
+     *
+     * @param negotiationResult 密钥协商结果
+     * @param xDk               数据密钥密文
+     * @return 数据密钥明文 dataKey
+     */
+    public static byte[] decryptDk(NegotiationResult negotiationResult, String xDk) throws SymmetricCryptoException {
+        return TransportCryptoByteUtil.decryptDk(negotiationResult, ByteSpecification.decodeToBytes(xDk));
+    }
+
+    /**
+     * 加密数据
+     *
+     * @param negotiationResult 密钥协商结果
+     * @param dataKey           数据密钥明文
+     * @param text              数据明文
+     * @return 数据密文 cipherText
+     */
+    public static String encrypt(NegotiationResult negotiationResult, byte[] dataKey, String text) throws AesCryptoException {
+        return ByteSpecification.encodeToString(TransportCryptoByteUtil.encrypt(negotiationResult, dataKey, text.getBytes(ByteSpecification.STD_CHAR_SET)));
+    }
+
+    /**
+     * 解密数据
+     *
+     * @param negotiationResult 密钥协商结果
+     * @param dataKey           数据密钥明文
+     * @param cipherText        数据密文
+     * @return 数据明文 text
+     */
+    public static String decrypt(NegotiationResult negotiationResult, byte[] dataKey, String cipherText) throws AesCryptoException {
+        return new String(TransportCryptoByteUtil.decrypt(negotiationResult, dataKey, ByteSpecification.decodeToBytes(cipherText)), ByteSpecification.STD_CHAR_SET);
+    }
+
+
+    // ------------------ 安全保障-防监听篡改/防抵赖 ----------------
 
     /**
      * 生成 token（协商完毕，每次发送安全会话请求时）
@@ -185,7 +201,7 @@ public class TransportCryptoUtil {
      * @param negotiationResult 密钥交换结果
      * @return 请求头
      * @throws AsymmetricCryptoException 签名出错
-     * @throws AesCryptoException 加密 dataKey 出错
+     * @throws AesCryptoException        加密 dataKey 出错
      */
     public HttpHeaders generateHeaders(NegotiationResult negotiationResult) throws AsymmetricCryptoException, AesCryptoException {
         return generateHeaders(negotiationResult, null);
@@ -198,7 +214,7 @@ public class TransportCryptoUtil {
      * @param dataKey           数据密钥明文，如果为 null 表示请求中不带敏感信息，发起请求或收到请求时无需加密或解密
      * @return 请求头
      * @throws AsymmetricCryptoException 签名出错
-     * @throws AesCryptoException 加密 dataKey 出错
+     * @throws AesCryptoException        加密 dataKey 出错
      */
     public HttpHeaders generateHeaders(NegotiationResult negotiationResult, @Nullable byte[] dataKey) throws AsymmetricCryptoException, AesCryptoException {
         String xDk = encryptDk(negotiationResult, dataKey);

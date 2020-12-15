@@ -1,15 +1,15 @@
-package org.shoulder.crypto.constant;
+package org.shoulder.crypto.negotiation.constant;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * aes 安全算法枚举，用于密钥协商
+ * aes 安全算法枚举，用于密钥协商阶段算法选择
  *
  * @author lym
  */
-
 public enum AesAlgorithmEnum {
+
     /**
      * 支持的 aes 算法
      */
@@ -30,8 +30,14 @@ public enum AesAlgorithmEnum {
     AES_256_CBC_NoPadding("AES/CBC/NoPadding", 256),
     AES_256_ECB_NoPadding("AES/ECB/NoPadding", 256);
 
+    /**
+     * 加密算法名称
+     */
     private String algorithmName;
 
+    /**
+     * 密钥长度
+     */
     private int keyLength;
 
     AesAlgorithmEnum(String algorithmName, int keyLength) {

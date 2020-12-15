@@ -22,7 +22,7 @@ public class NegotiationResult implements Serializable {
     /**
      * 协商结果key，会话双方的共享密钥
      */
-    private byte[] localKey;
+    private byte[] shareKey;
 
     /**
      * 协商结果向量
@@ -30,7 +30,14 @@ public class NegotiationResult implements Serializable {
     private byte[] localIv;
 
     /**
+     * 本次会话中，报文的加密方式
+     * 一般为对称加密算法，如 AES-256
+     */
+    private String encryptionScheme;
+
+    /**
      * 协商结果key长度 256/8=32
+     * @deprecated 考虑使用 encryptionScheme 替代
      */
     private int keyLength;
 
@@ -42,10 +49,10 @@ public class NegotiationResult implements Serializable {
     public NegotiationResult() {
     }
 
-    public NegotiationResult(String xSessionId, byte[] localKey, byte[] localIv, int keyLength, int expireTime) {
+    public NegotiationResult(String xSessionId, byte[] shareKey, byte[] localIv, int keyLength, int expireTime) {
         this.xSessionId = xSessionId;
 
-        setLocalKey(localKey);
+        setShareKey(shareKey);
         setLocalIv(localIv);
 
         this.expireTime = expireTime;
@@ -68,12 +75,12 @@ public class NegotiationResult implements Serializable {
         this.xSessionId = xSessionId;
     }
 
-    public byte[] getLocalKey() {
-        return localKey == null ? null : localKey.clone();
+    public byte[] getShareKey() {
+        return shareKey == null ? null : shareKey.clone();
     }
 
-    public void setLocalKey(byte[] localKey) {
-        this.localKey = localKey == null ? null : localKey.clone();
+    public void setShareKey(byte[] shareKey) {
+        this.shareKey = shareKey == null ? null : shareKey.clone();
     }
 
     public byte[] getLocalIv() {
@@ -82,6 +89,14 @@ public class NegotiationResult implements Serializable {
 
     public void setLocalIv(byte[] localIv) {
         this.localIv = localIv == null ? null : localIv.clone();
+    }
+
+    public String getEncryptionScheme() {
+        return encryptionScheme;
+    }
+
+    public void setEncryptionScheme(String encryptionScheme) {
+        this.encryptionScheme = encryptionScheme;
     }
 
     public int getKeyLength() {

@@ -90,3 +90,23 @@
         </dependency>
         
 ```
+
+
+### XML 转换
+
+三个注解
+
+- XStreamAlias 输入/输出使用别名（默认类全路径名/属性名）
+- XStreamAsAttribute 作为父标签的属性，而非默认的下级标签
+- XStreamImplicit 简化/去除 集合 / List 的外层标签包装
+- XStreamOmitField 跳过该字段
+
+
+```xml
+        <!-- xml 转换 https://github.com/x-stream/xstream/releases -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.15</version>
+        </dependency>
+```

@@ -26,9 +26,10 @@ public class NegotiationResponse implements Cloneable {
     private String publicKey;
 
     /**
-     * 本次会话对称加密算法标识
+     * 本次会话中，报文的加密方式
+     * 一般为对称加密算法，如 AES-256
      */
-    private String aes;
+    private String encryptionScheme;
 
     /**
      * 算法密钥字节数，注意非 bit 位数，如 256/8=32，192/8=24，128/8=16
@@ -64,12 +65,12 @@ public class NegotiationResponse implements Cloneable {
         this.publicKey = publicKey;
     }
 
-    public String getAes() {
-        return aes;
+    public String getEncryptionScheme() {
+        return encryptionScheme;
     }
 
-    public void setAes(String aes) {
-        this.aes = aes;
+    public void setEncryptionScheme(String encryptionScheme) {
+        this.encryptionScheme = encryptionScheme;
     }
 
     public Integer getKeyBytesLength() {
@@ -94,7 +95,7 @@ public class NegotiationResponse implements Cloneable {
         cloned.xSessionId = this.xSessionId;
         cloned.token = this.token;
         cloned.publicKey = this.publicKey;
-        cloned.aes = this.aes;
+        cloned.encryptionScheme = this.encryptionScheme;
         cloned.keyBytesLength = this.keyBytesLength;
         cloned.expireTime = this.expireTime;
         return cloned;

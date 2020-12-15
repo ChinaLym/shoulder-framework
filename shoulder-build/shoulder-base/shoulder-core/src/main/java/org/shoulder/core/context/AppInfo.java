@@ -24,7 +24,7 @@ public class AppInfo {
     public static final String UTC_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
 
     /**
-     * 应用标识
+     * 应用标识 / 服务名称 https://bbs.huaweicloud.com/blogs/115110
      */
     private static String appId = "";
 
