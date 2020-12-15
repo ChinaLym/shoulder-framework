@@ -31,7 +31,7 @@ public class PersonBatchTaskSliceHandler implements BatchTaskSliceHandler {
         List<PersonRecord> dataList = (List<PersonRecord>) task.getBatchList();
         List<BatchRecordDetail> processResult = new ArrayList<>(dataList.size());
         for (PersonRecord personRecord : dataList) {
-            log.info("processing the no.{} data({}), ", personRecord.getRowNum(), personRecord);
+            log.info("processing the no.{} data({}), ", personRecord.getIndex(), personRecord);
 
             // 模拟校验比较耗时，校验字段、业务校验、查数据库、调接口等...
             Thread.sleep(1000);
@@ -40,7 +40,7 @@ public class PersonBatchTaskSliceHandler implements BatchTaskSliceHandler {
             BatchRecordDetail result = new BatchRecordDetail();
             result.setStatus(BatchResultEnum.IMPORT_SUCCESS.getCode());
             // todo 目前还需要使用者设置，需要优化
-            result.setRowNum(personRecord.getRowNum());
+            result.setRowNum(personRecord.getIndex());
 
             if (ThreadLocalRandom.current().nextInt(4) % 3 == 0) {
                 result.setFailReason("随机失败几个");

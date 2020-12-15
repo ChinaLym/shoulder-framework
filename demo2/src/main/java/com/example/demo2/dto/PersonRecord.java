@@ -21,5 +21,5 @@ public class PersonRecord implements DataItem, Serializable {
 
     private Integer age;
 
-    private int rowNum;
+    private int index;
 }

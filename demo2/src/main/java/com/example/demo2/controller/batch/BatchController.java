@@ -84,7 +84,7 @@ public class BatchController {
         List<PersonRecord> randomDataList = new ArrayList<>(num);
         for (int i = 0; i < num; i++) {
             PersonRecord fakerData = new PersonRecord();
-            fakerData.setRowNum(i);
+            fakerData.setIndex(i);
             fakerData.setName(UUID.randomUUID().toString().substring(0, 6));
             fakerData.setAge(ThreadLocalRandom.current().nextInt(30) + 10);
             fakerData.setSex((ThreadLocalRandom.current().nextInt(10) % 2) == 0 ? "男" : "女");
