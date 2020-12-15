@@ -29,12 +29,18 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * - 批量操作
  * - 查询数据操作进度
  * - 数据导入记录，分页查询、导出 todo 【开发】数据类型、业务操作类型
+ *  /batch-operation/{dataType}/{operationType}
+ *  如 /batch-operation/user/add-validate
+ *  如 /batch-operation/user/add
+ *  如 /batch-operation/user/update-validate
+ *  如 /batch-operation/user/update
+ *  带默认 api 请求路径，实际中可以通过继承复写来替换
  *
  * @author lym
  * @deprecated 不作为框架默认实现的一部分，将移动至 platform 中
  */
 @Api(tags = {"数据批量操作"})
-@RequestMapping("batch")
+@RequestMapping("/rest/{dataType}/batch/v1/")
 public interface ImportRestfulApi {
 
 
@@ -44,7 +50,7 @@ public interface ImportRestfulApi {
     @ApiOperation(value = "上传数据导入文件", consumes = "text/html", httpMethod = "POST")
     @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",
         defaultValue = "gbk", required = true, paramType = "body")
-    //@RequestMapping(value = "template/upload", method = {RequestMethod.POST})
+    @RequestMapping(value = "template/upload", method = {RequestMethod.POST})
     RestResult<String> doValidate(MultipartFile file,
                                   @RequestParam(name = "charsetLanguage", required = false) String charsetLanguage)
         throws Exception;
@@ -65,8 +71,8 @@ public interface ImportRestfulApi {
      * @return result
      */
     @ApiOperation(value = "批量操作", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "POST")
-    //@RequestMapping(value = "import", method = RequestMethod.POST)
-    RestResult<String> doImport(ExecuteOperationParam executeOperationParam);
+    @RequestMapping(value = "execute", method = RequestMethod.POST)
+    RestResult<String> doExecute(ExecuteOperationParam executeOperationParam);
 
     /**
      * 查询数据操作进度，todo 【开发】考虑 查进度和结果是否为同一个接口？进度不需要每行信息

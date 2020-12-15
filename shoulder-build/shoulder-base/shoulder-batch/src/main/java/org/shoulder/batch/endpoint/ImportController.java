@@ -74,7 +74,7 @@ public class ImportController implements ImportRestfulApi {
      * 实现举例：批量导入
      */
     @Override
-    public RestResult<String> doImport(@RequestBody ExecuteOperationParam executeOperationParam) {
+    public RestResult<String> doExecute(@RequestBody ExecuteOperationParam executeOperationParam) {
         // 示例：从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
 
         BatchData batchData = new BatchData();

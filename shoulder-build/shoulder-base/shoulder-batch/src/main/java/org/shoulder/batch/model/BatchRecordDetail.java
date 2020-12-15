@@ -31,7 +31,7 @@ public class BatchRecordDetail implements Serializable {
     /**
      * 本次批处理所在位置行号 / 索引 / 下标
      */
-    private int rowNum;
+    private int index;
 
     /**
      * 操作类型
@@ -61,13 +61,13 @@ public class BatchRecordDetail implements Serializable {
     public BatchRecordDetail() {
     }
 
-    public BatchRecordDetail(int rowNum, int status) {
-        this.rowNum = rowNum;
+    public BatchRecordDetail(int index, int status) {
+        this.index = index;
         this.status = status;
     }
 
-    public BatchRecordDetail(int rowNum, int status, String failReason) {
-        this.rowNum = rowNum;
+    public BatchRecordDetail(int index, int status, String failReason) {
+        this.index = index;
         this.status = status;
         this.failReason = failReason;
     }

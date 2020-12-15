@@ -226,7 +226,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
                     Map<String, String> dataMap = JsonUtils.toObject(
                         batchRecordDetail.getSource(), Map.class, String.class, String.class);
 
-                    dataMap.put(BatchConstants.ROW_NUM, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getRowNum()));
+                    dataMap.put(BatchConstants.INDEX, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getIndex()));
                     dataMap.put(BatchConstants.RESULT, translator.getMessage(batchRecordDetail.getFailReason(),
                         BatchResultEnum.of(batchRecordDetail.getStatus()).getTip()));
                     dataMap.put(BatchConstants.DETAIL, translator.getMessage(batchRecordDetail.getFailReason()));

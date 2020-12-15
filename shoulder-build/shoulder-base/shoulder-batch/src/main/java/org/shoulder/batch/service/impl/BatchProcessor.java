@@ -131,15 +131,15 @@ public class BatchProcessor implements Runnable {
             BatchErrorCodeEnum.TASK_SLICE_RESULT_INVALID.getMessage(), exceptNum, actuallyNum);
         // 为没有返回结果的任务进行补偿填充，认为失败了
         for (DataItem dataItem : task.getBatchList()) {
-            int rowNum = dataItem.getRowNum();
+            int index = dataItem.getIndex();
             BatchRecordDetail except =
                 resultDetailList.stream()
-                    .filter(result -> rowNum == result.getRowNum())
+                    .filter(result -> index == result.getIndex())
                     .findFirst().orElse(null);
             if (except != null) {
                 continue;
             }
-            except = new BatchRecordDetail(rowNum, BatchResultEnum.IMPORT_FAILED.getCode(),
+            except = new BatchRecordDetail(index, BatchResultEnum.IMPORT_FAILED.getCode(),
                 CommonErrorCodeEnum.UNKNOWN.getCode());
             resultDetailList.add(except);
         }

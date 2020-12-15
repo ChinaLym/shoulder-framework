@@ -19,7 +19,7 @@ public interface BatchConstants {
     String JSON = "json";
 
 
-    String ROW_NUM = "rowNum";
+    String INDEX = "index";
 
     String RESULT = "result";
 

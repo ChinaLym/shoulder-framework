@@ -26,7 +26,7 @@ public interface BatchTaskSliceHandler {
     List<ImportRecordDetail> resultList = new LinkedList<>();
         for (DataItem dataItem : dataList) {
         ImportRecordDetail result = new ImportRecordDetail();
-        result.setRowNum(dataItem.getRowNum());
+        result.setIndex(dataItem.getIndex());
         // doing process 如保存 db 等
         result.setResult(BatchResultEnum.IMPORT_SUCCESS.getCode());
 

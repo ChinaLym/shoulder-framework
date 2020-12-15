@@ -12,6 +12,6 @@ public interface DataItem {
      *
      * @return 行号
      */
-    int getRowNum();
+    int getIndex();
 
 }

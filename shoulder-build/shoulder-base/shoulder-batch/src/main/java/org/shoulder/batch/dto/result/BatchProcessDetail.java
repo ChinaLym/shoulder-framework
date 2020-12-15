@@ -22,27 +22,30 @@ import java.util.List;
 public class BatchProcessDetail {
 
     /**
-     * 行数
+     * 数据下标 / 所在行数 / 第几个
      */
-    @ApiModelProperty(value = "数据所在行数", dataType = "Integer", example = "1", position = 1)
-    private Integer row;
+    @ApiModelProperty(value = "数据下标 / 所在行数 / 第几个", dataType = "Integer", example = "1", position = 1)
+    private Integer index;
 
     /**
      * 结果状态
      */
-    @ApiModelProperty(value = "状态: 1校验成功、2校验失败、3导入成功、4导入失败、5重复更新、6重复跳过、7导入校验失败", example = "1")
+    @ApiModelProperty(value = "状态: 1校验成功、2校验失败、3导入成功、4导入失败、5重复更新、6重复跳过、7导入校验失败", example = "2")
     private Integer status;
 
     /**
-     * 失败原因
+     * 失败原因（失败详情）
      *
      * @see BatchResultEnum
      */
-    @ApiModelProperty(value = "失败原因-错误码", dataType = "String", example = "用户名已存在", position = 2)
-    private String reason;
+    @ApiModelProperty(value = "失败原因-错误码", dataType = "String", example = "用户名已存在", position = 3)
+    private String errorCode;
 
+    /**
+     * 失败原因参数
+     */
     @ApiModelProperty(value = "错误码对应翻译的填充参数", dataType = "String", example = "[\"xiaoming\"]",
-        position = 3)
+        position = 4)
     private List<String> reasonParam;
 
 }

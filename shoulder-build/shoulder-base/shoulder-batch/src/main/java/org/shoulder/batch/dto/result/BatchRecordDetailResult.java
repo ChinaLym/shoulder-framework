@@ -25,7 +25,7 @@ public class BatchRecordDetailResult {
      * 行数
      */
     @ApiModelProperty(required = true, value = "数据所在行数", dataType = "Integer", example = "1", position = 1)
-    private Integer rowNum;
+    private int index;
 
     /**
      * 结果状态 0 处理成功 1 校验失败、2 重复跳过、3 重复更新、4 处理失败

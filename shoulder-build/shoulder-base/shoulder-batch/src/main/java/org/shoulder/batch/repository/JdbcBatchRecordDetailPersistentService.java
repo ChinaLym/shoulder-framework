@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class JdbcBatchRecordDetailPersistentService implements BatchRecordDetailPersistentService {
 
 
-    private static String ALL_COLUMNS = "id, record_id, row_num, operation, status, fail_reason, source";
+    private static String ALL_COLUMNS = "id, record_id, index, operation, status, fail_reason, source";
 
     private static String BATCH_INSERT = "INSERT INTO batch_record_detail (" + ALL_COLUMNS + ") " +
         "VALUES (?,?,?,?,?,?,?)";
@@ -65,7 +65,7 @@ public class JdbcBatchRecordDetailPersistentService implements BatchRecordDetail
         Object[] fields = new Object[7];
         fields[0] = batchRecordDetail.getId();
         fields[1] = batchRecordDetail.getRecordId();
-        fields[2] = batchRecordDetail.getRowNum();
+        fields[2] = batchRecordDetail.getIndex();
         fields[3] = batchRecordDetail.getOperation();
         fields[4] = batchRecordDetail.getStatus();
         fields[5] = batchRecordDetail.getFailReason();
@@ -111,7 +111,7 @@ public class JdbcBatchRecordDetailPersistentService implements BatchRecordDetail
             return BatchRecordDetail.builder()
                 .id(resultSet.getInt(1))
                 .recordId(resultSet.getString(2))
-                .rowNum(resultSet.getInt(3))
+                .index(resultSet.getInt(3))
                 .operation(resultSet.getString(4))
                 .status(resultSet.getInt(5))
                 .failReason(resultSet.getString(6))
