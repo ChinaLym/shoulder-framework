@@ -183,9 +183,9 @@ public class BatchManager implements Runnable, ProgressAble {
         for (int i = 0; i < total; i++) {
             BatchRecordDetail detailItem = BatchRecordDetail.builder()
                 .recordId(getTaskId())
-                .rowNum(i)
+                .index(i)
                 .build();
-            // 这里认为 rowNum 唯一的，所以是 set，而非 add
+            // 这里认为 index 唯一的，所以是 set，而非 add
             detailList.add(detailItem);
         }
         this.result.setDetailList(detailList);
@@ -193,9 +193,9 @@ public class BatchManager implements Runnable, ProgressAble {
         // 预填充数据处理详情对象 List<RecordDetail> 的待处理部分
         batchData.getBatchListMap().forEach((operationType, dataList) -> {
             for (DataItem dataItem : dataList) {
-                // 这里认为 total 是所有校验的数据，若 total = 100，则不可能有 rowNum > 100 的数据
-                detailList.get(dataItem.getRowNum())
-                    .setRowNum(dataItem.getRowNum())
+                // 这里认为 total 是所有校验的数据，若 total = 100，则不可能有 index > 100 的数据
+                detailList.get(dataItem.getIndex())
+                    .setIndex(dataItem.getIndex())
                     .setRecordId(getTaskId())
                     .setOperation(operationType)
                     .setStatus(BatchResultEnum.VALIDATE_SUCCESS.getCode())
@@ -204,22 +204,22 @@ public class BatchManager implements Runnable, ProgressAble {
         });
         // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不处理的，校验失败无法处理的） todo 跳过状态定义
         for (DataItem dataItem : batchData.getSuccessList()) {
-            result.getDetailList().get(dataItem.getRowNum())
+            result.getDetailList().get(dataItem.getIndex())
                 .setRecordId(getTaskId())
-                .setRowNum(dataItem.getRowNum())
+                .setIndex(dataItem.getIndex())
                 .setOperation(batchData.getOperation())
                 .setSource(serializeSource(dataItem))
                 .setStatus(BatchResultEnum.SKIP_REPEAT.getCode());
         }
         for (DataItem dataItem : batchData.getFailList()) {
             // getFailReason 不可能为 null，否则就是使用者错误，未塞入错误原因
-            result.getDetailList().get(dataItem.getRowNum())
+            result.getDetailList().get(dataItem.getIndex())
                 .setRecordId(getTaskId())
-                .setRowNum(dataItem.getRowNum())
+                .setIndex(dataItem.getIndex())
                 .setOperation(batchData.getOperation())
                 .setSource(serializeSource(dataItem))
                 .setStatus(BatchResultEnum.VALIDATE_FAILED.getCode())
-                .setFailReason(batchData.getFailReason().get(dataItem.getRowNum()));
+                .setFailReason(batchData.getFailReason().get(dataItem.getIndex()));
         }
         log.info("Directly: success:{}, fail:{}", batchData.getSuccessList().size(), batchData.getFailList().size());
         // 可能直接完成了
@@ -338,7 +338,7 @@ public class BatchManager implements Runnable, ProgressAble {
                     progress.addFail(1);
                 }
                 // 使用者只能修改处理结果和原因
-                result.getDetailList().get(taskResultDetail.getRowNum())
+                result.getDetailList().get(taskResultDetail.getIndex())
                     .setStatus(taskResultDetail.getStatus())
                     .setFailReason(taskResultDetail.getFailReason());
             }
