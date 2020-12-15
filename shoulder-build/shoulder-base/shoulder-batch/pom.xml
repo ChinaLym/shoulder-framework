@@ -28,23 +28,23 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-batch</artifactId>
         </dependency>
 
-        <!-- spring integration-->
+        &lt;!&ndash; spring integration&ndash;&gt;
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-integration</artifactId>
         </dependency>
         <dependency>
-            <!-- spring integration 与 redis 结合 -->
+            &lt;!&ndash; spring integration 与 redis 结合 &ndash;&gt;
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-redis</artifactId>
         </dependency>
         <dependency>
-            <!-- spring integration 与 jdbc 结合 -->
+            &lt;!&ndash; spring integration 与 jdbc 结合 &ndash;&gt;
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-jdbc</artifactId>
         </dependency>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -89,6 +89,14 @@
             <groupId>com.univocity</groupId>
             <artifactId>univocity-parsers</artifactId>
             <version>2.9.0</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- xml 转换 https://github.com/x-stream/xstream/releases -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.15</version>
             <optional>true</optional>
         </dependency>
 

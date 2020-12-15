@@ -1,6 +1,7 @@
 package org.shoulder.crypto.aes;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.shoulder.core.util.ByteUtils;
 import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.springframework.util.Assert;
 
@@ -34,15 +35,26 @@ public class AesUtil {
     private static final int IV_LENGTH = 16;
 
     /**
-     * 算法类型
+     * 默认算法
      */
-    private static String AES_TYPE = "AES/CBC/PKCS5Padding";
+    private static String DEFAULT_AES_TYPE = "AES/CBC/PKCS5Padding";
 
     static {
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
             Security.addProvider(new BouncyCastleProvider());
         }
     }
+
+    //todo ECB 不需要 iv
+    public static void main(String[] args) throws AesCryptoException {
+        byte[] key = ByteUtils.randomBytes(16);
+        byte[] iv = ByteUtils.randomBytes(16);
+        byte[] cipher = encrypt("SM4/CBC/PKCS5Padding", "123".getBytes(), key, iv);
+        byte[] text = decrypt("SM4/CBC/PKCS5Padding", cipher, key, iv);
+        System.out.println(new String(text));
+
+    }
+
 
     /**
      * AES256 加密
@@ -53,19 +65,44 @@ public class AesUtil {
      * @return 密文
      */
     public static byte[] encrypt(byte[] content, byte[] key, byte[] iv) throws AesCryptoException {
-        return doCipher(AES_TYPE, key, iv, Cipher.ENCRYPT_MODE, content);
+        return doCipher(DEFAULT_AES_TYPE, key, iv, Cipher.ENCRYPT_MODE, content);
     }
 
     /**
      * AES256 解密
      *
-     * @param encryptContent 密文
-     * @param key            密钥
-     * @param iv             向量
+     * @param cipherText 密文
+     * @param key        密钥
+     * @param iv         向量
      * @return 明文
      */
-    public static byte[] decrypt(byte[] encryptContent, byte[] key, byte[] iv) throws AesCryptoException {
-        return doCipher(AES_TYPE, key, iv, Cipher.DECRYPT_MODE, encryptContent);
+    public static byte[] decrypt(byte[] cipherText, byte[] key, byte[] iv) throws AesCryptoException {
+        return doCipher(DEFAULT_AES_TYPE, key, iv, Cipher.DECRYPT_MODE, cipherText);
+    }
+
+
+    /**
+     * AES 加密
+     *
+     * @param content 明文
+     * @param key     密钥
+     * @param iv      向量
+     * @return 密文
+     */
+    public static byte[] encrypt(String aesType, byte[] content, byte[] key, byte[] iv) throws AesCryptoException {
+        return doCipher(aesType, key, iv, Cipher.ENCRYPT_MODE, content);
+    }
+
+    /**
+     * AES 解密
+     *
+     * @param cipherText 密文
+     * @param key        密钥
+     * @param iv         向量
+     * @return 明文
+     */
+    public static byte[] decrypt(String aesType, byte[] cipherText, byte[] key, byte[] iv) throws AesCryptoException {
+        return doCipher(aesType, key, iv, Cipher.DECRYPT_MODE, cipherText);
     }
 
     /**
@@ -75,7 +112,7 @@ public class AesUtil {
      * @param key         密钥
      * @param iv          向量
      * @param decryptMode 加密/解密
-     * @param content     密文/明文
+     * @param content     需要处理的内容，密文/明文
      * @return 明文
      */
     public static byte[] doCipher(String aesType, byte[] key, byte[] iv, int decryptMode, byte[] content) throws AesCryptoException {

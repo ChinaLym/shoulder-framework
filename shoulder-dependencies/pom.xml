@@ -83,7 +83,8 @@
         <!-- dataBase-->
         <mysql.version>8.0.21</mysql.version>
         <h2.version>1.4.200</h2.version>
-        <druid.version>1.2.1</druid.version>
+        <!-- 1.2.4支持jdk8时间打印 -->
+        <druid.version>1.2.4</druid.version>
         <mybatis-plus.version>3.4.0</mybatis-plus.version>
         <pagehelper.version>5.2.0</pagehelper.version>
         <pagehelper-starter.version>1.3.0</pagehelper-starter.version>

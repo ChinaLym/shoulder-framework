@@ -1,5 +1,8 @@
 package org.shoulder.crypto.negotiation.support.dto;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * 协商发起者提供参数
  * Token = 服务端公钥签名（xSessionId + publicKey）
@@ -24,9 +27,9 @@ public class NegotiationRequest {
     private String publicKey;
 
     /**
-     * 发起者支持的 aes 加解密算法，128/192/256
+     * 发起者支持的 报文 加解密算法，如 AES-128 / AES-192 / AES-256
      */
-    private String aesSupports = "256";
+    private List<String> encryptionSchemeSupports = Collections.singletonList("AES-256");
 
     /**
      * 是否强制双方重新协商
@@ -57,12 +60,12 @@ public class NegotiationRequest {
         this.publicKey = publicKey;
     }
 
-    public String getAesSupports() {
-        return aesSupports;
+    public List<String> getEncryptionSchemeSupports() {
+        return encryptionSchemeSupports;
     }
 
-    public void setAesSupports(String aesSupports) {
-        this.aesSupports = aesSupports;
+    public void setEncryptionSchemeSupports(List<String> encryptionSchemeSupports) {
+        this.encryptionSchemeSupports = encryptionSchemeSupports;
     }
 
     public boolean isRefresh() {

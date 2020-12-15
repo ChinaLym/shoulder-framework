@@ -1,4 +1,4 @@
-package org.shoulder.crypto.negotiation;
+package org.shoulder.crypto.negotiation.util;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.core.util.ByteUtils;
