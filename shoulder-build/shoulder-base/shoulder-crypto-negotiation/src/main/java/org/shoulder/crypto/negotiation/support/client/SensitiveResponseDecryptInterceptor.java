@@ -2,7 +2,7 @@ package org.shoulder.crypto.negotiation.support.client;
 
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.negotiation.cache.NegotiationCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
@@ -39,15 +39,15 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
 
     private final TransportCryptoUtil transportCryptoUtil;
 
-    private final NegotiationCache negotiationCache;
+    private final NegotiationResultCache negotiationResultCache;
 
     private final AppIdExtractor appIdExtractor;
 
 
     public SensitiveResponseDecryptInterceptor(TransportCryptoUtil transportCryptoUtil,
-                                               NegotiationCache negotiationCache, AppIdExtractor appIdExtractor) {
+                                               NegotiationResultCache negotiationResultCache, AppIdExtractor appIdExtractor) {
         this.transportCryptoUtil = transportCryptoUtil;
-        this.negotiationCache = negotiationCache;
+        this.negotiationResultCache = negotiationResultCache;
         this.appIdExtractor = appIdExtractor;
     }
 
@@ -63,8 +63,8 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
         if (!CollectionUtils.isEmpty(negotiationInvalidHeader)) {
             // if (negotiationInvalidHeader.contains(NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode())) {
             String aimServiceAppId = appIdExtractor.extract(request.getURI());
-            negotiationCache.delete(aimServiceAppId, true);
-            NegotiationCache.CLIENT_LOCAL_CACHE.remove();
+            negotiationResultCache.delete(aimServiceAppId, true);
+            NegotiationResultCache.CLIENT_LOCAL_CACHE.remove();
             log.warn("sensitive request FAIL for response with a invalid negotiation(xSessionId) mark, clean the negotiation cache.");
             // } else {
             // 对方未遵守约定，只返回了标记，未返回错误码
@@ -85,12 +85,12 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
         // 确定为加密的响应拦截
         // 1. 验证服务端签名
         try {
-            if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, NegotiationCache.CLIENT_LOCAL_CACHE.get().getPublicKey())) {
+            if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, NegotiationResultCache.CLIENT_LOCAL_CACHE.get().getPublicKey())) {
                 throw new RuntimeException("security token validate fail!");
             }
 
             // 2. 获取本次请求真正的数据密钥
-            NegotiationResult keyExchangeInfo = NegotiationCache.CLIENT_LOCAL_CACHE.get();
+            NegotiationResult keyExchangeInfo = NegotiationResultCache.CLIENT_LOCAL_CACHE.get();
             if (keyExchangeInfo == null) {
                 throw new IllegalStateException("keyExchangeInfo can't be null!");
             }
@@ -107,7 +107,7 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
             throw new RuntimeException("Decrypt xDk fail!", e);
         } finally {
             // 清理线程变量
-            NegotiationCache.CLIENT_LOCAL_CACHE.remove();
+            NegotiationResultCache.CLIENT_LOCAL_CACHE.remove();
         }
         return response;
     }

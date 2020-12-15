@@ -4,7 +4,6 @@ import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.cluster.redis.annotation.AppExclusive;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
-import org.shoulder.crypto.asymmetric.annotation.Ecc;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
@@ -36,7 +35,6 @@ public class AsymmetricCryptoAutoConfiguration {
     /**
      * 默认使用 ECC256 完成非对称加密
      */
-    @Ecc
     @Bean
     @ConditionalOnMissingBean
     public AsymmetricCryptoProcessor eccAsymmetricProcessor(KeyPairCache keyPairCache) {

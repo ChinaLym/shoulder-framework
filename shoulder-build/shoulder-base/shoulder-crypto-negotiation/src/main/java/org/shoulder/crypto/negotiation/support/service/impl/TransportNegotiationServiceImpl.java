@@ -6,7 +6,7 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.negotiation.cache.NegotiationCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
@@ -45,17 +45,17 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
      */
     private final RestTemplate restTemplate;
 
-    private final NegotiationCache negotiationCache;
+    private final NegotiationResultCache negotiationResultCache;
 
     private final AppIdExtractor appIdExtractor;
 
     private Map<String, String> negotiationUrls = new HashMap<>();
 
     public TransportNegotiationServiceImpl(TransportCryptoUtil transportCryptoUtil, RestTemplate restTemplate,
-                                           NegotiationCache negotiationCache, AppIdExtractor appIdExtractor) {
+                                           NegotiationResultCache negotiationResultCache, AppIdExtractor appIdExtractor) {
         this.transportCryptoUtil = transportCryptoUtil;
         this.restTemplate = restTemplate;
-        this.negotiationCache = negotiationCache;
+        this.negotiationResultCache = negotiationResultCache;
         this.appIdExtractor = appIdExtractor;
     }
 
@@ -74,7 +74,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         String appId = appIdExtractor.extract(uri);
         try {
             // 1. 先尝试走缓存
-            NegotiationResult cacheResult = negotiationCache.getAsClient(appId);
+            NegotiationResult cacheResult = negotiationResultCache.getAsClient(appId);
             if (cacheResult != null) {
                 return cacheResult;
             }
@@ -97,7 +97,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             NegotiationResult result = transportCryptoUtil.negotiation(negotiationResponse);
 
             // 5. 放缓存
-            negotiationCache.putAsClient(appId, result);
+            negotiationResultCache.putAsClient(appId, result);
             return result;
         } catch (RestClientException restClientEx) {
             // 接口都没调通，应该检查是否写错了
@@ -179,7 +179,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             validateAndFill(negotiationRequest);
             if (!negotiationRequest.isRefresh()) {
                 //不强制刷新 尝试走缓存
-                negotiationResult = negotiationCache.getAsServer(negotiationRequest.getxSessionId());
+                negotiationResult = negotiationResultCache.getAsServer(negotiationRequest.getxSessionId());
                 if (negotiationResult != null) {
                     return transportCryptoUtil.createResponse(negotiationResult);
                 }
@@ -194,7 +194,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             long expireTime = result.getExpireTime();
             // 放缓存 (作为响应方 协商缓存失效时间加1分钟，以尽量保证比对方提前过期，避免临界时大量请求失败)
             result.setExpireTime(expireTime + 60 * 1000);
-            negotiationCache.putAsServer(response.getxSessionId(), result);
+            negotiationResultCache.putAsServer(response.getxSessionId(), result);
 
             // processHeaders
             HttpServletResponse httpResponse = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse();

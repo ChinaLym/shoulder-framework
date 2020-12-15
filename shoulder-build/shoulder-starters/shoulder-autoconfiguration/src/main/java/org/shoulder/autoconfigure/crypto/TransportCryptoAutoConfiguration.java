@@ -5,13 +5,12 @@ import org.shoulder.autoconfigure.http.HttpAutoConfiguration;
 import org.shoulder.autoconfigure.redis.RedisAutoConfiguration;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.crypto.asymmetric.annotation.Ecc;
 import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
-import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
-import org.shoulder.crypto.asymmetric.store.KeyPairCache;
-import org.shoulder.crypto.negotiation.cache.LocalNegotiationCache;
-import org.shoulder.crypto.negotiation.cache.NegotiationCache;
-import org.shoulder.crypto.negotiation.cache.RedisNegotiationCache;
+import org.shoulder.crypto.negotiation.algorithm.DelegateNegotiationAsymmetricCryptoProcessor;
+import org.shoulder.crypto.negotiation.algorithm.NegotiationAsymmetricCryptoProcessor;
+import org.shoulder.crypto.negotiation.cache.LocalNegotiationResultCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
+import org.shoulder.crypto.negotiation.cache.RedisNegotiationResultCache;
 import org.shoulder.crypto.negotiation.support.endpoint.NegotiationEndPoint;
 import org.shoulder.crypto.negotiation.support.server.SensitiveRequestDecryptAdvance;
 import org.shoulder.crypto.negotiation.support.server.SensitiveResponseEncryptAdvice;
@@ -29,7 +28,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.lang.Nullable;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -45,20 +43,25 @@ public class TransportCryptoAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(TransportCryptoAutoConfiguration.class);
 
+
     /**
-     * 密钥协商工具，封装密钥协商相关基本方法单元
-     *
-     * @param eccAsymmetricProcessor 需要有 ECC 的非对称加解密实现
-     * @param keyPairCache           keyPair 缓存
+     * 默认使用 ECC256 完成非对称加密
      */
     @Bean
     @ConditionalOnMissingBean
-    public TransportCryptoUtil transportCryptoUtil(@Nullable @Ecc AsymmetricCryptoProcessor eccAsymmetricProcessor, KeyPairCache keyPairCache) {
-        AsymmetricCryptoProcessor eccCryptoProcessor = eccAsymmetricProcessor;
-        if (eccAsymmetricProcessor == null) {
-            eccCryptoProcessor = DefaultAsymmetricCryptoProcessor.ecc256(keyPairCache);
-        }
-        TransportCryptoByteUtil util = new TransportCryptoByteUtil(eccCryptoProcessor);
+    public NegotiationAsymmetricCryptoProcessor negotiationAsymmetricCryptoProcessor(AsymmetricCryptoProcessor delegate) {
+        return new DelegateNegotiationAsymmetricCryptoProcessor(delegate);
+    }
+
+    /**
+     * 密钥协商工具，封装密钥协商相关基本方法单元
+     *
+     * @param negotiationAsymmetricProcessor 用于处理协商的非对称加解密实现
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public TransportCryptoUtil transportCryptoUtil(NegotiationAsymmetricCryptoProcessor negotiationAsymmetricProcessor) {
+        TransportCryptoByteUtil util = new TransportCryptoByteUtil(negotiationAsymmetricProcessor);
         return new TransportCryptoUtil(util);
     }
 
@@ -67,23 +70,23 @@ public class TransportCryptoAutoConfiguration {
      */
     @Bean
     public TransportNegotiationService transportNegotiationService(TransportCryptoUtil transportCryptoUtil,
-                                                                   RestTemplate restTemplate, NegotiationCache negotiationCache, AppIdExtractor appIdExtractor) {
-        return new TransportNegotiationServiceImpl(transportCryptoUtil, restTemplate, negotiationCache, appIdExtractor);
+                                                                   RestTemplate restTemplate, NegotiationResultCache negotiationResultCache, AppIdExtractor appIdExtractor) {
+        return new TransportNegotiationServiceImpl(transportCryptoUtil, restTemplate, negotiationResultCache, appIdExtractor);
     }
 
     /**
      * 密钥协商结果缓存（支持集群）
      */
-    @ConditionalOnMissingBean(value = NegotiationCache.class)
+    @ConditionalOnMissingBean(value = NegotiationResultCache.class)
     @AutoConfigureAfter(RedisAutoConfiguration.class)
     @ConditionalOnCluster
     @ConditionalOnClass(RestTemplate.class)
     public static class KeyNegotiationCacheClusterAutoConfiguration {
 
         @Bean
-        public NegotiationCache redisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate) {
+        public NegotiationResultCache redisKeyNegotiationCache(RedisTemplate<String, Object> redisTemplate) {
 
-            RedisNegotiationCache keyNegotiationCache = new RedisNegotiationCache(redisTemplate);
+            RedisNegotiationResultCache keyNegotiationCache = new RedisNegotiationResultCache(redisTemplate);
             log.info("KeyNegotiationCache-redis init.");
             return keyNegotiationCache;
         }
@@ -92,14 +95,14 @@ public class TransportCryptoAutoConfiguration {
     /**
      * 密钥协商结果缓存（内存缓存）
      */
-    @ConditionalOnMissingBean(value = NegotiationCache.class)
+    @ConditionalOnMissingBean(value = NegotiationResultCache.class)
     @AutoConfigureAfter(RedisAutoConfiguration.class)
     @ConditionalOnCluster(cluster = false)
     public static class KeyNegotiationCacheLocalAutoConfiguration {
 
         @Bean
-        public NegotiationCache localKeyNegotiationCache() {
-            return new LocalNegotiationCache();
+        public NegotiationResultCache localKeyNegotiationCache() {
+            return new LocalNegotiationResultCache();
         }
     }
 

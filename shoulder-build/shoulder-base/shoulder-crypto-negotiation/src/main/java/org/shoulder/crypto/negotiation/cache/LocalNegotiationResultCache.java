@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author lym
  */
-public class LocalNegotiationCache implements NegotiationCache {
+public class LocalNegotiationResultCache implements NegotiationResultCache {
 
     /**
      * 客户端缓存，key为对方应用标识

@@ -4,7 +4,7 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.negotiation.cache.NegotiationCache;
+import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
@@ -50,14 +50,14 @@ public class SecurityRestTemplate extends RestTemplate {
 
     private final TransportCryptoUtil cryptoUtil;
 
-    private final NegotiationCache negotiationCache;
+    private final NegotiationResultCache negotiationResultCache;
 
     private final AppIdExtractor appIdExtractor;
 
-    public SecurityRestTemplate(TransportNegotiationService transportNegotiationService, TransportCryptoUtil cryptoUtil, NegotiationCache negotiationCache, AppIdExtractor appIdExtractor) {
+    public SecurityRestTemplate(TransportNegotiationService transportNegotiationService, TransportCryptoUtil cryptoUtil, NegotiationResultCache negotiationResultCache, AppIdExtractor appIdExtractor) {
         this.transportNegotiationService = transportNegotiationService;
         this.cryptoUtil = cryptoUtil;
-        this.negotiationCache = negotiationCache;
+        this.negotiationResultCache = negotiationResultCache;
         this.appIdExtractor = appIdExtractor;
     }
 
@@ -81,9 +81,9 @@ public class SecurityRestTemplate extends RestTemplate {
                 //negotiationInvalidHeader.contains(NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode());
                 String aimServiceAppId = appIdExtractor.extract(uri);
                 // 仅删除密钥交换缓存即可，因为加密器缓存已经在请求前清理。SensitiveRequestDecryptHandlerInterceptor 中有删除，这里也执行，因为删除是幂等的
-                negotiationCache.delete(aimServiceAppId, true);
-                NegotiationCache.CLIENT_LOCAL_CACHE.remove();
-                NegotiationCache.CLIENT_LOCAL_CACHE.remove();
+                negotiationResultCache.delete(aimServiceAppId, true);
+                NegotiationResultCache.CLIENT_LOCAL_CACHE.remove();
+                NegotiationResultCache.CLIENT_LOCAL_CACHE.remove();
                 log.info("sensitive request FAIL for response with a invalid negotiation(xSessionId) mark, negotiate and retry once.");
                 // 重新执行一次即可，此时已经将密钥交换缓存删除，将发起密钥交换
                 result = super.doExecute(uri, method, requestCallback, responseExtractor);
@@ -148,7 +148,7 @@ public class SecurityRestTemplate extends RestTemplate {
             NegotiationResult negotiationResult = null;
             while (negotiationResult == null) {
                 negotiationResult = negotiate(uri, time);
-                NegotiationCache.CLIENT_LOCAL_CACHE.set(negotiationResult);
+                NegotiationResultCache.CLIENT_LOCAL_CACHE.set(negotiationResult);
                 time++;
             }
 
