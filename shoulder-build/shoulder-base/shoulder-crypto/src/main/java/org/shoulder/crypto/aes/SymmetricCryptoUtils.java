@@ -1,8 +1,7 @@
 package org.shoulder.crypto.aes;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.shoulder.core.util.ByteUtils;
-import org.shoulder.crypto.aes.exception.AesCryptoException;
+import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.springframework.util.Assert;
 
 import javax.crypto.Cipher;
@@ -17,7 +16,7 @@ import java.security.Security;
  *
  * @author lym
  */
-public class AesUtil {
+public class SymmetricCryptoUtils {
 
     /**
      * 算法名称
@@ -45,17 +44,6 @@ public class AesUtil {
         }
     }
 
-    //todo ECB 不需要 iv
-    public static void main(String[] args) throws AesCryptoException {
-        byte[] key = ByteUtils.randomBytes(16);
-        byte[] iv = ByteUtils.randomBytes(16);
-        byte[] cipher = encrypt("SM4/CBC/PKCS5Padding", "123".getBytes(), key, iv);
-        byte[] text = decrypt("SM4/CBC/PKCS5Padding", cipher, key, iv);
-        System.out.println(new String(text));
-
-    }
-
-
     /**
      * AES256 加密
      *
@@ -64,7 +52,7 @@ public class AesUtil {
      * @param iv      向量
      * @return 密文
      */
-    public static byte[] encrypt(byte[] content, byte[] key, byte[] iv) throws AesCryptoException {
+    public static byte[] encrypt(byte[] content, byte[] key, byte[] iv) throws SymmetricCryptoException {
         return doCipher(DEFAULT_AES_TYPE, key, iv, Cipher.ENCRYPT_MODE, content);
     }
 
@@ -76,7 +64,7 @@ public class AesUtil {
      * @param iv         向量
      * @return 明文
      */
-    public static byte[] decrypt(byte[] cipherText, byte[] key, byte[] iv) throws AesCryptoException {
+    public static byte[] decrypt(byte[] cipherText, byte[] key, byte[] iv) throws SymmetricCryptoException {
         return doCipher(DEFAULT_AES_TYPE, key, iv, Cipher.DECRYPT_MODE, cipherText);
     }
 
@@ -89,7 +77,7 @@ public class AesUtil {
      * @param iv      向量
      * @return 密文
      */
-    public static byte[] encrypt(String aesType, byte[] content, byte[] key, byte[] iv) throws AesCryptoException {
+    public static byte[] encrypt(String aesType, byte[] content, byte[] key, byte[] iv) throws SymmetricCryptoException {
         return doCipher(aesType, key, iv, Cipher.ENCRYPT_MODE, content);
     }
 
@@ -101,7 +89,7 @@ public class AesUtil {
      * @param iv         向量
      * @return 明文
      */
-    public static byte[] decrypt(String aesType, byte[] cipherText, byte[] key, byte[] iv) throws AesCryptoException {
+    public static byte[] decrypt(String aesType, byte[] cipherText, byte[] key, byte[] iv) throws SymmetricCryptoException {
         return doCipher(aesType, key, iv, Cipher.DECRYPT_MODE, cipherText);
     }
 
@@ -115,7 +103,7 @@ public class AesUtil {
      * @param content     需要处理的内容，密文/明文
      * @return 明文
      */
-    public static byte[] doCipher(String aesType, byte[] key, byte[] iv, int decryptMode, byte[] content) throws AesCryptoException {
+    public static byte[] doCipher(String aesType, byte[] key, byte[] iv, int decryptMode, byte[] content) throws SymmetricCryptoException {
         try {
             validParam(key, iv);
             SecretKeySpec secretKey = new SecretKeySpec(key, AES);
@@ -124,7 +112,7 @@ public class AesUtil {
             cipher.init(decryptMode, secretKey, ivParameter);
             return cipher.doFinal(content);
         } catch (Exception e) {
-            throw new AesCryptoException("Aes decrypt Exception!", e);
+            throw new SymmetricCryptoException("Aes decrypt Exception!", e);
         }
     }
 

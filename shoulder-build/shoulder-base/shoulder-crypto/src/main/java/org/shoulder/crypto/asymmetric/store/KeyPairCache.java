@@ -20,7 +20,16 @@ public interface KeyPairCache {
      * @param id         id
      * @param keyPairDto 密钥对
      */
-    void set(String id, @Nonnull KeyPairDto keyPairDto);
+    void put(String id, @Nonnull KeyPairDto keyPairDto);
+
+    /**
+     * 存储密钥对
+     *
+     * @param id         id
+     * @param keyPairDto 密钥对
+     * @return 是否更新
+     */
+    boolean putIfAbsent(String id, @Nonnull KeyPairDto keyPairDto);
 
 
     /**
@@ -28,9 +37,9 @@ public interface KeyPairCache {
      *
      * @param keyPairDtoMap 密钥对 map。key: id; value: keyPairDto
      */
-    default void set(Map<String, KeyPairDto> keyPairDtoMap) {
+    default void put(Map<String, KeyPairDto> keyPairDtoMap) {
         if (MapUtils.isNotEmpty(keyPairDtoMap)) {
-            keyPairDtoMap.forEach(this::set);
+            keyPairDtoMap.forEach(this::put);
         }
     }
 
@@ -44,8 +53,4 @@ public interface KeyPairCache {
     @Nonnull
     KeyPairDto get(String id) throws NoSuchKeyPairException;
 
-    /**
-     * 销毁，退出时将密钥对清空
-     */
-    void destroy();
 }

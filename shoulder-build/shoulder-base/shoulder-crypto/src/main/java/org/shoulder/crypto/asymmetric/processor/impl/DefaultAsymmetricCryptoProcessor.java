@@ -12,7 +12,6 @@ import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PreDestroy;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -70,18 +69,6 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
 
     // ------------------ 提供两个推荐使用的安全加密方案 ------------------
 
-    public static DefaultAsymmetricCryptoProcessor ecc256(KeyPairCache keyPairCache) {
-        return new DefaultAsymmetricCryptoProcessor(
-            "EC",
-            256,
-            "ECIES",
-            "SHA256withECDSA",
-            BouncyCastleProvider.PROVIDER_NAME,
-            keyPairCache
-        );
-
-    }
-
     public static DefaultAsymmetricCryptoProcessor rsa2048(KeyPairCache keyPairCache) {
         return new DefaultAsymmetricCryptoProcessor(
             "RSA",
@@ -93,26 +80,44 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
         );
     }
 
-    @PreDestroy
-    public void destroy() {
-        keyPairCache.destroy();
+
+    /**
+     * 注意，椭圆曲线算法的签名速度远快于 RSA2048，近10倍，但验签速度慢了有10-20倍，因此通常对服务器更友好，对客户端要求更高
+     * 安全更高、存储更少（密钥更短）
+     */
+    public static DefaultAsymmetricCryptoProcessor ecc256(KeyPairCache keyPairCache) {
+        return new DefaultAsymmetricCryptoProcessor(
+            "EC",
+            256,
+            "ECDH",
+            "SHA256withECDSA",
+            BouncyCastleProvider.PROVIDER_NAME,
+            keyPairCache
+        );
     }
+
+    // sm2 暂不稳定，api 不统一，暂不纳入默认支持
+    /*public static DefaultAsymmetricCryptoProcessor sm2(KeyPairCache keyPairCache) {
+        return new DefaultAsymmetricCryptoProcessor(
+            "SM2",
+            256,
+            "SM2",
+            "SM3withSM2",
+            BouncyCastleProvider.PROVIDER_NAME,
+            keyPairCache
+        );
+    }*/
 
 
     @Override
-    public void buildKeyPair(String id, Duration ttl) throws KeyPairException {
-        KeyPair kp = null;
-        lock.lock();
+    public synchronized void buildKeyPair(String id, Duration ttl) throws KeyPairException {
         try {
             // 如果能成功将缓存中的值拿出来构建密钥对，则说明已经构建过，无需再次构建
             getKeyPair(id);
         } catch (NoSuchKeyPairException e) {
             // 未拿到或构建出错，则重新生成并保存
-            kp = keyPairFactory.build();
-            // 此时若构建密钥对失败则将异常抛出，表示不支持使用者设置的加密算法，需要使用者检查
-            keyPairCache.set(id, new KeyPairDto(kp, ttl));
-        } finally {
-            lock.unlock();
+            keyPairCache.put(id, new KeyPairDto(keyPairFactory.build(), ttl));
+            // 此时若构建密钥对失败则表示不支持使用者设置的加密算法，需要使用者检查自己的配置，因此直接将异常抛出
         }
     }
 

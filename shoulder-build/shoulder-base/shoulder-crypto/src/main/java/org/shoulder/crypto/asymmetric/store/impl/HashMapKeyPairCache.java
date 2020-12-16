@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -26,8 +27,13 @@ public class HashMapKeyPairCache implements KeyPairCache {
     }
 
     @Override
-    public void set(String id, @Nonnull KeyPairDto keyPair) {
+    public void put(String id, @Nonnull KeyPairDto keyPair) {
         store.put(id, keyPair);
+    }
+
+    @Override
+    public boolean putIfAbsent(String id, @Nonnull KeyPairDto keyPair) {
+        return store.putIfAbsent(id, keyPair) == null;
     }
 
     @Override
@@ -45,7 +51,10 @@ public class HashMapKeyPairCache implements KeyPairCache {
         }
     }
 
-    @Override
+    /**
+     * 销毁，Bean 注销时将密钥对清空
+     */
+    @PreDestroy
     public void destroy() {
         store.clear();
     }

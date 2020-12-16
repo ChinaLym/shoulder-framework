@@ -2,8 +2,8 @@ package org.shoulder.crypto.local.impl;
 
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.ByteUtils;
-import org.shoulder.crypto.aes.AesUtil;
-import org.shoulder.crypto.aes.exception.AesCryptoException;
+import org.shoulder.crypto.aes.SymmetricCryptoUtils;
+import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.digest.Sha256Utils;
 import org.shoulder.crypto.exception.CipherRuntimeException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
@@ -124,10 +124,10 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         ensureInit();
         AesInfoCache cacheInfo = CacheManager.getAesInfoCache(ALGORITHM_HEADER);
         try {
-            byte[] encryptResult = AesUtil.encrypt(text.getBytes(CHAR_SET), cacheInfo.dataKey,
+            byte[] encryptResult = SymmetricCryptoUtils.encrypt(text.getBytes(CHAR_SET), cacheInfo.dataKey,
                 cacheInfo.dateIv);
             return ALGORITHM_HEADER + ByteSpecification.encodeToString(encryptResult);
-        } catch (AesCryptoException e) {
+        } catch (SymmetricCryptoException e) {
             throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
         }
     }
@@ -144,9 +144,9 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
                 "cipher's markHeader is {}", cipherTextHeader);
         }
         try {
-            byte[] decryptData = AesUtil.decrypt(Base64.getDecoder().decode(realCipherText), cacheInfo.dataKey, cacheInfo.dateIv);
+            byte[] decryptData = SymmetricCryptoUtils.decrypt(Base64.getDecoder().decode(realCipherText), cacheInfo.dataKey, cacheInfo.dateIv);
             return new String(decryptData, CHAR_SET);
-        } catch (AesCryptoException e) {
+        } catch (SymmetricCryptoException e) {
             throw CryptoErrorCodeEnum.DECRYPT_FAIL.toException(e);
         }
     }
@@ -215,7 +215,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
      *
      * @return 是否加载成功
      */
-    private boolean loadSecurityInfo() throws AesCryptoException {
+    private boolean loadSecurityInfo() throws SymmetricCryptoException {
         List<LocalCryptoMetaInfo> aesInfos;
         try {
             // get All aesInfo
@@ -262,14 +262,14 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
      *
      * @return 本应用加密记录
      */
-    private LocalCryptoMetaInfo generateSecurity() throws AesCryptoException {
+    private LocalCryptoMetaInfo generateSecurity() throws SymmetricCryptoException {
         byte[] rootKeyRandomPart = ByteUtils.randomBytes(ROOT_KEY_RANDOM_LENGTH);
         String rootKeyRandomPartStr = ByteSpecification.encodeToString(rootKeyRandomPart);
         byte[] rootKey = generateDataKeyProtectKey(rootKeyRandomPart);
         // 用于加密数据密钥的 initVector 向量，写死
         byte[] dataKey = generateDataKey();
         byte[] dataKeyIv = generateDataKeyIv();
-        String dbDataKey = ByteSpecification.encodeToString(AesUtil.encrypt(dataKey, rootKey, DATA_KEY_IV));
+        String dbDataKey = ByteSpecification.encodeToString(SymmetricCryptoUtils.encrypt(dataKey, rootKey, DATA_KEY_IV));
         String initVector = ByteSpecification.encodeToString(dataKeyIv);
 
         LocalCryptoMetaInfo entity = new LocalCryptoMetaInfo();
@@ -315,9 +315,9 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
          * 添加到缓存
          *
          * @param aesInfoEntity 不为 null
-         * @throws AesCryptoException 转化失败
+         * @throws SymmetricCryptoException 转化失败
          */
-        private static void addToCacheMap(LocalCryptoMetaInfo aesInfoEntity) throws AesCryptoException {
+        private static void addToCacheMap(LocalCryptoMetaInfo aesInfoEntity) throws SymmetricCryptoException {
             addToCacheMap(Collections.singletonList(aesInfoEntity));
         }
 
@@ -325,9 +325,9 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
          * 添加到缓存
          *
          * @param aesInfoList 不为空
-         * @throws AesCryptoException 转化失败
+         * @throws SymmetricCryptoException 转化失败
          */
-        private static void addToCacheMap(List<LocalCryptoMetaInfo> aesInfoList) throws AesCryptoException {
+        private static void addToCacheMap(List<LocalCryptoMetaInfo> aesInfoList) throws SymmetricCryptoException {
             for (LocalCryptoMetaInfo aesInfo : aesInfoList) {
                 cacheMap.put(aesInfo.getHeader(), convertToCache(aesInfo));
             }
@@ -336,14 +336,14 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
 
         // keep singleTon ------------------------
 
-        private static AesInfoCache convertToCache(LocalCryptoMetaInfo entity) throws AesCryptoException {
+        private static AesInfoCache convertToCache(LocalCryptoMetaInfo entity) throws SymmetricCryptoException {
             String rootKeyRandomPartStr = entity.getRootKeyPart();
             byte[] rootKeyRandomPart = ByteSpecification.decodeToBytes(rootKeyRandomPartStr);
 
             byte[] rootKey = generateDataKeyProtectKey(rootKeyRandomPart);
             byte[] cipherDataKey = ByteSpecification.decodeToBytes(entity.getDataKey());
 
-            byte[] dataKey = AesUtil.decrypt(cipherDataKey, rootKey, DATA_KEY_IV);
+            byte[] dataKey = SymmetricCryptoUtils.decrypt(cipherDataKey, rootKey, DATA_KEY_IV);
             byte[] dataIv = ByteSpecification.decodeToBytes(entity.getVector());
 
             return new AesInfoCache(dataKey, dataIv);
