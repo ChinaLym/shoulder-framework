@@ -1,22 +1,22 @@
 package org.shoulder.crypto.aes;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.shoulder.core.constant.ByteSpecification;
+import org.shoulder.core.util.StringUtils;
+import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
+import org.springframework.util.Assert;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Security;
+import java.util.Arrays;
+
 /**
- * 非对称加解密工具实现
- * 确定算法，调用 doCipher
+ * 对称加解密工具实现
  *
  * @author lym
- * <p>
- * 算法名称
- * <p>
- * 算法实现提供商
- * <p>
- * 密钥位数
- * <p>
- * 算法实现
- * <p>
- * 签名算法
  */
-/*
 public class DefaultSymmetricCryptoProcessor implements SymmetricCryptoProcessor, ByteSpecification {
 
     // BC
@@ -26,207 +26,128 @@ public class DefaultSymmetricCryptoProcessor implements SymmetricCryptoProcessor
         }
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultSymmetricCryptoProcessor.class);
-
-    */
-/**
- * 算法名称
- *//*
-
+    /**
+     * 算法名称，用于生成密钥
+     */
     private final String algorithm;
-    */
-/**
- * 算法实现提供商
- *//*
 
+    /**
+     * 指定算法实现提供商
+     */
     private final String provider;
-    */
-/**
- * 密钥位数
- *//*
 
-    private final int keyLength;
-    */
-/**
- * 算法实现
- *//*
+    /**
+     * 密钥位数
+     */
+    private final int[] keyLengthSupports;
 
+    /**
+     * 算法实现
+     */
     private final String transformation;
-    */
-/**
- * 签名算法
- *//*
 
-    private final String signatureAlgorithm;
+    /**
+     * 需要初始化向量，固定长度 16*8=128
+     */
+    private final boolean needIv;
 
-    protected Lock lock = new ReentrantLock();
-
-    public DefaultSymmetricCryptoProcessor(String algorithm, int keyLength, String transformation, String signatureAlgorithm,
-                                           String provider, KeyPairCache keyPairCache) {
+    public DefaultSymmetricCryptoProcessor(String algorithm, int[] keyLengthSupports, String transformation, String provider) {
         this.provider = provider;
         this.algorithm = algorithm;
-        this.keyLength = keyLength;
-        this.signatureAlgorithm = signatureAlgorithm;
+        this.keyLengthSupports = keyLengthSupports;
         this.transformation = transformation;
+        needIv = StringUtils.contains(transformation, "CBC") || StringUtils.contains(transformation, "CFB");
+    }
+
+    public DefaultSymmetricCryptoProcessor(String transformation) {
+        this.provider = "BC";
+        this.algorithm = transformation.substring(0, transformation.indexOf("/"));
+        this.keyLengthSupports = new int[]{16, 24, 32};
+        this.transformation = transformation;
+        needIv = StringUtils.contains(transformation, "/CBC/") || StringUtils.contains(transformation, "/CFB/");
     }
 
     // ------------------ 提供两个推荐使用的安全加密方案 ------------------
 
-    public static DefaultSymmetricCryptoProcessor aesEcb256() {
-        return new DefaultSymmetricCryptoProcessor(
-            "EC",
-            256,
-            "ECIES",
-            "SHA256withECDSA",
-            BouncyCastleProvider.PROVIDER_NAME,
-            keyPairCache
-        );
-
+    public static DefaultSymmetricCryptoProcessor aes_256_CBC_PKCS5Padding() {
+        return new DefaultSymmetricCryptoProcessor("SM4/CBC/PKCS5Padding");
     }
 
-    public static DefaultSymmetricCryptoProcessor rsa2048(KeyPairCache keyPairCache) {
-        return new DefaultSymmetricCryptoProcessor(
-            "RSA",
-            2048,
-            "RSA/ECB/PKCS1Padding",
-            "SHA256WithRSA",
-            BouncyCastleProvider.PROVIDER_NAME,
-            keyPairCache
-        );
+    public static DefaultSymmetricCryptoProcessor sm4_256_CBC_PKCS5Padding() {
+        return new DefaultSymmetricCryptoProcessor("SM4/CBC/PKCS5Padding");
     }
 
-    @PreDestroy
-    public void destroy() {
-        keyPairCache.destroy();
-    }
-
-
+    /**
+     * 对称加密
+     *
+     * @param content 明文
+     * @param key     密钥
+     * @param iv      向量
+     * @return 密文
+     */
     @Override
-    public void buildKeyPair(String id, Duration ttl) throws KeyPairException {
-        KeyPair kp = null;
-        lock.lock();
+    public byte[] encrypt(byte[] key, byte[] iv, byte[] content) throws SymmetricCryptoException {
+        return doCipher(Cipher.ENCRYPT_MODE, key, iv, content);
+    }
+
+    /**
+     * 对称解密
+     *
+     * @param key        密钥
+     * @param iv         向量
+     * @param cipherText 密文
+     * @return 明文
+     */
+    @Override
+    public byte[] decrypt(byte[] key, byte[] iv, byte[] cipherText) throws SymmetricCryptoException {
+        return doCipher(Cipher.DECRYPT_MODE, key, iv, cipherText);
+    }
+
+    /**
+     * 加密或解密
+     *
+     * @param decryptMode 加密/解密
+     * @param key         密钥
+     * @param iv          向量
+     * @param content     需要处理的内容，密文/明文
+     * @return 明文
+     */
+    public byte[] doCipher(int decryptMode, byte[] key, byte[] iv, byte[] content) throws SymmetricCryptoException {
         try {
-            // 如果能成功将缓存中的值拿出来构建密钥对，则说明已经构建过，无需再次构建
-            getKeyPair(id);
-        } catch (NoSuchKeyPairException e) {
-            // 未拿到或构建出错，则重新生成并保存
-            kp = keyPairFactory.build();
-            // 此时若构建密钥对失败则将异常抛出，表示不支持使用者设置的加密算法，需要使用者检查
-            keyPairCache.set(id, new KeyPairDto(kp, ttl));
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    @Override
-    public void buildKeyPair(String id) throws KeyPairException {
-        this.buildKeyPair(id, null);
-    }
-
-    private KeyPair getKeyPairFromDto(KeyPairDto dto) throws KeyPairException {
-        KeyPair keyPair = null;
-        if ((keyPair = dto.getOriginKeyPair()) != null) {
-            // 内存存储，无需反序列化
-            return keyPair;
-        }
-        keyPair = keyPairFactory.buildFrom(
-            ByteSpecification.decodeToBytes(dto.getPk()),
-            ByteSpecification.decodeToBytes(dto.getVk())
-        );
-        // 兼容非直接存储的本地缓存，是否存在这种？
-        dto.setOriginKeyPair(keyPair);
-        return keyPair;
-    }
-
-    @Override
-    public byte[] decrypt(String id, byte[] content) throws AsymmetricCryptoException {
-        try {
+            validParam(key, iv);
+            SecretKeySpec secretKey = new SecretKeySpec(key, algorithm);
             Cipher cipher = Cipher.getInstance(transformation, provider);
-            cipher.init(Cipher.DECRYPT_MODE, keyPairFactory.generatePrivateKey(getKeyPair(id).getPrivate().getEncoded()));
+            if (needIv) {
+                IvParameterSpec ivParameter = new IvParameterSpec(iv);
+                cipher.init(decryptMode, secretKey, ivParameter);
+            } else {
+                cipher.init(decryptMode, secretKey);
+            }
             return cipher.doFinal(content);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | KeyPairException | NoSuchProviderException e) {
-            throw new AsymmetricCryptoException("decrypt fail.", e);
+        } catch (Exception e) {
+            throw new SymmetricCryptoException("symmetricCryptoException doCipher(mode=" + decryptMode + ") Exception!", e);
         }
     }
 
-    @Override
-    public byte[] encrypt(String id, byte[] content) throws AsymmetricCryptoException {
-        try {
-            // 对数据加密
-            Cipher cipher = Cipher.getInstance(transformation, provider);
-            cipher.init(Cipher.ENCRYPT_MODE, keyPairFactory.generatePublicKey(getKeyPair(id).getPublic().getEncoded()));
-            return cipher.doFinal(content);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | KeyPairException | NoSuchProviderException e) {
-            throw new AsymmetricCryptoException("encrypt fail.", e);
+    /**
+     * 参数校验
+     *
+     * @param key aes 密钥必须 128/192/256 位
+     * @param iv  加密向量，必须 128 位 16byte
+     */
+    private void validParam(byte[] key, byte[] iv) {
+        Assert.notNull(key, "the parameter 'key' can't be null!");
+        for (int i = 0; i < keyLengthSupports.length; i++) {
+            if (key.length == keyLengthSupports[i]) {
+                break;
+            }
+            if (i == keyLengthSupports.length - 1) {
+                throw new IllegalArgumentException("the length of parameter 'key' not support, only support " + Arrays.toString(keyLengthSupports));
+            }
+        }
+        if (needIv) {
+            Assert.notNull(iv, "the parameter 'iv' can't be null!");
+            Assert.isTrue(iv.length == 16, "the parameter 'iv' must be 128 bit(16 byte)");
         }
     }
-
-    @Override
-    public byte[] encrypt(byte[] content, byte[] publicKey) throws AsymmetricCryptoException {
-        try {
-            // 对数据加密
-            Cipher cipher = Cipher.getInstance(transformation, provider);
-            cipher.init(Cipher.ENCRYPT_MODE, keyPairFactory.generatePublicKey(publicKey));
-            return cipher.doFinal(content);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | KeyPairException | NoSuchProviderException e) {
-            throw new AsymmetricCryptoException("encrypt fail.", e);
-        }
-    }
-
-    @Override
-    public byte[] sign(String id, byte[] content) throws AsymmetricCryptoException {
-        try {
-            Signature signature = Signature.getInstance(signatureAlgorithm);
-            signature.initSign(keyPairFactory.generatePrivateKey(getKeyPair(id).getPrivate().getEncoded()));
-            signature.update(content);
-            return signature.sign();
-        } catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | KeyPairException e) {
-            throw new AsymmetricCryptoException("sign fail.", e);
-        }
-    }
-
-    @Override
-    public boolean verify(String id, byte[] content, byte[] signature) throws AsymmetricCryptoException {
-        try {
-            return this.verify(getKeyPair(id).getPublic().getEncoded(), content, signature);
-        } catch (NoSuchKeyPairException e) {
-            throw new AsymmetricCryptoException("verify fail.", e);
-        }
-    }
-
-    @Override
-    public boolean verify(byte[] publicKey, byte[] content, byte[] signature) throws AsymmetricCryptoException {
-        try {
-            Signature sign = Signature.getInstance(signatureAlgorithm);
-            sign.initVerify(keyPairFactory.generatePublicKey(publicKey));
-            sign.update(content);
-            return sign.verify(signature);
-        } catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | KeyPairException e) {
-            throw new AsymmetricCryptoException("verify fail.", e);
-        }
-    }
-
-
-    @Override
-    public KeyPair getKeyPair(String id) throws KeyPairException {
-        return getKeyPairFromDto(keyPairCache.get(id));
-    }
-
-    @Override
-    public PublicKey getPublicKey(String id) throws KeyPairException {
-        return getKeyPair(id).getPublic();
-    }
-
-
-    @Override
-    public String getPublicKeyString(String id) throws KeyPairException {
-        return keyPairCache.get(id).getPk();
-    }
-
-    @Override
-    public PrivateKey getPrivateKey(String id) throws KeyPairException {
-        return getKeyPair(id).getPrivate();
-    }
-
 }
-*/

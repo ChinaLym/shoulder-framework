@@ -2,7 +2,7 @@ package org.shoulder.crypto.negotiation.support;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.crypto.aes.exception.AesCryptoException;
+import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -134,7 +134,7 @@ public class SecurityRestTemplate extends RestTemplate {
                 HttpHeaders headers = negotiateBeforeExecute(URI_LOCAL.get());
                 HttpHeaders httpHeaders = request.getHeaders();
                 headers.forEach((key, values) -> httpHeaders.put(key, new LinkedList<>(values)));
-            } catch (AesCryptoException | AsymmetricCryptoException e) {
+            } catch (SymmetricCryptoException | AsymmetricCryptoException e) {
                 throw new RestClientException("Negotiate FAIL before doExecute!", e);
             }
             delegate.doWithRequest(request);
@@ -143,7 +143,7 @@ public class SecurityRestTemplate extends RestTemplate {
         /**
          * 在请求构建发送前，确保已经完成密钥协商
          */
-        private HttpHeaders negotiateBeforeExecute(URI uri) throws AesCryptoException, AsymmetricCryptoException {
+        private HttpHeaders negotiateBeforeExecute(URI uri) throws SymmetricCryptoException, AsymmetricCryptoException {
             int time = 0;
             NegotiationResult negotiationResult = null;
             while (negotiationResult == null) {

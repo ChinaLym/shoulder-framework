@@ -2,7 +2,7 @@ package org.shoulder.crypto.aes;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.shoulder.crypto.aes.exception.AesCryptoException;
+import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 
 import java.nio.charset.StandardCharsets;
 
@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @author lym
  */
-public class AesUtilTest {
+public class SymmetricCryptoUtilsTest {
 
     /**
      * 测试 aes
@@ -32,7 +32,7 @@ public class AesUtilTest {
             1, 2, 3, 4, 5, 6};
 
         // 解密后的加密过的明文
-        byte[] processedData = AesUtil.decrypt(AesUtil.encrypt(text, key, iv), key, iv);
+        byte[] processedData = SymmetricCryptoUtils.decrypt(SymmetricCryptoUtils.encrypt(text, key, iv), key, iv);
         Assertions.assertThat(text).isEqualTo(processedData);
     }
 
@@ -40,7 +40,7 @@ public class AesUtilTest {
      * 测试 aes 的参数校验
      * 密钥长度不符合标准 aes 的要求（必须为16/24/32）
      */
-    @Test(expected = AesCryptoException.class)
+    @Test(expected = SymmetricCryptoException.class)
     public void testAesKeyVerify() throws Exception {
 
         byte[] text = "testAes".getBytes(StandardCharsets.UTF_8);
@@ -55,7 +55,7 @@ public class AesUtilTest {
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
         // 解密后的加密过的明文
-        byte[] processedData = AesUtil.decrypt(AesUtil.encrypt(text, key, iv), key, iv);
+        byte[] processedData = SymmetricCryptoUtils.decrypt(SymmetricCryptoUtils.encrypt(text, key, iv), key, iv);
         Assertions.assertThat(text).isEqualTo(processedData);
     }
 
@@ -63,7 +63,7 @@ public class AesUtilTest {
      * 测试 aes 的参数校验
      * 向量长度不符合标准 aes 的要求（必须为16）
      */
-    @Test(expected = AesCryptoException.class)
+    @Test(expected = SymmetricCryptoException.class)
     public void testAesIvVerify() throws Exception {
 
         byte[] text = "testAes".getBytes(StandardCharsets.UTF_8);
@@ -77,7 +77,7 @@ public class AesUtilTest {
             1, 2, 3, 4, 5, 6};
 
         // 解密后的加密过的明文
-        byte[] processedData = AesUtil.decrypt(AesUtil.encrypt(text, key, iv), key, iv);
+        byte[] processedData = SymmetricCryptoUtils.decrypt(SymmetricCryptoUtils.encrypt(text, key, iv), key, iv);
         Assertions.assertThat(text).isEqualTo(processedData);
     }
 

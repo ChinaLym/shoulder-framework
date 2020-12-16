@@ -2,8 +2,7 @@ package org.shoulder.crypto.negotiation.util;
 
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.ByteUtils;
-import org.shoulder.crypto.aes.AesUtil;
-import org.shoulder.crypto.aes.exception.AesCryptoException;
+import org.shoulder.crypto.aes.SymmetricCryptoUtils;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
@@ -71,8 +70,8 @@ public class TransportCryptoByteUtil {
     /**
      * 生成数据密钥的密文（DK）
      */
-    public static byte[] encryptDk(NegotiationResult negotiationResult, byte[] dataKey) throws AesCryptoException {
-        return AesUtil.encrypt(dataKey, negotiationResult.getShareKey(), negotiationResult.getLocalIv());
+    public static byte[] encryptDk(NegotiationResult negotiationResult, byte[] dataKey) throws SymmetricCryptoException {
+        return SymmetricCryptoUtils.encrypt(dataKey, negotiationResult.getShareKey(), negotiationResult.getLocalIv());
     }
 
     /**
@@ -81,21 +80,21 @@ public class TransportCryptoByteUtil {
      * @return dataKey
      */
     public static byte[] decryptDk(NegotiationResult negotiationResult, byte[] xDk) throws SymmetricCryptoException {
-        return AesUtil.decrypt(xDk, negotiationResult.getShareKey(), negotiationResult.getLocalIv());
+        return SymmetricCryptoUtils.decrypt(xDk, negotiationResult.getShareKey(), negotiationResult.getLocalIv());
     }
 
     /**
      * 加密数据
      */
-    public static byte[] encrypt(NegotiationResult negotiationResult, byte[] dataKey, byte[] toCipher) throws AesCryptoException {
-        return AesUtil.encrypt(toCipher, dataKey, negotiationResult.getLocalIv());
+    public static byte[] encrypt(NegotiationResult negotiationResult, byte[] dataKey, byte[] toCipher) throws SymmetricCryptoException {
+        return SymmetricCryptoUtils.encrypt(toCipher, dataKey, negotiationResult.getLocalIv());
     }
 
     /**
      * 解密数据
      */
-    public static byte[] decrypt(NegotiationResult negotiationResult, byte[] dataKey, byte[] cipherText) throws AesCryptoException {
-        return AesUtil.decrypt(cipherText, dataKey, negotiationResult.getLocalIv());
+    public static byte[] decrypt(NegotiationResult negotiationResult, byte[] dataKey, byte[] cipherText) throws SymmetricCryptoException {
+        return SymmetricCryptoUtils.decrypt(cipherText, dataKey, negotiationResult.getLocalIv());
     }
 
     /**

@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.cipher;
 
-import org.shoulder.crypto.aes.exception.AesCryptoException;
+import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
@@ -57,7 +57,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
     public String encrypt(String toCipher) {
         try {
             return TransportCryptoUtil.encrypt(negotiationResult, dk, toCipher);
-        } catch (AesCryptoException e) {
+        } catch (SymmetricCryptoException e) {
             throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
         }
     }
@@ -72,7 +72,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
     public String decrypt(String cipherText) {
         try {
             return TransportCryptoUtil.decrypt(negotiationResult, dk, cipherText);
-        } catch (AesCryptoException e) {
+        } catch (SymmetricCryptoException e) {
             throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
         }
     }

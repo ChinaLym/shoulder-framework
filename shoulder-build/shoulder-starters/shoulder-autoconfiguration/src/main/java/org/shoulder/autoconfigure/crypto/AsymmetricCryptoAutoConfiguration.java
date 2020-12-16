@@ -8,6 +8,7 @@ import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
+import org.shoulder.crypto.asymmetric.store.impl.CryptoDelegateKeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.RedisKeyPairCache;
 import org.shoulder.crypto.local.LocalTextCipher;
@@ -65,13 +66,13 @@ public class AsymmetricCryptoAutoConfiguration {
         public KeyPairCache hashMapKeyPairCache(CryptoProperties cryptoProperties) {
             KeyPairCache keyPairCache = new HashMapKeyPairCache();
             // 将配置文件中的预置密钥对加入临时存储
-            keyPairCache.set(cryptoProperties.getKeyPair());
+            keyPairCache.put(cryptoProperties.getKeyPair());
             return keyPairCache;
         }
     }
 
     /**
-     * 如果支持集群，则默认使用 redis 作为非对称密钥对存储
+     * 如果支持集群，则默认使用 redis 作为非对称密钥对存储，并将对应的私钥加密再存至 redis
      */
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnCluster
@@ -83,11 +84,11 @@ public class AsymmetricCryptoAutoConfiguration {
         @Bean("keyPairCache")
         public KeyPairCache redisKeyPairCache(@AppExclusive StringRedisTemplate redisTemplate,
                                               LocalTextCipher localTextCipher, CryptoProperties cryptoProperties) {
-            KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate, localTextCipher);
-            keyPairCache.set(cryptoProperties.getKeyPair());
+            KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate);
+            keyPairCache.put(cryptoProperties.getKeyPair());
             LoggerFactory.getLogger(getClass()).debug("redisKeyPairCache provide RedisKeyPairCache.");
 
-            return keyPairCache;
+            return new CryptoDelegateKeyPairCache(keyPairCache, localTextCipher);
         }
 
     }

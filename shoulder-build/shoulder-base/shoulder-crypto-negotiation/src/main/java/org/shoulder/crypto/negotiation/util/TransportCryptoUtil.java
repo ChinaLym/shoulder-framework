@@ -3,7 +3,6 @@ package org.shoulder.crypto.negotiation.util;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.ByteUtils;
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.crypto.aes.exception.AesCryptoException;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
@@ -135,7 +134,7 @@ public class TransportCryptoUtil {
      * @param dataKey           数据密钥
      * @return 数据密钥密文 xDk
      */
-    public static String encryptDk(NegotiationResult negotiationResult, byte[] dataKey) throws AesCryptoException {
+    public static String encryptDk(NegotiationResult negotiationResult, byte[] dataKey) throws SymmetricCryptoException {
         return ByteSpecification.encodeToString(TransportCryptoByteUtil.encryptDk(negotiationResult, dataKey));
     }
 
@@ -158,7 +157,7 @@ public class TransportCryptoUtil {
      * @param text              数据明文
      * @return 数据密文 cipherText
      */
-    public static String encrypt(NegotiationResult negotiationResult, byte[] dataKey, String text) throws AesCryptoException {
+    public static String encrypt(NegotiationResult negotiationResult, byte[] dataKey, String text) throws SymmetricCryptoException {
         return ByteSpecification.encodeToString(TransportCryptoByteUtil.encrypt(negotiationResult, dataKey, text.getBytes(ByteSpecification.STD_CHAR_SET)));
     }
 
@@ -170,7 +169,7 @@ public class TransportCryptoUtil {
      * @param cipherText        数据密文
      * @return 数据明文 text
      */
-    public static String decrypt(NegotiationResult negotiationResult, byte[] dataKey, String cipherText) throws AesCryptoException {
+    public static String decrypt(NegotiationResult negotiationResult, byte[] dataKey, String cipherText) throws SymmetricCryptoException {
         return new String(TransportCryptoByteUtil.decrypt(negotiationResult, dataKey, ByteSpecification.decodeToBytes(cipherText)), ByteSpecification.STD_CHAR_SET);
     }
 
@@ -201,9 +200,9 @@ public class TransportCryptoUtil {
      * @param negotiationResult 密钥交换结果
      * @return 请求头
      * @throws AsymmetricCryptoException 签名出错
-     * @throws AesCryptoException        加密 dataKey 出错
+     * @throws SymmetricCryptoException        加密 dataKey 出错
      */
-    public HttpHeaders generateHeaders(NegotiationResult negotiationResult) throws AsymmetricCryptoException, AesCryptoException {
+    public HttpHeaders generateHeaders(NegotiationResult negotiationResult) throws AsymmetricCryptoException, SymmetricCryptoException {
         return generateHeaders(negotiationResult, null);
     }
 
@@ -214,9 +213,9 @@ public class TransportCryptoUtil {
      * @param dataKey           数据密钥明文，如果为 null 表示请求中不带敏感信息，发起请求或收到请求时无需加密或解密
      * @return 请求头
      * @throws AsymmetricCryptoException 签名出错
-     * @throws AesCryptoException        加密 dataKey 出错
+     * @throws SymmetricCryptoException        加密 dataKey 出错
      */
-    public HttpHeaders generateHeaders(NegotiationResult negotiationResult, @Nullable byte[] dataKey) throws AsymmetricCryptoException, AesCryptoException {
+    public HttpHeaders generateHeaders(NegotiationResult negotiationResult, @Nullable byte[] dataKey) throws AsymmetricCryptoException, SymmetricCryptoException {
         String xDk = encryptDk(negotiationResult, dataKey);
         HttpHeaders headers = new HttpHeaders();
         headers.add(NegotiationConstants.TOKEN, generateToken(negotiationResult.getxSessionId(), xDk));

@@ -6,7 +6,7 @@ import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.crypto.aes.AesUtil;
+import org.shoulder.crypto.aes.SymmetricCryptoUtils;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.exception.CryptoException;
@@ -43,7 +43,7 @@ public class CryptoEndpoint {
         try {
             byte[] dk = asymmetricTextCipher.decryptAsBytes(getCurrentKeyPairId(), xDataKey);
             byte[] iv = ByteSpecification.decodeToBytes(xiv);
-            return AesUtil.decrypt(content, dk, iv);
+            return SymmetricCryptoUtils.decrypt(content, dk, iv);
         } catch (CryptoException e) {
             throw new BaseRuntimeException(e);
         }
