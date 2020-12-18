@@ -45,6 +45,11 @@
 
 常用正则表达式参见开源的 `any-rule`。
 
+邮箱
+```js
+'(^\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$)'
+```
+
 ### 二次封装
 
 参见 `org.shoulder.web.advice.RestControllerExceptionAdvice#constraintViolationExceptionHandler`

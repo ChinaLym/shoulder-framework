@@ -47,24 +47,28 @@ public class DefaultSymmetricCryptoProcessor implements SymmetricCryptoProcessor
     private final String transformation;
 
     /**
-     * 需要初始化向量，固定长度 16*8=128
+     * 需要初始化向量，固定长度 16*8=128，todo OCB 必须小于 128，解密必须传 iv，可以为空 byte[]
      */
     private final boolean needIv;
 
-    public DefaultSymmetricCryptoProcessor(String algorithm, int[] keyLengthSupports, String transformation, String provider) {
+    public DefaultSymmetricCryptoProcessor(String algorithm, int[] keyLengthSupports, String transformation,
+                                           String provider, boolean needIv) {
         this.provider = provider;
         this.algorithm = algorithm;
         this.keyLengthSupports = keyLengthSupports;
         this.transformation = transformation;
-        needIv = StringUtils.contains(transformation, "CBC") || StringUtils.contains(transformation, "CFB");
+        this.needIv = needIv;
     }
 
     public DefaultSymmetricCryptoProcessor(String transformation) {
+        this.transformation = transformation;
         this.provider = "BC";
         this.algorithm = transformation.substring(0, transformation.indexOf("/"));
         this.keyLengthSupports = new int[]{16, 24, 32};
-        this.transformation = transformation;
-        needIv = StringUtils.contains(transformation, "/CBC/") || StringUtils.contains(transformation, "/CFB/");
+        needIv = StringUtils.contains(transformation, "/CBC/")
+            || StringUtils.contains(transformation, "/CFB/")
+            || StringUtils.contains(transformation, "/GCM/")
+        ;
     }
 
     // ------------------ 提供两个推荐使用的安全加密方案 ------------------
