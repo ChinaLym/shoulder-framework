@@ -161,3 +161,17 @@ public class UserServiceImpl implements IUserSerivce {
 - 不需要，有也不使用【无需支持】
 - 不能有，有则报错【无需支持】
 - 嵌套，如果有，则创建子业务【嵌套业务，不必支持】
+
+
+### 其他：压缩相关算法
+
+[lz4 比较](https://www.jianshu.com/p/71eb3071d3e0)
+[linux lz4命令](https://www.howtoing.com/zstd-fast-data-compression-algorithm-used-by-facebook)
+
+压缩算法 CPU 占用比较：
+峰值 lz4 64.8 zstd 61.9 snappy 57.2
+均值 lz4 5.1 zstd 3.5 snappy 3.0
+
+推荐 zstd
+
+[【译】十款性能最佳的压缩算法](https://www.cnblogs.com/huxi2b/p/12989317.html)

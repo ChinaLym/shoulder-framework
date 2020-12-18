@@ -16,7 +16,7 @@ public class SymmetricCipherTest {
 
     private SymmetricCryptoProcessor aes = DefaultSymmetricCryptoProcessor.aes_256_CBC_PKCS5Padding();
 
-    private SymmetricCryptoProcessor sm4 = DefaultSymmetricCryptoProcessor.sm4_256_CBC_PKCS5Padding();
+    private SymmetricCryptoProcessor sm4 = new DefaultSymmetricCryptoProcessor("AES/GCM/NoPadding");
 
     /**
      * 测试加解密
