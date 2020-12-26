@@ -1,7 +1,7 @@
 package org.shoulder.log.operation.dto;
 
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.util.IpUtils;
+import org.shoulder.core.util.AddressUtils;
 import org.shoulder.log.operation.enums.TerminalType;
 
 import javax.annotation.Nonnull;
@@ -34,7 +34,7 @@ public class SystemOperator implements Operator {
 
     private static class SingletonHolder {
         private static final SystemOperator INSTANCE =
-            new SystemOperator("system." + AppInfo.appId(), IpUtils.getIp(), IpUtils.getMac());
+            new SystemOperator("system." + AppInfo.appId(), AddressUtils.getIp(), AddressUtils.getMac());
     }
 
     public static SystemOperator getInstance() {
