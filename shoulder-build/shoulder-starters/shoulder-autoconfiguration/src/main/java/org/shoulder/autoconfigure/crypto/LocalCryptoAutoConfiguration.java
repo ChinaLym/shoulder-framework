@@ -8,7 +8,7 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
 import org.shoulder.crypto.local.LocalTextCipher;
-import org.shoulder.crypto.local.impl.Aes256LocalTextCipher;
+import org.shoulder.crypto.local.impl.DefaultLocalTextCipher;
 import org.shoulder.crypto.local.impl.LocalTextCipherManager;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.FileLocalCryptoInfoRepository;
@@ -76,7 +76,7 @@ public class LocalCryptoAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(JudgeAbleLocalTextCipher.class)
     public JudgeAbleLocalTextCipher shoulderLocalCrypto(LocalCryptoInfoRepository localCryptoInfoRepository) {
-        return new Aes256LocalTextCipher(localCryptoInfoRepository, AppInfo.appId());
+        return new DefaultLocalTextCipher(localCryptoInfoRepository, AppInfo.appId());
     }
 
     /**

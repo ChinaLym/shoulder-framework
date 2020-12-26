@@ -3,6 +3,8 @@ package org.shoulder.core.exception;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * 通用错误（2^14以下框架使用）错误码标识 = 0 的那部分
@@ -151,6 +153,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
         this.httpStatus = httpStatus;
     }
 
+    @Nonnull
     @Override
     public String getCode() {
         return code;

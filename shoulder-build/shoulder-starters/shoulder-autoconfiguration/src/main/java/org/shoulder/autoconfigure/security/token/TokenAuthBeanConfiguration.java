@@ -6,9 +6,9 @@ import com.nimbusds.jose.jwk.RSAKey;
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationHandlerConfig;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
-import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
-import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
+import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
@@ -215,8 +215,8 @@ public class TokenAuthBeanConfiguration {
             @ConditionalOnMissingBean
             public KeyPair keyPair(List<String> jwtKeyPairIds, KeyPairCache keyPairCache) throws KeyPairException {
                 jwtKeyPairIds = List.of("jwk");
-                AsymmetricCryptoProcessor rsa2048 = DefaultAsymmetricCryptoProcessor.rsa2048(keyPairCache);
-                DefaultAsymmetricCryptoProcessor.rsa2048(keyPairCache).buildKeyPair(jwtKeyPairIds.get(0));
+                AsymmetricCipher rsa2048 = DefaultAsymmetricCipher.rsa2048(keyPairCache);
+                DefaultAsymmetricCipher.rsa2048(keyPairCache).buildKeyPair(jwtKeyPairIds.get(0));
                 return rsa2048.getKeyPair(jwtKeyPairIds.get(0));
             }
 
@@ -228,7 +228,7 @@ public class TokenAuthBeanConfiguration {
             @ConditionalOnMissingBean
             public JWKSet jwkSet(List<String> jwtKeyPairIds, KeyPairCache keyPairCache) throws KeyPairException {
                 jwtKeyPairIds = List.of("jwk");
-                AsymmetricCryptoProcessor rsa2048 = DefaultAsymmetricCryptoProcessor.rsa2048(keyPairCache);
+                AsymmetricCipher rsa2048 = DefaultAsymmetricCipher.rsa2048(keyPairCache);
                 List<JWK> keys = new ArrayList<>(jwtKeyPairIds.size());
                 for (String jwtKeyPairId : jwtKeyPairIds) {
                     rsa2048.buildKeyPair(jwtKeyPairId);

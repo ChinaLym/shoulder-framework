@@ -1,7 +1,7 @@
 package org.shoulder.core.lock;
 
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.util.IpUtils;
+import org.shoulder.core.util.AddressUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -64,7 +64,7 @@ public class LockInfo {
     public LockInfo(String resource, Duration holdTime) {
         this.resource = resource;
         // appId:instanceId:threadId 不用于区分是否唯一，token 需要唯一
-        this.owner = IpUtils.getIp() + ":" + AppInfo.appId() + ":" + Thread.currentThread().getId();
+        this.owner = AddressUtils.getIp() + ":" + AppInfo.appId() + ":" + Thread.currentThread().getId();
         this.token = UUID.randomUUID().toString();
         this.holdTime = holdTime;
         // 先填充一下
