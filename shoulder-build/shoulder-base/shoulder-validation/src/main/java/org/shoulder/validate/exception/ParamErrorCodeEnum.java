@@ -4,6 +4,8 @@ import org.shoulder.core.exception.ErrorCode;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * 通用参数错误码枚举
@@ -86,6 +88,7 @@ public enum ParamErrorCodeEnum implements ErrorCode {
         this.httpStatus = httpStatus;
     }
 
+    @Nonnull
     @Override
     public String getCode() {
         return code;
