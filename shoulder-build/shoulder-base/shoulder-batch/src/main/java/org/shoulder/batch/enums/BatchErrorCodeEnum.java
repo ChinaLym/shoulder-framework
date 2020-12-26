@@ -4,6 +4,8 @@ import org.shoulder.core.exception.ErrorCode;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
+import javax.annotation.Nonnull;
+
 /**
  * 批量相关错误码
  *
@@ -65,6 +67,7 @@ public enum BatchErrorCodeEnum implements ErrorCode {
         this.httpStatus = httpStatus;
     }
 
+    @Nonnull
     @Override
     public String getCode() {
         return code;

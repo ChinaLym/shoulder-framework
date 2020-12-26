@@ -5,9 +5,9 @@ import org.shoulder.autoconfigure.http.HttpAutoConfiguration;
 import org.shoulder.autoconfigure.redis.RedisAutoConfiguration;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
-import org.shoulder.crypto.negotiation.algorithm.DelegateNegotiationAsymmetricCryptoProcessor;
-import org.shoulder.crypto.negotiation.algorithm.NegotiationAsymmetricCryptoProcessor;
+import org.shoulder.crypto.asymmetric.AsymmetricCipher;
+import org.shoulder.crypto.negotiation.algorithm.DelegateNegotiationAsymmetricCipher;
+import org.shoulder.crypto.negotiation.algorithm.NegotiationAsymmetricCipher;
 import org.shoulder.crypto.negotiation.cache.LocalNegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.RedisNegotiationResultCache;
@@ -49,8 +49,8 @@ public class TransportCryptoAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public NegotiationAsymmetricCryptoProcessor negotiationAsymmetricCryptoProcessor(AsymmetricCryptoProcessor delegate) {
-        return new DelegateNegotiationAsymmetricCryptoProcessor(delegate);
+    public NegotiationAsymmetricCipher negotiationAsymmetricCryptoProcessor(AsymmetricCipher delegate) {
+        return new DelegateNegotiationAsymmetricCipher(delegate);
     }
 
     /**
@@ -60,7 +60,7 @@ public class TransportCryptoAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public TransportCryptoUtil transportCryptoUtil(NegotiationAsymmetricCryptoProcessor negotiationAsymmetricProcessor) {
+    public TransportCryptoUtil transportCryptoUtil(NegotiationAsymmetricCipher negotiationAsymmetricProcessor) {
         TransportCryptoByteUtil util = new TransportCryptoByteUtil(negotiationAsymmetricProcessor);
         return new TransportCryptoUtil(util);
     }

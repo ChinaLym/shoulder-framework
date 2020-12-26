@@ -3,10 +3,10 @@ package org.shoulder.autoconfigure.crypto;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.cluster.redis.annotation.AppExclusive;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
+import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricTextCipher;
-import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
-import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.CryptoDelegateKeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
@@ -38,20 +38,20 @@ public class AsymmetricCryptoAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public AsymmetricCryptoProcessor eccAsymmetricProcessor(KeyPairCache keyPairCache) {
-        return DefaultAsymmetricCryptoProcessor.ecc256(keyPairCache);
+    public AsymmetricCipher eccAsymmetricProcessor(KeyPairCache keyPairCache) {
+        return DefaultAsymmetricCipher.ecc256(keyPairCache);
     }
 
     /**
      * 非对称加解密 Bean 注入
      *
-     * @param asymmetricCryptoProcessor 基本的非对称加密处理器
+     * @param asymmetricCipher 基本的非对称加密处理器
      * @return RSA 2048
      */
     @Bean
     @ConditionalOnMissingBean
-    public AsymmetricTextCipher asymmetricCrypto(AsymmetricCryptoProcessor asymmetricCryptoProcessor) {
-        return new DefaultAsymmetricTextCipher(asymmetricCryptoProcessor);
+    public AsymmetricTextCipher asymmetricCrypto(AsymmetricCipher asymmetricCipher) {
+        return new DefaultAsymmetricTextCipher(asymmetricCipher);
     }
 
     /**

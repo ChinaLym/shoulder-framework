@@ -62,6 +62,7 @@
 
         <jna.version>5.5.0</jna.version>
         <!-- useful tools -->
+        <pinyin4j.version>2.5.1</pinyin4j.version>
         <hutool.version>5.4.3</hutool.version>
         <javassist.version>3.27.0-GA</javassist.version>
         <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
@@ -437,6 +438,13 @@
                 <groupId>javax.ws.rs</groupId>
                 <artifactId>javax.ws.rs-api</artifactId>
                 <version>${javax.ws.rs-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.belerweb</groupId>
+                <artifactId>pinyin4j</artifactId>
+                <version>${pinyin4j.version}</version>
+                <optional>true</optional>
             </dependency>
 
             <dependency>

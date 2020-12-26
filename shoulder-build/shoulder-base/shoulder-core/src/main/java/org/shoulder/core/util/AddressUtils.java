@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * @author lym
  */
 @Slf4j
-public class IpUtils {
+public class AddressUtils {
 
     /**
      * (250~255 | 200~249 | 100~199 | 0~99 + .) * 3 + (250~255 | 200~249 | 100~199 | 0~99)
@@ -118,4 +118,104 @@ public class IpUtils {
         }
     }
 
+
+    /**
+     * 将 ipv4 转为 long（压缩）
+     *
+     * @param ipv4 ipv4
+     * @return long
+     */
+    public static long toLong(String ipv4) {
+        long[] ip = new long[4];
+        int position1 = ipv4.indexOf(".");
+        int position2 = ipv4.indexOf(".", position1 + 1);
+        int position3 = ipv4.indexOf(".", position2 + 1);
+        ip[0] = Long.parseLong(ipv4.substring(0, position1));
+        ip[1] = Long.parseLong(ipv4.substring(position1 + 1, position2));
+        ip[2] = Long.parseLong(ipv4.substring(position2 + 1, position3));
+        ip[3] = Long.parseLong(ipv4.substring(position3 + 1));
+        return (ip[0] << 24) + (ip[1] << 16) + (ip[2] << 8) + ip[3];
+    }
+
+    /**
+     * 将 ipv4 转为 int（压缩）
+     *
+     * @param ipv4 ipv4
+     * @return int
+     */
+    public static int toInt(String ipv4) {
+        int[] ip = new int[4];
+        int position1 = ipv4.indexOf(".");
+        int position2 = ipv4.indexOf(".", position1 + 1);
+        int position3 = ipv4.indexOf(".", position2 + 1);
+        ip[0] = Integer.parseInt(ipv4.substring(0, position1));
+        ip[1] = Integer.parseInt(ipv4.substring(position1 + 1, position2));
+        ip[2] = Integer.parseInt(ipv4.substring(position2 + 1, position3));
+        ip[3] = Integer.parseInt(ipv4.substring(position3 + 1));
+        return (ip[0] << 24) + (ip[1] << 16) + (ip[2] << 8) + ip[3];
+    }
+
+    /**
+     * 将 long 转为 ipv4 字符串（压缩）
+     *
+     * @param ipv4 ipv4
+     * @return ipv4Str
+     */
+    public static String toIPv4(long ipv4) {
+        final long mask = 255;
+
+        return ((ipv4 >>> 24) & mask) +
+            "." +
+            ((ipv4 >>> 16) & mask) +
+            "." +
+            ((ipv4 >>> 8) & mask) +
+            "." +
+            (ipv4 & mask);
+    }
+
+    /**
+     * 将 int 转为 ipv4 字符串（压缩）
+     *
+     * @param ipv4 ipv4
+     * @return ipv4Str
+     */
+    public static String toIPv4(int ipv4) {
+        final int mask = 255;
+
+        return ((ipv4 >>> 24) & mask) +
+            "." +
+            ((ipv4 >>> 16) & mask) +
+            "." +
+            ((ipv4 >>> 8) & mask) +
+            "." +
+            (ipv4 & mask);
+    }
+
+
+    /**
+     * 在一个区间内
+     *
+     * @param ip      要检测的ip
+     * @param ipStart ip起始
+     * @param ipEnd   ip结束
+     * @return 是否在该区间内，闭区间
+     */
+    public static boolean isBetweenInterval(long ip, String ipStart, String ipEnd) {
+        long start = toLong(ipStart);
+        long end = toLong(ipEnd);
+        return isBetweenInterval(ip, start, end);
+    }
+
+    public static boolean isBetweenInterval(int ip, String ipStart, String ipEnd) {
+        final long mask = (1L << 32) - 1;
+        return isBetweenInterval(ip & mask, ipStart, ipEnd);
+    }
+
+    public static boolean isBetweenInterval(long ip, long start, long end) {
+        return ip >= start && ip <= end;
+    }
+
+    public static boolean isBetweenInterval(String ip, String start, String end) {
+        return isBetweenInterval(toLong(ip), start, end);
+    }
 }
