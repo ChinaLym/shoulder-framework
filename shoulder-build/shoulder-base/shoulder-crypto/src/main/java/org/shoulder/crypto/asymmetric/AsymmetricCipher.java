@@ -1,6 +1,5 @@
-package org.shoulder.crypto.asymmetric.processor;
+package org.shoulder.crypto.asymmetric;
 
-import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 
@@ -15,7 +14,7 @@ import java.time.Duration;
  *
  * @author lym
  */
-public interface AsymmetricCryptoProcessor {
+public interface AsymmetricCipher {
 
     /**
      * 构建密钥对（具有幂等性，已经存在的则不会重复构建）

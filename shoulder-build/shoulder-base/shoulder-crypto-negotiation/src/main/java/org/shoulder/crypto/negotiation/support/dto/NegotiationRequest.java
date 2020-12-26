@@ -27,7 +27,7 @@ public class NegotiationRequest {
     private String publicKey;
 
     /**
-     * 发起者支持的 报文 加解密算法，如 AES-128 / AES-192 / AES-256
+     * 【非空】发起者支持的 报文 加解密算法，如 AES-128 / AES-192 / AES-256
      */
     private List<String> encryptionSchemeSupports = Collections.singletonList("AES-256");
 

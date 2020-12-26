@@ -73,6 +73,10 @@ public enum SymmetricAlgorithmEnum {
     SM4_PGPCFB("SM4/PGPCFB/NoPadding"),
     SM4_OpenPGPCFB("SM4/OpenPGPCFB/NoPadding"),
 
+    SM4_CBC_PKCS5Padding("SM4/CBC/PKCS5Padding"),
+    SM4_ECB_PKCS5Padding("SM4/ECB/PKCS5Padding"),
+
+
     ;
 
     /**

@@ -5,6 +5,8 @@ import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 
+import javax.annotation.Nonnull;
+
 /**
  * 传输加解密，使用者使用
  *
@@ -54,7 +56,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
      * @return 密文
      */
     @Override
-    public String encrypt(String toCipher) {
+    public String encrypt(@Nonnull String toCipher) {
         try {
             return TransportCryptoUtil.encrypt(negotiationResult, dk, toCipher);
         } catch (SymmetricCryptoException e) {
@@ -69,7 +71,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
      * @return 明文
      */
     @Override
-    public String decrypt(String cipherText) {
+    public String decrypt(@Nonnull String cipherText) {
         try {
             return TransportCryptoUtil.decrypt(negotiationResult, dk, cipherText);
         } catch (SymmetricCryptoException e) {
@@ -97,7 +99,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
         }
 
         @Override
-        public String decrypt(String toCipher) {
+        public String decrypt(@Nonnull String toCipher) {
             throw new UnsupportedOperationException("Can't decrypt with a encryptCipher!");
         }
 
@@ -121,7 +123,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
         }
 
         @Override
-        public String encrypt(String toCipher) {
+        public String encrypt(@Nonnull String toCipher) {
             throw new UnsupportedOperationException("Can't encrypt with a decryptCipher!");
         }
 

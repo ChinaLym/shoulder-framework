@@ -6,7 +6,8 @@ import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.crypto.aes.SymmetricCryptoUtils;
+import org.shoulder.crypto.aes.SymmetricCipher;
+import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.exception.CryptoException;
@@ -25,8 +26,16 @@ public class CryptoEndpoint {
 
     private final String xDataKeyInHeader = "xDataKey";
 
+    /**
+     * 非对称加密，用于供客户端获取公钥，并加密传输数据密钥
+     */
     @Autowired
     private AsymmetricTextCipher asymmetricTextCipher;
+
+    /**
+     * 对称加密，用于解密敏感数据
+     */
+    private SymmetricCipher symmetricCipher = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
 
 
     /**
@@ -43,7 +52,7 @@ public class CryptoEndpoint {
         try {
             byte[] dk = asymmetricTextCipher.decryptAsBytes(getCurrentKeyPairId(), xDataKey);
             byte[] iv = ByteSpecification.decodeToBytes(xiv);
-            return SymmetricCryptoUtils.decrypt(content, dk, iv);
+            return symmetricCipher.decrypt(content, dk, iv);
         } catch (CryptoException e) {
             throw new BaseRuntimeException(e);
         }

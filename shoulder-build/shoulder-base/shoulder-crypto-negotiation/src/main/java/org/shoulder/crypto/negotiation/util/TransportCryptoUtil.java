@@ -50,7 +50,7 @@ public class TransportCryptoUtil {
     }
 
     /**
-     * 根据协商请求准备协商参数：确定加密算法、密钥长度、协商有效期（服务端调用）
+     * 服务端根据协商请求准备协商参数：确定加密算法、密钥长度、协商有效期（服务端调用）
      *
      * @param negotiationRequest 待协商的请求：{@link #createRequest} 方法生成结果
      * @return 协商参数 {@link #negotiation} 方法的入参
@@ -116,7 +116,7 @@ public class TransportCryptoUtil {
     }
 
 
-    // =========================== 协商完毕，遵守 DH 协议 ===========================
+    // =========================== 协商完毕，遵守 DH 协议（暂时放这里，方便统一维护） ===========================
 
     /**
      * 生成数据密钥（用于协商完毕，产生加密报文时使用）
@@ -126,6 +126,8 @@ public class TransportCryptoUtil {
     public static byte[] generateDataKey(int size) {
         return TransportCryptoByteUtil.generateDataKey(size);
     }
+
+    // ------------------ 数据密钥处理 ----------------
 
     /**
      * 生成数据密钥的密文（用于协商完毕，产生加密报文时使用，每次请求中）
@@ -148,6 +150,9 @@ public class TransportCryptoUtil {
     public static byte[] decryptDk(NegotiationResult negotiationResult, String xDk) throws SymmetricCryptoException {
         return TransportCryptoByteUtil.decryptDk(negotiationResult, ByteSpecification.decodeToBytes(xDk));
     }
+
+
+    // ------------------ 数据处理 ----------------
 
     /**
      * 加密数据
@@ -174,7 +179,7 @@ public class TransportCryptoUtil {
     }
 
 
-    // ------------------ 安全保障-防监听篡改/防抵赖 ----------------
+    // ------------------------------ 安全保障-防监听篡改/防抵赖 ----------------------------
 
     /**
      * 生成 token（协商完毕，每次发送安全会话请求时）

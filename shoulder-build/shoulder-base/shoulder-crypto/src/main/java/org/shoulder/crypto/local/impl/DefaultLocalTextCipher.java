@@ -2,8 +2,9 @@ package org.shoulder.crypto.local.impl;
 
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.ByteUtils;
-import org.shoulder.crypto.aes.SymmetricCryptoUtils;
+import org.shoulder.crypto.aes.SymmetricCipher;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
+import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
 import org.shoulder.crypto.digest.Sha256Utils;
 import org.shoulder.crypto.exception.CipherRuntimeException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
@@ -31,7 +32,7 @@ import java.util.*;
  * Aes256算法。
  * rootKey、rootKeyIv 的保存一样由 {@link LocalCryptoInfoRepository} 和 {@link LocalCryptoMetaInfo}负责实现。
  * rootKey 的保护：持久化的值为 SHA256(rootKey, random) 而不是 rootKey 本身
- * rootKey 的生成：32个字符即 256位，详见 {@link Aes256LocalTextCipher#generateDataKeyProtectKey}
+ * rootKey 的生成：32个字符即 256位，详见 {@link DefaultLocalTextCipher#generateDataKeyProtectKey}
  *
  * <ul>
  * <li> 敏感数据（data）：需要被加密的数据
@@ -42,18 +43,21 @@ import java.util.*;
  *
  * <li>密钥向量：用于加密数据密钥、加密敏感数据
  * <p>
- * 改成 abstract 以更好的扩展？无需求，暂不
+ * 改成 abstract / 各项参数允许配置、以更好的扩展？暂无需求，不整理，加密方式等方式写死。
  *
  * @author lym
  */
-public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
+public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
+
+    private final static Logger log = LoggerFactory.getLogger(DefaultLocalTextCipher.class);
 
     /**
      * 长度为6的加密标记，与加密版本挂钩，该字段的存在支持升级版本。AES256 2^8
      */
     public static final String ALGORITHM_HEADER = "${a8} ";
-    private final static Logger log = LoggerFactory.getLogger(Aes256LocalTextCipher.class);
+
     private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
+
     /**
      * 保护数据密钥的 iv 16 * 8
      */
@@ -75,10 +79,14 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
      */
     private final LocalCryptoInfoRepository aesInfoRepository;
 
+    private final static SymmetricCipher ROOT_KEY_CIPHER = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
+
+    private final SymmetricCipher dataCipher = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
+
     private String appId;
 
 
-    public Aes256LocalTextCipher(LocalCryptoInfoRepository aesInfoRepository, String appId) {
+    public DefaultLocalTextCipher(LocalCryptoInfoRepository aesInfoRepository, String appId) {
         this.aesInfoRepository = aesInfoRepository;
         this.appId = appId;
     }
@@ -124,7 +132,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         ensureInit();
         AesInfoCache cacheInfo = CacheManager.getAesInfoCache(ALGORITHM_HEADER);
         try {
-            byte[] encryptResult = SymmetricCryptoUtils.encrypt(text.getBytes(CHAR_SET), cacheInfo.dataKey,
+            byte[] encryptResult = dataCipher.encrypt(text.getBytes(CHAR_SET), cacheInfo.dataKey,
                 cacheInfo.dateIv);
             return ALGORITHM_HEADER + ByteSpecification.encodeToString(encryptResult);
         } catch (SymmetricCryptoException e) {
@@ -144,7 +152,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
                 "cipher's markHeader is {}", cipherTextHeader);
         }
         try {
-            byte[] decryptData = SymmetricCryptoUtils.decrypt(Base64.getDecoder().decode(realCipherText), cacheInfo.dataKey, cacheInfo.dateIv);
+            byte[] decryptData = dataCipher.decrypt(Base64.getDecoder().decode(realCipherText), cacheInfo.dataKey, cacheInfo.dateIv);
             return new String(decryptData, CHAR_SET);
         } catch (SymmetricCryptoException e) {
             throw CryptoErrorCodeEnum.DECRYPT_FAIL.toException(e);
@@ -269,7 +277,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
         // 用于加密数据密钥的 initVector 向量，写死
         byte[] dataKey = generateDataKey();
         byte[] dataKeyIv = generateDataKeyIv();
-        String dbDataKey = ByteSpecification.encodeToString(SymmetricCryptoUtils.encrypt(dataKey, rootKey, DATA_KEY_IV));
+        String dbDataKey = ByteSpecification.encodeToString(ROOT_KEY_CIPHER.encrypt(dataKey, rootKey, DATA_KEY_IV));
         String initVector = ByteSpecification.encodeToString(dataKeyIv);
 
         LocalCryptoMetaInfo entity = new LocalCryptoMetaInfo();
@@ -343,7 +351,7 @@ public class Aes256LocalTextCipher implements JudgeAbleLocalTextCipher {
             byte[] rootKey = generateDataKeyProtectKey(rootKeyRandomPart);
             byte[] cipherDataKey = ByteSpecification.decodeToBytes(entity.getDataKey());
 
-            byte[] dataKey = SymmetricCryptoUtils.decrypt(cipherDataKey, rootKey, DATA_KEY_IV);
+            byte[] dataKey = ROOT_KEY_CIPHER.decrypt(cipherDataKey, rootKey, DATA_KEY_IV);
             byte[] dataIv = ByteSpecification.decodeToBytes(entity.getVector());
 
             return new AesInfoCache(dataKey, dataIv);

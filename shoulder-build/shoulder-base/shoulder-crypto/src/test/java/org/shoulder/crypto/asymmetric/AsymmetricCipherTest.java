@@ -4,8 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
-import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
+import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 
 /**
@@ -15,9 +14,9 @@ import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
  */
 public class AsymmetricCipherTest {
 
-    private AsymmetricCryptoProcessor ecc256 = DefaultAsymmetricCryptoProcessor.ecc256(new HashMapKeyPairCache());
+    private AsymmetricCipher ecc256 = DefaultAsymmetricCipher.ecc256(new HashMapKeyPairCache());
 
-    private AsymmetricCryptoProcessor rsa2048 = DefaultAsymmetricCryptoProcessor.rsa2048(new HashMapKeyPairCache());
+    private AsymmetricCipher rsa2048 = DefaultAsymmetricCipher.rsa2048(new HashMapKeyPairCache());
 
     /**
      * 测试加解密
@@ -38,7 +37,7 @@ public class AsymmetricCipherTest {
         testSign(rsa2048);
     }
 
-    private void testCrypt(AsymmetricCryptoProcessor processor) throws AsymmetricCryptoException {
+    private void testCrypt(AsymmetricCipher processor) throws AsymmetricCryptoException {
         String keyPairIndex = StringUtils.uuid32();
         processor.buildKeyPair(keyPairIndex);
 
@@ -51,7 +50,7 @@ public class AsymmetricCipherTest {
         Assertions.assertThat(text).isEqualTo(decrypted);
     }
 
-    private void testSign(AsymmetricCryptoProcessor processor) throws AsymmetricCryptoException {
+    private void testSign(AsymmetricCipher processor) throws AsymmetricCryptoException {
         String keyPairIndex = StringUtils.uuid32();
         processor.buildKeyPair(keyPairIndex);
 

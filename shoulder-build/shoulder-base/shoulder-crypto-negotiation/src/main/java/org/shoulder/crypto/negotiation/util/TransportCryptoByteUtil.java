@@ -1,12 +1,15 @@
 package org.shoulder.crypto.negotiation.util;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.ByteUtils;
-import org.shoulder.crypto.aes.SymmetricCryptoUtils;
+import org.shoulder.crypto.aes.SymmetricAlgorithmEnum;
+import org.shoulder.crypto.aes.SymmetricCipher;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
+import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
+import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
-import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 /**
  * 传输加解密相关实现。仅为 byte 提供服务
@@ -36,7 +40,7 @@ public class TransportCryptoByteUtil {
     /**
      * 非对称加密器，生成/保存自己的公私钥
      */
-    private final AsymmetricCryptoProcessor asymmetricCryptoProcessor;
+    private final AsymmetricCipher asymmetricCipher;
 
     /**
      * 服务端密钥协商缓存过期默认时间
@@ -44,18 +48,22 @@ public class TransportCryptoByteUtil {
     private final Duration negotiationDuration = Duration.ofHours(1);
 
     /**
-     * 支持的对称加密算法
+     * 支持的对称加密算法，这里暂时只支持 aes cbc pkcs5padding
      */
-    private final Set<String> encryptionSchemeSupports = Set.of("AES-1", "", "");
+    private final Set<String> encryptionSchemeSupports = Set.of(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
 
+    /**
+     * 数据密钥加密算法，这里写死
+     */
+    private static final SymmetricCipher KEY_CIPHER = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
 
     /**
      * 构造器
      *
-     * @param asymmetricCryptoProcessor 非对称加密器，生成/保存自己的公私钥
+     * @param asymmetricCipher 非对称加密器，生成/保存自己的公私钥
      */
-    public TransportCryptoByteUtil(AsymmetricCryptoProcessor asymmetricCryptoProcessor) {
-        this.asymmetricCryptoProcessor = asymmetricCryptoProcessor;
+    public TransportCryptoByteUtil(AsymmetricCipher asymmetricCipher) {
+        this.asymmetricCipher = asymmetricCipher;
     }
 
     /**
@@ -71,7 +79,7 @@ public class TransportCryptoByteUtil {
      * 生成数据密钥的密文（DK）
      */
     public static byte[] encryptDk(NegotiationResult negotiationResult, byte[] dataKey) throws SymmetricCryptoException {
-        return SymmetricCryptoUtils.encrypt(dataKey, negotiationResult.getShareKey(), negotiationResult.getLocalIv());
+        return KEY_CIPHER.encrypt(dataKey, negotiationResult.getShareKey(), negotiationResult.getLocalIv());
     }
 
     /**
@@ -80,21 +88,23 @@ public class TransportCryptoByteUtil {
      * @return dataKey
      */
     public static byte[] decryptDk(NegotiationResult negotiationResult, byte[] xDk) throws SymmetricCryptoException {
-        return SymmetricCryptoUtils.decrypt(xDk, negotiationResult.getShareKey(), negotiationResult.getLocalIv());
+        return KEY_CIPHER.decrypt(xDk, negotiationResult.getShareKey(), negotiationResult.getLocalIv());
     }
 
     /**
-     * 加密数据
+     * 加密数据（具体加密算法根据协商确定）
      */
     public static byte[] encrypt(NegotiationResult negotiationResult, byte[] dataKey, byte[] toCipher) throws SymmetricCryptoException {
-        return SymmetricCryptoUtils.encrypt(toCipher, dataKey, negotiationResult.getLocalIv());
+        SymmetricCipher cipher = DefaultSymmetricCipher.getFlyweight(negotiationResult.getEncryptionScheme());
+        return cipher.encrypt(toCipher, dataKey, negotiationResult.getLocalIv());
     }
 
     /**
      * 解密数据
      */
     public static byte[] decrypt(NegotiationResult negotiationResult, byte[] dataKey, byte[] cipherText) throws SymmetricCryptoException {
-        return SymmetricCryptoUtils.decrypt(cipherText, dataKey, negotiationResult.getLocalIv());
+        SymmetricCipher cipher = DefaultSymmetricCipher.getFlyweight(negotiationResult.getEncryptionScheme());
+        return cipher.decrypt(cipherText, dataKey, negotiationResult.getLocalIv());
     }
 
     /**
@@ -105,19 +115,19 @@ public class TransportCryptoByteUtil {
         // 生成会话唯一标识
         String clientSessionId = UUID.randomUUID().toString().replaceAll("-", "");
         request.setxSessionId(clientSessionId);
-        asymmetricCryptoProcessor.buildKeyPair(clientSessionId, negotiationDuration);
-        request.setPublicKey(ByteSpecification.encodeToString(asymmetricCryptoProcessor.getPublicKey(clientSessionId).getEncoded()));
+        asymmetricCipher.buildKeyPair(clientSessionId, negotiationDuration);
+        request.setPublicKey(ByteSpecification.encodeToString(asymmetricCipher.getPublicKey(clientSessionId).getEncoded()));
         request.setRefresh(false);
         request.setToken(ByteSpecification.encodeToString(generateRequestToken(request)));
         return request;
     }
 
     /**
-     * 协商密钥交换响应
-     * 主要是获得密钥与 iv
+     * 协商密钥交换响应（发起方、处理方都会调用）
+     * 主要是获得相同的密钥与 iv
      */
     public NegotiationResult negotiation(NegotiationResponse negotiationResponse) throws KeyPairException, NegotiationException {
-        byte[] selfPrivateKey = asymmetricCryptoProcessor.getPrivateKey(negotiationResponse.getxSessionId()).getEncoded();
+        byte[] selfPrivateKey = asymmetricCipher.getPrivateKey(negotiationResponse.getxSessionId()).getEncoded();
         byte[] otherPublicKey = ByteSpecification.decodeToBytes(negotiationResponse.getPublicKey());
         List<byte[]> keyAndIv = ECDHUtils.negotiationToKeyAndIv(selfPrivateKey, otherPublicKey, negotiationResponse.getKeyBytesLength());
 
@@ -126,6 +136,7 @@ public class TransportCryptoByteUtil {
         result.setLocalIv(keyAndIv.get(1));
         result.setPublicKey(otherPublicKey);
         result.setxSessionId(negotiationResponse.getxSessionId());
+        result.setEncryptionScheme(negotiationResponse.getEncryptionScheme());
         result.setKeyLength(negotiationResponse.getKeyBytesLength());
 
         long expireTimePoint = System.currentTimeMillis() + negotiationResponse.getExpireTime();
@@ -134,29 +145,33 @@ public class TransportCryptoByteUtil {
     }
 
     /**
-     * 根据协商请求准备协商参数：确定加密算法、密钥长度、协商有效期
+     * 服务端根据协商请求准备协商参数：确定加密算法、密钥长度、协商有效期
      */
     public NegotiationResponse prepareNegotiation(NegotiationRequest negotiationRequest) throws AsymmetricCryptoException {
         // 这时候还没有缓存，因此需要生成
         String xSessionId = negotiationRequest.getxSessionId();
-        asymmetricCryptoProcessor.buildKeyPair(xSessionId, negotiationDuration);
-        byte[] selfPublicKey = asymmetricCryptoProcessor.getPublicKey(xSessionId).getEncoded();
+        asymmetricCipher.buildKeyPair(xSessionId, negotiationDuration);
+        byte[] selfPublicKey = asymmetricCipher.getPublicKey(xSessionId).getEncoded();
 
         NegotiationResponse response = new NegotiationResponse();
-
-        final int keyByteLength = randomKeyLength();
-        response.setEncryptionScheme(String.valueOf(keyByteLength));
-        response.setKeyBytesLength(keyByteLength);
+        response.setxSessionId(xSessionId);
         response.setExpireTime(NegotiationConstants.EXPIRE_TIME);
         response.setPublicKey(ByteSpecification.encodeToString(selfPublicKey));
-        // todo 根据协商请求，选择自己支持的算法
-        response.setEncryptionScheme("AES-" + (keyByteLength << 3));
-        response.setxSessionId(xSessionId);
+        // 根据协商请求，选择自己支持的算法
+        List<String> shareAlgorithms = CollectionUtils.emptyIfNull(negotiationRequest.getEncryptionSchemeSupports()).stream()
+            .filter(encryptionSchemeSupports::contains)
+            .collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(shareAlgorithms)) {
+            throw new IllegalStateException("There is no common algorithm!");
+        }
+        // 这里未使用 findAny()，因为 findAny 在短 list 中往往是第一个（最高性能地获取），不具有随机性
+        String shareAlgorithm = shareAlgorithms.get(ThreadLocalRandom.current().nextInt(shareAlgorithms.size()));
+        response.setEncryptionScheme(shareAlgorithm);
+        response.setKeyBytesLength(randomKeyLength());
         response.setToken(ByteSpecification.encodeToString(generateResponseToken(response)));
 
         return response;
     }
-
 
     // =========================== 防篡改 ==================================
 
@@ -176,7 +191,7 @@ public class TransportCryptoByteUtil {
      * 生成 token（发起协商请求时）
      */
     public byte[] generateRequestToken(NegotiationRequest request) throws AsymmetricCryptoException {
-        return asymmetricCryptoProcessor.sign(request.getxSessionId(), getNeedToSign(request));
+        return asymmetricCipher.sign(request.getxSessionId(), getNeedToSign(request));
     }
 
     /**
@@ -184,7 +199,7 @@ public class TransportCryptoByteUtil {
      */
     public boolean verifyRequestToken(NegotiationRequest request) throws AsymmetricCryptoException {
         byte[] signature = ByteSpecification.decodeToBytes(request.getToken());
-        return asymmetricCryptoProcessor.verify(
+        return asymmetricCipher.verify(
             ByteSpecification.decodeToBytes(request.getPublicKey()),
             getNeedToSign(request),
             signature
@@ -212,7 +227,7 @@ public class TransportCryptoByteUtil {
      * 生成 token（协商响应时）
      */
     public byte[] generateResponseToken(NegotiationResponse response) throws AsymmetricCryptoException {
-        return asymmetricCryptoProcessor.sign(response.getxSessionId(), getNeedToSign(response));
+        return asymmetricCipher.sign(response.getxSessionId(), getNeedToSign(response));
     }
 
     /**
@@ -220,7 +235,7 @@ public class TransportCryptoByteUtil {
      */
     public boolean verifyResponseToken(NegotiationResponse response) throws AsymmetricCryptoException {
         byte[] signature = ByteSpecification.decodeToBytes(response.getToken());
-        return asymmetricCryptoProcessor.verify(
+        return asymmetricCipher.verify(
             ByteSpecification.decodeToBytes(response.getPublicKey()),
             getNeedToSign(response),
             signature
@@ -237,7 +252,7 @@ public class TransportCryptoByteUtil {
     public byte[] generateToken(String xSessionId, @Nullable byte[] xDk) throws AsymmetricCryptoException {
         byte[] xSessionIdBytes = xSessionId.getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] toSin = ByteUtils.compound(Arrays.asList(xSessionIdBytes, xDk));
-        return asymmetricCryptoProcessor.sign(xSessionId, toSin);
+        return asymmetricCipher.sign(xSessionId, toSin);
     }
 
     /**
@@ -250,7 +265,7 @@ public class TransportCryptoByteUtil {
     public boolean verifyToken(String xSessionId, byte[] xDk, byte[] signature, byte[] otherPublicKey) throws AsymmetricCryptoException {
         byte[] xSessionIdBytes = xSessionId.getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] toSin = ByteUtils.compound(Arrays.asList(xSessionIdBytes, xDk));
-        return asymmetricCryptoProcessor.verify(otherPublicKey, toSin, signature);
+        return asymmetricCipher.verify(otherPublicKey, toSin, signature);
     }
 
     /**

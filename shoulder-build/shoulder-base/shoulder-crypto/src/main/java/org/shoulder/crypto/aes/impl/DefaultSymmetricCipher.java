@@ -1,23 +1,26 @@
-package org.shoulder.crypto.aes;
+package org.shoulder.crypto.aes.impl;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.StringUtils;
+import org.shoulder.crypto.aes.SymmetricCipher;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.springframework.util.Assert;
 
+import javax.annotation.Nonnull;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Security;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 对称加解密工具实现
  *
  * @author lym
  */
-public class DefaultSymmetricCryptoProcessor implements SymmetricCryptoProcessor, ByteSpecification {
+public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecification {
 
     // BC
     static {
@@ -51,8 +54,8 @@ public class DefaultSymmetricCryptoProcessor implements SymmetricCryptoProcessor
      */
     private final boolean needIv;
 
-    public DefaultSymmetricCryptoProcessor(String algorithm, int[] keyLengthSupports, String transformation,
-                                           String provider, boolean needIv) {
+    public DefaultSymmetricCipher(String algorithm, int[] keyLengthSupports, String transformation,
+                                  String provider, boolean needIv) {
         this.provider = provider;
         this.algorithm = algorithm;
         this.keyLengthSupports = keyLengthSupports;
@@ -60,7 +63,7 @@ public class DefaultSymmetricCryptoProcessor implements SymmetricCryptoProcessor
         this.needIv = needIv;
     }
 
-    public DefaultSymmetricCryptoProcessor(String transformation) {
+    public DefaultSymmetricCipher(String transformation) {
         this.transformation = transformation;
         this.provider = "BC";
         this.algorithm = transformation.substring(0, transformation.indexOf("/"));
@@ -73,12 +76,14 @@ public class DefaultSymmetricCryptoProcessor implements SymmetricCryptoProcessor
 
     // ------------------ 提供两个推荐使用的安全加密方案 ------------------
 
-    public static DefaultSymmetricCryptoProcessor aes_256_CBC_PKCS5Padding() {
-        return new DefaultSymmetricCryptoProcessor("SM4/CBC/PKCS5Padding");
-    }
+    /**
+     * 享元工厂模式
+     */
+    private static final ConcurrentHashMap<String, DefaultSymmetricCipher> FLYWEIGHT_CACHE = new ConcurrentHashMap<>();
 
-    public static DefaultSymmetricCryptoProcessor sm4_256_CBC_PKCS5Padding() {
-        return new DefaultSymmetricCryptoProcessor("SM4/CBC/PKCS5Padding");
+    @Nonnull
+    public static DefaultSymmetricCipher getFlyweight(String encryptionScheme) {
+        return FLYWEIGHT_CACHE.computeIfAbsent(encryptionScheme, DefaultSymmetricCipher::new);
     }
 
     /**
@@ -134,7 +139,7 @@ public class DefaultSymmetricCryptoProcessor implements SymmetricCryptoProcessor
     }
 
     /**
-     * 参数校验
+     * 参数校验 todo 改为（只检查key长度）
      *
      * @param key aes 密钥必须 128/192/256 位
      * @param iv  加密向量，必须 128 位 16byte
