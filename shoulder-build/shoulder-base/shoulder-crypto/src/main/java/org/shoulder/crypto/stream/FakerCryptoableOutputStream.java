@@ -73,7 +73,14 @@ public class FakerCryptoableOutputStream extends BufferedOutputStream {
 
 
     public static void main(String[] args) throws IOException {
-        encryptFile("E:\\a", "E:\\b");
+        File fileDir = new File("F:\\codes\\projects\\xxx");
+        File[] files = fileDir.listFiles();
+        for (File file : files) {
+            if (file.getName().endsWith(".7zx")) {
+                decryptFile(file.getAbsolutePath(), file.getAbsolutePath().replace(".7zx", ".7z"));
+            }
+        }
+
     }
 
     public static void encryptFile(String from, String to) throws IOException {

@@ -2,10 +2,10 @@ package org.shoulder.crypto.asymmetric.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.core.constant.ByteSpecification;
+import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
-import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.exception.CipherRuntimeException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.slf4j.Logger;
@@ -30,18 +30,18 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     /**
      * 非对称加密处理器
      */
-    private final AsymmetricCryptoProcessor processor;
+    private final AsymmetricCipher processor;
 
     /**
      * 密钥对 id ：用于获取加解密的公钥私钥对。分布式时无需关心其他应用是否会有冲突
      */
     private final String defaultKeyPairId;
 
-    public DefaultAsymmetricTextCipher(AsymmetricCryptoProcessor processor) {
+    public DefaultAsymmetricTextCipher(AsymmetricCipher processor) {
         this(processor, "defaultKeyPairId");
     }
 
-    public DefaultAsymmetricTextCipher(AsymmetricCryptoProcessor processor, String defaultKeyPairId) {
+    public DefaultAsymmetricTextCipher(AsymmetricCipher processor, String defaultKeyPairId) {
         this.defaultKeyPairId = defaultKeyPairId;
         this.processor = processor;
         try {

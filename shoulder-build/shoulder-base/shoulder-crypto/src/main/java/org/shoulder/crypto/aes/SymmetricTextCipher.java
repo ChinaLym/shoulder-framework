@@ -1,43 +1,51 @@
 package org.shoulder.crypto.aes;
 
 
-import org.shoulder.crypto.TextCipher;
-import org.shoulder.crypto.exception.CipherRuntimeException;
+import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 
 /**
  * 对称加解密：主要用于本地存储
  *
  * @author lym
  */
-public interface SymmetricTextCipher extends TextCipher {
+public interface SymmetricTextCipher {
+
 
     /**
-     * 解密
+     * 加密
      *
-     * @param cipher 待解密的数据，密文
-     * @return 解密后的
-     * @throws CipherRuntimeException RsaCryptoException
+     * @param text 待加密数据
+     * @return 加密后的
+     * @throws SymmetricCryptoException AesCryptoException
      */
-    @Override
-    String decrypt(String cipher) throws CipherRuntimeException;
-
-    /**
-     * 解密
-     *
-     * @param cipher 待解密的数据，密文
-     * @return 解密后的
-     * @throws CipherRuntimeException RsaCryptoException
-     */
-    byte[] decryptAsBytes(String cipher) throws CipherRuntimeException;
+    byte[] encryptAsBytes(byte[] key, byte[] iv, String text) throws SymmetricCryptoException;
 
     /**
      * 加密（使用自己的默认公钥）
      *
      * @param text 待加密数据
      * @return 加密后的
-     * @throws CipherRuntimeException RsaCryptoException
+     * @throws SymmetricCryptoException AesCryptoException
      */
-    @Override
-    String encrypt(String text) throws CipherRuntimeException;
+    String encrypt(byte[] key, byte[] iv, String text) throws SymmetricCryptoException;
+
+    /**
+     * 解密
+     *
+     * @param cipher 待解密的数据，密文
+     * @return 解密后的
+     * @throws SymmetricCryptoException AesCryptoException
+     */
+    byte[] decryptAsBytes(byte[] key, byte[] iv, String cipher) throws SymmetricCryptoException;
+
+    /**
+     * 解密
+     *
+     * @param cipher 待解密的数据，密文
+     * @return 解密后的
+     * @throws SymmetricCryptoException AesCryptoException
+     */
+    String decrypt(byte[] key, byte[] iv, String cipher) throws SymmetricCryptoException;
+
 
 }

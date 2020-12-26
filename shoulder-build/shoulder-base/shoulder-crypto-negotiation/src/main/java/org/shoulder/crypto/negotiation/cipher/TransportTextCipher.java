@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 /**
  * 传输加解密：仅用于传输
  * 子类职责：负责实现传输加解密
+ * todo 添加 getDataKey
  *
  * @author lym
  */

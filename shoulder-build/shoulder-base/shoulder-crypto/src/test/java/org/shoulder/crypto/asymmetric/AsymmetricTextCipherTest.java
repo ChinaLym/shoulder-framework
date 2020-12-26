@@ -2,8 +2,8 @@ package org.shoulder.crypto.asymmetric;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricTextCipher;
-import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 
 /**
@@ -14,7 +14,7 @@ import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 public class AsymmetricTextCipherTest {
 
     private DefaultAsymmetricTextCipher textCipher = new DefaultAsymmetricTextCipher(
-        DefaultAsymmetricCryptoProcessor.ecc256(new HashMapKeyPairCache())
+        DefaultAsymmetricCipher.ecc256(new HashMapKeyPairCache())
     );
 
     /**

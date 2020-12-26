@@ -3,7 +3,7 @@ package org.shoulder.crypto.local;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
-import org.shoulder.crypto.local.impl.Aes256LocalTextCipher;
+import org.shoulder.crypto.local.impl.DefaultLocalTextCipher;
 import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
 
 /**
@@ -11,9 +11,9 @@ import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
  *
  * @author lym
  */
-public class Aes256LocalTextCipherTest {
+public class DefaultLocalTextCipherTest {
 
-    private JudgeAbleLocalTextCipher cipher = new Aes256LocalTextCipher(new HashMapCryptoInfoRepository(), "test");
+    private JudgeAbleLocalTextCipher cipher = new DefaultLocalTextCipher(new HashMapCryptoInfoRepository(), "test");
 
 
     /**
@@ -32,7 +32,7 @@ public class Aes256LocalTextCipherTest {
     @Test
     public void testJudgeAble2() {
 
-        String mockCipherText = Aes256LocalTextCipher.ALGORITHM_HEADER + "asfdghhjkfhwqkdfjwqjp";
+        String mockCipherText = DefaultLocalTextCipher.ALGORITHM_HEADER + "asfdghhjkfhwqkdfjwqjp";
         boolean support = cipher.support(mockCipherText);
         Assertions.assertThat(support).isTrue();
     }

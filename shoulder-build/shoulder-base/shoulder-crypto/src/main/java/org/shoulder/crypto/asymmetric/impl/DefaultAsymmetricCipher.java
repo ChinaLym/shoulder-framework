@@ -1,13 +1,13 @@
-package org.shoulder.crypto.asymmetric.processor.impl;
+package org.shoulder.crypto.asymmetric.impl;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.core.constant.ByteSpecification;
+import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.asymmetric.exception.NoSuchKeyPairException;
 import org.shoulder.crypto.asymmetric.factory.AsymmetricKeyPairFactory;
-import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +26,9 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author lym
  */
-public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcessor, ByteSpecification {
+public class DefaultAsymmetricCipher implements AsymmetricCipher, ByteSpecification {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultAsymmetricCryptoProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultAsymmetricCipher.class);
 
     private final AsymmetricKeyPairFactory keyPairFactory;
 
@@ -56,8 +56,8 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
 
     protected Lock lock = new ReentrantLock();
 
-    public DefaultAsymmetricCryptoProcessor(String algorithm, int keyLength, String transformation, String signatureAlgorithm,
-                                            String provider, KeyPairCache keyPairCache) {
+    public DefaultAsymmetricCipher(String algorithm, int keyLength, String transformation, String signatureAlgorithm,
+                                   String provider, KeyPairCache keyPairCache) {
         this.provider = provider;
         this.algorithm = algorithm;
         this.keyLength = keyLength;
@@ -69,8 +69,8 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
 
     // ------------------ 提供两个推荐使用的安全加密方案 ------------------
 
-    public static DefaultAsymmetricCryptoProcessor rsa2048(KeyPairCache keyPairCache) {
-        return new DefaultAsymmetricCryptoProcessor(
+    public static DefaultAsymmetricCipher rsa2048(KeyPairCache keyPairCache) {
+        return new DefaultAsymmetricCipher(
             "RSA",
             2048,
             "RSA/ECB/PKCS1Padding",
@@ -85,8 +85,8 @@ public class DefaultAsymmetricCryptoProcessor implements AsymmetricCryptoProcess
      * 注意，椭圆曲线算法的签名速度远快于 RSA2048，近10倍，但验签速度慢了有10-20倍，因此通常对服务器更友好，对客户端要求更高
      * 安全更高、存储更少（密钥更短）
      */
-    public static DefaultAsymmetricCryptoProcessor ecc256(KeyPairCache keyPairCache) {
-        return new DefaultAsymmetricCryptoProcessor(
+    public static DefaultAsymmetricCipher ecc256(KeyPairCache keyPairCache) {
+        return new DefaultAsymmetricCipher(
             "EC",
             256,
             "ECDH",

@@ -3,9 +3,10 @@ package org.shoulder.crypto.asymmetric;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.shoulder.core.util.ByteUtils;
-import org.shoulder.crypto.aes.DefaultSymmetricCryptoProcessor;
-import org.shoulder.crypto.aes.SymmetricCryptoProcessor;
+import org.shoulder.crypto.aes.SymmetricAlgorithmEnum;
+import org.shoulder.crypto.aes.SymmetricCipher;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
+import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
 
 /**
  * 非对称加密测试-框架基础封装
@@ -14,9 +15,9 @@ import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
  */
 public class SymmetricCipherTest {
 
-    private SymmetricCryptoProcessor aes = DefaultSymmetricCryptoProcessor.aes_256_CBC_PKCS5Padding();
+    private SymmetricCipher aes = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
 
-    private SymmetricCryptoProcessor sm4 = new DefaultSymmetricCryptoProcessor("AES/GCM/NoPadding");
+    private SymmetricCipher sm4 = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_GCM.getAlgorithmName());
 
     /**
      * 测试加解密
@@ -28,7 +29,7 @@ public class SymmetricCipherTest {
     }
 
 
-    private void testCrypt(SymmetricCryptoProcessor processor) throws SymmetricCryptoException {
+    private void testCrypt(SymmetricCipher processor) throws SymmetricCryptoException {
         byte[] key = ByteUtils.randomBytes(16);
         byte[] iv = ByteUtils.randomBytes(16);
         byte[] text = "hello, shoulder".getBytes();

@@ -1,7 +1,7 @@
 package org.shoulder.crypto.stream;
 
-import org.shoulder.crypto.aes.DefaultSymmetricCryptoProcessor;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
+import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
 
 import javax.crypto.Cipher;
 import java.io.*;
@@ -13,7 +13,7 @@ import java.io.*;
  */
 public class CryptoableOutputStream extends BufferedOutputStream {
 
-    private DefaultSymmetricCryptoProcessor aes_gcm = new DefaultSymmetricCryptoProcessor("AES/CBC/PKCS5Padding");
+    private DefaultSymmetricCipher aes_gcm = new DefaultSymmetricCipher("AES/CBC/PKCS5Padding");
     private byte[] key = "1234567890123456".getBytes();
     private byte[] iv = "1234567890123456".getBytes();
     private int mode;

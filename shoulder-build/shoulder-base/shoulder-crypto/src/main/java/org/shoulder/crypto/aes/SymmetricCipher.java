@@ -8,7 +8,7 @@ import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
  *
  * @author lym
  */
-public interface SymmetricCryptoProcessor {
+public interface SymmetricCipher {
 
     /**
      * 对称加密

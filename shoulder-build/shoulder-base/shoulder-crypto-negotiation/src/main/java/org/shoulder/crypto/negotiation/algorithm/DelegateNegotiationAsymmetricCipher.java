@@ -1,9 +1,9 @@
 package org.shoulder.crypto.negotiation.algorithm;
 
 import org.shoulder.core.constant.ByteSpecification;
+import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
-import org.shoulder.crypto.asymmetric.processor.AsymmetricCryptoProcessor;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -15,11 +15,11 @@ import java.time.Duration;
  *
  * @author lym
  */
-public class DelegateNegotiationAsymmetricCryptoProcessor implements NegotiationAsymmetricCryptoProcessor, ByteSpecification {
+public class DelegateNegotiationAsymmetricCipher implements NegotiationAsymmetricCipher, ByteSpecification {
 
-    private final AsymmetricCryptoProcessor delegate;
+    private final AsymmetricCipher delegate;
 
-    public DelegateNegotiationAsymmetricCryptoProcessor(AsymmetricCryptoProcessor delegate) {
+    public DelegateNegotiationAsymmetricCipher(AsymmetricCipher delegate) {
         this.delegate = delegate;
     }
 
