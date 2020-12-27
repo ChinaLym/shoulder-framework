@@ -2,6 +2,7 @@ package org.shoulder.crypto.local.impl;
 
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.ByteUtils;
+import org.shoulder.crypto.aes.SymmetricAlgorithmEnum;
 import org.shoulder.crypto.aes.SymmetricCipher;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
@@ -49,13 +50,11 @@ import java.util.*;
  */
 public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
 
-    private final static Logger log = LoggerFactory.getLogger(DefaultLocalTextCipher.class);
-
     /**
      * 长度为6的加密标记，与加密版本挂钩，该字段的存在支持升级版本。AES256 2^8
      */
     public static final String ALGORITHM_HEADER = "${a8} ";
-
+    private final static Logger log = LoggerFactory.getLogger(DefaultLocalTextCipher.class);
     private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
 
     /**
@@ -74,13 +73,11 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
      * 根密钥随机部分长度
      */
     private static final int ROOT_KEY_RANDOM_LENGTH = AES_KEY_LENGTH - ROOT_KEY_FINAL_PART.length;
+    private final static SymmetricCipher ROOT_KEY_CIPHER = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
     /**
      * 密钥持久化依赖：用于获取持久化的加密信息
      */
     private final LocalCryptoInfoRepository aesInfoRepository;
-
-    private final static SymmetricCipher ROOT_KEY_CIPHER = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
-
     private final SymmetricCipher dataCipher = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
 
     private String appId;
@@ -132,8 +129,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
         ensureInit();
         AesInfoCache cacheInfo = CacheManager.getAesInfoCache(ALGORITHM_HEADER);
         try {
-            byte[] encryptResult = dataCipher.encrypt(text.getBytes(CHAR_SET), cacheInfo.dataKey,
-                cacheInfo.dateIv);
+            byte[] encryptResult = dataCipher.encrypt(cacheInfo.dataKey, cacheInfo.dateIv, text.getBytes(CHAR_SET));
             return ALGORITHM_HEADER + ByteSpecification.encodeToString(encryptResult);
         } catch (SymmetricCryptoException e) {
             throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
@@ -152,7 +148,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
                 "cipher's markHeader is {}", cipherTextHeader);
         }
         try {
-            byte[] decryptData = dataCipher.decrypt(Base64.getDecoder().decode(realCipherText), cacheInfo.dataKey, cacheInfo.dateIv);
+            byte[] decryptData = dataCipher.decrypt(cacheInfo.dataKey, cacheInfo.dateIv, Base64.getDecoder().decode(realCipherText));
             return new String(decryptData, CHAR_SET);
         } catch (SymmetricCryptoException e) {
             throw CryptoErrorCodeEnum.DECRYPT_FAIL.toException(e);
@@ -277,7 +273,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
         // 用于加密数据密钥的 initVector 向量，写死
         byte[] dataKey = generateDataKey();
         byte[] dataKeyIv = generateDataKeyIv();
-        String dbDataKey = ByteSpecification.encodeToString(ROOT_KEY_CIPHER.encrypt(dataKey, rootKey, DATA_KEY_IV));
+        String dbDataKey = ByteSpecification.encodeToString(ROOT_KEY_CIPHER.encrypt(rootKey, DATA_KEY_IV, dataKey));
         String initVector = ByteSpecification.encodeToString(dataKeyIv);
 
         LocalCryptoMetaInfo entity = new LocalCryptoMetaInfo();
@@ -351,7 +347,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
             byte[] rootKey = generateDataKeyProtectKey(rootKeyRandomPart);
             byte[] cipherDataKey = ByteSpecification.decodeToBytes(entity.getDataKey());
 
-            byte[] dataKey = ROOT_KEY_CIPHER.decrypt(cipherDataKey, rootKey, DATA_KEY_IV);
+            byte[] dataKey = ROOT_KEY_CIPHER.decrypt(rootKey, DATA_KEY_IV, cipherDataKey);
             byte[] dataIv = ByteSpecification.decodeToBytes(entity.getVector());
 
             return new AesInfoCache(dataKey, dataIv);

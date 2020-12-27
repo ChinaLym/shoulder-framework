@@ -41,7 +41,7 @@ public class ECDHUtils {
      *
      * @param selfPrivateKey 己方的私钥
      * @param otherPublicKey 对方的公钥
-     * @param keyBytes      aes密钥长度除8：16/24/32
+     * @param keyBytes       aes密钥长度除8：16/24/32
      * @return keyAndIv                 sessionAesKey, sessionAesIv
      * @throws NegotiationException 密钥协商出错
      */
@@ -71,7 +71,7 @@ public class ECDHUtils {
      * 由于双方 negotiationKey、keyLength 一样，故结果一样
      *
      * @param negotiationKey 协商出来的密钥
-     * @param keyBytes 共享密钥长度（字节数，非bit数）
+     * @param keyBytes       共享密钥长度（字节数，非bit数）
      * @return 共享密钥、init-vector
      */
     private static List<byte[]> generateLocalKeyAndIv(byte[] negotiationKey, int keyBytes) {

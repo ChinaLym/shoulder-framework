@@ -37,6 +37,7 @@ public class NegotiationResult implements Serializable {
 
     /**
      * 协商结果key长度 256/8=32
+     *
      * @deprecated 考虑使用 encryptionScheme 替代
      */
     private int keyLength;

@@ -10,11 +10,9 @@ import java.io.*;
  */
 public class FakerCryptoableOutputStream extends BufferedOutputStream {
 
-    private int mode;
-
     protected byte buf[];
-
     protected int count;
+    private int mode;
 
     /**
      * Cipher.ENCRYPT_MODE
@@ -31,46 +29,6 @@ public class FakerCryptoableOutputStream extends BufferedOutputStream {
         buf = new byte[size];
         this.mode = mode;
     }
-
-    @Override
-    public synchronized void write(int b) throws IOException {
-        if (count >= buf.length) {
-            flushBuffer();
-        }
-        buf[count++] = (byte) b;
-    }
-
-    @Override
-    public synchronized void write(byte b[], int off, int len) throws IOException {
-        if (len >= buf.length) {
-            flushBuffer();
-            out.write(b, off, len);
-            return;
-        }
-        if (len > buf.length - count) {
-            flushBuffer();
-        }
-        System.arraycopy(b, off, buf, count, len);
-        count += len;
-    }
-
-    @Override
-    public synchronized void flush() throws IOException {
-        flushBuffer();
-        out.flush();
-    }
-
-
-    private void flushBuffer() throws IOException {
-        if (count > 0) {
-            for (int i = 0; i < count; i++) {
-                buf[i] ^= 26;
-            }
-            out.write(buf, 0, count);
-            count = 0;
-        }
-    }
-
 
     public static void main(String[] args) throws IOException {
         File fileDir = new File("F:\\codes\\projects\\xxx");
@@ -103,5 +61,43 @@ public class FakerCryptoableOutputStream extends BufferedOutputStream {
         }
         in.close();
         out.close();
+    }
+
+    @Override
+    public synchronized void write(int b) throws IOException {
+        if (count >= buf.length) {
+            flushBuffer();
+        }
+        buf[count++] = (byte) b;
+    }
+
+    @Override
+    public synchronized void write(byte b[], int off, int len) throws IOException {
+        if (len >= buf.length) {
+            flushBuffer();
+            out.write(b, off, len);
+            return;
+        }
+        if (len > buf.length - count) {
+            flushBuffer();
+        }
+        System.arraycopy(b, off, buf, count, len);
+        count += len;
+    }
+
+    @Override
+    public synchronized void flush() throws IOException {
+        flushBuffer();
+        out.flush();
+    }
+
+    private void flushBuffer() throws IOException {
+        if (count > 0) {
+            for (int i = 0; i < count; i++) {
+                buf[i] ^= 26;
+            }
+            out.write(buf, 0, count);
+            count = 0;
+        }
     }
 }

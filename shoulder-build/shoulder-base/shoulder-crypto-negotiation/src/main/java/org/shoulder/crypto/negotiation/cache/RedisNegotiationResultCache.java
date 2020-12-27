@@ -15,20 +15,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class RedisNegotiationResultCache implements NegotiationResultCache {
 
-    private RedisTemplate<String, Object> redisTemplate;
-
     private static final String DEFAULT_CLIENT_KEY_PREFIX = "negotiation:asClient:";
     private static final String DEFAULT_SERVER_KEY_PREFIX = "negotiation:asServer:";
-
     /**
      * 客户端存储安全会话信息缓存的key前缀
      */
     private final String clientKeyPrefix;
-
     /**
      * 服务端存储安全会话信息缓存的key前缀
      */
     private final String serverKeyPrefix;
+    private RedisTemplate<String, Object> redisTemplate;
 
     public RedisNegotiationResultCache(RedisTemplate<String, Object> redisTemplate) {
         this(redisTemplate, DEFAULT_CLIENT_KEY_PREFIX, DEFAULT_SERVER_KEY_PREFIX);

@@ -22,14 +22,13 @@ import java.util.concurrent.TimeUnit;
 public class RedisKeyPairCache implements KeyPairCache {
 
     /**
-     * 注意维护应用隔离
-     */
-    private RedisTemplate<String, String> redisTemplate;
-
-    /**
      * 密钥对缓存前缀
      */
     private final String keyPrefix;
+    /**
+     * 注意维护应用隔离
+     */
+    private RedisTemplate<String, String> redisTemplate;
 
     public RedisKeyPairCache(StringRedisTemplate redisTemplate) {
         this(redisTemplate, "crypto:asymmetric:");

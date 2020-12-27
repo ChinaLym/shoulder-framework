@@ -14,8 +14,8 @@ import java.security.Security;
  * AES加密工具
  * 默认使用 AES/CBC/PKCS5Padding   支持位数 128/192/256
  *
- * @deprecated use {@link SymmetricCipher}
  * @author lym
+ * @deprecated use {@link SymmetricCipher}
  */
 public class SymmetricCryptoUtils {
 

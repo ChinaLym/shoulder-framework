@@ -114,11 +114,9 @@ public class SecurityRestTemplate extends RestTemplate {
      * @author lym
      */
     private static class EnsureNegotiatedRequestCallback implements RequestCallback {
-        private RequestCallback delegate;
-
         private final TransportNegotiationService transportNegotiationService;
-
         private final TransportCryptoUtil cryptoUtil;
+        private RequestCallback delegate;
 
         public EnsureNegotiatedRequestCallback(RequestCallback delegate, TransportNegotiationService transportNegotiationService,
                                                TransportCryptoUtil cryptoUtil) {

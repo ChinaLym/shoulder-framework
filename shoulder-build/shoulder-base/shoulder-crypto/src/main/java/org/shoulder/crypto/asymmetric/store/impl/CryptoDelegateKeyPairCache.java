@@ -16,17 +16,16 @@ import javax.annotation.Nonnull;
 public class CryptoDelegateKeyPairCache implements KeyPairCache {
 
     /**
-     * 注意维护应用隔离
-     */
-    private KeyPairCache delegate;
-
-    /**
      * 局部加密器，保证即使多个应用共享一个 redis，也无法获得其他应用的私钥信息
      * - 仅加密私钥：性能高；【推荐方案】
      * - 加密整个密钥对：性能差、可能导致已知明文攻击（需要localTextCipher的算法能避免该攻击）
      * - 极端情况无法检测密钥对被外界篡改（破坏者能直接或间接使用localTextCipher时）
      */
     private final LocalTextCipher localTextCipher;
+    /**
+     * 注意维护应用隔离
+     */
+    private KeyPairCache delegate;
 
 
     public CryptoDelegateKeyPairCache(KeyPairCache delegate, LocalTextCipher localTextCipher) {
