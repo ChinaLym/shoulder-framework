@@ -22,8 +22,8 @@ import java.util.Map;
  *
  * @author lym
  */
-@ApiModel(value = "Restful 风格响应 DTO 格式")
-//@Schema(name = "Restful 风格响应 DTO")
+@ApiModel(value = "接口响应统一返回值包装类 Restful 风格")
+//@Schema(name = "接口响应统一返回值包装类 Restful 风格")
 public class RestResult<T> implements Serializable {
 
     @ApiModelProperty(value = "状态码/错误码，成功为0，失败非0，必定返回", dataType = "String", required = true, example = "0", position = 0)

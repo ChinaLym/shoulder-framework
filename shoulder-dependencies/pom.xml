@@ -38,8 +38,9 @@
         <swagger.version>1.6.2</swagger.version>
         <!-- 使用 springfox 解析文档，管理 swagger2 的版本号 -->
         <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
+        <springfox.version>3.0.0</springfox.version>
         <!-- knife4j 前身是 swagger-bootstrap-ui，一个用于优化 swagger-ui 的项目，视觉效果更好 -->
-        <!--<knife4j.version>2.0.4</knife4j.version>-->
+        <knife4j.version>3.0.2</knife4j.version>
 
         <!-- api-doc OPEN-API3 -->
         <!-- openApi(swagger)是行业标准，swagger 17更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
@@ -223,6 +224,12 @@
                 <version>${shoulder.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-api-doc</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
             <!--shoulder-base end -->
 
 
@@ -341,13 +348,6 @@
             </dependency>-->
 
             <!--<dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
-            </dependency>-->
-
-
-            <!--<dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger3.version}</version>
@@ -371,6 +371,18 @@
                 <version>${springdoc-openapi.version}</version>
             </dependency>-->
 
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
 
             <!-- oauth2 授权服务器相关依赖 -->
             <dependency>
