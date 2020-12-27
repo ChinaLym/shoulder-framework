@@ -5,7 +5,7 @@ import com.example.demo1.dto.CryptoTestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
+import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * 否则 shoulder 默认使用性能更好，安全系数更高的 ECC 算法，{@link EccCryptoDemoController}
  *
  * @author lym
- * @see DefaultAsymmetricCryptoProcessor#ecc256
+ * @see DefaultAsymmetricCipher#ecc256
  */
 @Slf4j
 @SkipResponseWrap

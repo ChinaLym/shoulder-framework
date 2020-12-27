@@ -1,7 +1,7 @@
 package com.example.demo1.config;
 
 import com.example.demo1.controller.crypto.asymmetric.EccCryptoDemoController;
-import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
+import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.crypto.local.repository.impl.FileLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
@@ -36,11 +36,11 @@ public class CryptoConfig {
      * 打开 @Bean 注释，非对称加解密将使用 RSA 算法
      * shoulder 默认使用性能更好，安全系数更高的 ECC 算法，{@link EccCryptoDemoController}
      * <p>
-     * 默认 RSA 算法参数详见 {@link DefaultAsymmetricCryptoProcessor#rsa2048}
+     * 默认 RSA 算法参数详见 {@link DefaultAsymmetricCipher#rsa2048}
      */
     //@Bean
-    public DefaultAsymmetricCryptoProcessor rsa2048(KeyPairCache keyPairCache) {
-        return DefaultAsymmetricCryptoProcessor.rsa2048(keyPairCache);
+    public DefaultAsymmetricCipher rsa2048(KeyPairCache keyPairCache) {
+        return DefaultAsymmetricCipher.rsa2048(keyPairCache);
     }
 
     /**

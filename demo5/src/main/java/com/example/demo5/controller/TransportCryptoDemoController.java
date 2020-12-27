@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
+import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.support.client.SensitiveRequestEncryptMessageConverter;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
  * 接口加密
  *
  * @author lym
- * @see DefaultAsymmetricCryptoProcessor#ecc256
+ * @see DefaultAsymmetricCipher#ecc256
  */
 @Slf4j
 @RestController

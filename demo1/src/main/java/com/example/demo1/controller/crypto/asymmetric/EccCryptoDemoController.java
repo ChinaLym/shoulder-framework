@@ -6,7 +6,7 @@ import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.MultiKeyPairAsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.SingleKeyPairAsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
-import org.shoulder.crypto.asymmetric.processor.impl.DefaultAsymmetricCryptoProcessor;
+import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 加解密技术指南：http://doc.itlym.cn/specs/security/crypto.html#%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%89%E6%8B%A9
  *
  * @author lym
- * @see DefaultAsymmetricCryptoProcessor#ecc256
+ * @see DefaultAsymmetricCipher#ecc256
  * @see SingleKeyPairAsymmetricTextCipher
  * @see MultiKeyPairAsymmetricTextCipher
  * @see AsymmetricTextCipher

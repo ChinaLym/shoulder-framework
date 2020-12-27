@@ -40,7 +40,7 @@ public class PersonBatchTaskSliceHandler implements BatchTaskSliceHandler {
             BatchRecordDetail result = new BatchRecordDetail();
             result.setStatus(BatchResultEnum.IMPORT_SUCCESS.getCode());
             // todo 目前还需要使用者设置，需要优化
-            result.setRowNum(personRecord.getIndex());
+            result.setIndex(personRecord.getIndex());
 
             if (ThreadLocalRandom.current().nextInt(4) % 3 == 0) {
                 result.setFailReason("随机失败几个");

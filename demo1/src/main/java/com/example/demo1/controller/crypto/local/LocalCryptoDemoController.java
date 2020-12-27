@@ -4,7 +4,6 @@ import com.example.demo1.dto.CryptoTestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.local.LocalTextCipher;
-import org.shoulder.crypto.local.impl.Aes256LocalTextCipher;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
  * 本地：指的是 A 应用加密的数据仅 A 应用能解密，其他应用无法解密
  *
  * @author lym
- * @see Aes256LocalTextCipher
  */
 @Slf4j
 @SkipResponseWrap
