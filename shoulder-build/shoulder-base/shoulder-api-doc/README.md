@@ -47,3 +47,43 @@
   </plugins>
 </build>
 ```
+
+---
+
+## SpringBoot整合swagger3.X
+
+启动后访问：http://127.0.0.1:8080/swagger-ui/index.html
+
+
+使用 knife4j 增强 ui
+
+生成环境关闭swagger
+```yaml
+# swagger3.0 settings
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true # true放开api文档，false关闭api文档
+
+```
+
+SpringSecurity集成swagger要放行swaggerAPI
+```java
+@Override
+public void configure(WebSecurity web) throws Exception {
+    web.ignoring().antMatchers("/swagger-ui/index.html",
+            "/swagger-ui/**",
+            "/doc.html",
+            "/webjars/**",
+            // swagger api json
+            "/v3/api-docs",
+            //用来获取支持的动作
+            "/swagger-resources/configuration/ui",
+            //用来获取api-docs的URI
+            "/swagger-resources",
+            //安全选项
+            "/swagger-resources/configuration/security",
+            "/swagger-resources/**");
+}
+```
+[SpringBoot整合swagger3.X](https://blog.csdn.net/weixin_42201180/article/details/111588194)

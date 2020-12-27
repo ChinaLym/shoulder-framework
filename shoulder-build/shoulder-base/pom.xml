@@ -33,7 +33,7 @@
         <module>shoulder-cluster</module>
         <module>shoulder-batch</module>
 
-        <!--<module>shoulder-api-doc-swagger2</module>-->
+        <module>shoulder-api-doc</module>
     </modules>
 
 </project>
