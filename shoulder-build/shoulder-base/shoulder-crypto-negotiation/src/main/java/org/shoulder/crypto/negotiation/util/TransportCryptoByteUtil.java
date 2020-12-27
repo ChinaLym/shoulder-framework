@@ -36,26 +36,22 @@ public class TransportCryptoByteUtil {
      * 128/192/256，长度为 4 特用于优化随机数性能
      */
     private static final int[] SUPPORT_KEY_BYTE_LENGTH = {16, 16, 24, 32};
-
-    /**
-     * 非对称加密器，生成/保存自己的公私钥
-     */
-    private final AsymmetricCipher asymmetricCipher;
-
-    /**
-     * 服务端密钥协商缓存过期默认时间
-     */
-    private final Duration negotiationDuration = Duration.ofHours(1);
-
-    /**
-     * 支持的对称加密算法，这里暂时只支持 aes cbc pkcs5padding
-     */
-    private final Set<String> encryptionSchemeSupports = Set.of(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
-
     /**
      * 数据密钥加密算法，这里写死
      */
     private static final SymmetricCipher KEY_CIPHER = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
+    /**
+     * 非对称加密器，生成/保存自己的公私钥
+     */
+    private final AsymmetricCipher asymmetricCipher;
+    /**
+     * 服务端密钥协商缓存过期默认时间
+     */
+    private final Duration negotiationDuration = Duration.ofHours(1);
+    /**
+     * 支持的对称加密算法，这里暂时只支持 aes cbc pkcs5padding
+     */
+    private final Set<String> encryptionSchemeSupports = Set.of(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
 
     /**
      * 构造器
@@ -78,8 +74,8 @@ public class TransportCryptoByteUtil {
     /**
      * 生成数据密钥的密文（DK）
      */
-    public static byte[] encryptDk(NegotiationResult negotiationResult, byte[] dataKey) throws SymmetricCryptoException {
-        return KEY_CIPHER.encrypt(dataKey, negotiationResult.getShareKey(), negotiationResult.getLocalIv());
+    public static byte[] encryptDk(NegotiationResult negotiationResult, byte[] dataKeyPlain) throws SymmetricCryptoException {
+        return KEY_CIPHER.encrypt(negotiationResult.getShareKey(), negotiationResult.getLocalIv(), dataKeyPlain);
     }
 
     /**
@@ -88,7 +84,7 @@ public class TransportCryptoByteUtil {
      * @return dataKey
      */
     public static byte[] decryptDk(NegotiationResult negotiationResult, byte[] xDk) throws SymmetricCryptoException {
-        return KEY_CIPHER.decrypt(xDk, negotiationResult.getShareKey(), negotiationResult.getLocalIv());
+        return KEY_CIPHER.decrypt(negotiationResult.getShareKey(), negotiationResult.getLocalIv(), xDk);
     }
 
     /**
@@ -96,7 +92,7 @@ public class TransportCryptoByteUtil {
      */
     public static byte[] encrypt(NegotiationResult negotiationResult, byte[] dataKey, byte[] toCipher) throws SymmetricCryptoException {
         SymmetricCipher cipher = DefaultSymmetricCipher.getFlyweight(negotiationResult.getEncryptionScheme());
-        return cipher.encrypt(toCipher, dataKey, negotiationResult.getLocalIv());
+        return cipher.encrypt(dataKey, negotiationResult.getLocalIv(), toCipher);
     }
 
     /**
@@ -104,7 +100,16 @@ public class TransportCryptoByteUtil {
      */
     public static byte[] decrypt(NegotiationResult negotiationResult, byte[] dataKey, byte[] cipherText) throws SymmetricCryptoException {
         SymmetricCipher cipher = DefaultSymmetricCipher.getFlyweight(negotiationResult.getEncryptionScheme());
-        return cipher.decrypt(cipherText, dataKey, negotiationResult.getLocalIv());
+        return cipher.decrypt(dataKey, negotiationResult.getLocalIv(), cipherText);
+    }
+
+    /**
+     * 简单随机算法，50% 128，25%192，25%256
+     *
+     * @return 128/192/256
+     */
+    private static int randomKeyLength() {
+        return SUPPORT_KEY_BYTE_LENGTH[ThreadLocalRandom.current().nextInt(SUPPORT_KEY_BYTE_LENGTH.length)];
     }
 
     /**
@@ -144,6 +149,8 @@ public class TransportCryptoByteUtil {
         return result;
     }
 
+    // =========================== 防篡改 ==================================
+
     /**
      * 服务端根据协商请求准备协商参数：确定加密算法、密钥长度、协商有效期
      */
@@ -173,8 +180,6 @@ public class TransportCryptoByteUtil {
         return response;
     }
 
-    // =========================== 防篡改 ==================================
-
     /**
      * 发起协商请求时需要签名的数据
      *
@@ -194,6 +199,8 @@ public class TransportCryptoByteUtil {
         return asymmetricCipher.sign(request.getxSessionId(), getNeedToSign(request));
     }
 
+    // -------------------------------
+
     /**
      * 验签，防篡改（处理协商请求时）
      */
@@ -205,8 +212,6 @@ public class TransportCryptoByteUtil {
             signature
         );
     }
-
-    // -------------------------------
 
     /**
      * 响应需要签名的数据
@@ -230,6 +235,8 @@ public class TransportCryptoByteUtil {
         return asymmetricCipher.sign(response.getxSessionId(), getNeedToSign(response));
     }
 
+    // -------------------------------
+
     /**
      * 验签，防篡改（确认协商响应请求时）
      */
@@ -241,8 +248,6 @@ public class TransportCryptoByteUtil {
             signature
         );
     }
-
-    // -------------------------------
 
     /**
      * 生成 token（协商完毕，每次发送安全会话请求时）
@@ -266,14 +271,5 @@ public class TransportCryptoByteUtil {
         byte[] xSessionIdBytes = xSessionId.getBytes(ByteSpecification.STD_CHAR_SET);
         byte[] toSin = ByteUtils.compound(Arrays.asList(xSessionIdBytes, xDk));
         return asymmetricCipher.verify(otherPublicKey, toSin, signature);
-    }
-
-    /**
-     * 简单随机算法，50% 128，25%192，25%256
-     *
-     * @return 128/192/256
-     */
-    private static int randomKeyLength() {
-        return SUPPORT_KEY_BYTE_LENGTH[ThreadLocalRandom.current().nextInt(SUPPORT_KEY_BYTE_LENGTH.length)];
     }
 }

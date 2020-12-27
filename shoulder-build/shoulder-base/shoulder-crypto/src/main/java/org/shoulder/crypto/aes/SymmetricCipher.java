@@ -13,13 +13,13 @@ public interface SymmetricCipher {
     /**
      * 对称加密
      *
-     * @param content 明文
-     * @param key     密钥
-     * @param iv      向量
-     * @throws SymmetricCryptoException 加密失败
+     * @param plainText 明文
+     * @param key       密钥
+     * @param iv        向量
      * @return 密文
+     * @throws SymmetricCryptoException 加密失败
      */
-    byte[] encrypt(byte[] key, byte[] iv, byte[] content) throws SymmetricCryptoException;
+    byte[] encrypt(byte[] key, byte[] iv, byte[] plainText) throws SymmetricCryptoException;
 
     /**
      * 对称解密
@@ -27,8 +27,8 @@ public interface SymmetricCipher {
      * @param key        密钥
      * @param iv         向量
      * @param cipherText 密文
-     * @throws SymmetricCryptoException 解密失败
      * @return 明文
+     * @throws SymmetricCryptoException 解密失败
      */
     byte[] decrypt(byte[] key, byte[] iv, byte[] cipherText) throws SymmetricCryptoException;
 }

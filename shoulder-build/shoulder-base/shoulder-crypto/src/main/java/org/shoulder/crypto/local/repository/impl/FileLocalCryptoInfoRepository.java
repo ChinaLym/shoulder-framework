@@ -29,10 +29,8 @@ import java.util.stream.Collectors;
  */
 public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     private static final String DEFAULT_FILE_NAME = "_shoulder_aesInfo.json";
-
+    private final Logger log = LoggerFactory.getLogger(getClass());
     /**
      * 存储文件字符集
      */

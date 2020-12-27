@@ -5,8 +5,8 @@ import org.springframework.util.DigestUtils;
 /**
  * 信息摘要能力接口
  *
- * @see DigestUtils spring 也有提供
  * @author lym
+ * @see DigestUtils spring 也有提供
  */
 public interface DigestAble {
 

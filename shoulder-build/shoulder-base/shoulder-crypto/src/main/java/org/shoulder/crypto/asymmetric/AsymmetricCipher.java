@@ -56,12 +56,12 @@ public interface AsymmetricCipher {
     /**
      * 加密（公钥加密）
      *
-     * @param content   需加密的数据
      * @param publicKey 对方的公钥
+     * @param content   需加密的数据
      * @return 密文
      * @throws AsymmetricCryptoException 加密失败
      */
-    byte[] encrypt(byte[] content, byte[] publicKey) throws AsymmetricCryptoException;
+    byte[] encrypt(byte[] publicKey, byte[] content) throws AsymmetricCryptoException;
 
     /**
      * 签名

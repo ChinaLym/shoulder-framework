@@ -165,7 +165,7 @@ public class DefaultAsymmetricCipher implements AsymmetricCipher, ByteSpecificat
     }
 
     @Override
-    public byte[] encrypt(byte[] content, byte[] publicKey) throws AsymmetricCryptoException {
+    public byte[] encrypt(byte[] publicKey, byte[] content) throws AsymmetricCryptoException {
         try {
             // 对数据加密
             Cipher cipher = Cipher.getInstance(transformation, provider);

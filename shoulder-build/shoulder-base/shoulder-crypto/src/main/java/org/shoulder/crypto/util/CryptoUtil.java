@@ -71,6 +71,13 @@ public final class CryptoUtil {
         return getAsymmetric().decrypt(cipherText);
     }
 
+    private static LocalTextCipher getLocal() {
+        return LocalTextCipherHolder.INSTANCE;
+    }
+
+    private static AsymmetricTextCipher getAsymmetric() {
+        return AsymmetricCipherHolder.INSTANCE;
+    }
 
     /**
      * RSA加密（公钥加密）
@@ -83,6 +90,8 @@ public final class CryptoUtil {
     public String asymmetricEncrypt(String text, String publicKey) throws CipherRuntimeException {
         return getAsymmetric().encrypt(text, publicKey);
     }
+
+    // ------------------------- singleTon holder --------------------------
 
     /**
      * 签名
@@ -105,16 +114,6 @@ public final class CryptoUtil {
      */
     public boolean verify(String text, String signature) throws CipherRuntimeException {
         return getAsymmetric().verify(text, signature);
-    }
-
-    // ------------------------- singleTon holder --------------------------
-
-    private static LocalTextCipher getLocal() {
-        return LocalTextCipherHolder.INSTANCE;
-    }
-
-    private static AsymmetricTextCipher getAsymmetric() {
-        return AsymmetricCipherHolder.INSTANCE;
     }
 
     private static class LocalTextCipherHolder {

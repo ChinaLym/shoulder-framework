@@ -13,14 +13,12 @@ import java.io.*;
  */
 public class CryptoableOutputStream extends BufferedOutputStream {
 
+    protected byte buf[];
+    protected int count;
     private DefaultSymmetricCipher aes_gcm = new DefaultSymmetricCipher("AES/CBC/PKCS5Padding");
     private byte[] key = "1234567890123456".getBytes();
     private byte[] iv = "1234567890123456".getBytes();
     private int mode;
-
-    protected byte buf[];
-
-    protected int count;
 
     /**
      * Cipher.ENCRYPT_MODE
@@ -36,6 +34,31 @@ public class CryptoableOutputStream extends BufferedOutputStream {
         }
         buf = new byte[size];
         this.mode = mode;
+    }
+
+    public static void main(String[] args) throws IOException {
+    }
+
+    public static void encryptFile(String from, String to) throws IOException {
+        doCipher(from, to, Cipher.ENCRYPT_MODE);
+    }
+
+    public static void decryptFile(String from, String to) throws IOException {
+        doCipher(from, to, Cipher.DECRYPT_MODE);
+    }
+
+    public static void doCipher(String from, String to, int mode) throws IOException {
+        File readFile = new File(from);
+        File writeFile = new File(to);
+        FileInputStream in = new FileInputStream(readFile);
+        CryptoableOutputStream out = new CryptoableOutputStream(new FileOutputStream(writeFile), mode);
+        byte[] buffer = new byte[4096];
+        int n;
+        while ((n = in.read(buffer)) != -1) {
+            out.write(buffer, 0, n);
+        }
+        in.close();
+        out.close();
     }
 
     @Override
@@ -66,7 +89,6 @@ public class CryptoableOutputStream extends BufferedOutputStream {
         out.flush();
     }
 
-
     private void flushBuffer() throws IOException {
         if (count > 0) {
             try {
@@ -83,30 +105,5 @@ public class CryptoableOutputStream extends BufferedOutputStream {
         byte[] origin = new byte[count];
         System.arraycopy(buf, 0, origin, 0, count);
         return aes_gcm.doCipher(mode, key, iv, origin);
-    }
-
-    public static void main(String[] args) throws IOException {
-    }
-
-    public static void encryptFile(String from, String to) throws IOException {
-        doCipher(from, to, Cipher.ENCRYPT_MODE);
-    }
-
-    public static void decryptFile(String from, String to) throws IOException {
-        doCipher(from, to, Cipher.DECRYPT_MODE);
-    }
-
-    public static void doCipher(String from, String to, int mode) throws IOException {
-        File readFile = new File(from);
-        File writeFile = new File(to);
-        FileInputStream in = new FileInputStream(readFile);
-        CryptoableOutputStream out = new CryptoableOutputStream(new FileOutputStream(writeFile), mode);
-        byte[] buffer = new byte[4096];
-        int n;
-        while ((n = in.read(buffer)) != -1) {
-            out.write(buffer, 0, n);
-        }
-        in.close();
-        out.close();
     }
 }

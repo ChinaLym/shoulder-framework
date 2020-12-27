@@ -22,6 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecification {
 
+    /**
+     * 享元工厂模式
+     */
+    private static final ConcurrentHashMap<String, DefaultSymmetricCipher> FLYWEIGHT_CACHE = new ConcurrentHashMap<>();
+
     // BC
     static {
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
@@ -33,22 +38,18 @@ public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecificatio
      * 算法名称，用于生成密钥
      */
     private final String algorithm;
-
     /**
      * 指定算法实现提供商
      */
     private final String provider;
-
     /**
      * 密钥位数
      */
     private final int[] keyLengthSupports;
-
     /**
      * 算法实现
      */
     private final String transformation;
-
     /**
      * 需要初始化向量，固定长度 16*8=128，todo OCB 必须小于 128，解密必须传 iv，可以为空 byte[]
      */
@@ -63,6 +64,8 @@ public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecificatio
         this.needIv = needIv;
     }
 
+    // ------------------ 提供两个推荐使用的安全加密方案 ------------------
+
     public DefaultSymmetricCipher(String transformation) {
         this.transformation = transformation;
         this.provider = "BC";
@@ -74,13 +77,6 @@ public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecificatio
         ;
     }
 
-    // ------------------ 提供两个推荐使用的安全加密方案 ------------------
-
-    /**
-     * 享元工厂模式
-     */
-    private static final ConcurrentHashMap<String, DefaultSymmetricCipher> FLYWEIGHT_CACHE = new ConcurrentHashMap<>();
-
     @Nonnull
     public static DefaultSymmetricCipher getFlyweight(String encryptionScheme) {
         return FLYWEIGHT_CACHE.computeIfAbsent(encryptionScheme, DefaultSymmetricCipher::new);
@@ -89,14 +85,14 @@ public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecificatio
     /**
      * 对称加密
      *
-     * @param content 明文
-     * @param key     密钥
-     * @param iv      向量
+     * @param plainText 明文
+     * @param key       密钥
+     * @param iv        向量
      * @return 密文
      */
     @Override
-    public byte[] encrypt(byte[] key, byte[] iv, byte[] content) throws SymmetricCryptoException {
-        return doCipher(Cipher.ENCRYPT_MODE, key, iv, content);
+    public byte[] encrypt(byte[] key, byte[] iv, byte[] plainText) throws SymmetricCryptoException {
+        return doCipher(Cipher.ENCRYPT_MODE, key, iv, plainText);
     }
 
     /**
@@ -139,7 +135,7 @@ public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecificatio
     }
 
     /**
-     * 参数校验 todo 改为（只检查key长度）
+     * 参数校验 （只检查key长度）
      *
      * @param key aes 密钥必须 128/192/256 位
      * @param iv  加密向量，必须 128 位 16byte
@@ -156,6 +152,7 @@ public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecificatio
         }
         if (needIv) {
             Assert.notNull(iv, "the parameter 'iv' can't be null!");
+            // 注意 OCB 特殊，故不能一概而论（但由于其带有专利，故不考虑）
             Assert.isTrue(iv.length == 16, "the parameter 'iv' must be 128 bit(16 byte)");
         }
     }

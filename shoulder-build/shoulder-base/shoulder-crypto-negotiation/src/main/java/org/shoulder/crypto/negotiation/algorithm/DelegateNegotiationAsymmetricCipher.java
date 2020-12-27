@@ -44,8 +44,8 @@ public class DelegateNegotiationAsymmetricCipher implements NegotiationAsymmetri
     }
 
     @Override
-    public byte[] encrypt(byte[] content, byte[] publicKey) throws AsymmetricCryptoException {
-        return delegate.encrypt(content, publicKey);
+    public byte[] encrypt(byte[] publicKey, byte[] content) throws AsymmetricCryptoException {
+        return delegate.encrypt(publicKey, content);
     }
 
     @Override
