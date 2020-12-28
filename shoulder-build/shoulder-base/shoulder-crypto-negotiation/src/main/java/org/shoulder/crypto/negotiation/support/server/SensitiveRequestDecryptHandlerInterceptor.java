@@ -12,7 +12,6 @@ import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -68,7 +67,6 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
         if (StringUtils.isEmpty(xSessionId) || StringUtils.isEmpty(xDk) || StringUtils.isEmpty(token)) {
             // xSessionId 没有说明不是一个 ecdh 请求；没有 xDk 仅出现在密钥协商阶段；没有 token不能保证安全
             log.debug("reject for invalid security headers.");
-            response.setStatus(NegotiationErrorCodeEnum.MISSING_REQUIRED_PARAM.getHttpStatusCode().value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             RestResult r = RestResult.error(NegotiationErrorCodeEnum.MISSING_REQUIRED_PARAM);
             response.getWriter().write(JsonUtils.toJson(r));
@@ -81,7 +79,6 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             log.debug("cache missing, xSessionId:{}", xSessionId);
             // 返回重新握手错误码
             response.setHeader(NegotiationConstants.NEGOTIATION_INVALID_TAG, NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode());
-            response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             RestResult r = RestResult.error(NegotiationErrorCodeEnum.NEGOTIATION_INVALID);
             response.getWriter().write(JsonUtils.toJson(r));
@@ -92,7 +89,6 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
         // 校验token是否正确
         if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, cacheNegotiationResult.getPublicKey())) {
             log.debug("Token({}) invalid! xSessionId={}", token, xSessionId);
-            response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             RestResult r = RestResult.error(NegotiationErrorCodeEnum.TOKEN_INVALID);
             response.getWriter().write(JsonUtils.toJson(r));
