@@ -241,7 +241,6 @@ public class RestControllerExceptionAdvice {
             ErrorCode errorCode = (ErrorCode) e;
             log.log(errorCode);
             ex = new BaseRuntimeException(e);
-            response.setStatus(errorCode.getHttpStatusCode().value());
         } else {
             // 未知异常
             ex = new BaseRuntimeException(CommonErrorCodeEnum.UNKNOWN, e);

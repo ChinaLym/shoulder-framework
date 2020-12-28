@@ -1,8 +1,10 @@
 package org.shoulder.security.authentication.handler.json;
 
-import org.shoulder.security.AuthResponseUtil;
+import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -20,9 +22,12 @@ public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
+    private static final String SUCCESS_RESPONSE = JsonUtils.toJson(RestResult.success());
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.debug("login success");
-        AuthResponseUtil.success(response);
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.getWriter().write(SUCCESS_RESPONSE);
     }
 }

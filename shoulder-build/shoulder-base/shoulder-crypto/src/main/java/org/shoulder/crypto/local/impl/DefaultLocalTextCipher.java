@@ -73,6 +73,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
      * 根密钥随机部分长度
      */
     private static final int ROOT_KEY_RANDOM_LENGTH = AES_KEY_LENGTH - ROOT_KEY_FINAL_PART.length;
+
     private final static SymmetricCipher ROOT_KEY_CIPHER = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
     /**
      * 密钥持久化依赖：用于获取持久化的加密信息
@@ -173,6 +174,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
     @Override
     public boolean support(String cipherText) {
         String header = cipherText.substring(0, 6);
+        ensureInit();
         return CacheManager.getAesInfoCache(header) != null;
     }
 

@@ -123,6 +123,7 @@ public interface ErrorCode extends Translatable {
     /**
      * 若接口中抛出该错误，返回调用方什么状态码，默认 500 【便于全局异常统一处理，非必需】
      *
+     * @deprecated shoulder 默认全都使用 200
      * @return httpStatusCode
      */
     @Nonnull

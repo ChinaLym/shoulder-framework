@@ -7,7 +7,6 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.negotiation.algorithm.DelegateNegotiationAsymmetricCipher;
-import org.shoulder.crypto.negotiation.algorithm.NegotiationAsymmetricCipher;
 import org.shoulder.crypto.negotiation.cache.LocalNegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.RedisNegotiationResultCache;
@@ -45,23 +44,14 @@ public class TransportCryptoAutoConfiguration {
 
 
     /**
-     * 默认使用 ECC256 完成非对称加密
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public NegotiationAsymmetricCipher negotiationAsymmetricCryptoProcessor(AsymmetricCipher delegate) {
-        return new DelegateNegotiationAsymmetricCipher(delegate);
-    }
-
-    /**
      * 密钥协商工具，封装密钥协商相关基本方法单元
      *
-     * @param negotiationAsymmetricProcessor 用于处理协商的非对称加解密实现
+     * @param delegate 用于处理协商的非对称加解密实现，默认使用当前项目中提供的非对称加密器
      */
     @Bean
     @ConditionalOnMissingBean
-    public TransportCryptoUtil transportCryptoUtil(NegotiationAsymmetricCipher negotiationAsymmetricProcessor) {
-        TransportCryptoByteUtil util = new TransportCryptoByteUtil(negotiationAsymmetricProcessor);
+    public TransportCryptoUtil transportCryptoUtil(AsymmetricCipher delegate) {
+        TransportCryptoByteUtil util = new TransportCryptoByteUtil(new DelegateNegotiationAsymmetricCipher(delegate));
         return new TransportCryptoUtil(util);
     }
 

@@ -1,9 +1,11 @@
 package org.shoulder.security.authentication.handler.json;
 
+import org.shoulder.core.dto.response.RestResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.security.AuthResponseUtil;
+import org.shoulder.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -24,7 +26,10 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
         log.info("authentication FAIL.", exception);
-        AuthResponseUtil.authFail(response, exception, CommonErrorCodeEnum.AUTH_401_UNAUTHORIZED);
+        RestResult restResult = RestResult.error(CommonErrorCodeEnum.AUTH_401_UNAUTHORIZED, exception.getMessage());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.getWriter().write(JsonUtils.toJson(restResult));
     }
 
 }
