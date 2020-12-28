@@ -41,6 +41,11 @@ public class TransportCryptoByteUtil {
      */
     private static final SymmetricCipher KEY_CIPHER = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
     /**
+     * 本服务支持的对称加密算法，这里暂时只支持 aes cbc pkcs5padding
+     */
+    public static final Set<String> ENCRYPTION_SCHEME_SUPPORTS = Set.of(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
+
+    /**
      * 非对称加密器，生成/保存自己的公私钥
      */
     private final AsymmetricCipher asymmetricCipher;
@@ -48,10 +53,6 @@ public class TransportCryptoByteUtil {
      * 服务端密钥协商缓存过期默认时间
      */
     private final Duration negotiationDuration = Duration.ofHours(1);
-    /**
-     * 支持的对称加密算法，这里暂时只支持 aes cbc pkcs5padding
-     */
-    private final Set<String> encryptionSchemeSupports = Set.of(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
 
     /**
      * 构造器
@@ -166,7 +167,7 @@ public class TransportCryptoByteUtil {
         response.setPublicKey(ByteSpecification.encodeToString(selfPublicKey));
         // 根据协商请求，选择自己支持的算法
         List<String> shareAlgorithms = CollectionUtils.emptyIfNull(negotiationRequest.getEncryptionSchemeSupports()).stream()
-            .filter(encryptionSchemeSupports::contains)
+            .filter(ENCRYPTION_SCHEME_SUPPORTS::contains)
             .collect(Collectors.toList());
         if (CollectionUtils.isEmpty(shareAlgorithms)) {
             throw new IllegalStateException("There is no common algorithm!");
