@@ -1,7 +1,8 @@
 package org.shoulder.crypto.negotiation.support.dto;
 
-import java.util.Collections;
-import java.util.List;
+import org.shoulder.crypto.negotiation.util.TransportCryptoByteUtil;
+
+import java.util.Set;
 
 /**
  * 协商发起者提供参数
@@ -29,7 +30,7 @@ public class NegotiationRequest {
     /**
      * 【非空】发起者支持的 报文 加解密算法，如 AES-128 / AES-192 / AES-256
      */
-    private List<String> encryptionSchemeSupports = Collections.singletonList("AES-256");
+    private Set<String> encryptionSchemeSupports = TransportCryptoByteUtil.ENCRYPTION_SCHEME_SUPPORTS;
 
     /**
      * 是否强制双方重新协商
@@ -60,11 +61,11 @@ public class NegotiationRequest {
         this.publicKey = publicKey;
     }
 
-    public List<String> getEncryptionSchemeSupports() {
+    public Set<String> getEncryptionSchemeSupports() {
         return encryptionSchemeSupports;
     }
 
-    public void setEncryptionSchemeSupports(List<String> encryptionSchemeSupports) {
+    public void setEncryptionSchemeSupports(Set<String> encryptionSchemeSupports) {
         this.encryptionSchemeSupports = encryptionSchemeSupports;
     }
 
