@@ -40,9 +40,9 @@ public class DelayTaskAutoConfiguration implements ApplicationListener<ContextRe
     }
 
     @Bean
-    @DependsOn(Threads.DEFAULT_THREAD_POOL_NAME)
+    @DependsOn(Threads.SHOULDER_THREAD_POOL_NAME)
     @ConditionalOnProperty(name = "shoulder.delayTask.defaultDispatcher.enable", havingValue = "true", matchIfMissing = true)
-    public DelayTaskDispatcher delayTaskPorter(@Qualifier(Threads.DEFAULT_THREAD_POOL_NAME) Executor defaultExecutor,
+    public DelayTaskDispatcher delayTaskPorter(@Qualifier(Threads.SHOULDER_THREAD_POOL_NAME) Executor defaultExecutor,
                                                DelayTaskHolder delayTaskHolder) {
         return new DelayTaskDispatcher(defaultExecutor, delayTaskHolder);
     }

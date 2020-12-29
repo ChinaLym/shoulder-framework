@@ -26,7 +26,7 @@ public class Threads {
     /**
      * shoulder 通用线程池名称
      */
-    public final static String DEFAULT_THREAD_POOL_NAME = "shoulderThreadPool";
+    public final static String SHOULDER_THREAD_POOL_NAME = "shoulderThreadPool";
 
     /**
      * 通用线程池
@@ -85,7 +85,7 @@ public class Threads {
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "delay", true);
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
-            log.debug("{} creat delay task will run after {}", callerName);
+            log.debug("{} creat delay task will run in {}ms", callerName, delayTask.getDelay(TimeUnit.MILLISECONDS));
         }
         DELAY_TASK_HOLDER.put(delayTask);
     }
@@ -96,9 +96,10 @@ public class Threads {
      * @param runnable 要执行的任务
      */
     public static void execute(Runnable runnable) {
+        // 是否去掉 null 判断，这里应该认为一定不为空
         if (SHOULDER_THREAD_POOL == null) {
-            log.warn("not set threadPool fall back: use bean named '{}' in context.", DEFAULT_THREAD_POOL_NAME);
-            Object threadPoolBean = ContextUtils.getBean(DEFAULT_THREAD_POOL_NAME);
+            log.warn("not set threadPool fall back: use bean named '{}' in context.", SHOULDER_THREAD_POOL_NAME);
+            Object threadPoolBean = ContextUtils.getBean(SHOULDER_THREAD_POOL_NAME);
             if (threadPoolBean instanceof ExecutorService) {
                 setExecutorService((ExecutorService) threadPoolBean);
             }
@@ -217,12 +218,8 @@ public class Threads {
 
     /**
      * 类比jdk的默认策略，{@link ThreadPoolExecutor.AbortPolicy}，这里将其转为框架的运行时异常，
-     *
-     * @deprecated use {@link ThreadPoolExecutor.AbortPolicy}
      */
     public static class Abort implements RejectedExecutionHandler {
-
-        private static final Logger log = LoggerFactory.getLogger(Abort.class);
 
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {

@@ -36,7 +36,7 @@ public abstract class AbstractOpLogAsyncRunner {
         }
         if (shouldEnhancer()) {
             if (this.opLogContext != null) {
-                OpLogContextHolder.setLog(this.opLogContext.getOperationLog().cloneTo(new OperationLogDTO()));
+                OpLogContextHolder.setContext(this.opLogContext);
             }
         }
 
