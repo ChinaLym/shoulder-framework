@@ -1,4 +1,4 @@
-package com.example.demo1.controller.delay;
+package com.example.demo1.controller.concurrent;
 
 import lombok.extern.shoulder.SLog;
 import org.shoulder.core.concurrent.Threads;
