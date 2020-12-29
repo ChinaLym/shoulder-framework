@@ -329,7 +329,9 @@ public class OperationLogDTO implements Cloneable {
         clone.setEndTime(endTime);
         clone.setResult(result);
         clone.setDetailKey(detailKey);
-        clone.setDetailItems(new LinkedList<>(detailItems));
+        if (detailItems != null) {
+            clone.setDetailItems(new LinkedList<>(detailItems));
+        }
         clone.setDetail(detail);
         clone.setErrorCode(errorCode);
 

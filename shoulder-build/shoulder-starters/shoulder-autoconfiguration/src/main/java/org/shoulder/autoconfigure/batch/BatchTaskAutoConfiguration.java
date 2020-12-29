@@ -12,7 +12,6 @@ import org.shoulder.batch.repository.JdbcBatchRecordPersistentService;
 import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.impl.CsvExporter;
 import org.shoulder.batch.service.impl.DefaultBatchExportService;
-import org.shoulder.core.concurrent.Threads;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -53,11 +52,9 @@ public class BatchTaskAutoConfiguration {
     @ConditionalOnMissingBean(name = BatchConstants.THREAD_NAME)
     public ThreadPoolExecutor shoulderBatchThreadPool() {
         // 默认使用 5 个线程
-        ThreadPoolExecutor executorService = new ThreadPoolExecutor(5, 5,
+        return new ThreadPoolExecutor(5, 5,
             60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
             new CustomizableThreadFactory("shoulder-batch"));
-        Threads.setExecutorService(executorService);
-        return executorService;
     }
 
     /**
