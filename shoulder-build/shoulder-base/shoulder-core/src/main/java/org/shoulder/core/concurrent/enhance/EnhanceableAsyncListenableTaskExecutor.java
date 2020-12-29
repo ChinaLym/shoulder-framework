@@ -1,7 +1,5 @@
-package org.shoulder.log.operation.async.executors;
+package org.shoulder.core.concurrent.enhance;
 
-import org.shoulder.log.operation.async.OpLogCallable;
-import org.shoulder.log.operation.async.OpLogRunnable;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
 import org.springframework.util.concurrent.ListenableFuture;
 
@@ -14,46 +12,46 @@ import java.util.concurrent.Future;
  *
  * @author lym
  */
-public class OpLogAsyncListenableTaskExecutor implements AsyncListenableTaskExecutor {
+public class EnhanceableAsyncListenableTaskExecutor implements AsyncListenableTaskExecutor {
 
     private final AsyncListenableTaskExecutor delegate;
 
-    public OpLogAsyncListenableTaskExecutor(AsyncListenableTaskExecutor delegate) {
+    public EnhanceableAsyncListenableTaskExecutor(AsyncListenableTaskExecutor delegate) {
         this.delegate = delegate;
     }
 
     @Override
     public void execute(@Nonnull Runnable task) {
-        this.delegate.execute(new OpLogRunnable(task));
+        this.delegate.execute(ThreadEnhanceHelper.doEnhance(task));
     }
 
     @Override
     public void execute(@Nonnull Runnable task, long startTimeout) {
-        this.delegate.execute((new OpLogRunnable(task)), startTimeout);
+        this.delegate.execute((ThreadEnhanceHelper.doEnhance(task)), startTimeout);
     }
 
     @Nonnull
     @Override
     public Future<?> submit(@Nonnull Runnable task) {
-        return this.delegate.submit(new OpLogRunnable(task));
+        return this.delegate.submit(ThreadEnhanceHelper.doEnhance(task));
     }
 
     @Nonnull
     @Override
     public <T> Future<T> submit(@Nonnull Callable<T> task) {
-        return this.delegate.submit(new OpLogCallable<>(task));
+        return this.delegate.submit(ThreadEnhanceHelper.doEnhance(task));
     }
 
     @Nonnull
     @Override
     public ListenableFuture<?> submitListenable(@Nonnull Runnable task) {
-        return this.delegate.submitListenable(new OpLogRunnable(task));
+        return this.delegate.submitListenable(ThreadEnhanceHelper.doEnhance(task));
     }
 
     @Nonnull
     @Override
     public <T> ListenableFuture<T> submitListenable(@Nonnull Callable<T> task) {
-        return this.delegate.submitListenable(new OpLogCallable<>(task));
+        return this.delegate.submitListenable(ThreadEnhanceHelper.doEnhance(task));
     }
 
 }

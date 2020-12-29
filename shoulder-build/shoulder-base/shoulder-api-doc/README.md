@@ -86,4 +86,28 @@ public void configure(WebSecurity web) throws Exception {
             "/swagger-resources/**");
 }
 ```
+
+---
+
+### swagger 原理
+
+- 定义某些注解（默认激活 jax-rs、swagger(OpenAPI) 定义的注解）
+- 程序启动时根据扫描规则扫描所有类，并识别这些注解，在内存中生成一套结构化的数据
+- 访问 swagger-ui 时，返回生成好的这些数据
+
+`swagger - Spring Boot` 在步骤二中扩展了扫描 `Spring MVC` 定义的注解，从而可以快速看到文档，而若使用默认注解，相当于补充注释
+`swagger-jaxrs2` 扩展了 `JAX-RS`(java restful server标准注解) 中定义的注解
+
+
+因此，不推荐在生产环境中激活文档，因为这会影响启动速度、并占用一定的内存。
+
+---
+
+### Shoulder 提供的支持
+
+由于 api 本身就是定制的东西，shoulder 只提供技术选型，不应该再封装一遍如何配置，因此仅在应用未注册时，提供默认配置
+
+
+[Swagger3 注解使用（Open API 3）](https://blog.csdn.net/qq_35425070/article/details/105347336)
+[swagger2 -> swagger3 官方教程](https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations#quick-annotation-overview)
 [SpringBoot整合swagger3.X](https://blog.csdn.net/weixin_42201180/article/details/111588194)

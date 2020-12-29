@@ -1,8 +1,8 @@
-package org.shoulder.autoconfigure.operation.async;
+package org.shoulder.autoconfigure.core.current.enhancer;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.shoulder.log.operation.async.executors.OpLogExecutor;
+import org.shoulder.core.concurrent.enhance.EnhanceableExecutor;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -47,7 +47,7 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
     }
 
     <E extends Executor> E executor(E executor) {
-        return (E) new OpLogExecutor(executor);
+        return (E) new EnhanceableExecutor(executor);
     }
 
 }

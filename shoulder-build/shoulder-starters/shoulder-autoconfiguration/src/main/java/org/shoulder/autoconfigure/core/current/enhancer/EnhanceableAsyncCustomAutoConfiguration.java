@@ -1,42 +1,41 @@
-package org.shoulder.autoconfigure.operation.async;
+package org.shoulder.autoconfigure.core.current.enhancer;
 
-import org.shoulder.log.operation.annotation.OperationLog;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 
+import javax.annotation.Nonnull;
+
 /**
- * 即使其他地方覆盖了 AsyncConfigurer，也可以激活 OpLog 在 @Async 方法实现跨线程
+ * 即使其他地方覆盖了 AsyncConfigurer，也可以激活 shoulder 线程池增强能力
  * <p>
  * {@link org.springframework.boot.autoconfigure.EnableAutoConfiguration
  * Auto-configuration} that wraps an existing custom {@link AsyncConfigurer} in a
- * {@link OpLogAsyncCustomizer}.
+ * {@link EnhanceableAsyncCustomizer}.
  *
  * @author lym
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(OperationLog.class)
 @ConditionalOnBean(AsyncConfigurer.class)
-@AutoConfigureBefore(OpLogAsyncDefaultAutoConfiguration.class)
-public class OpLogAsyncCustomAutoConfiguration implements BeanPostProcessor {
+@AutoConfigureBefore(EnhanceableAsyncDefaultAutoConfiguration.class)
+public class EnhanceableAsyncCustomAutoConfiguration implements BeanPostProcessor {
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName)
+    public Object postProcessBeforeInitialization(@Nonnull Object bean, String beanName)
         throws BeansException {
         return bean;
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName)
+    public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName)
         throws BeansException {
         if (bean instanceof AsyncConfigurer
-            && !(bean instanceof OpLogAsyncCustomizer)) {
+            && !(bean instanceof EnhanceableAsyncCustomizer)) {
             AsyncConfigurer configurer = (AsyncConfigurer) bean;
-            return new OpLogAsyncCustomizer(configurer);
+            return new EnhanceableAsyncCustomizer(configurer);
         }
         return bean;
     }

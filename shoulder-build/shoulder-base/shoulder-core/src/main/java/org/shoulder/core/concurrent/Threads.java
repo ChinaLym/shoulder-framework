@@ -164,7 +164,7 @@ public class Threads {
             log.info("no threadPool need shutdown.");
             return;
         }
-        log.debug("shutdown start...");
+        log.debug("prepare shutdown");
         try {
             SHOULDER_THREAD_POOL.shutdown();
         } catch (Exception e) {

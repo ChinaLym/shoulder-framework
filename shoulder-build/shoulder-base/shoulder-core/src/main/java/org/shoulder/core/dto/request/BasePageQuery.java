@@ -30,13 +30,13 @@ public class BasePageQuery<T> implements Serializable {
     /**
      * 待排序的字段名称
      */
-    @ApiModelProperty(value = "", dataType = "String", example = "xxx", required = false)
+    @ApiModelProperty(value = "", example = "xxx", required = false)
     private String sortBy;
 
     /**
      * 排序顺序 asc | desc
      */
-    @ApiModelProperty(value = "", dataType = "String", example = "asc", required = false)
+    @ApiModelProperty(value = "", example = "asc", required = false)
     private String order = DEFAULT_ORDER;
 
     private T condition;

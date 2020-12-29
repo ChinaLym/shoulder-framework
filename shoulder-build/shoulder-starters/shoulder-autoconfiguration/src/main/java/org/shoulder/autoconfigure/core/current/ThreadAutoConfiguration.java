@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.core;
+package org.shoulder.autoconfigure.core.current;
 
 import org.shoulder.core.concurrent.Threads;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

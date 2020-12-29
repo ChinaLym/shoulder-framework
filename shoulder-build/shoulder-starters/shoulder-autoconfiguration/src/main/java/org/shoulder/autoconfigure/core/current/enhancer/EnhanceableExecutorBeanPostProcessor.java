@@ -1,10 +1,10 @@
-package org.shoulder.autoconfigure.operation.async;
+package org.shoulder.autoconfigure.core.current.enhancer;
 
 import org.aopalliance.aop.Advice;
-import org.shoulder.log.operation.async.executors.OpLogAsyncListenableTaskExecutor;
-import org.shoulder.log.operation.async.executors.OpLogAsyncTaskExecutor;
-import org.shoulder.log.operation.async.executors.OpLogExecutor;
-import org.shoulder.log.operation.async.executors.OpLogExecutorService;
+import org.shoulder.core.concurrent.enhance.EnhanceableAsyncListenableTaskExecutor;
+import org.shoulder.core.concurrent.enhance.EnhanceableAsyncTaskExecutor;
+import org.shoulder.core.concurrent.enhance.EnhanceableExecutor;
+import org.shoulder.core.concurrent.enhance.EnhanceableExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopConfigException;
@@ -24,14 +24,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 /**
- * 自动包装所有线程池
- * 自动继承操作日志相关线程变量，并自动清理
+ * 自动包装所有线程池，实现自动增强
  *
  * @author lym
  */
-public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
+public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
 
-    private static final Logger log = LoggerFactory.getLogger(OpLogExecutorBeanPostProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(EnhanceableExecutorBeanPostProcessor.class);
 
     @Override
     public Object postProcessBeforeInitialization(@Nonnull Object bean, String beanName)
@@ -45,24 +44,24 @@ public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
         throws BeansException {
         // 只处理 Executor
         if (bean instanceof Executor) {
-            log.info("OperationLogExecutorSupport: Wrapped Executor " + beanName);
+            log.info("EnhanceableExecutorSupport: Wrapped Executor " + beanName);
             // spring 的可监听的异步线程池
             if (bean instanceof AsyncListenableTaskExecutor
-                && !(bean instanceof OpLogAsyncListenableTaskExecutor)) {
+                && !(bean instanceof EnhanceableAsyncListenableTaskExecutor)) {
                 return wrapAsyncListenableTaskExecutor(bean);
             }
             // spring 的可监听的异步线程池
             else if (bean instanceof AsyncTaskExecutor
-                && !(bean instanceof OpLogAsyncTaskExecutor)) {
+                && !(bean instanceof EnhanceableAsyncTaskExecutor)) {
                 return wrapAsyncTaskExecutor(bean);
             }
             // jdk 的线程池
             else if (bean instanceof ExecutorService
-                && !(bean instanceof OpLogExecutorService)) {
+                && !(bean instanceof EnhanceableExecutorService)) {
                 return wrapExecutorService(bean);
             }
             // jdk 的执行器
-            else if (!(bean instanceof OpLogExecutor)) {
+            else if (!(bean instanceof EnhanceableExecutor)) {
                 return wrapExecutor(bean);
             }
         }
@@ -122,26 +121,22 @@ public class OpLogExecutorBeanPostProcessor implements BeanPostProcessor {
 
     // =========================== 包装实现（创建代理） =====================================
 
-    Object createAsyncListenableTaskExecutorProxy(Object bean, boolean cglibProxy,
-                                                  AsyncListenableTaskExecutor executor) {
+    private Object createAsyncListenableTaskExecutorProxy(Object bean, boolean cglibProxy, AsyncListenableTaskExecutor executor) {
         return getProxiedObject(bean, cglibProxy, executor,
-            () -> new OpLogAsyncListenableTaskExecutor(executor));
+            () -> new EnhanceableAsyncListenableTaskExecutor(executor));
     }
 
-    Object createAsyncTaskExecutorProxy(Object bean, boolean cglibProxy,
-                                        AsyncTaskExecutor executor) {
+    private Object createAsyncTaskExecutorProxy(Object bean, boolean cglibProxy, AsyncTaskExecutor executor) {
         return getProxiedObject(bean, cglibProxy, executor,
-            () -> new OpLogAsyncTaskExecutor(executor));
+            () -> new EnhanceableAsyncTaskExecutor(executor));
     }
 
-    Object createExecutorServiceProxy(Object bean, boolean cglibProxy,
-                                      ExecutorService executor) {
+    private Object createExecutorServiceProxy(Object bean, boolean cglibProxy, ExecutorService executor) {
         return getProxiedObject(bean, cglibProxy, executor,
-            () -> new OpLogExecutorService(executor));
+            () -> new EnhanceableExecutorService(executor));
     }
 
-    private Object getProxiedObject(Object bean, boolean cglibProxy, Executor executor,
-                                    Supplier<Executor> supplier) {
+    private Object getProxiedObject(Object bean, boolean cglibProxy, Executor executor, Supplier<Executor> supplier) {
         ProxyFactoryBean factory = new ProxyFactoryBean();
         factory.setProxyTargetClass(cglibProxy);
         factory.addAdvice(

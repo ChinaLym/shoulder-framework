@@ -39,20 +39,20 @@ public class BatchRecordDetailResult {
      *
      * @see BatchResultEnum
      */
-    @ApiModelProperty(value = "失败原因:错误码", dataType = "String", example = "用户名已存在", position = 3)
+    @ApiModelProperty(value = "失败原因:错误码", example = "用户名已存在", position = 3)
     private String reason;
 
     /**
      * 用于填充翻译项
      */
-    @ApiModelProperty(value = "错误码对应翻译的填充参数", dataType = "String", example = "[\"xiaoming\"]",
+    @ApiModelProperty(value = "错误码对应翻译的填充参数", example = "[\"xiaoming\"]",
         position = 4)
     private List<String> reasonParam;
 
     /**
      * 处理的原始数据
      */
-    @ApiModelProperty(required = true, value = "失败原因:错误码", dataType = "String", example = "用户名已存在", position = 5)
+    @ApiModelProperty(required = true, value = "失败原因:错误码", example = "用户名已存在", position = 5)
     private String source;
 
 

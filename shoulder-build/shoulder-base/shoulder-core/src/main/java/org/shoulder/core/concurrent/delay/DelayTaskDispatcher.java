@@ -37,7 +37,7 @@ public class DelayTaskDispatcher implements Runnable {
      */
     public synchronized void start() {
         if (running) {
-            log.debug("invalid operation, already running.");
+            log.warn("invalid operation 'start', already running.");
             return;
         }
         running = true;
