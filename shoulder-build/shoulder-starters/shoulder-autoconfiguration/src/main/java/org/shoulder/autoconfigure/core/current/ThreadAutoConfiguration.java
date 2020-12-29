@@ -1,14 +1,14 @@
 package org.shoulder.autoconfigure.core.current;
 
 import org.shoulder.core.concurrent.Threads;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.shoulder.core.util.ContextUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
-import javax.annotation.Nonnull;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -33,19 +33,11 @@ public class ThreadAutoConfiguration {
 
 
     /**
-     * 自动注册
+     * 自动注册，保证 Threads 中使用的是经过增强的
      */
     @Bean
-    public BeanPostProcessor threadEnhancePostProcessor() {
-        return new BeanPostProcessor() {
-            @Override
-            public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName) throws BeansException {
-                if (bean instanceof ExecutorService && Threads.SHOULDER_THREAD_POOL_NAME.equals(beanName)) {
-                    Threads.setExecutorService((ExecutorService) bean);
-                }
-                return bean;
-            }
-        };
+    public ApplicationListener<ContextRefreshedEvent> shoulderThreadsUtilPostProcessor() {
+        return event -> Threads.setExecutorService(ContextUtils.getBean(Threads.SHOULDER_THREAD_POOL_NAME));
     }
 
 }

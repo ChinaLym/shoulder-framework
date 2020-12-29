@@ -39,12 +39,12 @@ public class Threads {
     private static DelayTaskHolder DELAY_TASK_HOLDER;
 
 
-    public static void setExecutorService(ExecutorService executorService) {
+    public static synchronized void setExecutorService(ExecutorService executorService) {
         Threads.SHOULDER_THREAD_POOL = executorService;
         log.info("Threads' DEFAULT_THREAD_POOL has changed to " + executorService);
     }
 
-    public static void setDelayTaskHolder(DelayTaskHolder delayTaskHolder) {
+    public static synchronized void setDelayTaskHolder(DelayTaskHolder delayTaskHolder) {
         Threads.DELAY_TASK_HOLDER = delayTaskHolder;
         log.info("Threads' DELAY_TASK_HOLDER has changed to " + delayTaskHolder);
     }
@@ -98,12 +98,16 @@ public class Threads {
     public static void execute(Runnable runnable) {
         // 是否去掉 null 判断，这里应该认为一定不为空
         if (SHOULDER_THREAD_POOL == null) {
-            log.warn("not set threadPool fall back: use bean named '{}' in context.", SHOULDER_THREAD_POOL_NAME);
-            Object threadPoolBean = ContextUtils.getBean(SHOULDER_THREAD_POOL_NAME);
-            if (threadPoolBean instanceof ExecutorService) {
-                setExecutorService((ExecutorService) threadPoolBean);
+            synchronized (Threads.class) {
+                if (SHOULDER_THREAD_POOL == null) {
+                    log.warn("not set threadPool fall back: use bean named '{}' in context.", SHOULDER_THREAD_POOL_NAME);
+                    Object threadPoolBean = ContextUtils.getBean(SHOULDER_THREAD_POOL_NAME);
+                    if (threadPoolBean instanceof ExecutorService) {
+                        setExecutorService((ExecutorService) threadPoolBean);
+                    }
+                    throw new IllegalStateException("Need invoke setExecutorService first!");
+                }
             }
-            throw new IllegalStateException("Need invoke setExecutorService first!");
         }
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "delay", true);
