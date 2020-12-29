@@ -20,7 +20,7 @@ public class OperationDemoService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        //
+        // 可以对比 operation 字段是否与 Controller 中传递的相同
         System.out.println("操作日志上下文支持 @Async 自动跨线程测试： asyncTest:" + (OpLogContextHolder.getLog() != null));
     }
 

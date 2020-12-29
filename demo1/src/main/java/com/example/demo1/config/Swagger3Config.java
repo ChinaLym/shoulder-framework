@@ -1,5 +1,6 @@
 package com.example.demo1.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import org.shoulder.core.context.AppInfo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import java.util.List;
  * swagger3 config
  * <p>
  * 查看swagger-ui界面 http://127.0.0.1:8080/swagger-ui/index.html
+ * http://localhost:8080/doc.html
  * <p>
  * 利用注解配置 https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations#quick-annotation-overview
  *
@@ -67,6 +69,7 @@ import java.util.List;
         bearerFormat = "JWT",
         scheme = "bearer"
 )*/
+@EnableKnife4j
 @Configuration
 @EnableOpenApi
 public class Swagger3Config {
@@ -135,7 +138,7 @@ public class Swagger3Config {
     private List<Response> getGlobalResponseMessage() {
         List<Response> responseList = new ArrayList<>();
         responseList.add(new ResponseBuilder().code("200").description("操作成功").build());
-        responseList.add(new ResponseBuilder().code("201").description("修改数据成功").build());
+        /*responseList.add(new ResponseBuilder().code("201").description("修改数据成功").build());
         responseList.add(new ResponseBuilder().code("202").description("命令下发成功").build());
         responseList.add(new ResponseBuilder().code("204").description("操作成功（无返回值）").build());
         responseList.add(new ResponseBuilder().code("400").description("参数错误").build());
@@ -143,7 +146,7 @@ public class Swagger3Config {
         responseList.add(new ResponseBuilder().code("403").description("权限不够，操作拒绝").build());
         responseList.add(new ResponseBuilder().code("404").description("找不到资源").build());
         responseList.add(new ResponseBuilder().code("405").description("执行方法无效").build());
-        responseList.add(new ResponseBuilder().code("429").description("触发限流").build());
+        responseList.add(new ResponseBuilder().code("429").description("触发限流").build());*/
         return responseList;
     }
 

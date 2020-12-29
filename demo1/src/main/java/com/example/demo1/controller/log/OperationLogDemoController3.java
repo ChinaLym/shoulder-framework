@@ -74,7 +74,6 @@ public class OperationLogDemoController3 {
     @OperationLog(operation = "crossThread")
     @GetMapping("crossThread")
     public String crossThread() {
-
         // 随便填充点东西，看看异步线程里能不能看到
         OpLogContextHolder.getContextOrException().getOperationLog()
                 .setObjectId("objId")

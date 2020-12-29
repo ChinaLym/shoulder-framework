@@ -1,5 +1,6 @@
 package com.example.demo1.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Data;
  * @author lym
  */
 @Data
+@ApiModel("接口响应统一返回值包装类 Restful 风格")
 public class ShopDTO2 {
 
     String id;
