@@ -118,9 +118,9 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
             SensitiveFieldCache.handleSensitiveData(toEncryptDTO, sensitiveFieldWrapperList, responseEncryptCipher);
 
             HttpHeaders responseHeaders = response.getHeaders();
-            responseHeaders.add("Token", transportCryptoUtil.generateToken(xSessionId, responseX_Dk));
-            responseHeaders.add("xSessionId", cacheNegotiationResult.getxSessionId());
-            responseHeaders.add("xDk", responseX_Dk);
+            responseHeaders.add(NegotiationConstants.TOKEN, transportCryptoUtil.generateToken(xSessionId, responseX_Dk));
+            responseHeaders.add(NegotiationConstants.SECURITY_SESSION_ID, cacheNegotiationResult.getxSessionId());
+            responseHeaders.add(NegotiationConstants.SECURITY_DATA_KEY, responseX_Dk);
         } catch (AsymmetricCryptoException e) {
             log.warn("token generate fail!", e);
             throw new RuntimeException("token generate fail!", e);

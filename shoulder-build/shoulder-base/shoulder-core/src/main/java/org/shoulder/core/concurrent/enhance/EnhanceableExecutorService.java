@@ -1,7 +1,4 @@
-package org.shoulder.log.operation.async.executors;
-
-import org.shoulder.log.operation.async.OpLogCallable;
-import org.shoulder.log.operation.async.OpLogRunnable;
+package org.shoulder.core.concurrent.enhance;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -15,11 +12,11 @@ import java.util.concurrent.*;
  *
  * @author lym
  */
-public class OpLogExecutorService implements ExecutorService {
+public class EnhanceableExecutorService implements ExecutorService {
 
     private final ExecutorService delegate;
 
-    public OpLogExecutorService(ExecutorService delegate) {
+    public EnhanceableExecutorService(ExecutorService delegate) {
         this.delegate = delegate;
     }
 
@@ -52,19 +49,19 @@ public class OpLogExecutorService implements ExecutorService {
     @Nonnull
     @Override
     public <T> Future<T> submit(@Nonnull Callable<T> task) {
-        return this.delegate.submit(new OpLogCallable<>(task));
+        return this.delegate.submit(ThreadEnhanceHelper.doEnhance(task));
     }
 
     @Nonnull
     @Override
     public <T> Future<T> submit(@Nonnull Runnable task, T result) {
-        return this.delegate.submit(new OpLogRunnable(task), result);
+        return this.delegate.submit(ThreadEnhanceHelper.doEnhance(task), result);
     }
 
     @Nonnull
     @Override
     public Future<?> submit(@Nonnull Runnable task) {
-        return this.delegate.submit(new OpLogRunnable(task));
+        return this.delegate.submit(ThreadEnhanceHelper.doEnhance(task));
     }
 
     @Nonnull
@@ -76,9 +73,7 @@ public class OpLogExecutorService implements ExecutorService {
     private <T> Collection<? extends Callable<T>> wrapCallableCollection(Collection<? extends Callable<T>> tasks) {
         List<Callable<T>> ts = new ArrayList<>(tasks.size());
         for (Callable<T> task : tasks) {
-            if (!(task instanceof OpLogCallable)) {
-                ts.add(new OpLogCallable<>(task));
-            }
+            ts.add(ThreadEnhanceHelper.doEnhance(task));
         }
         return ts;
     }
@@ -103,6 +98,6 @@ public class OpLogExecutorService implements ExecutorService {
 
     @Override
     public void execute(@Nonnull Runnable command) {
-        this.delegate.execute(new OpLogRunnable(command));
+        this.delegate.execute(ThreadEnhanceHelper.doEnhance(command));
     }
 }

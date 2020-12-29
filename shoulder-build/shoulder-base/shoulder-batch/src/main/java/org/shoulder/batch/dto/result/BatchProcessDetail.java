@@ -38,13 +38,13 @@ public class BatchProcessDetail {
      *
      * @see BatchResultEnum
      */
-    @ApiModelProperty(value = "失败原因-错误码", dataType = "String", example = "用户名已存在", position = 3)
+    @ApiModelProperty(value = "失败原因-错误码", example = "用户名已存在", position = 3)
     private String errorCode;
 
     /**
      * 失败原因参数
      */
-    @ApiModelProperty(value = "错误码对应翻译的填充参数", dataType = "String", example = "[\"xiaoming\"]",
+    @ApiModelProperty(value = "错误码对应翻译的填充参数", example = "[\"xiaoming\"]",
         position = 4)
     private List<String> reasonParam;
 

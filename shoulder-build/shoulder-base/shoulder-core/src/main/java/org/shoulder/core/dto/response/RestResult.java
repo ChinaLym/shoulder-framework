@@ -26,15 +26,15 @@ import java.util.Map;
 //@Schema(name = "接口响应统一返回值包装类 Restful 风格")
 public class RestResult<T> implements Serializable {
 
-    @ApiModelProperty(value = "状态码/错误码，成功为0，失败非0，必定返回", dataType = "String", required = true, example = "0", position = 0)
+    @ApiModelProperty(value = "状态码/错误码，成功为0，失败非0，必定返回", required = true, example = "0", position = 0)
     //@Schema(name = "状态码/错误码，成功为0，失败非0", example = "0")
     private String code = "0";
 
-    @ApiModelProperty(value = "响应描述，成功时一般不需要该值，必定返回", dataType = "String", required = false, example = "success", position = 1)
+    @ApiModelProperty(value = "响应描述，成功时一般不需要该值，必定返回", example = "success", position = 1)
     //@Schema(name = "响应描述，成功时一般不需要该值", example = "success")
     private String msg = "success";
 
-    @ApiModelProperty(value = "传输的数据", dataType = "Object", required = false, example = "{\"name\":\"shoulder\"}", position = 2)
+    @ApiModelProperty(value = "传输的数据", dataType = "Object", example = "{\"name\":\"shoulder\"}", position = 2)
     //@Schema(name = "传输的数据")
     private T data;
 

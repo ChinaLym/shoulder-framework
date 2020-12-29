@@ -20,9 +20,9 @@ public enum NegotiationErrorCodeEnum implements ErrorCode {
     // ------------------------------- 对称加解密 -----------------------------
 
     /**
-     * 参数错误:参数Secusid 为空未传...
+     * 参数错误:安全会话参数缺失（xSessionId、token、xDk）
      */
-    MISSING_REQUIRED_PARAM(5501, "negotiation param missing", Level.WARN, HttpStatus.BAD_REQUEST),
+    MISSING_REQUIRED_PARAM(5501, "negotiation session param missing", Level.WARN, HttpStatus.BAD_REQUEST),
 
     /**
      * 协商失败

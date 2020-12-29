@@ -12,6 +12,7 @@ import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -65,8 +66,9 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             log.debug("xSessionId: {}, xDk: {}, token: {}.", xSessionId, xDk, token);
         }
         if (StringUtils.isEmpty(xSessionId) || StringUtils.isEmpty(xDk) || StringUtils.isEmpty(token)) {
-            // xSessionId 没有说明不是一个 ecdh 请求；没有 xDk 仅出现在密钥协商阶段；没有 token不能保证安全
+            // xSessionId 没有说明不是一个 ecdh 请求；没有 xDk 仅出现在密钥协商阶段；没有 token 不能保证安全
             log.debug("reject for invalid security headers.");
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             RestResult r = RestResult.error(NegotiationErrorCodeEnum.MISSING_REQUIRED_PARAM);
             response.getWriter().write(JsonUtils.toJson(r));

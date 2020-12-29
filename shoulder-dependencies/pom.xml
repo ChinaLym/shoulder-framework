@@ -34,19 +34,15 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- api-doc OPEN-API2 -->
-        <swagger.version>1.6.2</swagger.version>
-        <!-- 使用 springfox 解析文档，管理 swagger2 的版本号 -->
-        <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
+        <!-- api-doc -->
+        <swagger2.version>1.6.2</swagger2.version>
+        <!-- openApi(swagger)是行业标准，swagger 1.7 更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
+        <swagger3.version>2.1.2</swagger3.version>
+
+        <!-- 使用 springfox 解析文档 -->
         <springfox.version>3.0.0</springfox.version>
         <!-- knife4j 前身是 swagger-bootstrap-ui，一个用于优化 swagger-ui 的项目，视觉效果更好 -->
         <knife4j.version>3.0.2</knife4j.version>
-
-        <!-- api-doc OPEN-API3 -->
-        <!-- openApi(swagger)是行业标准，swagger 17更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
-        <swagger3.version>2.1.2</swagger3.version>
-        <!-- springdoc-openapi 是一个基于 oenapi3（swagger3）的，类似于springfox与swagger2的关系，它可能是未来 -->
-        <springdoc-openapi.version>1.3.0</springdoc-openapi.version>
 
         <!-- apache-common-tools -->
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
@@ -70,7 +66,7 @@
 
         <guava.version>29.0-jre</guava.version>
         <findbugs-annotations.version>3.0.0</findbugs-annotations.version>
-        <alibaba.transmittable.version>2.11.5</alibaba.transmittable.version>
+        <alibaba.transmittable.version>2.12.0</alibaba.transmittable.version>
 
         <bcprov.jdk15on.version>1.66</bcprov.jdk15on.version>
         <bcpkix.jdk15on.version>1.66</bcpkix.jdk15on.version>
@@ -311,71 +307,37 @@
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-annotations</artifactId>
-                <version>${swagger.version}</version>
+                <version>${swagger2.version}</version>
             </dependency>
 
-            <!--<dependency>
+            <dependency>
                 <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox-swagger2.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>io.swagger</groupId>
-                        <artifactId>swagger-annotations</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>io.swagger</groupId>
-                        <artifactId>swagger-models</artifactId>
-                    </exclusion>
-                </exclusions>
+                <artifactId>springfox-core</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger3.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>io.swagger</groupId>
-                <artifactId>swagger-models</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-            &lt;!&ndash;springfox-bean-validators 用来支持 JSR 303 @ NotNull，@ Min，@ Max，@Size &ndash;&gt;
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-bean-validators</artifactId>
-                <version>${springfox-swagger2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-core</artifactId>
-                <version>${springfox-swagger2.version}</version>
-            </dependency>-->
-
-            <!--<dependency>
-                <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations</artifactId>
-                <version>${swagger3.version}</version>
-                <optional>true</optional>
-            </dependency>-->
-
-            <!-- swagger3 springboot 2.2.x可能不支持，2.1.x支持 -->
-            <!--<dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-webmvc-core</artifactId>
-                <version>${springdoc-openapi.version}</version>
-            </dependency>-->
-            <!--<dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-ui</artifactId>
-                <version>${springdoc-openapi.version}</version>
-            </dependency>-->
-            <!--<dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-security</artifactId>
-                <version>${springdoc-openapi.version}</version>
-            </dependency>-->
-
+                <version>1.6.2</version>
+            </dependency>
 
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-boot-starter</artifactId>
                 <version>3.0.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-ui</artifactId>
+                <version>${knife4j.version}</version>
             </dependency>
 
             <dependency>
@@ -502,7 +464,7 @@
                 <version>${mapstruct.version}</version>
             </dependency>
 
-            <!-- inheritable threadLocal -->
+            <!-- inheritable threadLocal https://github.com/alibaba/transmittable-thread-local/releases -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>transmittable-thread-local</artifactId>

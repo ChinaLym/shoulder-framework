@@ -65,7 +65,10 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
             String aimServiceAppId = appIdExtractor.extract(request.getURI());
             negotiationResultCache.delete(aimServiceAppId, true);
             NegotiationResultCache.CLIENT_LOCAL_CACHE.remove();
-            log.warn("sensitive request FAIL for response with a invalid negotiation(xSessionId) mark, clean the negotiation cache.");
+            List<String> xSessionIdInHeader = request.getHeaders().get(NegotiationConstants.SECURITY_SESSION_ID);
+            String xSessionId = CollectionUtils.isEmpty(xSessionIdInHeader) ? "" : xSessionIdInHeader.get(0);
+            log.warn("sensitive request to {} '{}' FAIL for response with a invalid xSessionId({}) mark, clean the negotiation cache.",
+                aimServiceAppId, request.getURI(), xSessionId);
             // } else {
             // 对方未遵守约定，只返回了标记，未返回错误码
             //     log.warn("invalid response");

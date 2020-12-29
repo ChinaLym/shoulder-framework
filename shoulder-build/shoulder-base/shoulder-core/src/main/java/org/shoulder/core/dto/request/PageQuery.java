@@ -37,13 +37,13 @@ public class PageQuery implements Serializable {
     /**
      * 待排序的字段名称
      */
-    @ApiModelProperty(value = "", dataType = "String", example = "xxx")
+    @ApiModelProperty(value = "", example = "xxx")
     private String sortBy;
 
     /**
      * 排序顺序 asc | desc
      */
-    @ApiModelProperty(value = "", dataType = "String", example = "asc")
+    @ApiModelProperty(value = "", example = "asc")
     private String order = DEFAULT_ORDER;
 
     public PageQuery() {

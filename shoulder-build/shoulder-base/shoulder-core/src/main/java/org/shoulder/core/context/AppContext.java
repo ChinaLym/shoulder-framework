@@ -15,7 +15,6 @@ import java.util.Map;
 /**
  * 当前应用（请求）上下文中的值，作为 Holder 的角色，维护当前请求中一些常用的数据。
  * 推荐在调用的地方记录 debug 日志
- * todo 是否实现自动跨线程，如何实现，注意 @Async 注解支持
  *
  * @author lym
  */
@@ -194,6 +193,14 @@ public class AppContext {
      */
     public static void setAttributes(Map<String, Object> contextMap) {
         THREAD_LOCAL.set(contextMap);
+    }
+
+    public static Map<String, Object> getAll() {
+        return THREAD_LOCAL.get();
+    }
+
+    public static void set(Map<String, Object> attributes) {
+        THREAD_LOCAL.set(attributes);
     }
 
 }

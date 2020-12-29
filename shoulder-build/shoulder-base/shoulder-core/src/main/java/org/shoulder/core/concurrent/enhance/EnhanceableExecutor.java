@@ -1,6 +1,4 @@
-package org.shoulder.log.operation.async.executors;
-
-import org.shoulder.log.operation.async.OpLogRunnable;
+package org.shoulder.core.concurrent.enhance;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.Executor;
@@ -10,16 +8,16 @@ import java.util.concurrent.Executor;
  *
  * @author lym
  */
-public class OpLogExecutor implements Executor {
+public class EnhanceableExecutor implements Executor {
 
     private final Executor delegate;
 
-    public OpLogExecutor(Executor delegate) {
+    public EnhanceableExecutor(Executor delegate) {
         this.delegate = delegate;
     }
 
     @Override
     public void execute(@Nonnull Runnable command) {
-        this.delegate.execute(new OpLogRunnable(command));
+        this.delegate.execute(ThreadEnhanceHelper.doEnhance(command));
     }
 }
