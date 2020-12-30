@@ -4,9 +4,9 @@ import org.shoulder.core.i18.Translatable;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 /**
@@ -38,6 +38,13 @@ public interface ErrorCode extends Translatable {
 
     /**
      * 获取完整错误码
+     * long -> String
+     * <code>String.format("0x%08x", code)<code/>
+     * 或
+     * <code>
+     * String hex = Long.toHexString(code);
+     * this.code = "0x" + "0".repeat(Math.max(0, 8 - hex.length())) + hex;
+     * <code/>
      *
      * @return 错误码
      */
@@ -65,6 +72,7 @@ public interface ErrorCode extends Translatable {
 
     /**
      * 补充翻译需要参数
+     *
      * @return 翻译需要参数
      */
     @Override
@@ -75,6 +83,7 @@ public interface ErrorCode extends Translatable {
 
     /**
      * 当翻译失败时，返回什么
+     *
      * @return msg
      */
     @Override
@@ -123,8 +132,8 @@ public interface ErrorCode extends Translatable {
     /**
      * 若接口中抛出该错误，返回调用方什么状态码，默认 500 【便于全局异常统一处理，非必需】
      *
-     * @deprecated shoulder 默认全都使用 200
      * @return httpStatusCode
+     * @deprecated shoulder 默认全都使用 200
      */
     @Nonnull
     default HttpStatus getHttpStatusCode() {

@@ -82,7 +82,8 @@ public enum ParamErrorCodeEnum implements ErrorCode {
     }
 
     ParamErrorCodeEnum(long code, String message, Level logLevel, HttpStatus httpStatus) {
-        this.code = Long.toHexString(code);
+        String hex = Long.toHexString(code);
+        this.code = "0x" + "0".repeat(Math.max(0, 8 - hex.length())) + hex;
         this.message = message;
         this.logLevel = logLevel;
         this.httpStatus = httpStatus;

@@ -15,15 +15,18 @@ public enum CommonErrorCodeEnum implements ErrorCode {
 
     // ------------------------------- 认证 -----------------------------
     /**
-     * 未认证，需要认证后才能访问
+     * @desc 未认证，需要认证后才能访问
+     * @sug 先进行认证，再访问服务
      */
     AUTH_401_NEED_AUTH(1, "Need Authentication.", Level.INFO, HttpStatus.UNAUTHORIZED),
     /**
-     * 认证失败：如用户名或密码凭据无效、由于白名单等被拒绝、未开启匿名访问等
+     * @desc 认证失败：如用户名或密码凭据无效、由于白名单等被拒绝、未开启匿名访问等
+     * @sug 检查认证凭证是否正确且在有效期内
      */
     AUTH_401_UNAUTHORIZED(2, "Authentication failed.", Level.INFO, HttpStatus.UNAUTHORIZED),
     /**
-     * 认证过期，需要重新认证
+     * @desc 认证过期，需要重新认证
+     * @sug
      */
     AUTH_401_EXPIRED(3, "Certification expired. Re-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
 
@@ -113,7 +116,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
 
     // ----------------------- 并发、达到瓶颈 error 级别 返回 500 ----------------------
 
-    SERVER_BUSY(1, "server is busy, try again later.", Level.ERROR),
+    SERVER_BUSY(399, "server is busy, try again later.", Level.ERROR),
 
 
     // ----------------------- 与中间件操作异常，代码正确时，常发于中间件宕机 ----------------------
@@ -147,7 +150,8 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     }
 
     CommonErrorCodeEnum(long code, String message, Level logLevel, HttpStatus httpStatus) {
-        this.code = Long.toHexString(code);
+        String hex = Long.toHexString(code);
+        this.code = "0x" + "0".repeat(Math.max(0, 8 - hex.length())) + hex;
         this.message = message;
         this.logLevel = logLevel;
         this.httpStatus = httpStatus;
