@@ -174,13 +174,14 @@
             </plugin>
 
             <!-- 自动生成错误码以及对应的翻译 -->
-            <!--<plugin>
+            <plugin>
                 <groupId>cn.itlym.shoulder</groupId>
                 <artifactId>errcode-maven-plugin</artifactId>
                 <version>0.1-SNAPSHOT</version>
                 <configuration>
                     <errorCodePrefix>0x0001</errorCodePrefix>
                     <scanPackage>org.shoulder.core</scanPackage>
+                    <useCache>true</useCache>
                 </configuration>
                 <executions>
                     <execution>
@@ -191,7 +192,19 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-web</artifactId>
+                        <version>5.2.11.RELEASE</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                        <version>5.2.11.RELEASE</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
 
         </plugins>
 
