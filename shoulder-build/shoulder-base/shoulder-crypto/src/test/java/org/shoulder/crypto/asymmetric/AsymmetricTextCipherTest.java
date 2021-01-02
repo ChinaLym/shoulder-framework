@@ -24,7 +24,7 @@ public class AsymmetricTextCipherTest {
     public void testCrypt() throws Exception {
         String text = "hello, shoulder";
         String cipher = textCipher.encrypt(text);
-        String decrypt = textCipher.decrypt(text);
+        String decrypt = textCipher.decrypt(cipher);
 
         Assertions.assertThat(text).isNotEqualTo(cipher);
         Assertions.assertThat(text).isEqualTo(decrypt);

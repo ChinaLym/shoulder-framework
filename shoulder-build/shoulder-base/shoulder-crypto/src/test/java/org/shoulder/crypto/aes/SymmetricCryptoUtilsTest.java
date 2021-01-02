@@ -3,6 +3,7 @@ package org.shoulder.crypto.aes;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
+import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
 
 import java.nio.charset.StandardCharsets;
 
@@ -12,6 +13,10 @@ import java.nio.charset.StandardCharsets;
  * @author lym
  */
 public class SymmetricCryptoUtilsTest {
+
+    private SymmetricCipher symmetricCipher = DefaultSymmetricCipher.getFlyweight(
+        SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName()
+    );
 
     /**
      * 测试 aes
@@ -32,7 +37,7 @@ public class SymmetricCryptoUtilsTest {
             1, 2, 3, 4, 5, 6};
 
         // 解密后的加密过的明文
-        byte[] processedData = SymmetricCryptoUtils.decrypt(SymmetricCryptoUtils.encrypt(text, key, iv), key, iv);
+        byte[] processedData = symmetricCipher.decrypt(key, iv, symmetricCipher.encrypt(key, iv, text));
         Assertions.assertThat(text).isEqualTo(processedData);
     }
 
@@ -55,7 +60,7 @@ public class SymmetricCryptoUtilsTest {
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
         // 解密后的加密过的明文
-        byte[] processedData = SymmetricCryptoUtils.decrypt(SymmetricCryptoUtils.encrypt(text, key, iv), key, iv);
+        byte[] processedData = symmetricCipher.decrypt(key, iv, symmetricCipher.encrypt(key, iv, text));
         Assertions.assertThat(text).isEqualTo(processedData);
     }
 
@@ -77,7 +82,7 @@ public class SymmetricCryptoUtilsTest {
             1, 2, 3, 4, 5, 6};
 
         // 解密后的加密过的明文
-        byte[] processedData = SymmetricCryptoUtils.decrypt(SymmetricCryptoUtils.encrypt(text, key, iv), key, iv);
+        byte[] processedData = symmetricCipher.decrypt(key, iv, symmetricCipher.encrypt(key, iv, text));
         Assertions.assertThat(text).isEqualTo(processedData);
     }
 
