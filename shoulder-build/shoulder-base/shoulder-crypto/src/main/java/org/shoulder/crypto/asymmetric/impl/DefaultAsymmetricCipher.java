@@ -89,7 +89,7 @@ public class DefaultAsymmetricCipher implements AsymmetricCipher, ByteSpecificat
         return new DefaultAsymmetricCipher(
             "EC",
             256,
-            "ECDH",
+            "ECIES",
             "SHA256withECDSA",
             BouncyCastleProvider.PROVIDER_NAME,
             keyPairCache
