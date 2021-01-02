@@ -1,10 +1,10 @@
 package org.shoulder.autoconfigure.crypto;
 
-import org.shoulder.crypto.aes.SymmetricAlgorithmEnum;
-import org.shoulder.crypto.aes.SymmetricCipher;
-import org.shoulder.crypto.aes.SymmetricTextCipher;
-import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
-import org.shoulder.crypto.aes.impl.DefaultSymmetricTextCipher;
+import org.shoulder.crypto.symmetric.SymmetricAlgorithmEnum;
+import org.shoulder.crypto.symmetric.SymmetricCipher;
+import org.shoulder.crypto.symmetric.SymmetricTextCipher;
+import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;
+import org.shoulder.crypto.symmetric.impl.DefaultSymmetricTextCipher;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

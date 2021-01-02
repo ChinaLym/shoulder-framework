@@ -1,9 +1,9 @@
-package org.shoulder.crypto.aes;
+package org.shoulder.crypto.symmetric;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
-import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
+import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;
 
 import java.nio.charset.StandardCharsets;
 

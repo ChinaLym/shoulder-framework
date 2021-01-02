@@ -1,7 +1,7 @@
 package org.shoulder.crypto.stream;
 
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
-import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
+import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;
 
 import javax.crypto.Cipher;
 import java.io.*;

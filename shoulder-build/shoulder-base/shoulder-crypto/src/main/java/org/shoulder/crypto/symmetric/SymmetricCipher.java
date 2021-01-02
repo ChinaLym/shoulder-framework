@@ -1,6 +1,6 @@
-package org.shoulder.crypto.aes;
+package org.shoulder.crypto.symmetric;
 
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 
 /**
  * 执行对称算法的处理工具。
