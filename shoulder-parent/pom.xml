@@ -31,6 +31,9 @@
         <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
+        <errcode-maven-plugin.version>0.1-SNAPSHOT</errcode-maven-plugin.version>
+        <shoulder-framework.errcode-prefix>0x0000</shoulder-framework.errcode-prefix>
+
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
 
     </properties>
@@ -358,6 +361,30 @@
                             </manifestEntries>
                         </archive>
                     </configuration>
+                </plugin>
+
+                <!-- shoulder 开发的错误码插件 -->
+                <plugin>
+                    <groupId>cn.itlym.shoulder</groupId>
+                    <artifactId>errcode-maven-plugin</artifactId>
+                    <version>${errcode-maven-plugin.version}</version>
+                    <configuration>
+                        <!-- 【必填】本组件对应的错误码前缀 -->
+                        <!--<errorCodePrefix>0x0000</errorCodePrefix>-->
+                        <!-- 【必填】要生成错误码文件，扫描的包路径，通常为组件错误码枚举/常量类所在包路径，越精确，越能减少插件构建时间 -->
+                        <!--<scanPackage>org.shoulder.core</scanPackage>-->
+                    </configuration>
+                    <executions>
+                        <!-- 开启插件的哪些功能 -->
+                        <execution>
+                            <!-- 在 mvn compile 阶段触发该插件 -->
+                            <phase>compile</phase>
+                            <goals>
+                                <!-- 执行该插件的 生成错误码翻译 能力 -->
+                                <goal>generateErrorCodeInfo</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
 
             </plugins>

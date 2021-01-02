@@ -142,6 +142,44 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return !isBase64(str);
     }
 
+
+    /**
+     * 确保 text 以 endWith 结尾
+     */
+    private static String ensureEndWith(String text, String endWith) {
+        if (isEmpty(text)) {
+            return endWith;
+        }
+        if (isEmpty(endWith)) {
+            return text;
+        }
+        if (text.endsWith(endWith)) {
+            return text;
+        }
+        return text + endWith;
+    }
+
+    private static String toOneLine(String text) {
+        if (text.contains("\r") || text.contains("\n")) {
+            String[] processText = text.split("\r|\n");
+            StringBuilder sb = new StringBuilder(text.length());
+            String line = "";
+            for (int i = 0; i < processText.length; i++) {
+                line = processText[i].trim();
+                if (line.isBlank()) {
+                    // 处理连续多空个行问题
+                    continue;
+                }
+                sb.append(line);
+                sb.append("\\r\\n");
+            }
+            // 去掉尾部的 \r\n 4 个字符
+            return sb.substring(0, sb.length() - 4);
+        } else {
+            return text;
+        }
+    }
+
     /**
      * 将字符串转换为语言和时区
      *
