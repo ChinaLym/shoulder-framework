@@ -1,9 +1,9 @@
 package org.shoulder.crypto.negotiation.cipher;
 
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 
 import javax.annotation.Nonnull;
 

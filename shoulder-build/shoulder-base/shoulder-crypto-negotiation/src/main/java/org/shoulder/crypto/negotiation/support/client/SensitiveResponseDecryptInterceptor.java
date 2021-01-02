@@ -1,6 +1,5 @@
 package org.shoulder.crypto.negotiation.support.client;
 
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -10,6 +9,7 @@ import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.shoulder.http.AppIdExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

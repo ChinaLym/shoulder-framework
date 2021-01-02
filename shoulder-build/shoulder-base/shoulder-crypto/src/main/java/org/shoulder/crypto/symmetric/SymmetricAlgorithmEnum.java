@@ -1,4 +1,4 @@
-package org.shoulder.crypto.aes;
+package org.shoulder.crypto.symmetric;
 
 import java.util.HashSet;
 import java.util.Set;

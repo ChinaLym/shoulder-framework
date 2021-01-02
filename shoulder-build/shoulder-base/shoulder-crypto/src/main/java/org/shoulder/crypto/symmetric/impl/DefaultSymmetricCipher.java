@@ -1,10 +1,10 @@
-package org.shoulder.crypto.aes.impl;
+package org.shoulder.crypto.symmetric.impl;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.crypto.aes.SymmetricCipher;
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
+import org.shoulder.crypto.symmetric.SymmetricCipher;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;

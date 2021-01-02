@@ -1,7 +1,7 @@
-package org.shoulder.crypto.aes;
+package org.shoulder.crypto.symmetric;
 
 
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 
 /**
  * 对称加解密：主要用于本地存储

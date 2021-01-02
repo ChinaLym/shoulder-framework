@@ -1,11 +1,11 @@
-package org.shoulder.crypto.aes.impl;
+package org.shoulder.crypto.symmetric.impl;
 
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.crypto.aes.SymmetricCipher;
-import org.shoulder.crypto.aes.SymmetricTextCipher;
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
+import org.shoulder.crypto.symmetric.SymmetricCipher;
+import org.shoulder.crypto.symmetric.SymmetricTextCipher;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 
 import java.nio.charset.Charset;
 

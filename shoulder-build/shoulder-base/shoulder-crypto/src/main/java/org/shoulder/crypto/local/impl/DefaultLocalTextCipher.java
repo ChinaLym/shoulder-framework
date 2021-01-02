@@ -2,16 +2,16 @@ package org.shoulder.crypto.local.impl;
 
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.ByteUtils;
-import org.shoulder.crypto.aes.SymmetricAlgorithmEnum;
-import org.shoulder.crypto.aes.SymmetricCipher;
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
-import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
 import org.shoulder.crypto.digest.Sha256Utils;
 import org.shoulder.crypto.exception.CipherRuntimeException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
 import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
+import org.shoulder.crypto.symmetric.SymmetricAlgorithmEnum;
+import org.shoulder.crypto.symmetric.SymmetricCipher;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
+import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -149,7 +149,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
                 "cipher's markHeader is {}", cipherTextHeader);
         }
         try {
-            byte[] decryptData = dataCipher.decrypt(cacheInfo.dataKey, cacheInfo.dateIv, Base64.getDecoder().decode(realCipherText));
+            byte[] decryptData = dataCipher.decrypt(cacheInfo.dataKey, cacheInfo.dateIv, ByteSpecification.decodeToBytes(realCipherText));
             return new String(decryptData, CHAR_SET);
         } catch (SymmetricCryptoException e) {
             throw CryptoErrorCodeEnum.DECRYPT_FAIL.toException(e);

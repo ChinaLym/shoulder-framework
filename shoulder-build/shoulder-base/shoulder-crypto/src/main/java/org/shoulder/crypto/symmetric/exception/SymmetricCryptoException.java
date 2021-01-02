@@ -1,4 +1,4 @@
-package org.shoulder.crypto.aes.exception;
+package org.shoulder.crypto.symmetric.exception;
 
 import org.shoulder.crypto.exception.CryptoException;
 

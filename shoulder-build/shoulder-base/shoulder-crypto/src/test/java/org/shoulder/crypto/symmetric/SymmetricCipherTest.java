@@ -1,12 +1,10 @@
-package org.shoulder.crypto.asymmetric;
+package org.shoulder.crypto.symmetric;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.shoulder.core.util.ByteUtils;
-import org.shoulder.crypto.aes.SymmetricAlgorithmEnum;
-import org.shoulder.crypto.aes.SymmetricCipher;
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
-import org.shoulder.crypto.aes.impl.DefaultSymmetricCipher;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
+import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;
 
 /**
  * 非对称加密测试-框架基础封装
