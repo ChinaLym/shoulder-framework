@@ -4,6 +4,8 @@ import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 
 /**
@@ -26,7 +28,6 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     AUTH_401_UNAUTHORIZED(2, "Authentication failed.", Level.INFO, HttpStatus.UNAUTHORIZED),
     /**
      * @desc 认证过期，需要重新认证
-     * @sug
      */
     AUTH_401_EXPIRED(3, "Certification expired. Re-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
 
@@ -102,7 +103,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
 
     /**
      * 包装 HttpMessageNotReadableException,
-     * 请求体读取失败，传过来的参数与你controller接收的参数类型不匹配。如 Post 请求缺少参数或者解析 json 时失败了
+     * 请求体读取失败：传来的参数与controller声明的参数类型不匹配。如 Post 请求缺少参数或者解析 json 时失败了
      */
     PARAM_BODY_NOT_READABLE(321, "HttpMessageNotReadable. %s", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
@@ -116,13 +117,18 @@ public enum CommonErrorCodeEnum implements ErrorCode {
 
     // ----------------------- 并发、达到瓶颈 error 级别 返回 500 ----------------------
 
+    /**
+     * @desc 服务器繁忙
+     * @sug 请稍后再试
+     */
     SERVER_BUSY(399, "server is busy, try again later.", Level.ERROR),
 
 
     // ----------------------- 与中间件操作异常，代码正确时，常发于中间件宕机 ----------------------
 
-
-    // 一般要包含连接什么异常、什么操作时失败 error 级别 返回 500
+    /**
+     * 连接xxx中间件异常、xxx操作时失败通常 error 级别 返回 500，对外暴露未知错误
+     */
     MID_WARE_CONNECT_FAIL(400, "Connect ", Level.ERROR),
 
     PERSISTENCE_TO_DB_FAIL(401, "Persistent fail!", Level.ERROR),
@@ -176,6 +182,15 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     @Override
     public HttpStatus getHttpStatusCode() {
         return httpStatus;
+    }
+
+    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CommonErrorCodeEnum[] codeEnums = CommonErrorCodeEnum.class.getEnumConstants();
+        for (CommonErrorCodeEnum codeEnum : codeEnums) {
+            Method method = CommonErrorCodeEnum.class.getMethod("getCode");
+            String code = (String) method.invoke(codeEnum);
+            System.out.println(code);
+        }
     }
 
 }

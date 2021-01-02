@@ -12,4 +12,5 @@ spring:
 shoulder:
   application:
     id: ${spring.application.name}
-    errorCodePrefix: '0x000b' # unique code to mark a application
+    # unique code to mark a application
+    errorCodePrefix: @errorCodePrefix@

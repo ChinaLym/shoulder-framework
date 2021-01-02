@@ -99,6 +99,18 @@
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
 
+            <!-- 自动生成错误码以及对应的翻译 可以在 target 目录生成所有实现 ErrorCode 接口错误码枚举类的翻译文件 -->
+            <plugin>
+                <groupId>cn.itlym.shoulder</groupId>
+                <artifactId>errcode-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 【必填】本组件对应的错误码前缀 -->
+                    <errorCodePrefix>${shoulder-framework.errcode-prefix}</errorCodePrefix>
+                    <!-- 【必填】要生成错误码文件，扫描的包路径，通常为组件错误码枚举/常量类所在包路径，越精确，越能减少插件构建时间 -->
+                    <scanPackage>org.shoulder.validate.exception</scanPackage>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
