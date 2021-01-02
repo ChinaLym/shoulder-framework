@@ -12,13 +12,15 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 
 建议根据以下的顺序了解 `Shoulder` 的使用
 
-- log   打印日志
+- log   打印日志、请求日志、http客户端日志、操作日志
 - ex    处理异常与错误码
 - response  统一响应格式
 - convert   枚举参数自动转换
-- i18n      多语言翻译
-- crypto    加密
-- delay     延迟任务
+- validate  参数校验
+- i18n      国际化 / 多语言翻译
+- crypto    加解密：传输加解密、存储加解密
+- current   线程相关，延迟任务、线程池增强器
+- apidoc    接口文档
 
 ## 功能介绍
 

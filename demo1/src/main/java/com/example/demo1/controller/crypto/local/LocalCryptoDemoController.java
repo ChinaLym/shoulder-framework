@@ -2,8 +2,8 @@ package com.example.demo1.controller.crypto.local;
 
 import com.example.demo1.dto.CryptoTestDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.shoulder.crypto.aes.exception.SymmetricCryptoException;
 import org.shoulder.crypto.local.LocalTextCipher;
+import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

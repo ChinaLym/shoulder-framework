@@ -27,3 +27,7 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 - JPA：
     - 提供了常用的类型转换，如 varchar(jsonStr) 与 list、set、枚举类型转换
 
+- 全局锁（分布式锁-基于数据库）
+
+- 批处理
+    快速实现一些业务的批量处理 / 导入 / 导出

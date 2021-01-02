@@ -123,6 +123,17 @@
                 <version>2.7</version>
             </plugin>
 
+            <!-- 自动生成错误码以及对应的翻译 可以在 target 目录生成所有实现 ErrorCode 接口错误码枚举类的翻译文件 -->
+            <plugin>
+                <groupId>cn.itlym.shoulder</groupId>
+                <artifactId>errcode-maven-plugin</artifactId>
+                <version>0.1-SNAPSHOT</version>
+                <configuration>
+                    <errorCodePrefix>0x000a</errorCodePrefix>
+                    <scanPackage>com.example.demo1</scanPackage>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

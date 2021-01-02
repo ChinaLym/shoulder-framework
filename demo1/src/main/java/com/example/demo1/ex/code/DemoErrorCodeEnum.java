@@ -19,13 +19,17 @@ import org.springframework.http.HttpStatus;
 public enum DemoErrorCodeEnum implements ErrorCode {
 
     /**
-     * 报名者年龄不符合要求
+     * @desc 报名者年龄不符合要求
      * 转为异常抛出时，记录 info 级别日志，若接口中抛出未捕获，返回客户端 400 状态码
      */
     AGE_OUT_OF_RANGE(100001, "age out of range", Level.INFO, HttpStatus.BAD_REQUEST),
 
     /**
-     * 报名失败（调用其他服务出错）
+     * @desc dsd
+     * <p>
+     *     dwq
+     * @sug 检查日志
+     *
      * 若接口中抛出未捕获，返回客户端 500 状态码
      */
     SIGN_UP_FAIL(100002, "third service error"),
@@ -60,7 +64,8 @@ public enum DemoErrorCodeEnum implements ErrorCode {
     }
 
     DemoErrorCodeEnum(long code, String message, Level logLevel, HttpStatus httpStatus) {
-        this.code = Long.toHexString(code);
+        String hex = Long.toHexString(code);
+        this.code = "0x" + "0".repeat(Math.max(0, 8 - hex.length())) + hex;
         this.message = message;
         this.logLevel = logLevel;
         this.httpStatus = httpStatus;
@@ -88,10 +93,12 @@ public enum DemoErrorCodeEnum implements ErrorCode {
 
     // 提供了两个生成异常的方法，可选择使用
 
+    @Override
     public BaseRuntimeException toException(Object... args) {
         return new BaseRuntimeException(this, args);
     }
 
+    @Override
     public BaseRuntimeException toException(Throwable t, Object... args) {
         return new BaseRuntimeException(this, t, args);
     }
