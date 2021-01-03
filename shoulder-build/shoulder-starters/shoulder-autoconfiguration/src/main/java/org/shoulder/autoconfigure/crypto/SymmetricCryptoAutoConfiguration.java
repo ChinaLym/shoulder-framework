@@ -24,7 +24,7 @@ public class SymmetricCryptoAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public SymmetricCipher eccAsymmetricProcessor() {
+    public SymmetricCipher aesCbcSymmetricProcessor() {
         return DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
     }
 
@@ -33,7 +33,7 @@ public class SymmetricCryptoAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public SymmetricTextCipher eccAsymmetricTextProcessor(SymmetricCipher symmetricCipher) {
+    public SymmetricTextCipher defaultSymmetricTextCipher(SymmetricCipher symmetricCipher) {
         return new DefaultSymmetricTextCipher(symmetricCipher);
     }
 
