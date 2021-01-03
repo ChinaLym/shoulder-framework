@@ -201,7 +201,7 @@
                         <execution>
                             <id>attach-sources</id>
                             <!--<phase>package</phase>--><!-- docs / source -->
-                            <phase>deploy</phase><!-- docs / source -->
+                            <phase>verify</phase><!-- docs / source -->
                             <goals>
                                 <goal>jar</goal>
                                 <goal>jar-no-fork</goal>
@@ -249,7 +249,7 @@
                         <execution>
                             <id>attach-javadocs</id>
                             <!--<phase>package</phase>--><!-- docs / source -->
-                            <phase>deploy</phase><!-- docs / source -->
+                            <phase>verify</phase><!-- docs / source -->
                             <goals>
                                 <goal>jar</goal>
                             </goals>
@@ -269,7 +269,7 @@
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
-                            <phase>deploy</phase><!-- gpg phase verify deploy -->
+                            <phase>verify</phase><!-- gpg phase verify deploy -->
                             <goals>
                                 <goal>sign</goal>
                             </goals>
