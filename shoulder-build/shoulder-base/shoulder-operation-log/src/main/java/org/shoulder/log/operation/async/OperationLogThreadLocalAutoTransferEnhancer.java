@@ -1,8 +1,8 @@
 package org.shoulder.log.operation.async;
 
+import org.shoulder.core.concurrent.enhance.EnhancedCallable;
+import org.shoulder.core.concurrent.enhance.EnhancedRunnable;
 import org.shoulder.core.concurrent.enhance.ThreadEnhancer;
-
-import java.util.concurrent.Callable;
 
 /**
  * 自动将线程变量转移
@@ -18,8 +18,8 @@ public class OperationLogThreadLocalAutoTransferEnhancer implements ThreadEnhanc
      * @return 包装后
      */
     @Override
-    public Runnable doEnhance(Runnable runnable) {
-        return new OpLogRunnable(runnable);
+    public EnhancedRunnable doEnhance(EnhancedRunnable runnable) {
+        return new EnhancedRunnable(new OpLogRunnable(runnable));
     }
 
     /**
@@ -30,8 +30,8 @@ public class OperationLogThreadLocalAutoTransferEnhancer implements ThreadEnhanc
      * @return 包装后
      */
     @Override
-    public <T> Callable<T> doEnhance(Callable<T> callable) {
-        return new OpLogCallable<>(callable);
+    public <T> EnhancedCallable<T> doEnhance(EnhancedCallable<T> callable) {
+        return new EnhancedCallable<>(new OpLogCallable<>(callable));
     }
 
 }

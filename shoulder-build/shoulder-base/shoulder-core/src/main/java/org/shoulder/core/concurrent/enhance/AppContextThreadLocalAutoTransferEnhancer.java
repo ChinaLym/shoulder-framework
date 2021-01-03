@@ -3,7 +3,6 @@ package org.shoulder.core.concurrent.enhance;
 import org.shoulder.core.context.AppContext;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * 自动将线程变量转移
@@ -19,16 +18,16 @@ public class AppContextThreadLocalAutoTransferEnhancer implements ThreadEnhancer
      * @return 包装后
      */
     @Override
-    public Runnable doEnhance(Runnable runnable) {
+    public EnhancedRunnable doEnhance(EnhancedRunnable runnable) {
         Map<String, Object> temp = AppContext.getAll();
-        return () -> {
+        return new EnhancedRunnable(() -> {
             try {
                 AppContext.set(temp);
                 runnable.run();
             } finally {
                 AppContext.clean();
             }
-        };
+        });
     }
 
     /**
@@ -39,16 +38,16 @@ public class AppContextThreadLocalAutoTransferEnhancer implements ThreadEnhancer
      * @return 包装后
      */
     @Override
-    public <T> Callable<T> doEnhance(Callable<T> callable) {
+    public <T> EnhancedCallable<T> doEnhance(EnhancedCallable<T> callable) {
         Map<String, Object> temp = AppContext.getAll();
-        return () -> {
+        return new EnhancedCallable<>(() -> {
             try {
                 AppContext.set(temp);
                 return callable.call();
             } finally {
                 AppContext.clean();
             }
-        };
+        });
     }
 
 }

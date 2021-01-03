@@ -1,9 +1,10 @@
-package org.shoulder.autoconfigure.monitor.thread;
+package org.shoulder.monitor.concurrent;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.ImmutableTag;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
+import org.shoulder.core.concurrent.enhance.EnhancedRunnable;
 import org.shoulder.core.util.StringUtils;
 
 import java.util.List;
@@ -261,6 +262,8 @@ public class ThreadPoolMetrics {
     public Counter exceptionCount(Runnable runnable) {
         if (runnable instanceof MonitorableRunnable) {
             return exceptionCount(((MonitorableRunnable) runnable).getTaskName());
+        } else if (runnable instanceof EnhancedRunnable && ((EnhancedRunnable) runnable).isInstanceOf(MonitorableRunnable.class)) {
+            exceptionCount(((EnhancedRunnable) runnable).as(MonitorableRunnable.class).getTaskName());
         }
         return exceptionCount();
     }

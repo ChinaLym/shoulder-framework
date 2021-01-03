@@ -1,7 +1,5 @@
 package org.shoulder.core.concurrent.enhance;
 
-import java.util.concurrent.Callable;
-
 /**
  * 线程增强（装饰者模式-装饰器接口）
  *
@@ -15,8 +13,8 @@ public interface ThreadEnhancer {
      * @param runnable 包装前
      * @return 包装后
      */
-    default Runnable doEnhance(Runnable runnable) {
-        return runnable;
+    default EnhancedRunnable doEnhance(EnhancedRunnable runnable) {
+        return new EnhancedRunnable(runnable);
     }
 
     /**
@@ -26,8 +24,8 @@ public interface ThreadEnhancer {
      * @param <T>      泛型
      * @return 包装后
      */
-    default <T> Callable<T> doEnhance(Callable<T> callable) {
-        return callable;
+    default <T> EnhancedCallable<T> doEnhance(EnhancedCallable<T> callable) {
+        return new EnhancedCallable<>(callable);
     }
 
 }
