@@ -17,20 +17,19 @@ public class ThreadEnhanceHelper {
     private static List<ThreadEnhancer> enhancers = new LinkedList<>();
 
     public static Runnable doEnhance(Runnable runnable) {
-        Runnable result = runnable;
+        EnhancedRunnable enhancedRunnable = new EnhancedRunnable(runnable);
         for (ThreadEnhancer enhancer : enhancers) {
-            result = enhancer.doEnhance(result);
+            enhancedRunnable = enhancer.doEnhance(enhancedRunnable);
         }
-        return result;
+        return enhancedRunnable;
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> Callable<T> doEnhance(Callable<T> callable) {
-        Callable<T> result = callable;
+        EnhancedCallable<T> enhancedCallable = new EnhancedCallable<>(callable);
         for (ThreadEnhancer enhancer : enhancers) {
-            result = enhancer.doEnhance(result);
+            enhancedCallable = enhancer.doEnhance(enhancedCallable);
         }
-        return result;
+        return enhancedCallable;
     }
 
     public static synchronized void register(ThreadEnhancer enhancer) {

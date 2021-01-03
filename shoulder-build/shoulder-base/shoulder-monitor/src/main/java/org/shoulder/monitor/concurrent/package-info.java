@@ -1,4 +1,4 @@
 /**
  * 提供带自动监控能力的线程池
  */
-package org.shoulder.autoconfigure.monitor.thread;
+package org.shoulder.monitor.concurrent;

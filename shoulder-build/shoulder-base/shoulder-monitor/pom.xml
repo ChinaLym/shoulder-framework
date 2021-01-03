@@ -10,17 +10,29 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>shoulder-starter-monitor</artifactId>
+    <artifactId>shoulder-monitor</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-monitor</artifactId>
+            <artifactId>shoulder-core</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <!--短任务需要，推送到 push-gateway-->
+        <!--<dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_pushgateway</artifactId>
+        </dependency>-->
 
     </dependencies>
 
@@ -50,12 +62,31 @@
                 <artifactId>maven-gpg-plugin</artifactId>
             </plugin>
 
+            <!-- findbugs -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+            </plugin>
+
             <!-- unit test settings when mvn test -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
 
+            <!-- 自动生成错误码以及对应的翻译 可以在 target 目录生成所有实现 ErrorCode 接口错误码枚举类的翻译文件 -->
+            <!--<plugin>
+                <groupId>cn.itlym.shoulder</groupId>
+                <artifactId>errcode-maven-plugin</artifactId>
+                <configuration>
+                    &lt;!&ndash; 【必填】本组件对应的错误码前缀 &ndash;&gt;
+                    <errorCodePrefix>${shoulder-framework.errcode-prefix}</errorCodePrefix>
+                    &lt;!&ndash; 【必填】要生成错误码文件，扫描的包路径，通常为组件错误码枚举/常量类所在包路径，越精确，越能减少插件构建时间 &ndash;&gt;
+                    <scanPackage>org.shoulder.monitor.exception</scanPackage>
+                </configuration>
+            </plugin>-->
+
         </plugins>
     </build>
+
 </project>

@@ -82,6 +82,12 @@
         </dependency>
 
         <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-monitor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
             <optional>true</optional>

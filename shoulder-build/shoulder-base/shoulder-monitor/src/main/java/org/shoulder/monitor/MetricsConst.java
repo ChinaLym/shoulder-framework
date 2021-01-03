@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.monitor;
+package org.shoulder.monitor;
 
 /**
  * 常量类

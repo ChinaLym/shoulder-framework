@@ -53,4 +53,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.security.token.TokenEndPointConfiguration, \
   org.shoulder.autoconfigure.security.token.TokenSecurityConfiguration, \
   org.shoulder.autoconfigure.security.code.ValidateCodeBeanConfig, \
-  org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig
+  org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig, \
+  \
+  org.shoulder.autoconfigure.monitor.MonitorableThreadAutoConfiguration, \
+  org.shoulder.autoconfigure.monitor.MonitorRunnableAutoConfiguration

@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.monitor.thread;
+package org.shoulder.monitor.concurrent;
 
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;

@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.monitor.thread;
+package org.shoulder.monitor.concurrent;
 
 /**
  * 可监控的任务

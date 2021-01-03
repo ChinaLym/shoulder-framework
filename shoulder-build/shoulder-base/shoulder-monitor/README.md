@@ -1,6 +1,6 @@
-# Spring Boot 监控 starter
+# Shoulder 监控（Base on Spring Boot 监控解决方案）
 
-仅仅提供了两个依赖，也可以直接引入这两个依赖替代这个jar
+让开发者看见~ 监控系统是架构师的眼睛，只有将指标看清，系统才能的更大、更稳定！
 
 `spring boot` 的 `org.springframework.boot.actuate.autoconfigure.metrics` 包下已经提供了很多可以用的监控，无特殊需求可直接使用其提供的。
 如：`org.springframework.boot.actuate.autoconfigure.metrics.web.client.HttpClientMetricsAutoConfiguration`
@@ -32,7 +32,7 @@ management.endpoints.web.exposure.include=*
 
 需要修改变量的值：
 
-Dashboard Setting -> Variables，选择相应的变量进行修改，这里修改两个：applicaiton 和 instance
+Dashboard Setting -> Variables，选择相应的变量进行修改，这里修改两个：application 和 instance
 
 - label_values(application)
 - label_values(jvm_memory_used_bytes{application="$application"},instance) 
