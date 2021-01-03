@@ -123,7 +123,7 @@ Shoulder 不求使用最广，而是致力于成为使用体验最好的开发�
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.6-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.6</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- 你的 groupId -->

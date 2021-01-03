@@ -52,7 +52,7 @@ public interface BusinessErrorCode extends ErrorCode {
      * @return 本组件的错误码前缀
      */
     default String getErrorCodePrefix() {
-        return AppInfo.appId();
+        return AppInfo.errorCodePrefix();
     }
 
 }
