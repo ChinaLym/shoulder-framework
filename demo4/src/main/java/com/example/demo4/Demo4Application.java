@@ -1,6 +1,6 @@
 package com.example.demo4;
 
-import org.shoulder.autoconfigure.monitor.thread.MonitorableThreadPool;
+import org.shoulder.monitor.concurrent.MonitorableThreadPool;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

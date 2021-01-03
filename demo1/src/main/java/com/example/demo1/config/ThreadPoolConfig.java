@@ -1,6 +1,7 @@
 package com.example.demo1.config;
 
 import com.example.demo1.controller.concurrent.ThreadEnhancerDemoController;
+import org.shoulder.core.concurrent.enhance.EnhancedRunnable;
 import org.shoulder.core.concurrent.enhance.ThreadEnhancer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +16,9 @@ public class ThreadPoolConfig {
     public ThreadEnhancer myThreadEnhancer() {
         return new ThreadEnhancer() {
             @Override
-            public Runnable doEnhance(Runnable runnable) {
-                if (runnable instanceof ThreadEnhancerDemoController.SomeBusinessOperation) {
-                    return () -> {
+            public EnhancedRunnable doEnhance(EnhancedRunnable runnable) {
+                if (runnable.isInstanceOf(ThreadEnhancerDemoController.SomeBusinessOperation.class)) {
+                    return new EnhancedRunnable(() -> {
                         try {
                             System.out.println("我要在所有线程池执行之前干点事情");
                             runnable.run();
@@ -28,7 +29,7 @@ public class ThreadPoolConfig {
                         } finally {
                             System.out.println("我要在所有线程执行之后干点事情");
                         }
-                    };
+                    });
                 }
                 return runnable;
             }
