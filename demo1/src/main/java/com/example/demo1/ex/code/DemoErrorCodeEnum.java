@@ -25,9 +25,7 @@ public enum DemoErrorCodeEnum implements ErrorCode {
     AGE_OUT_OF_RANGE(100001, "age out of range", Level.INFO, HttpStatus.BAD_REQUEST),
 
     /**
-     * @desc dsd
-     * <p>
-     *     dwq
+     * @desc 错误描述：第三方服务失败
      * @sug 检查日志
      *
      * 若接口中抛出未捕获，返回客户端 500 状态码

@@ -1,5 +1,8 @@
 package com.example.demo1;
 
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.i18.Translator;
+import org.shoulder.core.util.ContextUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationListener;
@@ -21,6 +24,7 @@ public class Demo1Application implements ApplicationListener<ContextRefreshedEve
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        System.out.println(ContextUtils.getBean(Translator.class).getMessage(CommonErrorCodeEnum.AUTH_401_EXPIRED));
         System.out.println("上下文加载完毕");
     }
 
