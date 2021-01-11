@@ -231,5 +231,7 @@ JSON，采用 jackson，比 fastJson 更安全，同时性能基本无差别。
 XML，可选依赖：Xstream：API简单，使用方便（这里适合读取配置文件，而非作为传输体请求/响应界别的频繁读写的场景，更快的选型可考虑 `Toplink JAXB` 等）
 
 
+# 其他
 
+- [阿里巴巴开发规约](https://github.com/alibaba/p3c)
 

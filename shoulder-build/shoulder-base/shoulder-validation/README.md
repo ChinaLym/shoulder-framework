@@ -64,4 +64,5 @@
 ## 推荐阅读：
 
 - [Spring Validation最佳实践与实现原理](https://zhuanlan.zhihu.com/p/205151764)
-
+- [中国大陆手机号正则匹配](https://github.com/VincentSit/ChinaMobilePhoneNumberRegex)
+- [电信网编号计划(2017)](https://wenku.baidu.com/view/34fa568a11a6f524ccbff121dd36a32d7375c7f3.html)

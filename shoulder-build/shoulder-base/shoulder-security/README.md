@@ -227,3 +227,4 @@ Authentication.Detail
 - [AccessDecisionManager 介绍](https://www.cnblogs.com/chenhonggao/p/9152751.html)
 - [Spring Security 内置 Filter](https://blog.csdn.net/qq_35067322/article/details/102690579)
 - [Spring Security 优缺点](https://blog.csdn.net/caomiao2006/article/details/51812401)
+- [seebug 一个介绍常见网络安全问题的网站](https://paper.seebug.org)

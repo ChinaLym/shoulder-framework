@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
  * <p>
  * 小提示：业务中可以按模块或按业务定义枚举 保存错误码、错误提示信息
  * 详细的错误码规范见 <a href="https://spec.itlym.cn/specs/base/errorCode.html">错误码规范<a/>
+ * todo 考虑前缀区分大类，调用方出错（如参数）/ 系统内部错误（如取缓存时反序列失败） / 第三方服务失败（如调用其他服务，结果其他服务挂了，返回500）
  *
  * @author lym
  */
