@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * 应用信息
+ * 应用信息 todo ip/domain 运行模式，如 docker / jar / war / side-car
  * 需要保证该类的赋值实际要足够早，shoulder 会在应用启动时初始化该类配置
  *
  * @author lym
