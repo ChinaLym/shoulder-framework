@@ -1,15 +1,21 @@
-# editorconfig.org
+# editorconfig.org。IDEA：settings-editor-code style-"enable editorconfig support" / edit config 选择文件
 root = true
 
 [*]
+# 字符集
 charset = utf-8
-insert_final_newline = true
-trim_trailing_whitespace = true
+# 结尾换行符，可选"lf"、"cr"、"crlf"
 end_of_line = lf
+# 在文件结尾插入新行
+insert_final_newline = true
+# 删除一行中的前后空格
+trim_trailing_whitespace = true
+# 缩进风格，可选"space"、"tab"
 indent_style = space
+# 缩进的空格数
 indent_size = 4
 
-
-[*.yml]
+# 特殊的，yaml 文件只需缩进两个空格
+[*.{yaml, yml}]
 indent_style = space
 indent_size = 2

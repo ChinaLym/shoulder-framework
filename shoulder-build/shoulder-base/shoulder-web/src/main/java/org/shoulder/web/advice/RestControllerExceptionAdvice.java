@@ -41,6 +41,8 @@ import java.sql.SQLException;
 /**
  * RestController 全局异常处理器 - 请求方错误，提供默认统一场景错误返回值
  * 不同 RestControllerAdvice 类中的异常处理器优先级：与 @Order 接口定义有关，默认最低，用户可以定义，以覆盖框架实现
+ * <p>
+ * todo 组装返回值时，根据返回值类型判断，
  *
  * @author lym
  */
@@ -99,6 +101,19 @@ public class RestControllerExceptionAdvice {
         return stdEx.toResponse();
     }
 
+
+    /**
+     * 缺少参数
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({IllegalArgumentException.class})
+    public RestResult illegalArgumentHandler(IllegalArgumentException e) {
+        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_INVALID, e, e.getMessage());
+        log.info(stdEx);
+        return stdEx.toResponse();
+    }
+
+
     /**
      * 字段类型不匹配
      */
@@ -113,7 +128,7 @@ public class RestControllerExceptionAdvice {
 
 
     /**
-     * jsr303 验证不通过
+     * jsr303 验证不通过 todo 通过配置，可能未开启快速失败，因此会有多个错误原因，因此需要 getConstraintViolations
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {ConstraintViolationException.class})
@@ -122,7 +137,7 @@ public class RestControllerExceptionAdvice {
         ConstraintViolationImpl firstConstraintViolation = (ConstraintViolationImpl) e.getConstraintViolations()
             .stream().findFirst().orElse(null);
         assert firstConstraintViolation != null;
-        // 使用校验处类的日志记录器打印日志
+        // 使用校验处类的日志记录器打印日志 getPropertyPath().toString() 也行
         NodeImpl node = ((PathImpl) firstConstraintViolation.getPropertyPath()).getLeafNode();
         String paramName = node.getName();
         // 可以在这里打印方法名，必要不大，暂未实现

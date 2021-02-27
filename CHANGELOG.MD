@@ -1,5 +1,22 @@
 # 更新记录
 
+## 0.7
+
+- DB
+  - 自动判断是否存在分布式事务问题，默认仅开发时生效
+    - TransactionSynchronizationManager.isActualTransactionActive() 判断是否有 @Transactional
+    - 且该方法是写的（CUD）支持扩展这里
+    - 拿到数据源
+    - 判断是否是同一个事务管理器（不是则可能有分布式事务问题）
+      - !null && 正在事务 && TransactionSynchronizationManager.getResource(dataSource) == null || 它的 isTransactionActive 为
+        false
+
+- 操作日志
+  - 优化扩展，支持自定义解析逻辑，以支持在记录操作日志时，同时记录其他信息
+
+- batch
+  - 批处理模块支持导出导出，进度条等基本逻辑，上升至无依赖任务批处理
+
 ## 0.6 （2021年1月4日 发布）
 
 0.6 版本主要致力于基本能力的完善，也是标志着基本使用方式确定，具体的实现可能有部分调整，方向不再大幅变动。
