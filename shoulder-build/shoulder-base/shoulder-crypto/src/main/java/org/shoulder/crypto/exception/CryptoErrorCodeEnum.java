@@ -73,11 +73,7 @@ public enum CryptoErrorCodeEnum implements ErrorCode {
     }
 
     CryptoErrorCodeEnum(long code, String message) {
-        this(code, message, DEFAULT_LOG_LEVEL);
-    }
-
-    CryptoErrorCodeEnum(long code, String message, HttpStatus httpStatus) {
-        this(code, message, DEFAULT_LOG_LEVEL, httpStatus);
+        this(code, message, Level.ERROR);
     }
 
     CryptoErrorCodeEnum(long code, String message, Level logLevel) {

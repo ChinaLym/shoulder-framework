@@ -17,6 +17,7 @@ import java.util.List;
 @ApiModel(value = "分页数据返回格式")
 public class PageResult<T> extends ListResult<T> implements Serializable {
 
+    private static final long serialVersionUID = -1451879834966540928L;
     /**
      * 当前页
      */

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -14,8 +15,10 @@ import java.nio.charset.StandardCharsets;
  */
 public class SymmetricCryptoUtilsTest {
 
+    private static final Charset UTF8 = StandardCharsets.UTF_8;
+
     private SymmetricCipher symmetricCipher = DefaultSymmetricCipher.getFlyweight(
-        SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName()
+            SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName()
     );
 
     /**
@@ -24,7 +27,7 @@ public class SymmetricCryptoUtilsTest {
     @Test
     public void testAesByteArray() throws Exception {
 
-        byte[] text = "testAes".getBytes(StandardCharsets.UTF_8);
+        byte[] text = "testAes".getBytes(UTF8);
 
         byte[] iv = {
             1, 2, 3, 4, 5, 6, 7, 8, 9, 0,
@@ -48,7 +51,7 @@ public class SymmetricCryptoUtilsTest {
     @Test(expected = SymmetricCryptoException.class)
     public void testAesKeyVerify() throws Exception {
 
-        byte[] text = "testAes".getBytes(StandardCharsets.UTF_8);
+        byte[] text = "testAes".getBytes(UTF8);
 
         byte[] iv = {
             1, 2, 3, 4, 5, 6, 7, 8, 9, 0,
@@ -71,7 +74,7 @@ public class SymmetricCryptoUtilsTest {
     @Test(expected = SymmetricCryptoException.class)
     public void testAesIvVerify() throws Exception {
 
-        byte[] text = "testAes".getBytes(StandardCharsets.UTF_8);
+        byte[] text = "testAes".getBytes(UTF8);
 
         byte[] iv = {1, 2, 3, 4, 5, 6};
 

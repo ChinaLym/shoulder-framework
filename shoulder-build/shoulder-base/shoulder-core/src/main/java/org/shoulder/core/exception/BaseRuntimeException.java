@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
  */
 public class BaseRuntimeException extends RuntimeException implements ErrorCode {
 
+    private static final long serialVersionUID = 8917762936709850638L;
     /**
      * 错误码
      */
@@ -28,7 +29,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
     /**
      * 异常后，记录日志的级别是什么
      */
-    private Level logLevel = DEFAULT_LOG_LEVEL;
+    private Level logLevel = Level.ERROR;
 
     /**
      * 返回给调用方的 HTTP status 是什么

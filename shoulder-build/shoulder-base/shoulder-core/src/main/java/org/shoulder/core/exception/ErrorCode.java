@@ -17,15 +17,18 @@ import javax.annotation.Nullable;
  * 小提示：业务中可以按模块或按业务定义枚举 保存错误码、错误提示信息
  * 详细的错误码规范见 <a href="https://spec.itlym.cn/specs/base/errorCode.html">错误码规范<a/>
  * todo 考虑前缀区分大类，调用方出错（如参数）/ 系统内部错误（如取缓存时反序列失败） / 第三方服务失败（如调用其他服务，结果其他服务挂了，返回500）
+ * 区分业务失败、业务状态未知
  *
  * @author lym
  */
 public interface ErrorCode extends Translatable {
 
+    /* ---------------------- 默认值 ------------------- */
+
     /**
      * 默认错误码、异常类日志记录级别为 warn
      */
-    Level DEFAULT_LOG_LEVEL = Level.WARN;
+    Level DEFAULT_LOG_LEVEL = Level.ERROR;
 
     /**
      * 默认错误码、异常类 HTTP 响应码为 500
@@ -36,6 +39,9 @@ public interface ErrorCode extends Translatable {
      * 特殊值，0代表成功
      */
     SuccessCode SUCCESS = new SuccessCode();
+
+
+    /* ---------------------- 方法 ------------------- */
 
     /**
      * 获取完整错误码

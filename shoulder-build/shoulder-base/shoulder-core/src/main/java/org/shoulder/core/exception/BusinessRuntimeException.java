@@ -12,6 +12,8 @@ package org.shoulder.core.exception;
  */
 public class BusinessRuntimeException extends BaseRuntimeException implements ErrorCode {
 
+    private static final long serialVersionUID = -3940675117866395789L;
+
     public BusinessRuntimeException(String code, String message) {
         super(code, message);
     }

@@ -20,6 +20,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.apidoc.SwaggerAutoConfiguration, \
   \
   org.shoulder.autoconfigure.redis.RedisAutoConfiguration, \
+  org.shoulder.autoconfigure.redis.LettuceEventConsumerConfiguration, \
   \
   org.shoulder.autoconfigure.lock.LockAutoConfiguration, \
   \

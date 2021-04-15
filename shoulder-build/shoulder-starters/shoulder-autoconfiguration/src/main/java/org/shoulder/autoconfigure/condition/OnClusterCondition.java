@@ -17,6 +17,7 @@ public class OnClusterCondition implements Condition {
 
     @Override
     public boolean matches(@Nonnull ConditionContext conditionContext, @Nonnull AnnotatedTypeMetadata annotatedTypeMetadata) {
+        //boolean clusterMode = "true".equals(conditionContext.getEnvironment().getProperty("shoulder.application.cluster"))
         MergedAnnotation<ConditionalOnCluster> mergedAnnotation =
             annotatedTypeMetadata.getAnnotations().get(ConditionalOnCluster.class);
         if (!mergedAnnotation.isPresent()) {

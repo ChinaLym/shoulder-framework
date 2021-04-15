@@ -26,6 +26,8 @@ import java.util.Map;
 //@Schema(name = "接口响应统一返回值包装类 Restful 风格")
 public class RestResult<T> implements Serializable {
 
+    private static final long serialVersionUID = -3829563105110651627L;
+
     @ApiModelProperty(value = "状态码/错误码，成功为0，失败非0，必定返回", required = true, example = "0", position = 0)
     //@Schema(name = "状态码/错误码，成功为0，失败非0", example = "0")
     private String code = "0";
@@ -107,19 +109,24 @@ public class RestResult<T> implements Serializable {
     @JsonIgnore
     public T getOrException() {
         // success
-        if (ErrorCode.SUCCESS.getCode().equals(code)) {
+        if (isSuccess()) {
             return data;
         }
-        throw new BaseRuntimeException(CommonErrorCodeEnum.RPC_COMMON, code);
+        throw new BaseRuntimeException(CommonErrorCodeEnum.RPC_FAIL_WITH_CODE, code);
     }
 
     /**
      * 检查 code，若不为 SUCCESS，则抛异常
      */
     public void checkCode() {
-        if (!ErrorCode.SUCCESS.getCode().equals(code)) {
+        if (!isSuccess()) {
             throw new BaseRuntimeException(code, msg);
         }
+    }
+
+    @JsonIgnore
+    public boolean isSuccess() {
+        return ErrorCode.SUCCESS.getCode().equals(code);
     }
 
 

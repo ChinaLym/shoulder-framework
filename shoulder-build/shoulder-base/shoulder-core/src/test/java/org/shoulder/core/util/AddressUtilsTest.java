@@ -14,6 +14,7 @@ public class AddressUtilsTest {
         String ip = "243.215.64.23";
         assert ip.equals(AddressUtils.toIPv4(AddressUtils.toInt(ip)));
         assert ip.equals(AddressUtils.toIPv4(AddressUtils.toLong(ip)));
+        assert ip.equals(AddressUtils.toIPv4FromHex(AddressUtils.toHexStr(ip)));
     }
 
     @Test
@@ -24,6 +25,8 @@ public class AddressUtilsTest {
         assert AddressUtils.isBetweenInterval(ip, start, end);
         assert AddressUtils.isBetweenInterval(AddressUtils.toLong(ip), start, end);
         assert AddressUtils.isBetweenInterval(AddressUtils.toInt(ip), start, end);
+        assert AddressUtils.isBetweenIntervalHex(AddressUtils.toHexStr(ip), start, end);
+        assert AddressUtils.isBetweenHexInterval(AddressUtils.toHexStr(ip), AddressUtils.toHexStr(start), AddressUtils.toHexStr(end));
     }
 
 }

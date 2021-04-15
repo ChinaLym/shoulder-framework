@@ -376,8 +376,8 @@ public class BatchManager implements Runnable, ProgressAble {
             // 性能： 最后保存一次。一致性： worker 中与批处理在同一事务进行，避免大事务
             batchRecordDetailPersistentService.batchSave(result.getId(), result.getDetailList());
         } catch (Exception e) {
-            log.warnWithErrorCode(CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL.getCode(), "persistentImportRecord fail", e);
-            throw CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL.toException(e);
+            log.warnWithErrorCode(CommonErrorCodeEnum.DATA_STORAGE_FAIL.getCode(), "persistentImportRecord fail", e);
+            throw CommonErrorCodeEnum.DATA_STORAGE_FAIL.toException(e);
         }
     }
 

@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 
 /**
  * 通用错误（2^14以下框架使用）错误码标识 = 0 的那部分
+ * 多数通用错误，展示时仅为未知错误，dev环境可详情，堆栈，错误码映射表地址
  *
  * @author lym
  */
@@ -39,6 +40,14 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      * 主动拒绝请求：令牌无效
      */
     AUTH_403_TOKEN_INVALID(9, "Invalid token.", Level.INFO, HttpStatus.FORBIDDEN),
+    /**
+     * 租户无效：不存在 / 封禁 / 冻结
+     */
+    TENANT_INVALID(30, "Invalid tenant.", Level.INFO, HttpStatus.FORBIDDEN),
+    /**
+     * 操作非法：租户信息与业务不匹配 / 数据路由错误
+     */
+    ILLEGAL_OPERATION(40, "illegal operation.", Level.INFO, HttpStatus.FORBIDDEN),
 
 
     // ------------------------------- 文件 -----------------------------
@@ -68,15 +77,15 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 请求错误：请求超时
      */
-    REQUEST_TIMEOUT(201, "Request timeout."),
+    RPC_TIMEOUT(201, "Request timeout.", Level.WARN),
     /**
      * 请求错误：指定的请求方法不能被服务器处理
      */
-    REQUEST_METHOD_MISMATCH(202, "The request method can't be processed by the server.", Level.ERROR),
+    REQUEST_METHOD_MISMATCH(202, "The request method can't be processed by the server.", Level.WARN),
     /**
      * 调用 xxx 返回了错误码:xxx
      */
-    RPC_COMMON(203, "Invoke %s fail with error code '%s'."),
+    RPC_FAIL_WITH_CODE(203, "Invoke %s fail with error code '%s'.", Level.ERROR),
     /**
      * 请求错误：实体格式不支持
      */
@@ -87,11 +96,11 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 未知异常，谨慎使用该错误码，不利于排查
      */
-    UNKNOWN(300, "Unknown error."),
+    UNKNOWN(300, "Unknown error.", Level.ERROR, HttpStatus.BAD_REQUEST),
     /**
      * 响应超时（对于网关）
      */
-    SERVICE_RESPONSE_TIMEOUT(301, "Service response timeout.", HttpStatus.REQUEST_TIMEOUT),
+    SERVICE_RESPONSE_TIMEOUT(301, "Service response timeout.", Level.ERROR, HttpStatus.REQUEST_TIMEOUT),
     /**
      * 服务不可用
      */
@@ -111,9 +120,9 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     CONTENT_TYPE_INVALID(323, "HttpMediaTypeNotSupported. ContentType(%s) is not acceptable.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
-     * 文件上传出错
+     * 文件上传出错 todo 迁移
      */
-    MULTIPART_INVALID(324, "Request is not a validate multipart request, please check request or file size.", HttpStatus.BAD_REQUEST),
+    MULTIPART_INVALID(324, "Request is not a validate multipart request, please check request or file size.", Level.WARN, HttpStatus.BAD_REQUEST),
 
     // ----------------------- 并发、达到瓶颈 error 级别 返回 500 ----------------------
 
@@ -127,11 +136,17 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     // ----------------------- 与中间件操作异常，代码正确时，常发于中间件宕机 ----------------------
 
     /**
-     * 连接xxx中间件异常、xxx操作时失败通常 error 级别 返回 500，对外暴露未知错误
+     * 连接xxx中间件异常（配置信息有误/中间件宕机）、xxx操作时失败通常 error 级别 返回 500
      */
     MID_WARE_CONNECT_FAIL(400, "Connect ", Level.ERROR),
-
-    PERSISTENCE_TO_DB_FAIL(401, "Persistent fail!", Level.ERROR),
+    /**
+     * 数据存储失败
+     */
+    DATA_STORAGE_FAIL(401, "Persistent fail!", Level.ERROR),
+    /**
+     * 数据访问错误
+     */
+    DATA_ACCESS_FAIL(402, "Data access fail!", Level.ERROR),
 
     ;
 
@@ -144,11 +159,11 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     private HttpStatus httpStatus;
 
     CommonErrorCodeEnum(long code, String message) {
-        this(code, message, DEFAULT_LOG_LEVEL, DEFAULT_HTTP_STATUS_CODE);
+        this(code, message, Level.ERROR, DEFAULT_HTTP_STATUS_CODE);
     }
 
     CommonErrorCodeEnum(long code, String message, HttpStatus httpStatus) {
-        this(code, message, DEFAULT_LOG_LEVEL, httpStatus);
+        this(code, message, Level.ERROR, httpStatus);
     }
 
     CommonErrorCodeEnum(long code, String message, Level logLevel) {
