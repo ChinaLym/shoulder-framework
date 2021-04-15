@@ -1,2 +1,6 @@
 version=${project.version}
-errorCodePrefix=f
+errorCodePrefix=${shoulder-framework.errcode-prefix}
+docUrl=https://spec.itlym.cn
+gitRepository=${project.url}
+updateInfo=${project.url}/tag/v${project.version}
+buildTime=${maven.build.timestamp}

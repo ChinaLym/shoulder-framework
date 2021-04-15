@@ -9,11 +9,11 @@
 - 全局返回值包装
 - 可扩展的全局安全过滤器
     - xss
+- 近地域路由，如根据ip，在请求头中添加特殊标记，暗示期望访问的服务器（域名+页面跳转）
 - 可扩展的防表单重复提交拦截器
 - 便于调试的 api 访问报告（默认调试时为美观方式、生产环境关闭）
 
 除`全局异常处理`和`全局返回值包装`是扩展的 `spring-web`，其余均为 `Java 标准规范`，不依赖额外jar
-
 
 过滤器执行顺序一般为：
 
@@ -24,6 +24,35 @@
 拦截器同理
 
 ----
+
+## web 安全防护注意事项
+
+// TODO 放到 spec 中 refer
+
+- 黑板名单
+- 带参数 scheme: http / https / shoulder... 文件上传 SSRF
+    - https://blog.csdn.net/qq_30135181/article/details/52734225
+      模板引擎xss 紧急开关 检查；双检查 encode cors allowHost redirect 白名单 ctoken（csrfToken）
+    - 在 cookie 当前 host 下种 ctoken，这样其他网站发出同样请求则无效 uriWithFormated
+- xss
+  - 
+
+XXE：
+
+- 未处理，不推荐使用 XML 作为响应 redirect
+- CRLF注入（包含 '0' '\r' '\n';最好过滤掉所有控制字符（ASCII码十六进制 0x00~0x1F）；）
+- 空地址
+- 不合法的URI
+- 不被允许的地址
+- 不被允许的协议头
+- 重定向地址的 host、authority 不同
+- 命中白名单
+- 允许跳转
+- app关闭了重定向检测
+- 利用域内跳转进行重定向检测绕过
+-
+
+方式:黑白名单，优先级列表
 
 ## Shoulder 提供过滤器
 

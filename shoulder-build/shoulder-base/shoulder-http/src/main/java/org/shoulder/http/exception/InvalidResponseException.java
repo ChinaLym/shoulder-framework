@@ -9,6 +9,8 @@ import org.shoulder.core.exception.BaseRuntimeException;
  */
 public class InvalidResponseException extends BaseRuntimeException {
 
+    private static final long serialVersionUID = -1935896109628796740L;
+
     public InvalidResponseException(Throwable cause) {
         super(cause);
     }

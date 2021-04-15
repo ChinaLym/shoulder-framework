@@ -8,6 +8,8 @@ package org.shoulder.core.exception;
  */
 public class SerialException extends BaseRuntimeException {
 
+    private static final long serialVersionUID = 5330049957369887114L;
+
     public SerialException(Throwable cause) {
         super(cause);
     }

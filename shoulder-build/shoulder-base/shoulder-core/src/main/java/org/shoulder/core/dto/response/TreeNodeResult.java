@@ -12,6 +12,7 @@ import java.io.Serializable;
 @Data
 public class TreeNodeResult implements Serializable {
 
+    private static final long serialVersionUID = -3515352250874606693L;
     /**
      * 数据标识
      */

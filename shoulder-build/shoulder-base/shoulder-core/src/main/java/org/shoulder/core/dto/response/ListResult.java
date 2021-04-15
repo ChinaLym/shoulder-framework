@@ -19,6 +19,7 @@ import java.util.List;
 //@Schema(description = "列表数据返回内容")
 public class ListResult<T> implements Serializable {
 
+    private static final long serialVersionUID = -3134782461635924904L;
     //@Schema(name = "数据总数")
     @ApiModelProperty(value = "数据总数", dataType = "long", required = true, example = "4", position = 0)
     private int total = 0;

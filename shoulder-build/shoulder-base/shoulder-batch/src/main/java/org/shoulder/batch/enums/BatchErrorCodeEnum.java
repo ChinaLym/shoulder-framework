@@ -53,7 +53,7 @@ public enum BatchErrorCodeEnum implements ErrorCode {
     }
 
     BatchErrorCodeEnum(long code, String message, HttpStatus httpStatus) {
-        this(code, message, DEFAULT_LOG_LEVEL, httpStatus);
+        this(code, message, Level.WARN, httpStatus);
     }
 
     BatchErrorCodeEnum(long code, String message, Level logLevel) {

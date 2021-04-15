@@ -9,6 +9,8 @@ import org.shoulder.core.exception.BaseRuntimeException;
  */
 public class ResolveFailException extends BaseRuntimeException {
 
+    private static final long serialVersionUID = -2745556685325930983L;
+
     public ResolveFailException(Throwable cause) {
         super(cause);
     }

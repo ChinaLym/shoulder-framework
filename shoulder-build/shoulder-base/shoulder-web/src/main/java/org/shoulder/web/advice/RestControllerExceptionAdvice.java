@@ -284,7 +284,7 @@ public class RestControllerExceptionAdvice {
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(SQLException.class)
     public RestResult sqlExceptionHandler(SQLException e) {
-        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL, e);
+        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.DATA_STORAGE_FAIL, e);
         log.error(ex);
         return ex.toResponse();
     }

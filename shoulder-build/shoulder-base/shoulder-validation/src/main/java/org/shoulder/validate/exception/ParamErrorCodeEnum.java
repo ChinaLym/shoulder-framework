@@ -74,7 +74,7 @@ public enum ParamErrorCodeEnum implements ErrorCode {
     }
 
     ParamErrorCodeEnum(long code, String message, HttpStatus httpStatus) {
-        this(code, message, DEFAULT_LOG_LEVEL, httpStatus);
+        this(code, message, Level.WARN, httpStatus);
     }
 
     ParamErrorCodeEnum(long code, String message, Level logLevel) {

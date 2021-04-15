@@ -13,14 +13,14 @@ public enum TerminalType {
     SYSTEM(0),
 
     /**
-     * 浏览器
+     * PC 浏览器
      */
     BROWSER(1),
 
     /**
      * PC 客户端
      */
-    CLIENT(2),
+    PC(2),
 
     /**
      * 移动 APP
@@ -28,9 +28,14 @@ public enum TerminalType {
     APP(3),
 
     /**
-     * 小程序 mini APP
+     * 移动端浏览器 web app
      */
-    MINA(4),
+    WAP(4),
+
+    /**
+     * 小程序 mini APP / H5
+     */
+    MINA(5),
 
     /**
      * 未知
@@ -39,7 +44,7 @@ public enum TerminalType {
 
     ;
 
-    private int code;
+    private final int code;
 
     TerminalType(int code) {
         this.code = code;

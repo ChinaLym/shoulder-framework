@@ -14,7 +14,7 @@
 
 应将有状态的数据迁移到外部存储，如 `Redis`、`数据库`、`消息队列` 等
 
-为了降低从有状态应用迁移到无状态服务的难度，在有状态开发阶段就应该使用同一的缓存接口或管理器，支持无状态时，只需要把存储的实现由内存改为外部存储即可，甚至只需改一个配置项。
+为了降低从有状态应用迁移到无状态服务的难度，在有状态开发阶段就应该使用同一的缓存接口或管理器；当需要支持无状态集群部署时，只需要将存储的实现由内存切换为外部存储即可（大部分只需添加一个配置项 `cluster=true`）。
 
 - 使用`统一的缓存接口` 或 `带 SPI 机制的缓存入口`
 - 开始使用内存缓存，验证前，先更换为本地带序列化的存储（放入缓存前序列化，拿出时反序列化），保证代码的正确性
@@ -26,16 +26,15 @@
 - 基于 DB
     - 高可靠、强一致性、性能差
     - 适合强一致性场景
-    
+
 - 基于 `zookeeper`、`etcd`
     - 高可靠、强一致性、性能中等、引入新的依赖
     - 适用于技术选形中已经存在 `zookeeper`/`etcd` 的场景
-    
+
 - 基于 `redis`
     - 高性能、非强一致性、单节点时强一致性
     - 适用于一般业务、或特定幂等业务场景
-    
-    
+
 提前定义全局锁接口，加全局锁时使用该接口，默认实现为JDK实现，支持集群时，只需替代为外部锁即可。
 
 
@@ -68,9 +67,10 @@ canal 等数据同步工具，读数据库日志，删缓存
 
 ## Redis 集群客户端重连
 
-Jedis 自动支持
+Jedis会在从节点晋升后正常工作，但 Lettuce不会:
 
-当 spring boot 版本低于 2.3 时，需要手动开启 Lettuce 刷新集群拓扑图
+spring boot 版本低于 2.3 时，需要手动开启 Lettuce 刷新集群拓扑图【生产环境中 redis 如果是集群部署，它将是灾难的】
+Redis集群服务某个主节点宕机，对应的从节点会迅速进行迁移升级为主节点（节点迁移期间Redis服务不可用）
 
 * [集群说明](https://github.com/lettuce-io/lettuce-core/wiki/Redis-Cluster#Refreshing%20the%20cluster%20topology%20view)
 * [集群配置项](https://github.com/lettuce-io/lettuce-core/wiki/Client-options#Cluster-specific%20options)
@@ -83,16 +83,14 @@ spring-data-session 在启动时会向 redis 中执行 config 命令，若是云
 
 @Configuration
 public class RedisSessionInitOpConfig {
-	
-	@Bean
+
+  @Bean
 	public ConfigureRedisAction configureRedisAction() {
 		return ConfigureRedisAction.NO_OP;
 	}
-	
+
 }
 ```
- 
-
 
 - [redis分布式锁和lua脚本](https://www.cnblogs.com/number7/p/8320259.html)
 - [redis 可视化工具-Redily官网](https://www.electronjs.org/releases/stable) [github 发布地址](https://github.com/electron/electron/releases)
