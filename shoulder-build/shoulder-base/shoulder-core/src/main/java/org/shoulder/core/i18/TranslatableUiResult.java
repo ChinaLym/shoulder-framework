@@ -1,11 +1,11 @@
 package org.shoulder.core.i18;
 
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 
 import java.util.List;
 
 /**
- * 可翻译的接口返回值（一般用于给前端，{@link RestResult} 定位为 api 接口返回值，故未继承该接口）
+ * 可翻译的接口返回值（一般用于给前端，{@link BaseResult} 定位为 api 接口返回值，故未继承该接口）
  *
  * @author lym
  */
@@ -40,7 +40,7 @@ public interface TranslatableUiResult<T> {
      *
      * @return 框架中提供的
      */
-    default RestResult<T> unified() {
-        return new RestResult<>(getCode(), getMsg(), getData());
+    default BaseResult<T> unified() {
+        return new BaseResult<>(getCode(), getMsg(), getData());
     }
 }

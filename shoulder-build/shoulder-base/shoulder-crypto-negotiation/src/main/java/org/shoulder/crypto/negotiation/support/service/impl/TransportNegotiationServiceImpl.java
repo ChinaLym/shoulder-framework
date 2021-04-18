@@ -1,7 +1,7 @@
 package org.shoulder.crypto.negotiation.support.service.impl;
 
 import cn.hutool.core.lang.Assert;
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.JsonUtils;
@@ -85,10 +85,10 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             String dslAimUrl = uri.toString().replace(uri.getPath(), negotiationUrl);
             log.debug("negotiate with {}, url is {}", appId, dslAimUrl);
 
-            ParameterizedTypeReference<RestResult<NegotiationResponse>> responseType = new ParameterizedTypeReference<>() {
+            ParameterizedTypeReference<BaseResult<NegotiationResponse>> responseType = new ParameterizedTypeReference<>() {
             };
-            ResponseEntity<RestResult<NegotiationResponse>> httpResponse =
-                restTemplate.exchange(dslAimUrl, HttpMethod.POST, createKeyNegotiationHttpEntity(), responseType);
+            ResponseEntity<BaseResult<NegotiationResponse>> httpResponse =
+                    restTemplate.exchange(dslAimUrl, HttpMethod.POST, createKeyNegotiationHttpEntity(), responseType);
 
             // 3. 提取并校验密钥协商响应
             NegotiationResponse negotiationResponse = validateAndFill(httpResponse);
@@ -136,8 +136,8 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
      * @param httpResponse 密钥协商响应
      * @return 合法的响应
      */
-    private NegotiationResponse validateAndFill(ResponseEntity<RestResult<NegotiationResponse>> httpResponse) throws AsymmetricCryptoException, NegotiationException {
-        RestResult<NegotiationResponse> response = httpResponse.getBody();
+    private NegotiationResponse validateAndFill(ResponseEntity<BaseResult<NegotiationResponse>> httpResponse) throws AsymmetricCryptoException, NegotiationException {
+        BaseResult<NegotiationResponse> response = httpResponse.getBody();
         if (HttpStatus.OK != httpResponse.getStatusCode() || response == null) {
             throw new NegotiationException("response error! response = " + JsonUtils.toJson(response));
         }

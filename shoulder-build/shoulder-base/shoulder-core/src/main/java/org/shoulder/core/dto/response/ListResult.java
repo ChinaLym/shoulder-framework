@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 列表数据对象
  * <p>
- * 统一列表返回值，作为 {@link RestResult} 的 data 字段，total，list
+ * 统一列表返回值，作为 {@link BaseResult} 的 data 字段，total，list
  *
  * @author lym
  */

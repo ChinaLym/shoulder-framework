@@ -7,8 +7,8 @@ import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
-import org.shoulder.core.dto.response.RestResult;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,11 +49,11 @@ public interface ImportRestfulApi {
      */
     @ApiOperation(value = "上传数据导入文件", consumes = "text/html", httpMethod = "POST")
     @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",
-        defaultValue = "gbk", required = true, paramType = "body")
+            defaultValue = "gbk", required = true, paramType = "body")
     @RequestMapping(value = "template/upload", method = {RequestMethod.POST})
-    RestResult<String> doValidate(MultipartFile file,
+    BaseResult<String> doValidate(MultipartFile file,
                                   @RequestParam(name = "charsetLanguage", required = false) String charsetLanguage)
-        throws Exception;
+            throws Exception;
 
     /**
      * 查询数据导入数据校验进度
@@ -72,7 +72,7 @@ public interface ImportRestfulApi {
      */
     @ApiOperation(value = "批量操作", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "POST")
     @RequestMapping(value = "execute", method = RequestMethod.POST)
-    RestResult<String> doExecute(ExecuteOperationParam executeOperationParam);
+    BaseResult<String> doExecute(ExecuteOperationParam executeOperationParam);
 
     /**
      * 查询数据操作进度，todo 【开发】考虑 查进度和结果是否为同一个接口？进度不需要每行信息
@@ -82,9 +82,9 @@ public interface ImportRestfulApi {
      */
     @ApiOperation(value = "查询数据操作进度", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "GET")
     @ApiImplicitParam(value = "批次ID", name = "taskId", example = "312312312312", defaultValue = "3123412312321",
-        required = true, paramType = "path")
+            required = true, paramType = "path")
     @RequestMapping(value = "progress/{taskId}", method = GET)
-    RestResult<BatchProcessResult> queryOperationProcess(@PathVariable("taskId") String taskId);
+    BaseResult<BatchProcessResult> queryOperationProcess(@PathVariable("taskId") String taskId);
 
 
     // ===================================  导入记录查询  =====================================
@@ -98,9 +98,9 @@ public interface ImportRestfulApi {
      * @return 分页-批量处理进度 / 结果
      */
     @ApiOperation(value = "查询处理记录", notes = "暂不支持分页", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE,
-        produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "GET")
+            produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "GET")
     @RequestMapping(value = "record/list", method = RequestMethod.GET)
-    RestResult<ListResult<BatchRecordResult>> queryImportRecord();
+    BaseResult<ListResult<BatchRecordResult>> queryImportRecord();
 
 
     /**
@@ -112,9 +112,9 @@ public interface ImportRestfulApi {
      * @return 批量处理进度 / 结果
      */
     @ApiOperation(value = "查询某次处理记录详情", notes = "支持分页", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE
-        , produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "POST")
+            , produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "POST")
     @RequestMapping(value = "record/detail", method = RequestMethod.POST)
-    RestResult<BatchRecordResult> queryImportRecordDetail(QueryImportResultDetailParam condition);
+    BaseResult<BatchRecordResult> queryImportRecordDetail(QueryImportResultDetailParam condition);
 
     // ===================================  导出相关  =====================================
 

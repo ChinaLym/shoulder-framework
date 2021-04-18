@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 分页数据
  * <p>
- * 统一分页列表返回值，作为 {@link RestResult} 的 data 字段，total，list
+ * 统一分页列表返回值，作为 {@link BaseResult} 的 data 字段，total，list
  *
  * @author lym
  */
