@@ -99,7 +99,7 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public RestResult<ListResult<BatchRecordResult>> queryImportRecord() {
         return RestResult.success(
-            Stream.of(recordService.findLastRecord("dataType", AppContext.getUserIdAsString()))
+            Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
                 .map(BatchModelConvert.CONVERT::toDTO).collect(Collectors.toList())
         );
     }

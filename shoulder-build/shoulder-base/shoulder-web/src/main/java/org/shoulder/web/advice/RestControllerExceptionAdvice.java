@@ -96,7 +96,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public RestResult methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
-        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_INVALID, e, firstErrorInfo);
+        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_ILLEGAL, e, firstErrorInfo);
         log.info(stdEx);
         return stdEx.toResponse();
     }
@@ -108,7 +108,7 @@ public class RestControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({IllegalArgumentException.class})
     public RestResult illegalArgumentHandler(IllegalArgumentException e) {
-        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_INVALID, e, e.getMessage());
+        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_ILLEGAL, e, e.getMessage());
         log.info(stdEx);
         return stdEx.toResponse();
     }
@@ -121,7 +121,7 @@ public class RestControllerExceptionAdvice {
     @ExceptionHandler({BindException.class})
     public RestResult bindExceptionHandler(BindException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
-        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_INVALID, e, firstErrorInfo);
+        BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_ILLEGAL, e, firstErrorInfo);
         log.info(stdEx);
         return stdEx.toResponse();
     }
@@ -142,7 +142,7 @@ public class RestControllerExceptionAdvice {
         String paramName = node.getName();
         // 可以在这里打印方法名，必要不大，暂未实现
         String msgInAnnotation = firstConstraintViolation.getMessage();
-        String msg = StringUtils.isEmpty(msgInAnnotation) ? ParamErrorCodeEnum.PARAM_INVALID.getMessage() : msgInAnnotation;
+        String msg = StringUtils.isEmpty(msgInAnnotation) ? ParamErrorCodeEnum.PARAM_ILLEGAL.getMessage() : msgInAnnotation;
         Logger logger = LoggerFactory.getLogger(firstConstraintViolation.getRootBeanClass().getName());
         if (logger.isInfoEnabled()) {
             String logMessage = null;
@@ -152,9 +152,9 @@ public class RestControllerExceptionAdvice {
                 translator.getMessage(msg, paramName, AppInfo.defaultLocale());
             }
             // 这里堆栈信息不必打印
-            logger.infoWithErrorCode(ParamErrorCodeEnum.PARAM_INVALID.getCode(), GLOBAL_EXCEPTION_HANDLER_TIP + logMessage);
+            logger.infoWithErrorCode(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(), GLOBAL_EXCEPTION_HANDLER_TIP + logMessage);
         }
-        return new RestResult<>(ParamErrorCodeEnum.PARAM_INVALID.getCode(), msg, new Object[]{paramName});
+        return new RestResult<>(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(), msg, new Object[]{paramName});
     }
 
 

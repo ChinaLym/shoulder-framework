@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 /**
  * 通用参数错误码枚举
  * 默认记录 info 日志，返回 400 httpCode
+ * 使用统一的参数非法代替
  *
  * @author lym
  */
@@ -21,9 +22,9 @@ public enum ParamErrorCodeEnum implements ErrorCode {
     /**
      * 参数校验未通过，参数非法（非业务代码 或 内部约定格式，非公开隐蔽接口，一般不使用）
      */
-    PARAM_INVALID(314, "Parameter not valid. for %s."),
+    PARAM_ILLEGAL(314, "Parameter illegal. for %s."),
     /**
-     * 参数不能为空
+     * 参数为空
      */
     PARAM_BLANK(315, "The required parameter %s is blank."),
     /**

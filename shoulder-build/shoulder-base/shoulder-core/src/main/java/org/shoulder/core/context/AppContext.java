@@ -27,8 +27,8 @@ public class AppContext {
     /**
      * 获取 用户标识
      */
-    public static String getUserIdAsString() {
-        return (String) get(ShoulderContextKey.USER_ID);
+    public static String getUserId() {
+        return String.valueOf(get(ShoulderContextKey.USER_ID));
     }
 
     /**
