@@ -33,7 +33,6 @@
         <module>shoulder-build</module>
         <!-- 骨架工程 -->
         <module>shoulder-archetype-simple</module>
-        <module>shoulder-build/shoulder-plugins/shoulder-ext-config</module>
     </modules>
 
     <properties>

@@ -3,7 +3,7 @@ package org.shoulder.security.authentication.handler.json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.shoulder.SLog;
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class Restful403AccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.info("accessDenied 403 for: " + accessDeniedException.getMessage(), accessDeniedException);
-        RestResult<Void> result = RestResult.error(CommonErrorCodeEnum.AUTH_403_FORBIDDEN,
+        BaseResult<Void> result = BaseResult.error(CommonErrorCodeEnum.AUTH_403_FORBIDDEN,
                 accessDeniedException.getMessage());
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 

@@ -1,6 +1,6 @@
 package org.shoulder.security.authentication.handler.json;
 
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    private static final String SUCCESS_RESPONSE = JsonUtils.toJson(RestResult.success());
+    private static final String SUCCESS_RESPONSE = JsonUtils.toJson(BaseResult.success());
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

@@ -2,7 +2,7 @@ package org.shoulder.batch.service.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.batch.cache.BatchProgressCache;
-import org.shoulder.batch.enums.BatchConstants;
+import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.BatchI18nEnum;
 import org.shoulder.batch.enums.BatchResultEnum;

@@ -1,7 +1,7 @@
 package org.shoulder.security.authentication.browser;
 
 import org.apache.commons.lang3.StringUtils;
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
@@ -77,7 +77,7 @@ public class AbstractSessionStrategy {
             logger.debug("redirectTo:" + targetUrl);
             redirectStrategy.sendRedirect(request, response, targetUrl);
         } else {
-            RestResult needAuthResponse = new RestResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
+            BaseResult needAuthResponse = new BaseResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
             String resultMsg = buildResponseContent(request);
             needAuthResponse.setMsg(resultMsg);
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
