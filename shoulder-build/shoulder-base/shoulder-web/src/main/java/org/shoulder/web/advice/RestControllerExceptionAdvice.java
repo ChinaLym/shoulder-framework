@@ -4,7 +4,7 @@ import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.hibernate.validator.internal.engine.path.NodeImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
@@ -63,7 +63,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MissingServletRequestParameterException.class})
-    public RestResult paramsMissingHandler(MissingServletRequestParameterException e) {
+    public BaseResult paramsMissingHandler(MissingServletRequestParameterException e) {
         BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_BLANK, e, e.getParameterName());
         log.info(stdEx);
         return stdEx.toResponse();
@@ -74,7 +74,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public RestResult messageNotReadableHandler(HttpMessageNotReadableException e) {
+    public BaseResult messageNotReadableHandler(HttpMessageNotReadableException e) {
         final String springErrorTipHeader = "Could not read document:";
         final String errorStackSplit = " at ";
         String message = e.getMessage();
@@ -94,7 +94,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public RestResult methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+    public BaseResult methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
         BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_ILLEGAL, e, firstErrorInfo);
         log.info(stdEx);
@@ -107,7 +107,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({IllegalArgumentException.class})
-    public RestResult illegalArgumentHandler(IllegalArgumentException e) {
+    public BaseResult illegalArgumentHandler(IllegalArgumentException e) {
         BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_ILLEGAL, e, e.getMessage());
         log.info(stdEx);
         return stdEx.toResponse();
@@ -119,7 +119,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BindException.class})
-    public RestResult bindExceptionHandler(BindException e) {
+    public BaseResult bindExceptionHandler(BindException e) {
         String firstErrorInfo = getFirstErrorDescription(e.getBindingResult());
         BaseRuntimeException stdEx = new BaseRuntimeException(ParamErrorCodeEnum.PARAM_ILLEGAL, e, firstErrorInfo);
         log.info(stdEx);
@@ -132,10 +132,10 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {ConstraintViolationException.class})
-    public RestResult constraintViolationExceptionHandler(ConstraintViolationException e) {
+    public BaseResult constraintViolationExceptionHandler(ConstraintViolationException e) {
         // 这里取了第一个错误作为校验错误原因，且默认使用 hibernate，未做其他实现判断
         ConstraintViolationImpl firstConstraintViolation = (ConstraintViolationImpl) e.getConstraintViolations()
-            .stream().findFirst().orElse(null);
+                .stream().findFirst().orElse(null);
         assert firstConstraintViolation != null;
         // 使用校验处类的日志记录器打印日志 getPropertyPath().toString() 也行
         NodeImpl node = ((PathImpl) firstConstraintViolation.getPropertyPath()).getLeafNode();
@@ -154,7 +154,7 @@ public class RestControllerExceptionAdvice {
             // 这里堆栈信息不必打印
             logger.infoWithErrorCode(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(), GLOBAL_EXCEPTION_HANDLER_TIP + logMessage);
         }
-        return new RestResult<>(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(), msg, new Object[]{paramName});
+        return new BaseResult<>(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(), msg, new Object[]{paramName});
     }
 
 
@@ -191,7 +191,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-    public RestResult methodNotSupportedHandler(HttpRequestMethodNotSupportedException e) {
+    public BaseResult methodNotSupportedHandler(HttpRequestMethodNotSupportedException e) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.REQUEST_METHOD_MISMATCH, e);
         log.warn(ex);
         return ex.toResponse();
@@ -203,10 +203,10 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public RestResult methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
+    public BaseResult methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
         BaseRuntimeException ex =
-            new BaseRuntimeException(ParamErrorCodeEnum.PARAM_TYPE_NOT_MATCH, e,
-                e.getName(), e.getValue(), e.getRequiredType() == null ? null : e.getRequiredType().getName());
+                new BaseRuntimeException(ParamErrorCodeEnum.PARAM_TYPE_NOT_MATCH, e,
+                        e.getName(), e.getValue(), e.getRequiredType() == null ? null : e.getRequiredType().getName());
         log.info(ex);
         return ex.toResponse();
     }
@@ -217,7 +217,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public RestResult httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
+    public BaseResult httpMediaTypeNotSupportedExceptionHandler(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.CONTENT_TYPE_INVALID, e, String.valueOf(e.getContentType()));
         log.info(ex);
         return ex.toResponse();
@@ -235,7 +235,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(MultipartException.class)
-    public RestResult multipartException(MultipartException e) {
+    public BaseResult multipartException(MultipartException e) {
         // MultipartException 只有一个子类 MaxUploadSizeExceededException，很可能是上传文件过大，或不能从请求中解析出来
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.MULTIPART_INVALID, e);
         log.warn(ex);
@@ -248,7 +248,7 @@ public class RestControllerExceptionAdvice {
      * todo 【可选】ClientAbortException tomcat中客户端连接断开，如浏览器请求了，还没响应就关闭了，服务器返回时发现response不能写
      */
     @ExceptionHandler(Exception.class)
-    public RestResult otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public BaseResult otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws Exception {
         // 暂不考虑不是 json 响应
         BaseRuntimeException ex;
         if (e instanceof ErrorCode) {
@@ -283,7 +283,7 @@ public class RestControllerExceptionAdvice {
      */
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(SQLException.class)
-    public RestResult sqlExceptionHandler(SQLException e) {
+    public BaseResult sqlExceptionHandler(SQLException e) {
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.DATA_STORAGE_FAIL, e);
         log.error(ex);
         return ex.toResponse();

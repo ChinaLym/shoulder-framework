@@ -2,11 +2,11 @@ package org.shoulder.batch.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
-import org.shoulder.batch.enums.BatchConstants;
 import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchProgress;

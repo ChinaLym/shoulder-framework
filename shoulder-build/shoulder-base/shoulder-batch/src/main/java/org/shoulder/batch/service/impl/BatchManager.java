@@ -3,7 +3,7 @@ package org.shoulder.batch.service.impl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.shoulder.batch.enums.BatchConstants;
+import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.model.*;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;

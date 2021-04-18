@@ -81,7 +81,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
     private final LocalCryptoInfoRepository aesInfoRepository;
     private final SymmetricCipher dataCipher = DefaultSymmetricCipher.getFlyweight(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
 
-    private String appId;
+    private final String appId;
 
 
     public DefaultLocalTextCipher(LocalCryptoInfoRepository aesInfoRepository, String appId) {
