@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.support.server;
 
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -70,7 +70,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             log.debug("reject for invalid security headers.");
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            RestResult<Void> r = RestResult.error(NegotiationErrorCodeEnum.MISSING_REQUIRED_PARAM);
+            BaseResult<Void> r = BaseResult.error(NegotiationErrorCodeEnum.MISSING_REQUIRED_PARAM);
             response.getWriter().write(JsonUtils.toJson(r));
             return false;
         }
@@ -82,7 +82,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
             // 返回重新握手错误码
             response.setHeader(NegotiationConstants.NEGOTIATION_INVALID_TAG, NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            RestResult<Void> r = RestResult.error(NegotiationErrorCodeEnum.NEGOTIATION_INVALID);
+            BaseResult<Void> r = BaseResult.error(NegotiationErrorCodeEnum.NEGOTIATION_INVALID);
             response.getWriter().write(JsonUtils.toJson(r));
             return false;
         }
@@ -92,7 +92,7 @@ public class SensitiveRequestDecryptHandlerInterceptor extends HandlerIntercepto
         if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, cacheNegotiationResult.getPublicKey())) {
             log.debug("Token({}) invalid! xSessionId={}", token, xSessionId);
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            RestResult<Void> r = RestResult.error(NegotiationErrorCodeEnum.TOKEN_INVALID);
+            BaseResult<Void> r = BaseResult.error(NegotiationErrorCodeEnum.TOKEN_INVALID);
             response.getWriter().write(JsonUtils.toJson(r));
             return false;
         }

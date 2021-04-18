@@ -17,8 +17,8 @@ import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
-import org.shoulder.core.dto.response.RestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,10 +63,10 @@ public class ImportController implements ImportRestfulApi {
      * 实现举例：上传数据导入文件
      */
     @Override
-    public RestResult<String> doValidate(MultipartFile file, String charsetLanguage) throws Exception {
+    public BaseResult<String> doValidate(MultipartFile file, String charsetLanguage) throws Exception {
         // 示例：解析文件，然后校验，返回校验任务标识
         String taskId = "doValidate";
-        return RestResult.success(taskId);
+        return BaseResult.success(taskId);
     }
 
 
@@ -74,12 +74,12 @@ public class ImportController implements ImportRestfulApi {
      * 实现举例：批量导入
      */
     @Override
-    public RestResult<String> doExecute(@RequestBody ExecuteOperationParam executeOperationParam) {
+    public BaseResult<String> doExecute(@RequestBody ExecuteOperationParam executeOperationParam) {
         // 示例：从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
 
         BatchData batchData = new BatchData();
-        return RestResult.success(
-            batchService.doProcess(batchData)
+        return BaseResult.success(
+                batchService.doProcess(batchData)
         );
     }
 
@@ -87,9 +87,9 @@ public class ImportController implements ImportRestfulApi {
      * 查询数据导入进度
      */
     @Override
-    public RestResult<BatchProcessResult> queryOperationProcess(String taskId) {
+    public BaseResult<BatchProcessResult> queryOperationProcess(String taskId) {
         BatchProgress process = batchService.queryBatchProgress(taskId);
-        return RestResult.success(BatchModelConvert.CONVERT.toDTO(process));
+        return BaseResult.success(BatchModelConvert.CONVERT.toDTO(process));
     }
 
 
@@ -97,10 +97,10 @@ public class ImportController implements ImportRestfulApi {
      * 查询数据导入记录
      */
     @Override
-    public RestResult<ListResult<BatchRecordResult>> queryImportRecord() {
-        return RestResult.success(
-            Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
-                .map(BatchModelConvert.CONVERT::toDTO).collect(Collectors.toList())
+    public BaseResult<ListResult<BatchRecordResult>> queryImportRecord() {
+        return BaseResult.success(
+                Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
+                        .map(BatchModelConvert.CONVERT::toDTO).collect(Collectors.toList())
         );
     }
 
@@ -108,13 +108,13 @@ public class ImportController implements ImportRestfulApi {
      * 查询某次处理记录详情
      */
     @Override
-    public RestResult<BatchRecordResult> queryImportRecordDetail(
-        @RequestBody QueryImportResultDetailParam condition) {
+    public BaseResult<BatchRecordResult> queryImportRecordDetail(
+            @RequestBody QueryImportResultDetailParam condition) {
         BatchRecord record = recordService.findRecordById("xxx");
         List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getTaskId());
         record.setDetailList(details);
         BatchRecordResult result = BatchModelConvert.CONVERT.toDTO(record);
-        return RestResult.success(result);
+        return BaseResult.success(result);
     }
 
 

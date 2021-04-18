@@ -25,7 +25,7 @@ import java.util.Map;
  */
 @ApiModel(value = "接口响应统一返回值包装类 Restful 风格")
 //@Schema(name = "接口响应统一返回值包装类 Restful 风格")
-public class RestResult<T> implements Serializable {
+public class BaseResult<T> implements Serializable {
 
     private static final long serialVersionUID = -3829563105110651627L;
 
@@ -50,7 +50,7 @@ public class RestResult<T> implements Serializable {
     @ApiModelProperty(value = "扩展属性", dataType = "", example = "", position = 4)
     private Map<String, Object> ext = Collections.emptyMap();
 
-    public RestResult() {
+    public BaseResult() {
     }
 
     /**
@@ -58,7 +58,7 @@ public class RestResult<T> implements Serializable {
      *
      * @param errorCode 错误码
      */
-    public RestResult(ErrorCode errorCode) {
+    public BaseResult(ErrorCode errorCode) {
         setCode(errorCode.getCode());
         setMsg(errorCode.getMessage());
     }
@@ -70,32 +70,32 @@ public class RestResult<T> implements Serializable {
      * @param msg  提示信息
      * @param data 返回数据
      */
-    public RestResult(String code, String msg, T data) {
+    public BaseResult(String code, String msg, T data) {
         setCode(code);
         setMsg(msg);
         setData(data);
     }
 
 
-    public static <T> RestResult<T> success() {
-        return new RestResult<T>(ErrorCode.SUCCESS);
+    public static <T> BaseResult<T> success() {
+        return new BaseResult<T>(ErrorCode.SUCCESS);
     }
 
-    public static <T> RestResult<T> success(T data) {
-        return new RestResult<T>(ErrorCode.SUCCESS).setData(data);
+    public static <T> BaseResult<T> success(T data) {
+        return new BaseResult<T>(ErrorCode.SUCCESS).setData(data);
     }
 
-    public static <X> RestResult<ListResult<X>> success(Collection<? extends X> dataList) {
+    public static <X> BaseResult<ListResult<X>> success(Collection<? extends X> dataList) {
         ListResult<X> listData = ListResult.of(dataList);
-        return new RestResult<ListResult<X>>(ErrorCode.SUCCESS).setData(listData);
+        return new BaseResult<ListResult<X>>(ErrorCode.SUCCESS).setData(listData);
     }
 
-    public static RestResult<Void> error(ErrorCode errorCode) {
-        return new RestResult<>(errorCode);
+    public static BaseResult<Void> error(ErrorCode errorCode) {
+        return new BaseResult<>(errorCode);
     }
 
-    public static RestResult<Void> error(ErrorCode error, String msg) {
-        return new RestResult<Void>(error).setMsg(msg);
+    public static BaseResult<Void> error(ErrorCode error, String msg) {
+        return new BaseResult<Void>(error).setMsg(msg);
     }
 
 
@@ -130,7 +130,7 @@ public class RestResult<T> implements Serializable {
         return code;
     }
 
-    public RestResult<T> setCode(String code) {
+    public BaseResult<T> setCode(String code) {
         this.code = ExceptionUtil.formatErrorCode(code);
         return this;
     }
@@ -139,7 +139,7 @@ public class RestResult<T> implements Serializable {
         return msg;
     }
 
-    public RestResult<T> setMsg(String msg) {
+    public BaseResult<T> setMsg(String msg) {
         this.msg = msg;
         return this;
     }
@@ -148,7 +148,7 @@ public class RestResult<T> implements Serializable {
         return data;
     }
 
-    public RestResult<T> setData(T data) {
+    public BaseResult<T> setData(T data) {
         this.data = data;
         return this;
     }
@@ -161,7 +161,7 @@ public class RestResult<T> implements Serializable {
         this.errorContext = errorContext;
     }
 
-    public RestResult<T> setExt(String key, Object value) {
+    public BaseResult<T> setExt(String key, Object value) {
         if (this.ext == Collections.EMPTY_MAP) {
             // 一般扩展属性不会太多，默认4
             this.ext = new HashMap<>(4);
@@ -175,7 +175,7 @@ public class RestResult<T> implements Serializable {
         return (ANY) ext.remove(key);
     }
 
-    public RestResult<T> removeExt(String key) {
+    public BaseResult<T> removeExt(String key) {
         ext.remove(key);
         return this;
     }

@@ -1,6 +1,6 @@
 package org.shoulder.core.exception;
 
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.ExceptionUtil;
@@ -214,8 +214,8 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @param data 填充异常信息的参数
      * @return api 返回值
      */
-    public RestResult<Object> toResponse(Object data) {
-        return new RestResult<>(this.getCode(), this.getMessage(), data);
+    public BaseResult<Object> toResponse(Object data) {
+        return new BaseResult<>(this.getCode(), this.getMessage(), data);
     }
 
     /**
@@ -223,8 +223,8 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      *
      * @return api 返回值
      */
-    public RestResult<Object> toResponse() {
-        return new RestResult<>(this.getCode(), this.getMessage(), getArgs());
+    public BaseResult<Object> toResponse() {
+        return new BaseResult<>(this.getCode(), this.getMessage(), getArgs());
     }
 
     @Override
