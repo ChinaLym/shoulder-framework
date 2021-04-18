@@ -36,7 +36,17 @@ public class ExceptionUtil {
      */
     public static String generateExceptionMessage(String message, Object... args) {
         if (StringUtils.isNotEmpty(message)) {
-            message = MessageFormat.format(message, args);
+            // 顺序不要变，否则出问题
+            if (message.contains("{}")) {
+                // log4j 格式
+                Log4jParameterFormatter.formatMessage(message, args);
+            } else if (message.contains("{0}")) {
+                // MessageFormat
+                message = MessageFormat.format(message, args);
+            } else if (message.contains("%")) {
+                // 否则尝试 String format
+                message = String.format(message, args);
+            }
         }
         return message;
     }

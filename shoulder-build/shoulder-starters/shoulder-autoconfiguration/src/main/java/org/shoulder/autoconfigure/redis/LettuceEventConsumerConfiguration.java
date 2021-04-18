@@ -15,13 +15,13 @@ import java.util.List;
 /**
  * LettuceEventConsumer
  *
- * @author Admin
+ * @author lym
  */
 @Configuration
+@ConditionalOnBean(LettuceEventConsumer.class)
 public class LettuceEventConsumerConfiguration extends LettuceConnectionFactory {
 
     @Bean
-    @ConditionalOnBean(LettuceEventConsumer.class)
     public LettuceEventConsumerManager lettuceEventConsumerManager(@Nullable List<LettuceEventConsumer> consumers) {
         return new LettuceEventConsumerManager(consumers);
     }

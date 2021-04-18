@@ -7,9 +7,13 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.servlet.ServletContext;
 import java.util.Collections;
 import java.util.Map;
@@ -32,6 +36,8 @@ public class ContextUtils {
      * Spring应用上下文 ApplicationContext
      */
     private static ApplicationContext applicationContext;
+
+    private static final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
     /**
      * 根据 bean 名称获取对象
@@ -76,11 +82,12 @@ public class ContextUtils {
     /**
      * 如果给定的bean名字在bean定义中有别名，则返回这些别名
      */
-    public static String[] getAliases(String name) throws NoSuchBeanDefinitionException {
-        return getBeanFactory().getAliases(name);
+    @Nonnull
+    public static String[] getAliases(String beanName) throws NoSuchBeanDefinitionException {
+        return getBeanFactory().getAliases(beanName);
     }
 
-
+    @Nonnull
     public static <T> Map<String, T> getBeansOfType(Class<T> cls) {
         try {
             return getBeanFactory().getBeansOfType(cls);
@@ -89,12 +96,13 @@ public class ContextUtils {
         }
     }
 
-    public static <T> Map<String, T> getBeansOfType(Class<T> cls, ServletContext sc) {
-        if (sc == null) {
-            throw new IllegalStateException("can not find servlet context.");
+    @Nonnull
+    public static <T> Map<String, T> getBeansOfType(Class<T> cls, ServletContext servletContext) {
+        if (servletContext == null) {
+            throw new IllegalArgumentException("servletContext can not be null!");
         }
         try {
-            return Objects.requireNonNull(WebApplicationContextUtils.getWebApplicationContext(sc)).getBeansOfType(cls);
+            return Objects.requireNonNull(WebApplicationContextUtils.getWebApplicationContext(servletContext)).getBeansOfType(cls);
         } catch (BeansException e) {
             // 这里直接返回空
             return Collections.emptyMap();
@@ -108,20 +116,26 @@ public class ContextUtils {
         return Objects.requireNonNull(((WebApplicationContext) applicationContext).getServletContext()).getRealPath(path);
     }
 
+    @Nonnull
     public static Resource getResource(String location) {
-        return applicationContext.getResource(location);
+        return applicationContext != null ? applicationContext.getResource(location) : resourcePatternResolver.getResource(location);
     }
 
+    @Nullable
     public static Environment getEnvironment() {
-        return applicationContext.getEnvironment();
+        return applicationContext != null ? applicationContext.getEnvironment() : null;
     }
 
+    @Nullable
     public static String getProperty(String propertyKey) {
-        return getEnvironment().getProperty(propertyKey);
+        Environment env = getEnvironment();
+        return env != null ? env.getProperty(propertyKey) : null;
     }
 
+    @Nullable
     public static String getProperty(String propertyKey, String defaultValue) {
-        return getEnvironment().getProperty(propertyKey, defaultValue);
+        String v = getProperty(propertyKey);
+        return v != null ? v : defaultValue;
     }
 
     /**
@@ -136,24 +150,18 @@ public class ContextUtils {
         ContextUtils.beanFactory = beanFactory;
     }
 
+    @Nullable
     public static ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException {
-        ConfigurableListableBeanFactory tmp = ContextUtils.beanFactory;
-        if (tmp == null) {
-            throw new IllegalStateException("beanFactory has not set!");
-        }
-        return tmp;
+        return beanFactory;
     }
 
     public static void setApplicationContext(ApplicationContext applicationContext) {
         ContextUtils.applicationContext = applicationContext;
     }
 
+    @Nullable
     public static ApplicationContext getApplicationContext() throws IllegalStateException {
-        ApplicationContext tmp = ContextUtils.applicationContext;
-        if (tmp == null) {
-            throw new IllegalStateException("applicationContext has not set!");
-        }
-        return tmp;
+        return applicationContext;
     }
 
 }

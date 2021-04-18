@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBundleMessageSource implements Translator {
 
-    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+    private final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
     public ReloadableLocaleDirectoryMessageSource() {
         // 默认会加载 classpath*:language 中的多语言（便于自定义jar包中扩充，优先级较低，优先使用用户的）
@@ -58,12 +58,13 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
 
     /**
      * 加载特定语言对应的资源文件。在这里解析通配符
+     * todo 考虑覆盖 calculateAllFilenames 中的 获取默认语言
      *
      * @return 多语言资源路径
      */
     @Nonnull
     @Override
-    protected List<String> calculateFilenamesForLocale(String basename, Locale locale) {
+    protected List<String> calculateFilenamesForLocale(@Nonnull String basename, @Nonnull Locale locale) {
         // 先放入 super 的，优先级最低
         List<String> result = new LinkedList<>(super.calculateFilenamesForLocale(basename, locale));
         String language = locale.getLanguage();
@@ -140,4 +141,14 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
         return fileName.endsWith(".properties") || fileName.endsWith(".xml");
     }
 
+
+    @Override
+    protected Locale getDefaultLocale() {
+        return AppInfo.defaultLocale();
+    }
+
+    @Override
+    protected String getDefaultEncoding() {
+        return AppInfo.charset().name();
+    }
 }

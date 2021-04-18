@@ -16,7 +16,8 @@ import javax.annotation.Nullable;
  * <p>
  * 小提示：业务中可以按模块或按业务定义枚举 保存错误码、错误提示信息
  * 详细的错误码规范见 <a href="https://spec.itlym.cn/specs/base/errorCode.html">错误码规范<a/>
- * todo 考虑前缀区分大类，调用方出错（如参数）/ 系统内部错误（如取缓存时反序列失败） / 第三方服务失败（如调用其他服务，结果其他服务挂了，返回500）
+ * todo 考虑前缀区分来源，调用方出错（如参数）/ 系统内部错误（如取缓存时反序列失败） / 第三方服务失败（如调用其他服务，结果其他服务挂了，返回500）
+ * <p>
  * 区分业务失败、业务状态未知
  *
  * @author lym
@@ -39,6 +40,11 @@ public interface ErrorCode extends Translatable {
      * 特殊值，0代表成功
      */
     SuccessCode SUCCESS = new SuccessCode();
+
+    /**
+     * 特殊值，幂等成功
+     */
+    SuccessCode IDEMPOTENT_SUCCESS = new IdempotentSuccessCode();
 
 
     /* ---------------------- 方法 ------------------- */
@@ -156,6 +162,7 @@ public interface ErrorCode extends Translatable {
      *
      * @return 填充参数后的 msg
      */
+    // todo 废弃
     default String generateDetail() {
         return ExceptionUtil.generateExceptionMessage(getMessage(), getArgs());
     }
@@ -229,10 +236,16 @@ public interface ErrorCode extends Translatable {
          */
         @Override
         public BaseRuntimeException toException(Throwable t, Object... args) {
-            throw new IllegalCallerException("SuccessCode can't convert to an exception!");
+            throw new IllegalCallerException("Success can't convert to an exception!");
         }
 
     }
 
+    class IdempotentSuccessCode extends SuccessCode {
+        @Override
+        public String getMessage() {
+            return "idempotent success";
+        }
+    }
 
 }

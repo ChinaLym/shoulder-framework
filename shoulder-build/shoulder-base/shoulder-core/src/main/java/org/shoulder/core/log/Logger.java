@@ -58,6 +58,20 @@ public interface Logger extends org.slf4j.Logger {
 
     void infoWithErrorCode(String errorCode, String msg, Throwable t);
 
+    /**
+     * 语法糖
+     *
+     * @param throwable 异常
+     */
+    default void warn(Object throwable) {
+        if (throwable instanceof ErrorCode) {
+            error((ErrorCode) throwable);
+        }
+        if (throwable instanceof Throwable) {
+            error(((Throwable) throwable).getLocalizedMessage(), throwable);
+        }
+        error(String.valueOf(throwable));
+    }
 
     /**
      * 推荐的 warn 日志，带错误码
@@ -88,6 +102,20 @@ public interface Logger extends org.slf4j.Logger {
 
     void warnWithErrorCode(String errorCode, String msg, Throwable t);
 
+    /**
+     * 语法糖
+     *
+     * @param throwable 异常
+     */
+    default void error(Object throwable) {
+        if (throwable instanceof ErrorCode) {
+            error((ErrorCode) throwable);
+        }
+        if (throwable instanceof Throwable) {
+            error(((Throwable) throwable).getLocalizedMessage(), throwable);
+        }
+        error(String.valueOf(throwable));
+    }
 
     /**
      * error 级别带错误码

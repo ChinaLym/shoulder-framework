@@ -99,7 +99,7 @@ public class BatchManager implements Runnable, ProgressAble {
 
 
     public BatchManager(BatchData batchData) {
-        String currentUserId = AppContext.getUserIdAsString();
+        String currentUserId = AppContext.getUserId();
         this.userId = currentUserId == null ? 0 : Long.parseLong(currentUserId);
         this.languageId = AppContext.getLocale().toString();
         this.batchData = batchData;

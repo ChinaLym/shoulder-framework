@@ -159,7 +159,7 @@ public class ParamCheck {
         if (StringUtils.isNotEmpty(textToCheck) &&
             StringUtils.isNotEmpty(mustContain) &&
             textToCheck.contains(mustContain)) {
-            throw ParamErrorCodeEnum.PARAM_INVALID.toException(invalidReason);
+            throw ParamErrorCodeEnum.PARAM_ILLEGAL.toException(invalidReason);
         }
         return mustContain;
     }
@@ -244,7 +244,7 @@ public class ParamCheck {
      */
     public static void isNull(Object object, Object... paramName) throws BaseRuntimeException {
         if (object != null) {
-            throw ParamErrorCodeEnum.PARAM_INVALID.toException(paramName);
+            throw ParamErrorCodeEnum.PARAM_ILLEGAL.toException(paramName);
         }
     }
 
@@ -259,7 +259,7 @@ public class ParamCheck {
         if (size > 0 && size <= limit) {
             return;
         }
-        throw ParamErrorCodeEnum.PARAM_INVALID.toException(paramName);
+        throw ParamErrorCodeEnum.PARAM_ILLEGAL.toException(paramName);
     }
 
 
@@ -283,7 +283,7 @@ public class ParamCheck {
      */
     public static <T> T assertIn(T param, Collection<? extends T> allowData, Object... paramName) throws BaseRuntimeException {
         if (CollectionUtils.isEmpty(allowData) || !allowData.contains(param)) {
-            throw ParamErrorCodeEnum.PARAM_INVALID.toException(paramName);
+            throw ParamErrorCodeEnum.PARAM_ILLEGAL.toException(paramName);
         }
         return param;
     }
@@ -307,7 +307,7 @@ public class ParamCheck {
      */
     public static void dateLater(Date createTime, Date updateTime, Object... paramName) throws BaseRuntimeException {
         if (createTime != null && updateTime != null && updateTime.before(createTime)) {
-            throw ParamErrorCodeEnum.PARAM_INVALID.toException(paramName);
+            throw ParamErrorCodeEnum.PARAM_ILLEGAL.toException(paramName);
         }
     }
 

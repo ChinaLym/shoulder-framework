@@ -3,6 +3,8 @@ package org.shoulder.core.guid;
 import org.junit.Test;
 import org.shoulder.core.util.JsonUtils;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.BitSet;
 import java.util.Map;
 import java.util.UUID;
@@ -19,9 +21,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ShoulderGuidTest {
 
     /**
-     * 生成次数（默认 1kw次，低性能机器适当调低，否则将过于卡顿或导致测试结果不准确）
+     * 生成次数（默认 100w次，低性能机器适当调低，否则将过于卡顿或导致测试结果不准确）
      */
-    private static final int GENERATE_NUM = 10_000_000;
+    private static final int GENERATE_NUM = 10_000_00;
 
     /**
      * 测试多线程生成时使用的核数
@@ -139,7 +141,7 @@ public class ShoulderGuidTest {
             41, System.currentTimeMillis(), 10, 0, 12, 1);
         for (int i = 0; i < GENERATE_NUM; i++) {
             long id = generator.nextId();
-            // must pressed！ or else will cause OOM crash! (pressed for stander snowflake: 10 bit time 12 bit sequence)
+            // must pressed! or else will cause OOM crash! (pressed for stander snowflake: 10 bit time 12 bit sequence)
             int pressedId = press(id);
             bitSet.set(pressedId);
             assert id > lastId; // 断言递增
@@ -342,17 +344,18 @@ public class ShoulderGuidTest {
     /**
      * 【其他开源实现】测试 twitter 的翻译实现，发现 shoulder 的生成速度是 twitterSnowFlakeIdGenerator.java 的近万倍！！
      * 注意，该算法固定单个生成器，1s最多生产4096个！性能可估，故不要测试十万级别以上的数据！
+     * 单测时跳过，否则太慢了
      */
-    @Test
+    //@Test
     public void third_twitter_snowflake() {
         SnowFlakeIdGenerator snowFlakeIdGenerator = new SnowFlakeIdGenerator(1, 1);
-        long start = System.currentTimeMillis();
+        Instant start = Instant.now();
         // 标准雪花算法不要使用 GENERATE_NUM，否则慢的离谱，这里只生成10w
         for (int i = 0; i < 100_000; i++) {
             //System.out.println(generator.nextId());
             snowFlakeIdGenerator.nextId();
         }
-        System.out.println("cost " + (System.currentTimeMillis() - start));
+        System.out.println("cost " + Duration.between(start, Instant.now()));
 
     }
 

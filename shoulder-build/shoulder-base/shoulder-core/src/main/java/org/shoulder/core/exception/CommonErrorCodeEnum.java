@@ -21,33 +21,33 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      * @desc 未认证，需要认证后才能访问
      * @sug 先进行认证，再访问服务
      */
-    AUTH_401_NEED_AUTH(1, "Need Authentication.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    AUTH_401_NEED_AUTH(11, "Need Authentication.", Level.INFO, HttpStatus.UNAUTHORIZED),
     /**
      * @desc 认证失败：如用户名或密码凭据无效、由于白名单等被拒绝、未开启匿名访问等
      * @sug 检查认证凭证是否正确且在有效期内
      */
-    AUTH_401_UNAUTHORIZED(2, "Authentication failed.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    AUTH_401_UNAUTHORIZED(12, "Authentication failed.", Level.INFO, HttpStatus.UNAUTHORIZED),
     /**
      * @desc 认证过期，需要重新认证
      */
-    AUTH_401_EXPIRED(3, "Certification expired. Re-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    AUTH_401_EXPIRED(13, "Certification expired. Re-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
 
     /**
      * 主动拒绝请求：权限不够
      */
-    AUTH_403_FORBIDDEN(8, "Permission deny.", Level.INFO, HttpStatus.FORBIDDEN),
+    AUTH_403_FORBIDDEN(18, "Permission deny.", Level.INFO, HttpStatus.FORBIDDEN),
     /**
      * 主动拒绝请求：令牌无效
      */
-    AUTH_403_TOKEN_INVALID(9, "Invalid token.", Level.INFO, HttpStatus.FORBIDDEN),
+    AUTH_403_TOKEN_INVALID(19, "Invalid token.", Level.INFO, HttpStatus.FORBIDDEN),
     /**
      * 租户无效：不存在 / 封禁 / 冻结
      */
-    TENANT_INVALID(30, "Invalid tenant.", Level.INFO, HttpStatus.FORBIDDEN),
+    TENANT_INVALID(40, "Invalid tenant.", Level.INFO, HttpStatus.FORBIDDEN),
     /**
      * 操作非法：租户信息与业务不匹配 / 数据路由错误
      */
-    ILLEGAL_OPERATION(40, "illegal operation.", Level.INFO, HttpStatus.FORBIDDEN),
+    ILLEGAL_OPERATION(50, "illegal operation.", Level.INFO, HttpStatus.FORBIDDEN),
 
 
     // ------------------------------- 文件 -----------------------------
@@ -95,20 +95,31 @@ public enum CommonErrorCodeEnum implements ErrorCode {
 
     /**
      * 未知异常，谨慎使用该错误码，不利于排查
+     * 一般只用于断言正常一定怎样，如根据索引更新，更新影响数目一定小于等于1;或者编码时使用者未按照设计者的思路使用
      */
     UNKNOWN(300, "Unknown error.", Level.ERROR, HttpStatus.BAD_REQUEST),
     /**
+     * 重复提交：参数完全相同 / 检测到幂等且不支持幂等
+     */
+    REPEATED_SUBMIT(301, "Repeated submit"),
+    /**
+     * 非当且分片数据：系统有逻辑数据分片，但路由等问题导致错误的服务器收到了不属于服务器处理的分片数据
+     *
+     * @deprecated use unknown
+     */
+    SLICE_NOT_MATCH(302, "Slice not match"),
+    /**
      * 响应超时（对于网关）
      */
-    SERVICE_RESPONSE_TIMEOUT(301, "Service response timeout.", Level.ERROR, HttpStatus.REQUEST_TIMEOUT),
+    SERVICE_RESPONSE_TIMEOUT(311, "Service response timeout.", Level.ERROR, HttpStatus.REQUEST_TIMEOUT),
     /**
-     * 服务不可用
+     * 服务不可用（已经降级）
      */
-    SERVICE_UNAVAILABLE(302, "Service unavailable.", Level.ERROR, HttpStatus.SERVICE_UNAVAILABLE),
+    SERVICE_UNAVAILABLE(312, "Service unavailable.", Level.ERROR, HttpStatus.SERVICE_UNAVAILABLE),
     /**
      * 不再支持的接口（接口已废弃）
      */
-    DEPRECATED_NOT_SUPPORT(305, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    DEPRECATED_NOT_SUPPORT(315, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
 
     /**
      * 包装 HttpMessageNotReadableException,

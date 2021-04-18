@@ -298,10 +298,16 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
-                        <argLine>-Xms256m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=64m -Dfile.encoding=utf-8</argLine>
                         <includes>
-                            <include>**/*TestSuite.java</include>
+                            <include>**/*Test.java</include>
+                            <include>**/*Test.groovy</include>
+                            <include>**/*Spec.*</include>
                         </includes>
+                        <forkMode>always</forkMode>
+                        <argLine>-Xms256m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=64m -Dfile.encoding=utf-8</argLine>
+                        <argLine>--add-modules java.xml.bind</argLine>
+                        <argLine>--add-modules java.activation</argLine>
+                        <argLine>--add-opens=java.base/java.lang=ALL-UNNAMED --illegal-access=warn</argLine>
                     </configuration>
                 </plugin>
 

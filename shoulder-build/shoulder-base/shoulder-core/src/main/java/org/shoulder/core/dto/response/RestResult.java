@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
+import org.shoulder.core.exception.ErrorContext;
 import org.shoulder.core.util.ExceptionUtil;
 
 import java.io.Serializable;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * Restful 风格返回值
  * <p>
- * 统一接口返回值格式，包含 code，msg，data
+ * 统一接口返回值格式，包含 code，msg，data，错误时包含 errorContext
  * 接口版本不兼容变更，需要约定返回版本号的位置，通常在响应头，以便于接收者感知处理
  *
  * @author lym
@@ -40,9 +41,13 @@ public class RestResult<T> implements Serializable {
     //@Schema(name = "传输的数据")
     private T data;
 
+    @ApiModelProperty(value = "错误上下文", dataType = "Object", example = "", position = 3)
+    private ErrorContext errorContext;
+
     /**
      * 预留的扩展属性
      */
+    @ApiModelProperty(value = "扩展属性", dataType = "", example = "", position = 4)
     private Map<String, Object> ext = Collections.emptyMap();
 
     public RestResult() {
@@ -56,15 +61,6 @@ public class RestResult<T> implements Serializable {
     public RestResult(ErrorCode errorCode) {
         setCode(errorCode.getCode());
         setMsg(errorCode.getMessage());
-    }
-
-    public RestResult<T> addExt(String key, Object value) {
-        if (this.ext == Collections.EMPTY_MAP) {
-            // 一般扩展属性不会太多，默认4
-            this.ext = new HashMap<>(4);
-        }
-        ext.put(key, value);
-        return this;
     }
 
     /**
@@ -94,12 +90,12 @@ public class RestResult<T> implements Serializable {
         return new RestResult<ListResult<X>>(ErrorCode.SUCCESS).setData(listData);
     }
 
-    public static <T> RestResult<T> error(ErrorCode errorCode) {
-        return new RestResult<T>(errorCode);
+    public static RestResult<Void> error(ErrorCode errorCode) {
+        return new RestResult<>(errorCode);
     }
 
-    public static <T> RestResult<T> error(ErrorCode error, T data) {
-        return new RestResult<T>(error).setData(data);
+    public static RestResult<Void> error(ErrorCode error, String msg) {
+        return new RestResult<Void>(error).setMsg(msg);
     }
 
 
@@ -154,6 +150,33 @@ public class RestResult<T> implements Serializable {
 
     public RestResult<T> setData(T data) {
         this.data = data;
+        return this;
+    }
+
+    public ErrorContext getErrorContext() {
+        return errorContext;
+    }
+
+    public void setErrorContext(ErrorContext errorContext) {
+        this.errorContext = errorContext;
+    }
+
+    public RestResult<T> setExt(String key, Object value) {
+        if (this.ext == Collections.EMPTY_MAP) {
+            // 一般扩展属性不会太多，默认4
+            this.ext = new HashMap<>(4);
+        }
+        ext.put(key, value);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <ANY> ANY getExt(String key) {
+        return (ANY) ext.remove(key);
+    }
+
+    public RestResult<T> removeExt(String key) {
+        ext.remove(key);
         return this;
     }
 
