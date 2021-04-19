@@ -68,7 +68,7 @@ public class OperationLogDemoController {
                 // 从request中获取客户端类型
                 .setTerminalType(TerminalType.BROWSER)
                 // 根据请求取出当前用户、并填充用户信息
-                .setUserId(AppContext.getUserIdAsString())
+                .setUserId(AppContext.getUserId())
                 .setUserName(AppContext.getUserName())
                 .setUserOrgId("xxx")
                 .setUserOrgName("xxx")

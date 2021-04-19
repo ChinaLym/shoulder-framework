@@ -4,7 +4,6 @@ import com.example.demo1.dto.CryptoTestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
-import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lym
  */
 @Slf4j
-@SkipResponseWrap
 @RestController
 @RequestMapping("crypto/local")
 public class LocalCryptoDemoController {

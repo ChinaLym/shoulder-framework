@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
-import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * RSA 非对称加解密  若需测试 rsa 需要打开 {@link CryptoConfig#rsa2048} 的 @Bean
@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @see DefaultAsymmetricCipher#ecc256
  */
 @Slf4j
-@SkipResponseWrap
-//@RestController
+@RestController
 @RequestMapping("crypto/rsa")
 public class RsaCryptoDemoController {
 

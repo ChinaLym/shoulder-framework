@@ -60,7 +60,7 @@ public class ShoulderI18nDemoController {
 
     /**
      * Shoulder 中的推荐用法  <a href="http://localhost:8080/i18n/shoulder?toBeTranslate=shoulder.test.hi" />
-     *   <a href="http://localhost:8080/i18n/shoulder?toBeTranslate=shoulder.test.hi" />
+     *
      * 在 Spring 之上简化了使用，不必再填写 Locale，将自动获取
      *
      * @param toBeTranslate 待翻译的 多语言标识 code

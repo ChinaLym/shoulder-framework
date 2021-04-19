@@ -14,8 +14,8 @@ import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
-import org.shoulder.core.dto.response.RestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,7 +61,7 @@ public class BatchController {
      * http://localhost:8080/batch/validate
      */
     @RequestMapping(value = "validate")
-    public RestResult<String> doValidate() throws Exception {
+    public BaseResult<String> doValidate() throws Exception {
         List<? extends DataItem> mockUploadData = randomData(10);
         AppContext.setUserId(ThreadLocalRandom.current().nextLong(10));
 
@@ -77,7 +77,7 @@ public class BatchController {
         // 示例：解析文件，然后校验，返回校验任务标识
         String taskId = batchService.doProcess(batchData);
         System.out.println("可以在这里查询批处理进度:  http://localhost:8080/batch/progress?taskId=" + taskId);
-        return RestResult.success(taskId);
+        return BaseResult.success(taskId);
     }
 
     private List<PersonRecord> randomData(int num) {
@@ -98,11 +98,11 @@ public class BatchController {
      * 实现举例：批量导入
      */
 
-    public RestResult<String> doImport(@RequestBody ExecuteOperationParam executeOperationParam) {
+    public BaseResult<String> doImport(@RequestBody ExecuteOperationParam executeOperationParam) {
         // 示例：从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
 
         BatchData batchData = new BatchData();
-        return RestResult.success(
+        return BaseResult.success(
                 batchService.doProcess(batchData)
         );
     }
@@ -112,9 +112,9 @@ public class BatchController {
      * http://localhost:8080/batch/progress?taskId=
      */
     @RequestMapping(value = "progress", method = GET)
-    public RestResult<BatchProcessResult> queryOperationProcess(@Nullable String taskId) {
+    public BaseResult<BatchProcessResult> queryOperationProcess(@Nullable String taskId) {
         BatchProgress process = batchService.queryBatchProgress(taskId);
-        return RestResult.success(BatchModelConvert.CONVERT.toDTO(process));
+        return BaseResult.success(BatchModelConvert.CONVERT.toDTO(process));
     }
 
 
@@ -122,8 +122,8 @@ public class BatchController {
      * 查询数据导入记录
      */
 
-    public RestResult<ListResult<BatchRecordResult>> queryImportRecord() {
-        return RestResult.success(
+    public BaseResult<ListResult<BatchRecordResult>> queryImportRecord() {
+        return BaseResult.success(
                 Stream.of(recordService.findLastRecord("dataType", AppContext.getUserName()))
                         .map(BatchModelConvert.CONVERT::toDTO).collect(Collectors.toList())
         );
@@ -133,13 +133,13 @@ public class BatchController {
      * 查询某次处理记录详情
      */
 
-    public RestResult<BatchRecordResult> queryImportRecordDetail(
+    public BaseResult<BatchRecordResult> queryImportRecordDetail(
             @RequestBody QueryImportResultDetailParam condition) {
         BatchRecord record = recordService.findRecordById("xxx");
         List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getTaskId());
         record.setDetailList(details);
         BatchRecordResult result = BatchModelConvert.CONVERT.toDTO(record);
-        return RestResult.success(result);
+        return BaseResult.success(result);
     }
 
 

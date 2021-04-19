@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.security.authentication.handler.json.TokenAuthenticationSuccessHandler;
 import org.slf4j.Logger;
@@ -84,9 +84,9 @@ public class AuthTest {
         formData.add("password", "shoulder");
         HttpEntity requestBody = new HttpEntity<>(formData, headers);
 
-        ResponseEntity<RestResult> responseEntity = restTemplate.postForEntity(url, requestBody, RestResult.class);
+        ResponseEntity<BaseResult> responseEntity = restTemplate.postForEntity(url, requestBody, BaseResult.class);
         assert responseEntity.getStatusCode() == HttpStatus.OK;
-        RestResult authResult = responseEntity.getBody();
+        BaseResult authResult = responseEntity.getBody();
         log.info("status:" + responseEntity.getStatusCodeValue() + ",content:" + JsonUtils.toJson(authResult));
         assert authResult != null;
         return (Map<String, Object>) authResult.getData();

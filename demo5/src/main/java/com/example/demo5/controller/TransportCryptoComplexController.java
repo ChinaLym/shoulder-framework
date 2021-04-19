@@ -5,7 +5,7 @@ import com.example.demo5.dto.ComplexResult;
 import com.example.demo5.dto.SimpleParam;
 import com.example.demo5.dto.SimpleResult;
 import lombok.extern.slf4j.Slf4j;
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
@@ -56,12 +56,12 @@ public class TransportCryptoComplexController {
         param.setInnerCipher(inner);
 
         HttpEntity<ComplexParam> httpEntity = new HttpEntity<>(param, null);
-        ParameterizedTypeReference<RestResult<ComplexResult>> resultType = new ParameterizedTypeReference<>() {
+        ParameterizedTypeReference<BaseResult<ComplexResult>> resultType = new ParameterizedTypeReference<>() {
         };
-        ResponseEntity<RestResult<ComplexResult>> responseEntity = restTemplate.exchange("http://localhost:80/complex/receive", HttpMethod.POST,
+        ResponseEntity<BaseResult<ComplexResult>> responseEntity = restTemplate.exchange("http://localhost:80/complex/receive", HttpMethod.POST,
                 httpEntity, resultType);
 
-        RestResult<ComplexResult> apiResponse = responseEntity.getBody();
+        BaseResult<ComplexResult> apiResponse = responseEntity.getBody();
         System.out.println(JsonUtils.toJson(apiResponse));
         return apiResponse.getData();
     }

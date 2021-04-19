@@ -7,7 +7,6 @@ import org.shoulder.crypto.asymmetric.MultiKeyPairAsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.SingleKeyPairAsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
-import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @see AsymmetricTextCipher
  */
 @Slf4j
-@SkipResponseWrap
 @RestController
 @RequestMapping("crypto/ecc")
 public class EccCryptoDemoController {
