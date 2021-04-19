@@ -3,7 +3,9 @@ package org.shoulder.core.util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.exception.ErrorCode;
 
+import javax.annotation.Nonnull;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
@@ -75,11 +77,12 @@ public class ExceptionUtil {
     }
 
 
-    public static String formatErrorCode(String errorCode) {
-        if ("0".equals(errorCode)) {
-            return "0";
+    public static String formatErrorCode(@Nonnull String errorCode) {
+        if (ErrorCode.SUCCESS_CODE.equals(errorCode)) {
+            return ErrorCode.SUCCESS_CODE;
         }
-        return AppInfo.errorCodePrefix() + errorCode;
+        return StringUtils.startsWith(errorCode, AppInfo.errorCodePrefix()) ? errorCode :
+                AppInfo.errorCodePrefix() + "0".repeat(Math.max(0, 8 - errorCode.length())) + errorCode;
     }
 
     public static String formatErrorCode(Long errorCode) {

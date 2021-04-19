@@ -42,6 +42,11 @@ public interface ErrorCode extends Translatable {
     SuccessCode SUCCESS = new SuccessCode();
 
     /**
+     * 特殊值，0代表成功
+     */
+    String SUCCESS_CODE = "0";
+
+    /**
      * 特殊值，幂等成功
      */
     SuccessCode IDEMPOTENT_SUCCESS = new IdempotentSuccessCode();
@@ -56,7 +61,7 @@ public interface ErrorCode extends Translatable {
      * 或
      * <code>
      * String hex = Long.toHexString(code);
-     * this.code = "0x" + "0".repeat(Math.max(0, 8 - hex.length())) + hex;
+     * this.code = AppInfo.errorCodePrefix() + hex;
      * <code/>
      *
      * @return 错误码
@@ -197,7 +202,7 @@ public interface ErrorCode extends Translatable {
         @Nonnull
         @Override
         public String getCode() {
-            return "0";
+            return SUCCESS_CODE;
         }
 
         @Override

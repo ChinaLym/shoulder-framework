@@ -65,8 +65,13 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
     @Nonnull
     @Override
     protected List<String> calculateFilenamesForLocale(@Nonnull String basename, @Nonnull Locale locale) {
-        // 先放入 super 的，优先级最低
-        List<String> result = new LinkedList<>(super.calculateFilenamesForLocale(basename, locale));
+        // 先放入 super 的，优先级最低（这里是用于兼容 jdk / spring 约定的翻译文件路径）
+        List<String> result = new LinkedList<>();
+        if (!"classpath*:language".equals(basename)) {
+            // todo getMessage 不存在时候，报错：加载 Illegal char <*> at index 25: src\main\webapp\classpath*:language_en.xml
+            result.addAll(super.calculateFilenamesForLocale(basename, locale));
+        }
+
         String language = locale.getLanguage();
         String country = locale.getCountry();
         String variant = locale.getVariant();
@@ -100,9 +105,6 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
      */
     @Nonnull
     private List<String> listLanguageSourceDir(String basename) {
-        /*if(!basename.startsWith("classpath")){
-            return Collections.emptyList();
-        }*/
         Resource[] resources;
         try {
             // 扫描可能会很慢

@@ -41,9 +41,6 @@ public class BaseResult<T> implements Serializable {
     //@Schema(name = "传输的数据")
     private T data;
 
-    @ApiModelProperty(value = "错误上下文", dataType = "Object", example = "", position = 3)
-    private ErrorContext errorContext;
-
     /**
      * 预留的扩展属性
      */
@@ -122,7 +119,7 @@ public class BaseResult<T> implements Serializable {
 
     @JsonIgnore
     public boolean isSuccess() {
-        return ErrorCode.SUCCESS.getCode().equals(code);
+        return ErrorCode.SUCCESS_CODE.equals(code);
     }
 
 
@@ -153,23 +150,27 @@ public class BaseResult<T> implements Serializable {
         return this;
     }
 
+    @JsonIgnore
     public ErrorContext getErrorContext() {
-        return errorContext;
+        return getExt("errorContext");
     }
 
+    @JsonIgnore
     public void setErrorContext(ErrorContext errorContext) {
-        this.errorContext = errorContext;
+        setExt("errorContext", errorContext);
     }
 
+    @JsonIgnore
     public BaseResult<T> setExt(String key, Object value) {
         if (this.ext == Collections.EMPTY_MAP) {
             // 一般扩展属性不会太多，默认4
-            this.ext = new HashMap<>(4);
+            this.ext = new HashMap<>();
         }
         ext.put(key, value);
         return this;
     }
 
+    @JsonIgnore
     @SuppressWarnings("unchecked")
     public <ANY> ANY getExt(String key) {
         return (ANY) ext.remove(key);

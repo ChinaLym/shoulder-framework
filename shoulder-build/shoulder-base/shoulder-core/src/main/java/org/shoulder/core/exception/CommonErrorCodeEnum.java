@@ -94,46 +94,48 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     // ----------------------- 作为服务提供者（要处理的HTTP请求参数校验未通过） ----------------------
 
     /**
-     * 未知异常，谨慎使用该错误码，不利于排查
-     * 一般只用于断言正常一定怎样，如根据索引更新，更新影响数目一定小于等于1;或者编码时使用者未按照设计者的思路使用
+     * 未知异常，谨慎使用该错误码，不利于排查；一般只用于断言正常一定怎样，如根据索引更新，更新影响数目一定小于等于1;或者编码时使用者未按照设计者的思路使用
      */
     UNKNOWN(300, "Unknown error.", Level.ERROR, HttpStatus.BAD_REQUEST),
     /**
+     * 编码错误，仅在框架 / 工具内使用，提示使用者使用错误
+     */
+    CODING(305, "Coding error.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    /**
      * 重复提交：参数完全相同 / 检测到幂等且不支持幂等
      */
-    REPEATED_SUBMIT(301, "Repeated submit"),
+    REPEATED_SUBMIT(311, "Repeated submit"),
     /**
      * 非当且分片数据：系统有逻辑数据分片，但路由等问题导致错误的服务器收到了不属于服务器处理的分片数据
      *
      * @deprecated use unknown
      */
-    SLICE_NOT_MATCH(302, "Slice not match"),
+    SLICE_NOT_MATCH(312, "Slice not match"),
     /**
      * 响应超时（对于网关）
      */
-    SERVICE_RESPONSE_TIMEOUT(311, "Service response timeout.", Level.ERROR, HttpStatus.REQUEST_TIMEOUT),
+    SERVICE_RESPONSE_TIMEOUT(321, "Service response timeout.", Level.ERROR, HttpStatus.REQUEST_TIMEOUT),
     /**
      * 服务不可用（已经降级）
      */
-    SERVICE_UNAVAILABLE(312, "Service unavailable.", Level.ERROR, HttpStatus.SERVICE_UNAVAILABLE),
+    SERVICE_UNAVAILABLE(322, "Service unavailable.", Level.ERROR, HttpStatus.SERVICE_UNAVAILABLE),
     /**
      * 不再支持的接口（接口已废弃）
      */
-    DEPRECATED_NOT_SUPPORT(315, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    DEPRECATED_NOT_SUPPORT(325, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
 
     /**
-     * 包装 HttpMessageNotReadableException,
-     * 请求体读取失败：传来的参数与controller声明的参数类型不匹配。如 Post 请求缺少参数或者解析 json 时失败了
+     * 包装 HttpMessageNotReadableException；请求体读取失败：传来的参数与controller声明的参数类型不匹配。如 Post 请求缺少参数或者解析 json 时失败了
      */
-    PARAM_BODY_NOT_READABLE(321, "HttpMessageNotReadable. %s", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_BODY_NOT_READABLE(331, "HttpMessageNotReadable. %s", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * content-type 不正确
      */
-    CONTENT_TYPE_INVALID(323, "HttpMediaTypeNotSupported. ContentType(%s) is not acceptable.", Level.INFO, HttpStatus.BAD_REQUEST),
+    CONTENT_TYPE_INVALID(333, "HttpMediaTypeNotSupported. ContentType(%s) is not acceptable.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * 文件上传出错 todo 迁移
      */
-    MULTIPART_INVALID(324, "Request is not a validate multipart request, please check request or file size.", Level.WARN, HttpStatus.BAD_REQUEST),
+    MULTIPART_INVALID(334, "Request is not a validate multipart request, please check request or file size.", Level.WARN, HttpStatus.BAD_REQUEST),
 
     // ----------------------- 并发、达到瓶颈 error 级别 返回 500 ----------------------
 

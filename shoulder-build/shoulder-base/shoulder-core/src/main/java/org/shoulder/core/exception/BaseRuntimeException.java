@@ -2,6 +2,7 @@ package org.shoulder.core.exception;
 
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.i18.Translator;
+import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
@@ -50,7 +51,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @param cause 上级异常
      */
     public BaseRuntimeException(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
         if (cause instanceof ErrorCode) {
             ErrorCode errorCode = (ErrorCode) cause;
             this.setHttpStatus(errorCode.getHttpStatusCode());
@@ -132,7 +133,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @param message 错误描述
      */
     public BaseRuntimeException(String code, String message) {
-        this(code, message, (Object) null);
+        this(code, message, new Object[0]);
     }
 
     /**
@@ -214,7 +215,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @param data 填充异常信息的参数
      * @return api 返回值
      */
-    public BaseResult<Object> toResponse(Object data) {
+    public <T> BaseResult<T> toResponse(T data) {
         return new BaseResult<>(this.getCode(), this.getMessage(), data);
     }
 
@@ -224,7 +225,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @return api 返回值
      */
     public BaseResult<Object> toResponse() {
-        return new BaseResult<>(this.getCode(), this.getMessage(), getArgs());
+        return new BaseResult<>(this.getCode(), this.getMessage(), ArrayUtils.isEmpty(getArgs()) ? null : getArgs());
     }
 
     @Override
