@@ -31,7 +31,7 @@ public class AppInfo {
     /**
      * 应用错误码前缀
      */
-    private static String errorCodePrefix = "";
+    private static String errorCodePrefix = "0x0000";
 
     /**
      * 应用版本（用于灰度发布、版本兼容等）
@@ -109,6 +109,8 @@ public class AppInfo {
 
     public static void initErrorCodePrefix(@Nonnull String errorCodePrefix) {
         Assert.notNull(errorCodePrefix, "errorCodePrefix can't be null");
+        // 建议以 0x 开头表示 16 进制，暂时强制要求，有需要后再取消
+        Assert.isTrue(StringUtils.startsWith(errorCodePrefix, "0x"), "errorCodePrefix need startWith '0x'");
         AppInfo.errorCodePrefix = errorCodePrefix;
         log.info("initErrorCodePrefix: " + errorCodePrefix);
     }
