@@ -53,7 +53,9 @@ public class FileTypeValidator implements ConstraintValidator<FileType, Multipar
             return allowEmpty;
         }
         String fileName = multipartFile.getOriginalFilename();
+        log.debug("fileName is {}", fileName);
         if (!checkName(fileName)) {
+            log.warn("illegal fileName:" + fileName);
             return false;
         }
         String suffix = FileUtils.getSuffix(fileName);
@@ -63,21 +65,33 @@ public class FileTypeValidator implements ConstraintValidator<FileType, Multipar
                 if (StringUtils.equals(allowedSuffix, suffix)) {
                     // 不仅仅是文件名要符合限制，还需要满足文件头限制，避免恶意文件上传
                     boolean validHeader = FileUtils.checkHeader(multipartFile.getInputStream(), allowedSuffix, true);
-                    if (!validHeader || StringUtils.isEmpty(maxSizeStr)) {
-                        return validHeader;
+                    if (!validHeader) {
+                        log.warn("illegal fileHeader:" + fileName);
+                        return false;
                     }
-                    long allowedMaxSize = parseSize(maxSizeStr);
                     // 检查文件大小
                     long uploadSize = multipartFile.getSize();
-                    return allowedMaxSize >= uploadSize;
+                    if (StringUtils.isEmpty(maxSizeStr)) {
+                        log.debug("ignore fileSize, received bytes: {}", fileName);
+                        return true;
+                    }
+                    long allowedMaxSize = parseSize(maxSizeStr);
+                    if (allowedMaxSize >= uploadSize) {
+                        return true;
+                    } else {
+                        log.warn("the file({}) size({}) exceed max({})", fileName, uploadSize, maxSizeStr);
+                        return false;
+                    }
+
                 }
             }
+            // 类型 / 后缀名不允许(不在白名单)
+            log.warn("illegal fileSuffix:{} sourceFileName:{}", suffix, fileName);
+            return false;
         } catch (Exception e) {
             log.warn("validate mimeType fail", e);
             return false;
         }
-        // 类型 / 后缀名不允许
-        return false;
     }
 
     private long parseSize(@Nonnull CharSequence maxSizeStr) {
