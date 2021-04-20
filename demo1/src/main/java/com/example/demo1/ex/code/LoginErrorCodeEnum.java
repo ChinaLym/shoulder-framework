@@ -12,7 +12,7 @@ public enum LoginErrorCodeEnum implements LoginModuleErrorCode {
     /**
      * 用户已经被锁定
      */
-    USER_LOCKED("00001", "user not exists"),
+    USER_LOCKED("00001", "user locked"),
 
 
     ;

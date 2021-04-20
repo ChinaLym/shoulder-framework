@@ -53,7 +53,7 @@ public class FileUploadController {
 
         // 正则校验文件名禁止包含特殊字符
         boolean noForbiddenPattern = !RegexpUtils.matches(fileName, forbiddenNamePattern);
-        if (!onlyAllowPattern) {
+        if (!noForbiddenPattern) {
             // 省略每种校验失败组装返回值结果、记录日志...
 
         }
@@ -70,7 +70,7 @@ public class FileUploadController {
         // 校验文件大小
         long maxSize_1MB = 1024 * 1024;
         boolean sizeOk = uploadFile.getSize() < maxSize_1MB;
-        if (!onlyAllowPattern) {
+        if (!sizeOk) {
             // 省略每种校验失败组装返回值结果、记录日志...
 
         }
@@ -88,12 +88,21 @@ public class FileUploadController {
      * 只需一个注解 @FileType
      */
     @RequestMapping("1")
-    public String case1(@FileType(allowSuffix = "png", maxSize = "10M") MultipartFile uploadFile) {
+    public String case1(@FileType(allowSuffix = "png", maxSize = "10MB") MultipartFile uploadFile) {
+        // 你的业务代码 ...
 
-        // 你的业务代码
-        System.out.println("fileName: " + (uploadFile == null ? "null" : uploadFile.getOriginalFilename()));
-        return "1";
+        return uploadFile == null ? "null" : uploadFile.getOriginalFilename();
     }
 
+    /**
+     * 框架自动校验
+     * 只需一个注解 @FileType
+     */
+    @RequestMapping("2")
+    public String case2(@FileType(allowSuffix = {"yml", "properties"}, maxSize = "1MB") MultipartFile uploadFile) {
+        // 你的业务代码 ...
+
+        return uploadFile == null ? "null" : uploadFile.getOriginalFilename();
+    }
 
 }

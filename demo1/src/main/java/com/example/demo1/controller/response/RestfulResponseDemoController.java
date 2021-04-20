@@ -33,7 +33,7 @@ public class RestfulResponseDemoController {
     public BaseResult<String> notRecommended() {
         BaseResult<String> response = new BaseResult<>();
         response.setCode("0");
-        response.setMsg("msg");
+        response.setMsg("success");
         response.setData("data");
         return response;
     }
@@ -53,8 +53,8 @@ public class RestfulResponseDemoController {
     @GetMapping("2")
     public Map<String, User> case2() {
         Map<String, User> map = new HashMap<>(2);
-        map.put("1", new User());
-        map.put("2", new User());
+        map.put("1", new User("id1", "name1"));
+        map.put("2", new User("id2", "name2"));
         return map;
     }
 
