@@ -3,7 +3,9 @@ package org.shoulder.core.util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.exception.ErrorCode;
 
+import javax.annotation.Nonnull;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
@@ -35,8 +37,18 @@ public class ExceptionUtil {
      * @return 填充参数后的信息
      */
     public static String generateExceptionMessage(String message, Object... args) {
-        if (StringUtils.isNotEmpty(message)) {
-            message = MessageFormat.format(message, args);
+        if (StringUtils.isNotEmpty(message) && ArrayUtils.isNotEmpty(args)) {
+            // 顺序不要变，否则出问题
+            if (message.contains("{}")) {
+                // log4j 格式
+                Log4jParameterFormatter.formatMessage(message, args);
+            } else if (message.contains("{0}")) {
+                // MessageFormat
+                message = MessageFormat.format(message, args);
+            } else if (message.contains("%")) {
+                // 否则尝试 String format
+                message = String.format(message, args);
+            }
         }
         return message;
     }
@@ -65,11 +77,12 @@ public class ExceptionUtil {
     }
 
 
-    public static String formatErrorCode(String errorCode) {
-        if ("0".equals(errorCode)) {
-            return "0";
+    public static String formatErrorCode(@Nonnull String errorCode) {
+        if (ErrorCode.SUCCESS_CODE.equals(errorCode)) {
+            return ErrorCode.SUCCESS_CODE;
         }
-        return AppInfo.errorCodePrefix() + errorCode;
+        return StringUtils.startsWith(errorCode, "0x") ? errorCode :
+                AppInfo.errorCodePrefix() + "0".repeat(Math.max(0, 8 - errorCode.length())) + errorCode;
     }
 
     public static String formatErrorCode(Long errorCode) {

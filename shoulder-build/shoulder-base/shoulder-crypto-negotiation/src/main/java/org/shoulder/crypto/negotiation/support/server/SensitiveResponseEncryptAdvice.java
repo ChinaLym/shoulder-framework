@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.support.server;
 
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
@@ -79,14 +79,14 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
         }
         Object toEncryptDTO = body;
         // json
-        if (body instanceof RestResult) {
-            toEncryptDTO = ((RestResult) body).getData();
+        if (body instanceof BaseResult) {
+            toEncryptDTO = ((BaseResult) body).getData();
             if (toEncryptDTO == null) {
                 return body;
             }
         }
         List<SensitiveFieldWrapper> sensitiveFieldWrapperList =
-            SensitiveFieldCache.findSensitiveResponseFieldInfo(toEncryptDTO.getClass());
+                SensitiveFieldCache.findSensitiveResponseFieldInfo(toEncryptDTO.getClass());
         if (CollectionUtils.isEmpty(sensitiveFieldWrapperList)) {
             return body;
         }
@@ -106,7 +106,7 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
             response.getHeaders().set(NegotiationConstants.NEGOTIATION_INVALID_TAG, NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode());
             response.setStatusCode(HttpStatus.OK);
             response.getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
-            return RestResult.error(NegotiationErrorCodeEnum.NEGOTIATION_INVALID);
+            return BaseResult.error(NegotiationErrorCodeEnum.NEGOTIATION_INVALID);
         }
         try {
             byte[] responseDk = TransportCryptoUtil.generateDataKey(cacheNegotiationResult.getKeyLength());

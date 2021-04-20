@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
  */
 public enum CryptoErrorCodeEnum implements ErrorCode {
 
-    // ------------------------------- 对称加解密 -----------------------------
     /**
      * 加密失败
      */
@@ -25,6 +24,27 @@ public enum CryptoErrorCodeEnum implements ErrorCode {
      * 解密失败
      */
     DECRYPT_FAIL(5001, "decrypt fail."),
+
+    /**
+     * 密钥过期
+     */
+    KEY_EXPIRED(0, "key expired."),
+
+    /**
+     * 密钥无效
+     */
+    KEY_INVALID(0, "key invalid."),
+
+    /**
+     * 证书过期
+     */
+    CERTIFICATE_EXPIRED(0, "certificate expired."),
+
+    /**
+     * 证书无效
+     */
+    CERTIFICATE_INVALID(0, "certificate invalid."),
+
     /**
      * 签名失败
      */
@@ -53,11 +73,7 @@ public enum CryptoErrorCodeEnum implements ErrorCode {
     }
 
     CryptoErrorCodeEnum(long code, String message) {
-        this(code, message, DEFAULT_LOG_LEVEL);
-    }
-
-    CryptoErrorCodeEnum(long code, String message, HttpStatus httpStatus) {
-        this(code, message, DEFAULT_LOG_LEVEL, httpStatus);
+        this(code, message, Level.ERROR);
     }
 
     CryptoErrorCodeEnum(long code, String message, Level logLevel) {

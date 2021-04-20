@@ -2,6 +2,8 @@ package org.shoulder.core.dto.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -14,14 +16,14 @@ import java.util.Map;
 import static org.shoulder.core.constant.PageConst.*;
 
 /**
- * 分页参数
+ * 分页参数 DTO
  *
  * @author lym
  */
 @ApiModel("分页查询 DTO param")
 public class PageQuery implements Serializable {
 
-
+    private static final long serialVersionUID = -3462907130101674607L;
     /**
      * 页码
      */
@@ -140,6 +142,11 @@ public class PageQuery implements Serializable {
 
     public String getOrder() {
         return order;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 }

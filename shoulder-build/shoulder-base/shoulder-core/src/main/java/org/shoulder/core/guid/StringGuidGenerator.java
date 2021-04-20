@@ -5,6 +5,7 @@ package org.shoulder.core.guid;
  * 返回值类型为 String 的全局唯一标识符 guid 生成器
  * <p>
  * 实现策略举例：直接使用 jdk的UUID；jdkUUID去掉'-'；jdk UUID转62进制；等等...
+ * 建议在生成流水号时，携带生产者标识
  *
  * @author lym
  */

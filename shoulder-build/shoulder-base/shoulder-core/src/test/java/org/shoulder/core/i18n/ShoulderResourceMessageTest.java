@@ -3,7 +3,6 @@ package org.shoulder.core.i18n;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.shoulder.core.i18.ReloadableLocaleDirectoryMessageSource;
-import org.springframework.context.NoSuchMessageException;
 
 import java.util.Locale;
 
@@ -33,12 +32,13 @@ public class ShoulderResourceMessageTest {
     }
 
     /**
-     * 如果某个语言下没有对应的翻译，会报错
+     * 如果某个语言下没有对应的翻译，会 fallback 到默认语言
      */
-    @Test(expected = NoSuchMessageException.class)
+    @Test
     public void testTranslate_zh_special() {
         ReloadableLocaleDirectoryMessageSource messageSource = new ReloadableLocaleDirectoryMessageSource();
-        messageSource.getMessage("shoulder.test.cnSpecial", null, Locale.US);
+        String tr = messageSource.getMessage("shoulder.test.cnSpecial", null, Locale.US);
+        Assertions.assertThat(tr).isEqualTo("this is a zh_CN special message");
     }
 
 }

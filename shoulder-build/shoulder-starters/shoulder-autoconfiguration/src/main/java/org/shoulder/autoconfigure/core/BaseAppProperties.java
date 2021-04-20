@@ -2,6 +2,7 @@ package org.shoulder.autoconfigure.core;
 
 import lombok.Data;
 import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.i18.LocaleInfo;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -38,7 +39,7 @@ public class BaseAppProperties {
     /**
      * 全局统一字符集，默认为 UTF-8
      */
-    private String charset = "UTF-8";
+    private String charset = LocaleInfo.getSystemDefault().getCharset().name();
 
     /**
      * 支持集群、多实例部署

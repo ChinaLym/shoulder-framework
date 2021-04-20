@@ -20,17 +20,20 @@ import java.util.List;
  */
 public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
+    /**
+     * todo 使用 resource Loader 加载 ddl
+     */
     private static final String CREATE_STATEMENT =
-        "create table crypt_info(" +
-            "    component_id  VARCHAR(32) NOT NULL COMMENT '应用标识'," +
-            "    header        VARCHAR(32) NOT NULL default '' COMMENT '密文前缀标识，算法标识'," +
-            "    data_key      VARCHAR(64) NOT NULL COMMENT '数据密钥（密文）'," +
-            "    root_key_part VARCHAR(64) COMMENT '根密钥部件'," +
-            "    vector        VARCHAR(64) COMMENT '初始偏移向量'," +
-            "    create_time   DATETIME             default now() COMMENT '创建时间'," +
-            "    PRIMARY KEY pk_crypt_info (component_id, header)" +
-            ") ENGINE = INNODB" +
-            "  DEFAULT CHARSET = UTF8MB4 COMMENT = '加密元信息';";
+            "create table crypt_info(" +
+                    "    app_id        VARCHAR(32) NOT NULL COMMENT '应用标识'," +
+                    "    header        VARCHAR(32) NOT NULL default '' COMMENT '密文前缀标识，算法标识'," +
+                    "    data_key      VARCHAR(64) NOT NULL COMMENT '数据密钥（密文）'," +
+                    "    root_key_part VARCHAR(64) COMMENT '根密钥部件'," +
+                    "    vector        VARCHAR(64) COMMENT '初始偏移向量'," +
+                    "    create_time   DATETIME             default now() COMMENT '创建时间'," +
+                    "    PRIMARY KEY pk_crypt_info (component_id, header)" +
+                    ") ENGINE = INNODB" +
+                    "  DEFAULT CHARSET = UTF8MB4 COMMENT = '加密元信息';";
 
     private static final String FIELDS = "app_id, header, data_key, root_key_part, vector, create_time";
 

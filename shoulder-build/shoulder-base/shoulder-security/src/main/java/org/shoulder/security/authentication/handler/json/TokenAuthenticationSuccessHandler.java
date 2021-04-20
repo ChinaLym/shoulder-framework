@@ -1,7 +1,7 @@
 package org.shoulder.security.authentication.handler.json;
 
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.StringUtils;
 import org.slf4j.Logger;
@@ -116,7 +116,7 @@ public class TokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 
         // 这种方式不需要处理页面请求，必然返回 json
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        response.getWriter().write(JsonUtils.toJson(RestResult.success(accessToken)));
+        response.getWriter().write(JsonUtils.toJson(BaseResult.success(accessToken)));
 
     }
 

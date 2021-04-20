@@ -21,7 +21,7 @@ public class ShoulderFramework {
     /**
      * 框架错误码-模块前缀
      */
-    public static String SHOULDER_ERRORCODE_MODEULE_PREFIX = "";
+    public static String SHOULDER_ERROR_CODE_MODULE_PREFIX = "";
 
     static {
         try (InputStream in = ShoulderFramework.class.getClassLoader().getResourceAsStream("shoulder-version.txt")) {
@@ -34,7 +34,7 @@ public class ShoulderFramework {
                 VERSION = val;
             }
             val = props.getProperty("errorCodePrefix");
-            SHOULDER_ERRORCODE_MODEULE_PREFIX = val;
+            SHOULDER_ERROR_CODE_MODULE_PREFIX = val;
         } catch (Exception e) {
             e.printStackTrace();
         }

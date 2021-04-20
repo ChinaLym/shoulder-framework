@@ -3,7 +3,7 @@ package org.shoulder.autoconfigure.batch;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.batch.cache.BatchProgressCache;
 import org.shoulder.batch.cache.DefaultBatchProgressCache;
-import org.shoulder.batch.enums.BatchConstants;
+import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;

@@ -30,7 +30,7 @@ public interface BatchService {
      * @return 批量任务标识
      */
     default String doProcess(BatchData batchData) {
-        return this.doProcess(batchData, AppContext.getUserIdAsString(), AppContext.getLocale());
+        return this.doProcess(batchData, AppContext.getUserId(), AppContext.getLocale());
     }
 
     /**

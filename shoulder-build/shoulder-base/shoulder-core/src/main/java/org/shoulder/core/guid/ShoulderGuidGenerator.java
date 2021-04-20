@@ -131,11 +131,14 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         final int longBits = 64 - 1;
         if (timeStampBits + instanceIdBits + sequenceBits != longBits) {
             throw new IllegalArgumentException("timeStampBits + instanceIdBits + sequenceBits != 63 must = 63. " +
-                "timeStampBits=" + timeStampBits + "instanceIdBits=" + instanceIdBits + "sequenceBits=" + sequenceBits);
+                    "timeStampBits=" + timeStampBits + "instanceIdBits=" + instanceIdBits + "sequenceBits=" + sequenceBits);
         }
 
         // 初始化缓冲区
         this.buffer = new Node[bufferSizeFor(bufferSize)];
+        for (int i = 0; i < buffer.length; i++) {
+            buffer[i] = new Node(-1, 0, -1);
+        }
         Arrays.fill(buffer, new Node(-1, 0, -1));
     }
 

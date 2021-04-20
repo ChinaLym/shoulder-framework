@@ -10,13 +10,14 @@ import java.util.List;
 /**
  * 分页数据
  * <p>
- * 统一分页列表返回值，作为 {@link RestResult} 的 data 字段，total，list
+ * 统一分页列表返回值，作为 {@link BaseResult} 的 data 字段，total，list
  *
  * @author lym
  */
 @ApiModel(value = "分页数据返回格式")
 public class PageResult<T> extends ListResult<T> implements Serializable {
 
+    private static final long serialVersionUID = -1451879834966540928L;
     /**
      * 当前页
      */
@@ -141,6 +142,20 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
         return new PageResultBuilder();
     }
 
+    public static <T> PageResult<T> build(List<T> list, int pageNum, int pageSize, long totalCount) {
+        PageResult<T> result = new PageResult<>();
+        result.setList(list);
+        result.setPageNum(pageNum);
+        result.setPageSize(pageSize);
+        result.setTotal(totalCount);
+        int totalFullPage = (int) (totalCount / pageSize);
+        if (totalCount % pageSize != 0) {
+            totalFullPage++;
+        }
+        result.setTotalPageNum(totalFullPage);
+        return result;
+    }
+
     public static final class PageResultBuilder {
         boolean firstPage = false;
         private int pageNum;
@@ -240,7 +255,7 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
             pageResult.setFirstPage(pageInfo.isIsFirstPage());
             pageResult.setLastPage(pageInfo.isIsLastPage());
             pageResult.setTotalPageNum(pageInfo.getPages());
-            pageResult.setTotal((int) pageInfo.getTotal());
+            pageResult.setTotal(pageInfo.getTotal());
             List<T> list = pageInfo.getList();
             if (list != null) {
                 pageResult.setList(new ArrayList<>(list));

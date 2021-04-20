@@ -63,6 +63,10 @@ public class AddressUtils {
         }
     }
 
+    public static void main(String[] args) {
+        System.out.println(LOCAL_IP_CACHE);
+    }
+
     /**
      * Retrieve the first validated local ip address(the Public and LAN ip addresses are validated).
      *
@@ -120,21 +124,35 @@ public class AddressUtils {
 
 
     /**
+     * 将 ipv4 转为 hexStr（压缩）
+     * 以 . 分隔，每段转为两个 0-f 的 hex 字母
+     *
+     * @param ipv4 ipv4
+     * @return hexString
+     */
+    public static String toHexStr(String ipv4) {
+        int[] ipSegments = parseToIntArray(ipv4);
+        StringBuilder hexIp = new StringBuilder(8);
+        for (int ipSegment : ipSegments) {
+            String hexSegment = Integer.toHexString(ipSegment);
+            if (hexSegment.length() == 1) {
+                hexIp.append("0");
+            }
+            hexIp.append(hexSegment);
+        }
+        return hexIp.toString();
+    }
+
+
+    /**
      * 将 ipv4 转为 long（压缩）
      *
      * @param ipv4 ipv4
      * @return long
      */
     public static long toLong(String ipv4) {
-        long[] ip = new long[4];
-        int position1 = ipv4.indexOf(".");
-        int position2 = ipv4.indexOf(".", position1 + 1);
-        int position3 = ipv4.indexOf(".", position2 + 1);
-        ip[0] = Long.parseLong(ipv4.substring(0, position1));
-        ip[1] = Long.parseLong(ipv4.substring(position1 + 1, position2));
-        ip[2] = Long.parseLong(ipv4.substring(position2 + 1, position3));
-        ip[3] = Long.parseLong(ipv4.substring(position3 + 1));
-        return (ip[0] << 24) + (ip[1] << 16) + (ip[2] << 8) + ip[3];
+        int[] ip = parseToIntArray(ipv4);
+        return ((long) ip[0] << 24) + ((long) ip[1] << 16) + ((long) ip[2] << 8) + ip[3];
     }
 
     /**
@@ -144,19 +162,12 @@ public class AddressUtils {
      * @return int
      */
     public static int toInt(String ipv4) {
-        int[] ip = new int[4];
-        int position1 = ipv4.indexOf(".");
-        int position2 = ipv4.indexOf(".", position1 + 1);
-        int position3 = ipv4.indexOf(".", position2 + 1);
-        ip[0] = Integer.parseInt(ipv4.substring(0, position1));
-        ip[1] = Integer.parseInt(ipv4.substring(position1 + 1, position2));
-        ip[2] = Integer.parseInt(ipv4.substring(position2 + 1, position3));
-        ip[3] = Integer.parseInt(ipv4.substring(position3 + 1));
+        int[] ip = parseToIntArray(ipv4);
         return (ip[0] << 24) + (ip[1] << 16) + (ip[2] << 8) + ip[3];
     }
 
     /**
-     * 将 long 转为 ipv4 字符串（压缩）
+     * 将 long 转为 ipv4 字符串（解压）
      *
      * @param ipv4 ipv4
      * @return ipv4Str
@@ -165,16 +176,16 @@ public class AddressUtils {
         final long mask = 255;
 
         return ((ipv4 >>> 24) & mask) +
-            "." +
-            ((ipv4 >>> 16) & mask) +
-            "." +
-            ((ipv4 >>> 8) & mask) +
-            "." +
-            (ipv4 & mask);
+                "." +
+                ((ipv4 >>> 16) & mask) +
+                "." +
+                ((ipv4 >>> 8) & mask) +
+                "." +
+                (ipv4 & mask);
     }
 
     /**
-     * 将 int 转为 ipv4 字符串（压缩）
+     * 将 int 转为 ipv4 字符串（解压）
      *
      * @param ipv4 ipv4
      * @return ipv4Str
@@ -183,14 +194,54 @@ public class AddressUtils {
         final int mask = 255;
 
         return ((ipv4 >>> 24) & mask) +
-            "." +
-            ((ipv4 >>> 16) & mask) +
-            "." +
-            ((ipv4 >>> 8) & mask) +
-            "." +
-            (ipv4 & mask);
+                "." +
+                ((ipv4 >>> 16) & mask) +
+                "." +
+                ((ipv4 >>> 8) & mask) +
+                "." +
+                (ipv4 & mask);
     }
 
+
+    /**
+     * 将 hexStrIp 转为 ipv4 字符串（解压）
+     *
+     * @param hexIp ipv4
+     * @return ipv4Str
+     */
+    public static String toIPv4FromHex(String hexIp) {
+        if (hexIp == null || hexIp.length() != 8) {
+            throw new IllegalArgumentException("invalid hexIp: " + hexIp);
+        }
+        StringBuilder ipv4Str = new StringBuilder(15);
+        for (int i = 0; i < 4; i++) {
+            int ipSegment = Integer.parseUnsignedInt(hexIp.substring(i << 1, (i << 1) + 2), 16);
+            ipv4Str.append(ipSegment);
+            if (i < 3) {
+                ipv4Str.append(".");
+            }
+        }
+        return ipv4Str.toString();
+    }
+
+
+    /**
+     * 将 ipv4 字符串形式转为 int[]
+     *
+     * @param ipv4 ipv4
+     * @return 长度必定为 4
+     */
+    public static int[] parseToIntArray(String ipv4) {
+        int[] ip = new int[4];
+        int position1 = ipv4.indexOf(".");
+        int position2 = ipv4.indexOf(".", position1 + 1);
+        int position3 = ipv4.indexOf(".", position2 + 1);
+        ip[0] = Integer.parseInt(ipv4.substring(0, position1));
+        ip[1] = Integer.parseInt(ipv4.substring(position1 + 1, position2));
+        ip[2] = Integer.parseInt(ipv4.substring(position2 + 1, position3));
+        ip[3] = Integer.parseInt(ipv4.substring(position3 + 1));
+        return ip;
+    }
 
     /**
      * 在一个区间内
@@ -218,4 +269,14 @@ public class AddressUtils {
     public static boolean isBetweenInterval(String ip, String start, String end) {
         return isBetweenInterval(toLong(ip), start, end);
     }
+
+    public static boolean isBetweenHexInterval(String hexIp, String hexStart, String hexEnd) {
+        return hexIp.compareTo(hexStart) >= 0 && hexIp.compareTo(hexEnd) <= 0;
+    }
+
+    public static boolean isBetweenIntervalHex(String hexIp, String start, String end) {
+        return isBetweenInterval(toIPv4FromHex(hexIp), start, end);
+    }
+
+
 }
