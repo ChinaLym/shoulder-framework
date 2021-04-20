@@ -37,7 +37,7 @@ public class ExceptionUtil {
      * @return 填充参数后的信息
      */
     public static String generateExceptionMessage(String message, Object... args) {
-        if (StringUtils.isNotEmpty(message)) {
+        if (StringUtils.isNotEmpty(message) && ArrayUtils.isNotEmpty(args)) {
             // 顺序不要变，否则出问题
             if (message.contains("{}")) {
                 // log4j 格式
@@ -81,7 +81,7 @@ public class ExceptionUtil {
         if (ErrorCode.SUCCESS_CODE.equals(errorCode)) {
             return ErrorCode.SUCCESS_CODE;
         }
-        return StringUtils.startsWith(errorCode, AppInfo.errorCodePrefix()) ? errorCode :
+        return StringUtils.startsWith(errorCode, "0x") ? errorCode :
                 AppInfo.errorCodePrefix() + "0".repeat(Math.max(0, 8 - errorCode.length())) + errorCode;
     }
 
