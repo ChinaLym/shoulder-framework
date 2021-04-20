@@ -12,7 +12,7 @@ public class ContextTest {
     public void testTranslate_zh() {
         String uid = "123";
         AppContext.setUserId(uid);
-        assert uid.equals(AppContext.getUserIdAsString());
+        assert uid.equals(AppContext.getUserId());
     }
 
 

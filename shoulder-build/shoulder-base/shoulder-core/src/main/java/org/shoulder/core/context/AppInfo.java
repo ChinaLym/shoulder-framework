@@ -1,5 +1,6 @@
 package org.shoulder.core.context;
 
+import org.shoulder.core.i18.LocaleInfo;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
@@ -7,7 +8,6 @@ import org.springframework.util.Assert;
 
 import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -31,7 +31,7 @@ public class AppInfo {
     /**
      * 应用错误码前缀
      */
-    private static String errorCodePrefix = "";
+    private static String errorCodePrefix = "0x0000";
 
     /**
      * 应用版本（用于灰度发布、版本兼容等）
@@ -52,12 +52,12 @@ public class AppInfo {
     /**
      * 全局统一字符集，默认 UTF-8
      */
-    private static Charset charset = StandardCharsets.UTF_8;
+    private static Charset charset = LocaleInfo.getSystemDefault().getCharset();
 
     /**
      * 默认语言环境，从用户中获取不到地区/语言信息时，将采用该值，若不设置则从系统中获取
      */
-    private static Locale defaultLocale = Locale.getDefault();
+    private static Locale defaultLocale = LocaleInfo.getSystemDefault().getLocale();
 
     /**
      * 时区，若不设置则从系统中获取
@@ -109,6 +109,8 @@ public class AppInfo {
 
     public static void initErrorCodePrefix(@Nonnull String errorCodePrefix) {
         Assert.notNull(errorCodePrefix, "errorCodePrefix can't be null");
+        // 建议以 0x 开头表示 16 进制，暂时强制要求，有需要后再取消
+        Assert.isTrue(StringUtils.startsWith(errorCodePrefix, "0x"), "errorCodePrefix need startWith '0x'");
         AppInfo.errorCodePrefix = errorCodePrefix;
         log.info("initErrorCodePrefix: " + errorCodePrefix);
     }
@@ -134,7 +136,7 @@ public class AppInfo {
     public static void initCharset(@Nonnull String charset) {
         Assert.notNull(charset, "charset can't be null");
         AppInfo.charset = StringUtils.isNotEmpty(charset) && Charset.isSupported(charset) ?
-            Charset.forName(charset) : StandardCharsets.UTF_8;
+                Charset.forName(charset) : LocaleInfo.getSystemDefault().getCharset();
         log.info("initCharset: " + charset);
     }
 

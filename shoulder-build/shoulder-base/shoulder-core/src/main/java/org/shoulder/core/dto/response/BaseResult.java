@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
+import org.shoulder.core.exception.ErrorContext;
 import org.shoulder.core.util.ExceptionUtil;
 
 import java.io.Serializable;
@@ -17,14 +18,16 @@ import java.util.Map;
 /**
  * Restful 风格返回值
  * <p>
- * 统一接口返回值格式，包含 code，msg，data
+ * 统一接口返回值格式，包含 code，msg，data，错误时包含 errorContext
  * 接口版本不兼容变更，需要约定返回版本号的位置，通常在响应头，以便于接收者感知处理
  *
  * @author lym
  */
 @ApiModel(value = "接口响应统一返回值包装类 Restful 风格")
 //@Schema(name = "接口响应统一返回值包装类 Restful 风格")
-public class RestResult<T> implements Serializable {
+public class BaseResult<T> implements Serializable {
+
+    private static final long serialVersionUID = -3829563105110651627L;
 
     @ApiModelProperty(value = "状态码/错误码，成功为0，失败非0，必定返回", required = true, example = "0", position = 0)
     //@Schema(name = "状态码/错误码，成功为0，失败非0", example = "0")
@@ -41,9 +44,10 @@ public class RestResult<T> implements Serializable {
     /**
      * 预留的扩展属性
      */
+    @ApiModelProperty(value = "扩展属性", dataType = "", example = "", position = 4)
     private Map<String, Object> ext = Collections.emptyMap();
 
-    public RestResult() {
+    public BaseResult() {
     }
 
     /**
@@ -51,18 +55,9 @@ public class RestResult<T> implements Serializable {
      *
      * @param errorCode 错误码
      */
-    public RestResult(ErrorCode errorCode) {
+    public BaseResult(ErrorCode errorCode) {
         setCode(errorCode.getCode());
         setMsg(errorCode.getMessage());
-    }
-
-    public RestResult<T> addExt(String key, Object value) {
-        if (this.ext == Collections.EMPTY_MAP) {
-            // 一般扩展属性不会太多，默认4
-            this.ext = new HashMap<>(4);
-        }
-        ext.put(key, value);
-        return this;
     }
 
     /**
@@ -72,32 +67,32 @@ public class RestResult<T> implements Serializable {
      * @param msg  提示信息
      * @param data 返回数据
      */
-    public RestResult(String code, String msg, T data) {
+    public BaseResult(String code, String msg, T data) {
         setCode(code);
         setMsg(msg);
         setData(data);
     }
 
 
-    public static <T> RestResult<T> success() {
-        return new RestResult<T>(ErrorCode.SUCCESS);
+    public static <T> BaseResult<T> success() {
+        return new BaseResult<T>(ErrorCode.SUCCESS);
     }
 
-    public static <T> RestResult<T> success(T data) {
-        return new RestResult<T>(ErrorCode.SUCCESS).setData(data);
+    public static <T> BaseResult<T> success(T data) {
+        return new BaseResult<T>(ErrorCode.SUCCESS).setData(data);
     }
 
-    public static <X> RestResult<ListResult<X>> success(Collection<? extends X> dataList) {
+    public static <X> BaseResult<ListResult<X>> success(Collection<? extends X> dataList) {
         ListResult<X> listData = ListResult.of(dataList);
-        return new RestResult<ListResult<X>>(ErrorCode.SUCCESS).setData(listData);
+        return new BaseResult<ListResult<X>>(ErrorCode.SUCCESS).setData(listData);
     }
 
-    public static <T> RestResult<T> error(ErrorCode errorCode) {
-        return new RestResult<T>(errorCode);
+    public static BaseResult<Void> error(ErrorCode errorCode) {
+        return new BaseResult<>(errorCode);
     }
 
-    public static <T> RestResult<T> error(ErrorCode error, T data) {
-        return new RestResult<T>(error).setData(data);
+    public static BaseResult<Void> error(ErrorCode error, String msg) {
+        return new BaseResult<Void>(error).setMsg(msg);
     }
 
 
@@ -107,19 +102,24 @@ public class RestResult<T> implements Serializable {
     @JsonIgnore
     public T getOrException() {
         // success
-        if (ErrorCode.SUCCESS.getCode().equals(code)) {
+        if (isSuccess()) {
             return data;
         }
-        throw new BaseRuntimeException(CommonErrorCodeEnum.RPC_COMMON, code);
+        throw new BaseRuntimeException(CommonErrorCodeEnum.RPC_FAIL_WITH_CODE, code);
     }
 
     /**
      * 检查 code，若不为 SUCCESS，则抛异常
      */
     public void checkCode() {
-        if (!ErrorCode.SUCCESS.getCode().equals(code)) {
+        if (!isSuccess()) {
             throw new BaseRuntimeException(code, msg);
         }
+    }
+
+    @JsonIgnore
+    public boolean isSuccess() {
+        return ErrorCode.SUCCESS_CODE.equals(code);
     }
 
 
@@ -127,7 +127,7 @@ public class RestResult<T> implements Serializable {
         return code;
     }
 
-    public RestResult<T> setCode(String code) {
+    public BaseResult<T> setCode(String code) {
         this.code = ExceptionUtil.formatErrorCode(code);
         return this;
     }
@@ -136,7 +136,7 @@ public class RestResult<T> implements Serializable {
         return msg;
     }
 
-    public RestResult<T> setMsg(String msg) {
+    public BaseResult<T> setMsg(String msg) {
         this.msg = msg;
         return this;
     }
@@ -145,8 +145,39 @@ public class RestResult<T> implements Serializable {
         return data;
     }
 
-    public RestResult<T> setData(T data) {
+    public BaseResult<T> setData(T data) {
         this.data = data;
+        return this;
+    }
+
+    @JsonIgnore
+    public ErrorContext getErrorContext() {
+        return getExt("errorContext");
+    }
+
+    @JsonIgnore
+    public void setErrorContext(ErrorContext errorContext) {
+        setExt("errorContext", errorContext);
+    }
+
+    @JsonIgnore
+    public BaseResult<T> setExt(String key, Object value) {
+        if (this.ext == Collections.EMPTY_MAP) {
+            // 一般扩展属性不会太多，默认4
+            this.ext = new HashMap<>();
+        }
+        ext.put(key, value);
+        return this;
+    }
+
+    @JsonIgnore
+    @SuppressWarnings("unchecked")
+    public <ANY> ANY getExt(String key) {
+        return (ANY) ext.remove(key);
+    }
+
+    public BaseResult<T> removeExt(String key) {
+        ext.remove(key);
         return this;
     }
 

@@ -10,6 +10,8 @@ import org.shoulder.core.exception.ErrorCode;
  */
 public class CipherRuntimeException extends BaseRuntimeException {
 
+    private static final long serialVersionUID = -1391563921356126481L;
+
     public CipherRuntimeException(Throwable cause) {
         super(cause);
     }

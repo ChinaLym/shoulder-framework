@@ -11,4 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "shoulder.web.waf.xss")
 public class XssProperties extends PathFilterProperties {
 
+    Boolean enbale = true;
+
 }

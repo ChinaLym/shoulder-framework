@@ -1,0 +1,9 @@
+<shop>
+    <id>f1e3779c-a70d-4b26-9d07-6980194d5894</id>
+    <name>name</name>
+    <addr>addr</addr>
+    <boss>
+        <name>bossName</name>
+        <age>20</age>
+    </boss>
+</shop>

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBundleMessageSource implements Translator {
 
-    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+    private final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
     public ReloadableLocaleDirectoryMessageSource() {
         // 默认会加载 classpath*:language 中的多语言（便于自定义jar包中扩充，优先级较低，优先使用用户的）
@@ -58,14 +58,20 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
 
     /**
      * 加载特定语言对应的资源文件。在这里解析通配符
+     * todo 考虑覆盖 calculateAllFilenames 中的 获取默认语言
      *
      * @return 多语言资源路径
      */
     @Nonnull
     @Override
-    protected List<String> calculateFilenamesForLocale(String basename, Locale locale) {
-        // 先放入 super 的，优先级最低
-        List<String> result = new LinkedList<>(super.calculateFilenamesForLocale(basename, locale));
+    protected List<String> calculateFilenamesForLocale(@Nonnull String basename, @Nonnull Locale locale) {
+        // 先放入 super 的，优先级最低（这里是用于兼容 jdk / spring 约定的翻译文件路径）
+        List<String> result = new LinkedList<>();
+        if (!"classpath*:language".equals(basename)) {
+            // todo getMessage 不存在时候，报错：加载 Illegal char <*> at index 25: src\main\webapp\classpath*:language_en.xml
+            result.addAll(super.calculateFilenamesForLocale(basename, locale));
+        }
+
         String language = locale.getLanguage();
         String country = locale.getCountry();
         String variant = locale.getVariant();
@@ -99,9 +105,6 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
      */
     @Nonnull
     private List<String> listLanguageSourceDir(String basename) {
-        /*if(!basename.startsWith("classpath")){
-            return Collections.emptyList();
-        }*/
         Resource[] resources;
         try {
             // 扫描可能会很慢
@@ -140,4 +143,14 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
         return fileName.endsWith(".properties") || fileName.endsWith(".xml");
     }
 
+
+    @Override
+    protected Locale getDefaultLocale() {
+        return AppInfo.defaultLocale();
+    }
+
+    @Override
+    protected String getDefaultEncoding() {
+        return AppInfo.charset().name();
+    }
 }

@@ -1,10 +1,12 @@
 package org.shoulder.core.exception;
 
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.i18.Translator;
+import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.http.HttpStatus;
 
 import javax.annotation.Nonnull;
@@ -20,6 +22,7 @@ import javax.annotation.Nonnull;
  */
 public class BaseRuntimeException extends RuntimeException implements ErrorCode {
 
+    private static final long serialVersionUID = 8917762936709850638L;
     /**
      * 错误码
      */
@@ -28,7 +31,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
     /**
      * 异常后，记录日志的级别是什么
      */
-    private Level logLevel = DEFAULT_LOG_LEVEL;
+    private Level logLevel = Level.ERROR;
 
     /**
      * 返回给调用方的 HTTP status 是什么
@@ -48,7 +51,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @param cause 上级异常
      */
     public BaseRuntimeException(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
         if (cause instanceof ErrorCode) {
             ErrorCode errorCode = (ErrorCode) cause;
             this.setHttpStatus(errorCode.getHttpStatusCode());
@@ -82,22 +85,10 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
     /**
      * 根据定义的错误码直接抛出运行异常（推荐）
      *
-     * @param error 规范的错误码
+     * @param error 规范的错误码，而非堆栈
      */
     public BaseRuntimeException(ErrorCode error) {
-        this(error.getCode(), error.getMessage());
-        setLogLevel(error.getLogLevel());
-        setHttpStatus(error.getHttpStatusCode());
-    }
-
-
-    /**
-     * 根据定义的错误码直接抛出运行异常（推荐）
-     *
-     * @param msg 自定义信息
-     */
-    public BaseRuntimeException(ErrorCode error, String msg) {
-        this(error.getCode(), msg);
+        this(error, error.getArgs());
     }
 
     /**
@@ -107,9 +98,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @param args  错误码信息填充参数
      */
     public BaseRuntimeException(ErrorCode error, Object... args) {
-        this(error.getCode(), error.getMessage(), args);
-        setLogLevel(error.getLogLevel());
-        setHttpStatus(error.getHttpStatusCode());
+        this(error.getCode(), error.getMessage(), error instanceof Throwable ? (Throwable) error : null, args);
     }
 
     /**
@@ -125,6 +114,16 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
         setHttpStatus(error.getHttpStatusCode());
     }
 
+    /**
+     * 根据定义的错误码直接抛出运行异常（推荐）
+     *
+     * @param msg 自定义信息
+     */
+    public BaseRuntimeException(ErrorCode error, String msg) {
+        this(error.getCode(), msg);
+    }
+
+
     // ==================== 带错误码的 =================
 
     /**
@@ -134,7 +133,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @param message 错误描述
      */
     public BaseRuntimeException(String code, String message) {
-        this(code, message, (Object) null);
+        this(code, message, new Object[0]);
     }
 
     /**
@@ -146,7 +145,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @param args    错误信息填充参数
      */
     public BaseRuntimeException(String code, String message, Throwable cause, Object... args) {
-        super(message, cause);
+        super(ExceptionUtil.generateExceptionMessage(message, args), cause);
         this.code = code;
         this.setArgs(args);
     }
@@ -159,7 +158,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @param args    错误信息填充参数
      */
     public BaseRuntimeException(String code, String message, Object... args) {
-        super(message);
+        super(ExceptionUtil.generateExceptionMessage(message, args));
         this.code = code;
         this.setArgs(args);
     }
@@ -216,8 +215,8 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      * @param data 填充异常信息的参数
      * @return api 返回值
      */
-    public RestResult<Object> toResponse(Object data) {
-        return new RestResult<>(this.getCode(), this.getMessage(), data);
+    public <T> BaseResult<T> toResponse(T data) {
+        return new BaseResult<>(this.getCode(), this.getMessage(), data);
     }
 
     /**
@@ -225,13 +224,17 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      *
      * @return api 返回值
      */
-    public RestResult<Object> toResponse() {
-        return new RestResult<>(this.getCode(), this.getMessage(), getArgs());
+    public BaseResult<Object> toResponse() {
+        return new BaseResult<>(this.getCode(), this.getMessage(), ArrayUtils.isEmpty(getArgs()) ? null : getArgs());
     }
 
     @Override
     public String getLocalizedMessage() {
-        return ContextUtils.getBean(Translator.class).getMessage(this);
+        BeanFactory bf = ContextUtils.getBeanFactory();
+        if (bf != null) {
+            ContextUtils.getBean(Translator.class).getMessage(this);
+        }
+        return getMessage();
     }
 
 

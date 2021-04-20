@@ -1,6 +1,6 @@
 package org.shoulder.security.authentication.handler.json;
 
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.JsonUtils;
 import org.slf4j.Logger;
@@ -26,10 +26,10 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
         log.info("authentication FAIL.", exception);
-        RestResult restResult = RestResult.error(CommonErrorCodeEnum.AUTH_401_UNAUTHORIZED, exception.getMessage());
+        BaseResult<Void> baseResult = BaseResult.error(CommonErrorCodeEnum.AUTH_401_UNAUTHORIZED, exception.getMessage());
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        response.getWriter().write(JsonUtils.toJson(restResult));
+        response.getWriter().write(JsonUtils.toJson(baseResult));
     }
 
 }

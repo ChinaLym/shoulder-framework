@@ -3,7 +3,7 @@ package org.shoulder.batch.service.impl;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
-import org.shoulder.batch.enums.BatchConstants;
+import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.model.ExportConfig;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;

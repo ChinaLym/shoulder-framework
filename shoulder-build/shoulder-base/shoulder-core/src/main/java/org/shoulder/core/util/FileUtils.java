@@ -171,11 +171,18 @@ public class FileUtils extends FileUtil {
         byte[] standHeaderBytes = FILE_HEADER_MAP.get(lowExtName);
         if (standHeaderBytes != null) {
             int byteCount = standHeaderBytes.length;
+            if (byteCount == 0) {
+                // byte[0] 意味着无要求
+                return true;
+            }
             byte[] headBytes = new byte[byteCount];
             assert in.read(headBytes, 0, byteCount) == byteCount;
             return Arrays.compare(headBytes, standHeaderBytes) == 0;
         } else {
             // 警告，不在里，未校验
+            if (allowUnKnown) {
+                log.warn("filExtName({}) unknown and skipped.", extName);
+            }
             return allowUnKnown;
         }
     }

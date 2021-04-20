@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 
 /**
  * 通用错误（2^14以下框架使用）错误码标识 = 0 的那部分
+ * 多数通用错误，展示时仅为未知错误，dev环境可详情，堆栈，错误码映射表地址
  *
  * @author lym
  */
@@ -20,25 +21,33 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      * @desc 未认证，需要认证后才能访问
      * @sug 先进行认证，再访问服务
      */
-    AUTH_401_NEED_AUTH(1, "Need Authentication.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    AUTH_401_NEED_AUTH(11, "Need Authentication.", Level.INFO, HttpStatus.UNAUTHORIZED),
     /**
      * @desc 认证失败：如用户名或密码凭据无效、由于白名单等被拒绝、未开启匿名访问等
      * @sug 检查认证凭证是否正确且在有效期内
      */
-    AUTH_401_UNAUTHORIZED(2, "Authentication failed.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    AUTH_401_UNAUTHORIZED(12, "Authentication failed.", Level.INFO, HttpStatus.UNAUTHORIZED),
     /**
      * @desc 认证过期，需要重新认证
      */
-    AUTH_401_EXPIRED(3, "Certification expired. Re-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    AUTH_401_EXPIRED(13, "Certification expired. Re-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
 
     /**
      * 主动拒绝请求：权限不够
      */
-    AUTH_403_FORBIDDEN(8, "Permission deny.", Level.INFO, HttpStatus.FORBIDDEN),
+    AUTH_403_FORBIDDEN(18, "Permission deny.", Level.INFO, HttpStatus.FORBIDDEN),
     /**
      * 主动拒绝请求：令牌无效
      */
-    AUTH_403_TOKEN_INVALID(9, "Invalid token.", Level.INFO, HttpStatus.FORBIDDEN),
+    AUTH_403_TOKEN_INVALID(19, "Invalid token.", Level.INFO, HttpStatus.FORBIDDEN),
+    /**
+     * 租户无效：不存在 / 封禁 / 冻结
+     */
+    TENANT_INVALID(40, "Invalid tenant.", Level.INFO, HttpStatus.FORBIDDEN),
+    /**
+     * 操作非法：租户信息与业务不匹配 / 数据路由错误
+     */
+    ILLEGAL_OPERATION(50, "illegal operation.", Level.INFO, HttpStatus.FORBIDDEN),
 
 
     // ------------------------------- 文件 -----------------------------
@@ -68,15 +77,15 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 请求错误：请求超时
      */
-    REQUEST_TIMEOUT(201, "Request timeout."),
+    RPC_TIMEOUT(201, "Request timeout.", Level.WARN),
     /**
      * 请求错误：指定的请求方法不能被服务器处理
      */
-    REQUEST_METHOD_MISMATCH(202, "The request method can't be processed by the server.", Level.ERROR),
+    REQUEST_METHOD_MISMATCH(202, "The request method can't be processed by the server.", Level.WARN),
     /**
      * 调用 xxx 返回了错误码:xxx
      */
-    RPC_COMMON(203, "Invoke %s fail with error code '%s'."),
+    RPC_FAIL_WITH_CODE(203, "Invoke %s fail with error code '%s'.", Level.ERROR),
     /**
      * 请求错误：实体格式不支持
      */
@@ -85,35 +94,48 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     // ----------------------- 作为服务提供者（要处理的HTTP请求参数校验未通过） ----------------------
 
     /**
-     * 未知异常，谨慎使用该错误码，不利于排查
+     * 未知异常，谨慎使用该错误码，不利于排查；一般只用于断言正常一定怎样，如根据索引更新，更新影响数目一定小于等于1;或者编码时使用者未按照设计者的思路使用
      */
-    UNKNOWN(300, "Unknown error."),
+    UNKNOWN(300, "Unknown error.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    /**
+     * 编码错误，仅在框架 / 工具内使用，提示使用者使用错误
+     */
+    CODING(305, "Coding error.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    /**
+     * 重复提交：参数完全相同 / 检测到幂等且不支持幂等
+     */
+    REPEATED_SUBMIT(311, "Repeated submit"),
+    /**
+     * 非当且分片数据：系统有逻辑数据分片，但路由等问题导致错误的服务器收到了不属于服务器处理的分片数据
+     *
+     * @deprecated use unknown
+     */
+    SLICE_NOT_MATCH(312, "Slice not match"),
     /**
      * 响应超时（对于网关）
      */
-    SERVICE_RESPONSE_TIMEOUT(301, "Service response timeout.", HttpStatus.REQUEST_TIMEOUT),
+    SERVICE_RESPONSE_TIMEOUT(321, "Service response timeout.", Level.ERROR, HttpStatus.REQUEST_TIMEOUT),
     /**
-     * 服务不可用
+     * 服务不可用（已经降级）
      */
-    SERVICE_UNAVAILABLE(302, "Service unavailable.", Level.ERROR, HttpStatus.SERVICE_UNAVAILABLE),
+    SERVICE_UNAVAILABLE(322, "Service unavailable.", Level.ERROR, HttpStatus.SERVICE_UNAVAILABLE),
     /**
      * 不再支持的接口（接口已废弃）
      */
-    DEPRECATED_NOT_SUPPORT(305, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    DEPRECATED_NOT_SUPPORT(325, "Function not support any more.", Level.ERROR, HttpStatus.BAD_REQUEST),
 
     /**
-     * 包装 HttpMessageNotReadableException,
-     * 请求体读取失败：传来的参数与controller声明的参数类型不匹配。如 Post 请求缺少参数或者解析 json 时失败了
+     * 包装 HttpMessageNotReadableException；请求体读取失败：传来的参数与controller声明的参数类型不匹配。如 Post 请求缺少参数或者解析 json 时失败了
      */
-    PARAM_BODY_NOT_READABLE(321, "HttpMessageNotReadable. %s", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_BODY_NOT_READABLE(331, "HttpMessageNotReadable. %s", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * content-type 不正确
      */
-    CONTENT_TYPE_INVALID(323, "HttpMediaTypeNotSupported. ContentType(%s) is not acceptable.", Level.INFO, HttpStatus.BAD_REQUEST),
+    CONTENT_TYPE_INVALID(333, "HttpMediaTypeNotSupported. ContentType(%s) is not acceptable.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
-     * 文件上传出错
+     * 文件上传出错 todo 迁移
      */
-    MULTIPART_INVALID(324, "Request is not a validate multipart request, please check request or file size.", HttpStatus.BAD_REQUEST),
+    MULTIPART_INVALID(334, "Request is not a validate multipart request, please check request or file size.", Level.WARN, HttpStatus.BAD_REQUEST),
 
     // ----------------------- 并发、达到瓶颈 error 级别 返回 500 ----------------------
 
@@ -127,11 +149,17 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     // ----------------------- 与中间件操作异常，代码正确时，常发于中间件宕机 ----------------------
 
     /**
-     * 连接xxx中间件异常、xxx操作时失败通常 error 级别 返回 500，对外暴露未知错误
+     * 连接xxx中间件异常（配置信息有误/中间件宕机）、xxx操作时失败通常 error 级别 返回 500
      */
     MID_WARE_CONNECT_FAIL(400, "Connect ", Level.ERROR),
-
-    PERSISTENCE_TO_DB_FAIL(401, "Persistent fail!", Level.ERROR),
+    /**
+     * 数据存储失败
+     */
+    DATA_STORAGE_FAIL(401, "Persistent fail!", Level.ERROR),
+    /**
+     * 数据访问错误
+     */
+    DATA_ACCESS_FAIL(402, "Data access fail!", Level.ERROR),
 
     ;
 
@@ -144,11 +172,11 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     private HttpStatus httpStatus;
 
     CommonErrorCodeEnum(long code, String message) {
-        this(code, message, DEFAULT_LOG_LEVEL, DEFAULT_HTTP_STATUS_CODE);
+        this(code, message, Level.ERROR, DEFAULT_HTTP_STATUS_CODE);
     }
 
     CommonErrorCodeEnum(long code, String message, HttpStatus httpStatus) {
-        this(code, message, DEFAULT_LOG_LEVEL, httpStatus);
+        this(code, message, Level.ERROR, httpStatus);
     }
 
     CommonErrorCodeEnum(long code, String message, Level logLevel) {

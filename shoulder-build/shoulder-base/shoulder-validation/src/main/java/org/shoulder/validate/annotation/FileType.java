@@ -30,6 +30,9 @@ public @interface FileType {
     /**
      * 允许的单文件最大大小
      * 为空时不限制，注意该校验为逻辑校验，在此之前还有 nginx 接收请求大小限制、servlet 接收请求大小限制
+     * 注意必须大写字母，且以B结尾，如 B、KB、MB、GB，不能使用小写，不能简写去掉B
+     *
+     * @see org.springframework.util.unit.DataSize#parse(java.lang.CharSequence, org.springframework.util.unit.DataUnit)
      */
     String maxSize() default "";
 

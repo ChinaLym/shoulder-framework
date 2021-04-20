@@ -1,6 +1,6 @@
 package org.shoulder.crypto.negotiation.support.endpoint;
 
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.dto.NegotiationRequest;
@@ -32,8 +32,8 @@ public class NegotiationEndPoint {
      * @throws NegotiationException 密钥交换失败
      */
     @PostMapping(NegotiationConstants.DEFAULT_NEGOTIATION_URL)
-    public RestResult<NegotiationResponse> handleNegotiate(@RequestBody NegotiationRequest negotiationRequest) throws NegotiationException {
-        return RestResult.success(negotiationService.handleNegotiate(negotiationRequest));
+    public BaseResult<NegotiationResponse> handleNegotiate(@RequestBody NegotiationRequest negotiationRequest) throws NegotiationException {
+        return BaseResult.success(negotiationService.handleNegotiate(negotiationRequest));
     }
 
 

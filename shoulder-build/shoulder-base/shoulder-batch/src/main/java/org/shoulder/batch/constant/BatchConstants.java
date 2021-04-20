@@ -1,4 +1,4 @@
-package org.shoulder.batch.enums;
+package org.shoulder.batch.constant;
 
 /**
  * 导出类型

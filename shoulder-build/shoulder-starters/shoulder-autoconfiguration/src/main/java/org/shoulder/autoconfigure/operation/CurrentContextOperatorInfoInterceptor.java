@@ -22,11 +22,11 @@ public class CurrentContextOperatorInfoInterceptor extends OperationLogOperatorI
      */
     @Override
     protected Operator resolveOperator(HttpServletRequest request) {
-        String userId = AppContext.getUserIdAsString();
+        String userId = AppContext.getUserId();
         if (StringUtils.isEmpty(userId)) {
             return SystemOperator.getInstance();
         }
-        ShoulderCurrentUserOperator operator = new ShoulderCurrentUserOperator(AppContext.getUserIdAsString());
+        ShoulderCurrentUserOperator operator = new ShoulderCurrentUserOperator(AppContext.getUserId());
         operator.setTerminalInfo(String.valueOf(AppContext.getLocale()));
         return operator;
     }

@@ -1,6 +1,6 @@
 package org.shoulder.security.authentication;
 
-import org.shoulder.core.dto.response.RestResult;
+import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.security.SecurityConst;
@@ -73,11 +73,11 @@ public class BeforeAuthEndpoint {
      */
     @RequestMapping(SecurityConst.URL_REQUIRE_AUTHENTICATION)
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-    public RestResult requireAuthentication(HttpServletRequest request, HttpServletResponse response)
-        throws IOException {
+    public BaseResult requireAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         if (signInPage == null) {
-            return new RestResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
+            return new BaseResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
         }
 
         // 是否有认证错误
@@ -87,8 +87,8 @@ public class BeforeAuthEndpoint {
         if (returnJson(request, response)) {
             log.trace("json type");
             // json 响应
-            return withoutError ? new RestResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH) :
-                new RestResult<>(CommonErrorCodeEnum.AUTH_401_NEED_AUTH).setData(failReason);
+            return withoutError ? new BaseResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH) :
+                    new BaseResult<>(CommonErrorCodeEnum.AUTH_401_NEED_AUTH).setData(failReason);
         }
         log.trace("redirect to signInPage({})", signInPage);
 
@@ -97,7 +97,7 @@ public class BeforeAuthEndpoint {
             signInPage + "?" + SecurityConst.AUTH_FAIL_PARAM_NAME + "=" + failReason;
         redirectStrategy.sendRedirect(request, response, redirectSignInUrl);
 
-        return new RestResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
+        return new BaseResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
     }
 
 

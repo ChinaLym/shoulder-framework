@@ -23,9 +23,9 @@ public class ShoulderAuthenticationException extends AuthenticationException imp
     private String code;
 
     /**
-     * 异常后，记录日志的级别是什么
+     * 认证失败时，记录日志采用 WARN 级别
      */
-    private Level logLevel = DEFAULT_LOG_LEVEL;
+    private Level logLevel = Level.WARN;
 
     /**
      * 返回给调用方的 HTTP status 是什么

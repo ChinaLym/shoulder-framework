@@ -3,7 +3,7 @@ package org.shoulder.batch.service.impl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.shoulder.batch.enums.BatchConstants;
+import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.model.*;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
@@ -99,7 +99,7 @@ public class BatchManager implements Runnable, ProgressAble {
 
 
     public BatchManager(BatchData batchData) {
-        String currentUserId = AppContext.getUserIdAsString();
+        String currentUserId = AppContext.getUserId();
         this.userId = currentUserId == null ? 0 : Long.parseLong(currentUserId);
         this.languageId = AppContext.getLocale().toString();
         this.batchData = batchData;
@@ -376,8 +376,8 @@ public class BatchManager implements Runnable, ProgressAble {
             // 性能： 最后保存一次。一致性： worker 中与批处理在同一事务进行，避免大事务
             batchRecordDetailPersistentService.batchSave(result.getId(), result.getDetailList());
         } catch (Exception e) {
-            log.warnWithErrorCode(CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL.getCode(), "persistentImportRecord fail", e);
-            throw CommonErrorCodeEnum.PERSISTENCE_TO_DB_FAIL.toException(e);
+            log.warnWithErrorCode(CommonErrorCodeEnum.DATA_STORAGE_FAIL.getCode(), "persistentImportRecord fail", e);
+            throw CommonErrorCodeEnum.DATA_STORAGE_FAIL.toException(e);
         }
     }
 

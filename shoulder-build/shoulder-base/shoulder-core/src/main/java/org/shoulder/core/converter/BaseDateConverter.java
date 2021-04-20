@@ -17,7 +17,7 @@ public abstract class BaseDateConverter<T> implements Converter<String, T> {
     /**
      * 具体的格式化表达式
      */
-    private Map<String, String> formatMap = initTimeParserMap();
+    private final Map<String, String> formatMap = initTimeParserMap();
 
     /**
      * 用于初始化格式表达式 Map

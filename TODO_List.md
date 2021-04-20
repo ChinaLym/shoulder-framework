@@ -79,24 +79,19 @@ MicroMeter
 
 
 ### 日志
-详细分文件
-按照来源比。如 shoulder / spring / other 等，服务内部也可以分 common core 
-按照角色分。如 rpcClient rpcServer msgConsumer msgProducer configClient db heartbeat monitor trace 定时任务
-按照级别分文件 
-按照时间分文件 √
-按照大小分文件 √
+
+详细分文件 按照来源比。如 shoulder / spring / other 等，服务内部也可以分 common core 按照角色分。如 rpcClient rpcServer msgConsumer msgProducer
+configClient db heartbeat monitor trace 定时任务 上下文启动、配置 监控状态 按照级别分文件 按照时间分文件 √ 按照大小分文件 √
 
 增加 traceId spanId parentTraceId
 
+### 上下游检测
+
+注册中心、（配置中心）、数据库、消息队列、下游系统 若未启动，为了防止提供服务时，下游服务不存在，最多延迟 10s启动（每500ms检测一次）
 
 ### 脚本
-服务启动需要的 jvm 参数
-启动命令以及扩展点
-    - healthCheck 健康检查
-    - nginx 脚本
-    - start 启动脚本
-    - 状态/关闭等
-    - 扩展点。如安装前、安装后，升级前，升级后，卸载前，卸载后
+
+服务启动需要的 jvm 参数 启动命令以及扩展点 - healthCheck 健康检查 - nginx 脚本 - start 启动脚本 - 状态/关闭等 - 扩展点。如安装前、安装后，升级前，升级后，卸载前，卸载后
 
 
 ### nginx 代理
