@@ -7,8 +7,11 @@ spring:
     password: ${MYSQL_PWD} # 这里使用了系统的环境变量，参见 spring boot 的特性
 
   profiles:
-    active: token # token / session
+    active: session # token / session
 
 shoulder:
   application:
     errorCodePrefix: '0x000b'
+  crypto:
+    local:
+      repository: redis # 将加密元数据放入 redis，避免集群情况下（cluster: true），每次重启导致非对称密钥对的解密失败

@@ -1,4 +1,4 @@
-package com.example.demo1;
+package com.example.demo3.token;
 
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.util.JsonUtils;
@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class BaseControllerTest {
+public class BaseWebTest {
 
     @Autowired
     protected MockMvc mockMvc;

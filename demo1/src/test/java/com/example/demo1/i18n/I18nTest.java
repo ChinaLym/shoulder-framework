@@ -1,6 +1,6 @@
 package com.example.demo1.i18n;
 
-import com.example.demo1.BaseControllerTest;
+import com.example.demo1.BaseWebTest;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
  *
  * @see com.example.demo1.controller.i18n.ErrorCodeI18nDemoController#errorCode()
  */
-public class I18nTest extends BaseControllerTest {
+public class I18nTest extends BaseWebTest {
 
 
     @Test

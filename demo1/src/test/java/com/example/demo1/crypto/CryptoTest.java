@@ -1,9 +1,9 @@
 package com.example.demo1.crypto;
 
-import com.example.demo1.BaseControllerTest;
+import com.example.demo1.BaseWebTest;
 import org.junit.jupiter.api.Test;
 
-public class CryptoTest extends BaseControllerTest {
+public class CryptoTest extends BaseWebTest {
 
 
     @Test

@@ -1,9 +1,9 @@
 package com.example.demo1.convert;
 
-import com.example.demo1.BaseControllerTest;
+import com.example.demo1.BaseWebTest;
 import org.junit.jupiter.api.Test;
 
-class BeanMapControllerTest extends BaseControllerTest {
+class BeanMapTest extends BaseWebTest {
 
     @Test
     public void test1() throws Exception {

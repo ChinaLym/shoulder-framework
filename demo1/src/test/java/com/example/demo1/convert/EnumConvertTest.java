@@ -1,13 +1,13 @@
 package com.example.demo1.convert;
 
-import com.example.demo1.BaseControllerTest;
+import com.example.demo1.BaseWebTest;
 import com.example.demo1.controller.convert.EnumConvertController;
 import com.example.demo1.enums.MyColorEnum;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-class EnumConvertTest extends BaseControllerTest {
+class EnumConvertTest extends BaseWebTest {
 
 
     @Test

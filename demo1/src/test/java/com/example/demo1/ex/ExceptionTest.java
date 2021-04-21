@@ -1,9 +1,9 @@
 package com.example.demo1.ex;
 
-import com.example.demo1.BaseControllerTest;
+import com.example.demo1.BaseWebTest;
 import org.junit.jupiter.api.Test;
 
-public class ExceptionTest extends BaseControllerTest {
+public class ExceptionTest extends BaseWebTest {
 
 
     @Test

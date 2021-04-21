@@ -1,6 +1,6 @@
 package com.example.demo1.validate;
 
-import com.example.demo1.BaseControllerTest;
+import com.example.demo1.BaseWebTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ValidateTest extends BaseControllerTest {
+public class ValidateTest extends BaseWebTest {
 
     private static final ResourceLoader resourceLoader = new DefaultResourceLoader();
 

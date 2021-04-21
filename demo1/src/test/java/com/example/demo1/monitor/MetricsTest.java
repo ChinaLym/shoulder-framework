@@ -1,9 +1,9 @@
 package com.example.demo1.monitor;
 
-import com.example.demo1.BaseControllerTest;
+import com.example.demo1.BaseWebTest;
 import org.junit.jupiter.api.Test;
 
-public class MetricsTest extends BaseControllerTest {
+public class MetricsTest extends BaseWebTest {
 
     @Test
     public void test0() throws Exception {
