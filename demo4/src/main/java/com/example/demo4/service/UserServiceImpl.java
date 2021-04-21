@@ -1,8 +1,8 @@
-package com.example.demo6.service;
+package com.example.demo4.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.demo6.entity.UserEntity;
-import com.example.demo6.repository.UserMapper;
+import com.example.demo4.entity.UserEntity;
+import com.example.demo4.repository.UserMapper;
 import org.shoulder.data.mybatis.base.service.BaseServiceImpl;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;

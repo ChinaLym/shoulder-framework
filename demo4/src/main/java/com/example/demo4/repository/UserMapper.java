@@ -1,6 +1,6 @@
-package com.example.demo6.repository;
+package com.example.demo4.repository;
 
-import com.example.demo6.entity.UserEntity;
+import com.example.demo4.entity.UserEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.shoulder.data.mybatis.base.dao.IBaseRepository;
 

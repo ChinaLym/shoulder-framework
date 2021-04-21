@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
  */
 public class ResponseTest extends BaseControllerTest {
 
-
     @Test
     public void test0() throws Exception {
         String result = "{\"code\":\"0\",\"msg\":\"success\",\"data\":\"data\"}";

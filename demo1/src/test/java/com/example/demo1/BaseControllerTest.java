@@ -30,11 +30,15 @@ public class BaseControllerTest {
     private static final String UTF_8 = "UTF-8";
 
     public void doGetTest(String getUrl, String resultContains) throws Exception {
-        ResultActions resultActions = mockMvc.perform(get(getUrl).characterEncoding(UTF_8));
-        resultActions.andReturn().getResponse().setCharacterEncoding(UTF_8);
-        resultActions.andDo(print())
+        doGetTest(getUrl)
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(resultContains)));
+    }
+
+    public ResultActions doGetTest(String getUrl) throws Exception {
+        ResultActions resultActions = mockMvc.perform(get(getUrl).characterEncoding(UTF_8));
+        resultActions.andReturn().getResponse().setCharacterEncoding(UTF_8);
+        return resultActions.andDo(print());
     }
 
     public void doPostTest(String postUrl, String resultContains) throws Exception {

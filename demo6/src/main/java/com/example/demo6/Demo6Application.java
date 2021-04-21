@@ -1,18 +1,7 @@
 package com.example.demo6;
 
-import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.client.BaseClientDetails;
-import org.springframework.security.oauth2.provider.client.InMemoryClientDetailsService;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * shoulder-framework 实例工程
@@ -27,23 +16,4 @@ public class Demo6Application {
         SpringApplication.run(Demo6Application.class, args);
     }
 
-    @Bean
-    public ClientDetailsService clientDetailsService() {
-        InMemoryClientDetailsService service = new InMemoryClientDetailsService();
-
-        Map<String, ClientDetails> clientDetailsStore = new HashMap<>();
-        //String clientId, String resourceIds, String scopes, String grantTypes, String authorities
-        BaseClientDetails details = new BaseClientDetails(
-                "shoulder",
-                "oauth2-resource", // 资源标识，可以使用 appId（服务标识）、或具体资源标识，如用户信息、用户组信息、动态
-                "scopes", // 客户端申请的权限范围,可选值包括read,write,trust;若有多个权限范围用逗号(,)分隔
-                // @EnableGlobalMethodSecurity(prePostEnabled = true)启用方法级权限控制，方法上@PreAuthorize("#oauth2.hasScope('read')")
-                "grantTypes",// 指定客户端支持的grant_type,可选值包括authorization_code,password,refresh_token,implicit,client_credentials, 若支持多个grant_type用逗号(,)
-                "authorities");
-        details.setClientSecret("shoulder");
-        clientDetailsStore.put(details.getClientId(), details);
-
-        service.setClientDetailsStore(clientDetailsStore);
-        return service;
-    }
 }

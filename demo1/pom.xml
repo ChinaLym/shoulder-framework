@@ -21,16 +21,15 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-http</artifactId>
-        </dependency>
+        <!-- shoulder 继承了 spring boot 的所有特性，引入 spring boot/shoulder 的jar 一样不需要写版本号 -->
+
         <!-- 包含了 spring-boot-starter-web，在其之上额外提供了更棒的能力 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
         </dependency>
 
+        <!-- 接口文档 -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
@@ -40,7 +39,13 @@
             <artifactId>knife4j-spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- 加密传输 -->
+        <!-- 加密算法 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-crypto</artifactId>
+        </dependency>
+
+        <!-- 加密通信 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-crypto-negotiation</artifactId>
@@ -53,22 +58,24 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-crypto</artifactId>
-        </dependency>
-
+        <!-- 操作日志 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-operation-log</artifactId>
         </dependency>
 
+        <!-- 对象转换 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-beanmap</artifactId>
         </dependency>
 
-        <!-- shoulder 继承了 spring boot 的所有特性，引入 spring boot 的jar 一样不需要写版本号 -->
+        <!-- 监控相关（附工具包：可监控的线程池） -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-monitor</artifactId>
+        </dependency>
+
 
         <!-- 热更新插件，修改代码无需重启 -->
         <!--<dependency>
@@ -78,18 +85,7 @@
             <optional>true</optional>
         </dependency>-->
 
-        <dependency>
-            <groupId>com.github.chris2018998</groupId>
-            <artifactId>spring-boot-starter-beecp</artifactId>
-            <version>1.3.5.RELEASE</version>
-        </dependency>
-
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>-->
-
-        <!-- 测试 -->
+        <!-- ====================== 测试 ====================== -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

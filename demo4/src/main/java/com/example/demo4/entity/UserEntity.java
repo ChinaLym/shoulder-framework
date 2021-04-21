@@ -1,4 +1,4 @@
-package com.example.demo6.entity;
+package com.example.demo4.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Getter;

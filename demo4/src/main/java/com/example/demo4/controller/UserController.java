@@ -1,8 +1,8 @@
-package com.example.demo6.controller;
+package com.example.demo4.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.demo6.entity.UserEntity;
-import com.example.demo6.service.IUserService;
+import com.example.demo4.entity.UserEntity;
+import com.example.demo4.service.IUserService;
 import org.shoulder.data.mybatis.base.controller.BaseController;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -6,28 +6,32 @@
     - 介绍了 **[Shoulder](https://gitee.com/ChinaLym/shoulder-framework)** 框架基本使用，便于快速入门
     - 通过对比使用 `Shoulder` 与原生的 `Spring Boot` 来展示 Shoulder 提供的能力与快速开发。
     - 包含：日志、错误码、多语言翻译、返回值自动包装、异常自动拦截、数据存储加解密、前后端传输加解密
-    
+    - 系统监控
+        - spring boot 自动监控
+        - 轻松实现监控自己的线程池状态，同步到监控与报警中心 Prometheus，Grafana 展示
+
 - demo2（`数据库`）
     - 演示对数据库的增强和简化
     - 主要由 `mybatis`、`mybatis-plus`、`pagehelper` 提供能力增强，shoulder 在其之上添加了几个简单的封装
-    
+
 - demo3（`spring security`）
     - 演示安全认证相关
         - 用户名、密码登录
         - 手机短信登录
         - 验证码
-        
-- demo4（`系统监控`）
-    - spring boot 自动监控
-    - 轻松实现监控自己的线程池状态，同步到监控与报警中心 Prometheus，Grafana 展示
-    
+        - (认证方式 token/session 一键切换)
+
+- demo4（`spring security`）
+    - 演示安全认证相关
+        - 基于 JWT Token 的认证实现
+
+
 - demo5（`服务间安全通信`）
     - 应用间传输加解密【绝密！不可破解、不可伪造、不可抵赖！】
     - 完整的客户端与服务端实现，只需要在 `Spring` 的基础上知道一个 `@Sensitive` 注解即可实现整套功能
 
-- demo6（`spring security`）
-    - 演示安全认证相关
-        - 基于 token 的认证实现
+- demo6
+    - TODO
 
 ## 下载、部署、运行
 
