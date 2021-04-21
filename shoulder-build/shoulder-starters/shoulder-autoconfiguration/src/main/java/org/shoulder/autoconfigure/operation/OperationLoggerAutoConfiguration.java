@@ -52,6 +52,9 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
         this.operationLogProperties = operationLogProperties;
     }
 
+    /**
+     * @see OperationLogProperties.LoggerProperties#async
+     */
     @Bean
     @Order(0)
     @ConditionalOnProperty(value = "shoulder.log.operation.logger.async", havingValue = "true", matchIfMissing = true)
@@ -70,15 +73,18 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
                 // 可以设置为 true，因为操作日志一般并不是非记录不可
                 // opLogThreadFactory.setDaemon(true);
                 ExecutorService opLogExecutorService = new ThreadPoolExecutor(threadNum, threadNum,
-                    60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000), opLogThreadFactory);
+                        60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000), opLogThreadFactory);
 
                 return new AsyncOperationLogger()
-                    .setExecutorService(opLogExecutorService)
-                    .setLogger((OperationLogger) bean);
+                        .setExecutorService(opLogExecutorService)
+                        .setLogger((OperationLogger) bean);
             }
         };
     }
 
+    /**
+     * @see OperationLogProperties.LoggerProperties#buffered
+     */
     @Bean
     @Order(1)
     @ConditionalOnProperty(value = "shoulder.log.operation.logger.buffered", havingValue = "true")
@@ -91,13 +97,13 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
                 }
                 String threadName = operationLogProperties.getLogger().getThreadName();
                 ScheduledExecutorService scheduledExecutorService =
-                    Executors.newScheduledThreadPool(1, new CustomizableThreadFactory(threadName));
+                        Executors.newScheduledThreadPool(1, new CustomizableThreadFactory(threadName));
 
                 long flushInterval = operationLogProperties.getLogger().getFlushInterval().toMillis();
                 int flushThreshold = operationLogProperties.getLogger().getFlushThreshold();
                 int perFlushMax = operationLogProperties.getLogger().getPerFlushMax();
                 return new BufferedOperationLogger(new ConcurrentLinkedQueue<>(), (OperationLogger) bean, scheduledExecutorService,
-                    flushInterval, flushThreshold, perFlushMax);
+                        flushInterval, flushThreshold, perFlushMax);
             }
         };
     }

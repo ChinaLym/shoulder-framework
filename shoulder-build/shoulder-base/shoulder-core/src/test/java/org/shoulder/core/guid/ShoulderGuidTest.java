@@ -1,6 +1,6 @@
 package org.shoulder.core.guid;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.shoulder.core.util.JsonUtils;
 
 import java.time.Duration;

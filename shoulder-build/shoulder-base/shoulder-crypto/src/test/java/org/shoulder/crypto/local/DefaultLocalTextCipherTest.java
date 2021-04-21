@@ -1,7 +1,7 @@
 package org.shoulder.crypto.local;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.shoulder.crypto.local.impl.DefaultLocalTextCipher;
 import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;

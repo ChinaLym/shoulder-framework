@@ -234,4 +234,5 @@ XML，可选依赖：Xstream：API简单，使用方便（这里适合读取配�
 # 其他
 
 - [阿里巴巴开发规约](https://github.com/alibaba/p3c)
+  Spring Boot 2.2.X以后 `org.junit.jupiter.api.Test` 替代之前的 `org.junit.Test` (JUnitTest 4->5)
 

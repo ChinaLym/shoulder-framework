@@ -34,12 +34,13 @@ public class OperationLogProperties {
     public static class LoggerProperties {
 
         /**
-         * 操作日志记录方式
+         * TODO 操作日志记录方式
          */
         private PersistenceType type = PersistenceType.LOGGER;
 
         /**
-         * 是否以异步线程记录 操作日志.
+         * 是否以异步线程记录 操作日志
+         * 默认开启
          */
         private boolean async = true;
 
@@ -54,7 +55,7 @@ public class OperationLogProperties {
         private String threadName = "shoulder-opLogger";
 
         /**
-         * 是否启用缓冲池。优化频繁记录单条，如：需将操作日志直接存数据库，每 0.2s 插入一次数据库 -> 每隔一段时间批量插入数据库
+         * 是否启用缓冲池。优化频繁记录单条，如：需将操作日志存数据库/发送至远程可使用，开启后每 0.2s 插入一次数据库 -> 每隔一段时间批量插入数据库
          * 默认 false，开启后可能无法查看到实时操作日志
          */
         private boolean buffered = false;
