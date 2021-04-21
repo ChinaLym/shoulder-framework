@@ -1,7 +1,7 @@
 package org.shoulder.crypto.digest;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.shoulder.core.constant.ByteSpecification;
 
 public class Sha256ExUtilsTest {

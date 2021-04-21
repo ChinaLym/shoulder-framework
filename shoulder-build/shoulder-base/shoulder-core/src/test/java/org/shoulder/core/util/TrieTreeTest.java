@@ -1,6 +1,6 @@
 package org.shoulder.core.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 字典树测试

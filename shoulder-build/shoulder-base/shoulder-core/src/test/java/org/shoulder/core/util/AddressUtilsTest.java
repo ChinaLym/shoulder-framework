@@ -1,6 +1,6 @@
 package org.shoulder.core.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * ip 转换，区间比较
