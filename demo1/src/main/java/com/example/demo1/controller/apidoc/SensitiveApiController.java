@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author Admin
+ * @author lym
  */
 @Api(tags = "sensitive 相关接口")
 @SkipResponseWrap

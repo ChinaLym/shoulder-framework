@@ -1,3 +1,22 @@
 # demo2 使用 yaml 格式配置作为示例，properties转yaml: https://www.toyaml.com/index.html
 
+spring:
+  application:
+    name: demo3-token
 
+#  redis:  # redis 地址，测试支持集群情况 cluster: false 时不需要
+#    host: ${REDIS_ADDR}     # 127.0.0.1:3306
+#    password: ${REDIS_PWD}  # xxx
+
+
+shoulder:
+  security:
+    auth: # 如果使用者自行实现登录成功、退出成功处理器，则这些配置将失效，使用者实现的优先生效
+      type: token # 测试环境这里设置为 token。session 方式已经在页面上可以测过了！！！！！！！
+      responseType: json
+
+    token:
+      store: memory  # token 放哪里，支持 jdbc/redis/memory
+
+  application:
+    cluster: false

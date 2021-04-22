@@ -1,6 +1,7 @@
 package com.example.demo3.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Accessors(chain = true)
 @ToString(callSuper = true)
+@EqualsAndHashCode
 @TableName("tb_user")
 public class UserEntity {
 

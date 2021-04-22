@@ -12,7 +12,11 @@ import org.springframework.security.oauth2.provider.client.InMemoryClientDetails
 import java.util.HashMap;
 import java.util.Map;
 
-// 该类仅为 Token 认证提供客户端信息解析器、Session 方式认证需要注释 / 删除该类
+/**
+ * 该类仅为 Token 认证提供客户端信息解析器、Session 方式认证可删除该类
+ *
+ * @author lym
+ */
 @Configuration
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
 public class TokenAuthBeanConfiguration {
