@@ -1,16 +1,16 @@
-package com.example.demo3.token;
+package com.example.demo4.token;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.demo3.BaseWebTest;
-import com.example.demo3.entity.UserEntity;
-import com.example.demo3.service.IUserService;
+import com.example.demo4.BaseWebTest;
+import com.example.demo4.entity.UserEntity;
+import com.example.demo4.service.IUserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.security.authentication.handler.json.FormTokenAuthenticationSuccessHandler;
+import org.shoulder.security.authentication.handler.json.BasicAuthorizationTokenAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.authentication.ProviderManager;
@@ -46,7 +46,6 @@ public class TokenTest extends BaseWebTest {
         if (!isTokenMode()) {
             return;
         }
-        // todo
         doGetTest("/")
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string(equalTo("{\"code\":\"0x0000000d\",\"msg\":\"" + CommonErrorCodeEnum.AUTH_401_EXPIRED.getMessage() + "\",\"data\":null}")));
@@ -55,7 +54,7 @@ public class TokenTest extends BaseWebTest {
     /**
      * 测试认证接口
      *
-     * @see FormTokenAuthenticationSuccessHandler 认证成功发 token
+     * @see BasicAuthorizationTokenAuthenticationSuccessHandler 认证成功发 token
      */
     @Test
     public void getAccessTokenTest() {
@@ -75,7 +74,6 @@ public class TokenTest extends BaseWebTest {
      * @see org.springframework.security.web.access.intercept.FilterSecurityInterceptor
      */
     @Test
-    @SuppressWarnings("rawtypes, unchecked")
     public void testGetResource() throws Exception {
         String token = getAccessToken();
         String authorization = "Bearer " + token;
@@ -104,7 +102,7 @@ public class TokenTest extends BaseWebTest {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        //headers.add("Authorization", authorization);
+        headers.add("Authorization", authorization);
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("username", "shoulder");

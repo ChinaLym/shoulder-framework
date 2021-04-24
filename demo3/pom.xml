@@ -81,14 +81,6 @@
             <artifactId>shoulder-starter-auth-token</artifactId>
         </dependency>
 
-        <!-- shoulder 继承了 spring boot 的所有特性，引入 spring boot 的jar 一样不需要写版本号 -->
-
-        <!-- ======================== ============================== -->
-        <!--认证服务器，使用 token 认证，在 test 里测试 -->
-        <!--<dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-auth-server</artifactId>
-        </dependency>-->
 
         <!-- 热更新插件，修改代码无需重启 -->
         <dependency>
