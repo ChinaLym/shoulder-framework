@@ -25,11 +25,6 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-web</artifactId>
         </dependency>
-        <!-- 一般开发web也会调用其他接口 -->
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-http</artifactId>
-        </dependency>
 
     </dependencies>
 

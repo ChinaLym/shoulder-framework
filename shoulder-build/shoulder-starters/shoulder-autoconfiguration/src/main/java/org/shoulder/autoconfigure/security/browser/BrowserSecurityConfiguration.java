@@ -138,6 +138,9 @@ public class BrowserSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 // 不需要登录认证可以访问的
                 .antMatchers(
+                    // error
+                    "/error",
+
                     // 未认证的跳转
                     SecurityConst.URL_REQUIRE_AUTHENTICATION,
 

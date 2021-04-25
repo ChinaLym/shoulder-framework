@@ -156,6 +156,13 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- 单测 condition -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
     <build>

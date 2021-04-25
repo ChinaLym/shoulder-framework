@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Locale -> Charset
+ * Locale → Charset
  *
  * @author lym
  */

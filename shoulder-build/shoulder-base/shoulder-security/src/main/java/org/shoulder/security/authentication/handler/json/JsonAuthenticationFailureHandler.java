@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 public class JsonAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,

@@ -28,9 +28,11 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     AUTH_401_UNAUTHORIZED(12, "Authentication failed.", Level.INFO, HttpStatus.UNAUTHORIZED),
     /**
-     * @desc 认证过期，需要重新认证
+     * @desc 认证无效，需要先进行认证
+     * @sug 1.未携带正确认证标识（需要检查接口文档-认证）；2.过期的认证标识（需要重新登陆）
+     * @see org.springframework.security.web.access.ExceptionTranslationFilter#handleSpringSecurityException(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, javax.servlet.FilterChain, java.lang.RuntimeException) AccessDeny
      */
-    AUTH_401_EXPIRED(13, "Certification expired. Re-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    AUTH_401_EXPIRED(13, "Certification invalid. Do-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
 
     /**
      * 主动拒绝请求：权限不够

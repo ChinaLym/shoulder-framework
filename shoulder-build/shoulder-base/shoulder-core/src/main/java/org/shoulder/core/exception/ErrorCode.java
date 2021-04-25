@@ -56,7 +56,7 @@ public interface ErrorCode extends Translatable {
 
     /**
      * 获取完整错误码
-     * long -> String
+     * long → String
      * <code>String.format("0x%08x", code)<code/>
      * 或
      * <code>

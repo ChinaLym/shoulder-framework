@@ -87,12 +87,12 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     /**
      * 初始化 id 自增器格式
      *
-     * @param timeStampBits  时间戳所占位数 > 0
+     * @param timeStampBits  时间戳所占位数 ＞ 0
      * @param timeEpoch      元时间戳（位数必须与 timeStampBits 一致）
-     * @param instanceIdBits 应用实例标识（机器标识）位数 >= 0，必填，因为后续可能不一定是64位，不使用 64 减其他位计算
+     * @param instanceIdBits 应用实例标识（机器标识）位数 ≥ 0，必填，因为后续可能不一定是64位，不使用 64 减其他位计算
      * @param instanceId     实例标识
-     * @param sequenceBits   单位时间（时间戳相关）内自增序列bit位数 > 0
-     * @param bufferSize     缓冲区大小，用于抵抗时钟回拨，抵抗大小为[时间单位]*[bufferSize]；范围：[1, 1 << 30]，1 时不能抵抗时钟回拨，但性能最高
+     * @param sequenceBits   单位时间（时间戳相关）内自增序列bit位数 ＞ 0
+     * @param bufferSize     缓冲区大小，用于抵抗时钟回拨，抵抗大小为[时间单位]*[bufferSize]；范围：[1, 1^30]，1 时不能抵抗时钟回拨，但性能最高
      *                       该值越小，则对时钟回拨处理能力越弱，在满负载生成时，性能越小
      *                       该值越大，则对时钟回拨处理能力越强，越大在满负载生成时对性能有一定影响
      *                       注意：参数设置合理时，几乎任何业务场景都不会触发满负载，无需关注性能问题
@@ -218,7 +218,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      * <p>
      * 测试发现，使用snowflakes默认格式，若总量需要 1kw 个
      * - nextId 方式需要 135ms
-     * - nextIds(1) 方式需要 225ms, 1 -> 8 所需时间减少
+     * - nextIds(1) 方式需要 225ms, 1 → 8 所需时间减少
      * - nextIds(16-4095) 方式需要 65ms 左右
      * - nextIds(4096)需要 40 ms
      * 实际生产中，可以忽略

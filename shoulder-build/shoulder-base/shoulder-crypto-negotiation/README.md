@@ -66,7 +66,7 @@ class SendRequest {
     public ApiResult receive(@RequestBody ApiParam param) {
         System.out.println(param);
         ApiResult result = new ApiResult();
-        result.setCipher("shoulder");
+        result.setCipher("hello,shoulder");
         result.setText("666");
         return result;
     }
