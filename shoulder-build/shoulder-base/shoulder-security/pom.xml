@@ -38,12 +38,13 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- oauth2 授权服务器相关依赖 deprecated -->
+        <!-- oauth2 授权服务器相关依赖 deprecated TODO 废弃与 spring security oauth 项目相关的类，改为替代品 -->
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
             <optional>true</optional>
         </dependency>
+
         <!--Spring Security OAuth通过提供了自己的JWT支持spring-security-jwt。
             Spring Security依靠Nimbus来提供JWT支持。-->
         <!--<dependency>

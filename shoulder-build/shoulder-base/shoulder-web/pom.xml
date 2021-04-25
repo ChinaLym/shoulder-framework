@@ -24,6 +24,7 @@
             <artifactId>shoulder-validation</artifactId>
         </dependency>
 
+        <!-- 一般开发web也会调用 http 接口 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-http</artifactId>

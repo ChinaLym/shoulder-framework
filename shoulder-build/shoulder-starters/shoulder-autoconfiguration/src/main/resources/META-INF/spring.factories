@@ -12,6 +12,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.core.ContextUtilsAutoConfiguration, \
   org.shoulder.autoconfigure.core.I18nAutoConfiguration, \
   \
+  org.shoulder.autoconfigure.web.ShoulderDispatcherServletAutoConfiguration, \
   org.shoulder.autoconfigure.web.WebAdvanceAutoConfiguration, \
   org.shoulder.autoconfigure.web.MvcConverterAutoConfiguration, \
   org.shoulder.autoconfigure.web.WebMvcAutoConfiguration, \

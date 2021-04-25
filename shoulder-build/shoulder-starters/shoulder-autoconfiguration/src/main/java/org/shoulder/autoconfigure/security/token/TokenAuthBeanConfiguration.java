@@ -13,7 +13,7 @@ import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.BeforeAuthEndpoint;
-import org.shoulder.security.authentication.handler.json.TokenAuthenticationSuccessHandler;
+import org.shoulder.security.authentication.handler.json.BasicAuthorizationTokenAuthenticationSuccessHandler;
 import org.shoulder.security.authentication.token.SimpleTokenIntrospector;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -75,7 +75,7 @@ public class TokenAuthBeanConfiguration {
     @ConditionalOnMissingBean
     public AuthenticationSuccessHandler tokenAuthenticationSuccessHandler(ClientDetailsService clientDetailsService,
                                                                           AuthorizationServerTokenServices authorizationServerTokenServices) {
-        return new TokenAuthenticationSuccessHandler(clientDetailsService, authorizationServerTokenServices);
+        return new BasicAuthorizationTokenAuthenticationSuccessHandler(clientDetailsService, authorizationServerTokenServices);
     }
 
 

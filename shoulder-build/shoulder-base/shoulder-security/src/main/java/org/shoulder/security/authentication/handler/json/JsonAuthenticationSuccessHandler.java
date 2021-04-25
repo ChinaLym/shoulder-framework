@@ -20,9 +20,9 @@ import java.io.IOException;
  */
 public class JsonAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private static final String SUCCESS_RESPONSE = JsonUtils.toJson(BaseResult.success());
+    private static final char[] SUCCESS_RESPONSE = JsonUtils.toJson(BaseResult.success()).toCharArray();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

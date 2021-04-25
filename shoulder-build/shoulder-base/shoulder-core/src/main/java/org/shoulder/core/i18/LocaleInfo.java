@@ -23,14 +23,14 @@ import java.util.TimeZone;
  */
 @Getter
 @EqualsAndHashCode
-public final class LocaleInfo implements Cloneable {
+public final class LocaleInfo implements BaseLocaleContext, Cloneable {
 
     private static final LocaleInfo SYSTEM_DEFAULT;
 
     private static LocaleInfo DEFAULT;
 
     static {
-        SYSTEM_DEFAULT = new LocaleInfo(Locale.getDefault(), Charset.defaultCharset(), TimeZone.getDefault());
+        SYSTEM_DEFAULT = new LocaleInfo(Locale.getDefault(), TimeZone.getDefault(), Charset.defaultCharset());
         DEFAULT = SYSTEM_DEFAULT;
     }
 
@@ -40,19 +40,19 @@ public final class LocaleInfo implements Cloneable {
     private final Locale locale;
 
     @Nonnull
-    private final Charset charset;
+    private final TimeZone timeZone;
 
     @Nonnull
-    private final TimeZone timeZone;
+    private final Charset charset;
 
     // todo 为每种语言独立设置
     @Nonnull
     private final String dateTimeFormat = AppInfo.UTC_DATE_TIME_FORMAT;
 
-    public LocaleInfo(@NonNull Locale locale, @NonNull Charset charset, @NonNull TimeZone timeZone) {
+    public LocaleInfo(@NonNull Locale locale, @NonNull TimeZone timeZone, @NonNull Charset charset) {
         this.locale = locale;
-        this.charset = charset;
         this.timeZone = timeZone;
+        this.charset = charset;
     }
 
     // -----------------------------------------------
@@ -69,11 +69,11 @@ public final class LocaleInfo implements Cloneable {
 
     public static void setDefault(Locale locale) {
         // charset 会随着 locale 改变而发生变化，因此使用 null
-        setDefault(LocaleUtils.buildLocaleInfo(locale, null, DEFAULT.getTimeZone()));
+        setDefault(LocaleUtils.buildLocaleInfo(locale, DEFAULT.getTimeZone(), null));
     }
 
     public static void setDefault(Locale locale, Charset charset) {
-        setDefault(LocaleUtils.buildLocaleInfo(locale, charset, DEFAULT.getTimeZone()));
+        setDefault(LocaleUtils.buildLocaleInfo(locale, DEFAULT.getTimeZone(), charset));
     }
 
     public static void setDefault(LocaleInfo localeInfo) {
