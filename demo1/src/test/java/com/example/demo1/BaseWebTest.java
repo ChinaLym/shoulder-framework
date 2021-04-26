@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(properties = {"management.endpoints.web.exposure.include=*"})
 @AutoConfigureMockMvc
 //@RunWith(SpringRunner.class) // IDEA 中可不加，其他 IDE 需要有
 public class BaseWebTest {
@@ -30,8 +30,8 @@ public class BaseWebTest {
 
     private static final String UTF_8 = "UTF-8";
 
-    public void doGetTest(String getUrl, String resultContains) throws Exception {
-        doGetTest(getUrl)
+    public ResultActions doGetTest(String getUrl, String resultContains) throws Exception {
+        return doGetTest(getUrl)
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(resultContains)));
     }

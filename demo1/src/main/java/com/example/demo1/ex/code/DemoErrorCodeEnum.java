@@ -1,8 +1,10 @@
 package com.example.demo1.ex.code;
 
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
+import org.shoulder.core.util.AssertUtils;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
@@ -22,15 +24,15 @@ public enum DemoErrorCodeEnum implements ErrorCode {
      * @desc 报名者年龄不符合要求
      * 转为异常抛出时，记录 info 级别日志，若接口中抛出未捕获，返回客户端 400 状态码
      */
-    AGE_OUT_OF_RANGE(100001, "age out of range", Level.INFO, HttpStatus.BAD_REQUEST),
+    AGE_OUT_OF_RANGE(10001, "age out of range", Level.INFO, HttpStatus.BAD_REQUEST),
 
     /**
      * @desc 错误描述：第三方服务失败
      * @sug 检查日志
-     *
+     * <p>
      * 若接口中抛出未捕获，返回客户端 500 状态码
      */
-    SIGN_UP_FAIL(100002, "third service error"),
+    SIGN_UP_FAIL(10002, "third service error"),
 
     ;
 
@@ -63,7 +65,8 @@ public enum DemoErrorCodeEnum implements ErrorCode {
 
     DemoErrorCodeEnum(long code, String message, Level logLevel, HttpStatus httpStatus) {
         String hex = Long.toHexString(code);
-        this.code = "0x" + "0".repeat(Math.max(0, 8 - hex.length())) + hex;
+        AssertUtils.isTrue(hex.length() <= 4, CommonErrorCodeEnum.CODING, "错误码长度不正确");
+        this.code = AppInfo.errorCodePrefix() + "0".repeat(Math.max(0, 4 - hex.length())) + hex;
         this.message = message;
         this.logLevel = logLevel;
         this.httpStatus = httpStatus;

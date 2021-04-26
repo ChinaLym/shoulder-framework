@@ -2,7 +2,9 @@ package com.example.demo1.monitor;
 
 import com.example.demo1.BaseWebTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
 
+@AutoConfigureMetrics // 2.4 之后需要加这个 && @SpringBootTest(properties = {"management.endpoints.web.exposure.include=*"})
 public class MetricsTest extends BaseWebTest {
 
     @Test

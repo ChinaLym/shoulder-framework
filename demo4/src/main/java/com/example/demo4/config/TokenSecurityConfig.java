@@ -7,23 +7,27 @@ import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityCo
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.security.KeyPair;
+import java.security.interfaces.RSAPublicKey;
 
 /**
  * token 相关安全配置
  *
  * @author lym
  */
+@EnableWebSecurity
 @Configuration
 public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired(required = false)
+    @Autowired//(required = false)
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -78,6 +82,8 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
             // 配置校验规则（哪些请求要过滤）
             .authorizeRequests()
                 .antMatchers(
+                    // error
+                    "/error",
                     // 未认证的跳转
                     SecurityConst.URL_REQUIRE_AUTHENTICATION,
                     "/token/introspect",
@@ -109,7 +115,7 @@ public class TokenSecurityConfig extends WebSecurityConfigurerAdapter {
                 .oauth2ResourceServer()
                     .jwt()
                 // jwk 多了这个配置
-                        //.decoder(NimbusJwtDecoder.withPublicKey((RSAPublicKey) keyPair.getPublic()).build())
+                        .decoder(NimbusJwtDecoder.withPublicKey((RSAPublicKey) keyPair.getPublic()).build())
                         .jwkSetUri("http://localhost:8080/.well-known/jwks.json")
                     /*.opaqueToken()
                         // token 校验地址

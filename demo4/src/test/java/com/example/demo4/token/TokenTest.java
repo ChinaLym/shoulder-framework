@@ -10,7 +10,6 @@ import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.security.authentication.handler.json.BasicAuthorizationTokenAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.authentication.ProviderManager;
@@ -46,6 +45,7 @@ public class TokenTest extends BaseWebTest {
         if (!isTokenMode()) {
             return;
         }
+        // todo
         doGetTest("/")
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string(equalTo("{\"code\":\"0x0000000d\",\"msg\":\"" + CommonErrorCodeEnum.AUTH_401_EXPIRED.getMessage() + "\",\"data\":null}")));
@@ -53,8 +53,6 @@ public class TokenTest extends BaseWebTest {
 
     /**
      * 测试认证接口
-     *
-     * @see BasicAuthorizationTokenAuthenticationSuccessHandler 认证成功发 token
      */
     @Test
     public void getAccessTokenTest() {
@@ -62,7 +60,10 @@ public class TokenTest extends BaseWebTest {
             return;
         }
         String accessToken = getAccessToken();
+        String repeatTest = getAccessToken();
         System.out.println(accessToken);
+
+        Assertions.assertEquals(accessToken, repeatTest);
     }
 
 
@@ -74,7 +75,8 @@ public class TokenTest extends BaseWebTest {
      * @see org.springframework.security.web.access.intercept.FilterSecurityInterceptor
      */
     @Test
-    public void testGetResource() throws Exception {
+    @SuppressWarnings("rawtypes")
+    public void testGetResource() {
         String token = getAccessToken();
         String authorization = "Bearer " + token;
 
@@ -97,7 +99,7 @@ public class TokenTest extends BaseWebTest {
 
     @SuppressWarnings("rawtypes, unchecked")
     private String getAccessToken() {
-        String url = "/authentication/form";
+        String url = "/oauth/token";
         String authorization = "Basic " + Base64.getEncoder().encodeToString("shoulder:shoulder".getBytes());
 
         HttpHeaders headers = new HttpHeaders();
@@ -131,3 +133,4 @@ public class TokenTest extends BaseWebTest {
 
 
 }
+

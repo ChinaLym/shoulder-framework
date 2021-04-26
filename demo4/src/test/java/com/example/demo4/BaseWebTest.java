@@ -3,8 +3,6 @@ package com.example.demo4;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.EnvironmentAware;
@@ -33,8 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 需要完整的请求请按  https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-testing-with-running-server  这个文档使用即可
  * 为了测试 filter，采用随机端口
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@AutoConfigureMockMvc
 public class BaseWebTest implements EnvironmentAware {
 
     protected Environment environment;

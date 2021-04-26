@@ -16,6 +16,7 @@ import java.util.Map;
  * @author lym
  */
 @Configuration
+//@EnableAuthorizationServer
 public class AuthorizationServerConfiguration {
 
     /**

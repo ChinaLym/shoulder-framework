@@ -16,48 +16,29 @@
     <name>demo4</name>
     <description>Demo project for Shoulder Framework</description>
 
-
     <properties>
         <java.version>11</java.version>
     </properties>
     <dependencies>
 
         <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-crypto</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <!-- token 认证相关 -->
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-auth-token</artifactId>
-        </dependency>
         <!-- 认证服务器相关 -->
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-auth-server</artifactId>
+            <artifactId>shoulder-starter-auth-token</artifactId>
+
         </dependency>
-        <!-- resourceServer -->
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.security.experimental</groupId>
+            <artifactId>spring-security-oauth2-authorization-server</artifactId>
+            <version>0.1.0</version>
+        </dependency>
 
-        <!-- spring security: oauth2-client -->
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
-        </dependency>-->
-
+        <!-- 数据库 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-data-db</artifactId>

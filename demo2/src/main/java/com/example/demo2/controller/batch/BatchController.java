@@ -2,11 +2,11 @@ package com.example.demo2.controller.batch;
 
 import com.example.demo2.dto.PersonRecord;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
-import org.shoulder.batch.enums.BatchConstants;
 import org.shoulder.batch.enums.BatchResultEnum;
 import org.shoulder.batch.model.*;
 import org.shoulder.batch.model.convert.BatchModelConvert;

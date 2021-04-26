@@ -1,6 +1,9 @@
 package com.example.demo1.ex.code;
 
+import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
+import org.shoulder.core.util.AssertUtils;
 
 
 /**
@@ -29,7 +32,8 @@ public enum DemoErrorCodeEnum2 implements ErrorCode {
      */
     DemoErrorCodeEnum2(long code, String message) {
         String hex = Long.toHexString(code);
-        this.code = "0x" + "0".repeat(Math.max(0, 8 - hex.length())) + hex;
+        AssertUtils.isTrue(hex.length() <= 4, CommonErrorCodeEnum.CODING, "错误码长度不正确");
+        this.code = AppInfo.errorCodePrefix() + "0".repeat(Math.max(0, 4 - hex.length())) + hex;
     }
 
     @Override

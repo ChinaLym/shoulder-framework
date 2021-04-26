@@ -17,7 +17,6 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Base64;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -63,7 +62,10 @@ public class TokenTest extends BaseWebTest {
             return;
         }
         String accessToken = getAccessToken();
+        String repeatTest = getAccessToken();
         System.out.println(accessToken);
+
+        Assertions.assertEquals(accessToken, repeatTest);
     }
 
 
@@ -75,8 +77,8 @@ public class TokenTest extends BaseWebTest {
      * @see org.springframework.security.web.access.intercept.FilterSecurityInterceptor
      */
     @Test
-    @SuppressWarnings("rawtypes, unchecked")
-    public void testGetResource() throws Exception {
+    @SuppressWarnings("rawtypes")
+    public void testGetResource() {
         String token = getAccessToken();
         String authorization = "Bearer " + token;
 
@@ -100,18 +102,12 @@ public class TokenTest extends BaseWebTest {
     @SuppressWarnings("rawtypes, unchecked")
     private String getAccessToken() {
         String url = "/authentication/form";
-        String authorization = "Basic " + Base64.getEncoder().encodeToString("shoulder:shoulder".getBytes());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        //headers.add("Authorization", authorization);
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("username", "shoulder");
         formData.add("password", "shoulder");
-        HttpEntity requestBody = new HttpEntity<>(formData, headers);
 
-        ResponseEntity<BaseResult> responseEntity = rest.postForEntity(url, requestBody, BaseResult.class);
+        ResponseEntity<BaseResult> responseEntity = rest.postForEntity(url, formData, BaseResult.class);
 
         Assertions.assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
 

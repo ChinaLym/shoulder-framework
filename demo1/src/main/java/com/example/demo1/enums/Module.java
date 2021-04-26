@@ -10,12 +10,12 @@ public enum Module {
     /**
      * 登录模块
      */
-    SIGN_IN("000"),
+    SIGN_IN("00"),
 
     /**
      * 注册模块
      */
-    SIGN_UP("001"),
+    SIGN_UP("01"),
 
     ;
 

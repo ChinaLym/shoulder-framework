@@ -21,7 +21,7 @@ public class I18nTest extends BaseWebTest {
 
     @Test
     public void testErrorCode() throws Exception {
-        String result = "{\"code\":\"0\",\"msg\":\"success\",\"data\":{\"0x000a00000001\":\"用户已经被锁定\",\"0x000186a1\":\"报名者年龄不符合要求\\r\\n转为异常抛出时，记录 info 级别日志，若接口中抛出未捕获，返回客户端 400 状态码\",\"0x00000064\":\"文件系统错误：创建文件失败\",\"0x000186a2\":\"错误描述：第三方服务失败\",\"0x0000000d\":\"认证过期，需要重新认证\"}}";
+        String result = "{\"code\":\"0\",\"msg\":\"success\",\"data\":{\"0x00000064\":\"文件系统错误：创建文件失败\",\"0x000a0001\":\"user locked\",\"0x000a2712\":\"third service error\",\"0x0000000d\":\"认证无效，需要先进行认证\",\"0x000a2711\":\"age out of range\"}}";
         doGetTest("/i18n/errorCode", result);
     }
 }

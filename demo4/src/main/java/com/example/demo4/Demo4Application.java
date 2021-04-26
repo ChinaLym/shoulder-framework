@@ -1,5 +1,7 @@
 package com.example.demo4;
 
+import org.shoulder.security.authentication.endpoint.JwkSetEndpoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +25,9 @@ public class Demo4Application {
     public static void main(String[] args) {
         SpringApplication.run(Demo4Application.class, args);
     }
+
+    @Autowired
+    private JwkSetEndpoint jwkSetEndpoint;
 
     @Bean
     public ClientDetailsService clientDetailsService() {
