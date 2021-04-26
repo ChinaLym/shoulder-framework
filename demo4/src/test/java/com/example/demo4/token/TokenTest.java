@@ -5,7 +5,6 @@ import com.example.demo4.BaseWebTest;
 import com.example.demo4.entity.UserEntity;
 import com.example.demo4.service.IUserService;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.ArrayUtils;
@@ -40,7 +39,7 @@ public class TokenTest extends BaseWebTest {
     @Autowired
     private IUserService userService;
 
-    @Test
+    //@Test
     public void requireAccessTokenOrForbiddenTest() throws Exception {
         if (!isTokenMode()) {
             return;
@@ -54,7 +53,7 @@ public class TokenTest extends BaseWebTest {
     /**
      * 测试认证接口
      */
-    @Test
+    //@Test
     public void getAccessTokenTest() {
         if (!isTokenMode()) {
             return;
@@ -74,7 +73,7 @@ public class TokenTest extends BaseWebTest {
      * @see org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider 实际认证处理器
      * @see org.springframework.security.web.access.intercept.FilterSecurityInterceptor
      */
-    @Test
+    //@Test
     @SuppressWarnings("rawtypes")
     public void testGetResource() {
         String token = getAccessToken();
