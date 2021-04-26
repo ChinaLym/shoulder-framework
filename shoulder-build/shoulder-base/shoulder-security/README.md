@@ -47,7 +47,7 @@ Token（JWT）：
 | 适用场景 | 单点登录 | 授权、第三方登录、单点登录 |
 
 ----
- 
+
 ## 方案
 
 ### `TOKEN` 续签问题
@@ -70,7 +70,7 @@ Token（JWT）：
 - 启动后报错：`org.springframework.security.web.authentication.rememberme.CookieTheftException: Invalid remember-me token (Series/token) mismatch. Implies previous cookie theft attack.`
     - 一般是极端时间内发送了两个请求导致的:第一个请求将通过，并为随后的请求生成新的哈希，但第二个请求仍带着旧的令牌来访问，因此导致异常。
     - 解决：静态资源不要拦截，如 css、jpg、js 等，保证请求一个页面时仅发生一次过滤即可。其他：该情况经常在启动后第一次访问，连续刷新页面时发生。
-    
+
 
 ---
 
@@ -100,11 +100,11 @@ Token（JWT）：
         - `SessionAuthenticationStrategy#onAuthentication`
         - `RememberMeServices`
         - `AuthenticationSuccessHandler`
-       
+
 - **认证颁发的凭证** AbstractPreAuthenticatedProcessingFilter
     - 处理经过预先认证的身份验证请求的过滤器的基类，其中认证主体已经由外部系统进行了身份验证。 目的只是从传入请求中提取主体上的必要信息，而不是对它们进行身份验证。
 
- 
+
 - **鉴权**：
 
 类介绍
@@ -112,7 +112,7 @@ Token（JWT）：
     - `FilterSecurityInterceptor` 适用于 web 中对请求鉴权
     - `MethodSecurityInterceptor` 基于 Spring AOP，适用于只对 Service 方法鉴权
     - `AspectJMethodSecurityInterceptor` 适用于对 Service 方法、甚至可以做到领域对象鉴权
-    
+
 通常的做法是使用Filter对Web请求进行一个比较粗略的鉴权，辅以使用Spring AOP对Service层的方法进行较细粒度的鉴权。
 
 **AbstractSecurityInterceptor** 逻辑（`org.springframework.security.web.access.intercept.FilterSecurityInterceptor.invoke`）
@@ -129,17 +129,17 @@ Token（JWT）：
     - 若获取到的规则为空
         - rejectPublicInvocations == true （默认 true）则抛 IllegalArgumentException 异常
         - 否则发送 PublicInvocationEvent 通知，并返回 null。
-        - beforeInvocation 方法会结束 
+        - beforeInvocation 方法会结束
     - 若获取到的规则不为空：
         - 断言 SecurityContextHolder.getContext().getAuthentication() 不为空（已经认证过）
             - 若为空，一般表示非法调用，发送 AuthenticationCredentialsNotFoundEvent ，并抛对应的异常 AuthenticationCredentialsNotFoundException
         - 获取认证凭证，根据 alwaysReauthenticate（默认 false）决定是否再次通过 AuthenticationManager#authenticate 重新认证
         - **通过 `accessDecisionManager` 鉴权** `#decide(authenticated, object, attributes)`
             - accessDecisionManager 的抽象类是 `AbstractAccessDecisionManager`，有三个默认实现
-         
+
         - 抛 AccessDeniedException 异常代表鉴权失败，发送 AuthorizationFailureEvent，并抛出鉴权失败异常 AccessDeniedException
         - 鉴权通过后发送 AuthorizedEvent 通知
-        - 调用 runAsManager.buildRunAs(authenticated, object, attributes); 根据返回值来决定是否更换执行者信息，默认为 null 不切换 
+        - 调用 runAsManager.buildRunAs(authenticated, object, attributes); 根据返回值来决定是否更换执行者信息，默认为 null 不切换
 - afterInvocation
 
 
@@ -148,7 +148,7 @@ Token（JWT）：
     - `AffirmativeBased`【默认，常用】 一票通过，只要获得任意一个投票者投赞成票即可
     - `UnanimousBased` 【常用】一票反对，只要获得任意一个投票者投反对票则不通过
     - `ConsensusBased` 少数服从多数，获得多数投票者的赞成票才可
-    
+
 - 投票者为 `AccessDecisionVoter`，常见的有
     - `RoleVoter<Object>`基于角色的投票器（适用于 用户-角色-权限）
     - `RoleHierarchyVoter<Object>` 基于角色(额外支持继承)的投票器
@@ -178,7 +178,7 @@ Token（JWT）：
             - WebExpressionConfigAttribute 使用了装饰器模式，会调用 postProcessor 的相同方法（实际为 `RequestVariablesExtractorEvaluationContextPostProcessor`）但由于其未继承，会调用 AbstractVariableEvaluationContextPostProcessor 的方法
                 - 返回new `DelegatingEvaluationContext` 的匿名子类 ，重写了 `lookupVariable` 方法，返回值为 null 时，使用 extractVariables(request)，从请求中获取，即：表达式中可以使用请求中相关变量，但优先级低于原有变量解析器
         - 根据 ExpressionUtils.evaluateAsBoolean(weca.getAuthorizeExpression(), ctx) 返回值决定投赞成票还是反对票
-        
+
     - `AbstractAclVoter<MethodInvocation>` 基于角色(支持继承)的投票器
     - `PreInvocationAuthorizationAdviceVoter<MethodInvocation>` 权限范围投票器
     - ... 可以自行实现更多的投票器，比如基于时间、登录地点
@@ -203,8 +203,9 @@ Token（JWT）：
 
 
 Authentication.Detail
+
 - `PreAuthenticatedAuthenticationTokenDeserializer`
-- 
+-
 
 
 ## Spring Security 入门总结
