@@ -12,6 +12,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 配置查询
+ *
+ * @author lym
+ */
 @Service
 public class ConfigQueryCoreServiceImpl implements ConfigQueryCoreService {
 
@@ -19,10 +24,7 @@ public class ConfigQueryCoreServiceImpl implements ConfigQueryCoreService {
     private ConfigRepository configRepository;
 
     /**
-     * Query by biz id config data.
-     *
-     * @param bizId the biz id
-     * @return the config data
+     * 根据 bizId 查询
      */
     @Override
     public ConfigData queryByBizId(String bizId) {
@@ -30,10 +32,7 @@ public class ConfigQueryCoreServiceImpl implements ConfigQueryCoreService {
     }
 
     /**
-     * Lock by biz id config data.
-     *
-     * @param bizId the biz id
-     * @return the config data
+     * 根据 bizId 锁定
      */
     @Override
     public ConfigData lockByBizId(String bizId) {
@@ -41,12 +40,7 @@ public class ConfigQueryCoreServiceImpl implements ConfigQueryCoreService {
     }
 
     /**
-     * Query list by multi condition list.
-     *
-     * @param tenant          the tenant
-     * @param configType      the config type
-     * @param filterCondition the filter condition
-     * @return the list
+     * 多条件查询
      */
     @Override
     public List<ConfigData> queryListByMultiCondition(String tenant, ConfigType configType,
@@ -55,14 +49,7 @@ public class ConfigQueryCoreServiceImpl implements ConfigQueryCoreService {
     }
 
     /**
-     * Query page by multi condition page info.
-     *
-     * @param tenant          the tenant
-     * @param configType      the config type
-     * @param filterCondition the filter condition
-     * @param pageNum         the page num
-     * @param pageSize        the page size
-     * @return the page info
+     * 多条件分页查询
      */
     @Override
     public PageInfo<ConfigData> queryPageByMultiCondition(String tenant, ConfigType configType,

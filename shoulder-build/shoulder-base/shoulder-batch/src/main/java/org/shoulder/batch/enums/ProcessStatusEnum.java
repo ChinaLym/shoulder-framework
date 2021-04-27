@@ -9,7 +9,7 @@ import java.util.Arrays;
  *
  * @author lym
  */
-public enum BatchResultEnum {
+public enum ProcessStatusEnum {
 
 
     // ==================== 准备批处理 =================
@@ -58,7 +58,7 @@ public enum BatchResultEnum {
 
     String tip;
 
-    BatchResultEnum(int code, String tip) {
+    ProcessStatusEnum(int code, String tip) {
         this.code = code;
         this.tip = tip;
     }
@@ -71,13 +71,13 @@ public enum BatchResultEnum {
         return tip;
     }
 
-    public static BatchResultEnum of(Integer code) {
-        return Arrays.stream(BatchResultEnum.values())
-            .filter(e -> e.code.equals(code))
-            .findFirst().orElseThrow(() -> {
-                // 非法状态码，除恶意调用，否则不会发生
-                throw new BaseRuntimeException("invalid resultCode");
-            });
+    public static ProcessStatusEnum of(Integer code) {
+        return Arrays.stream(ProcessStatusEnum.values())
+                .filter(e -> e.code.equals(code))
+                .findFirst().orElseThrow(() -> {
+                    // 非法状态码，除恶意调用，否则不会发生
+                    throw new BaseRuntimeException("invalid resultCode");
+                });
     }
 
 }

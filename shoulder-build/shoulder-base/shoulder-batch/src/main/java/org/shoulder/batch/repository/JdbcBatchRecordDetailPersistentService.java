@@ -1,7 +1,7 @@
 package org.shoulder.batch.repository;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.repository.po.BatchRecordDetailPO;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -81,14 +81,14 @@ public class JdbcBatchRecordDetailPersistentService implements BatchRecordDetail
      * @return 所有的批量处理记录
      */
     @Override
-    public List<BatchRecordDetail> findAllByResult(String recordId, List<BatchResultEnum> resultList) {
+    public List<BatchRecordDetail> findAllByResult(String recordId, List<ProcessStatusEnum> resultList) {
         return jdbc.queryForList(QUERY_ALL_WITH_CONDITION, BatchRecordDetailPO.class, recordId,
-            CollectionUtils.emptyIfNull(resultList).stream()
-                .map(BatchResultEnum::getCode)
-                .collect(Collectors.toList())
+                CollectionUtils.emptyIfNull(resultList).stream()
+                        .map(ProcessStatusEnum::getCode)
+                        .collect(Collectors.toList())
         ).stream()
-            .map(BatchRecordDetailPO::toModel)
-            .collect(Collectors.toList());
+                .map(BatchRecordDetailPO::toModel)
+                .collect(Collectors.toList());
     }
 
     @Override

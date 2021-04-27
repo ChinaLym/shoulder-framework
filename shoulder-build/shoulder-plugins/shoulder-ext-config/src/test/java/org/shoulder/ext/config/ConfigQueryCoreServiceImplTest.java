@@ -72,7 +72,8 @@ public class ConfigQueryCoreServiceImplTest extends BasePowerMock {
         RegionConfig regionConfig = new RegionConfig();
         regionConfig.setRegion("CN");
         Mockito.when(configRepository.queryByIndex(Mockito.any(), Mockito.any())).thenReturn(null);
-        configQueryCoreService.queryByIndex(TenantEnum.DEFAULT, regionConfig);
+        ConfigData result = configQueryCoreService.queryByIndex(TenantEnum.DEFAULT, regionConfig);
+        Assertions.assertNull(result);
     }
 
 
@@ -82,7 +83,8 @@ public class ConfigQueryCoreServiceImplTest extends BasePowerMock {
         Map<String, String> dataMap = new HashMap<>();
         dataMap.put("region", "CN");
         Mockito.when(configRepository.queryByBizId(Mockito.any())).thenReturn(configDataQuery);
-        configQueryCoreService.queryByIndex(TenantEnum.DEFAULT, CONFIG_TYPE, dataMap);
+        ConfigData result = configQueryCoreService.queryByIndex(TenantEnum.DEFAULT, CONFIG_TYPE, dataMap);
+        Assertions.assertNotNull(result);
     }
 
     @Test

@@ -172,6 +172,7 @@ public class ConfigRepositoryImpl implements ConfigRepository {
         configData.setBizId(configDO.getBizId());
         configData.setVersion(configDO.getVersion());
         configData.setOperatorNo(configDO.getModifier());
+        // todo 创建者名称
         //configData.setOperatorName(configDO.getOperatorName());
         configData.setConfigObj(JsonUtils.toObject(configDO.getBusinessValue(), configData.getConfigType().getClazz()));
         configData.setBusinessValue(ConfigData.extractFieldsFromConfigObject(configData.getConfigObj()));

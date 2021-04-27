@@ -1,11 +1,14 @@
 package org.shoulder.validate.util;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.core.util.StringUtils;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.Validation;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,6 +29,21 @@ public class ValidateUtil {
         if (CollectionUtils.isNotEmpty(constraintViolationSet)) {
             throw new ConstraintViolationException(constraintViolationSet);
         }
+    }
+
+    /**
+     * 将检查异常转为 string
+     *
+     * @param e e
+     * @return string
+     */
+    public static String toValidationStr(ConstraintViolationException e) {
+        Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+        List<String> messages = Lists.newArrayList();
+        for (ConstraintViolation<?> constraintViolation : constraintViolations) {
+            messages.add(constraintViolation.getPropertyPath().toString() + " " + constraintViolation.getMessage());
+        }
+        return StringUtils.join(messages, ",");
     }
 
 }

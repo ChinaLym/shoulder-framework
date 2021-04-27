@@ -1,4 +1,4 @@
-package org.shoulder.ext.config.web.config;
+package org.shoulder.ext.config.config;
 
 import org.shoulder.core.log.InvokeLogInterceptor;
 import org.shoulder.ext.common.constant.ShoulderExtConstants;
@@ -12,8 +12,7 @@ import org.springframework.core.annotation.Order;
 public class BackstageInterceptorConfig {
 
     private static final String EXPRESSION
-            = "execution(public org.shoulder.core.dto.response.RestResult org.shoulder.ext.config.web.controller"
-            + ".ParameterConfigController.*(..))";
+            = "execution(public org.shoulder.ext.config.provider.controller.controller.ParameterConfigController.*(..))";
 
 
     @Bean

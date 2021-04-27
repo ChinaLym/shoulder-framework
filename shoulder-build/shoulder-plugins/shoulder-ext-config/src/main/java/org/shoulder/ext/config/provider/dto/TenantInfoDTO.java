@@ -1,4 +1,4 @@
-package org.shoulder.ext.config.provider.mvc.dto;
+package org.shoulder.ext.config.provider.dto;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;

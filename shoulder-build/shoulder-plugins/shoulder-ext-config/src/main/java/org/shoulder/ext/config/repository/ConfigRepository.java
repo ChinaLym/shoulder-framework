@@ -8,39 +8,44 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 配置存储接口
+ *
+ * @author lym
+ */
 public interface ConfigRepository {
 
     /**
-     * Create.
+     * 保存
      *
-     * @param configData the config data
+     * @param configData BO
      */
     void save(ConfigData configData);
 
     /**
-     * Update by id.
+     * 更新
      *
-     * @param configData the config data
+     * @param configData BO
      */
     void updateByBizIdAndVersion(ConfigData configData);
 
     /**
-     * Delete by biz id and version int.
+     * 删除
      *
      * @param bizId   the biz id
      * @param version the version
-     * @return the int
+     * @return 影响行数
      */
     int deleteByBizIdAndVersion(String bizId, int version);
 
     // ================= query ======================
 
     /**
-     * Query by index field config data.
+     * 条件查询
      *
      * @param tenant        the tenant
      * @param configExample the config example
-     * @return the config data
+     * @return BO
      */
     @Nullable
     default ConfigData queryByIndex(String tenant, Object configExample) {
@@ -48,12 +53,12 @@ public interface ConfigRepository {
     }
 
     /**
-     * Query by index field config data.
+     * 根据索引查询
      *
      * @param tenant      the tenant
      * @param configType  the config name
      * @param indexFields the index fields
-     * @return the config data
+     * @return BO
      */
     @Nullable
     default ConfigData queryByIndex(String tenant, ConfigType configType, Map<String, String> indexFields) {
@@ -61,29 +66,29 @@ public interface ConfigRepository {
     }
 
     /**
-     * Query by biz id config data.
+     * 根据索引查询
      *
      * @param bizId the biz id
-     * @return the config data
+     * @return BO
      */
     @Nullable
     ConfigData queryByBizId(String bizId);
 
     /**
-     * Lock by biz id config data.
+     * 根据索引锁定
      *
      * @param bizId the biz id
-     * @return the config data
+     * @return BO
      */
     @Nullable
     ConfigData lockByBizId(String bizId);
 
     /**
-     * Query list by multi condition list.
+     * 条件查询
      *
      * @param tenant        the tenant
      * @param configExample the config example
-     * @return the list
+     * @return 查询结果
      */
     default List<ConfigData> queryListByMultiCondition(String tenant, Object configExample) {
         return queryListByMultiCondition(tenant, ConfigType.getByType(configExample.getClass()),
@@ -91,7 +96,7 @@ public interface ConfigRepository {
     }
 
     /**
-     * Query page by multi condition page info.
+     * 条件查询
      *
      * @param tenant        the tenant
      * @param configExample the config example
@@ -105,49 +110,49 @@ public interface ConfigRepository {
     }
 
     /**
-     * Query all by tenant and config name list.
+     * 条件查询
      *
      * @param tenant     the tenant
      * @param configType the config name
-     * @return the list
+     * @return 查询结果
      */
     default List<ConfigData> queryListByTenantAndConfigName(String tenant, ConfigType configType) {
         return queryListByMultiCondition(tenant, configType, null);
     }
 
     /**
-     * Query page by tenant and config name list.
+     * 条件查询
      *
      * @param tenant     the tenant
      * @param configType the config name
      * @param pageNum    the page num
      * @param pageSize   the page size
-     * @return the list
+     * @return 查询结果
      */
     default PageInfo<ConfigData> queryPageByTenantAndConfigName(String tenant, ConfigType configType, int pageNum, int pageSize) {
         return queryPageByMultiCondition(tenant, configType, null, pageNum, pageSize);
     }
 
     /**
-     * Query all by multi condition list.
+     * 条件查询
      *
      * @param tenant          the tenant
      * @param configType      the config name
      * @param filterCondition the filter condition
-     * @return the list
+     * @return 查询结果
      */
     List<ConfigData> queryListByMultiCondition(String tenant, ConfigType configType,
                                                @Nullable Map<String, String> filterCondition);
 
     /**
-     * Query page by multi condition list.
+     * 条件查询
      *
      * @param tenant          the tenant
      * @param configType      the config name
      * @param filterCondition the filter condition
      * @param pageNum         the page num
      * @param pageSize        the page size
-     * @return the list
+     * @return 查询结果
      */
     PageInfo<ConfigData> queryPageByMultiCondition(String tenant, ConfigType configType,
                                                    @Nullable Map<String, String> filterCondition,

@@ -1,9 +1,9 @@
-package org.shoulder.ext.config.web.controller;
+package org.shoulder.ext.config.provider.controller;
 
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.ext.common.constant.ShoulderExtConstants;
-import org.shoulder.ext.config.provider.mvc.dto.TenantInfoDTO;
+import org.shoulder.ext.config.provider.dto.TenantInfoDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * @author lym
+ * @deprecated 租户专门提供
  */
 @Controller
 @RequestMapping(ShoulderExtConstants.TENANT_URL_PREFIX)

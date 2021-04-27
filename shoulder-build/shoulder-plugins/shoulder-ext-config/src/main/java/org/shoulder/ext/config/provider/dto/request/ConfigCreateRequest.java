@@ -1,4 +1,4 @@
-package org.shoulder.ext.config.provider.mvc.dto.request;
+package org.shoulder.ext.config.provider.dto.request;
 
 import lombok.Data;
 

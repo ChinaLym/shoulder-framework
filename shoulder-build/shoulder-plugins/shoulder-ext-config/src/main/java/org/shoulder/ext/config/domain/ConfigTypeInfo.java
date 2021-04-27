@@ -24,6 +24,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 /**
+ *
  * @author lym
  */
 @Data
@@ -54,7 +55,7 @@ public class ConfigTypeInfo implements ConfigType {
         AssertUtils.notEmpty(indexFieldInfoList, ConfigErrorCodeEnum.CODING_ERROR, clazz.getName(), "must at least one field annotated @ConfigField(index=true)!");
     }
 
-    // ======================================== 解析字段 ============================================
+    // ======================================== static 解析字段 ============================================
 
     /**
      * 解析类字段
@@ -63,7 +64,7 @@ public class ConfigTypeInfo implements ConfigType {
      * @param configClazz 配置类
      * @return 字段信息
      */
-    List<ConfigFieldInfo> resolveFieldInfo(Class<?> configClazz) {
+    private static List<ConfigFieldInfo> resolveFieldInfo(Class<?> configClazz) {
         Field[] fields = configClazz.getDeclaredFields();
         List<ConfigFieldInfo> fieldInfoList = new ArrayList<>(fields.length);
         int order = 0;
@@ -97,7 +98,7 @@ public class ConfigTypeInfo implements ConfigType {
                 formatDescription(fieldInfo);
 
                 // getter / setter 方法
-                resolveGetterSetter(field, fieldInfo);
+                resolveGetterSetter(configClazz, field, fieldInfo);
 
                 fieldInfoList.add(fieldInfo);
                 // 成功解析序号才增
@@ -111,7 +112,7 @@ public class ConfigTypeInfo implements ConfigType {
         return fieldInfoList;
     }
 
-    private void formatDescription(ConfigFieldInfo fieldInfo) {
+    private static void formatDescription(ConfigFieldInfo fieldInfo) {
 
         StringBuilder sb = new StringBuilder();
         if (fieldInfo.isNotNull()) {
@@ -144,21 +145,20 @@ public class ConfigTypeInfo implements ConfigType {
         fieldInfo.setDescription(sb.toString());
     }
 
-    private void resolveGetterSetter(Field field, ConfigFieldInfo fieldInfo) throws NoSuchMethodException {
+    private static void resolveGetterSetter(Class<?> configClazz, Field field, ConfigFieldInfo fieldInfo) throws NoSuchMethodException {
         String fieldName = field.getName();
         String upperLeadingCharName = capitalize(fieldName);
-        Class<?> clazz = getClazz();
         if (field.getType() == boolean.class) {
             if (fieldName.startsWith("is")) {
-                fieldInfo.setReadMethod(clazz.getMethod(fieldName));
-                fieldInfo.setWriteMethod(clazz.getMethod("set" + capitalize(fieldName.substring(2)), field.getType()));
+                fieldInfo.setReadMethod(configClazz.getMethod(fieldName));
+                fieldInfo.setWriteMethod(configClazz.getMethod("set" + capitalize(fieldName.substring(2)), field.getType()));
             } else {
-                fieldInfo.setReadMethod(clazz.getMethod("is" + upperLeadingCharName));
-                fieldInfo.setWriteMethod(clazz.getMethod("set" + upperLeadingCharName, field.getType()));
+                fieldInfo.setReadMethod(configClazz.getMethod("is" + upperLeadingCharName));
+                fieldInfo.setWriteMethod(configClazz.getMethod("set" + upperLeadingCharName, field.getType()));
             }
         } else {
-            fieldInfo.setReadMethod(clazz.getMethod("get" + upperLeadingCharName));
-            fieldInfo.setWriteMethod(clazz.getMethod("set" + upperLeadingCharName, field.getType()));
+            fieldInfo.setReadMethod(configClazz.getMethod("get" + upperLeadingCharName));
+            fieldInfo.setWriteMethod(configClazz.getMethod("set" + upperLeadingCharName, field.getType()));
         }
     }
 

@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class BatchRecordDetailResult {
     /**
      * 失败原因
      *
-     * @see BatchResultEnum
+     * @see ProcessStatusEnum
      */
     @ApiModelProperty(value = "失败原因:错误码", example = "用户名已存在", position = 3)
     private String reason;

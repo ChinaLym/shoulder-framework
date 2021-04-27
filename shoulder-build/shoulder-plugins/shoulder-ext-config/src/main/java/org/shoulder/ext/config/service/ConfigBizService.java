@@ -22,12 +22,12 @@ public interface ConfigBizService {
     // ======================================== 查询单个 =====================================
 
     /**
-     * Query by index
+     * 根据业务索引查询
      *
      * @param <T>           the type parameter
      * @param tenant        the tenant
      * @param configExample the config example
-     * @return the t
+     * @return 查询结果
      */
     @Nullable
     default <T> T queryByIndex(String tenant, T configExample) {
@@ -40,13 +40,13 @@ public interface ConfigBizService {
     }
 
     /**
-     * Query by index
+     * 根据业务索引查询
      *
      * @param <T>         the type parameter
      * @param tenant      the tenant
      * @param configType  the config type
      * @param indexFields the index fields
-     * @return the t
+     * @return 查询结果
      */
     @Nullable
     default <T> T queryByIndex(String tenant, ConfigType configType, Map<String, String> indexFields) {
@@ -63,22 +63,22 @@ public interface ConfigBizService {
 
 
     /**
-     * Query all by tenant and config name list.
+     * 根据租户 + 配置类查询所有
      *
      * @param tenant     the tenant
      * @param configType the config name
-     * @return the list
+     * @return 查询结果
      */
     default <T> List<T> queryListByTenantAndConfigName(String tenant, ConfigType configType) {
         return queryListByMultiCondition(tenant, configType, null);
     }
 
     /**
-     * Query list by multi condition list.
+     * 租户 + 条件查询
      *
      * @param tenant        the tenant
      * @param configExample the config example
-     * @return the list
+     * @return 查询结果
      */
     default <T> List<T> queryListByMultiCondition(String tenant, Object configExample) {
         return queryListByMultiCondition(tenant, ConfigType.getByType(configExample.getClass()),
@@ -87,12 +87,12 @@ public interface ConfigBizService {
 
 
     /**
-     * Query all by multi condition list.
+     * 租户 + 条件查询
      *
      * @param tenant          the tenant
      * @param configType      the config name
      * @param filterCondition the filter condition
-     * @return the list
+     * @return 查询结果
      */
     <T> List<T> queryListByMultiCondition(String tenant, ConfigType configType,
                                           @Nullable Map<String, String> filterCondition);

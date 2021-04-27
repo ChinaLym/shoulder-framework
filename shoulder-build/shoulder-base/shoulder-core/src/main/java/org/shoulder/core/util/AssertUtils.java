@@ -6,6 +6,7 @@ import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.ErrorCode;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collection;
@@ -90,7 +91,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param args      任意个异常描述信息的参数
      */
-    public static void isTrue(final boolean expValue, final ErrorCode errorCode, final Object... args) {
+    public static void isTrue(final boolean expValue, final ErrorCode errorCode, final Object... args) throws BaseRuntimeException {
 
         if (!expValue) {
             BaseRuntimeException exception;
@@ -115,7 +116,7 @@ public class AssertUtils {
      * @param callback  断言失败的回调方法
      */
     public static void isTrue(final boolean expValue, final ErrorCode errorCode,
-                              Consumer<ErrorCode> callback) {
+                              Consumer<ErrorCode> callback) throws BaseRuntimeException {
 
         if (expValue) {
             return;
@@ -132,7 +133,7 @@ public class AssertUtils {
      * @param objs      任意个异常描述信息的参数
      */
     public static void isFalse(final boolean expValue, final ErrorCode errorCode,
-                               final Object... objs) {
+                               final Object... objs) throws BaseRuntimeException {
         isTrue(!expValue, errorCode, objs);
     }
 
@@ -144,7 +145,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param objs      任意个异常描述信息的参数
      */
-    public static void equals(final Object obj1, final Object obj2, final ErrorCode errorCode, final Object... objs) {
+    public static void equals(final Object obj1, final Object obj2, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(Objects.equals(obj1, obj2), errorCode, objs);
     }
 
@@ -156,7 +157,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param objs      任意个异常描述信息的参数
      */
-    public static void notEquals(final Object obj1, final Object obj2, final ErrorCode errorCode, final Object... objs) {
+    public static void notEquals(final Object obj1, final Object obj2, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(!Objects.equals(obj1, obj2), errorCode, objs);
     }
 
@@ -168,7 +169,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param objs      任意个异常描述信息的参数
      */
-    public static void is(final Object base, final Object target, final ErrorCode errorCode, final Object... objs) {
+    public static void is(final Object base, final Object target, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(base == target, errorCode, objs);
     }
 
@@ -180,7 +181,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param objs      任意个异常描述信息的参数
      */
-    public static void isNot(final Object base, final Object target, final ErrorCode errorCode, final Object... objs) {
+    public static void isNot(final Object base, final Object target, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(base != target, errorCode, objs);
     }
 
@@ -192,7 +193,7 @@ public class AssertUtils {
      * @param errorCode  错误码
      * @param objs       任意个异常描述信息的参数
      */
-    public static void contains(final Collection<?> collection, final Object target, final ErrorCode errorCode, final Object... objs) {
+    public static void contains(final Collection<?> collection, final Object target, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         notEmpty(collection, errorCode, objs);
         isTrue(CollectionUtils.containsAny(collection, target), errorCode, objs);
     }
@@ -205,7 +206,7 @@ public class AssertUtils {
      * @param errorCode  错误码
      * @param objs       任意个异常描述信息的参数
      */
-    public static void contains(Object[] collection, Object target, ErrorCode errorCode, final Object... objs) {
+    public static void contains(Object[] collection, Object target, ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(ArrayUtils.contains(collection, target), errorCode, objs);
     }
 
@@ -217,7 +218,7 @@ public class AssertUtils {
      * @param errorCode  错误码
      * @param objs       任意个异常描述信息的参数
      */
-    public static void notContains(final Object[] collection, final Object target, final ErrorCode errorCode, final Object... objs) {
+    public static void notContains(final Object[] collection, final Object target, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(ArrayUtils.notContains(collection, target), errorCode, objs);
     }
 
@@ -228,7 +229,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param objs      任意个异常描述信息的参数
      */
-    public static void blank(final String str, final ErrorCode errorCode, final Object... objs) {
+    public static void blank(@Nullable final String str, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(StringUtils.isBlank(str), errorCode, objs);
     }
 
@@ -239,7 +240,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param objs      任意个异常描述信息的参数
      */
-    public static void notBlank(final String str, final ErrorCode errorCode, final Object... objs) {
+    public static void notBlank(@Nonnull final String str, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(StringUtils.isNotBlank(str), errorCode, objs);
     }
 
@@ -250,7 +251,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param objs      任意个异常描述信息的参数
      */
-    public static void isNull(final Object object, final ErrorCode errorCode, final Object... objs) {
+    public static void isNull(@Nullable final Object object, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(object == null, errorCode, objs);
     }
 
@@ -261,7 +262,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param objs      任意个异常描述信息的参数
      */
-    public static void notNull(final Object object, final ErrorCode errorCode, final Object... objs) {
+    public static void notNull(@Nonnull final Object object, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(object != null, errorCode, objs);
     }
 
@@ -272,7 +273,7 @@ public class AssertUtils {
      * @param errorCode  错误码
      * @param objs       任意个异常描述信息的参数
      */
-    public static void notEmpty(final Collection collection, final ErrorCode errorCode, final Object... objs) {
+    public static void notEmpty(@Nonnull final Collection collection, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(!CollectionUtils.isEmpty(collection), errorCode, objs);
     }
 
@@ -283,7 +284,7 @@ public class AssertUtils {
      * @param errorCode  错误码
      * @param objs       任意个异常描述信息的参数
      */
-    public static void empty(final Collection collection, final ErrorCode errorCode, final Object... objs) {
+    public static void empty(@Nullable final Collection collection, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(CollectionUtils.isEmpty(collection), errorCode, objs);
     }
 
@@ -294,7 +295,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param objs      任意个异常描述信息的参数
      */
-    public static void notEmpty(final Map map, final ErrorCode errorCode, final Object... objs) {
+    public static void notEmpty(@Nonnull final Map map, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(!MapUtils.isEmpty(map), errorCode, objs);
     }
 
@@ -305,7 +306,7 @@ public class AssertUtils {
      * @param errorCode 错误码
      * @param objs      任意个异常描述信息的参数
      */
-    public static void empty(final Map map, final ErrorCode errorCode, final Object... objs) {
+    public static void empty(@Nullable final Map map, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(MapUtils.isEmpty(map), errorCode, objs);
     }
 

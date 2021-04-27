@@ -3,7 +3,7 @@ package org.shoulder.batch.service.impl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.model.DataItem;
@@ -139,8 +139,8 @@ public class BatchProcessor implements Runnable {
             if (except != null) {
                 continue;
             }
-            except = new BatchRecordDetail(index, BatchResultEnum.IMPORT_FAILED.getCode(),
-                CommonErrorCodeEnum.UNKNOWN.getCode());
+            except = new BatchRecordDetail(index, ProcessStatusEnum.IMPORT_FAILED.getCode(),
+                    CommonErrorCodeEnum.UNKNOWN.getCode());
             resultDetailList.add(except);
         }
         return resultDetailList;
