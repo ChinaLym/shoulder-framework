@@ -1,4 +1,4 @@
-package org.shoulder.ext.config.web.controller;
+package org.shoulder.ext.config.provider.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

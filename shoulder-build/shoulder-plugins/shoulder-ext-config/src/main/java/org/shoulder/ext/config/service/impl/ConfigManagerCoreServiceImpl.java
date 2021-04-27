@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 /**
+ * 配置管理
+ *
  * @author lym
  */
 @Service
@@ -24,11 +26,6 @@ public class ConfigManagerCoreServiceImpl implements ConfigManagerCoreService {
     @Autowired
     private ConfigRepository configRepository;
 
-    /**
-     * Insert.
-     *
-     * @param configData the config data
-     */
     @Override
     @Transactional(transactionManager = ShoulderExtConstants.BACKSTAGE_TRANSACTION_MANAGER, rollbackFor = Exception.class)
     public void insert(ConfigData configData) {
@@ -41,12 +38,6 @@ public class ConfigManagerCoreServiceImpl implements ConfigManagerCoreService {
         // todo 保存日志
     }
 
-    /**
-     * Migration.
-     *
-     * @param configData the config data
-     * @param overwrite
-     */
     @Override
     @Transactional(transactionManager = ShoulderExtConstants.BACKSTAGE_TRANSACTION_MANAGER, rollbackFor = Exception.class)
     public void migration(ConfigData configData, boolean overwrite) {
@@ -66,11 +57,6 @@ public class ConfigManagerCoreServiceImpl implements ConfigManagerCoreService {
         // todo 保存日志
     }
 
-    /**
-     * Update.
-     *
-     * @param configData the config data
-     */
     @Override
     @Transactional(transactionManager = ShoulderExtConstants.BACKSTAGE_TRANSACTION_MANAGER, rollbackFor = Exception.class)
     public void update(ConfigData configData) {
@@ -79,12 +65,6 @@ public class ConfigManagerCoreServiceImpl implements ConfigManagerCoreService {
         // todo 保存日志
     }
 
-    /**
-     * Delete boolean.
-     *
-     * @param configData the config data
-     * @return the boolean
-     */
     @Override
     @Transactional(transactionManager = ShoulderExtConstants.BACKSTAGE_TRANSACTION_MANAGER, rollbackFor = Exception.class)
     public boolean delete(ConfigData configData) {

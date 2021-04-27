@@ -8,9 +8,8 @@ import java.lang.annotation.*;
  * 潜在的风险：主键字段顺序变更将影响 bizId 计算结果？反射获取后按名称排序，避免字段顺序修改导致问题
  * 名称改变影响 bizId 计算结果？允许设置 name 字段
  *
- * @author liuyanming
- * @date 2021年3月16日 下午5:00:31
- * @see ConfigTypeEnum
+ * @author lym
+ * @see ConfigType
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

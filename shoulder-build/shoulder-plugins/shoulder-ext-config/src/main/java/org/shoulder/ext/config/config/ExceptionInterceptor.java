@@ -1,4 +1,4 @@
-package org.shoulder.ext.config.web.config;
+package org.shoulder.ext.config.config;
 
 import com.google.common.collect.Lists;
 import org.aopalliance.intercept.MethodInterceptor;

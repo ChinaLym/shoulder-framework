@@ -4,7 +4,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.batch.constant.BatchConstants;
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.*;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
@@ -195,30 +195,30 @@ public class BatchManager implements Runnable, ProgressAble {
             for (DataItem dataItem : dataList) {
                 // 这里认为 total 是所有校验的数据，若 total = 100，则不可能有 index > 100 的数据
                 detailList.get(dataItem.getIndex())
-                    .setIndex(dataItem.getIndex())
-                    .setRecordId(getTaskId())
-                    .setOperation(operationType)
-                    .setStatus(BatchResultEnum.VALIDATE_SUCCESS.getCode())
+                        .setIndex(dataItem.getIndex())
+                        .setRecordId(getTaskId())
+                        .setOperation(operationType)
+                        .setStatus(ProcessStatusEnum.VALIDATE_SUCCESS.getCode())
                     .setSource(serializeSource(dataItem));
             }
         });
         // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不处理的，校验失败无法处理的） todo 跳过状态定义
         for (DataItem dataItem : batchData.getSuccessList()) {
             result.getDetailList().get(dataItem.getIndex())
-                .setRecordId(getTaskId())
-                .setIndex(dataItem.getIndex())
-                .setOperation(batchData.getOperation())
-                .setSource(serializeSource(dataItem))
-                .setStatus(BatchResultEnum.SKIP_REPEAT.getCode());
+                    .setRecordId(getTaskId())
+                    .setIndex(dataItem.getIndex())
+                    .setOperation(batchData.getOperation())
+                    .setSource(serializeSource(dataItem))
+                    .setStatus(ProcessStatusEnum.SKIP_REPEAT.getCode());
         }
         for (DataItem dataItem : batchData.getFailList()) {
             // getFailReason 不可能为 null，否则就是使用者错误，未塞入错误原因
             result.getDetailList().get(dataItem.getIndex())
-                .setRecordId(getTaskId())
-                .setIndex(dataItem.getIndex())
-                .setOperation(batchData.getOperation())
-                .setSource(serializeSource(dataItem))
-                .setStatus(BatchResultEnum.VALIDATE_FAILED.getCode())
+                    .setRecordId(getTaskId())
+                    .setIndex(dataItem.getIndex())
+                    .setOperation(batchData.getOperation())
+                    .setSource(serializeSource(dataItem))
+                    .setStatus(ProcessStatusEnum.VALIDATE_FAILED.getCode())
                 .setFailReason(batchData.getFailReason().get(dataItem.getIndex()));
         }
         log.info("Directly: success:{}, fail:{}", batchData.getSuccessList().size(), batchData.getFailList().size());
@@ -326,12 +326,10 @@ public class BatchManager implements Runnable, ProgressAble {
      */
     private void handleResult(int n) {
         for (int i = 0; i < n; i++) {
-            /*
-             * worker 未捕获的异常会交给 UncaughtExceptionHandler，这里设计时让worker保证一定返回结果
-             */
+            // worker 未捕获的异常会交给 UncaughtExceptionHandler，这里设计时让worker保证一定返回结果
             BatchRecordDetail taskResultDetail = takeUnExceptInterrupted(resultQueue);
             if (taskResultDetail.isCalculateProgress()) {
-                boolean success = BatchResultEnum.IMPORT_SUCCESS.getCode() == taskResultDetail.getStatus();
+                boolean success = ProcessStatusEnum.IMPORT_SUCCESS.getCode() == taskResultDetail.getStatus();
                 if (success) {
                     progress.addSuccess(1);
                 } else {

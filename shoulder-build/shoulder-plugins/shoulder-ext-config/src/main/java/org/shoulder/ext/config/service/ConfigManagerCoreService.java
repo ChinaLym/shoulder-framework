@@ -8,32 +8,32 @@ import org.shoulder.ext.config.domain.model.ConfigData;
 public interface ConfigManagerCoreService {
 
     /**
-     * Create.
+     * 新增
      *
-     * @param configData the config data
+     * @param configData 要新增的
      */
     void insert(ConfigData configData);
 
     /**
-     * Update by id.
+     * 更新
      *
-     * @param configData the config data
+     * @param configData 要更新的
      */
     void update(ConfigData configData);
 
     /**
-     * Delete by biz id and version int.
+     * 删除
      *
-     * @param configData the config data
-     * @return the int
+     * @param configData 要删除的
+     * @return 删除成果
      */
     boolean delete(ConfigData configData);
 
     /**
-     * Migration.
+     * 迁移
      *
      * @param configData the config data
-     * @param overwrite
+     * @param overwrite  如果存在是否覆盖
      */
     void migration(ConfigData configData, boolean overwrite);
 }

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 查询
+ *
  * @author lym
  */
 public interface ConfigQueryCoreService {
@@ -16,11 +18,11 @@ public interface ConfigQueryCoreService {
     // ======================================== 查询单个 =====================================
 
     /**
-     * Query by index field config data.
+     * 根据主键查
      *
      * @param tenant        the tenant
      * @param configExample the config example
-     * @return the config data
+     * @return 查询结果
      */
     @Nullable
     default ConfigData queryByIndex(String tenant, Object configExample) {
@@ -28,12 +30,12 @@ public interface ConfigQueryCoreService {
     }
 
     /**
-     * Query by index field config data.
+     * 根据主键查
      *
      * @param tenant      the tenant
      * @param configType  the config name
      * @param indexFields the index fields
-     * @return the config data
+     * @return 查询结果
      */
     @Nullable
     default ConfigData queryByIndex(String tenant, ConfigType configType, Map<String, String> indexFields) {
@@ -41,42 +43,43 @@ public interface ConfigQueryCoreService {
     }
 
     /**
-     * Query by biz id config data.
+     * 根据 bizId 查
      *
      * @param bizId the biz id
-     * @return the config data
+     * @return 查询结果
      */
     @Nullable
     ConfigData queryByBizId(String bizId);
 
     /**
-     * Lock by biz id config data.
+     * 根据 bizId 锁
      *
      * @param bizId the biz id
-     * @return the config data
+     * @return 查询结果
      */
+    @Nullable
     ConfigData lockByBizId(String bizId);
 
 
     // ======================================== 查询多个-全部 =====================================
 
     /**
-     * Query all by tenant and config name list.
+     * 根据租户 + 配置类型查
      *
      * @param tenant     the tenant
      * @param configType the config name
-     * @return the list
+     * @return 查询结果
      */
     default List<ConfigData> queryListByTenantAndConfigName(String tenant, ConfigType configType) {
         return queryListByMultiCondition(tenant, configType, null);
     }
 
     /**
-     * Query list by multi condition list.
+     * 多条件查询
      *
      * @param tenant        the tenant
      * @param configExample the config example
-     * @return the list
+     * @return 查询结果
      */
     default List<ConfigData> queryListByMultiCondition(String tenant, Object configExample) {
         return queryListByMultiCondition(tenant, ConfigType.getByType(configExample.getClass()),
@@ -85,12 +88,12 @@ public interface ConfigQueryCoreService {
 
 
     /**
-     * Query all by multi condition list.
+     * 多条件查询
      *
      * @param tenant          the tenant
      * @param configType      the config name
      * @param filterCondition the filter condition
-     * @return the list
+     * @return 查询结果
      */
     List<ConfigData> queryListByMultiCondition(String tenant, ConfigType configType,
                                                @Nullable Map<String, String> filterCondition);
@@ -100,7 +103,7 @@ public interface ConfigQueryCoreService {
 
 
     /**
-     * Query page by multi condition page info.
+     * 多条件分页查询
      *
      * @param tenant        the tenant
      * @param configExample the config example
@@ -115,27 +118,27 @@ public interface ConfigQueryCoreService {
 
 
     /**
-     * Query page by tenant and config name list.
+     * 多条件分页查询
      *
      * @param tenant     the tenant
      * @param configType the config name
      * @param pageNum    the page num
      * @param pageSize   the page size
-     * @return the list
+     * @return 查询结果
      */
     default PageInfo<ConfigData> queryPageByTenantAndConfigName(String tenant, ConfigType configType, int pageNum, int pageSize) {
         return queryPageByMultiCondition(tenant, configType, null, pageNum, pageSize);
     }
 
     /**
-     * Query page by multi condition list.
+     * 多条件分页查询
      *
      * @param tenant          the tenant
      * @param configType      the config name
      * @param filterCondition the filter condition
      * @param pageNum         the page num
      * @param pageSize        the page size
-     * @return the list
+     * @return 查询结果
      */
     PageInfo<ConfigData> queryPageByMultiCondition(String tenant, ConfigType configType,
                                                    @Nullable Map<String, String> filterCondition,

@@ -1,7 +1,7 @@
-package org.shoulder.ext.config.provider.mvc.dto.request;
+package org.shoulder.ext.config.provider.dto.request;
 
 import lombok.Data;
-import org.shoulder.ext.config.provider.mvc.dto.ConfigItemDTO;
+import org.shoulder.ext.config.provider.dto.ConfigItemDTO;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

@@ -2,6 +2,9 @@ package org.shoulder.ext.config.domain;
 
 import java.util.List;
 
+/**
+ * @author Admin
+ */
 public class PageInfo<T> {
 
     /**

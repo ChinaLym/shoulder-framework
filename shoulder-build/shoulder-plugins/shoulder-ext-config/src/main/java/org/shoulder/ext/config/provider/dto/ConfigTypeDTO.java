@@ -1,4 +1,4 @@
-package org.shoulder.ext.config.provider.mvc.dto;
+package org.shoulder.ext.config.provider.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
