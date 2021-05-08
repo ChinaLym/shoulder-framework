@@ -3,8 +3,8 @@ package com.example.demo4.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo4.entity.UserEntity;
 import com.example.demo4.service.IUserService;
-import org.shoulder.data.mybatis.base.controller.BaseController;
 import org.shoulder.web.annotation.SkipResponseWrap;
+import org.shoulder.web.template.CrudController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SkipResponseWrap // 跳过包装方便演示
 @RestController
 @RequestMapping("user")
-public class UserController extends BaseController<IUserService, UserEntity> {
+public class UserController extends CrudController<IUserService, UserEntity, Long, UserEntity, UserEntity, UserEntity> {
 
 
     /**
@@ -25,8 +25,8 @@ public class UserController extends BaseController<IUserService, UserEntity> {
      */
     @RequestMapping("1")
     public UserEntity get() {
-        // 自动根据当前 Controller 泛型注入对应的 IService（IUserService），可通过 bizService 调用
-        return bizService.getById(1);
+        // 自动根据当前 Controller 泛型注入对应的 IService（IUserService），可通过 service 调用
+        return service.getById(1);
     }
 
     /**
@@ -35,10 +35,10 @@ public class UserController extends BaseController<IUserService, UserEntity> {
      */
     @RequestMapping("getOne")
     public UserEntity getOne(String name) {
-        // 已经自动注入 bizService，即 IUserService
+        // 已经自动注入 service，即 IUserService
         LambdaQueryWrapper<UserEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(UserEntity::getName, name);
-        return bizService.getOne(queryWrapper);
+        return service.getOne(queryWrapper);
     }
 
     /**

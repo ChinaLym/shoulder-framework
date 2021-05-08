@@ -3,7 +3,7 @@ package com.example.demo3.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo3.entity.UserEntity;
 import com.example.demo3.repository.UserMapper;
-import org.shoulder.data.mybatis.base.service.BaseServiceImpl;
+import org.shoulder.data.mybatis.template.service.BaseServiceImpl;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,7 +46,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserEntity> imp
 
     @Override
     public UserDetails loadUserByPhoneNum(String phoneNum) throws UsernameNotFoundException {
-        // 已经自动注入 bizService，即 IUserService
+        // 已经自动注入 service，即 IUserService
         LambdaQueryWrapper<UserEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(UserEntity::getPhoneNum, phoneNum);
         UserEntity user = this.getOne(queryWrapper);
@@ -68,4 +68,5 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserEntity> imp
                 true, true, true, true,
                 AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
+
 }

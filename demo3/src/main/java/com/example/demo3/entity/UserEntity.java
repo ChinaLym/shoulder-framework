@@ -1,15 +1,13 @@
 package com.example.demo3.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-import lombok.EqualsAndHashCode;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.shoulder.data.mybatis.base.entity.RecordEntity;
-import org.shoulder.data.mybatis.base.entity.VariableRecordEntity;
-
-import javax.validation.constraints.NotNull;
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
 
 /**
  * 用户实体，举例：主键为 uuid
@@ -22,13 +20,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Accessors(chain = true)
 @ToString(callSuper = true)
-@EqualsAndHashCode
 @TableName("tb_user")
-public class UserEntity {
-
-    @TableId(value = "id", type = IdType.AUTO)
-    @NotNull(message = "id can't be null", groups = RecordEntity.Update.class)
-    protected Long id;
+public class UserEntity extends BaseEntity<Long> {
 
     @TableField(value = "username", fill = FieldFill.INSERT)
     private String username;

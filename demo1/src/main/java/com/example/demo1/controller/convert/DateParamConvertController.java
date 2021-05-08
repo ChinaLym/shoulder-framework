@@ -24,6 +24,7 @@ public class DateParamConvertController {
      * 自动将字符串转换为 {@link Date}，如访问 <a href="http://localhost:8080/date/1?date=2020"/>
      * 格式要求：yyyy-MM-dd HH:mm:ss 可以只填前面一段，如 yyyy-MM，'-' 可以替换为 / 如 yyyy/MM/dd
      * 注：输出时，java 默认以 0 时区格式输出
+     * 但由于 {@link org.shoulder.core.util.JsonUtils#createObjectMapper} 设置了时区，收到，输出时间时，均以设置的 timeZone 为准
      */
     @GetMapping("1")
     public Date case1(Date date) {

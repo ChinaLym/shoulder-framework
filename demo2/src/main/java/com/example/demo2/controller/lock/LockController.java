@@ -5,8 +5,8 @@ import com.example.demo2.service.IUserService;
 import org.shoulder.core.lock.LockInfo;
 import org.shoulder.core.lock.ServerLock;
 import org.shoulder.core.lock.impl.JdbcLock;
-import org.shoulder.data.mybatis.base.controller.BaseController;
 import org.shoulder.web.annotation.SkipResponseWrap;
+import org.shoulder.web.template.BaseControllerImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @SkipResponseWrap // 跳过包装方便演示
 @RestController
 @RequestMapping("lock")
-public class LockController extends BaseController<IUserService, UserEntity> {
+public class LockController extends BaseControllerImpl<IUserService, UserEntity> {
 
 
     private ServerLock lock;
@@ -43,7 +43,7 @@ public class LockController extends BaseController<IUserService, UserEntity> {
     @RequestMapping("tryLock")
     public boolean tryLock() {
         LockInfo lockInfo = new LockInfo(shareKey);
-        if(lock.tryLock(lockInfo)){
+        if (lock.tryLock(lockInfo)) {
             operationToken = lockInfo.getToken();
             return true;
         }
@@ -56,7 +56,7 @@ public class LockController extends BaseController<IUserService, UserEntity> {
     @RequestMapping("tryLockMax5s")
     public boolean tryLockMax5s() throws InterruptedException {
         LockInfo lockInfo = new LockInfo(shareKey);
-        if(lock.tryLock(lockInfo, Duration.ofSeconds(5))){
+        if (lock.tryLock(lockInfo, Duration.ofSeconds(5))) {
             operationToken = lockInfo.getToken();
             return true;
         }
@@ -81,7 +81,7 @@ public class LockController extends BaseController<IUserService, UserEntity> {
     @RequestMapping("holdLock")
     public boolean holdLock(Boolean useShare) {
         LockInfo shareLock = new LockInfo(shareKey);
-        if(Boolean.TRUE.equals(useShare)){
+        if (Boolean.TRUE.equals(useShare)) {
             shareLock.setToken(operationToken);
         }
         return lock.holdLock(shareLock);
@@ -94,13 +94,12 @@ public class LockController extends BaseController<IUserService, UserEntity> {
     @RequestMapping("unlock")
     public String unlock(Boolean release) {
         LockInfo shareLock = new LockInfo(shareKey);
-        if(Boolean.TRUE.equals(release)){
+        if (Boolean.TRUE.equals(release)) {
             shareLock.setToken(operationToken);
         }
         lock.unlock(shareLock);
         return "ok";
     }
-
 
 
     // ------------------- jdk interface --------------------
@@ -144,7 +143,7 @@ public class LockController extends BaseController<IUserService, UserEntity> {
      */
     @RequestMapping("jdk/tryLockMax5s")
     public boolean tryLockMax5s_jdk() throws InterruptedException {
-        if(lock.tryLock(5, TimeUnit.SECONDS)){
+        if (lock.tryLock(5, TimeUnit.SECONDS)) {
             return true;
         }
         return false;
@@ -169,8 +168,6 @@ public class LockController extends BaseController<IUserService, UserEntity> {
         }
         return "ok";
     }
-
-
 
 
 }

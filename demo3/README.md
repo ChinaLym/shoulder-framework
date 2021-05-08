@@ -7,7 +7,7 @@ git clone https://gitee.com/ChinaLym/shoulder-framework-demo
 ```
 
 在自己的数据库，如mysql中建立 `demo_shoulder` 数据库
-- 导入建表语句 `tb_user.ddl` 即可
+- 导入建表语句 `user.ddl` 即可
 
 打开 `demo3` 工程，修改 `application.yml` 中数据库配置信息：url、用户名、密码等
 

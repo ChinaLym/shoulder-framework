@@ -8,7 +8,7 @@ class DateParamConvertTest extends BaseWebTest {
     @Test
     public void test1() throws Exception {
         doGetTest("/date/1?date=2020",
-                "{\"code\":\"0\",\"msg\":\"success\",\"data\":\"2019-12-31T16:00:00.000+00:00\"");
+                "{\"code\":\"0\",\"msg\":\"success\",\"data\":\"2020-01-01T00:00:00.000 +0800\"");
     }
 
     @Test

@@ -105,74 +105,77 @@ CREATE TABLE `batch_record_detail` (
 /*Table structure for table `log_operation` */
 
 CREATE TABLE `log_operation` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `component_id` varchar(32) NOT NULL COMMENT '组件id',
-  `version` varchar(64) DEFAULT NULL COMMENT '组件版本',
-  `instance_id` varchar(64) DEFAULT NULL COMMENT '操作服务器节点标识（支持集群时用于定位具体哪台服务器执行）',
-  `user_id` BIGINT NOT NULL COMMENT '用户标识',
-  `user_name` varchar(64) DEFAULT NULL COMMENT '用户名',
-  `user_real_name` varchar(128) DEFAULT NULL COMMENT '用户真实姓名',
-  `user_org_id` BIGINT DEFAULT NULL COMMENT '用户组标识',
-  `user_org_name` varchar(64) DEFAULT NULL COMMENT '用户组名',
-  `terminal_type` INT NOT NULL COMMENT '终端类型。0:服务内部定时任务等触发；1:浏览器；2:客户端；3:移动App；4:小程序。推荐前端支持多语言',
-  `terminal_address` varchar(64) DEFAULT NULL COMMENT '操作者所在终端地址，如 IPv4(15) IPv6(46)',
-  `terminal_id` varchar(64) DEFAULT NULL COMMENT '操作者所在终端标识，如PC的 MAC；手机的 IMSI、IMEI、ESN、MEID；甚至持久化的 UUID',
-  `terminal_info` varchar(255) DEFAULT NULL COMMENT '操作者所在终端信息，如操作系统类型、浏览器、版本号等',
-  `object_type` varchar(128) DEFAULT NULL COMMENT '操作对象类型，通常展示，推荐支持多语言',
-  `object_id` varchar(128) DEFAULT NULL COMMENT '操作对象id',
-  `object_name` varchar(255) DEFAULT NULL COMMENT '操作对象名称',
-  `operation_param` text COMMENT '触发该操作的参数',
-  `operation` varchar(255) NOT NULL COMMENT '操作动作，通常展示，推荐支持多语言',
-  `detail` varchar(4096) DEFAULT NULL COMMENT '操作详情。详细的描述用户的操作内容、json对象等',
-  `detail_key` varchar(128) DEFAULT NULL COMMENT '操作详情对应的多语言key',
-  `detail_item` varchar(255) DEFAULT NULL COMMENT '填充 detail_i18n_key 对应的多语言翻译。数组类型',
-  `result` INT NOT NULL COMMENT '操作结果,0成功；1失败；2部分成功，通常展示，推荐支持多语言',
-  `error_code` varchar(32) DEFAULT NULL COMMENT '错误码',
-  `operation_time` timestamp NOT NULL COMMENT '操作触发时间，注意采集完成后替换为日志服务所在服务器时间',
-  `end_time` timestamp NULL DEFAULT NULL COMMENT '操作结束时间',
-  `duration` BIGINT DEFAULT NULL COMMENT '操作持续时间，冗余字段，单位 ms',
-  `trace_id` varchar(64) DEFAULT NULL COMMENT '调用链id',
-  `relation_id` varchar(64) DEFAULT NULL COMMENT '关联的调用链id/业务id',
-  `tenant_code` varchar(20) DEFAULT '' COMMENT '租户编码',
-  `insert_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '数据入库时间',
-  `extended_field0` varchar(1024) DEFAULT NULL,
-  `extended_field1` varchar(1024) DEFAULT NULL,
-  `extended_field2` varchar(1024) DEFAULT NULL,
-  `extended_field3` varchar(1024) DEFAULT NULL,
-  `extended_field4` varchar(1024) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_trace_id` (`trace_id`),
-  KEY `idx_operation_time` (`operation_time`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_terminal_address` (`terminal_address`)
+                                 `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                 `component_id` varchar(32) NOT NULL COMMENT '组件id',
+                                 `version` varchar(64) DEFAULT NULL COMMENT '组件版本',
+                                 `instance_id` varchar(64) DEFAULT NULL COMMENT '操作服务器节点标识（支持集群时用于定位具体哪台服务器执行）',
+                                 `user_id` BIGINT NOT NULL COMMENT '用户标识',
+                                 `user_name` varchar(64) DEFAULT NULL COMMENT '用户名',
+                                 `user_real_name` varchar(128) DEFAULT NULL COMMENT '用户真实姓名',
+                                 `user_org_id` BIGINT DEFAULT NULL COMMENT '用户组标识',
+                                 `user_org_name` varchar(64) DEFAULT NULL COMMENT '用户组名',
+                                 `terminal_type` INT NOT NULL COMMENT '终端类型。0:服务内部定时任务等触发；1:浏览器；2:客户端；3:移动App；4:小程序。推荐前端支持多语言',
+                                 `terminal_address` varchar(64) DEFAULT NULL COMMENT '操作者所在终端地址，如 IPv4(15) IPv6(46)',
+                                 `terminal_id` varchar(64) DEFAULT NULL COMMENT '操作者所在终端标识，如PC的 MAC；手机的 IMSI、IMEI、ESN、MEID；甚至持久化的 UUID',
+                                 `terminal_info` varchar(255) DEFAULT NULL COMMENT '操作者所在终端信息，如操作系统类型、浏览器、版本号等',
+                                 `object_type` varchar(128) DEFAULT NULL COMMENT '操作对象类型，通常展示，推荐支持多语言',
+                                 `object_id` varchar(128) DEFAULT NULL COMMENT '操作对象id',
+                                 `object_name` varchar(255) DEFAULT NULL COMMENT '操作对象名称',
+                                 `operation_param` text COMMENT '触发该操作的参数',
+                                 `operation` varchar(255) NOT NULL COMMENT '操作动作，通常展示，推荐支持多语言',
+                                 `detail` varchar(4096) DEFAULT NULL COMMENT '操作详情。详细的描述用户的操作内容、json对象等',
+                                 `detail_key` varchar(128) DEFAULT NULL COMMENT '操作详情对应的多语言key',
+                                 `detail_item` varchar(255) DEFAULT NULL COMMENT '填充 detail_i18n_key 对应的多语言翻译。数组类型',
+                                 `result` INT NOT NULL COMMENT '操作结果,0成功；1失败；2部分成功，通常展示，推荐支持多语言',
+                                 `error_code` varchar(32) DEFAULT NULL COMMENT '错误码',
+                                 `operation_time` timestamp NOT NULL COMMENT '操作触发时间，注意采集完成后替换为日志服务所在服务器时间',
+                                 `end_time` timestamp NULL DEFAULT NULL COMMENT '操作结束时间',
+                                 `duration` BIGINT DEFAULT NULL COMMENT '操作持续时间，冗余字段，单位 ms',
+                                 `trace_id` varchar(64) DEFAULT NULL COMMENT '调用链id',
+                                 `relation_id`     varchar(64) DEFAULT NULL COMMENT '关联的调用链id/业务id',
+                                 `tenant_code`     varchar(20) DEFAULT '' COMMENT '租户编码',
+                                 `insert_time`     timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '数据入库时间',
+                                 `extended_field0` varchar(1024) DEFAULT NULL,
+                                 `extended_field1` varchar(1024) DEFAULT NULL,
+                                 `extended_field2` varchar(1024) DEFAULT NULL,
+                                 `extended_field3` varchar(1024) DEFAULT NULL,
+                                 `extended_field4` varchar(1024) DEFAULT NULL,
+                                 PRIMARY KEY (`id`),
+                                 KEY               `idx_trace_id` (`trace_id`),
+                                 KEY               `idx_operation_time` (`operation_time`),
+                                 KEY               `idx_user_id` (`user_id`),
+                                 KEY               `idx_terminal_address` (`terminal_address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='业务日志';
 
 /*Data for the table `log_operation` */
 
 
-/*Table structure for table `tb_user` */
+/*Table structure for table `user` */
 
-DROP TABLE IF EXISTS `tb_user`;
+DROP TABLE IF EXISTS `user`;
 
-create table `tb_user` (
-	`id` bigint (20),
-	`username` varchar (128),
-	`password` varchar (512),
-	`name` varchar (128),
-	`age` int (11),
-	`email` varchar (256)
+create table demo_shoulder.tb_user
+(
+    id          bigint                              not null comment '主键ID'
+        primary key,
+    username    varchar(32) null comment '用户名',
+    phone_num   varchar(32) null comment '手机号',
+    password    varchar(128) null comment '密码（密文）',
+    name        varchar(32) null comment '姓名',
+    age         int null comment '年龄',
+    email       varchar(64) null comment '邮箱',
+    create_time timestamp default CURRENT_TIMESTAMP not null,
+    update_time timestamp null
 );
 
-/*Data for the table `tb_user` 其中密码是由 BCEncryptor 加密的，其明文均为 shoulder */
+/*Data for the table `user` 其中密码是由 BCEncryptor 加密的，其明文均为 shoulder */
 
-INSERT INTO tb_user (id, username, PASSWORD, NAME, age, email) VALUES
-(1, 'shoulder', '$2a$10$tNmATC/VgsmFXEgCm2vIX.ndFlVGS/VKff.4L.9UGkW/JegEC4NXu', 'Shoulder', 8, 'shoulder@shoulder.com'),
-(2, 'jack', '$2a$10$krRf9r03W2hbyDeX64f5Nud0zyjf5Q7af3yTRPQU6aF98l/T5A6Zi', 'Jack', 20, 'jack@shoulder.com'),
-(3, 'tom', '$2a$10$zMbaVJ3qfEZAPenBgjTg/u2zfw96Bb3iLbJclJ63cs9EFA95Q1Eta', 'Tom', 28, 'tom@shoulder.com'),
-(4, 'sandy', '$2a$10$QAWTiks6bBNUUuWlwCLDwet4.9SGVGNWafbjZkspRq/H3eX/ouorq', 'Sandy', 21, 'sandy@shoulder.com'),
-(5, 'billie', '$2a$10$4PMa6nS8oiNoGXvbTzH/PeTzBQlUMmnWrnmMGzHj5nCWc/OOme04e', 'Billie', 34, 'billie@shoulder.com');
+INSERT INTO user (id, username, PASSWORD, NAME, age, email)
+VALUES (1, 'shoulder', '$2a$10$tNmATC/VgsmFXEgCm2vIX.ndFlVGS/VKff.4L.9UGkW/JegEC4NXu', 'Shoulder', 8,
+        'shoulder@shoulder.com'),
+       (2, 'jack', '$2a$10$krRf9r03W2hbyDeX64f5Nud0zyjf5Q7af3yTRPQU6aF98l/T5A6Zi', 'Jack', 20, 'jack@shoulder.com'),
+       (3, 'tom', '$2a$10$zMbaVJ3qfEZAPenBgjTg/u2zfw96Bb3iLbJclJ63cs9EFA95Q1Eta', 'Tom', 28, 'tom@shoulder.com'),
+       (4, 'sandy', '$2a$10$QAWTiks6bBNUUuWlwCLDwet4.9SGVGNWafbjZkspRq/H3eX/ouorq', 'Sandy', 21, 'sandy@shoulder.com'),
+       (5, 'billie', '$2a$10$4PMa6nS8oiNoGXvbTzH/PeTzBQlUMmnWrnmMGzHj5nCWc/OOme04e', 'Billie', 34,
+        'billie@shoulder.com');
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

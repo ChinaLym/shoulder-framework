@@ -18,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -88,7 +89,7 @@ public class TokenTest extends BaseWebTest {
         ResponseEntity<UserEntity> response = rest.exchange("/user/1", HttpMethod.GET, requestEntity, UserEntity.class);
         UserEntity userEntity = userService.getById(1);
 
-        Assertions.assertEquals(userEntity, response.getBody());
+        Assertions.assertEquals(userEntity.toString(), Objects.requireNonNull(response.getBody()).toString());
 
         String name = "Shoulder";
         ResponseEntity<UserEntity> response2 = rest.exchange("/user/getOne?name=" + name, HttpMethod.GET, requestEntity,
@@ -96,7 +97,7 @@ public class TokenTest extends BaseWebTest {
         LambdaQueryWrapper<UserEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(UserEntity::getName, name);
         UserEntity userEntity2 = userService.getOne(queryWrapper);
-        Assertions.assertEquals(userEntity2, response2.getBody());
+        Assertions.assertEquals(userEntity2.toString(), Objects.requireNonNull(response2.getBody()).toString());
     }
 
     @SuppressWarnings("rawtypes, unchecked")

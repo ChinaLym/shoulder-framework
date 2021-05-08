@@ -1,3 +1,4 @@
+/*
 package com.example.demo1.config;
 
 import com.fasterxml.jackson.databind.introspect.AnnotatedField;
@@ -17,11 +18,13 @@ import springfox.documentation.swagger.schema.ApiModelProperties;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+*/
 /**
  * swagger 展示，字段排序【OpenAPI 3 中没有相关定义，可能不生效】
  *
  * @author lym
- */
+ *//*
+
 @Component
 public class CustomApiModelPropertyPositionBuilder implements ModelPropertyBuilderPlugin {
 
@@ -63,4 +66,4 @@ public class CustomApiModelPropertyPositionBuilder implements ModelPropertyBuild
             }
         }
     }
-}
+}*/

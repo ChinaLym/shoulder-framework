@@ -84,13 +84,13 @@ public class DemoOperationLogInterceptor implements OperationLoggerInterceptor {
         String objectName = null;
         switch (opLog.getObjectType()) {
             case "USER":
-                tableName = "tb_user";
+                tableName = "user";
                 objectId = "user_id";
                 objectName = "user_name";
                 break;
 
             case "USER_GROUP":
-                tableName = "tb_user_group";
+                tableName = "user_group";
                 objectId = "user_group_id";
                 objectName = "user_group_name";
 

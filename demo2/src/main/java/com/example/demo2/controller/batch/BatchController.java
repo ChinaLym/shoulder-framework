@@ -7,7 +7,7 @@ import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.*;
 import org.shoulder.batch.model.convert.BatchModelConvert;
 import org.shoulder.batch.service.BatchService;
@@ -171,7 +171,7 @@ public class BatchController {
     public void exportRecordDetail(HttpServletResponse response, QueryImportResultDetailParam condition) throws IOException {
         exportService.exportBatchDetail(response.getOutputStream(), BatchConstants.CSV, condition.getBusinessType(),
                 condition.getTaskId(), CollectionUtils.emptyIfNull(condition.getStatusList())
-                        .stream().map(BatchResultEnum::of).collect(Collectors.toList()));
+                        .stream().map(ProcessStatusEnum::of).collect(Collectors.toList()));
     }
 
 

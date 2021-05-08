@@ -2,7 +2,7 @@ package com.example.demo2.controller.batch;
 
 import com.example.demo2.dto.PersonRecord;
 import lombok.SneakyThrows;
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.service.ext.BatchTaskSliceHandler;
@@ -38,13 +38,13 @@ public class PersonBatchTaskSliceHandler implements BatchTaskSliceHandler {
 
             // 设置每条处理结果信息
             BatchRecordDetail result = new BatchRecordDetail();
-            result.setStatus(BatchResultEnum.IMPORT_SUCCESS.getCode());
+            result.setStatus(ProcessStatusEnum.IMPORT_SUCCESS.getCode());
             // todo 目前还需要使用者设置，需要优化
             result.setIndex(personRecord.getIndex());
 
             if (ThreadLocalRandom.current().nextInt(4) % 3 == 0) {
                 result.setFailReason("随机失败几个");
-                result.setStatus(BatchResultEnum.VALIDATE_FAILED.getCode());
+                result.setStatus(ProcessStatusEnum.VALIDATE_FAILED.getCode());
             }
 
             processResult.add(result);
