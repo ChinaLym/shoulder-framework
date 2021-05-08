@@ -24,7 +24,7 @@ public abstract class AbstractOperationLogger implements OperationLogger {
     /**
      * 日志拦截器
      */
-    private Collection<OperationLoggerInterceptor> logInterceptors = new LinkedList<>();
+    private final Collection<OperationLoggerInterceptor> logInterceptors = new LinkedList<>();
 
     /**
      * 记录一条操作日志

@@ -1,16 +1,18 @@
 package org.shoulder.ext.config.dal.dao;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.shoulder.ext.config.dal.dataobject.ConfigDataDO;
-import org.springframework.stereotype.Repository;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 /**
+ * DAO
+ *
  * @author lym
  */
-@Repository
+@Mapper
 public interface ConfigDataDAO {
 
 

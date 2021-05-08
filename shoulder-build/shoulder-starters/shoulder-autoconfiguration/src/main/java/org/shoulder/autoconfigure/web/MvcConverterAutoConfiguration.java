@@ -24,7 +24,7 @@ public class MvcConverterAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public DateConverter dateConverter() {
-        return new DateConverter();
+        return DateConverter.INSTANCE;
     }
 
     /**
@@ -35,7 +35,7 @@ public class MvcConverterAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public LocalDateConverter localDateConverter() {
-        return new LocalDateConverter();
+        return LocalDateConverter.INSTANCE;
     }
 
     /**
@@ -46,7 +46,7 @@ public class MvcConverterAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public LocalDateTimeConverter localDateTimeConverter() {
-        return new LocalDateTimeConverter();
+        return LocalDateTimeConverter.INSTANCE;
     }
 
     /**
@@ -57,7 +57,7 @@ public class MvcConverterAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public LocalTimeConverter localTimeConverter() {
-        return new LocalTimeConverter();
+        return LocalTimeConverter.INSTANCE;
     }
 
     /**
@@ -67,8 +67,8 @@ public class MvcConverterAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public EnumConverterFactory enumConverterFactory() {
-        return new EnumConverterFactory();
+    public EnumConverterFactory enumConverterFactory(EnumMissMatchHandler missMatchHandler) {
+        return new EnumConverterFactory(missMatchHandler);
     }
 
     /**
@@ -77,6 +77,7 @@ public class MvcConverterAutoConfiguration {
      * @return EnumMissMatchHandler
      */
     @Bean
+    @ConditionalOnMissingBean
     public EnumMissMatchHandler enumMissMatchHandler() {
         return new DefaultEnumMissMatchHandler();
     }

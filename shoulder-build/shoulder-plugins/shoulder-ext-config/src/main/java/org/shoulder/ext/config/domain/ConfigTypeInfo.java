@@ -105,7 +105,7 @@ public class ConfigTypeInfo implements ConfigType {
                 order++;
             } catch (Exception e) {
                 LoggerFactory.getLogger(ShoulderExtConstants.BACKSTAGE_BIZ_SERVICE_LOGGER).error(
-                        "parse '" + getClazz().getTypeName() + "' FAIL!", e);
+                        "parse '" + configClazz.getTypeName() + "' FAIL!", e);
                 throw new ConfigException(e, CommonErrorCodeEnum.UNKNOWN);
             }
         }

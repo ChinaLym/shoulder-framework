@@ -14,6 +14,8 @@ import java.util.function.BiFunction;
  */
 public class LocalDateConverter extends BaseLocalDateTimeConverter<LocalDate> {
 
+    public static final LocalDateConverter INSTANCE = new LocalDateConverter();
+
     @Override
     protected Map<String, String> initTimeParserMap() {
         Map<String, String> formatMap = new LinkedHashMap<>(2);

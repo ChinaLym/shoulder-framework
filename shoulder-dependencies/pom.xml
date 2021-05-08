@@ -265,6 +265,12 @@
 
             <dependency>
                 <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-starter-mysql</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-starter-web</artifactId>
                 <version>${shoulder.version}</version>
             </dependency>

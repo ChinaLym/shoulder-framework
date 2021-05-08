@@ -11,9 +11,9 @@ import javax.annotation.Nonnull;
  */
 public class EnumConverter implements Converter<String, Enum> {
 
-    private Class<? extends Enum> enumType;
+    private final Class<? extends Enum> enumType;
 
-    private EnumMissMatchHandler missMatchHandler;
+    private final EnumMissMatchHandler missMatchHandler;
 
     public EnumConverter(@Nonnull Class<? extends Enum> enumType, EnumMissMatchHandler missMatchHandler) {
         this.enumType = enumType;

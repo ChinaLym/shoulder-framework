@@ -29,6 +29,11 @@ public class OperationLogProperties {
      */
     private Integer interceptorOrder = 0;
 
+    /**
+     * 是否开启
+     */
+    private Boolean enable = true;
+
 
     @Data
     public static class LoggerProperties {

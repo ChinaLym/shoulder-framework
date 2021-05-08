@@ -26,6 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @AutoConfigureAfter(OperationLogAspect.class)
 @ConditionalOnWebApplication
 @EnableConfigurationProperties(OperationLogProperties.class)
+@ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
 
     private final Logger log = LoggerFactory.getLogger(getClass());

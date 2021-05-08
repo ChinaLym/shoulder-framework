@@ -46,6 +46,6 @@ public interface PageConst {
     /**
      * 排序方向 KEY (ASC\DESC)
      */
-    String PARAM_ORDER = "order";
+    String PARAM_RULES = "orderRules";
 
 }

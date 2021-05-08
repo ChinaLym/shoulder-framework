@@ -1,6 +1,8 @@
 package org.shoulder.core.guid;
 
 import org.junit.jupiter.api.Test;
+import org.shoulder.core.guid.impl.ShoulderGuidGenerator;
+import org.shoulder.core.guid.impl.SnowFlakeGenerator;
 import org.shoulder.core.util.JsonUtils;
 
 import java.time.Duration;

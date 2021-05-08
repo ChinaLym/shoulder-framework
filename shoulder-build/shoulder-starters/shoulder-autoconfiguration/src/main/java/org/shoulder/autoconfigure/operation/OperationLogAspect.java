@@ -22,6 +22,7 @@ import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverte
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.expression.EvaluationContext;
@@ -53,6 +54,7 @@ import java.util.Objects;
     OperationLogParamConverterAutoConfiguration.class
 })
 @EnableConfigurationProperties(OperationLogProperties.class)
+@ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLogAspect {
 
     private final static Logger log = LoggerFactory.getLogger(OperationLogAspect.class);
@@ -60,7 +62,7 @@ public class OperationLogAspect {
     /**
      * 保存操作日志上次的上下文
      */
-    private static ThreadLocal<OpLogContext> lastOpLogContext = new ThreadLocal<>();
+    private static final ThreadLocal<OpLogContext> lastOpLogContext = new ThreadLocal<>();
 
     @Autowired
     private OperationLogProperties operationLogProperties;
@@ -70,7 +72,7 @@ public class OperationLogAspect {
     /**
      * 用于SpEL表达式解析.
      */
-    private SpelExpressionParser parser = new SpelExpressionParser();
+    private final SpelExpressionParser parser = new SpelExpressionParser();
 
     // ********************************* annotation AOP *********************************************
 

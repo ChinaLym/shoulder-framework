@@ -37,7 +37,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 主动拒绝请求：权限不够
      */
-    AUTH_403_FORBIDDEN(18, "Permission deny.", Level.INFO, HttpStatus.FORBIDDEN),
+    PERMISSION_DENY(18, "Permission deny.", Level.INFO, HttpStatus.FORBIDDEN),
     /**
      * 主动拒绝请求：令牌无效
      */

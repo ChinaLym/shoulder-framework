@@ -11,7 +11,7 @@ create table shoulder_ext_config_data
     `creator`        VARCHAR(64)        NOT NULL COMMENT '创建人编号',
     `create_time`    DATETIME DEFAULT NOW() COMMENT '创建时间',
     `modifier`       VARCHAR(64)        NOT NULL COMMENT '最近修改人编码',
-    `modify_time`    DATETIME DEFAULT NOW() COMMENT '最后修改时间',
+    update_time      DATETIME DEFAULT NOW() COMMENT '最后修改时间',
     `business_value` TEXT               NOT NULL COMMENT '业务数据，json 类型',
 
     CONSTRAINT config_data_pk

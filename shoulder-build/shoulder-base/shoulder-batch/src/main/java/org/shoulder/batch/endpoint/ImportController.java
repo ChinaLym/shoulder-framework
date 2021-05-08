@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 导入相关
+ * 导入 API
  *
  * @author lym
  */
@@ -100,7 +100,9 @@ public class ImportController implements ImportRestfulApi {
     public BaseResult<ListResult<BatchRecordResult>> queryImportRecord() {
         return BaseResult.success(
                 Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
-                        .map(BatchModelConvert.CONVERT::toDTO).collect(Collectors.toList())
+                        .map(BatchModelConvert.CONVERT::toDTO)
+                        .collect(Collectors.toList()
+                        )
         );
     }
 

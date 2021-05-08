@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 上下文工具类，方便获取bean
+ * Spring 上下文工具类，方便获取bean
  * 提供：从 Spring 环境中获取 Bean、配置信息、上下文路径、BeanFactory、应用上下文
  *
  * @author lym

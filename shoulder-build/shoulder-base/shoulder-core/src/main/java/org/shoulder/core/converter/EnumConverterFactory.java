@@ -1,6 +1,5 @@
 package org.shoulder.core.converter;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
@@ -15,8 +14,11 @@ import javax.annotation.Nonnull;
  */
 public class EnumConverterFactory implements ConverterFactory<String, Enum> {
 
-    @Autowired
-    private EnumMissMatchHandler missMatchHandler = new DefaultEnumMissMatchHandler();
+    private final EnumMissMatchHandler missMatchHandler;
+
+    public EnumConverterFactory(EnumMissMatchHandler missMatchHandler) {
+        this.missMatchHandler = missMatchHandler;
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -24,4 +26,7 @@ public class EnumConverterFactory implements ConverterFactory<String, Enum> {
     public <T extends Enum> Converter<String, T> getConverter(@Nonnull Class<T> targetType) {
         return (Converter<String, T>) new EnumConverter(targetType, missMatchHandler);
     }
+
+
+
 }

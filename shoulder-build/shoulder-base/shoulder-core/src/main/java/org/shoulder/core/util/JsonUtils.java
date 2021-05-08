@@ -101,9 +101,9 @@ public class JsonUtils {
         final ObjectMapper mapper = JSON_MAPPER.copy();
         try {
             return mapper
-                .setSerializerFactory(mapper.getSerializerFactory().withSerializerModifier(modifier))
-                .setFilterProvider(createIgnorePropertiesProvider("_temp_ignore", ignoreProperties))
-                .writeValueAsString(object);
+                    .setSerializerFactory(mapper.getSerializerFactory().withSerializerModifier(modifier))
+                    .setFilterProvider(createIgnorePropertiesProvider("_temp_ignore", ignoreProperties))
+                    .writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new SerialException(e);
         }
@@ -180,35 +180,43 @@ public class JsonUtils {
         ObjectMapper objectMapper = new ObjectMapper();
 
         // 设置为配置中的统一 地区、时区、
-        objectMapper.setLocale(AppInfo.defaultLocale());
-        objectMapper.setTimeZone(AppInfo.timeZone());
+        objectMapper
+                .setLocale(AppInfo.defaultLocale())
+                // 这里设置后，若接收到时间不带时区时，会认为该时间为设置的时区，如北京时间的服务器为 +8:00 时区
+                // 比如收到 12:00 会认为是 12:00 +8:00；若不设置则会认为是 04:00 +0:00
+                .setTimeZone(AppInfo.timeZone())
 
-        // 设置序列化日期为配置的统一时间格式
-        objectMapper.setDateFormat(new SimpleDateFormat(AppInfo.dateTimeFormat(), AppInfo.defaultLocale()));
-        // 反序列化时，允许存在 tab、换行符、结束语符、注释符等控制字符
-        objectMapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
-        // 反序列化时，可解析反斜杠引用的所有字符
-        objectMapper.configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true);
+                // 设置序列化日期为配置的统一时间格式
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                .setDateFormat(new SimpleDateFormat(AppInfo.dateTimeFormat(), AppInfo.defaultLocale()))
 
-        // 忽略空bean转json错误
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        // 忽略在json字符串中存在，在java类中不存在字段
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // 允许使用单引号代替双引号（更好的兼容性）
-        objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-        // 将 key 排序（更好的体验）
-        objectMapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+                // 反序列化时，允许存在 tab、换行符、结束语符、注释符等控制字符（自动转移），关闭若遇到则抛异常
+                .configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true)
+                // 反序列化时，可解析反斜杠引用的所有字符，忽略无法转移的字符
+                .configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true)
+
+                // 忽略空bean转json错误，如使用 JPA FetchType.LAZY 时
+                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+                // 忽略在json字符串中存在，在java类中不存在字段
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                // 允许使用单引号代替双引号（更好的兼容性）
+                .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
+                // 将 key 排序（更好的体验）
+                .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 
         if (modifier != null) {
+            // 可以定制逻辑：类型为array，list、set时，当值为空时，序列化成[]
             objectMapper.setSerializerFactory(
-                objectMapper.getSerializerFactory().withSerializerModifier(modifier)
+                    objectMapper.getSerializerFactory().withSerializerModifier(modifier)
             );
         }
         // 添加 jdk8 新增的时间序列化处理模块
         objectMapper.registerModule(new DateEnhancerJacksonModule())
-            .registerModule(new Jdk8Module())
-            .registerModule(new JavaTimeModule());
+                .registerModule(new Jdk8Module())
+                .registerModule(new JavaTimeModule());
+        // todo 枚举；long、BigInteger、BigDecimal 可以转为字符串处理
 
+        // 激活所有通过 spi 注册的模块，如接口响应多种格式，统一反序列化为标准的，需要自行实现 StdDeserializer，new SimpleModule().addDeserializer
         objectMapper.findAndRegisterModules();
         return objectMapper;
     }
@@ -220,7 +228,7 @@ public class JsonUtils {
 
     public static SimpleFilterProvider createIgnorePropertiesProvider(String filterName, Set<String> ignores) {
         return new SimpleFilterProvider().addFilter(
-            filterName, SimpleBeanPropertyFilter.serializeAllExcept(ignores));
+                filterName, SimpleBeanPropertyFilter.serializeAllExcept(ignores));
     }
 
     /**

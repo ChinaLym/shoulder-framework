@@ -1,4 +1,6 @@
 # Auto Configuration shoulder-autoconfiguration
+org.springframework.beans.factory.config=\
+  org.shoulder.autoconfigure.core.JacksonObjectMapperPostProcessor
 org.springframework.context.ApplicationListener=\
   org.shoulder.autoconfigure.core.DefaultPropertiesStartingListener
 org.springframework.boot.env.EnvironmentPostProcessor=\
@@ -11,6 +13,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.core.current.enhancer.EnhanceableAsyncDefaultAutoConfiguration, \
   org.shoulder.autoconfigure.core.ContextUtilsAutoConfiguration, \
   org.shoulder.autoconfigure.core.I18nAutoConfiguration, \
+  org.shoulder.autoconfigure.core.JacksonAutoConfiguration, \
   \
   org.shoulder.autoconfigure.web.ShoulderDispatcherServletAutoConfiguration, \
   org.shoulder.autoconfigure.web.WebAdvanceAutoConfiguration, \
