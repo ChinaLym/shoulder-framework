@@ -35,13 +35,13 @@ import java.util.stream.Collectors;
 @RequestMapping(ShoulderExtConstants.CONFIG_URL_PREFIX)
 public class ConfigDataQueryController {
 
-    private static final BaseResult<ListResult<ConfigTypeDTO>> CONFIG_TYPE_LIST;
+    private static final ListResult<ConfigTypeDTO> CONFIG_TYPE_LIST;
 
     static {
         List<ConfigTypeDTO> configTypeDTOList = ConfigType.values().stream()
                 .map(configType -> new ConfigTypeDTO(configType.getConfigName(), configType.getDescription()))
                 .collect(Collectors.toList());
-        CONFIG_TYPE_LIST = BaseResult.success(configTypeDTOList);
+        CONFIG_TYPE_LIST = ListResult.of(configTypeDTOList);
     }
 
     @Autowired
@@ -59,7 +59,7 @@ public class ConfigDataQueryController {
     // todo 考虑根据租户返回可使用的 configType
     @GetMapping("queryConfigTypeNameList")
     @ResponseBody
-    public BaseResult<ListResult<ConfigTypeDTO>> queryConfigTypeNameList() {
+    public ListResult<ConfigTypeDTO> queryConfigTypeNameList() {
         return CONFIG_TYPE_LIST;
     }
 
@@ -70,10 +70,10 @@ public class ConfigDataQueryController {
      */
     @GetMapping("queryConfigFieldList")
     @ResponseBody
-    public BaseResult<ListResult<ConfigFieldInfoDTO>> queryConfigFieldList(@NotNull @RequestParam("configType") String configType) {
+    public ListResult<ConfigFieldInfoDTO> queryConfigFieldList(@NotNull @RequestParam("configType") String configType) {
         List<ConfigFieldInfo> fieldInfoList = ConfigType.getByName(configType).getFieldInfoList();
         List<ConfigFieldInfoDTO> dtoList = fieldInfoList.stream().map(this::convertToDTO).collect(Collectors.toList());
-        return BaseResult.success(dtoList);
+        return ListResult.of(dtoList);
     }
 
     private ConfigFieldInfoDTO convertToDTO(ConfigFieldInfo configFieldInfo) {
@@ -123,7 +123,7 @@ public class ConfigDataQueryController {
         dto.setBusinessValue(configData.getBusinessValue());
         dto.setOperatorNo(configData.getOperatorNo());
         dto.setOperatorName(configData.getOperatorName());
-        dto.setLastModifyTime(configData.getModifyTime());
+        dto.setLastUpdateTime(configData.getUpdateTime());
         return dto;
     }
 

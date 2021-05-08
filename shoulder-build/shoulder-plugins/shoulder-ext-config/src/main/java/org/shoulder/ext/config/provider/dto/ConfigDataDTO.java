@@ -44,7 +44,7 @@ public class ConfigDataDTO implements Serializable {
     /**
      * 修改时间
      */
-    private Date lastModifyTime;
+    private Date lastUpdateTime;
 
     /**
      * 操作人编码

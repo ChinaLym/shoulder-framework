@@ -32,7 +32,7 @@ public class ConfigDataDO {
 
     private String modifier;
 
-    private Date modifyTime;
+    private Date updateTime;
 
     private String businessValue;
 

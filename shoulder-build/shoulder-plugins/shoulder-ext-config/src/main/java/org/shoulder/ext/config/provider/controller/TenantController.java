@@ -1,6 +1,5 @@
 package org.shoulder.ext.config.provider.controller;
 
-import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.ext.common.constant.ShoulderExtConstants;
 import org.shoulder.ext.config.provider.dto.TenantInfoDTO;
@@ -20,11 +19,11 @@ import java.util.List;
 @RequestMapping(ShoulderExtConstants.TENANT_URL_PREFIX)
 public class TenantController {
 
-    private static final BaseResult<ListResult<TenantInfoDTO>> TENANT_LIST;
+    private static final ListResult<TenantInfoDTO> TENANT_LIST;
 
     static {
         List<TenantInfoDTO> tenantInfoDTOList = Collections.singletonList(new TenantInfoDTO("DEFAULT", "默认"));
-        TENANT_LIST = BaseResult.success(tenantInfoDTOList);
+        TENANT_LIST = ListResult.of(tenantInfoDTOList);
     }
 
     /**
@@ -34,7 +33,7 @@ public class TenantController {
      */
     @GetMapping("queryTenantList")
     @ResponseBody
-    public BaseResult<ListResult<TenantInfoDTO>> queryTenantList() {
+    public ListResult<TenantInfoDTO> queryTenantList() {
         return TENANT_LIST;
     }
 

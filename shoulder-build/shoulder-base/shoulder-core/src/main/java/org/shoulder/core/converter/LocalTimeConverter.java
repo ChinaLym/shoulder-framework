@@ -16,6 +16,8 @@ import java.util.Map;
 public class LocalTimeConverter extends BaseDateConverter<LocalTime> implements Converter<String, LocalTime> {
 
 
+    public static final LocalTimeConverter INSTANCE = new LocalTimeConverter();
+
     @Override
     protected Map<String, String> initTimeParserMap() {
         return Collections.singletonMap("HH:mm:ss", "^\\d{1,2}:\\d{2}:\\d{2}$");

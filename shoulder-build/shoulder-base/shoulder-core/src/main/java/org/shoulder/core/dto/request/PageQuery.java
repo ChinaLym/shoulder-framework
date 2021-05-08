@@ -2,15 +2,18 @@ package org.shoulder.core.dto.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.util.StringUtils;
+import org.shoulder.core.util.JsonUtils;
+import org.shoulder.core.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import static org.shoulder.core.constant.PageConst.*;
@@ -21,9 +24,10 @@ import static org.shoulder.core.constant.PageConst.*;
  * @author lym
  */
 @ApiModel("分页查询 DTO param")
-public class PageQuery implements Serializable {
+public class PageQuery<DTO> implements Serializable {
 
     private static final long serialVersionUID = -3462907130101674607L;
+
     /**
      * 页码
      */
@@ -37,44 +41,44 @@ public class PageQuery implements Serializable {
     private int pageSize = DEFAULT_PAGE_SIZE;
 
     /**
-     * 待排序的字段名称
+     * 排序规则
      */
     @ApiModelProperty(value = "", example = "xxx")
-    private String sortBy;
+    private List<OrderRule> orderRules;
 
     /**
-     * 排序顺序 asc | desc
+     * 查询条件
      */
-    @ApiModelProperty(value = "", example = "asc")
-    private String order = DEFAULT_ORDER;
+    @ApiModelProperty("查询条件")
+    private DTO condition;
+
+    /**
+     * 扩展
+     */
+    private Map<String, Object> ext;
 
     public PageQuery() {
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public PageQuery(Map map) {
         if (map == null) {
             return;
         }
         this.pageNo = Integer.parseInt(map.getOrDefault(PARAM_PAGE_NO, DEFAULT_PAGE_NO).toString());
         this.pageSize = Integer.parseInt(map.getOrDefault(PARAM_PAGE_SIZE, DEFAULT_PAGE_SIZE).toString());
-        this.sortBy = (String) map.getOrDefault(PARAM_SORT_BY, "");
-        this.order = (String) map.getOrDefault(PARAM_ORDER, "");
+        this.orderRules = (List<OrderRule>) map.getOrDefault(PARAM_SORT_BY, "");
+        this.condition = JsonUtils.toObject(JsonUtils.toJson(map));
         map.remove(PARAM_PAGE_NO);
         map.remove(PARAM_PAGE_SIZE);
         map.remove(PARAM_SORT_BY);
-        map.remove(PARAM_ORDER);
+        map.remove(PARAM_RULES);
     }
 
     public PageQuery(int pageNo, int pageSize) {
-        this(pageNo, pageSize, "", "");
-    }
-
-    public PageQuery(int pageNo, int pageSize, String sortBy, String order) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
-        this.sortBy = sortBy;
-        this.order = order;
     }
 
     /**
@@ -82,7 +86,7 @@ public class PageQuery implements Serializable {
      *
      * @return 分页相关信息
      */
-    public static PageQuery fromRequest() {
+    public static <T> PageQuery<T> fromRequest() {
         HttpServletRequest servletRequest = null;
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes instanceof ServletRequestAttributes) {
@@ -98,15 +102,17 @@ public class PageQuery implements Serializable {
      * @param request 请求
      * @return 分页相关信息
      */
-    public static PageQuery fromRequest(HttpServletRequest request) {
-        PageQuery result = new PageQuery();
+    public static <T> PageQuery<T> fromRequest(HttpServletRequest request) {
+        PageQuery<T> result = new PageQuery<T>();
         String pageNo = request.getParameter(PARAM_PAGE_NO);
         String pageSize = request.getParameter(PARAM_PAGE_SIZE);
+        String orderRules = request.getParameter(PARAM_RULES);
 
         result.pageNo = StringUtils.isEmpty(pageNo) ? DEFAULT_PAGE_NO : Integer.parseInt(pageNo);
         result.pageSize = StringUtils.isEmpty(pageSize) ? DEFAULT_PAGE_SIZE : Integer.parseInt(pageSize);
-        result.sortBy = request.getParameter(PARAM_SORT_BY);
-        result.order = request.getParameter(PARAM_ORDER);
+        if (StringUtils.isNotEmpty(orderRules)) {
+            result.orderRules = JsonUtils.toObject(orderRules);
+        }
         return result;
     }
 
@@ -132,22 +138,50 @@ public class PageQuery implements Serializable {
         this.pageSize = pageSize;
     }
 
-    public String getSortBy() {
-        return sortBy;
+    public DTO getCondition() {
+        return condition;
     }
 
-    public void setSortBy(String sortBy) {
-        this.sortBy = sortBy;
+    public void setCondition(DTO condition) {
+        this.condition = condition;
     }
 
-    public String getOrder() {
-        return order;
+    public List<OrderRule> getOrderRules() {
+        return orderRules;
+    }
+
+    public void setOrderRules(List<OrderRule> orderRules) {
+        this.orderRules = orderRules;
+    }
+
+    public Map<String, Object> getExt() {
+        return ext;
+    }
+
+    public void setExt(Map<String, Object> ext) {
+        this.ext = ext;
     }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
+    @Data
+    public static class OrderRule {
+
+        /**
+         * DTO 字段名
+         */
+        private String fieldName;
+
+        /**
+         * 顺序 asc/desc
+         */
+        private String order = "asc";
+
+    }
+
 
 }
 

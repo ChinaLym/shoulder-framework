@@ -17,27 +17,45 @@ public interface DataBaseConsts {
     /**
      * 主键
      */
-    String ID = "id";
+    String COLUMN_ID = "id";
 
     /**
      * 创建时间
      */
-    String CREATE_TIME = "createTime";
+    String COLUMN_CREATE_TIME = "create_time";
 
     /**
      * 最后一次修改时间
+     * alter 修改表结构
+     * update 表示修改表内容
+     * modify 表示修改字段格式
      */
-    String UPDATE_TIME = "updateTime";
+    String COLUMN_UPDATE_TIME = "update_time";
 
     /**
      * 创建者
      */
-    String CREATOR = "creator";
+    String COLUMN_CREATOR = "creator";
 
     /**
      * 最后一次修改者
      */
-    String MODIFIER = "modifier";
+    String COLUMN_MODIFIER = "modifier";
+
+    /**
+     * 标签名
+     */
+    String COLUMN_LABEL = "label";
+
+    /**
+     * 父级标识
+     */
+    String COLUMN_PARENT_ID = "parent_id";
+
+    /**
+     * 排序序号
+     */
+    String COLUMN_SORT_NO = "sort_no";
 
 
     // ------------------ 常用的数据源名称 ------------------
@@ -45,20 +63,71 @@ public interface DataBaseConsts {
     /**
      * 主数据库
      */
-    String LEADER = "leader";
+    String DB_LEADER = "leader";
 
     /**
      * 从数据库
      */
-    String FOLLOWER = "follower";
+    String DB_FOLLOWER = "follower";
 
     /**
      * 只读数据库
      */
-    String READ = "read";
+    String DB_READ = "read";
 
     /**
      * 读写数据库
      */
-    String WRITE = "write";
+    String DB_WRITE = "write";
+
+
+    // ------------------------ Mapper 中的扩展方法名 ------------------------
+
+    /**
+     * 逻辑删除方法名
+     */
+    String METHOD_DELETE_LOGIC_BY_ID = "deleteInLogicById";
+
+    /**
+     * 根据 id 更新所有字段
+     */
+    String METHOD_UPDATE_ALL_FIELDS_BY_ID = "updateAllById";
+
+    /**
+     * 批量插入
+     */
+    String METHOD_INSERT_BATCH = "insertBatch";
+
+    /**
+     * 根据 id 锁定，悲观锁
+     */
+    String METHOD_SELECT_FOR_UPDATE_BY_ID = "selectForUpdateById";
+
+    // ------------------------ 字段名 ------------------------
+
+    /**
+     * 主键
+     */
+    String FIELD_ID = "id";
+
+    /**
+     * 创建时间
+     */
+    String FIELD_CREATE_TIME = "createTime";
+
+    /**
+     * 最后一次修改时间
+     */
+    String FIELD_UPDATE_TIME = "updateTime";
+
+    /**
+     * 创建者
+     */
+    String FIELD_CREATOR = "creator";
+
+    /**
+     * 最后一次修改者
+     */
+    String FIELD_MODIFIER = "modifier";
+
 }

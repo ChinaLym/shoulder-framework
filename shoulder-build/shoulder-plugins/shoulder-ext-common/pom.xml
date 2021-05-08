@@ -25,15 +25,7 @@
 
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-data-db</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
+            <artifactId>shoulder-starter-mysql</artifactId>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>

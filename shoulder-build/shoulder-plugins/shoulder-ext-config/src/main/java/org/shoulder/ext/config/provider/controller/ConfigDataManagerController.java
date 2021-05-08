@@ -118,7 +118,7 @@ public class ConfigDataManagerController {
      */
     @PostMapping("delete")
     @ResponseBody
-    public BaseResult<ListResult<ConfigItemDTO>> delete(@Valid @NotNull @RequestBody ConfigDeleteRequest deleteRequest) {
+    public ListResult<ConfigItemDTO> delete(@Valid @NotNull @RequestBody ConfigDeleteRequest deleteRequest) {
         // configItemList 循环删除
         List<ConfigItemDTO> configItemList = deleteRequest.getConfigItemList();
         for (ConfigItemDTO item : configItemList) {
@@ -131,7 +131,7 @@ public class ConfigDataManagerController {
             item.setSuccess(configManagerCoreService.delete(configData));
         }
 
-        return BaseResult.success(configItemList);
+        return ListResult.of(configItemList);
     }
 
     /**

@@ -36,7 +36,7 @@ public class ConfigData {
     /**
      * 修改时间
      */
-    private Date modifyTime;
+    private Date updateTime;
 
     /**
      * 租户
@@ -122,15 +122,15 @@ public class ConfigData {
     /**
      * setter for column 修改时间
      */
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 
     /**
      * getter for column 修改时间
      */
-    public Date getModifyTime() {
-        return this.modifyTime;
+    public Date getUpdateTime() {
+        return this.updateTime;
     }
 
     /**

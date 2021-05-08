@@ -3,7 +3,7 @@ package org.shoulder.ext.config.domain;
 import java.util.List;
 
 /**
- * @author Admin
+ * @author lym
  */
 public class PageInfo<T> {
 

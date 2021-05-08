@@ -166,7 +166,7 @@ public class ConfigRepositoryImpl implements ConfigRepository {
         }
         ConfigData configData = new ConfigData();
         configData.setCreateTime(configDO.getCreateTime());
-        configData.setModifyTime(configDO.getModifyTime());
+        configData.setUpdateTime(configDO.getUpdateTime());
         configData.setTenant(configDO.getTenant());
         configData.setConfigType(ConfigType.getByName(configDO.getType()));
         configData.setBizId(configDO.getBizId());
@@ -185,7 +185,7 @@ public class ConfigRepositoryImpl implements ConfigRepository {
         }
         ConfigDataDO configDO = new ConfigDataDO();
         configDO.setCreateTime(configData.getCreateTime());
-        configDO.setModifyTime(configData.getModifyTime());
+        configDO.setUpdateTime(configData.getUpdateTime());
         configDO.setTenant(configData.getTenant());
         configDO.setType(configData.getConfigType().getConfigName());
         configDO.setBizId(configData.getBizId());

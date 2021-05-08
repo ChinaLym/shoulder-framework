@@ -72,13 +72,18 @@
   - 包结构重构
   - logger 增加 bufferedLogger，优化以 HTTP / MQ / Jdbc 形式记录日志的频繁写入性能
   - 当 @OperationLog 所在方法抛出异常时，若为 ErrorCode 及其子类，则自动记录错误码
-    - 更换跨线程增强方式，使用 shoulder-core 中定义的扩展点，提高 shoulder 框架内聚
+      - 更换跨线程增强方式，使用 shoulder-core 中定义的扩展点，提高 shoulder 框架内聚
 
 - web
     - 默认的 `RestController` 全局异常处理仅对 `json` 格式响应支持
 
 - validate
     - 通用错误码提供枚举类
+
+- db
+    - 模板类重构
+        - 包路径变更 org.shoulder.data.mybatis.base -> org.shoulder.data.mybatis.template
+        - 泛型要求调整
 
 - crypto
     - 对称加解密较大重构（最后一个参数为 明文/密文），使用接口，而非静态工具类

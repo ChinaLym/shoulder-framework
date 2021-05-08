@@ -42,6 +42,7 @@ import java.util.concurrent.*;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(OperationLogDTO.class)
 @EnableConfigurationProperties(OperationLogProperties.class)
+@ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLoggerAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger log = LoggerFactory.getLogger(OperationLoggerAutoConfiguration.class);
