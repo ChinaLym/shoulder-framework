@@ -7,7 +7,6 @@ import org.shoulder.crypto.local.repository.impl.FileLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.JdbcLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.RedisLocalCryptoInfoRepository;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -26,7 +25,7 @@ public class CryptoConfig {
      * @see RedisLocalCryptoInfoRepository
      * @see FileLocalCryptoInfoRepository
      */
-    @Bean
+    //@Bean
     public HashMapCryptoInfoRepository hashMapCryptoInfoRepository() {
         return new HashMapCryptoInfoRepository();
     }

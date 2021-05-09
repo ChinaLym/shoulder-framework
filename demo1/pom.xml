@@ -28,27 +28,6 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
         </dependency>
-        <!-- 解决构建失败问题 -->
-        <!--<dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-annotations</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.9.8</version>
-            &lt;!&ndash; 版本可以使用2.9.3、2.9.5 、2.9.8，不能忽略version属性&ndash;&gt;
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>-->
 
         <!-- 接口文档 -->
         <dependency>
@@ -95,6 +74,12 @@
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-monitor</artifactId>
+        </dependency>
+
+        <!-- test cluster -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-cluster</artifactId>
         </dependency>
 
 
