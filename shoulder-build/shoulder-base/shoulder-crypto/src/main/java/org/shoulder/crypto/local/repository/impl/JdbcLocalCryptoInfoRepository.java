@@ -147,4 +147,12 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         }
     }
 
+    /**
+     * 支持集群
+     */
+    @Override
+    public boolean supportCluster() {
+        return true;
+    }
+
 }

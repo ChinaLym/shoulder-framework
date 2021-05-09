@@ -2,6 +2,8 @@ package org.shoulder.autoconfigure.crypto;
 
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.cluster.redis.annotation.AppExclusive;
+import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
@@ -12,6 +14,8 @@ import org.shoulder.crypto.asymmetric.store.impl.CryptoDelegateKeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.RedisKeyPairCache;
 import org.shoulder.crypto.local.LocalTextCipher;
+import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -83,7 +87,16 @@ public class AsymmetricCryptoAutoConfiguration {
 
         @Bean("keyPairCache")
         public KeyPairCache redisKeyPairCache(@AppExclusive StringRedisTemplate redisTemplate,
-                                              LocalTextCipher localTextCipher, CryptoProperties cryptoProperties) {
+                                              LocalTextCipher localTextCipher, CryptoProperties cryptoProperties
+                , @Autowired(required = false) LocalCryptoInfoRepository localCryptoInfoRepository) {
+            if (localCryptoInfoRepository != null && !localCryptoInfoRepository.supportCluster()) {
+                // localCrypto 必须也支持集群，否则肯定会报错的
+                throw new BaseRuntimeException(CommonErrorCodeEnum.CODING,
+                        "localCryptoInfoRepository not support cluster! Current=" + localCryptoInfoRepository.getClass().getName() +
+                                "; Consider change another implement, " +
+                                "for example: JdbcLocalCryptoInfoRepository、RedisLocalCryptoInfoRepository. " +
+                                "you can set [shoulder.crypto.local.repository]=jdbc/redis");
+            }
             KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate);
             keyPairCache.put(cryptoProperties.getKeyPair());
             LoggerFactory.getLogger(getClass()).debug("redisKeyPairCache provide RedisKeyPairCache.");

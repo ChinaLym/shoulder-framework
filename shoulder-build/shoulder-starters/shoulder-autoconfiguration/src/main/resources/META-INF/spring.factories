@@ -28,6 +28,9 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   \
   org.shoulder.autoconfigure.lock.LockAutoConfiguration, \
   \
+  org.shoulder.autoconfigure.guid.GuidAutoConfiguration, \
+  org.shoulder.autoconfigure.guid.InstanceIdProviderAutoConfiguration, \
+  \
   org.shoulder.autoconfigure.http.RestTemplateLogAutoConfiguration, \
   org.shoulder.autoconfigure.http.RestTemplateCustomAutoConfiguration, \
   org.shoulder.autoconfigure.http.HttpAutoConfiguration, \

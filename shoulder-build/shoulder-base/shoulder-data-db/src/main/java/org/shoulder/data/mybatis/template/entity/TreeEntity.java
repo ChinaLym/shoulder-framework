@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 import org.shoulder.data.constant.DataBaseConsts;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class TreeEntity<ID> extends BaseEntity<ID> {
+public class TreeEntity<ID extends Serializable> extends BaseEntity<ID> {
 
     /**
      * 名称

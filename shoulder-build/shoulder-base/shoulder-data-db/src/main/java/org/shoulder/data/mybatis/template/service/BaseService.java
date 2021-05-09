@@ -39,6 +39,14 @@ public interface BaseService<ENTITY> extends IService<ENTITY> {
     boolean updateAllById(ENTITY entity);
 
     /**
+     * 根据主键锁定
+     *
+     * @param entity 获取到的行数据
+     * @return 非空，已经存在；空：不存在
+     */
+    ENTITY lockById(ENTITY entity);
+
+    /**
      * 分页查询
      *
      * @param pageQueryCondition 查询条件

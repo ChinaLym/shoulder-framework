@@ -77,7 +77,7 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
 
 
     private void fillId(MetaObject metaObject) {
-        final String StringTypeName = "java.lang.String";
+        final String stringTypeName = StringUtils.CLASS_NAME_STRING;
         if (uidGenerator == null) {
             // 这里使用SpringUtils的方式"延迟"获取对象，防止启动时，报循环注入的错
             //uidGenerator = SpringUtils.getBean(UidGenerator.class);
@@ -89,7 +89,7 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
                 return;
             }
             Long id = genUid();
-            Object idVal = StringTypeName.equals(metaObject.getGetterType(DataBaseConsts.FIELD_ID).getName()) ? String.valueOf(id) : id;
+            Object idVal = stringTypeName.equals(metaObject.getGetterType(DataBaseConsts.FIELD_ID).getName()) ? String.valueOf(id) : id;
             this.setFieldValByName(DataBaseConsts.FIELD_ID, idVal, metaObject);
             return;
         }
@@ -101,7 +101,7 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
                 return;
             }
             Long id = genUid();
-            Object idVal = StringTypeName.equals(metaObject.getGetterType(DataBaseConsts.FIELD_ID).getName()) ? String.valueOf(id) : id;
+            Object idVal = stringTypeName.equals(metaObject.getGetterType(DataBaseConsts.FIELD_ID).getName()) ? String.valueOf(id) : id;
             this.setFieldValByName(DataBaseConsts.FIELD_ID, idVal, metaObject);
             return;
         }
@@ -134,7 +134,7 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
             return;
         }
         Long id = genUid();
-        Object idVal = StringTypeName.equalsIgnoreCase(keyType.getName()) ? String.valueOf(id) : id;
+        Object idVal = stringTypeName.equalsIgnoreCase(keyType.getName()) ? String.valueOf(id) : id;
         this.setFieldValByName(keyProperty, idVal, metaObject);
     }
 

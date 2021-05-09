@@ -129,5 +129,13 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         }
     }
 
+    /**
+     * 可能支持集群
+     * 若挂载的磁盘为分布式文件存储，则支持，否则仅支持单机部署多实例
+     */
+    @Override
+    public boolean supportCluster() {
+        return false;
+    }
 
 }

@@ -18,7 +18,7 @@ public abstract class BaseServiceImpl<MAPPER extends BaseMapper<ENTITY>, ENTITY 
      * T 实体的存储层接口
      */
     @Autowired
-    private BaseMapper<ENTITY> repository;
+    private BaseMapper<ENTITY> dao;
 
     /**
      * 透传
@@ -27,6 +27,12 @@ public abstract class BaseServiceImpl<MAPPER extends BaseMapper<ENTITY>, ENTITY 
     @Transactional(rollbackFor = Exception.class)
     public boolean updateAllById(ENTITY entity) {
         return SqlHelper.retBool(getBaseMapper().updateAllById(entity));
+    }
+
+
+    @Override
+    public ENTITY lockById(ENTITY entity) {
+        return getBaseMapper().selectForUpdateById(entity.getId());
     }
 
 }

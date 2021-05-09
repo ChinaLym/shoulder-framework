@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 数据库配置 todo 激活
+ * 数据库配置
  *
  * @author lym
  */

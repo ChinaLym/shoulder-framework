@@ -15,6 +15,7 @@ import org.shoulder.data.constant.DataBaseConsts;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.Default;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -27,7 +28,7 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseEntity<ID> {
+public class BaseEntity<ID extends Serializable> {
 
     @TableId(value = DataBaseConsts.COLUMN_ID, type = IdType.INPUT)
     @NotNull(message = "id can't be null", groups = BaseEntity.Update.class)
@@ -50,6 +51,13 @@ public class BaseEntity<ID> {
      * 验证组分组-保存时
      */
     public interface Update extends Default {
+
+    }
+
+    /**
+     * 验证组分组-删除时
+     */
+    public interface DELETE extends Default {
 
     }
 

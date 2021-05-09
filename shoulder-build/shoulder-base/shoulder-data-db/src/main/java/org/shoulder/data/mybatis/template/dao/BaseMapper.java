@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,6 +14,14 @@ import java.util.List;
  * @author lym
  */
 public interface BaseMapper<ENTITY extends BaseEntity<?>> extends com.baomidou.mybatisplus.core.mapper.BaseMapper<ENTITY> {
+
+    /**
+     * 锁定一条记录
+     *
+     * @param id 主键
+     * @return 实体
+     */
+    ENTITY selectForUpdateById(Serializable id);
 
     /**
      * 根据 id 全量修改所有字段，与 updateById 区别：包括为 null 的字段，表示设置这个字段为 NULL
