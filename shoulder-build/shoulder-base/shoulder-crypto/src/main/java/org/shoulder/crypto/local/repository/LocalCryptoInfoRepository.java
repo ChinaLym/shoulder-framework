@@ -39,4 +39,13 @@ public interface LocalCryptoInfoRepository {
     @Nonnull
     List<LocalCryptoMetaInfo> get(@Nonnull String appId) throws Exception;
 
+    /**
+     * 是否支持集群
+     *
+     * @return 默认不支持
+     */
+    default boolean supportCluster() {
+        return false;
+    }
+
 }

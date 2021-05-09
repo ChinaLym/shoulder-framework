@@ -22,13 +22,13 @@ import java.util.List;
  */
 public class FormAuthenticationSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private AuthenticationSuccessHandler authenticationSuccessHandler;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
-    private AuthenticationFailureHandler authenticationFailureHandler;
+    private final AuthenticationFailureHandler authenticationFailureHandler;
 
-    private LogoutSuccessHandler logoutSuccessHandler;
+    private final LogoutSuccessHandler logoutSuccessHandler;
 
-    private List<LogoutHandler> logoutHandlers;
+    private final List<LogoutHandler> logoutHandlers;
 
     private String loginPageUrl;
 

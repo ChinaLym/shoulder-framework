@@ -36,12 +36,12 @@ public class RedisAutoConfiguration {
      * 必须配置 redis 相关参数
      * 应用专属
      */
-    @Bean
+    @Bean(name = "redisTemplate")
     @AppExclusive
     public RedisTemplate<String, Object> serviceExclusiveRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         //new StringRedisSerializer(ApplicationInfo.charset())
-        RedisSerializer<String> redisKeySerializer = new KeyStringRedisSerializer(getKeyPrefix());
+        RedisSerializer<String> redisKeySerializer = new WithPrefixKeyStringRedisSerializer(getKeyPrefix());
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(redisKeySerializer);
         redisTemplate.setHashKeySerializer(redisKeySerializer);
@@ -58,7 +58,7 @@ public class RedisAutoConfiguration {
     @AppExclusive
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         StringRedisTemplate redisTemplate = new StringRedisTemplate();
-        RedisSerializer<String> redisKeySerializer = new KeyStringRedisSerializer(getKeyPrefix());
+        RedisSerializer<String> redisKeySerializer = new WithPrefixKeyStringRedisSerializer(getKeyPrefix());
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(redisKeySerializer);
         redisTemplate.setHashKeySerializer(redisKeySerializer);
@@ -75,14 +75,14 @@ public class RedisAutoConfiguration {
     /**
      * redis key 包装
      */
-    static class KeyStringRedisSerializer extends StringRedisSerializer {
+    static class WithPrefixKeyStringRedisSerializer extends StringRedisSerializer {
 
         /**
          * key 前缀
          */
         private final String keyPrefix;
 
-        KeyStringRedisSerializer(String keyPrefix) {
+        WithPrefixKeyStringRedisSerializer(String keyPrefix) {
             this.keyPrefix = keyPrefix;
         }
 

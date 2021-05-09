@@ -102,10 +102,11 @@ public class Threads {
                 if (SHOULDER_THREAD_POOL == null) {
                     log.warn("not set threadPool fall back: use bean named '{}' in context.", SHOULDER_THREAD_POOL_NAME);
                     Object threadPoolBean = ContextUtils.getBean(SHOULDER_THREAD_POOL_NAME);
-                    if (threadPoolBean instanceof ExecutorService) {
+                    if (!(threadPoolBean instanceof ExecutorService)) {
                         setExecutorService((ExecutorService) threadPoolBean);
+                    } else {
+                        throw new IllegalStateException("Need invoke setExecutorService first!");
                     }
-                    throw new IllegalStateException("Need invoke setExecutorService first!");
                 }
             }
         }

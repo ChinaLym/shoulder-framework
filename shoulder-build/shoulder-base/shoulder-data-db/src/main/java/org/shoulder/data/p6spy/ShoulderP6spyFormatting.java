@@ -8,6 +8,7 @@ import org.shoulder.core.util.StringUtils;
 
 /**
  * 打印日志时打印 trace、租户、用户、链接、sql、用时
+ * 将类全限定名放到配置文件中
  *
  * @author lym
  */

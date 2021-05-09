@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.shoulder.data.constant.DataBaseConsts;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Entity<ID> extends BaseEntity<ID> {
+public class Entity<ID extends Serializable> extends BaseEntity<ID> {
 
     @TableField(value = DataBaseConsts.COLUMN_CREATOR, fill = FieldFill.INSERT)
     protected Long creator;

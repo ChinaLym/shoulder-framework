@@ -60,7 +60,7 @@ public class ForbbidonWriteInterceptor extends AbstractSqlParserHandler implemen
         // ip 白名单
         if (ServletUtil.canGetRequest()) {
             // 只处理可以获取到的，非请求触发 / 异步处理不能走白名单
-            String ip = ServletUtil.getRemoteIp();
+            String ip = ServletUtil.getRemoteAddress();
             for (String allowIp : allowIpList) {
                 if (RegexpUtils.matches(ip, allowIp, true)) {
                     // ip 白名单
