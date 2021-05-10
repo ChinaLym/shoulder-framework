@@ -31,8 +31,9 @@ public class OperationLogFactory {
     public static OperationLogDTO create(String operation) {
         Operator currentOperator = OpLogContext.getCurrentOperator();
         return new OperationLogDTO(operation)
-            .setOperator(currentOperator)
-            .setAppId(AppInfo.appId())
+                .setOperator(currentOperator)
+                .setAppId(AppInfo.appId())
+                .setInstanceId(AppInfo.instanceId())
             .setTenantCode(AppContext.getTenantCode());
     }
 

@@ -1,6 +1,9 @@
 package org.shoulder.code.propertities;
 
+import org.springframework.boot.convert.DurationUnit;
+
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -18,6 +21,7 @@ public abstract class BaseValidateCodeProperties {
     /**
      * 验证码有效时间，默认 10 分钟
      */
+    @DurationUnit(ChronoUnit.SECONDS)
     private Duration effectiveSeconds = Duration.ofMinutes(10);
 
     /**

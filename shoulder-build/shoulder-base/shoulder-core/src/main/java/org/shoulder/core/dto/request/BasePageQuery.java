@@ -53,7 +53,7 @@ public class BasePageQuery<T> implements Serializable {
         BasePageQuery<ENTITY> page = new BasePageQuery<ENTITY>();
         page.pageNo = pageQuery.getPageNo();
         page.pageSize = pageQuery.getPageSize();
-        // todo 实体转换
+        // todo 【功能|重要】实体转换
         page.condition = (ENTITY) pageQuery.getCondition();
         if (CollectionUtils.isNotEmpty(pageQuery.getOrderRules())) {
             page.orderRules = pageQuery.getOrderRules().stream()

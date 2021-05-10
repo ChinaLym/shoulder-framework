@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 
+import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
  *
  * @author lym
  */
+@SuppressWarnings("rawtypes, unchecked")
 public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implements ApplicationListener<ContextRefreshedEvent>, DisposableBean {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -144,7 +146,7 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
     }
 
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
+    public void onApplicationEvent(@Nonnull ContextRefreshedEvent event) {
         Threads.execute(this::heartbeat);
     }
 

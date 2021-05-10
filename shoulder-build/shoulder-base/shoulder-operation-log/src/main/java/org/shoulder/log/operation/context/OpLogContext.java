@@ -105,7 +105,8 @@ public class OpLogContext {
     }
 
     public static final class Builder {
-        private OpLogContext opLogContext;
+
+        private final OpLogContext opLogContext;
 
         private Builder() {
             opLogContext = new OpLogContext();
