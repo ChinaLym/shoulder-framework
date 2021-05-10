@@ -38,7 +38,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
 
     private static final String VALUES = "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private static String BATCH_INSERT = "INSERT INTO log_operation (" + ALL_INSERT_COLUMNS + ") " + VALUES;
+    private static final String BATCH_INSERT = "INSERT INTO log_operation (" + ALL_INSERT_COLUMNS + ") " + VALUES;
 
     {
         // 由于字段过多，这里断言能对应上，没有缺少字段
@@ -68,7 +68,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
     private <T extends OperationLogDTO> Object[] flatFieldsToArray(T opLog) {
         Object[] fields = new Object[FIELD_NUM];
         fields[0] = opLog.getAppId();
-        fields[1] = null; // todo instanceId
+        fields[1] = opLog.getInstanceId();
         fields[2] = opLog.getUserId();
         fields[3] = opLog.getUserName();
         fields[4] = opLog.getUserRealName();

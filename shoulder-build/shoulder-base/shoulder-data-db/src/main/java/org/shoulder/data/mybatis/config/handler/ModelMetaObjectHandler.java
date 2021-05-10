@@ -1,7 +1,5 @@
 package org.shoulder.data.mybatis.config.handler;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
@@ -12,10 +10,10 @@ import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
-import org.shoulder.data.uid.UidGenerator;
+import org.shoulder.data.uid.EntityIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.Field;
+import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
 
 /**
@@ -25,7 +23,7 @@ import java.time.LocalDateTime;
  * 2. update 时填充 updateTime, updatedBy
  * <p>
  * 值来源：
- * id： {@link UidGenerator#next(String, String)}
+ * id： {@link EntityIdGenerator#next(String, String)}
  * createTime updateTime：{@link LocalDateTime#now}
  * createdBy updatedBy：{@link AppContext#getUserId}
  *
@@ -34,7 +32,7 @@ import java.time.LocalDateTime;
 public class ModelMetaObjectHandler implements MetaObjectHandler {
 
     @Autowired(required = false)
-    private UidGenerator uidGenerator;
+    private EntityIdGenerator entityIdGenerator;
 
     /**
      * 插入时添加创建时间
@@ -75,73 +73,39 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
         }
     }
 
-
+    /**
+     * 填充 id 值
+     *
+     * @param metaObject obj
+     */
     private void fillId(MetaObject metaObject) {
-        final String stringTypeName = StringUtils.CLASS_NAME_STRING;
-        if (uidGenerator == null) {
-            // 这里使用SpringUtils的方式"延迟"获取对象，防止启动时，报循环注入的错
-            //uidGenerator = SpringUtils.getBean(UidGenerator.class);
-        }
-        //1. 继承了BaseEntity 若 ID 中有值，就不设置
-        if (metaObject.getOriginalObject() instanceof BaseEntity) {
-            Object oldId = ((BaseEntity) metaObject.getOriginalObject()).getId();
-            if (oldId != null) {
-                return;
-            }
-            Long id = genUid();
-            Object idVal = stringTypeName.equals(metaObject.getGetterType(DataBaseConsts.FIELD_ID).getName()) ? String.valueOf(id) : id;
-            this.setFieldValByName(DataBaseConsts.FIELD_ID, idVal, metaObject);
+        String idFieldName = getIdFieldName(metaObject);
+        Object oldId = getFieldValByName(idFieldName, metaObject);
+        if (oldId != null) {
+            // id 有值，不管了
             return;
         }
+        // 否则新建一个 set 上
+        Class<?> idType = ReflectUtil.getField(metaObject.getOriginalObject().getClass(), idFieldName).getType();
+        Object newId = entityIdGenerator.genId(metaObject, idType);
+        setFieldValByName(idFieldName, newId, metaObject);
+    }
 
-        // 2. 没有继承BaseEntity， 但主键的字段名为：  id
-        if (metaObject.hasGetter(DataBaseConsts.FIELD_ID)) {
-            Object oldId = metaObject.getValue(DataBaseConsts.FIELD_ID);
-            if (oldId != null) {
-                return;
-            }
-            Long id = genUid();
-            Object idVal = stringTypeName.equals(metaObject.getGetterType(DataBaseConsts.FIELD_ID).getName()) ? String.valueOf(id) : id;
-            this.setFieldValByName(DataBaseConsts.FIELD_ID, idVal, metaObject);
-            return;
+    @Nonnull
+    protected String getIdFieldName(MetaObject metaObject) {
+        // 有 fieldName 为 id 的字段
+        if (metaObject.getOriginalObject() instanceof BaseEntity || metaObject.hasGetter(DataBaseConsts.FIELD_ID)) {
+            return "id";
         }
 
         // 3. 实体没有继承 Entity 和 BaseEntity，且 主键名为其他字段
         TableInfo tableInfo = metaObject.hasGetter(Constants.MP_OPTLOCK_ET_ORIGINAL) ?
                 TableInfoHelper.getTableInfo(metaObject.getValue(Constants.MP_OPTLOCK_ET_ORIGINAL).getClass())
                 : TableInfoHelper.getTableInfo(metaObject.getOriginalObject().getClass());
-        if (tableInfo == null) {
-            // todo warn
-            return;
+        if (tableInfo == null || tableInfo.getKeyProperty() == null) {
+            throw new IllegalArgumentException("tableInfo == null. obj=" + metaObject);
         }
-        // 主键类型
-        Class<?> keyType = tableInfo.getKeyType();
-        if (keyType == null) {
-            return;
-        }
-        // id 字段名
-        String keyProperty = tableInfo.getKeyProperty();
-        Object oldId = metaObject.getValue(keyProperty);
-        if (oldId != null) {
-            return;
-        }
-
-        // 反射得到 主键的值
-        Field idField = ReflectUtil.getField(metaObject.getOriginalObject().getClass(), keyProperty);
-        Object fieldValue = ReflectUtil.getFieldValue(metaObject.getOriginalObject(), idField);
-        // 判断ID 是否有值，有值就不
-        if (ObjectUtil.isNotEmpty(fieldValue)) {
-            return;
-        }
-        Long id = genUid();
-        Object idVal = stringTypeName.equalsIgnoreCase(keyType.getName()) ? String.valueOf(id) : id;
-        this.setFieldValByName(keyProperty, idVal, metaObject);
-    }
-
-    protected Long genUid() {
-        // Long id = uidGenerator.getUid();
-        // todo
-        return RandomUtil.randomLong();
+        return tableInfo.getKeyProperty();
     }
 
 }

@@ -11,6 +11,8 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
 import org.shoulder.core.constant.PageConst;
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.guid.LongGuidGenerator;
+import org.shoulder.core.guid.StringGuidGenerator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.data.mybatis.config.handler.ModelMetaObjectHandler;
@@ -20,7 +22,8 @@ import org.shoulder.data.mybatis.interceptor.tenants.SchemaModeInterceptor;
 import org.shoulder.data.mybatis.interceptor.typehandler.FullLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.LeftLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.RightLikeTypeHandler;
-import org.shoulder.data.uid.UidGenerator;
+import org.shoulder.data.uid.DefaultEntityIdGenerator;
+import org.shoulder.data.uid.EntityIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -32,7 +35,6 @@ import org.springframework.core.annotation.Order;
 
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.UUID;
 
 /**
  * MybatisPlusConfig todo 【开发】根据 3.4 版本进行调整
@@ -198,9 +200,10 @@ public class MybatisPlusAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public UidGenerator uidGenerator() {
-        // todo uid
-        return (a, b) -> UUID.randomUUID().toString();
+    public EntityIdGenerator uidGenerator(LongGuidGenerator longGuidGenerator,
+                                          StringGuidGenerator stringGuidGenerator) {
+        // 没 bean 可注入会提前报错，避免 NPE
+        return new DefaultEntityIdGenerator(longGuidGenerator, stringGuidGenerator);
     }
 
     /**

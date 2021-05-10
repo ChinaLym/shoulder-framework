@@ -185,6 +185,11 @@ public class OperationLogDTO implements Cloneable {
     protected String appId;
 
     /**
+     * 应用实例编号 / 机器序号
+     */
+    protected Long instanceId;
+
+    /**
      * 本次业务操作的调用链标识（选填）
      */
     protected String traceId;
@@ -337,6 +342,7 @@ public class OperationLogDTO implements Cloneable {
 
         clone.setTenantCode(tenantCode);
         clone.setAppId(appId);
+        clone.setInstanceId(instanceId);
         clone.setTraceId(traceId);
         clone.setBusinessId(businessId);
         clone.setExtFields(extFields);

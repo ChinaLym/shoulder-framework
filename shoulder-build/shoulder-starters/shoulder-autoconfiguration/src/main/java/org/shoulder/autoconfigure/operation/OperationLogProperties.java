@@ -2,8 +2,10 @@ package org.shoulder.autoconfigure.operation;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.convert.DurationUnit;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 /**
  * 操作日志相关配置
@@ -68,6 +70,7 @@ public class OperationLogProperties {
         /**
          * buffer 日志记录器，每隔多少秒刷一次
          */
+        @DurationUnit(ChronoUnit.SECONDS)
         private Duration flushInterval = Duration.ofSeconds(10);
 
         /**
@@ -115,6 +118,11 @@ public class OperationLogProperties {
          * 调用日志服务接口
          */
         HTTP,
+
+        /**
+         * 调用日志服务接口
+         */
+        CUSTOMER,
         ;
 
     }
