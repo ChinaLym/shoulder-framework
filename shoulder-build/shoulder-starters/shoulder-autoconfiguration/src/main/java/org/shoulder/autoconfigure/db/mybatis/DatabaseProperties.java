@@ -21,6 +21,7 @@ import java.util.List;
 public class DatabaseProperties {
 
     public static final String PREFIX = BaseAppProperties.APPLICATION_CONFIG_PREFIX + ".db";
+
     /**
      * 是否启用 防止全表更新与删除插件
      */
@@ -90,13 +91,6 @@ public class DatabaseProperties {
             "clean*", "recycle*", "batch*", "mark*", "disable*", "enable*", "handle*", "syn*",
             "reg*", "gen*", "*Tx"
     ));
-
-    /**
-     * 事务扫描基础包，需要自己填写
-     * todo List
-     */
-    private String transactionScanPackage = "org.shoulder.tx";
-
 
     @Data
     public static class ShoulderUid {

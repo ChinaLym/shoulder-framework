@@ -24,7 +24,6 @@ import org.shoulder.data.mybatis.interceptor.typehandler.LeftLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.RightLikeTypeHandler;
 import org.shoulder.data.uid.DefaultEntityIdGenerator;
 import org.shoulder.data.uid.EntityIdGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -37,7 +36,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
- * MybatisPlusConfig todo 【开发】根据 3.4 版本进行调整
+ * MybatisPlusConfig
  *
  * @author lym
  */
@@ -46,13 +45,17 @@ import java.util.StringJoiner;
 @EnableConfigurationProperties(DatabaseProperties.class)
 public class MybatisPlusAutoConfiguration {
 
-    @Autowired
-    protected DatabaseProperties databaseProperties;
+    protected final DatabaseProperties databaseProperties;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    public MybatisPlusAutoConfiguration(DatabaseProperties databaseProperties) {
+        this.databaseProperties = databaseProperties;
+    }
+
     /**
-     * 开启分页插件
+     * 新的分页插件,一缓和二缓遵循mybatis的规则
+     * 需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题(该属性会在旧插件移除后一同移除)
      */
     @Deprecated
     @Bean
@@ -70,8 +73,15 @@ public class MybatisPlusAutoConfiguration {
     }
 
     /**
-     * 新的分页插件,一缓和二缓遵循mybatis的规则,需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题(该属性会在旧插件移除后一同移除)
-     * <p>
+     * 新分页插件填坑
+     */
+    @Bean
+    @Deprecated
+    public ConfigurationCustomizer configurationCustomizer() {
+        return configuration -> configuration.setUseDeprecatedExecutor(false);
+    }
+
+    /**
      * 注意:
      * InnerPlugin 插件使用时需要注意顺序关系,建议使用如下顺序
      * 多租户插件,动态表名插件
@@ -142,17 +152,6 @@ public class MybatisPlusAutoConfiguration {
         return paginationInterceptor;
     }
 
-    /**
-     * mybatis-plus 3.4.0开始采用新的分页插件,一缓和二缓遵循mybatis的规则,
-     * 需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题
-     * (该属性会在旧插件移除后一同移除)
-     */
-    @Bean
-    @Deprecated
-    public ConfigurationCustomizer configurationCustomizer() {
-        return configuration -> configuration.setUseDeprecatedExecutor(false);
-    }
-
 
     @Bean
     @Order(80)
@@ -209,7 +208,6 @@ public class MybatisPlusAutoConfiguration {
     /**
      * Mybatis 自定义的类型处理器： 处理XML中  #{name,typeHandler=fullLike}
      */
-
     @Bean
     public LeftLikeTypeHandler getLeftLikeTypeHandler() {
         return new LeftLikeTypeHandler();
