@@ -197,7 +197,7 @@ prometheus.集的指标由`指标名称 metric name`、`标签 label name` 两�
     - 由字母、数值、下划线或冒号(分隔符)组成
     - 注意：冒号保留用于用户定义的录制规则。 它们不应被exporter或直接仪表使用。
 - 标签( label):
-    - 标签体现指标的维度特征,用于过滤和聚标签名和标签值,形成多种维度的表达。
+  - 标签体现指标的维度特征,用于过滤和聚标签名和标签值,形成多种维度的表达。
 
 `abc_efg{n1="xx",n2="xxx",n3="xxx"}`
 
@@ -206,6 +206,14 @@ prometheus.集的指标由`指标名称 metric name`、`标签 label name` 两�
 指标名称( metric name)首先需满足 `prometheus` 指标规苑要求,其次需满足唯一性、反应功能/业务含义
 
 指标格式: `应用标识_业务/功能名称`。业务/功能名称由大小写字母开头包含字母或者数字的字符串构成（小驼峰命名）
+
+---
+
+Spring Boot EndPoint
+
+- @EndPoint中的id不能使用驼峰法，需要以-分割
+- @Spring Boot会去扫描@EndPoint注解下的 @ReadOperation, @WriteOperation, @DeleteOperation 注解，分别对应生成Get/Post/Delete的Mapping。
+  注解中有个produces参数，可以指定media type, 如：application/json等。
 
 ----
 

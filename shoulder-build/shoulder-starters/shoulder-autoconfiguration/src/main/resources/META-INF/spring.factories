@@ -64,4 +64,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig, \
   \
   org.shoulder.autoconfigure.monitor.MonitorableThreadAutoConfiguration, \
-  org.shoulder.autoconfigure.monitor.MonitorRunnableAutoConfiguration
+  org.shoulder.autoconfigure.monitor.MonitorRunnableAutoConfiguration, \
+  org.shoulder.autoconfigure.monitor.PrometheusAutoConfiguration, \
+  \
+  org.shoulder.autoconfigure.endpoints.InstanceIdEndpointAutoConfiguration
