@@ -17,6 +17,8 @@ import java.lang.reflect.Method;
 /**
  * 枚举反序列化工具，用于 Controller 接口用枚举接收字符串
  * 需要约定，通过 get 方法
+ * <p>
+ * todo 【合并冗余设计】EnumConverter 合并
  *
  * @author lym
  */

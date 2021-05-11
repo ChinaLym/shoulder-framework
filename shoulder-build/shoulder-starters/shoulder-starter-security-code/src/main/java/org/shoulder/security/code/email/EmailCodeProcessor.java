@@ -1,4 +1,4 @@
-package org.shoulder.security.code.sms;
+package org.shoulder.security.code.email;
 
 import org.shoulder.code.dto.ValidateCodeDTO;
 import org.shoulder.code.exception.ValidateCodeException;
@@ -15,17 +15,17 @@ import org.springframework.web.context.request.ServletWebRequest;
  *
  * @author lym
  */
-public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCodeDTO> implements SmsValidateCodeType {
+public class EmailCodeProcessor extends AbstractValidateCodeProcessor<ValidateCodeDTO> implements EmailValidateCodeType {
 
     /**
      * 短信验证码发送器
      */
-    private final SmsCodeSender smsCodeSender;
+    private final EmailCodeSender emailCodeSender;
 
-    public SmsCodeProcessor(BaseValidateCodeProperties baseValidateCodeProperties, ValidateCodeGenerator validateCodeGenerator,
-                            ValidateCodeStore validateCodeStore, SmsCodeSender smsCodeSender) {
+    public EmailCodeProcessor(BaseValidateCodeProperties baseValidateCodeProperties, ValidateCodeGenerator validateCodeGenerator,
+                              ValidateCodeStore validateCodeStore, EmailCodeSender emailCodeSender) {
         super(baseValidateCodeProperties, validateCodeGenerator, validateCodeStore);
-        this.smsCodeSender = smsCodeSender;
+        this.emailCodeSender = emailCodeSender;
     }
 
     /**
@@ -39,10 +39,11 @@ public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode
     @Override
     public void send(ServletWebRequest request, ValidateCodeDTO validateCode) throws ValidateCodeException {
         try {
-            String mobile = ServletRequestUtils.getRequiredStringParameter(request.getRequest(), SecurityConst.AUTHENTICATION_SMS_PARAMETER_NAME);
-            smsCodeSender.send(mobile, validateCode.getCode());
+            String mobile = ServletRequestUtils.getRequiredStringParameter(request.getRequest(),
+                    SecurityConst.AUTHENTICATION_EMAIL_PARAMETER_NAME);
+            emailCodeSender.send(mobile, validateCode.getCode());
         } catch (Exception e) {
-            throw new ValidateCodeException("send smsCode fail", e);
+            throw new ValidateCodeException("send emailCode fail", e);
         }
     }
 

@@ -313,7 +313,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     @Override
     public void warn(String msg, Throwable t) {
         if (t instanceof ErrorCode) {
-            warnWithErrorCode(((ErrorCode) t).getCode(), ((ErrorCode) t).generateDetail(), t);
+            warnWithErrorCode(((ErrorCode) t).getCode(), generateDetail((ErrorCode) t), t);
             return;
         }
         uniformLog(() -> delegateLogger.warn(msg, t));
@@ -389,9 +389,9 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public void debug(ErrorCode errorCode) {
         uniformLog(errorCode.getCode(), () -> {
             if (errorCode instanceof Throwable) {
-                delegateLogger.debug(errorCode.generateDetail(), (Throwable) errorCode);
+                delegateLogger.debug(generateDetail(errorCode), (Throwable) errorCode);
             } else {
-                delegateLogger.debug(errorCode.generateDetail());
+                delegateLogger.debug(generateDetail(errorCode));
             }
         });
     }
@@ -399,7 +399,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void debug(ErrorCode errorCode, Throwable t) {
-        uniformLog(errorCode.getCode(), () -> delegateLogger.debug(errorCode.generateDetail(), t));
+        uniformLog(errorCode.getCode(), () -> delegateLogger.debug(generateDetail(errorCode), t));
     }
 
 
@@ -440,16 +440,16 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public void info(ErrorCode errorCode) {
         uniformLog(errorCode.getCode(), () -> {
             if (errorCode instanceof Throwable) {
-                delegateLogger.info(errorCode.generateDetail(), (Throwable) errorCode);
+                delegateLogger.info(generateDetail(errorCode), (Throwable) errorCode);
             } else {
-                delegateLogger.info(errorCode.generateDetail());
+                delegateLogger.info(generateDetail(errorCode));
             }
         });
     }
 
     @Override
     public void info(ErrorCode errorCode, Throwable t) {
-        uniformLog(errorCode.getCode(), () -> delegateLogger.info(errorCode.generateDetail(), t));
+        uniformLog(errorCode.getCode(), () -> delegateLogger.info(generateDetail(errorCode), t));
     }
 
 
@@ -489,16 +489,16 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public void warn(ErrorCode errorCode) {
         uniformLog(errorCode.getCode(), () -> {
             if (errorCode instanceof Throwable) {
-                delegateLogger.warn(errorCode.generateDetail(), (Throwable) errorCode);
+                delegateLogger.warn(generateDetail(errorCode), (Throwable) errorCode);
             } else {
-                delegateLogger.warn(errorCode.generateDetail());
+                delegateLogger.warn(generateDetail(errorCode));
             }
         });
     }
 
     @Override
     public void warn(ErrorCode errorCode, Throwable t) {
-        uniformLog(errorCode.getCode(), () -> delegateLogger.warn(errorCode.generateDetail(), t));
+        uniformLog(errorCode.getCode(), () -> delegateLogger.warn(generateDetail(errorCode), t));
     }
 
 
@@ -567,7 +567,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     @Override
     public void error(String msg, Throwable t) {
         if (t instanceof ErrorCode) {
-            errorWithErrorCode(((ErrorCode) t).getCode(), ((ErrorCode) t).generateDetail(), t);
+            errorWithErrorCode(((ErrorCode) t).getCode(), generateDetail((ErrorCode) t), t);
             return;
         }
         uniformLog(() -> delegateLogger.error(msg, t));
@@ -615,16 +615,16 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     public void error(ErrorCode errorCode) {
         uniformLog(errorCode.getCode(), () -> {
             if (errorCode instanceof Throwable) {
-                delegateLogger.error(errorCode.generateDetail(), (Throwable) errorCode);
+                delegateLogger.error(generateDetail(errorCode), (Throwable) errorCode);
             } else {
-                delegateLogger.error(errorCode.generateDetail());
+                delegateLogger.error(generateDetail(errorCode));
             }
         });
     }
 
     @Override
     public void error(ErrorCode errorCode, Throwable t) {
-        uniformLog(errorCode.getCode(), () -> delegateLogger.error(errorCode.generateDetail(), t));
+        uniformLog(errorCode.getCode(), () -> delegateLogger.error(generateDetail(errorCode), t));
     }
 
     @Override
@@ -658,6 +658,15 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
 
     // =============================================================================
+
+    /**
+     * 生成错误详情
+     *
+     * @return 填充参数后的 msg
+     */
+    private String generateDetail(ErrorCode errorCode) {
+        return ExceptionUtil.generateExceptionMessage(errorCode.getMessage(), errorCode.getArgs());
+    }
 
     /**
      * 统一格式打印日志

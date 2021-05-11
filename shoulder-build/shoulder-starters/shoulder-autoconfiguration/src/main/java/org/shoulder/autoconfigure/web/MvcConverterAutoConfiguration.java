@@ -79,7 +79,7 @@ public class MvcConverterAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public EnumMissMatchHandler enumMissMatchHandler() {
-        return new DefaultEnumMissMatchHandler();
+        return DefaultEnumMissMatchHandler.getInstance();
     }
 
 }

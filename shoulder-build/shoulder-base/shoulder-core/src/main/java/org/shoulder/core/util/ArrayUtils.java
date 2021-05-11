@@ -44,7 +44,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      * @return 字符迭代器
      */
     public static Iterable<Character> toIterable(final CharSequence charSequence) {
-        Iterable<Character> characters = () -> new Iterator<>() {
+        return () -> new Iterator<>() {
             int n = 0;
 
             @Override
@@ -62,7 +62,6 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
                 throw new UnsupportedOperationException();
             }
         };
-        return characters;
     }
 
     /**
@@ -94,8 +93,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
             return arr1;
         }
         // 此处不能使用 list.toArray(arr1);
-        // 因为ArrayList.toArray[]的实现是将List元素拷贝到给出的容器中，如果容器大于List的空间，则在超出部分补上null.
-        // 因此不能起到消除null元素的作用。
+        // toArray[]的实现是将List元素拷贝到给出的容器中，若 arr1 大于List的空间，则在超出部分补上null.因此无法消除null元素
         T[] t = (T[]) Array.newInstance(arr1.getClass().getComponentType(),
             list.size());
         return list.toArray(t);
@@ -324,8 +322,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
         return data;
     }
 
-    // todo subArray 支持基本类型
-
+    /**
+     * 更多类型 参见 hutool
+     */
     public static <T> T[] subArray(T[] array, int endIndexExclusive) {
         return subArray(array, 0, endIndexExclusive);
     }
@@ -471,18 +470,18 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     /**
      * 转换为指定长度的数组,超过则截断，不足则补null
      *
-     * @param obj 任意类型数组
+     * @param arr 任意类型数组
      * @param len 新长度
      * @return 新数组
      */
-    public static Object toFixLength(Object obj, int len) {
-        int length = length(obj);
+    public static Object toFixLength(Object arr, int len) {
+        int length = length(arr);
         if (length == len) {
-            return obj;
+            return arr;
         }
-        Object result = Array.newInstance(obj.getClass().getComponentType(),
-            len);
-        System.arraycopy(obj, 0, result, 0, Math.min(length, len));
+        Object result = Array.newInstance(arr.getClass().getComponentType(),
+                len);
+        System.arraycopy(arr, 0, result, 0, Math.min(length, len));
         return result;
     }
 

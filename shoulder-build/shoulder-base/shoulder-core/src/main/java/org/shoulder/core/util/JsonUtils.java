@@ -214,7 +214,6 @@ public class JsonUtils {
         objectMapper.registerModule(new DateEnhancerJacksonModule())
                 .registerModule(new Jdk8Module())
                 .registerModule(new JavaTimeModule());
-        // todo 枚举；long、BigInteger、BigDecimal 可以转为字符串处理
 
         // 激活所有通过 spi 注册的模块，如接口响应多种格式，统一反序列化为标准的，需要自行实现 StdDeserializer，new SimpleModule().addDeserializer
         objectMapper.findAndRegisterModules();
@@ -263,6 +262,12 @@ public class JsonUtils {
             this.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(datetimeFormat));
 
             // 解决 17位+的 Long 给前端导致精度丢失问题，前端将以 str 接收（序列换成json时,将所有的long变成string）
+            // todo 【系统设计】JSON序列化时，枚举；long、BigInteger、BigDecimal 可以转为字符串处理
+//            this.addSerializer(Long.class, ToStringSerializer.instance);
+//            this.addSerializer(Long.TYPE, ToStringSerializer.instance);
+//            this.addSerializer(BigInteger.class, ToStringSerializer.instance);
+//            this.addSerializer(BigDecimal.class, ToStringSerializer.instance);
+//            this.addDeserializer(Enum.class, EnumDeserializer.INSTANCE);
             //this.addSerializer(Long.class, ToStringSerializer.instance);
             //this.addSerializer(Long.TYPE, ToStringSerializer.instance);
 
