@@ -67,4 +67,4 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.monitor.MonitorRunnableAutoConfiguration, \
   org.shoulder.autoconfigure.monitor.PrometheusAutoConfiguration, \
   \
-  org.shoulder.autoconfigure.endpoints.InstanceIdEndpointAutoConfiguration
+  org.shoulder.autoconfigure.endpoints.InstanceIdEndpoint
