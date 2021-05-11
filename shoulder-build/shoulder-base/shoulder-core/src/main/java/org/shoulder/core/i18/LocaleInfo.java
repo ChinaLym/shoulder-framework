@@ -13,7 +13,6 @@ import java.util.TimeZone;
 
 /**
  * 地区、字符编码
- * todo 时区、国家地区本地名称、i18nKey
  * 货币、日历、月份、数字、星期、时间周期、时间单位
  * 排序规则、单复数、省略号...
  * ISO、BCP 47
@@ -45,7 +44,7 @@ public final class LocaleInfo implements BaseLocaleContext, Cloneable {
     @Nonnull
     private final Charset charset;
 
-    // todo 为每种语言独立设置
+    // todo 【国际化】可考虑为每种语言独立设置
     @Nonnull
     private final String dateTimeFormat = AppInfo.UTC_DATE_TIME_FORMAT;
 

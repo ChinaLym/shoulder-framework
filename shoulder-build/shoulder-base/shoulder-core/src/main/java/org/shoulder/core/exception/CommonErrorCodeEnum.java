@@ -135,7 +135,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     CONTENT_TYPE_INVALID(333, "HttpMediaTypeNotSupported. ContentType(%s) is not acceptable.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
-     * 文件上传出错 todo 迁移
+     * 文件上传出错
      */
     MULTIPART_INVALID(334, "Request is not a validate multipart request, please check request or file size.", Level.WARN, HttpStatus.BAD_REQUEST),
 
@@ -155,11 +155,11 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     MID_WARE_CONNECT_FAIL(400, "Connect ", Level.ERROR),
     /**
-     * 数据存储失败
+     * 数据存储失败-未落库
      */
     DATA_STORAGE_FAIL(401, "Persistent fail!", Level.ERROR),
     /**
-     * 数据访问错误
+     * 数据访问错误-除了保存时
      */
     DATA_ACCESS_FAIL(402, "Data access fail!", Level.ERROR),
 

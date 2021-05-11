@@ -42,7 +42,7 @@ import java.sql.SQLException;
  * RestController 全局异常处理器 - 请求方错误，提供默认统一场景错误返回值
  * 不同 RestControllerAdvice 类中的异常处理器优先级：与 @Order 接口定义有关，默认最低，用户可以定义，以覆盖框架实现
  * <p>
- * todo 组装返回值时，根据返回值类型判断，
+ * 组装响应时，未根据返回值类型判断，统一返回 JSON 格式标准响应
  *
  * @author lym
  */
@@ -275,7 +275,6 @@ public class RestControllerExceptionAdvice {
      * SQLException
      * 开发者配置信息不全，完整性（必填为空），唯一性约束（主键不完整）
      * DataIntegrityViolationException
-     * todo 【可选】DataAccessException spring 的数据持久层异常基类（依赖数据库） 新建 RestControllerAdvice 加 ConditionalOnClass
      */
 
     /**

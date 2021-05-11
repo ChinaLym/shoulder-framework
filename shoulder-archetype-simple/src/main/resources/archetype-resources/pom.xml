@@ -31,6 +31,35 @@
             <artifactId>shoulder-starter-web</artifactId>
         </dependency>
 
+        <!-- 数据库相关 -->
+        <!--<dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-mysql</artifactId>
+        </dependency>-->
+
+        <!-- 对象转换 -->
+        <!--<dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-beanmap</artifactId>
+        </dependency>-->
+
+        <!-- 操作日志 -->
+        <!--<dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-operation-log</artifactId>
+        </dependency>-->
+
+        <!-- 监控相关（附工具包：可监控的线程池） -->
+        <!--<dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-monitor</artifactId>
+        </dependency>-->
+
+        <!-- 支持集群 -->
+        <!--<dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-cluster</artifactId>
+        </dependency>-->
 
         <!-- =================================== test =================================== -->
         <dependency>

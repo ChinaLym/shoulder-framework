@@ -56,7 +56,7 @@ public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM
     @OperationLog(operation = OperationLog.Operations.QUERY)
     default BaseResult<PageResult<ENTITY>> page(@RequestBody @Validated @Nonnull PageQuery<PageQueryPARAM> pageQueryParam) {
         // convert to BO
-        BasePageQuery<ENTITY> pageQuery = BasePageQuery.create(pageQueryParam);
+        BasePageQuery<ENTITY> pageQuery = BasePageQuery.create(pageQueryParam, this::convertToEntity);
         PageResult<ENTITY> queryResult = getService().page(pageQuery);
         return BaseResult.success(queryResult);
     }
@@ -74,5 +74,16 @@ public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM
     default BaseResult<ListResult<ENTITY>> query(@RequestBody ENTITY data) {
         return BaseResult.success(getService().list(data));
     }
+
+    /**
+     * DTO 转 entity
+     *
+     * @param pageQueryPARAM dto
+     * @return entity
+     */
+    default ENTITY convertToEntity(PageQueryPARAM pageQueryPARAM) {
+        return (ENTITY) pageQueryPARAM;
+    }
+
 
 }

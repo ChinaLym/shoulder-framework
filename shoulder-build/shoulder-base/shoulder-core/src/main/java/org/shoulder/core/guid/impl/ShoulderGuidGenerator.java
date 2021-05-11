@@ -1,6 +1,8 @@
 package org.shoulder.core.guid.impl;
 
 import org.shoulder.core.guid.LongGuidGenerator;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.PaddedAtomicLong;
 
 import java.lang.invoke.MethodHandles;
@@ -36,6 +38,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * @see SnowFlakeGenerator 提供了雪花算法格式的实现
  */
 public class ShoulderGuidGenerator implements LongGuidGenerator {
+
+    private static final Logger log = LoggerFactory.getLogger(ShoulderGuidGenerator.class);
 
     // ---------------------- Fields（7个不变的） -------------------------
 
@@ -98,9 +102,9 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
      *                       该值越大，则对时钟回拨处理能力越强，越大在满负载生成时对性能有一定影响
      *                       注意：参数设置合理时，几乎任何业务场景都不会触发满负载，无需关注性能问题
      */
-    public ShoulderGuidGenerator(long timeStampBits, long timeEpoch,
-                                 long instanceIdBits, long instanceId,
-                                 long sequenceBits, int bufferSize) {
+    public ShoulderGuidGenerator(int timeStampBits, long timeEpoch,
+                                 int instanceIdBits, long instanceId,
+                                 int sequenceBits, int bufferSize) {
         this.timeEpoch = timeEpoch;
         this.instanceId = instanceId;
 
@@ -120,7 +124,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         int selfInstanceIdBits = 64 - Long.numberOfLeadingZeros(instanceId);
         if (instanceIdBits < 0 || timeStampBits < selfInstanceIdBits) {
             throw new IllegalArgumentException("instanceIdBits or instanceId invalid. " +
-                "instanceIdBits=" + instanceIdBits + ", instanceId=" + instanceId);
+                    "instanceIdBits=" + instanceIdBits + ", instanceId=" + instanceId);
         }
 
         // 序列号所占位数必须大于 0
@@ -128,11 +132,18 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
             throw new IllegalArgumentException("sequenceBits must > 0. sequenceBits=" + sequenceBits);
         }
 
-        // 可以使用的位数 long 类型去掉符号位 todo 【扩展性】 是否去掉该校验，以支持用户生成非 64bit的 long，如 js 只支持 53bit
+        // 可以使用的位数 long 类型去掉符号位
         final int longBits = 64 - 1;
-        if (timeStampBits + instanceIdBits + sequenceBits != longBits) {
-            throw new IllegalArgumentException("timeStampBits + instanceIdBits + sequenceBits != 63 must = 63. " +
-                    "timeStampBits=" + timeStampBits + "instanceIdBits=" + instanceIdBits + "sequenceBits=" + sequenceBits);
+        int totalBits = timeStampBits + instanceIdBits + sequenceBits;
+        if (totalBits != longBits) {
+            String msg = "timeStampBits(" + timeStampBits + ") + " +
+                    "instanceIdBits(" + instanceIdBits + ") + " +
+                    "sequenceBits(" + sequenceBits + ") = " + totalBits;
+            if (totalBits > longBits) {
+                throw new IllegalArgumentException(msg + " > 63.");
+            } else {
+                log.warn(msg + " < 63.");
+            }
         }
 
         // 初始化缓冲区

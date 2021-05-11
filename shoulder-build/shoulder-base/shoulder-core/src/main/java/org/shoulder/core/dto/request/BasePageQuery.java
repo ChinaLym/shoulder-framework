@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.shoulder.core.constant.PageConst.*;
@@ -49,12 +50,17 @@ public class BasePageQuery<T> implements Serializable {
     public BasePageQuery() {
     }
 
+    @SuppressWarnings("unchecked")
     public static <ENTITY, DTO> BasePageQuery<ENTITY> create(@Nonnull PageQuery<DTO> pageQuery) {
-        BasePageQuery<ENTITY> page = new BasePageQuery<ENTITY>();
+        // convertUtil 支持泛型?
+        return create(pageQuery, dto -> (ENTITY) dto);
+    }
+
+    public static <ENTITY, DTO> BasePageQuery<ENTITY> create(@Nonnull PageQuery<DTO> pageQuery, Function<DTO, ENTITY> converter) {
+        BasePageQuery<ENTITY> page = new BasePageQuery<>();
         page.pageNo = pageQuery.getPageNo();
         page.pageSize = pageQuery.getPageSize();
-        // todo 【功能|重要】实体转换
-        page.condition = (ENTITY) pageQuery.getCondition();
+        page.condition = converter.apply(pageQuery.getCondition());
         if (CollectionUtils.isNotEmpty(pageQuery.getOrderRules())) {
             page.orderRules = pageQuery.getOrderRules().stream()
                     .map(r -> new OrderRule(r.getFieldName(), Order.getByName(r.getOrder())))

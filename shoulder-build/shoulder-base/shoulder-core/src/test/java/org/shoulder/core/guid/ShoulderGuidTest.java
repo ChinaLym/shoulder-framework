@@ -320,7 +320,7 @@ public class ShoulderGuidTest {
     @Test
     public void decode() {
         long timeEpoch = System.currentTimeMillis();
-        long instanceIdBits = 10;
+        int instanceIdBits = 10;
         long instanceId = ThreadLocalRandom.current().nextInt(1 << instanceIdBits);
         LongGuidGenerator generator = new ShoulderGuidGenerator(
             41, timeEpoch, instanceIdBits, instanceId, 12, 1);
