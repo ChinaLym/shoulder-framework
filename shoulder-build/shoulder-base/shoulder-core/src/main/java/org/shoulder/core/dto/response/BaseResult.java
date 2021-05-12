@@ -10,9 +10,9 @@ import org.shoulder.core.exception.ErrorContext;
 import org.shoulder.core.util.ExceptionUtil;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,7 +82,7 @@ public class BaseResult<T> implements Serializable {
         return new BaseResult<T>(ErrorCode.SUCCESS).setData(data);
     }
 
-    public static <X> BaseResult<ListResult<X>> success(List<X> dataList) {
+    public static <X> BaseResult<ListResult<X>> success(Collection<? extends X> dataList) {
         ListResult<X> listData = ListResult.of(dataList);
         return new BaseResult<ListResult<X>>(ErrorCode.SUCCESS).setData(listData);
     }

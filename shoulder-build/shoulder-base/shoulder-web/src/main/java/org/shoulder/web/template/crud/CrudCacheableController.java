@@ -1,4 +1,4 @@
-package org.shoulder.web.template;
+package org.shoulder.web.template.crud;
 
 import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;

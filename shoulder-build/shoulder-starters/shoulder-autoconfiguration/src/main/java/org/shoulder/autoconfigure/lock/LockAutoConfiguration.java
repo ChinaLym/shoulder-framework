@@ -16,7 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import javax.sql.DataSource;
 
 /**
- * 锁装配
+ * 锁装配 todo 【优化】添加properties以便于提示
  *
  * @author lym
  */

@@ -20,10 +20,10 @@ public class CommonEndpoint {
     @RequestMapping({"/redirect/**"})
     public String redirect(HttpServletRequest request, HttpServletResponse response,
                            @RequestHeader(value = "Host") String host) throws IOException {
-        String requestURI = request.getRequestURI();
+        String requestUri = request.getRequestURI();
         String ipPort = request.getScheme() + "://" + host;
         StringBuilder redirectAddress = new StringBuilder(ipPort);
-        redirectAddress.append(requestURI.substring(requestURI.indexOf("redirect") + 8));
+        redirectAddress.append(requestUri.substring(requestUri.indexOf("redirect") + 8));
         if (StringUtils.isNotEmpty(request.getQueryString())) {
             redirectAddress.append("?").append(request.getQueryString());
         }
