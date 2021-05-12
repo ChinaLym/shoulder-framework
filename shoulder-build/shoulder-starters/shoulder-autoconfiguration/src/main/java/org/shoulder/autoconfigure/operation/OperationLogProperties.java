@@ -41,7 +41,7 @@ public class OperationLogProperties {
     public static class LoggerProperties {
 
         /**
-         * TODO 操作日志记录方式
+         * 操作日志记录方式
          */
         private PersistenceType type = PersistenceType.LOGGER;
 
@@ -103,6 +103,8 @@ public class OperationLogProperties {
          * 保存到数据库
          */
         JDBC,
+
+        // ---------------------------------- 不在默认实现 ----------------------------------
 
         /**
          * 保存到消息队列，RabbitMQ

@@ -16,7 +16,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = InstanceIdProperties.PREFIX)
 public class InstanceIdProperties {
 
-    public static final String PREFIX = BaseAppProperties.APPLICATION_CONFIG_PREFIX + ".instance";
+    public static final String PREFIX = BaseAppProperties.KEY_PREFIX + "instance";
 
     /**
      * 生成器类型：FIXED / REDIS

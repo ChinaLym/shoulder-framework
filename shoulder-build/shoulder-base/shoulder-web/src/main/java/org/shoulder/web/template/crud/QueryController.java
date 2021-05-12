@@ -1,4 +1,4 @@
-package org.shoulder.web.template;
+package org.shoulder.web.template.crud;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Nonnull;
+import javax.validation.Valid;
 import java.io.Serializable;
 
 /**
@@ -27,6 +28,7 @@ import java.io.Serializable;
  * @param <PageQueryPARAM> 查询参数
  * @author lym
  */
+@Validated
 public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM> extends BaseController<ENTITY> {
 
     /**
@@ -36,12 +38,12 @@ public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM
      * @return 查询结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name = DataBaseConsts.FIELD_ID, value = "主键", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = DataBaseConsts.FIELD_ID, value = "主键", dataType = "long", paramType = "path"),
     })
-    @ApiOperation(value = "单体查询", notes = "单体查询")
+    @ApiOperation(value = "单个查询", notes = "单个查询")
     @GetMapping("/{id}")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<ENTITY> get(@PathVariable ID id) {
+    default BaseResult<ENTITY> get(@PathVariable(name = "id") ID id) {
         return BaseResult.success(getService().getById(id));
     }
 
@@ -51,10 +53,10 @@ public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM
      * @param pageQueryParam 分页参数
      * @return 分页数据
      */
-    @ApiOperation(value = "分页列表查询")
+    @ApiOperation(value = "分页查询")
     @PostMapping(value = "/page")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<PageResult<ENTITY>> page(@RequestBody @Validated @Nonnull PageQuery<PageQueryPARAM> pageQueryParam) {
+    default BaseResult<PageResult<ENTITY>> page(@RequestBody @Valid @Nonnull PageQuery<PageQueryPARAM> pageQueryParam) {
         // convert to BO
         BasePageQuery<ENTITY> pageQuery = BasePageQuery.create(pageQueryParam, this::convertToEntity);
         PageResult<ENTITY> queryResult = getService().page(pageQuery);
@@ -69,9 +71,9 @@ public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM
      * @return 查询结果
      */
     @ApiOperation(value = "批量查询", notes = "批量查询")
-    @PostMapping("/query")
+    @PostMapping("/listAll")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<ListResult<ENTITY>> query(@RequestBody ENTITY data) {
+    default BaseResult<ListResult<ENTITY>> listAll(@RequestBody ENTITY data) {
         return BaseResult.success(getService().list(data));
     }
 

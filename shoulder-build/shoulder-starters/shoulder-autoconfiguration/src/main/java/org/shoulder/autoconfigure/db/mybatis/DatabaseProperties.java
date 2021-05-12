@@ -20,7 +20,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = DatabaseProperties.PREFIX)
 public class DatabaseProperties {
 
-    public static final String PREFIX = BaseAppProperties.APPLICATION_CONFIG_PREFIX + ".db";
+    public static final String PREFIX = BaseAppProperties.KEY_PREFIX + "db";
 
     /**
      * 是否启用 防止全表更新与删除插件

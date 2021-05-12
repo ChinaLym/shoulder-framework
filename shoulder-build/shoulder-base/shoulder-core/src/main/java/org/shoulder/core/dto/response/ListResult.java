@@ -4,7 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 列表数据对象
@@ -46,12 +48,12 @@ public class ListResult<T> implements Serializable {
 
     }
 
-    public ListResult(List<T> list) {
-        this.list = list;
+    public ListResult(Collection<? extends T> list) {
+        this.list = list.stream().collect(Collectors.toList());
         this.total = (long) this.list.size();
     }
 
-    public static <T> ListResult<T> of(List<T> list) {
+    public static <T> ListResult<T> of(Collection<? extends T> list) {
         return new ListResult<>(list);
     }
 }

@@ -17,7 +17,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = GuidProperties.PREFIX)
 public class GuidProperties {
 
-    public static final String PREFIX = BaseAppProperties.APPLICATION_CONFIG_PREFIX + ".guid";
+    public static final String PREFIX = BaseAppProperties.KEY_PREFIX + "guid";
 
     /**
      * 元时间戳

@@ -1,4 +1,4 @@
-package org.shoulder.web.template;
+package org.shoulder.web.template.crud;
 
 
 import org.shoulder.core.context.AppContext;

@@ -1,4 +1,4 @@
-package org.shoulder.web.template;
+package org.shoulder.web.template.crud;
 
 import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
@@ -7,6 +7,9 @@ import org.shoulder.log.operation.annotation.OperationLog;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * 新增 API
@@ -26,7 +29,8 @@ public interface SaveController<ENTITY, SAVE_DTO> extends BaseController<ENTITY>
     @ApiOperation(value = "新增")
     @PostMapping
     @OperationLog(operation = OperationLog.Operations.CREATE)
-    default BaseResult<Void> save(@RequestBody @Validated(BaseEntity.Create.class) SAVE_DTO dto) {
+    @Validated(BaseEntity.Create.class)
+    default BaseResult<Void> save(@RequestBody @Valid @NotNull SAVE_DTO dto) {
         getService().save(handleBeforeSave(dto));
         return BaseResult.success();
     }

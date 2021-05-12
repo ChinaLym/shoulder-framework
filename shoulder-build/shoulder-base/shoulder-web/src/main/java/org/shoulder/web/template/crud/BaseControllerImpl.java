@@ -1,4 +1,4 @@
-package org.shoulder.web.template;
+package org.shoulder.web.template.crud;
 
 import org.shoulder.data.mybatis.template.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
