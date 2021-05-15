@@ -25,7 +25,7 @@ public class CryptoProperties {
     /**
      * 对称加密相关配置
      */
-    private LocalCryptoProperties local;
+    private LocalCryptoProperties local = new LocalCryptoProperties();
 
     /**
      * @deprecated 不支持也不推荐使用配置方式，推荐使用 @Bean 注入方式
