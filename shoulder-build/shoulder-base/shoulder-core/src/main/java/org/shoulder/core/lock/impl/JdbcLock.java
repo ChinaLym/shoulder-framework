@@ -149,7 +149,7 @@ public class JdbcLock extends AbstractDistributeLock implements ServerLock {
             // DuplicateKeyException | DeadlockLoserDataAccessException
             // 已经存在：其他线程已经获取到锁
         }
-        log.debug("try lock {}! {}", locked ? "SUCCESS" : "FAIL", lockInfo);
+        log.trace("try lock {}! {}", locked ? "SUCCESS" : "FAIL", lockInfo);
         return locked;
     }
 

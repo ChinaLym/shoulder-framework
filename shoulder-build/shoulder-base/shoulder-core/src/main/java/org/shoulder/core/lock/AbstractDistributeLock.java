@@ -18,9 +18,9 @@ public abstract class AbstractDistributeLock extends AbstractServerLock {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
-     * 重试等待时间间隔
+     * 重试等待时间间隔 50ms
      */
-    protected Duration retryBlockTime = Duration.ofMillis(30);
+    protected Duration retryBlockTime = Duration.ofMillis(50);
 
 
     public Duration getRetryBlockTime() {
