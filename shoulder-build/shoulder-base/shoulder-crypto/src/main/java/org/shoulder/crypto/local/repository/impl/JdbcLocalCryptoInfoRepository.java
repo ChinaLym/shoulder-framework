@@ -137,12 +137,13 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         @Override
         public LocalCryptoMetaInfo mapRow(@Nonnull ResultSet rs, int rowNum) throws SQLException {
             LocalCryptoMetaInfo entity = new LocalCryptoMetaInfo();
-            entity.setAppId(rs.getString(0));
-            entity.setHeader(rs.getString(1));
-            entity.setDataKey(rs.getString(2));
-            entity.setRootKeyPart(rs.getString(3));
-            entity.setVector(rs.getString(4));
-            entity.setCreateTime(rs.getDate(5));
+            // 第一个下标为 1
+            entity.setAppId(rs.getString(1));
+            entity.setHeader(rs.getString(2));
+            entity.setDataKey(rs.getString(3));
+            entity.setRootKeyPart(rs.getString(4));
+            entity.setVector(rs.getString(5));
+            entity.setCreateTime(rs.getDate(6));
             return entity;
         }
     }
