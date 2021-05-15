@@ -18,7 +18,7 @@ import java.io.Serializable;
  * @param <UpdateDTO> 修改参数
  * @author lym
  */
-abstract class CrudController<S extends BaseService<ENTITY>, ENTITY, Id extends Serializable, PageQuery, SaveDTO, UpdateDTO>
+public abstract class CrudController<S extends BaseService<ENTITY>, ENTITY, Id extends Serializable, PageQuery, SaveDTO, UpdateDTO>
         extends BaseControllerImpl<S, ENTITY>
         implements
         SaveController<ENTITY, SaveDTO>,
