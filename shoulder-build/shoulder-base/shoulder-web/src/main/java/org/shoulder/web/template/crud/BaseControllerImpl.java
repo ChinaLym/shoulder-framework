@@ -1,5 +1,7 @@
 package org.shoulder.web.template.crud;
 
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.data.mybatis.template.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author lym
  */
 public abstract class BaseControllerImpl<S extends BaseService<ENTITY>, ENTITY> implements BaseController<ENTITY> {
+
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     protected S service;

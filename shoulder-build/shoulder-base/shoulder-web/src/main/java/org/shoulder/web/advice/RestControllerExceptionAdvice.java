@@ -42,6 +42,7 @@ import java.sql.SQLException;
  *
  * @author lym
  */
+@SuppressWarnings("rawtypes")
 @Order(Ordered.LOWEST_PRECEDENCE)
 @RestControllerAdvice
 public class RestControllerExceptionAdvice {
@@ -118,12 +119,12 @@ public class RestControllerExceptionAdvice {
 
 
     /**
-     * jsr303 验证不通过 todo 通过配置，可能未开启快速失败，因此会有多个错误原因，因此需要 getConstraintViolations
+     * jsr303 验证不通过
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public BaseResult constraintViolationExceptionHandler(ConstraintViolationException e) {
-        // 这里取了第一个错误作为校验错误原因，且默认使用 hibernate，未做其他实现判断
+        // 默认使用 hibernate，未做其他实现判断（可能未开启快速失败，因此会有多个错误原因，值取第一个）
         ConstraintViolationImpl firstConstraintViolation = (ConstraintViolationImpl) e.getConstraintViolations()
                 .stream().findFirst().orElse(null);
         assert firstConstraintViolation != null;
@@ -230,7 +231,7 @@ public class RestControllerExceptionAdvice {
     /**
      * 其他异常
      * 对于这类不明确的异常，原始报错消息改成未知异常，日志打印详细内容并使用未知错误码，以避免暴露堆栈信息等
-     * todo 【可选】ClientAbortException tomcat中客户端连接断开，如浏览器请求了，还没响应就关闭了，服务器返回时发现response不能写
+     * 【可选】ClientAbortException tomcat中客户端连接断开，如浏览器请求了，还没响应就关闭了，服务器返回时发现response不能写
      */
     @ExceptionHandler(Exception.class)
     public BaseResult otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -263,7 +264,7 @@ public class RestControllerExceptionAdvice {
      */
 
     /**
-     * 数据库保存失败
+     * 数据库保存失败 (spring data 中不会抛 SQLException )
      */
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(SQLException.class)
