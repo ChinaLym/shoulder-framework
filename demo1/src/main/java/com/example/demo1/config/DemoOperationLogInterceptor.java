@@ -3,10 +3,10 @@ package com.example.demo1.config;
 import cn.hutool.core.collection.CollectionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.OperationLogDTO;
-import org.shoulder.log.operation.dto.sample.MultiOperableDecorator;
+import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.logger.OperationLoggerInterceptor;
+import org.shoulder.log.operation.model.OperationLogDTO;
+import org.shoulder.log.operation.model.sample.MultiOperableDecorator;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

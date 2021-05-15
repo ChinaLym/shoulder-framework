@@ -2,7 +2,7 @@ package com.example.demo1.bo;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.shoulder.log.operation.dto.Operable;
+import org.shoulder.core.model.Operable;
 
 /**
  * 用户

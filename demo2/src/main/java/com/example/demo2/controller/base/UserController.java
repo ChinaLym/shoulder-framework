@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo2.entity.UserEntity;
 import com.example.demo2.service.IUserService;
 import org.shoulder.web.annotation.SkipResponseWrap;
-import org.shoulder.web.template.CrudController;
+import org.shoulder.web.template.crud.CrudController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

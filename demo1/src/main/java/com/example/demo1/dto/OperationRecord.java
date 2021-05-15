@@ -1,7 +1,7 @@
 package com.example.demo1.dto;
 
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.sample.OperateRecordDto;
+import org.shoulder.core.model.Operable;
+import org.shoulder.log.operation.model.sample.OperateRecordDto;
 
 /**
  * 业务操作记录

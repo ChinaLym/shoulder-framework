@@ -96,8 +96,9 @@ public class BatchController {
 
     /**
      * 实现举例：批量导入
+     * http://localhost:8080/batch/validate?taskId=
      */
-
+    @RequestMapping(value = "import")
     public BaseResult<String> doImport(@RequestBody ExecuteOperationParam executeOperationParam) {
         // 示例：从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
 

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- TODO 这里设置 Mapper -->
 <mapper namespace="com.example.demo2.repository.UserMapper">
 
-    <!-- 通用查询映射结果 TODO 这里设置 Entity -->
+    <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.example.demo2.entity.UserEntity">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>

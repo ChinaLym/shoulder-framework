@@ -77,10 +77,10 @@
         </dependency>
 
         <!-- test cluster -->
-        <dependency>
+        <!--<dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-cluster</artifactId>
-        </dependency>
+        </dependency>-->
 
 
         <!-- 热更新插件，修改代码无需重启 -->

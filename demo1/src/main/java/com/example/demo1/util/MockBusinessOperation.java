@@ -5,7 +5,7 @@ import com.example.demo1.dto.OperationRecord;
 import org.shoulder.log.operation.context.OpLogContext;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.context.OperationLogFactory;
-import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.model.OperationLogDTO;
 
 import java.util.ArrayList;
 import java.util.List;

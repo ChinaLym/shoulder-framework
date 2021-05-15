@@ -6,7 +6,7 @@ import org.shoulder.core.lock.LockInfo;
 import org.shoulder.core.lock.ServerLock;
 import org.shoulder.core.lock.impl.JdbcLock;
 import org.shoulder.web.annotation.SkipResponseWrap;
-import org.shoulder.web.template.BaseControllerImpl;
+import org.shoulder.web.template.crud.BaseControllerImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,17 +51,20 @@ public class LockController extends BaseControllerImpl<IUserService, UserEntity>
     }
 
     /**
-     * http://localhost:8080/lock/tryLockMax5s
+     * 尝试获取锁，最多等 5s，获取到后永久锁定
+     * 10天 http://localhost:8080/lock/tryLockMax5s?holdTime=p10d
+     * 5秒 http://localhost:8080/lock/tryLockMax5s?holdTime=pt5s
      */
     @RequestMapping("tryLockMax5s")
-    public boolean tryLockMax5s() throws InterruptedException {
-        LockInfo lockInfo = new LockInfo(shareKey);
+    public boolean tryLockMax5s(String holdTime) throws InterruptedException {
+        LockInfo lockInfo = new LockInfo(shareKey, Duration.parse(holdTime));
         if (lock.tryLock(lockInfo, Duration.ofSeconds(5))) {
             operationToken = lockInfo.getToken();
             return true;
         }
         return false;
     }
+
 
     /**
      * http://localhost:8080/lock/lock
