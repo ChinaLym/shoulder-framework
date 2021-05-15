@@ -19,11 +19,4 @@ public class DictionaryCrudController<ID extends Serializable> extends CrudCache
         DictionaryService<ID>, DictionaryEntity<ID>, ID, DictionaryEntity<ID>, DictionaryEntity<ID>, DictionaryEntity<ID>
         > implements DictionaryController {
 
-
-    //@Override
-//    public BaseResult<ListResult<String>> allTypes() {
-//        Collection<String> allTypeNames = dictionaryEnumStore.listAllTypeNames();
-//        return BaseResult.success(allTypeNames);
-//    }
-
 }
