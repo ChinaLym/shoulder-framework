@@ -1,13 +1,16 @@
 package org.shoulder.autoconfigure.web;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.web.template.dictionary.DefaultDictionaryController;
-import org.shoulder.web.template.dictionary.DefaultDictionaryItemController;
-import org.shoulder.web.template.dictionary.DictionaryController;
-import org.shoulder.web.template.dictionary.DictionaryItemController;
+import org.shoulder.data.mybatis.template.service.BaseServiceImpl;
+import org.shoulder.web.template.dictionary.*;
+import org.shoulder.web.template.dictionary.repository.DictionaryItemRepository;
+import org.shoulder.web.template.dictionary.repository.DictionaryRepository;
+import org.shoulder.web.template.dictionary.service.DictionaryItemService;
+import org.shoulder.web.template.dictionary.service.DictionaryService;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -18,7 +21,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * 自动装配
+ * 自动装配 字典 api，用于动态下拉框
  *
  * @author lym
  */
@@ -52,22 +55,52 @@ public class WebExtAutoConfiguration {
         return repository;
     }
 
-    /**
-     * 枚举字典 api，用于简单动态下拉框
-     *
-     * @return DefaultDictionaryController
-     */
     @Bean
     @ConditionalOnMissingBean
-    public DictionaryController dictionaryController() {
-        return new DefaultDictionaryController();
+    public DictionaryController dictionaryController(DictionaryEnumStore dictionaryEnumStore) {
+        return new DictionaryEnumController(dictionaryEnumStore);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public DictionaryItemController dictionaryItemEnumController(@Autowired(required = false) DictionaryEnumStore dictionaryEnumStore) {
-        return new DefaultDictionaryItemController(dictionaryEnumStore);
+    public DictionaryItemController dictionaryItemController(DictionaryEnumStore dictionaryEnumStore) {
+        return new DictionaryItemEnumController(dictionaryEnumStore);
     }
 
 
+    @Configuration
+    @ConditionalOnClass(value = {BaseServiceImpl.class})
+    @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "db")
+    public static class BaseOnDbDictionaryConfiguration {
+
+        @Bean
+        @ConditionalOnMissingBean
+        @ConditionalOnBean(DictionaryItemRepository.class)
+        public DictionaryItemService dictionaryItemService() {
+            return new DictionaryItemService();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        @ConditionalOnBean(DictionaryRepository.class)
+        public DictionaryService dictionaryService() {
+            return new DictionaryService();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        @ConditionalOnBean(DictionaryService.class)
+        public DictionaryController dictionaryController() {
+            return new DictionaryCrudController();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        @ConditionalOnBean(DictionaryItemService.class)
+        public DictionaryItemController dictionaryItemEnumController() {
+            return new DictionaryItemCrudController();
+        }
+
+
+    }
 }

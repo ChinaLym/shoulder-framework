@@ -10,10 +10,10 @@ import java.util.function.Function;
 /**
  * 扩展了缓存能力
  *
- * @param <T> 实体
+ * @param <ENTITY> 实体
  * @author lym
  */
-public interface BaseCacheableService<T> extends BaseService<T> {
+public interface BaseCacheableService<ENTITY> extends BaseService<ENTITY> {
 
     /**
      * 先查缓存，再查db
@@ -21,7 +21,7 @@ public interface BaseCacheableService<T> extends BaseService<T> {
      * @param id 主键
      * @return 对象
      */
-    T getByIdFromCache(Serializable id);
+    ENTITY getByIdFromCache(Serializable id);
 
     /**
      * 根据 key 查询缓存中存放的id
@@ -31,7 +31,7 @@ public interface BaseCacheableService<T> extends BaseService<T> {
      * @param loader 数据加载器
      * @return 对象
      */
-    T getByCacheKey(Object key, Function<Object, Object> loader);
+    ENTITY getByCacheKey(Object key, Function<Object, Object> loader);
 
     /**
      * 可能会缓存穿透
@@ -40,7 +40,7 @@ public interface BaseCacheableService<T> extends BaseService<T> {
      * @param loader 回调
      * @return 对象集合
      */
-    List<T> loadByIds(@NonNull Collection<? extends Serializable> ids, Function<Collection<? extends Serializable>, Collection<T>> loader);
+    List<ENTITY> loadByIds(@NonNull Collection<? extends Serializable> ids, Function<Collection<? extends Serializable>, Collection<ENTITY>> loader);
 
     /**
      * 刷新缓存
