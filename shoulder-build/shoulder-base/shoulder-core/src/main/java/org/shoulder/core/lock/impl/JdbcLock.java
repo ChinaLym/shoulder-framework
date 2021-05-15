@@ -178,11 +178,11 @@ public class JdbcLock extends AbstractDistributeLock implements ServerLock {
         public LockInfo mapRow(@Nonnull ResultSet rs, int rowNum) throws SQLException {
             // owner, token, version, lock_time, release_time
             LockInfo entity = new LockInfo();
-            entity.setOwner(rs.getString(0));
-            entity.setToken(rs.getString(1));
-            entity.setVersion(rs.getInt(2));
-            entity.setLockTime(rs.getTimestamp(3).toLocalDateTime());
-            entity.setReleaseTime(rs.getTimestamp(4).toLocalDateTime());
+            entity.setOwner(rs.getString(1));
+            entity.setToken(rs.getString(2));
+            entity.setVersion(rs.getInt(3));
+            entity.setLockTime(rs.getTimestamp(4).toLocalDateTime());
+            entity.setReleaseTime(rs.getTimestamp(5).toLocalDateTime());
             return entity;
         }
     }
