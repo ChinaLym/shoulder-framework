@@ -2,8 +2,10 @@ package org.shoulder.web.template.crud;
 
 import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
-import org.shoulder.data.mybatis.template.entity.BaseEntity;
+import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.annotation.OperationLog;
+import org.shoulder.log.operation.context.OpLogContextHolder;
+import org.shoulder.validate.groups.Create;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,7 @@ public interface SaveController<ENTITY, SAVE_DTO> extends BaseController<ENTITY>
 
     /**
      * 新增
+     * service.save —— mapper.insert
      *
      * @param dto 保存参数
      * @return ok
@@ -29,9 +32,13 @@ public interface SaveController<ENTITY, SAVE_DTO> extends BaseController<ENTITY>
     @ApiOperation(value = "新增")
     @PostMapping
     @OperationLog(operation = OperationLog.Operations.CREATE)
-    @Validated(BaseEntity.Create.class)
+    @Validated(Create.class)
     default BaseResult<Void> save(@RequestBody @Valid @NotNull SAVE_DTO dto) {
-        getService().save(handleBeforeSave(dto));
+        ENTITY entity = handleBeforeSave(dto);
+        if (Operable.class.isAssignableFrom(getEntityClass())) {
+            OpLogContextHolder.setOperableObject((Operable) entity);
+        }
+        getService().save(entity);
         return BaseResult.success();
     }
 

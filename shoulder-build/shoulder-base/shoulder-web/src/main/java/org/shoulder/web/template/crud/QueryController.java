@@ -23,16 +23,17 @@ import java.io.Serializable;
 /**
  * 查询 API
  *
- * @param <ENTITY>         实体
- * @param <ID>             主键
- * @param <PageQueryPARAM> 查询参数
+ * @param <ENTITY>           实体
+ * @param <ID>               主键
+ * @param <PAGE_QUERY_PARAM> 查询参数
  * @author lym
  */
 @Validated
-public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM> extends BaseController<ENTITY> {
+public interface QueryController<ENTITY, ID extends Serializable, PAGE_QUERY_PARAM> extends BaseController<ENTITY> {
 
     /**
      * 查询
+     * service.getById —— mapper.selectById
      *
      * @param id 主键id
      * @return 查询结果
@@ -49,6 +50,7 @@ public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM
 
     /**
      * 分页查询
+     * service.page —— mapper.selectPage
      *
      * @param pageQueryParam 分页参数
      * @return 分页数据
@@ -56,7 +58,7 @@ public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM
     @ApiOperation(value = "分页查询")
     @PostMapping(value = "/page")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<PageResult<ENTITY>> page(@RequestBody @Valid @Nonnull PageQuery<PageQueryPARAM> pageQueryParam) {
+    default BaseResult<PageResult<ENTITY>> page(@RequestBody @Valid @Nonnull PageQuery<PAGE_QUERY_PARAM> pageQueryParam) {
         // convert to BO
         BasePageQuery<ENTITY> pageQuery = BasePageQuery.create(pageQueryParam, this::convertToEntity);
         PageResult<ENTITY> queryResult = getService().page(pageQuery);
@@ -66,6 +68,7 @@ public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM
 
     /**
      * 批量查询
+     * service.list —— mapper.selectList
      *
      * @param data 批量查询
      * @return 查询结果
@@ -80,11 +83,11 @@ public interface QueryController<ENTITY, ID extends Serializable, PageQueryPARAM
     /**
      * DTO 转 entity
      *
-     * @param pageQueryPARAM dto
+     * @param pageQueryParam dto
      * @return entity
      */
-    default ENTITY convertToEntity(PageQueryPARAM pageQueryPARAM) {
-        return (ENTITY) pageQueryPARAM;
+    default ENTITY convertToEntity(PAGE_QUERY_PARAM pageQueryParam) {
+        return (ENTITY) pageQueryParam;
     }
 
 

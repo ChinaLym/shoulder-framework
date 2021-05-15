@@ -3,6 +3,7 @@ package org.shoulder.web.template.dictionary.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class BatchQueryParam implements Serializable {
      * 字典类型
      */
     @NotNull
+    @Size(max = 10)
     List<String> dictionaryTypeList;
 
 }

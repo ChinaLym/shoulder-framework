@@ -15,8 +15,8 @@ import java.io.Serializable;
  *
  * @author lym
  */
-public abstract class CrudCacheableController<S extends BaseCacheableService<ENTITY>, ENTITY, Id extends Serializable, PageQuery, SaveDTO, UpdateDTO>
-        extends CrudController<S, ENTITY, Id, PageQuery, SaveDTO, UpdateDTO> {
+public abstract class CrudCacheableController<S extends BaseCacheableService<ENTITY>, ENTITY, ID extends Serializable, PageQuery, SaveDTO, UpdateDTO>
+        extends CrudController<S, ENTITY, ID, PageQuery, SaveDTO, UpdateDTO> {
 
     /**
      * 查询
@@ -26,7 +26,7 @@ public abstract class CrudCacheableController<S extends BaseCacheableService<ENT
      */
     @Override
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    public BaseResult<ENTITY> get(@PathVariable Id id) {
+    public BaseResult<ENTITY> get(@PathVariable ID id) {
         return BaseResult.success(service.getByIdFromCache(id));
     }
 

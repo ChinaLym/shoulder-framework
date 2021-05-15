@@ -1,43 +1,11 @@
-package org.shoulder.web.template.dictionary;
+package org.shoulder.web.template.dictionary.model;
 
 /**
  * 字典型枚举
  *
  * @author lym
  */
-public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<E, IDENTIFY>>, IDENTIFY> {
-
-    /**
-     * 获取该字典项的 id
-     *
-     * @return id
-     */
-    IDENTIFY getId();
-
-    /**
-     * 获取该字典项的 source
-     *
-     * @return source
-     */
-    String getName();
-
-    /**
-     * 获取该字典项的展示名称
-     *
-     * @return 展示名称
-     */
-    default String getDisplayName() {
-        return getName();
-    }
-
-    /**
-     * 获取对应的枚举类型，通常是类名等
-     *
-     * @return 枚举类型
-     */
-    default String getDictionaryType() {
-        return getClass().getSimpleName();
-    }
+public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<E, IDENTIFY>>, IDENTIFY> extends DictionaryItem<IDENTIFY> {
 
     /**
      * 将 id 转为 Enum
@@ -60,7 +28,7 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<E, IDENT
     @SuppressWarnings("unchecked")
     static <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> ENUM fromId(ENUM[] enumValues, ID id) {
         for (ENUM e : enumValues) {
-            if (((DictionaryEnum<ENUM, ID>) e).getId().equals(id)) {
+            if (((DictionaryEnum<ENUM, ID>) e).getItemId().equals(id)) {
                 return e;
             }
         }

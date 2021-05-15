@@ -1,7 +1,8 @@
-package org.shoulder.web.template.dictionary;
+package org.shoulder.web.template.dictionary.spi;
 
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
+import org.shoulder.web.template.dictionary.model.DictionaryEnum;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
  * @author lym
  */
 @SuppressWarnings("unchecked, rawtypes")
-public class DefaultDictionaryEnumRepository implements DictionaryEnumRepository {
+public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
 
     private final ConcurrentMap<String, Class<? extends DictionaryEnum>> repo = new ConcurrentHashMap<>();
 
@@ -27,7 +28,7 @@ public class DefaultDictionaryEnumRepository implements DictionaryEnumRepository
      */
     private final boolean ignoreCase;
 
-    public DefaultDictionaryEnumRepository(boolean ignoreCase) {
+    public DefaultDictionaryEnumStore(boolean ignoreCase) {
         this.ignoreCase = ignoreCase;
     }
 
@@ -48,7 +49,7 @@ public class DefaultDictionaryEnumRepository implements DictionaryEnumRepository
 
     @Nonnull
     @Override
-    public List<DictionaryEnum> listAsDictionaryEnum(String enumClassType) {
+    public List<DictionaryEnum> listAllAsDictionaryEnum(String enumClassType) {
         Class<? extends DictionaryEnum> dictionaryEnumClass = repo.get(processDictionaryTypeName(enumClassType));
         if (dictionaryEnumClass == null) {
             throw createDictionaryTypeNotFoundException(enumClassType);

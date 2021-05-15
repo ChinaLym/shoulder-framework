@@ -1,4 +1,6 @@
-package org.shoulder.web.template.dictionary;
+package org.shoulder.web.template.dictionary.spi;
+
+import org.shoulder.web.template.dictionary.model.DictionaryEnum;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -9,7 +11,7 @@ import java.util.List;
  *
  * @author lym
  */
-public interface DictionaryEnumRepository {
+public interface DictionaryEnumStore {
 
     /**
      * 注册一个枚举类
@@ -62,13 +64,11 @@ public interface DictionaryEnumRepository {
      * 列出所有 enumClassType 下的字典项 （返回值去掉泛型）
      *
      * @param enumClassType 枚举类名/别名
-     * @param <ID>          枚举标识类型
-     * @param <ENUM>        枚举
      * @return 所有符合条件的枚举
      */
     @Nonnull
     @SuppressWarnings("rawtypes")
-    List<DictionaryEnum> listAsDictionaryEnum(String enumClassType);
+    List<DictionaryEnum> listAllAsDictionaryEnum(String enumClassType);
 
     /**
      * 列出所有支持的枚举类名
