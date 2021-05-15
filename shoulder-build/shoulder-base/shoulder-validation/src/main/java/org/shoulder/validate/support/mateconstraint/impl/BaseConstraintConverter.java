@@ -6,7 +6,10 @@ import org.shoulder.validate.support.mateconstraint.ConstraintConverter;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 约束提取基础类
@@ -14,11 +17,6 @@ import java.util.*;
  * @author lym
  */
 public abstract class BaseConstraintConverter implements ConstraintConverter {
-
-    /**
-     * 支持解析所有注解
-     */
-    protected static final List<Class<? extends Annotation>> SUPPORT_ALL = new ArrayList<>(0);
 
     /**
      * 支持的注解
@@ -38,10 +36,7 @@ public abstract class BaseConstraintConverter implements ConstraintConverter {
      */
     @Override
     public boolean support(Class<? extends Annotation> annotationClass) {
-        if (getSupportAnnotations() == SUPPORT_ALL) {
-            return true;
-        }
-        return annotationClass != null && getSupportAnnotations().contains(annotationClass);
+        return supportAnnotations.contains(annotationClass);
     }
 
     /**
@@ -61,15 +56,6 @@ public abstract class BaseConstraintConverter implements ConstraintConverter {
         }
         String type = getType(annotation.annotationType());
         return new ConstraintInfoDTO().setType(type).setAttributes(attributes);
-    }
-
-    /**
-     * 返回支持的 JSR 注解 类型
-     *
-     * @return 注解
-     */
-    protected List<Class<? extends Annotation>> getSupportAnnotations() {
-        return supportAnnotations;
     }
 
     /**

@@ -3,18 +3,14 @@ package org.shoulder.web.advice;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.hibernate.validator.internal.engine.path.NodeImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
-import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
-import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.ExceptionUtil;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -51,12 +47,6 @@ import java.sql.SQLException;
 public class RestControllerExceptionAdvice {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private static final String GLOBAL_EXCEPTION_HANDLER_TIP = "RestControllerExceptionAdvice - ";
-
-    @Autowired(required = false)
-    private Translator translator;
-
 
     /**
      * 缺少参数
@@ -145,14 +135,9 @@ public class RestControllerExceptionAdvice {
         String msg = StringUtils.isEmpty(msgInAnnotation) ? ParamErrorCodeEnum.PARAM_ILLEGAL.getMessage() : msgInAnnotation;
         Logger logger = LoggerFactory.getLogger(firstConstraintViolation.getRootBeanClass().getName());
         if (logger.isInfoEnabled()) {
-            String logMessage = null;
-            if (translator == null) {
-                logMessage = ExceptionUtil.generateExceptionMessage(msg, paramName);
-            } else {
-                translator.getMessage(msg, paramName, AppInfo.defaultLocale());
-            }
             // 这里堆栈信息不必打印
-            logger.infoWithErrorCode(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(), GLOBAL_EXCEPTION_HANDLER_TIP + logMessage);
+            logger.infoWithErrorCode(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(),
+                    "RestControllerExceptionAdvice - " + paramName + " - " + msg);
         }
         return new BaseResult<>(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(), msg, new Object[]{paramName});
     }

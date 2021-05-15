@@ -37,4 +37,4 @@ logging.level.<包名>=<日志级别>
 
 ## 开发框架注意
 
-Properties 中嵌套其他 properties，最好初始 new 一个，避免用户使用不当产生 NPE
+Properties 中嵌套其他 properties，最好初始 new 一个，避免用户使用不当产生 NPE 注入 controller 时候，返回值必须为 带注解的实现类
