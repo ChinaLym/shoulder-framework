@@ -340,6 +340,18 @@
                 <version>${shoulder.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-ext-dictionary</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-ext-autoconfiguration</artifactId>
+                <version>${shoulder.version}</version>
+            </dependency>
+
             <!--shoulder-ext end -->
 
             <!-- ====================================== The third party ========================================== -->

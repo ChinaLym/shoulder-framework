@@ -14,10 +14,13 @@
     <version>0.6</version><!-- shoulder-version -->
     <packaging>pom</packaging>
 
+
     <modules>
         <module>shoulder-ext-common</module>
         <module>shoulder-ext-config</module>
+        <module>shoulder-ext-dictionary</module>
 
+        <module>shoulder-ext-autoconfiguration</module>
     </modules>
 
 </project>
