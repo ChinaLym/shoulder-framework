@@ -1,6 +1,6 @@
-/*Table structure for table `crypt_info` 加密部件表，可以由每个应用自身维护，也可统一管理 */
+/*Table structure for table `crypto_info` 加密部件表，可以由每个应用自身维护，也可统一管理 */
 
-CREATE TABLE `crypt_info`
+CREATE TABLE `crypto_info`
 (
     `app_id`        VARCHAR(32) NOT NULL COMMENT '应用标识',
     `header`        VARCHAR(32) NOT NULL DEFAULT '' COMMENT '密文前缀/算法标识/版本标志',
