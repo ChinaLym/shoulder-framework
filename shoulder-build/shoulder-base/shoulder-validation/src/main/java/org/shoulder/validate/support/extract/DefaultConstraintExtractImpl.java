@@ -17,6 +17,7 @@ import org.shoulder.validate.support.dto.ConstraintInfoDTO;
 import org.shoulder.validate.support.dto.FieldValidationRuleDTO;
 import org.shoulder.validate.support.mateconstraint.ConstraintConverter;
 import org.shoulder.validate.support.model.ValidConstraint;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 import javax.annotation.Nonnull;
 import javax.validation.Validator;
@@ -55,22 +56,22 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
      */
     private final List<ConstraintConverter> constraintConverters;
 
-    public DefaultConstraintExtractImpl(final Validator validator, List<ConstraintConverter> constraintConverters) {
+    public DefaultConstraintExtractImpl(Validator validator, List<ConstraintConverter> constraintConverters) {
         this.validator = validator;
         this.constraintConverters = constraintConverters;
         try {
+            if (validator instanceof SpringValidatorAdapter) {
+                Field targetValidatorField = SpringValidatorAdapter.class.getDeclaredField("targetValidator");
+                targetValidatorField.setAccessible(true);
+                validator = (Validator) targetValidatorField.get(validator);
+            }
+            assert validator instanceof ValidatorImpl;
             Field beanMetaDataManagerField = ValidatorImpl.class.getDeclaredField("beanMetaDataManager");
             beanMetaDataManagerField.setAccessible(true);
             beanMetaDataManager = (BeanMetaDataManager) beanMetaDataManagerField.get(validator);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             log.error("初始化验证器失败", e);
         }
-/*        constraintConverters = new ArrayList<>(10);
-        constraintConverters.add(new MaxMinConstraintConverter());
-        constraintConverters.add(new NotNullConstraintConverter());
-        constraintConverters.add(new RangeConstraintConverter());
-        constraintConverters.add(new RegexConstraintConverter());
-        constraintConverters.add(new OtherConstraintConverter());*/
     }
 
 

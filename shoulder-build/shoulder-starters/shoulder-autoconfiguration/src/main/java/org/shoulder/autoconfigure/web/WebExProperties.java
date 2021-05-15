@@ -36,7 +36,7 @@ public class WebExProperties {
         /**
          * 字典 api 路径
          */
-        private String path = "/api/v1/dictionary";
+        private String dictionaryPath = "/api/v1/dictionary";
 
         /**
          * 字典 / 字典项 数据存在哪

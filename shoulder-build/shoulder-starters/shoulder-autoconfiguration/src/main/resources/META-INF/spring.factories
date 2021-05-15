@@ -29,6 +29,8 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   \
   org.shoulder.autoconfigure.lock.LockAutoConfiguration, \
   \
+  org.shoulder.autoconfigure.validate.DynamicValidationRuleAutoConfiguration, \
+  \
   org.shoulder.autoconfigure.guid.GuidAutoConfiguration, \
   org.shoulder.autoconfigure.guid.InstanceIdProviderAutoConfiguration, \
   \

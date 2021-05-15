@@ -8,9 +8,7 @@ import org.shoulder.validate.support.extract.ConstraintExtract;
 import org.shoulder.validate.support.model.ValidConstraint;
 import org.springframework.core.MethodParameter;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -38,10 +36,10 @@ import java.util.List;
  *
  * @author lym
  */
-@RequestMapping
+@RestController
 public class ValidateRuleEndPoint {
 
-    private static final String FORM_VALIDATOR_URL = "/form/validateRule";
+    private static final String FORM_VALIDATOR_URL = "/api/v1/validate/rule";
 
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 
@@ -76,7 +74,7 @@ public class ValidateRuleEndPoint {
      * @return 验证规则
      * @throws Exception 异常
      */
-    @RequestMapping(FORM_VALIDATOR_URL)
+    @GetMapping(FORM_VALIDATOR_URL)
     @ResponseBody
     public BaseResult<ListResult<FieldValidationRuleDTO>> standardByQueryParam(@RequestParam(value = "formPath", required = false) String formPath, HttpServletRequest request) throws Exception {
         return BaseResult.success(localFieldValidatorDescribe(request, formPath));
