@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}")
-public class DefaultDictionaryController<ID extends Serializable> extends CrudCacheableController<
+public class DictionaryCrudController<ID extends Serializable> extends CrudCacheableController<
         DictionaryService<ID>, DictionaryEntity<ID>, ID, DictionaryEntity<ID>, DictionaryEntity<ID>, DictionaryEntity<ID>
         > implements DictionaryController {
 
