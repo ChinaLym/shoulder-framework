@@ -2,10 +2,14 @@ package org.shoulder.autoconfigure.web;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.web.template.dictionary.DefaultDictionaryController;
-import org.shoulder.web.template.dictionary.DefaultDictionaryEnumRepository;
-import org.shoulder.web.template.dictionary.DictionaryEnumRepository;
-import org.shoulder.web.template.dictionary.DictionaryEnumRepositoryCustomizer;
+import org.shoulder.web.template.dictionary.DefaultDictionaryItemController;
+import org.shoulder.web.template.dictionary.DictionaryController;
+import org.shoulder.web.template.dictionary.DictionaryItemController;
+import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
+import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,9 +42,10 @@ public class WebExtAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public DictionaryEnumRepository dictionaryEnumRepository(@Nullable List<DictionaryEnumRepositoryCustomizer> customizers) {
-        DictionaryEnumRepository repository =
-                new DefaultDictionaryEnumRepository(webExProperties.getDictionary().getIgnoreDictionaryTypeCase());
+    @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "enum", matchIfMissing = true)
+    public DictionaryEnumStore dictionaryEnumRepository(@Nullable List<DictionaryEnumRepositoryCustomizer> customizers) {
+        DictionaryEnumStore repository =
+                new DefaultDictionaryEnumStore(webExProperties.getDictionary().getIgnoreDictionaryTypeCase());
         if (CollectionUtils.isNotEmpty(customizers)) {
             customizers.forEach(c -> c.customize(repository));
         }
@@ -54,8 +59,14 @@ public class WebExtAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public DefaultDictionaryController dictionaryController(DictionaryEnumRepository dictionaryEnumRepository) {
-        return new DefaultDictionaryController(dictionaryEnumRepository);
+    public DictionaryController dictionaryController() {
+        return new DefaultDictionaryController();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DictionaryItemController dictionaryItemEnumController(@Autowired(required = false) DictionaryEnumStore dictionaryEnumStore) {
+        return new DefaultDictionaryItemController(dictionaryEnumStore);
     }
 
 

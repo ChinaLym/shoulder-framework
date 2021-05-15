@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.dto;
+package org.shoulder.log.operation.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

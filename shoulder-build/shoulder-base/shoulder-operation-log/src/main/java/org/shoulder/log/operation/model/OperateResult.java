@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.dto;
+package org.shoulder.log.operation.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.shoulder.log.operation.enums.OperationResult;

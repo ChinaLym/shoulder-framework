@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.dto;
+package org.shoulder.log.operation.model;
 
 import org.shoulder.log.operation.enums.TerminalType;
 import org.springframework.lang.Nullable;

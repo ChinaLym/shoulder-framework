@@ -2,7 +2,7 @@ package org.shoulder.log.operation.async;
 
 import org.shoulder.log.operation.context.OpLogContext;
 import org.shoulder.log.operation.context.OpLogContextHolder;
-import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.model.OperationLogDTO;
 
 /**
  * 日志异步执行器公共方法

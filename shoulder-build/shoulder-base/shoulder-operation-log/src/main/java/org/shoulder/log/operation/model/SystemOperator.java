@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.dto;
+package org.shoulder.log.operation.model;
 
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.util.AddressUtils;

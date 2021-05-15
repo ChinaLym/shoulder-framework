@@ -2,7 +2,6 @@ package org.shoulder.autoconfigure.operation;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.log.operation.context.OpLogContextHolder;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.format.impl.ShoulderOpLogFormatter;
 import org.shoulder.log.operation.logger.OperationLogger;
@@ -11,6 +10,7 @@ import org.shoulder.log.operation.logger.impl.AsyncOperationLogger;
 import org.shoulder.log.operation.logger.impl.BufferedOperationLogger;
 import org.shoulder.log.operation.logger.impl.JdbcOperationLogger;
 import org.shoulder.log.operation.logger.impl.LogOperationLogger;
+import org.shoulder.log.operation.model.OperationLogDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;

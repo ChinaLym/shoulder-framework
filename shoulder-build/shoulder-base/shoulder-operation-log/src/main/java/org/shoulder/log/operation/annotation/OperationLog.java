@@ -4,8 +4,8 @@ import org.shoulder.log.operation.context.OpLogContext;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.context.OperationContextStrategyEnum;
 import org.shoulder.log.operation.context.OperationLogFactory;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.enums.TerminalType;
+import org.shoulder.log.operation.model.OperationLogDTO;
 
 import java.lang.annotation.*;
 

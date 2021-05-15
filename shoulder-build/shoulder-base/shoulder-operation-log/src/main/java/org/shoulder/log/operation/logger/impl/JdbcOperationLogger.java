@@ -1,9 +1,9 @@
 package org.shoulder.log.operation.logger.impl;
 
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.logger.AbstractOperationLogger;
 import org.shoulder.log.operation.logger.OperationLogger;
+import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.annotation.Nonnull;

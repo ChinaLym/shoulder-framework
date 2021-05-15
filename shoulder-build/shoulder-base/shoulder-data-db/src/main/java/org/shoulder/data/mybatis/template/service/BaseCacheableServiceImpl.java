@@ -47,9 +47,12 @@ public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>
     /**
      * 缓存key 构造器
      *
+     * @param keywords 通常为 id
      * @return 缓存key构造器
      */
-    protected abstract Serializable generateCacheKey(Object keywords);
+    protected Serializable generateCacheKey(Object keywords) {
+        return getEntityClass().getSimpleName() + ":" + keywords;
+    }
 
     public Cache getCache() {
         return cache;

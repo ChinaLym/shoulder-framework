@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 树形实体
+ * 树形实体 id createTime updateTime creator modifier name parentId sortNo
  * 举例：组织类、位置类（）
  * 第一个泛型为 id 类型，第二个泛型通常为自身类型
  *
@@ -25,15 +25,15 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class TreeEntity<ID extends Serializable> extends BaseEntity<ID> {
+public class TreeEntity<ID extends Serializable> extends Entity<ID> {
 
     /**
      * 名称
      */
-    @NotEmpty(message = "label can't be null")
-    @Length(max = 255, message = "label length must less than 255")
+    @NotEmpty(message = "name can't be null")
+    @Length(max = 255, message = "name length must less than 255")
     @TableField(value = DataBaseConsts.COLUMN_LABEL, condition = SqlCondition.LIKE)
-    protected String label;
+    protected String name;
 
     /**
      * 父节点ID，允许为 null
@@ -65,6 +65,11 @@ public class TreeEntity<ID extends Serializable> extends BaseEntity<ID> {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    @Override
+    public String getObjectName() {
+        return name;
     }
 
 }

@@ -38,6 +38,24 @@ public class WebExProperties {
          */
         private String path = "/api/v1/dictionary";
 
+        /**
+         * 字典 / 字典项 数据存在哪
+         */
+        private DictionaryStorageType storageType;
+
+    }
+
+    public enum DictionaryStorageType {
+
+        /**
+         * 枚举
+         */
+        ENUM,
+        /**
+         * 数据库
+         */
+        DB,
+        ;
     }
 
 }

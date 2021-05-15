@@ -1,9 +1,9 @@
 package org.shoulder.autoconfigure.operation;
 
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
+import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
