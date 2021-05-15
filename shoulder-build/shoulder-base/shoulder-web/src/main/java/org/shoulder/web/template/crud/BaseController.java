@@ -2,7 +2,9 @@ package org.shoulder.web.template.crud;
 
 
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.util.ContextUtils;
 import org.shoulder.data.mybatis.template.service.BaseService;
+import org.shoulder.log.operation.OperableObjectTypeRepository;
 
 /**
  * 基础，几个基本方法，不提供任何接口
@@ -52,6 +54,16 @@ public interface BaseController<Entity> {
      */
     default String getUserName() {
         return AppContext.getUserName();
+    }
+
+    /**
+     * 获取对象类型
+     * 用于记录操作日志
+     *
+     * @return 对象类型
+     */
+    default String getEntityObjectType() {
+        return ContextUtils.getBean(OperableObjectTypeRepository.class).getObjectType(getEntityClass());
     }
 
 }
