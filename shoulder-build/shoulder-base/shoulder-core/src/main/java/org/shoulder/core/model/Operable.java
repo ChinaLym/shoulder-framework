@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.dto;
+package org.shoulder.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,7 +35,7 @@ public interface Operable {
      */
     @JsonIgnore
     default String getObjectType() {
-        return null;
+        return "objectType." + getClass().getSimpleName();
     }
 
 }

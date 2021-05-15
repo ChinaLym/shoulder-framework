@@ -2,9 +2,9 @@ package org.shoulder.autoconfigure.operation;
 
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.log.operation.dto.Operator;
-import org.shoulder.log.operation.dto.ShoulderCurrentUserOperator;
-import org.shoulder.log.operation.dto.SystemOperator;
+import org.shoulder.log.operation.model.Operator;
+import org.shoulder.log.operation.model.ShoulderCurrentUserOperator;
+import org.shoulder.log.operation.model.SystemOperator;
 
 import javax.servlet.http.HttpServletRequest;
 

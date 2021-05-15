@@ -3,9 +3,9 @@ package org.shoulder.log.operation.context;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.OperationLogDTO;
-import org.shoulder.log.operation.dto.Operator;
+import org.shoulder.core.model.Operable;
+import org.shoulder.log.operation.model.OperationLogDTO;
+import org.shoulder.log.operation.model.Operator;
 import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;

@@ -11,10 +11,11 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.shoulder.core.model.Operable;
 import org.shoulder.data.constant.DataBaseConsts;
+import org.shoulder.validate.groups.Update;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.groups.Default;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -28,10 +29,10 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseEntity<ID extends Serializable> {
+public class BaseEntity<ID extends Serializable> implements Operable {
 
     @TableId(value = DataBaseConsts.COLUMN_ID, type = IdType.INPUT)
-    @NotNull(message = "id can't be null", groups = BaseEntity.Update.class)
+    @NotNull(message = "id can't be null", groups = Update.class)
     protected ID id;
 
     @TableField(value = DataBaseConsts.COLUMN_CREATE_TIME, fill = FieldFill.INSERT)
@@ -40,29 +41,18 @@ public class BaseEntity<ID extends Serializable> {
     @TableField(value = DataBaseConsts.COLUMN_UPDATE_TIME, fill = FieldFill.UPDATE)
     protected LocalDateTime updateTime;
 
-    /**
-     * 验证组分组-创建时
-     */
-    public interface Create extends Default {
-
-    }
-
-    /**
-     * 验证组分组-保存时
-     */
-    public interface Update extends Default {
-
-    }
-
-    /**
-     * 验证组分组-删除时
-     */
-    public interface DELETE extends Default {
-
-    }
-
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    @Override
+    public String getObjectId() {
+        return String.valueOf(id);
+    }
+
+    @Override
+    public String getObjectName() {
+        return getObjectId();
     }
 }

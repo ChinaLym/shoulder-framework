@@ -1,8 +1,8 @@
 package org.shoulder.log.operation.logger;
 
+import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.context.OperationLogFactory;
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.model.OperationLogDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

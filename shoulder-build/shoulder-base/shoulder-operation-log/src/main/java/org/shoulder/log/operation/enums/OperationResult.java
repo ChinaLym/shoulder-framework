@@ -1,7 +1,7 @@
 package org.shoulder.log.operation.enums;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.log.operation.dto.OperateResult;
+import org.shoulder.log.operation.model.OperateResult;
 
 import java.util.Collection;
 

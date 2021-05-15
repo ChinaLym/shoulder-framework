@@ -1,7 +1,7 @@
-package org.shoulder.log.operation.dto.sample;
+package org.shoulder.log.operation.model.sample;
 
 import org.apache.commons.lang3.StringUtils;
-import org.shoulder.log.operation.dto.Operable;
+import org.shoulder.core.model.Operable;
 
 import java.util.Collection;
 

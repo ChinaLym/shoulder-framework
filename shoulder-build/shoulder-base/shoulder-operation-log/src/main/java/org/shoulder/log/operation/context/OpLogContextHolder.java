@@ -2,11 +2,11 @@ package org.shoulder.log.operation.context;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.annotation.OperationLog;
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.OperationLogDTO;
-import org.shoulder.log.operation.dto.Operator;
 import org.shoulder.log.operation.logger.OperationLogger;
+import org.shoulder.log.operation.model.OperationLogDTO;
+import org.shoulder.log.operation.model.Operator;
 import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;

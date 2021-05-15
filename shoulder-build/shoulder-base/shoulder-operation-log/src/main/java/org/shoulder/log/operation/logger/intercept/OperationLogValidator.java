@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.logger.intercept;
 
-import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.model.OperationLogDTO;
 
 /**
  * 日志校验器，若日志格式有一定要求则可以添加校验器。

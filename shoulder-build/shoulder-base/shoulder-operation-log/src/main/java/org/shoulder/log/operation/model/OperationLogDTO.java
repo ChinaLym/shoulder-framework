@@ -1,16 +1,18 @@
-package org.shoulder.log.operation.dto;
+package org.shoulder.log.operation.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.model.Operable;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.enums.OperationResult;
 import org.shoulder.log.operation.enums.TerminalType;
 
 import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -28,7 +30,8 @@ import java.util.Map;
  */
 @Data
 @Accessors(chain = true)
-public class OperationLogDTO implements Cloneable {
+public class OperationLogDTO implements Cloneable, Serializable {
+    private static final long serialVersionUID = 1998019128906395110L;
 
     /** ============= 操作者描述（操作者分两种情况，用户、系统内部触发） {@link Operator }  ================ */
 
@@ -149,7 +152,7 @@ public class OperationLogDTO implements Cloneable {
 
     /**
      * 被操作对象的类型标识 （选填）
-     * Key格式为：log.objectType.<操作对象类型标识>
+     * Key格式为：objectType.<操作对象类型标识>
      */
     protected String objectType;
 

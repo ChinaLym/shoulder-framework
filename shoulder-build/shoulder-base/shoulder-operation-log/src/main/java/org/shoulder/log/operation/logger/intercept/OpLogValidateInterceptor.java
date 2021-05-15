@@ -1,7 +1,7 @@
 package org.shoulder.log.operation.logger.intercept;
 
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.logger.OperationLoggerInterceptor;
+import org.shoulder.log.operation.model.OperationLogDTO;
 
 /**
  * 用于对日志格式由一定要求时，与{@link OperationLogValidator} 配合使用在记录前进行校验

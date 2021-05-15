@@ -2,10 +2,10 @@ package org.shoulder.log.operation.logger.impl;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.logger.AbstractOperationLogger;
 import org.shoulder.log.operation.logger.OperationLogger;
+import org.shoulder.log.operation.model.OperationLogDTO;
 
 /**
  * 以日志文件记录操作日志，并以 {@link OperationLogFormatter} 作为日志格式。后续可由日志采集器收集、处理、转发至日志中心。

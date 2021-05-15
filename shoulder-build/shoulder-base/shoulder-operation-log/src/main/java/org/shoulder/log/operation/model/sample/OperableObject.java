@@ -1,9 +1,9 @@
-package org.shoulder.log.operation.dto.sample;
+package org.shoulder.log.operation.model.sample;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.core.model.Operable;
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.OperationDetailAble;
+import org.shoulder.log.operation.model.OperationDetailAble;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +30,10 @@ public class OperableObject implements Operable, OperationDetailAble {
     public OperableObject() {
     }
 
+    public OperableObject(String id) {
+        this.objectId = id;
+    }
+
     public OperableObject(Operable operable) {
         this.objectId = operable.getObjectId();
         this.objectName = operable.getObjectName();
@@ -53,6 +57,13 @@ public class OperableObject implements Operable, OperationDetailAble {
             return Collections.emptyList();
         }
         return operables.stream().map(OperableObject::new).collect(Collectors.toList());
+    }
+
+    public static List<OperableObject> ofIds(Collection<?> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return ids.stream().map(String::valueOf).map(OperableObject::new).collect(Collectors.toList());
     }
 
     @Override

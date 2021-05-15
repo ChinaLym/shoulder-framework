@@ -20,7 +20,7 @@ public class SelectForUpdateById extends AbstractMethod {
     public SelectForUpdateById() {
     }
 
-    private static final String SQL_SELECT_FOR_UPDATE = SqlMethod.SELECT_BY_ID + " FOR UPDATE";
+    private static final String SQL_SELECT_FOR_UPDATE = SqlMethod.SELECT_BY_ID.getSql() + " FOR UPDATE";
 
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {

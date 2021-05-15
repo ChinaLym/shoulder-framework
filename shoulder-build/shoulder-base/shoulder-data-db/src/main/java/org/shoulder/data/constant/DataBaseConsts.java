@@ -45,7 +45,7 @@ public interface DataBaseConsts {
     /**
      * 标签名
      */
-    String COLUMN_LABEL = "label";
+    String COLUMN_LABEL = "name";
 
     /**
      * 父级标识
@@ -87,6 +87,21 @@ public interface DataBaseConsts {
      * 逻辑删除方法名
      */
     String METHOD_DELETE_LOGIC_BY_ID = "deleteInLogicById";
+
+    /**
+     * 逻辑删除方法名
+     */
+    String METHOD_DELETE_LOGIC_BY_ID_LIST = "deleteInLogicByIdList";
+
+    /**
+     * 逻辑删除方法名
+     */
+    String METHOD_DELETE_LOGIC_BY_BIZ_ID = "deleteInLogicByBizId";
+
+    /**
+     * 逻辑删除方法名
+     */
+    String METHOD_DELETE_LOGIC_BY_BIZ_ID_LIST = "deleteInLogicByBizIdList";
 
     /**
      * 根据 id 更新所有字段

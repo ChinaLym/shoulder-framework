@@ -1,7 +1,7 @@
-package org.shoulder.log.operation.dto.sample;
+package org.shoulder.log.operation.model.sample;
 
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.OperateRecord;
+import org.shoulder.core.model.Operable;
+import org.shoulder.log.operation.model.OperateRecord;
 
 /**
  * 临时保存一次操作结果 DTO，常用于批量场景

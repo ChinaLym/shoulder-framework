@@ -1,4 +1,4 @@
-package org.shoulder.log.operation.dto;
+package org.shoulder.log.operation.model;
 
 import java.util.LinkedList;
 import java.util.List;
