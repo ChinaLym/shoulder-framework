@@ -2,8 +2,8 @@ package org.shoulder.validate.support.mateconstraint.impl;
 
 import org.shoulder.validate.support.mateconstraint.ConstraintConverter;
 
+import javax.validation.Constraint;
 import java.lang.annotation.Annotation;
-import java.util.List;
 
 /**
  * 其他 转换器
@@ -18,8 +18,8 @@ public class OtherConstraintConverter extends BaseConstraintConverter implements
     }
 
     @Override
-    protected List<Class<? extends Annotation>> getSupportAnnotations() {
-        return SUPPORT_ALL;
+    public boolean support(Class<? extends Annotation> annotationClass) {
+        return annotationClass != null && annotationClass.getAnnotation(Constraint.class) != null;
     }
 
 }

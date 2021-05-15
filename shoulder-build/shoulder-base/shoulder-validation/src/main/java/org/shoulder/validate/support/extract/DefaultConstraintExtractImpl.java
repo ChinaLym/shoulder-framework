@@ -12,6 +12,7 @@ import org.hibernate.validator.internal.metadata.location.ConstraintLocation;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.support.dto.ConstraintInfoDTO;
 import org.shoulder.validate.support.dto.FieldValidationRuleDTO;
@@ -95,8 +96,10 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
         // clazz:groupsOnMethod
         String key = targetMethodClazz.getName() + StrPool.COLON +
                 Arrays.stream(groupsOnMethod).map(Class::getName).collect(Collectors.joining(StrPool.COLON));
-        if (CACHE.containsKey(key)) {
-            fieldValidatorDesc.putAll(CACHE.get(key));
+
+        Map<String, FieldValidationRuleDTO> cache = CACHE.get(key);
+        if (cache != null) {
+            fieldValidatorDesc.putAll(cache);
             return;
         }
 
@@ -106,9 +109,24 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
         BeanMetaData<?> beanMetaData = beanMetaDataManager.getBeanMetaData(targetMethodClazz);
         Set<MetaConstraint<?>> beanMetaConstraints = beanMetaData.getMetaConstraints();
         for (MetaConstraint<?> beanMetaConstraint : beanMetaConstraints) {
+            // todo 只获取一层？
             builderFieldValidatorDesc(beanMetaConstraint, groupsOnMethod, fieldValidatorDesc);
         }
+        // 字段自身：notNull 等；如果是基本类型，则还可能有基础校验注解
 
+        FieldValidationRuleDTO ruleDTO = new FieldValidationRuleDTO();
+        ruleDTO.setField("#self");
+        ruleDTO.setFieldType(convertToJsType(constraintOnMethod.getTarget().getName()));
+        ruleDTO.setConstraints(new ArrayList<>());
+        if (ArrayUtils.isNotEmpty(constraintOnMethod.getMethodAnnotations())) {
+            for (Annotation methodAnnotation : constraintOnMethod.getMethodAnnotations()) {
+                ConstraintInfoDTO constraint = buildConstraintInfo(methodAnnotation);
+                if (constraint != null) {
+                    ruleDTO.getConstraints().add(constraint);
+                }
+            }
+        }
+        fieldValidatorDesc.put("#self", ruleDTO);
         CACHE.put(key, fieldValidatorDesc);
     }
 
@@ -144,8 +162,10 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
             fieldValidatorDesc.put(fieldKey, ruleDTO);
         }
         // 校验信息（不同校验组）
-        ConstraintInfoDTO constraint = builderConstraint(beanMetaConstraint.getDescriptor().getAnnotation());
-        ruleDTO.getConstraints().add(constraint);
+        ConstraintInfoDTO constraint = buildConstraintInfo(beanMetaConstraint.getDescriptor().getAnnotation());
+        if (constraint != null) {
+            ruleDTO.getConstraints().add(constraint);
+        }
 
         // 特殊的补充
         if (Pattern.class == beanMetaConstraint.getDescriptor().getAnnotationType()) {
@@ -206,7 +226,14 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
         return StrUtil.subAfter(typeName, CharUtil.DOT, true);
     }
 
-    private ConstraintInfoDTO builderConstraint(Annotation annotation) throws Exception {
+    /**
+     * 将 JSR 校验注解转化为约束信息
+     *
+     * @param annotation annotation
+     * @return null if NOT Support
+     * @throws Exception 解析失败
+     */
+    private ConstraintInfoDTO buildConstraintInfo(Annotation annotation) throws Exception {
         for (ConstraintConverter constraintConverter : constraintConverters) {
             if (constraintConverter.support(annotation.annotationType())) {
                 return constraintConverter.converter(annotation);

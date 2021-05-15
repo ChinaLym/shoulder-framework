@@ -3,6 +3,8 @@ package org.shoulder.web.validate;
 import cn.hutool.core.util.StrUtil;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.validate.support.dto.FieldValidationRuleDTO;
 import org.shoulder.validate.support.extract.ConstraintExtract;
 import org.shoulder.validate.support.model.ValidConstraint;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.validation.Valid;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -26,26 +29,43 @@ import java.util.List;
  * 统一获取表单校验规则
  * 两种拉取方式<br>
  * A表单的保存url为 [POST] http://ip:port/projectName/role/save <br>
- * 第一种（通过增加前缀<font color="red">/from/validateRule/</font>）<br>
- * 那么获取A表单的验证规则url： [POST] http://ip:port/projectName<font color="red">/from/validateRule</font>/role/save <br>
+ * 第一种（通过增加前缀<font color="red">/api/v1/validate/rule/</font>）<br>
+ * 那么获取A表单的验证规则url： [GET] http://ip:port/projectName<font color="red">/api/v1/validate/rule</font>/role/save?method=post <br>
  * <br>
  * 第二种（通过参数传递uri路径的方式来拉取）：<br>
- * [GET] http://ip:port/projectName<font color="red">/from/validateRule</font>?formPath=/projectName/role/save <br>
+ * [GET] http://ip:port/projectName<font color="red">/api/v1/validate/rule</font>?method=post&uri=/projectName/role/save <br>
  * <br>
  * 固定了验证uri地址，而要验证的表单地址作为参数进行传输。当然，可以一次性拿多个表单验证地址。有些界面可能同时存在多个表单需要提交。
  *
  * @author lym
  */
 @RestController
+@RequestMapping(value = ValidateRuleEndPoint.VALIDATION_RULE_URL_VALUE_EXPRESSION)
 public class ValidateRuleEndPoint {
 
-    private static final String FORM_VALIDATOR_URL = "/api/v1/validate/rule";
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
+    public static final String VALIDATION_RULE_URL_VALUE_EXPRESSION = "${shoulder.web.ext.dynamic-validate.path:/api/v1/validate/rule}";
+
+    /**
+     * 动态路径
+     */
+    private final String validationRuleUrl;
+
+    /**
+     * 请求 mapping
+     */
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 
+    /**
+     * 约束抽取
+     */
     private final ConstraintExtract constraintExtract;
 
-    public ValidateRuleEndPoint(ConstraintExtract constraintExtract, RequestMappingHandlerMapping requestMappingHandlerMapping) {
+    public ValidateRuleEndPoint(ConstraintExtract constraintExtract,
+                                RequestMappingHandlerMapping requestMappingHandlerMapping,
+                                String validationRuleUrl) {
+        this.validationRuleUrl = validationRuleUrl;
         this.constraintExtract = constraintExtract;
         this.requestMappingHandlerMapping = requestMappingHandlerMapping;
     }
@@ -58,34 +78,43 @@ public class ValidateRuleEndPoint {
      * @return 验证规则
      * @throws Exception 异常
      */
-    @RequestMapping(FORM_VALIDATOR_URL + "/**")
+    @GetMapping("/**")
     @ResponseBody
-    public BaseResult<ListResult<FieldValidationRuleDTO>> standardByPathVar(HttpServletRequest request) throws Exception {
+    public BaseResult<ListResult<FieldValidationRuleDTO>> viaPathVariable(@RequestParam(value = "method", required = false) String method,
+                                                                          HttpServletRequest request) throws Exception {
         String requestUri = request.getRequestURI();
-        String formPath = StrUtil.subAfter(requestUri, FORM_VALIDATOR_URL, false);
-        return BaseResult.success(localFieldValidatorDescribe(request, formPath));
+        String uri = StrUtil.subAfter(requestUri, validationRuleUrl, false);
+        return BaseResult.success(localFieldValidatorDescribe(
+                new HttpServletRequestValidatorWrapper(request, method, uri)
+        ));
     }
 
     /**
      * 支持第二种拉取方式
      *
-     * @param formPath 表单地址
-     * @param request  请求
+     * @param uri     表单地址
+     * @param request 请求
      * @return 验证规则
      * @throws Exception 异常
      */
-    @GetMapping(FORM_VALIDATOR_URL)
+    @GetMapping
     @ResponseBody
-    public BaseResult<ListResult<FieldValidationRuleDTO>> standardByQueryParam(@RequestParam(value = "formPath", required = false) String formPath, HttpServletRequest request) throws Exception {
-        return BaseResult.success(localFieldValidatorDescribe(request, formPath));
+    public BaseResult<ListResult<FieldValidationRuleDTO>> viaQueryParam(@RequestParam(value = "method", required = false) String method,
+                                                                        @RequestParam(value = "uri", required = false) String uri,
+                                                                        HttpServletRequest request) throws Exception {
+        return BaseResult.success(localFieldValidatorDescribe(
+                new HttpServletRequestValidatorWrapper(request, method, uri)
+        ));
     }
 
-    private List<FieldValidationRuleDTO> localFieldValidatorDescribe(HttpServletRequest request, String formPath) throws Exception {
-        HandlerExecutionChain chains = requestMappingHandlerMapping.getHandler(new HttpServletRequestValidatorWrapper(request, formPath));
+    private List<FieldValidationRuleDTO> localFieldValidatorDescribe(HttpServletRequest request) throws Exception {
+        HandlerExecutionChain chains = requestMappingHandlerMapping.getHandler(request);
         if (chains == null) {
+            log.info("can't find handler match method={}, uri={}", request.getMethod(), request.getRequestURI());
             return Collections.emptyList();
         }
         HandlerMethod method = (HandlerMethod) chains.getHandler();
+        log.debug("method is {}", method);
         return loadValidatorDescribe(method);
     }
 
@@ -94,31 +123,39 @@ public class ValidateRuleEndPoint {
      */
     public static class HttpServletRequestValidatorWrapper extends HttpServletRequestWrapper {
 
-        private final String formPath;
+        private final String method;
 
-        public HttpServletRequestValidatorWrapper(HttpServletRequest request, String formPath) {
+        private final String requestUri;
+
+        public HttpServletRequestValidatorWrapper(HttpServletRequest request, String method, String requestUri) {
             super(request);
-            this.formPath = formPath;
+            this.method = method;
+            this.requestUri = requestUri;
         }
 
         @Override
         public String getRequestURI() {
-            return this.formPath;
+            return this.requestUri;
         }
 
         @Override
         public String getServletPath() {
-            return this.formPath;
+            return this.requestUri;
+        }
+
+        @Override
+        public String getMethod() {
+            return method;
         }
     }
 
     /**
-     * 官方验证规则： （可能还不完整）
+     * Spring 触发校验条件
      * A, 普通对象形：
      * B、@RequestBody形式：
      * <p>
-     * 1，类或方法或参数上有 @Validated
-     * 2，参数有 @Valid
+     * 1，类 / 方法 上有 {@link Validated}
+     * 2，参数有 {@link Valid} / {@link Validated}
      *
      * <p>
      * C、普通参数形式：
@@ -146,26 +183,20 @@ public class ValidateRuleEndPoint {
             return Collections.emptyList();
         }
 
-        // 类上面的验证注解  handlerMethod.getBeanType().getAnnotation(Validated.class)
         Validated classValidated = method.getDeclaringClass().getAnnotation(Validated.class);
 
-        List<ValidConstraint> validatorStandard = getValidConstraints(methodParams, methodParameters, classValidated);
+        List<ValidConstraint> validatorStandard = getValidConstraints(methodParams, classValidated);
         return constraintExtract.extract(validatorStandard);
     }
 
     @Nonnull
-    private List<ValidConstraint> getValidConstraints(Parameter[] methodParams, MethodParameter[] methodParameters, Validated classValidated) {
-        List<ValidConstraint> validatorStandard = new ArrayList<>(methodParameters.length);
-        for (int i = 0; i < methodParameters.length; i++) {
-            // 方法上的参数 (能正确获取到 当前类和父类Controller上的 参数类型)
-            MethodParameter methodParameter = methodParameters[i];
-            // 方法上的参数 (能正确获取到 当前类和父类Controller上的 参数注解)
-            Parameter methodParam = methodParams[i];
-
+    private List<ValidConstraint> getValidConstraints(Parameter[] methodParams, Validated classValidated) {
+        List<ValidConstraint> validatorStandard = new ArrayList<>(methodParams.length);
+        for (Parameter methodParam : methodParams) {
             Validated methodParamValidate = methodParam.getAnnotation(Validated.class);
-
-            //在参数和类上面找注解
-            if (methodParamValidate == null && classValidated == null) {
+            if (classValidated == null && methodParamValidate == null
+                    && methodParam.getAnnotation(Valid.class) == null) {
+                // 无校验注解
                 continue;
             }
 
@@ -173,12 +204,10 @@ public class ValidateRuleEndPoint {
             Class<?>[] groupsOnMethod = null;
             if (methodParamValidate != null) {
                 groupsOnMethod = methodParamValidate.value();
-            }
-            if (groupsOnMethod == null) {
+            } else if (classValidated != null) {
                 groupsOnMethod = classValidated.value();
             }
-
-            validatorStandard.add(new ValidConstraint(methodParameter.getParameterType(), groupsOnMethod));
+            validatorStandard.add(new ValidConstraint(methodParam.getType(), groupsOnMethod, methodParam.getDeclaredAnnotations()));
         }
         return validatorStandard;
     }

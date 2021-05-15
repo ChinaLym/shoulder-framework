@@ -25,48 +25,43 @@ import java.util.List;
  *
  * @author lym
  */
+@ConditionalOnClass(DictionaryController.class)
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(WebExProperties.class)
 public class WebExtAutoConfiguration {
 
-    /**
-     * config
-     */
-    private final WebExProperties webExProperties;
-
-    public WebExtAutoConfiguration(WebExProperties webExProperties) {
-        this.webExProperties = webExProperties;
-    }
-
-    /**
-     * 将 String 类型入参，转为 LocalDate 类型
-     *
-     * @return LocalDateTimeConverter
-     */
-    @Bean
-    @ConditionalOnMissingBean
+    @Configuration
+    @ConditionalOnClass(value = {DictionaryEnumStore.class})
+    @EnableConfigurationProperties(WebExProperties.class)
     @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "enum", matchIfMissing = true)
-    public DictionaryEnumStore dictionaryEnumRepository(@Nullable List<DictionaryEnumRepositoryCustomizer> customizers) {
-        DictionaryEnumStore repository =
-                new DefaultDictionaryEnumStore(webExProperties.getDictionary().getIgnoreDictionaryTypeCase());
-        if (CollectionUtils.isNotEmpty(customizers)) {
-            customizers.forEach(c -> c.customize(repository));
+    public static class BaseOnEnumDictionaryConfiguration {
+        /**
+         * 将 String 类型入参，转为 LocalDate 类型
+         *
+         * @return LocalDateTimeConverter
+         */
+        @Bean
+        @ConditionalOnMissingBean
+        public DictionaryEnumStore dictionaryEnumRepository(@Nullable List<DictionaryEnumRepositoryCustomizer> customizers, WebExProperties webExProperties) {
+            DictionaryEnumStore repository =
+                    new DefaultDictionaryEnumStore(webExProperties.getDictionary().getIgnoreDictionaryTypeCase());
+            if (CollectionUtils.isNotEmpty(customizers)) {
+                customizers.forEach(c -> c.customize(repository));
+            }
+            return repository;
         }
-        return repository;
-    }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public DictionaryController dictionaryController(DictionaryEnumStore dictionaryEnumStore) {
-        return new DictionaryEnumController(dictionaryEnumStore);
-    }
+        @Bean
+        @ConditionalOnMissingBean(value = DictionaryController.class)
+        public DictionaryEnumController dictionaryController(DictionaryEnumStore dictionaryEnumStore) {
+            return new DictionaryEnumController(dictionaryEnumStore);
+        }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public DictionaryItemController dictionaryItemController(DictionaryEnumStore dictionaryEnumStore) {
-        return new DictionaryItemEnumController(dictionaryEnumStore);
+        @Bean
+        @ConditionalOnMissingBean(value = DictionaryItemController.class)
+        public DictionaryItemEnumController dictionaryItemController(DictionaryEnumStore dictionaryEnumStore) {
+            return new DictionaryItemEnumController(dictionaryEnumStore);
+        }
     }
-
 
     @Configuration
     @ConditionalOnClass(value = {BaseServiceImpl.class})

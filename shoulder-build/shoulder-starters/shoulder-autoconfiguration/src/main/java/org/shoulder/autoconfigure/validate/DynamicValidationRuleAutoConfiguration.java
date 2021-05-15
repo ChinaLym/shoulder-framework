@@ -5,7 +5,7 @@ import org.shoulder.validate.support.extract.DefaultConstraintExtractImpl;
 import org.shoulder.validate.support.mateconstraint.ConstraintConverter;
 import org.shoulder.validate.support.mateconstraint.impl.*;
 import org.shoulder.web.validate.ValidateRuleEndPoint;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,13 +29,6 @@ public class DynamicValidationRuleAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnBean(ConstraintExtract.class)
-    public ValidateRuleEndPoint validateRuleEndPoint(ConstraintExtract constraintExtract, RequestMappingHandlerMapping requestMappingHandlerMapping) {
-        return new ValidateRuleEndPoint(constraintExtract, requestMappingHandlerMapping);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
     public ConstraintExtract constraintExtract(Validator validator, List<ConstraintConverter> constraintConverters) {
         List<ConstraintConverter> constraintConverterList = new ArrayList<>(constraintConverters.size() + 5);
         constraintConverterList.add(new MaxMinConstraintConverter());
@@ -44,6 +37,15 @@ public class DynamicValidationRuleAutoConfiguration {
         constraintConverterList.add(new RegexConstraintConverter());
         constraintConverterList.add(new OtherConstraintConverter());
         return new DefaultConstraintExtractImpl(validator, constraintConverterList);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ValidateRuleEndPoint validateRuleEndPoint(ConstraintExtract constraintExtract,
+                                                     RequestMappingHandlerMapping requestMappingHandlerMapping,
+                                                     @Value(ValidateRuleEndPoint.VALIDATION_RULE_URL_VALUE_EXPRESSION)
+                                                             String validationRuleUrl) {
+        return new ValidateRuleEndPoint(constraintExtract, requestMappingHandlerMapping, validationRuleUrl);
     }
 
 }
