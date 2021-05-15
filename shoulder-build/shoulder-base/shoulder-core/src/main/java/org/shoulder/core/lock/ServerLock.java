@@ -50,6 +50,7 @@ public interface ServerLock extends Lock {
 
     /**
      * 尝试获取锁，若未获取到则直接返回 false
+     * 尽量不打日志，因为可能频繁调用 tryLock
      *
      * @param lockInfo 锁信息
      * @return 是否获取到
