@@ -5,12 +5,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Xss 配置项
+ * todo
  *
  * @author lym
  */
 @ConfigurationProperties(prefix = "shoulder.web.waf.xss")
 public class XssProperties extends PathFilterProperties {
 
-    Boolean enbale = true;
+    Boolean enbale = Boolean.TRUE;
 
 }

@@ -18,7 +18,7 @@ public class WebExProperties {
     /**
      * 字典枚举接口相关配置
      */
-    private DictionaryProperties dictionary;
+    private DictionaryProperties dictionary = new DictionaryProperties();
 
     @Data
     static class DictionaryProperties {
