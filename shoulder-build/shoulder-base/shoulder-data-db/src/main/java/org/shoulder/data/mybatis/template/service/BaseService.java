@@ -57,6 +57,7 @@ public interface BaseService<ENTITY> extends IService<ENTITY> {
         handleBeforePageQuery(pageQueryCondition);
         Wrapper<ENTITY> wrapper = createPageQueryWrapper(pageQueryCondition);
         Page<ENTITY> page = convertToPage(pageQueryCondition, getEntityClass());
+        // page 参数支持 Map /IPage com.baomidou.mybatisplus.core.toolkit.ParameterUtils.findPage
         Page<ENTITY> pageResult = page(page, wrapper);
         return handlePageQueryResult(pageResult);
     }
