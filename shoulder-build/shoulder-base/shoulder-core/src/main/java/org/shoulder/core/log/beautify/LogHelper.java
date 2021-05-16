@@ -5,10 +5,10 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import org.shoulder.core.util.StringUtils;
-import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 
 /**

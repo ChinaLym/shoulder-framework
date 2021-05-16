@@ -1,8 +1,9 @@
 package org.shoulder.security.authentication.sms;
 
-import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import javax.annotation.Nullable;
 
 /**
  * 手机号认证

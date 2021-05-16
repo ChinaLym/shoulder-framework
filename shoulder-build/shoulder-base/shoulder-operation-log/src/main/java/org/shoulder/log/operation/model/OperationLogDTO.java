@@ -200,7 +200,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
     /**
      * 扩展字段 （选填） key 不能为 null
      */
-    protected Map<String, String> extFields;
+    protected Map<String, Object> extFields;
 
     // ***********************************  构造函数  ***********************************
 
@@ -276,7 +276,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
     }
 
     @JsonIgnore
-    public OperationLogDTO setExtField(String extKey, String value) {
+    public OperationLogDTO setExtField(String extKey, Object value) {
         if (extKey == null) {
             return this;
         }
@@ -288,11 +288,12 @@ public class OperationLogDTO implements Cloneable, Serializable {
     }
 
     @JsonIgnore
-    public String getExtField(String extKey) {
+    @SuppressWarnings("unchecked")
+    public <T> T getExtField(String extKey) {
         if (extKey == null || this.extFields == null) {
             return null;
         }
-        return this.extFields.get(extKey);
+        return (T) this.extFields.get(extKey);
     }
 
     @JsonIgnore

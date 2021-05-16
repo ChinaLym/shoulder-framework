@@ -1,9 +1,9 @@
 package org.shoulder.crypto.local.repository;
 
 import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
-import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**

@@ -27,6 +27,12 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-http</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 

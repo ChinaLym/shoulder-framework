@@ -35,4 +35,16 @@ public class ShoulderCurrentUserOperator implements Serializable, Operator {
         this.userId = userId;
     }
 
+    /**
+     * userId 必填
+     */
+    public ShoulderCurrentUserOperator(Operator operator) {
+        this.userId = operator.getUserId();
+        this.userRealName = operator.getUserName();
+        this.userRealName = operator.getUserRealName();
+        this.remoteAddress = operator.getRemoteAddress();
+        this.terminalId = operator.getTerminalId();
+        this.terminalInfo = operator.getTerminalInfo();
+    }
+
 }

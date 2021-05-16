@@ -3,9 +3,9 @@ package org.shoulder.core.cache;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cache.support.NullValue;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;

@@ -28,17 +28,17 @@ public enum TerminalType {
     APP(3),
 
     /**
-     * 移动端浏览器 web app
+     * 移动端浏览器 web app、h5；非微信等内嵌浏览器
      */
     WAP(4),
 
     /**
-     * 小程序 mini APP / H5
+     * 小程序 mini APP；非浏览器应用内嵌
      */
     MINA(5),
 
     /**
-     * 未知
+     * 未知，如无法获取 agent
      */
     UNKNOWN(-1),
 

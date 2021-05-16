@@ -126,6 +126,15 @@ public class ServletUtil {
     private static final String LOCALHOST_IP1 = "127.0.0.1";
 
     /**
+     * User-Agent
+     *
+     * @return user-agent
+     */
+    public static String getUserAgent() {
+        return getRequest().getHeader("User-Agent");
+    }
+
+    /**
      * 获取IP地址
      * <p>
      * 使用Nginx等反向代理软件， 则不能通过request.getRemoteAddr()获取IP地址

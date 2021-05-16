@@ -28,8 +28,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.lang.Nullable;
 
+import javax.annotation.Nullable;
 import javax.sql.DataSource;
 import java.security.Security;
 import java.util.List;

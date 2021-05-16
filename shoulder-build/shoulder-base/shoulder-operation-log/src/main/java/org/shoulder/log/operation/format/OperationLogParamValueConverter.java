@@ -1,9 +1,9 @@
 package org.shoulder.log.operation.format;
 
 import org.shoulder.log.operation.model.OperationLogDTO;
-import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**

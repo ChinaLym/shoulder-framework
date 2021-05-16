@@ -8,10 +8,10 @@ import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.shoulder.log.operation.model.Operator;
 import org.springframework.beans.BeansException;
-import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
