@@ -46,6 +46,7 @@ public interface DeleteController<ENTITY, ID extends Serializable> extends BaseC
     /**
      * 批量删除
      * service.removeByIds —— mapper.deleteBatchIds
+     * todo 请求体转为 json 格式，而非 Array
      *
      * @param ids id
      * @return 是否成功

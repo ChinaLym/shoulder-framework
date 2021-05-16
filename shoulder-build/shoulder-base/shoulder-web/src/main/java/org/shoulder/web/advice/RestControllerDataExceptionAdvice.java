@@ -50,6 +50,8 @@ public class RestControllerDataExceptionAdvice {
     /*
     DataIntegrityViolationException Insert或Update数据时违反了完整性，例如违反了惟一性限制，比如 name最大16，却传来了200
     PersistenceException 数据类型不正确，比如数据库int，来了string（abc）
+    BadSqlGrammarException sql 写错了->代码写错了->对外未知错误
+    TransientDataAccessResourceException 查的时候，赋值错了，比如缺少字段 / 格式不正确；如时间格式Zero date value prohibited-通过jdbc连接时候，zeroDateTimeBehavior=CONVERT_TO_NULL
     CleanupFailureDataAccessException 一项操作成功地执行，但在释放数据库资源时发生异常（例如，关闭一个Connection）
     DataAccessResourceFailureException 数据访问资源彻底失败，例如不能连接数据库
     DataRetrievalFailureException 某些数据不能被检测到，例如不能通过关键字找到一条记录

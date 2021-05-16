@@ -34,9 +34,9 @@ public class DatabaseProperties {
     private Boolean checkSqlPerformance = false;
 
     /**
-     * 分页大小限制（默认无）
+     * 分页大小限制（默认500 与 mybatis-plus 默认值一致）
      */
-    private long limit = -1;
+    private long limit = 500;
 
     /**
      * 数据库类型

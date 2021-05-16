@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.conditions.AbstractChainWrapper;
@@ -117,10 +118,22 @@ public interface BaseService<ENTITY> extends IService<ENTITY> {
 
     /* ======================================= 工具类 ======================================= */
 
+    /**
+     * 查询，可重载，筛选列名
+     *
+     * @param entity 实体
+     * @param ext    扩展条件
+     * @return 结果
+     */
     default Wrapper<ENTITY> query(ENTITY entity, Map<String, Object> ext) {
-        Wrapper<ENTITY> wrapper = query()
+        if (entity == null) {
+            // todo log
+        }
+        // 后面还可以加字符串，表示需要输出的列名
+        QueryWrapper<ENTITY> wrapper = new QueryWrapper<>(entity);
+        /*Wrapper<ENTITY> wrapper = query()
                 .setEntity(entity)
-                .setEntityClass(getEntityClass());
+                .setEntityClass(getEntityClass());*/
         return query(wrapper, ext, getEntityClass());
     }
 
@@ -134,6 +147,7 @@ public interface BaseService<ENTITY> extends IService<ENTITY> {
      * @param <Entity>    泛型
      * @return wrapper
      */
+    @SuppressWarnings("unchecked, rawtypes")
     static <Entity> Wrapper<Entity> query(Wrapper<Entity> wrapper, Map<String, Object> ext, Class<Entity> entityClass) {
         if (MapUtils.isEmpty(ext)) {
             return wrapper;
