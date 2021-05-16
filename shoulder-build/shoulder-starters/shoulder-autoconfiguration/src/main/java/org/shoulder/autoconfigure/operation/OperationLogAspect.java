@@ -118,14 +118,15 @@ public class OperationLogAspect {
     public void doAfterThrowing(Throwable ex) {
         if (OpLogContextHolder.isEnableAutoLog() && OpLogContextHolder.isLogWhenThrow()) {
             OpLogContextHolder.getLog()
-                .setEndTime(Instant.now())
-                .setResultFail();
+                    .setEndTime(Instant.now())
+                    .setResultFail();
+            String[] errorReasons = ex.getMessage().split("\\r");
+            String originReason = errorReasons[errorReasons.length - 1];
+            // todo 日志常量固定
+            OpLogContextHolder.getLog().setExtField("errorType", ex.getClass().getName())
+                    .setExtField("errorMsg", originReason);
             if (ex instanceof ErrorCode) {
-                ErrorCode errorCode = ((ErrorCode) ex);
-                OpLogContextHolder.getLog()
-                    .setErrorCode(errorCode.getCode())
-                    .setDetail(errorCode.getMessage())
-                ;
+                OpLogContextHolder.getLog().setErrorCode(((ErrorCode) ex).getCode());
             }
             OpLogContextHolder.log();
         }

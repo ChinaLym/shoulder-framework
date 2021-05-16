@@ -116,9 +116,7 @@ public class MybatisPlusAutoConfiguration {
     }
 
     /**
-     * 分页 NPE
-     *
-     * @see org.apache.ibatis.executor.SimpleExecutor#doQuery(org.apache.ibatis.mapping.MappedStatement, java.lang.Object, org.apache.ibatis.session.RowBounds, org.apache.ibatis.session.ResultHandler, org.apache.ibatis.mapping.BoundSql)
+     * todo 【安全】考虑继承 PaginationInnerInterceptor 处理分页查询页码溢出，风控可能需要
      */
     @Bean
     @Order(20)
@@ -131,7 +129,7 @@ public class MybatisPlusAutoConfiguration {
         // 数据库类型
         paginationInterceptor.setDbType(databaseProperties.getDbType());
         // 溢出总页数后是否进行处理；若查询目标页码大于总页码，true 查询第一页 false 不处理
-        paginationInterceptor.setOverflow(true);
+        paginationInterceptor.setOverflow(false);
         // 开启 count 的 join 优化,只针对部分 left join https://github.com/baomidou/mybatis-plus/issues/2492
         //paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
         return paginationInterceptor;
