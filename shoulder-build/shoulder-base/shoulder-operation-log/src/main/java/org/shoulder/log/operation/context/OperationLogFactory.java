@@ -33,8 +33,10 @@ public class OperationLogFactory {
         return new OperationLogDTO(operation)
                 .setOperator(currentOperator)
                 .setAppId(AppInfo.appId())
+                // todo version
+                //.setVersion(AppInfo.version())
                 .setInstanceId(AppInfo.instanceId())
-            .setTenantCode(AppContext.getTenantCode());
+                .setTenantCode(AppContext.getTenantCode());
     }
 
     /**

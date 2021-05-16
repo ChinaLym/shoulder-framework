@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.annotation.OperationLog;
+import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.validate.groups.Create;
 import org.springframework.validation.annotation.Validated;
@@ -33,10 +34,13 @@ public interface SaveController<ENTITY, SAVE_DTO> extends BaseController<ENTITY>
     @PostMapping
     @OperationLog(operation = OperationLog.Operations.CREATE)
     @Validated(Create.class)
-    default BaseResult<Void> save(@RequestBody @Valid @NotNull SAVE_DTO dto) {
+    default BaseResult<Void> save(@OperationLogParam @RequestBody @Valid @NotNull SAVE_DTO dto) {
         ENTITY entity = handleBeforeSave(dto);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
-            OpLogContextHolder.setOperableObject((Operable) entity);
+            if (entity != null) {
+                OpLogContextHolder.setOperableObject((Operable) entity);
+            }
+            OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
         getService().save(entity);
         return BaseResult.success();

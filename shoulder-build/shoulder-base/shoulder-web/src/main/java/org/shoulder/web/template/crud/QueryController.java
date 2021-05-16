@@ -8,8 +8,11 @@ import org.shoulder.core.dto.request.PageQuery;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.dto.response.PageResult;
+import org.shoulder.core.model.Operable;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.log.operation.annotation.OperationLog;
+import org.shoulder.log.operation.annotation.OperationLogParam;
+import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +47,9 @@ public interface QueryController<ENTITY, ID extends Serializable, PAGE_QUERY_PAR
     @ApiOperation(value = "单个查询", notes = "单个查询")
     @GetMapping("/{id}")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<ENTITY> get(@PathVariable(name = "id") ID id) {
+    default BaseResult<ENTITY> get(@OperationLogParam @PathVariable(name = "id") ID id) {
+        OpLogContextHolder.getLog().setObjectId(String.valueOf(id));
+        OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         return BaseResult.success(getService().getById(id));
     }
 
@@ -59,9 +64,10 @@ public interface QueryController<ENTITY, ID extends Serializable, PAGE_QUERY_PAR
     @ApiOperation(value = "分页查询")
     @PostMapping(value = "/page")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<PageResult<ENTITY>> page(@RequestBody @Valid @Nonnull PageQuery<PAGE_QUERY_PARAM> pageQueryParam) {
+    default BaseResult<PageResult<ENTITY>> page(@OperationLogParam @RequestBody @Valid @Nonnull PageQuery<PAGE_QUERY_PARAM> pageQueryParam) {
         // convert to BO
         BasePageQuery<ENTITY> pageQuery = BasePageQuery.create(pageQueryParam, this::convertToEntity);
+        OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         PageResult<ENTITY> queryResult = getService().page(pageQuery);
         return BaseResult.success(queryResult);
     }
@@ -77,7 +83,13 @@ public interface QueryController<ENTITY, ID extends Serializable, PAGE_QUERY_PAR
     @ApiOperation(value = "批量查询", notes = "批量查询")
     @PostMapping("/listAll")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<ListResult<ENTITY>> listAll(@RequestBody ENTITY data) {
+    default BaseResult<ListResult<ENTITY>> listAll(@OperationLogParam @RequestBody ENTITY data) {
+        if (Operable.class.isAssignableFrom(getEntityClass())) {
+            if (data != null) {
+                OpLogContextHolder.setOperableObject((Operable) data);
+            }
+            OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
+        }
         return BaseResult.success(getService().list(data));
     }
 
@@ -87,6 +99,7 @@ public interface QueryController<ENTITY, ID extends Serializable, PAGE_QUERY_PAR
      * @param pageQueryParam dto
      * @return entity
      */
+    @SuppressWarnings("unchecked")
     default ENTITY convertToEntity(PAGE_QUERY_PARAM pageQueryParam) {
         return (ENTITY) pageQueryParam;
     }

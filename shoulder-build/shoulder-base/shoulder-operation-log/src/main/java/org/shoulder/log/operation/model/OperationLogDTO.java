@@ -275,6 +275,13 @@ public class OperationLogDTO implements Cloneable, Serializable {
         return this;
     }
 
+    /**
+     * put Field to extends has order
+     *
+     * @param extKey k
+     * @param value  v
+     * @return this
+     */
     @JsonIgnore
     public OperationLogDTO setExtField(String extKey, Object value) {
         if (extKey == null) {
