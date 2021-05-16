@@ -96,6 +96,7 @@
         <h2.version>1.4.200</h2.version>
         <!-- 1.2.4支持jdk8时间打印 -->
         <druid.version>1.2.4</druid.version>
+        <!-- mybatis-plus 功能稳定性较差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
         <mybatis-plus.version>3.4.2</mybatis-plus.version>
         <pagehelper.version>5.2.0</pagehelper.version>
         <pagehelper-starter.version>1.3.0</pagehelper-starter.version>
