@@ -54,25 +54,6 @@ public class MybatisPlusAutoConfiguration {
     }
 
     /**
-     * 新的分页插件,一缓和二缓遵循mybatis的规则
-     * 需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题(该属性会在旧插件移除后一同移除)
-     */
-    @Deprecated
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnClass(PaginationInterceptor.class)
-    public PaginationInterceptor paginationInterceptor() {
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-        // 设置最大单页限制数量，默认 500 条，-1 不受限制，这里改为 PageConst.MAX_PAGE_SIZE
-        paginationInterceptor.setLimit(PageConst.MAX_PAGE_SIZE);
-        // 若查询目标页码大于总页码，则查询第一页
-        paginationInterceptor.setOverflow(false);
-        // 开启 count 的 join 优化,只针对部分 left join
-        paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
-        return paginationInterceptor;
-    }
-
-    /**
      * 新分页插件填坑
      */
     @Bean
@@ -143,15 +124,35 @@ public class MybatisPlusAutoConfiguration {
     public InnerInterceptor paginationInnerInterceptor() {
         // 分页插件
         PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
-        // 单页分页条数限制
+        // 单页分页条数限制 默认 500 条，-1 不受限制，这里从配置中拿
         paginationInterceptor.setMaxLimit(databaseProperties.getLimit());
         // 数据库类型
         paginationInterceptor.setDbType(databaseProperties.getDbType());
-        // 溢出总页数后是否进行处理
+        // 溢出总页数后是否进行处理；若查询目标页码大于总页码，true 查询第一页 false 不处理
         paginationInterceptor.setOverflow(true);
+        // 开启 count 的 join 优化,只针对部分 left join
+        //paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
         return paginationInterceptor;
     }
 
+    /**
+     * 新的分页插件,一缓和二缓遵循mybatis的规则
+     * 需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题(该属性会在旧插件移除后一同移除)
+     */
+    @Deprecated
+//    @Bean
+//    @ConditionalOnMissingBean
+//    @ConditionalOnClass(PaginationInterceptor.class)
+    public PaginationInterceptor oldPaginationInterceptor() {
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        // 设置最大单页限制数量，默认 500 条，-1 不受限制，这里改为 PageConst.MAX_PAGE_SIZE
+        paginationInterceptor.setLimit(PageConst.MAX_PAGE_SIZE);
+        // 若查询目标页码大于总页码，true 查询第一页 false 不处理
+        paginationInterceptor.setOverflow(false);
+        // 开启 count 的 join 优化,只针对部分 left join
+        paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
+        return paginationInterceptor;
+    }
 
     @Bean
     @Order(80)

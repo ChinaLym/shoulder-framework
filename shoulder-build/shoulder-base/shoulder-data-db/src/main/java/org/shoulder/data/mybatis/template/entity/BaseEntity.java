@@ -1,9 +1,6 @@
 package org.shoulder.data.mybatis.template.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +18,10 @@ import java.time.LocalDateTime;
 
 /**
  * 记录型实体: 带有 id、创建时间、最后修改时间
+ * todo createTime update 时区问题，update明显落后 8 h
  *
  * @author lym
+ * @see SqlCondition 注解加条件
  */
 @Getter
 @Setter
