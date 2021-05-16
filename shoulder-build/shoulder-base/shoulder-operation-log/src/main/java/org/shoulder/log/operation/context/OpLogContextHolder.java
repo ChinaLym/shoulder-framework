@@ -32,7 +32,7 @@ public class OpLogContextHolder {
     /**
      * 保存操作日志上下文
      */
-    private static final ThreadLocal<OpLogContext> currentOpLogContext = new ThreadLocal<>();
+    private static final ThreadLocal<OpLogContext> CURRENT_OP_LOG_CONTEXT = new ThreadLocal<>();
 
     /**
      * 操作日志记录器
@@ -43,7 +43,7 @@ public class OpLogContextHolder {
      * 记录日志
      */
     public static void log() {
-        OpLogContext context = currentOpLogContext.get();
+        OpLogContext context = CURRENT_OP_LOG_CONTEXT.get();
         if (context != null) {
             OperationLogDTO opLog = OpLogContextHolder.getLog();
             List<? extends Operable> operableCollection = OpLogContextHolder.getOperableObjects();
@@ -65,7 +65,7 @@ public class OpLogContextHolder {
      */
     @Nonnull
     public static OpLogContext getContextOrException() {
-        OpLogContext context = currentOpLogContext.get();
+        OpLogContext context = CURRENT_OP_LOG_CONTEXT.get();
         if (context == null) {
             throw new IllegalThreadStateException(
                 // Helpful Tip: Add a breakpoint here and debug your code
@@ -80,14 +80,14 @@ public class OpLogContextHolder {
      */
     @Nullable
     public static OpLogContext getContext() {
-        return currentOpLogContext.get();
+        return CURRENT_OP_LOG_CONTEXT.get();
     }
 
     /**
      * 设置日志上下文
      */
     public static void setContext(OpLogContext opLogContext) {
-        currentOpLogContext.set(opLogContext);
+        CURRENT_OP_LOG_CONTEXT.set(opLogContext);
     }
 
     // ============================ 日志实体 =======================
@@ -213,7 +213,7 @@ public class OpLogContextHolder {
      * 除非你很明白框架原理，否则不要主动调用该方法
      */
     public static void clean() {
-        currentOpLogContext.remove();
+        CURRENT_OP_LOG_CONTEXT.remove();
     }
 
     public static void setOperationLogger(OperationLogger opLogger) throws BeansException {

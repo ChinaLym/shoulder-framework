@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.annotation.OperationLog;
+import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.validate.groups.Update;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +35,7 @@ public interface UpdateController<ENTITY, UPDATE_DTO> extends BaseController<ENT
     @PutMapping
     @OperationLog(operation = OperationLog.Operations.UPDATE)
     @Validated(Update.class)
-    default BaseResult<Boolean> update(@RequestBody @Valid @NotNull UPDATE_DTO dto) {
+    default BaseResult<Boolean> update(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
         return update(dto, getService()::updateById);
     }
 
@@ -49,7 +50,7 @@ public interface UpdateController<ENTITY, UPDATE_DTO> extends BaseController<ENT
     @PutMapping("/all")
     @OperationLog(operation = OperationLog.Operations.UPDATE)
     @Validated(Update.class)
-    default BaseResult<Boolean> updateAll(@RequestBody @Valid @NotNull UPDATE_DTO dto) {
+    default BaseResult<Boolean> updateAll(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
         return update(dto, getService()::updateAllById);
     }
 
@@ -63,7 +64,10 @@ public interface UpdateController<ENTITY, UPDATE_DTO> extends BaseController<ENT
     private BaseResult<Boolean> update(UPDATE_DTO dto, Function<ENTITY, Boolean> updateMethod) {
         ENTITY entity = handleBeforeUpdate(dto);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
-            OpLogContextHolder.setOperableObject((Operable) entity);
+            if (entity != null) {
+                OpLogContextHolder.setOperableObject((Operable) entity);
+            }
+            OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
         return BaseResult.success(updateMethod.apply(entity));
     }

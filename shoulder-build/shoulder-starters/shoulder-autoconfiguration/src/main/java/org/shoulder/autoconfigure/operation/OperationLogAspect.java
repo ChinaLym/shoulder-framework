@@ -123,8 +123,10 @@ public class OperationLogAspect {
             String[] errorReasons = ex.getMessage().split("\\r");
             String originReason = errorReasons[errorReasons.length - 1];
             // todo 日志常量固定
-            OpLogContextHolder.getLog().setExtField("errorType", ex.getClass().getName())
-                    .setExtField("errorMsg", originReason);
+            OpLogContextHolder.getLog()
+                    .setExtField("errorMsg", originReason)
+                    .setExtField("errorType", ex.getClass().getName());
+
             if (ex instanceof ErrorCode) {
                 OpLogContextHolder.getLog().setErrorCode(((ErrorCode) ex).getCode());
             }

@@ -5,6 +5,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.annotation.OperationLog;
+import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.model.sample.OperableObject;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,7 +35,7 @@ public interface DeleteController<ENTITY, ID extends Serializable> extends BaseC
     @ApiOperation(value = "删除")
     @DeleteMapping("{id}")
     @OperationLog(operation = OperationLog.Operations.DELETE)
-    default BaseResult<Boolean> delete(@PathVariable("id") ID id) {
+    default BaseResult<Boolean> delete(@OperationLogParam @PathVariable("id") ID id) {
         ID realWantDeleteId = handlerBeforeDelete(id);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             OpLogContextHolder.getLog().setObjectId(String.valueOf(realWantDeleteId));
@@ -54,7 +55,7 @@ public interface DeleteController<ENTITY, ID extends Serializable> extends BaseC
     @ApiOperation(value = "删除")
     @DeleteMapping
     @OperationLog(operation = OperationLog.Operations.DELETE)
-    default BaseResult<Boolean> deleteBatch(@RequestBody List<ID> ids) {
+    default BaseResult<Boolean> deleteBatch(@OperationLogParam @RequestBody List<ID> ids) {
         List<ID> realWantDeleteIds = handlerBeforeDelete(ids);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             OpLogContextHolder.setOperableObjects(OperableObject.ofIds(realWantDeleteIds));
