@@ -31,7 +31,7 @@ public class GuidTest extends BaseWebTest {
         String longGuids = doGetTest("/guid/long/2?num=5")
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        for (String l : JsonUtils.toObject(longGuids, new TypeReference<String[]>() {
+        for (String l : JsonUtils.parseObject(longGuids, new TypeReference<String[]>() {
         })) {
             Assertions.assertTrue(Long.parseLong(l) != 0);
         }
@@ -50,7 +50,7 @@ public class GuidTest extends BaseWebTest {
         String stringGuids = doGetTest("/guid/string/2?num=5")
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        for (String s : JsonUtils.toObject(stringGuids, new TypeReference<String[]>() {
+        for (String s : JsonUtils.parseObject(stringGuids, new TypeReference<String[]>() {
         })) {
             Assertions.assertTrue(StringUtils.isNotBlank(s));
         }

@@ -37,7 +37,7 @@ public class I18nTest extends BaseWebTest {
                 .andExpect(content().string(containsString("\"code\":\"0\"")))
                 .andExpect(content().string(containsString("\"msg\":\"success\"")))
                 .andReturn().getResponse().getContentAsString();
-        BaseResult<Map<String, String>> r = JsonUtils.toObject(jsonResult, new TypeReference<>() {
+        BaseResult<Map<String, String>> r = JsonUtils.parseObject(jsonResult, new TypeReference<>() {
         });
         Map<String, String> trErrorCodeMap = r.getData();
         Assertions.assertEquals(trErrorCodeMap.get("0x0000000d"), "认证无效，需要先进行认证");
