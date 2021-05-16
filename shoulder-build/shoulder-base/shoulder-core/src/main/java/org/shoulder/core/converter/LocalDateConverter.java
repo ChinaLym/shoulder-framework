@@ -24,6 +24,7 @@ public class LocalDateConverter extends BaseLocalDateTimeConverter<LocalDate> {
         return formatMap;
     }
 
+    @Nonnull
     @Override
     protected String toStandFormat(@Nonnull String sourceDateString) {
         return super.toStandYearMonthDay(sourceDateString);

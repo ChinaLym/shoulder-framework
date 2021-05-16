@@ -17,12 +17,13 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.PackageVersion;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.converter.jackson.ShoulderEnumDeserializer;
+import org.shoulder.core.converter.jackson.ShoulderLocalDateTimeDeserializer;
 import org.shoulder.core.exception.SerialException;
 import org.slf4j.LoggerFactory;
 
@@ -211,9 +212,11 @@ public class JsonUtils {
             );
         }
         // 添加 jdk8 新增的时间序列化处理模块
-        objectMapper.registerModule(new DateEnhancerJacksonModule())
+        objectMapper
                 .registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule());
+                .registerModule(new JavaTimeModule())
+                // 对于时间等，用更宽松的取代默认严格的格式匹配
+                .registerModule(new DateEnhancerJacksonModule());
 
         // 激活所有通过 spi 注册的模块，如接口响应多种格式，统一反序列化为标准的，需要自行实现 StdDeserializer，new SimpleModule().addDeserializer
         objectMapper.findAndRegisterModules();
@@ -259,15 +262,14 @@ public class JsonUtils {
             String datetimeFormatStr = dateFormatStr + " " + timeFormatStr;
             DateTimeFormatter datetimeFormat = DateTimeFormatter.ofPattern(datetimeFormatStr);
             this.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(datetimeFormat));
-            this.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(datetimeFormat));
-
+            this.addDeserializer(LocalDateTime.class, ShoulderLocalDateTimeDeserializer.INSTANCE);
+            this.addDeserializer(Enum.class, ShoulderEnumDeserializer.INSTANCE);
             // 解决 17位+的 Long 给前端导致精度丢失问题，前端将以 str 接收（序列换成json时,将所有的long变成string）
             // todo 【系统设计】JSON序列化时，枚举；long、BigInteger、BigDecimal 可以转为字符串处理
 //            this.addSerializer(Long.class, ToStringSerializer.instance);
 //            this.addSerializer(Long.TYPE, ToStringSerializer.instance);
 //            this.addSerializer(BigInteger.class, ToStringSerializer.instance);
 //            this.addSerializer(BigDecimal.class, ToStringSerializer.instance);
-//            this.addDeserializer(Enum.class, EnumDeserializer.INSTANCE);
             //this.addSerializer(Long.class, ToStringSerializer.instance);
             //this.addSerializer(Long.TYPE, ToStringSerializer.instance);
 
