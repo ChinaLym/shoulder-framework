@@ -1,5 +1,7 @@
 package org.shoulder.log.operation.logger.impl;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.log.operation.logger.AbstractOperationLogger;
 import org.shoulder.log.operation.logger.OperationLogger;
@@ -85,8 +87,8 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[14] = opLog.getObjectName();
         fields[15] = opLog.getDetail();
         fields[16] = opLog.getDetailKey();
-        fields[17] = JsonUtils.toJson(opLog.getDetailItems());
-        fields[18] = JsonUtils.toJson(opLog.getParams());
+        fields[17] = CollectionUtils.isEmpty(opLog.getDetailItems()) ? null : JsonUtils.toJson(opLog.getDetailItems());
+        fields[18] = CollectionUtils.isEmpty(opLog.getParams()) ? null : JsonUtils.toJson(opLog.getParams());
 
         fields[19] = opLog.getResult().getCode();
         fields[20] = opLog.getErrorCode();
@@ -98,7 +100,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[25] = null;// relation_id
         fields[26] = opLog.getTenantCode();
 
-        fields[27] = JsonUtils.toJson(opLog.getExtFields());
+        fields[27] = MapUtils.isEmpty(opLog.getExtFields()) ? null : JsonUtils.toJson(opLog.getExtFields());
 
         return fields;
     }
