@@ -34,7 +34,6 @@ public class AddressUtils {
         return matcher.matches();
     }
 
-
     /**
      * 获取本机mac
      */
@@ -49,7 +48,6 @@ public class AddressUtils {
         return LOCAL_IP_CACHE;
     }
 
-
     static {
         try {
             InetAddress inetAddress = getLocalNetAddress();
@@ -61,10 +59,6 @@ public class AddressUtils {
             LOCAL_IP_CACHE = "127.0.0.1";
             LOCAL_MAC_CACHE = "00-00-00-00-00-00";
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(LOCAL_IP_CACHE);
     }
 
     /**
@@ -128,7 +122,7 @@ public class AddressUtils {
      * 以 . 分隔，每段转为两个 0-f 的 hex 字母
      *
      * @param ipv4 ipv4
-     * @return hexString
+     * @return hexString （8个字符的字符串）
      */
     public static String toHexStr(String ipv4) {
         int[] ipSegments = parseToIntArray(ipv4);
@@ -172,7 +166,7 @@ public class AddressUtils {
      * @param ipv4 ipv4
      * @return ipv4Str
      */
-    public static String toIPv4(long ipv4) {
+    public static String parseIPv4(long ipv4) {
         final long mask = 255;
 
         return ((ipv4 >>> 24) & mask) +
@@ -190,7 +184,7 @@ public class AddressUtils {
      * @param ipv4 ipv4
      * @return ipv4Str
      */
-    public static String toIPv4(int ipv4) {
+    public static String parseIPv4(int ipv4) {
         final int mask = 255;
 
         return ((ipv4 >>> 24) & mask) +
@@ -209,7 +203,7 @@ public class AddressUtils {
      * @param hexIp ipv4
      * @return ipv4Str
      */
-    public static String toIPv4FromHex(String hexIp) {
+    public static String parseIPv4FromHex(String hexIp) {
         if (hexIp == null || hexIp.length() != 8) {
             throw new IllegalArgumentException("invalid hexIp: " + hexIp);
         }
@@ -275,7 +269,7 @@ public class AddressUtils {
     }
 
     public static boolean isBetweenIntervalHex(String hexIp, String start, String end) {
-        return isBetweenInterval(toIPv4FromHex(hexIp), start, end);
+        return isBetweenInterval(parseIPv4FromHex(hexIp), start, end);
     }
 
 

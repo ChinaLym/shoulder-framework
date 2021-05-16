@@ -169,7 +169,11 @@ public class AppContext {
             map = new HashMap<>();
             THREAD_LOCAL.set(map);
         }
-        map.put(key, value);
+        if (value == null) {
+            map.remove(key);
+        } else {
+            map.put(key, value);
+        }
     }
 
     /**

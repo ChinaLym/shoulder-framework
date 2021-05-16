@@ -41,7 +41,7 @@ public class ExportSupport {
 
     static {
         try (InputStream inputStream = ExportSupport.class.getClassLoader().getResourceAsStream(LOCALIZE_FILE_PATH)) {
-            List<ExportLocalize> exportLocalizeList = JsonUtils.toObject(inputStream, new TypeReference<>() {
+            List<ExportLocalize> exportLocalizeList = JsonUtils.parseObject(inputStream, new TypeReference<>() {
             });
             for (ExportLocalize exportLocalize : exportLocalizeList) {
                 LOCALIZE_CACHE.put(exportLocalize.getLanguageId(), exportLocalize);

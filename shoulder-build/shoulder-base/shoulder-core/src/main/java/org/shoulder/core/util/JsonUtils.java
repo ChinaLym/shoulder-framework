@@ -115,9 +115,9 @@ public class JsonUtils {
      * 错误使用后果：可能导致 ClassCastException: LinkedHashMap cannot be cast to class xxx
      * 因为本方法签名中返回值的为 T，未指明泛型参数，泛型参数将被抹为 Object，Jackson碰到 Object 将使用 LinkedHashMap
      *
-     * @see #toObject(String, TypeReference) 该方法中可以在使用除传入 new TypeReference<>() {} 能利用到java泛型自动推断
+     * @see #parseObject(String, TypeReference) 该方法中可以在使用除传入 new TypeReference<>() {} 能利用到java泛型自动推断
      */
-    public static <T> T toObject(String json) {
+    public static <T> T parseObject(String json) {
         try {
             return JSON_MAPPER.readValue(json, new TypeReference<>() {
             });
@@ -129,7 +129,7 @@ public class JsonUtils {
     /**
      * 反序列化 JSON 字符串为 Object
      */
-    public static <T> T toObject(String json, TypeReference<T> type) {
+    public static <T> T parseObject(String json, TypeReference<T> type) {
         try {
             return JSON_MAPPER.readValue(json, type);
         } catch (JsonProcessingException e) {
@@ -144,7 +144,7 @@ public class JsonUtils {
      * @param clazz        反序列化的类型
      * @param paramClasses clazz 类型的泛型类型
      */
-    public static <T> T toObject(String json, Class<T> clazz, Class<?>... paramClasses) {
+    public static <T> T parseObject(String json, Class<T> clazz, Class<?>... paramClasses) {
         ObjectMapper mapper = JSON_MAPPER.copy();
         JavaType javaType = mapper.getTypeFactory().constructParametricType(clazz, paramClasses);
         try {
@@ -157,12 +157,12 @@ public class JsonUtils {
     /**
      * 第一次调用时可能较慢（申请堆外内存，加载更多的类）
      */
-    public static <T> T toObject(InputStream inputStream, Class<T> clazz, Class<?>... paramClasses) {
-        return toObject(IoUtil.read(inputStream, AppInfo.charset()), clazz, paramClasses);
+    public static <T> T parseObject(InputStream inputStream, Class<T> clazz, Class<?>... paramClasses) {
+        return parseObject(IoUtil.read(inputStream, AppInfo.charset()), clazz, paramClasses);
     }
 
-    public static <T> T toObject(InputStream inputStream, TypeReference<T> type) {
-        return toObject(IoUtil.read(inputStream, AppInfo.charset()), type);
+    public static <T> T parseObject(InputStream inputStream, TypeReference<T> type) {
+        return parseObject(IoUtil.read(inputStream, AppInfo.charset()), type);
     }
 
     public static void setJsonMapper(ObjectMapper jsonMapper) {

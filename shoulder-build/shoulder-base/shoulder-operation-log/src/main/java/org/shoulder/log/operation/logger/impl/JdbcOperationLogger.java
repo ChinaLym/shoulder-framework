@@ -31,10 +31,10 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    private static final String ALL_INSERT_COLUMNS = "component_id, instance_id, " +
-        "user_id, user_name, user_real_name, user_org_id, user_org_name, terminal_type, terminal_address, terminal_id, terminal_info, " +
-        "operation, object_type, object_id, object_name, detail, detail_key, detail_item, operation_param," +
-        "result, error_code, operation_time, end_time, duration, trace_id, relation_id, tenant_code, extended_field0";
+    private static final String ALL_INSERT_COLUMNS = "app_id, instance_id, " +
+            "user_id, user_name, user_real_name, user_org_id, user_org_name, terminal_type, terminal_address, terminal_id, terminal_info, " +
+            "operation, object_type, object_id, object_name, detail, detail_key, detail_item, operation_param," +
+            "result, error_code, operation_time, end_time, duration, trace_id, relation_id, tenant_code, extended_field0";
 
     private static final String VALUES = "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

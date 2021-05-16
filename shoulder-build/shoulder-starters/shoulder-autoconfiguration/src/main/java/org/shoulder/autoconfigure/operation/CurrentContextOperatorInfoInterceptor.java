@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CurrentContextOperatorInfoInterceptor extends OperationLogOperatorInfoInterceptor {
 
-
     /**
      * 用当前登录的用户信息作为操作日志中操作者信息默认值
      * 也可覆盖，改为从 spring security context holder 中拿
