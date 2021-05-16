@@ -8,6 +8,7 @@ import org.shoulder.core.log.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -25,6 +26,17 @@ public class RestControllerDataExceptionAdvice {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
+     * 数据重复
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler({DuplicateKeyException.class})
+    public BaseResult paramsMissingHandler(DuplicateKeyException e) {
+        BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.DATA_STORAGE_FAIL, e, e.getMessage());
+        log.error(stdEx);
+        return stdEx.toResponse();
+    }
+
+    /**
      * 数据库 / SQL 问题
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -35,9 +47,11 @@ public class RestControllerDataExceptionAdvice {
         return stdEx.toResponse();
     }
 
-    /*CleanupFailureDataAccessException 一项操作成功地执行，但在释放数据库资源时发生异常（例如，关闭一个Connection）
+    /*
+    DataIntegrityViolationException Insert或Update数据时违反了完整性，例如违反了惟一性限制，比如 name最大16，却传来了200
+    PersistenceException 数据类型不正确，比如数据库int，来了string（abc）
+    CleanupFailureDataAccessException 一项操作成功地执行，但在释放数据库资源时发生异常（例如，关闭一个Connection）
     DataAccessResourceFailureException 数据访问资源彻底失败，例如不能连接数据库
-    DataIntegrityViolationException Insert或Update数据时违反了完整性，例如违反了惟一性限制
     DataRetrievalFailureException 某些数据不能被检测到，例如不能通过关键字找到一条记录
     DeadlockLoserDataAccessException	当前的操作因为死锁而失败
     IncorrectUpdateSemanticsDataAccessException	Update时发生某些没有预料到的情况，例如更改超过预期的记录数。当这个异常被抛出时，执行着的事务不会被回滚

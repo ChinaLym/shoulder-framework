@@ -4,7 +4,7 @@ package org.shoulder.web.template.crud;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.data.mybatis.template.service.BaseService;
-import org.shoulder.log.operation.OperableObjectTypeRepository;
+import org.shoulder.log.operation.support.OperableObjectTypeRepository;
 
 /**
  * 基础，几个基本方法，不提供任何接口

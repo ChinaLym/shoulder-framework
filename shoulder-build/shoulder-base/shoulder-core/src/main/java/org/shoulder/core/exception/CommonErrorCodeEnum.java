@@ -157,7 +157,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 数据存储失败-未落库
      */
-    DATA_STORAGE_FAIL(401, "Persistent fail!", Level.ERROR),
+    DATA_STORAGE_FAIL(401, "Persistent fail! %s", Level.ERROR),
     /**
      * 数据访问错误-除了保存时
      */

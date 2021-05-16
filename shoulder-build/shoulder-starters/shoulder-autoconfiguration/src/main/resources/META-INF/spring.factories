@@ -55,6 +55,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.operation.OperationLogParamConverterAutoConfiguration,\
   org.shoulder.autoconfigure.operation.SpringSecurityCurrentUserConfiguration,\
   org.shoulder.autoconfigure.operation.OperationLogWebAutoConfiguration,\
+  org.shoulder.autoconfigure.operation.OperationLogOperableTypeResolverAutoConfiguration,\
   org.shoulder.autoconfigure.operation.OperationLogUserAgentResolverAutoConfiguration,\
   \
   org.shoulder.autoconfigure.security.AuthenticationBeanConfig, \
