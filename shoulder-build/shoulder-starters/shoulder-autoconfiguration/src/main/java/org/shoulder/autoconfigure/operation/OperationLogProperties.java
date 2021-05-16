@@ -32,6 +32,13 @@ public class OperationLogProperties {
     private Integer interceptorOrder = 0;
 
     /**
+     * 是否解析 UA，默认实现需要 hutool-http
+     *
+     * @see org.shoulder.log.operation.logger.intercept.UserAgentParserInterceptor
+     */
+    private Boolean resolveUserAgent = true;
+
+    /**
      * 是否开启
      */
     private Boolean enable = true;

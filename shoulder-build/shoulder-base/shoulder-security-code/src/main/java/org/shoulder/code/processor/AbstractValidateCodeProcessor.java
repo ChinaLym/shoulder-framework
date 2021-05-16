@@ -8,11 +8,11 @@ import org.shoulder.code.generator.ValidateCodeGenerator;
 import org.shoulder.code.propertities.BaseValidateCodeProperties;
 import org.shoulder.code.store.ValidateCodeStore;
 import org.springframework.http.HttpMethod;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;

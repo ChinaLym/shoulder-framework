@@ -10,8 +10,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
+
+import javax.annotation.Nullable;
 
 /**
  * redis相关配置，提供 string 和 string-object 两种

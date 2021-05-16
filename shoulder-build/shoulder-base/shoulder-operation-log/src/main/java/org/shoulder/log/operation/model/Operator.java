@@ -1,9 +1,9 @@
 package org.shoulder.log.operation.model;
 
 import org.shoulder.log.operation.enums.TerminalType;
-import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * 操作者信息

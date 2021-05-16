@@ -6,8 +6,8 @@ import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.shoulder.log.operation.model.Operator;
-import org.springframework.lang.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

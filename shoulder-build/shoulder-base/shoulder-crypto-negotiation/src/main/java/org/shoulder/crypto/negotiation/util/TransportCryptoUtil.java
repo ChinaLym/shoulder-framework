@@ -13,7 +13,8 @@ import org.shoulder.crypto.negotiation.support.dto.NegotiationResponse;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.lang.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * 为 String 提供适配
