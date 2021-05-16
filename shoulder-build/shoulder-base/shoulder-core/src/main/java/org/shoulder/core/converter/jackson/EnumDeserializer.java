@@ -1,4 +1,4 @@
-package org.shoulder.core.converter;
+package org.shoulder.core.converter.jackson;
 
 import cn.hutool.core.util.ReflectUtil;
 import com.fasterxml.jackson.core.JsonParser;
