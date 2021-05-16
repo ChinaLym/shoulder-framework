@@ -264,6 +264,9 @@ public class JsonUtils {
             this.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(datetimeFormat));
             this.addDeserializer(LocalDateTime.class, ShoulderLocalDateTimeDeserializer.INSTANCE);
             this.addDeserializer(Enum.class, ShoulderEnumDeserializer.INSTANCE);
+            // todo Date 是java旧的日期工具，暂不对其提供宽泛反序列化支持，后续版本支持
+            //  【考虑】LocalDate 支持带时间的，只取日期部分 LocalTime 同理
+
             // 解决 17位+的 Long 给前端导致精度丢失问题，前端将以 str 接收（序列换成json时,将所有的long变成string）
             // todo 【系统设计】JSON序列化时，枚举；long、BigInteger、BigDecimal 可以转为字符串处理
 //            this.addSerializer(Long.class, ToStringSerializer.instance);

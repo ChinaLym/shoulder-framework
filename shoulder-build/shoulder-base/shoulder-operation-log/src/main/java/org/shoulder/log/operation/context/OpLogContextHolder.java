@@ -32,7 +32,7 @@ public class OpLogContextHolder {
     /**
      * 保存操作日志上下文
      */
-    private static ThreadLocal<OpLogContext> currentOpLogContext = new ThreadLocal<>();
+    private static final ThreadLocal<OpLogContext> currentOpLogContext = new ThreadLocal<>();
 
     /**
      * 操作日志记录器
