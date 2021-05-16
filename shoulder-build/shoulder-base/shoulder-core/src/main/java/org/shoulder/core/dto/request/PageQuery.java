@@ -69,7 +69,7 @@ public class PageQuery<DTO> implements Serializable {
         this.pageNo = Integer.parseInt(map.getOrDefault(PARAM_PAGE_NO, DEFAULT_PAGE_NO).toString());
         this.pageSize = Integer.parseInt(map.getOrDefault(PARAM_PAGE_SIZE, DEFAULT_PAGE_SIZE).toString());
         this.orderRules = (List<OrderRule>) map.getOrDefault(PARAM_SORT_BY, "");
-        this.condition = JsonUtils.toObject(JsonUtils.toJson(map));
+        this.condition = JsonUtils.parseObject(JsonUtils.toJson(map));
         map.remove(PARAM_PAGE_NO);
         map.remove(PARAM_PAGE_SIZE);
         map.remove(PARAM_SORT_BY);
@@ -111,7 +111,7 @@ public class PageQuery<DTO> implements Serializable {
         result.pageNo = StringUtils.isEmpty(pageNo) ? DEFAULT_PAGE_NO : Integer.parseInt(pageNo);
         result.pageSize = StringUtils.isEmpty(pageSize) ? DEFAULT_PAGE_SIZE : Integer.parseInt(pageSize);
         if (StringUtils.isNotEmpty(orderRules)) {
-            result.orderRules = JsonUtils.toObject(orderRules);
+            result.orderRules = JsonUtils.parseObject(orderRules);
         }
         return result;
     }

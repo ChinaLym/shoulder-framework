@@ -223,7 +223,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
             return recordDetailList.stream()
                     .map(batchRecordDetail -> {
                         @SuppressWarnings("unchecked")
-                        Map<String, String> dataMap = JsonUtils.toObject(
+                        Map<String, String> dataMap = JsonUtils.parseObject(
                                 batchRecordDetail.getSource(), Map.class, String.class, String.class);
 
                         dataMap.put(BatchConstants.INDEX, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getIndex()));

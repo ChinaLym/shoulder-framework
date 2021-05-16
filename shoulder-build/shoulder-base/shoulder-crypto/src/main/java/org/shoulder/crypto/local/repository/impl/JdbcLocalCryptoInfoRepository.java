@@ -31,7 +31,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
                     "    root_key_part VARCHAR(64) COMMENT '根密钥部件'," +
                     "    vector        VARCHAR(64) COMMENT '初始偏移向量'," +
                     "    create_time   DATETIME             default now() COMMENT '创建时间'," +
-                    "    PRIMARY KEY pk_crypto_info (component_id, header)" +
+                    "    PRIMARY KEY pk_crypto_info (app_id, header)" +
                     ") ENGINE = INNODB" +
                     "  DEFAULT CHARSET = UTF8MB4 COMMENT = '加密元信息';";
 

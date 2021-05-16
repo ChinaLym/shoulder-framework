@@ -12,9 +12,9 @@ public class AddressUtilsTest {
     @Test
     public void testConvert() {
         String ip = "243.215.64.23";
-        assert ip.equals(AddressUtils.toIPv4(AddressUtils.toInt(ip)));
-        assert ip.equals(AddressUtils.toIPv4(AddressUtils.toLong(ip)));
-        assert ip.equals(AddressUtils.toIPv4FromHex(AddressUtils.toHexStr(ip)));
+        assert ip.equals(AddressUtils.parseIPv4(AddressUtils.toInt(ip)));
+        assert ip.equals(AddressUtils.parseIPv4(AddressUtils.toLong(ip)));
+        assert ip.equals(AddressUtils.parseIPv4FromHex(AddressUtils.toHexStr(ip)));
     }
 
     @Test

@@ -57,7 +57,7 @@ public class RedisNegotiationResultCache implements NegotiationResultCache {
         if (obj == null) {
             return null;
         }
-        return JsonUtils.toObject(String.valueOf(obj), NegotiationResult.class);
+        return JsonUtils.parseObject(String.valueOf(obj), NegotiationResult.class);
     }
 
     @Override

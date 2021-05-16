@@ -74,7 +74,7 @@ public class RedisKeyPairCache implements KeyPairCache {
         if (cipherKp == null) {
             throw new NoSuchKeyPairException("not such keyPair id= " + id);
         }
-        KeyPairDto keyPairDto = JsonUtils.toObject(cipherKp, KeyPairDto.class);
+        KeyPairDto keyPairDto = JsonUtils.parseObject(cipherKp, KeyPairDto.class);
         if (StringUtils.isEmpty(keyPairDto.getVk())) {
             // 数据完整性遭到外界恶意破坏，不应继续使用
             throw new NoSuchKeyPairException("KeyPair.privateKey is empty, id= " + id);

@@ -121,7 +121,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
             if (StringUtils.isBlank(jsonStr)) {
                 return Collections.emptyList();
             }
-            return JsonUtils.toObject(jsonStr, new TypeReference<>() {
+            return JsonUtils.parseObject(jsonStr, new TypeReference<>() {
             });
         } catch (IOException e) {
             // 大概率文件路径有问题，不可读

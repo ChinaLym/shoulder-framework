@@ -18,6 +18,6 @@ public class JpaConverterListJson implements AttributeConverter<Object, String> 
 
     @Override
     public Object convertToEntityAttribute(String s) {
-        return JsonUtils.toObject(s, Object.class);
+        return JsonUtils.parseObject(s, Object.class);
     }
 }

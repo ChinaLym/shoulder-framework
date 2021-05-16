@@ -62,7 +62,7 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
             Object cloned = ObjectUtil.clone(object);
             if (cloned == null) {
                 //使用 json 方式（性能差一点，备选）
-                cloned = JsonUtils.toObject(JsonUtils.toJson(object), objectClass);
+                cloned = JsonUtils.parseObject(JsonUtils.toJson(object), objectClass);
             }
             object = cloned;
 
