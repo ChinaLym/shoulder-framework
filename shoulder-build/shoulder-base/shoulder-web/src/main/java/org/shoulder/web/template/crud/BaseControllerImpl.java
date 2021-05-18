@@ -2,8 +2,11 @@ package org.shoulder.web.template.crud;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.Serializable;
 
 /**
  * BaseController
@@ -11,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @param <ENTITY> 实体
  * @author lym
  */
-public abstract class BaseControllerImpl<S extends BaseService<ENTITY>, ENTITY> implements BaseController<ENTITY> {
+public abstract class BaseControllerImpl<SERVICE extends BaseService<ENTITY>, ENTITY extends BaseEntity<? extends Serializable>> implements BaseController<ENTITY> {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    protected S service;
+    protected SERVICE service;
 
     @Override
     public Class<ENTITY> getEntityClass() {

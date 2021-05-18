@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,7 +14,33 @@ import java.util.List;
  * @param <ENTITY> Entity
  * @author lym
  */
-public interface BaseMapper<ENTITY extends BaseEntity<?>> extends com.baomidou.mybatisplus.core.mapper.BaseMapper<ENTITY> {
+public interface BaseMapper<ENTITY extends BaseEntity<? extends Serializable>> extends com.baomidou.mybatisplus.core.mapper.BaseMapper<ENTITY> {
+
+
+    /**
+     * 根据 bizId 查询
+     *
+     * @param bizId bizId
+     * @return entity
+     */
+    ENTITY selectByBizId(String bizId);
+
+    /**
+     * 查询（根据 bizId 批量查询）
+     *
+     * @param bizIdList bizId 列表(不能为 null 以及 empty)
+     * @return entity
+     */
+    List<ENTITY> selectBatchBizIds(@Param(Constants.COLLECTION) Collection<String> bizId);
+
+
+    /**
+     * 锁定一条记录
+     *
+     * @param bizId bizId
+     * @return 实体
+     */
+    ENTITY selectForUpdateByBizId(String bizId);
 
     /**
      * 锁定一条记录
@@ -22,6 +49,17 @@ public interface BaseMapper<ENTITY extends BaseEntity<?>> extends com.baomidou.m
      * @return 实体
      */
     ENTITY selectForUpdateById(Serializable id);
+
+    // --------------
+
+
+    /**
+     * 根据 bizId 修改
+     *
+     * @param entity 实体对象
+     * @return 影响行数
+     */
+    int updateByBizId(@Param(Constants.ENTITY) ENTITY entity);
 
     /**
      * 根据 id 全量修改所有字段，与 updateById 区别：包括为 null 的字段，表示设置这个字段为 NULL
@@ -61,7 +99,7 @@ public interface BaseMapper<ENTITY extends BaseEntity<?>> extends com.baomidou.m
      * @param entity 实体
      * @return 影响行数
      */
-    int deleteInLogicByBizIndex(ENTITY entity);
+    int deleteInLogicByBizId(ENTITY entity);
 
     /**
      * 逻辑删除，根据 id 进行
@@ -69,6 +107,6 @@ public interface BaseMapper<ENTITY extends BaseEntity<?>> extends com.baomidou.m
      * @param entityList 实体列表
      * @return 影响行数
      */
-    int deleteInLogicByBizIndex(List<ENTITY> entityList);
+    int deleteInLogicByBizIdList(Collection<? extends ENTITY> entityList);
 
 }

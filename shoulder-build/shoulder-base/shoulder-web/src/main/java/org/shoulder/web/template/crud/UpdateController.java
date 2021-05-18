@@ -3,6 +3,7 @@ package org.shoulder.web.template.crud;
 import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.model.Operable;
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.function.Function;
 
 /**
@@ -22,7 +24,7 @@ import java.util.function.Function;
  * @param <UPDATE_DTO> DTO
  * @author lym
  */
-public interface UpdateController<ENTITY, UPDATE_DTO> extends BaseController<ENTITY> {
+public interface UpdateController<ENTITY extends BaseEntity<? extends Serializable>, UPDATE_DTO> extends BaseController<ENTITY> {
 
     /**
      * 修改

@@ -33,7 +33,7 @@ public class BizEntity<ID extends Serializable> extends LogicDeleteEntity<ID> {
      * 版本号
      */
     @Version
-    private int version;
+    private Integer version;
 
     /**
      * 描述

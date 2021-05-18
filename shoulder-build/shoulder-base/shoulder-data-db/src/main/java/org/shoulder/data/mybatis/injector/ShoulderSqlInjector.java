@@ -6,8 +6,7 @@ import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
 import org.shoulder.data.constant.DataBaseConsts;
-import org.shoulder.data.mybatis.injector.methods.SelectForUpdateById;
-import org.shoulder.data.mybatis.injector.methods.UpdateAllById;
+import org.shoulder.data.mybatis.injector.methods.*;
 
 import java.util.List;
 
@@ -31,6 +30,21 @@ public class ShoulderSqlInjector extends DefaultSqlInjector {
                 DataBaseConsts.COLUMN_CREATE_TIME,
                 DataBaseConsts.COLUMN_CREATOR
         }, field.getColumn())));
+
+        // 逻辑删除
+        methodList.add(new DeleteInLogicById());
+        methodList.add(new DeleteInLogicByIdList());
+
+        // bizId 扩展
+        methodList.add(new SelectByBizId());
+        methodList.add(new SelectBatchByBizIds());
+        methodList.add(new SelectForUpdateByBizId());
+
+        methodList.add(new UpdateByBizId());
+
+        methodList.add(new DeleteInLogicByBizId());
+        methodList.add(new DeleteInLogicByBizIdList());
+
         return methodList;
     }
 

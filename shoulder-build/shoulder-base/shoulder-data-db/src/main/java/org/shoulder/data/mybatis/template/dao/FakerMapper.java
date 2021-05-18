@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * @author lym
  */
-public interface FakerMapper<ENTITY extends BaseEntity<?>> extends BaseMapper<ENTITY> {
+public interface FakerMapper<ENTITY extends BaseEntity<? extends Serializable>> extends BaseMapper<ENTITY> {
 
     // ========================= atLatest impl for crudController ==========================
 
@@ -68,7 +68,27 @@ public interface FakerMapper<ENTITY extends BaseEntity<?>> extends BaseMapper<EN
     // ========================= All ==========================
 
     @Override
+    default ENTITY selectByBizId(String bizId) {
+        throw createNotSupportException();
+    }
+
+    @Override
+    default List<ENTITY> selectBatchBizIds(Collection<String> bizId) {
+        throw createNotSupportException();
+    }
+
+    @Override
+    default ENTITY selectForUpdateByBizId(String bizId) {
+        throw createNotSupportException();
+    }
+
+    @Override
     default ENTITY selectForUpdateById(Serializable id) {
+        throw createNotSupportException();
+    }
+
+    @Override
+    default int updateByBizId(ENTITY entity) {
         throw createNotSupportException();
     }
 
@@ -88,12 +108,12 @@ public interface FakerMapper<ENTITY extends BaseEntity<?>> extends BaseMapper<EN
     }
 
     @Override
-    default int deleteInLogicByBizIndex(ENTITY entity) {
+    default int deleteInLogicByBizId(ENTITY entity) {
         throw createNotSupportException();
     }
 
     @Override
-    default int deleteInLogicByBizIndex(List<ENTITY> dictionaryEntities) {
+    default int deleteInLogicByBizIdList(Collection<? extends ENTITY> entityList) {
         throw createNotSupportException();
     }
 

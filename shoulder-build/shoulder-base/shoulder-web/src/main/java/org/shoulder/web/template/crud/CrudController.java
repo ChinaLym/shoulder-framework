@@ -1,6 +1,7 @@
 package org.shoulder.web.template.crud;
 
 import org.shoulder.core.util.ConvertUtil;
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseService;
 
 import javax.annotation.PostConstruct;
@@ -9,8 +10,8 @@ import java.io.Serializable;
 /**
  * 提供基本的 CRUD API 能力
  *
- * @param <S>         Service
- * @param <Id>        主键
+ * @param <SERVICE>   Service
+ * @param <ID>        主键
  * @param <ENTITY>    实体
  * @param <PageQuery> 分页参数
  * @param <SaveDTO>   保存参数
@@ -18,13 +19,13 @@ import java.io.Serializable;
  * @author lym
  */
 @SuppressWarnings("rawtypes")
-public abstract class CrudController<S extends BaseService<ENTITY>, ENTITY, Id extends Serializable, PageQuery, SaveDTO, UpdateDTO>
-        extends BaseControllerImpl<S, ENTITY>
+public abstract class CrudController<SERVICE extends BaseService<ENTITY>, ENTITY extends BaseEntity<ID>, ID extends Serializable, PageQuery, SaveDTO, UpdateDTO>
+        extends BaseControllerImpl<SERVICE, ENTITY>
         implements
         SaveController<ENTITY, SaveDTO>,
         UpdateController<ENTITY, UpdateDTO>,
-        DeleteController<ENTITY, Id>,
-        QueryController<ENTITY, Id, PageQuery> {
+        DeleteController<ENTITY, ID>,
+        QueryController<ENTITY, ID, PageQuery> {
 
     protected Class[] genericClasses;
 

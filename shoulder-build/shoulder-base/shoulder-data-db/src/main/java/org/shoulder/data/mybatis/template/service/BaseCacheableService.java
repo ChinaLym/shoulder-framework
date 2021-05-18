@@ -1,5 +1,6 @@
 package org.shoulder.data.mybatis.template.service;
 
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.util.function.Function;
  * @param <ENTITY> 实体
  * @author lym
  */
-public interface BaseCacheableService<ENTITY> extends BaseService<ENTITY> {
+public interface BaseCacheableService<ENTITY extends BaseEntity<? extends Serializable>> extends BaseService<ENTITY> {
 
     /**
      * 先查缓存，再查db
