@@ -14,8 +14,10 @@ import java.time.LocalDateTime;
 /**
  * 用户实体，举例：主键为 uuid
  * 自动生成主键、创建者，创建时间，修改者，修改时间
+ * todo 插件从 BaseEntity 类的注释上读取对象类型翻译
  *
  * @author lym
+ * @objectType zh_CN=用户,en_US=UserInfo
  * @see Entity 提供了一些基础的字段：id、createTime、creator、updateTime、modifier
  */
 @Getter
@@ -53,4 +55,9 @@ public class UserEntity extends BaseEntity<Long> {
 
     @TableField(value = "creator")
     private Long creator;
+
+    @Override
+    public String getObjectName() {
+        return name;
+    }
 }
