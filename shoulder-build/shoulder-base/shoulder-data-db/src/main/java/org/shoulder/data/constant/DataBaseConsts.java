@@ -83,6 +83,55 @@ public interface DataBaseConsts {
 
     // ------------------------ Mapper 中的扩展方法名 ------------------------
 
+
+    /**
+     * 根据 bizIds 批量查询
+     */
+    String METHOD_SELECT_BY_BIZ_ID = "selectByBizId";
+
+    /**
+     * 根据 bizIds 批量查询
+     */
+    String METHOD_SELECT_BATCH_BY_BIZ_IDS = "selectBatchByBizIds";
+
+
+    /**
+     * 根据 id 锁定，悲观锁
+     */
+    String METHOD_SELECT_FOR_UPDATE_BY_ID = "selectForUpdateById";
+
+    /**
+     * 根据 bizId 锁定，悲观锁
+     */
+    String METHOD_SELECT_FOR_UPDATE_BY_BIZ_ID = "selectForUpdateByBizId";
+
+    /**
+     * 根据 bizId 锁定，悲观锁
+     */
+    String METHOD_SELECT_FOR_UPDATE_BY_BIZ_IDS = "selectForUpdateByBizIds";
+
+
+    /**
+     * 批量插入
+     */
+    String METHOD_INSERT_BATCH = "insertBatch";
+
+    /**
+     * 根据 bizId 更新
+     */
+    String METHOD_UPDATE_BY_BIZ_ID = "updateByBizId";
+
+
+    /**
+     * 根据 id 更新所有字段
+     */
+    String METHOD_UPDATE_ALL_FIELDS_BY_ID = "updateAllById";
+    /**
+     * 根据 bizId 更新所有字段
+     */
+    String METHOD_UPDATE_ALL_FIELDS_BY_BIZ_ID = "updateAllByBizId";
+
+
     /**
      * 逻辑删除方法名
      */
@@ -102,21 +151,6 @@ public interface DataBaseConsts {
      * 逻辑删除方法名
      */
     String METHOD_DELETE_LOGIC_BY_BIZ_ID_LIST = "deleteInLogicByBizIdList";
-
-    /**
-     * 根据 id 更新所有字段
-     */
-    String METHOD_UPDATE_ALL_FIELDS_BY_ID = "updateAllById";
-
-    /**
-     * 批量插入
-     */
-    String METHOD_INSERT_BATCH = "insertBatch";
-
-    /**
-     * 根据 id 锁定，悲观锁
-     */
-    String METHOD_SELECT_FOR_UPDATE_BY_ID = "selectForUpdateById";
 
     // ------------------------ 字段名 ------------------------
 

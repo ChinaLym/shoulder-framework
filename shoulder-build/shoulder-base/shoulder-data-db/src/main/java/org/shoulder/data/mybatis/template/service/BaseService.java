@@ -12,13 +12,20 @@ import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.conditions.AbstractChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.converter.DateConverter;
 import org.shoulder.core.dto.request.BasePageQuery;
 import org.shoulder.core.dto.response.PageResult;
+import org.shoulder.data.mybatis.template.dao.BaseMapper;
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
+import org.shoulder.data.mybatis.template.entity.BizEntity;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,7 +36,10 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
-public interface BaseService<ENTITY> extends IService<ENTITY> {
+public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> extends IService<ENTITY> {
+
+    @Override
+    BaseMapper<ENTITY> getBaseMapper();
 
     /**
      * 根据id修改 entity 的所有字段，包含 NULL
@@ -45,7 +55,21 @@ public interface BaseService<ENTITY> extends IService<ENTITY> {
      * @param entity 获取到的行数据
      * @return 非空，已经存在；空：不存在
      */
-    ENTITY lockById(ENTITY entity);
+    default ENTITY lockById(ENTITY entity) {
+        return getBaseMapper().selectForUpdateById(entity.getId());
+    }
+
+    /**
+     * 根据 bizId 锁定
+     *
+     * @param entity 获取到的行数据
+     * @return 非空，已经存在；空：不存在
+     */
+    default ENTITY lockByBizId(ENTITY entity) {
+        checkEntityAs(BizEntity.class);
+        return getBaseMapper().selectForUpdateById(((BizEntity<? extends Serializable>) entity).getBizId());
+    }
+
 
     /**
      * 分页查询
@@ -57,7 +81,7 @@ public interface BaseService<ENTITY> extends IService<ENTITY> {
         handleBeforePageQuery(pageQueryCondition);
         Wrapper<ENTITY> wrapper = createPageQueryWrapper(pageQueryCondition);
         Page<ENTITY> page = convertToPage(pageQueryCondition, getEntityClass());
-        // page 参数支持 Map /IPage com.baomidou.mybatisplus.core.toolkit.ParameterUtils.findPage
+        // page 参数支持 Map /IPage ParameterUtils.findPage
         Page<ENTITY> pageResult = page(page, wrapper);
         return handlePageQueryResult(pageResult);
     }
@@ -227,6 +251,101 @@ public interface BaseService<ENTITY> extends IService<ENTITY> {
             return tf.value();
         }
         return StrUtil.EMPTY;
+    }
+
+    // ================= extends =============
+
+    /**
+     * 根据 bizId 删除
+     *
+     * @param entity entity
+     */
+    default boolean removeByBizId(ENTITY entity) {
+        checkEntityAs(BizEntity.class);
+        return SqlHelper.retBool(getBaseMapper().deleteInLogicByBizId(entity));
+    }
+
+    /**
+     * 删除（根据bizId 批量删除）
+     *
+     * @param entities entities 列表
+     */
+    default boolean removeByBizIds(Collection<ENTITY> entities) {
+        if (CollectionUtils.isEmpty(entities)) {
+            return false;
+        }
+        checkEntityAs(BizEntity.class);
+        return SqlHelper.retBool(getBaseMapper().deleteInLogicByBizIdList(entities));
+    }
+
+    /**
+     * 根据 bizId 选择修改
+     *
+     * @param entity 实体对象
+     */
+    default boolean updateByBizId(ENTITY entity) {
+        checkEntityAs(BizEntity.class);
+        return SqlHelper.retBool(getBaseMapper().updateByBizId(entity));
+    }
+
+    /**
+     * 根据bizId 批量更新
+     *
+     * @param entityList 实体对象集合
+     */
+    @Transactional(rollbackFor = Exception.class)
+    default boolean updateBatchByBizId(Collection<? extends ENTITY> entityList) {
+        checkEntityAs(BizEntity.class);
+        return updateBatchByBizId(entityList, DEFAULT_BATCH_SIZE);
+    }
+
+    /**
+     * 根据bizId 批量更新
+     *
+     * @param entityList 实体对象集合
+     * @param batchSize  更新批次数量
+     */
+    @SuppressWarnings("unchecked")
+    default boolean updateBatchByBizId(Collection<? extends ENTITY> entityList, int batchSize) {
+        return updateBatchById((Collection<ENTITY>) entityList, batchSize);
+    }
+
+    /**
+     * TableId 注解存在更新记录，否插入一条记录 todo 根据 bizId 判断
+     *
+     * @param entity 实体对象
+     */
+    @Override
+    boolean saveOrUpdate(ENTITY entity);
+
+    /**
+     * 根据 bizId 查询
+     *
+     * @param bizId bizId
+     */
+    default ENTITY getByBizId(String bizId) {
+        checkEntityAs(BizEntity.class);
+        return getBaseMapper().selectByBizId(bizId);
+    }
+
+    /**
+     * 查询（根据bizId 批量查询）
+     *
+     * @param bizIdList bizId列表
+     */
+    default List<ENTITY> listByBizIds(Collection<String> bizIdList) {
+        checkEntityAs(BizEntity.class);
+        return getBaseMapper().selectBatchBizIds(bizIdList);
+    }
+
+    /**
+     * 检查是否可以转为 exceptedClass
+     */
+    default void checkEntityAs(Class<?> exceptedClass) {
+        if (!exceptedClass.isAssignableFrom(getEntityClass())) {
+            throw new IllegalStateException("not support such entity(" + getEntityClass().getName() +
+                    ") for not extends " + exceptedClass.getName());
+        }
     }
 
 }

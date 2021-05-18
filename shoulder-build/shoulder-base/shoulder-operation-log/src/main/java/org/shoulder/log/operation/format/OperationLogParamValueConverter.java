@@ -24,6 +24,6 @@ public interface OperationLogParamValueConverter {
      * @return 转化后的 value，允许有多个值
      * @throws Exception 使用者在扩展时，可能不注意异常处理，会抛异常，因此框架需要捕获并给他警告
      */
-    List<String> convert(@Nonnull OperationLogDTO opLog, @Nullable Object paramValue, Class methodParamClazz) throws Exception;
+    List<String> convert(@Nonnull OperationLogDTO opLog, @Nullable Object paramValue, Class<?> methodParamClazz) throws Exception;
 
 }

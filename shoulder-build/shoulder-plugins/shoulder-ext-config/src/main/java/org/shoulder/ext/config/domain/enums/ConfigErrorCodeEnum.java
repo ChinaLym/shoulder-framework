@@ -26,7 +26,7 @@ public enum ConfigErrorCodeEnum implements ErrorCode {
 
     CONFIG_DATA_MISS_BIZ_ID_FIELDS("123", "配置项业务标识字段为空"),
 
-    CONFIG_DATA_BIZ_ID_CHANGED("122", "配置项业务标识字段被篡改"),
+    CONFIG_DATA_BIZ_ID_CHANGED("122", "检测到数据被恶意篡改"),
 
     /* -------------------------- CODING -------------------------- */
 

@@ -12,6 +12,8 @@ import java.util.List;
  * 默认的 value 转换器
  * 对数组和可迭代的对象做了展平处理。
  * 普通对象如DTO 则使用其 toString() 方法，如 XxxDTO(field1=1, field2=2,field3=3)
+ * <p>
+ * todo NULL log key?t
  *
  * @author lym
  */
@@ -20,7 +22,7 @@ public class DefaultOperationLogParamValueConverter implements OperationLogParam
     /**
      * 当参数值为 null 时，输出内容
      */
-    private String nullValueOutputText;
+    private final String nullValueOutputText;
 
     public DefaultOperationLogParamValueConverter() {
         this("");
@@ -32,7 +34,7 @@ public class DefaultOperationLogParamValueConverter implements OperationLogParam
 
     @Override
     public List<String> convert(@Nonnull OperationLogDTO opLog, @Nullable Object paramValue,
-                                Class methodParamClazz) {
+                                Class<?> methodParamClazz) {
         return toStringList(paramValue);
     }
 
@@ -44,7 +46,7 @@ public class DefaultOperationLogParamValueConverter implements OperationLogParam
             return resultList;
         }
 
-        Class clazz = obj.getClass();
+        Class<?> clazz = obj.getClass();
         if (obj instanceof Iterable) {
             // 可遍历的
             Iterable<?> iterableToLogParam = (Iterable<?>) obj;

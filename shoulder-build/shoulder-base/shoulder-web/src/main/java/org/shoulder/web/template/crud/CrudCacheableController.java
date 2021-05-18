@@ -2,6 +2,7 @@ package org.shoulder.web.template.crud;
 
 import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseCacheableService;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +16,8 @@ import java.io.Serializable;
  *
  * @author lym
  */
-public abstract class CrudCacheableController<S extends BaseCacheableService<ENTITY>, ENTITY, ID extends Serializable, PageQuery, SaveDTO, UpdateDTO>
-        extends CrudController<S, ENTITY, ID, PageQuery, SaveDTO, UpdateDTO> {
+public abstract class CrudCacheableController<SERVICE extends BaseCacheableService<ENTITY>, ENTITY extends BaseEntity<ID>, ID extends Serializable, PageQuery, SaveDTO, UpdateDTO>
+        extends CrudController<SERVICE, ENTITY, ID, PageQuery, SaveDTO, UpdateDTO> {
 
     /**
      * 查询

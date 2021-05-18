@@ -28,14 +28,14 @@ public abstract class AbstractDeleteInLogicMethod extends AbstractMethod {
             // 非 shoulder 定义的实体类
             // <script>\nUPDATE %s %s WHERE %s=#{%s} %s\n</script>
             //return super.injectMappedStatement(mapperClass, modelClass, tableInfo);
-            throw new IllegalCallerException("not support such entity(" + modelClass.getName() +
+            logger.warn("not support such entity(" + modelClass.getName() +
                     ") for not extends " + LogicDeleteEntity.class.getName());
         }
 
         String sql = String.format(baseSql(), tableInfo.getTableName(),
-                // set
+                // set todo 需要 version 增加
                 genSetSql(mapperClass, modelClass, tableInfo),
-                // where
+                // where 不需要判断 version
                 genWhereSql(mapperClass, modelClass, tableInfo)
         );
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);

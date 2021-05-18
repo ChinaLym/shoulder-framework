@@ -19,7 +19,7 @@ public class DeleteInLogicByIdList extends AbstractDeleteInLogicMethod {
 
     @Override
     protected String genWhereSql(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
-        return "where id in <foreach collection='idList' item='id' open='('separator=',' close=')'>#{id}</foreach>" +
+        return "id in <foreach collection='idList' item='id' open='(' separator=',' close=')'>#{id}</foreach>" +
                 " AND delete_version=0";
     }
 

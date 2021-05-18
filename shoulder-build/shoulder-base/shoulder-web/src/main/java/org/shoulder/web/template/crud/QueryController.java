@@ -10,6 +10,7 @@ import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.dto.response.PageResult;
 import org.shoulder.core.model.Operable;
 import org.shoulder.data.constant.DataBaseConsts;
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
@@ -32,7 +33,7 @@ import java.io.Serializable;
  * @author lym
  */
 @Validated
-public interface QueryController<ENTITY, ID extends Serializable, PAGE_QUERY_PARAM> extends BaseController<ENTITY> {
+public interface QueryController<ENTITY extends BaseEntity<ID>, ID extends Serializable, PAGE_QUERY_PARAM> extends BaseController<ENTITY> {
 
     /**
      * 查询

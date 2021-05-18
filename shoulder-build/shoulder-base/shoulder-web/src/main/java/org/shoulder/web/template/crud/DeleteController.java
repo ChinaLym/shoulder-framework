@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.model.Operable;
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
  * @param <ID>     主键
  * @author lym
  */
-public interface DeleteController<ENTITY, ID extends Serializable> extends BaseController<ENTITY> {
+public interface DeleteController<ENTITY extends BaseEntity<ID>, ID extends Serializable> extends BaseController<ENTITY> {
 
     /**
      * 删除单个
