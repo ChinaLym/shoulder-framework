@@ -15,9 +15,9 @@ import org.shoulder.data.constant.DataBaseConsts;
  * @author lym
  */
 @SuppressWarnings("serial")
-public class SelectForUpdateByBizIds extends AbstractMethod {
+public class SelectBatchForUpdateByBizIds extends AbstractMethod {
 
-    public SelectForUpdateByBizIds() {
+    public SelectBatchForUpdateByBizIds() {
     }
 
     private static final String SQL_SELECT_FOR_UPDATE = "<script>SELECT %s FROM %s WHERE biz_id IN (%s) %s FOR UPDATE</script>";
@@ -36,6 +36,6 @@ public class SelectForUpdateByBizIds extends AbstractMethod {
 
     @Override
     public String getMethod(SqlMethod sqlMethod) {
-        return DataBaseConsts.METHOD_SELECT_FOR_UPDATE_BY_BIZ_ID;
+        return DataBaseConsts.METHOD_SELECT_BATCH_FOR_UPDATE_BY_BIZ_IDS;
     }
 }

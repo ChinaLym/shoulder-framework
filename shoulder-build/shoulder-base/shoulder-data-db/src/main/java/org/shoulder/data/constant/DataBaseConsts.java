@@ -108,7 +108,7 @@ public interface DataBaseConsts {
     /**
      * 根据 bizId 锁定，悲观锁
      */
-    String METHOD_SELECT_FOR_UPDATE_BY_BIZ_IDS = "selectForUpdateByBizIds";
+    String METHOD_SELECT_BATCH_FOR_UPDATE_BY_BIZ_IDS = "selectBatchForUpdateByBizIds";
 
 
     /**
@@ -125,7 +125,7 @@ public interface DataBaseConsts {
     /**
      * 根据 id 更新所有字段
      */
-    String METHOD_UPDATE_ALL_FIELDS_BY_ID = "updateAllById";
+    String METHOD_UPDATE_ALL_FIELDS_BY_ID = "updateAllFieldsById";
     /**
      * 根据 bizId 更新所有字段
      */

@@ -36,7 +36,7 @@ public interface FakerMapper<ENTITY extends BaseEntity<? extends Serializable>> 
     }
 
     @Override
-    default int updateAllById(ENTITY entity) {
+    default int updateAllFieldsById(ENTITY entity) {
         throw createNotSupportException();
     }
 

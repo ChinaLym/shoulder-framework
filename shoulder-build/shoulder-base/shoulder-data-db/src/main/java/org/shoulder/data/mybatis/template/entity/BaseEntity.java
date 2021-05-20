@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 
 /**
  * 记录型实体: 带有 id、创建时间、最后修改时间
- * todo createTime update 时区问题，update明显落后 8 h
  *
  * @author lym
  * @see SqlCondition 注解加条件

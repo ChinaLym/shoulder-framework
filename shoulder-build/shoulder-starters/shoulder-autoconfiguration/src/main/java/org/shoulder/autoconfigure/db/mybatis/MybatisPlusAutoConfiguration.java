@@ -19,8 +19,10 @@ import org.shoulder.data.mybatis.interceptor.tenants.SchemaModeInterceptor;
 import org.shoulder.data.mybatis.interceptor.typehandler.FullLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.LeftLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.RightLikeTypeHandler;
+import org.shoulder.data.uid.BizIdGenerator;
 import org.shoulder.data.uid.DefaultEntityIdGenerator;
 import org.shoulder.data.uid.EntityIdGenerator;
+import org.shoulder.data.uid.KeyFieldsBizIdGenerator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -185,6 +187,12 @@ public class MybatisPlusAutoConfiguration {
                                           StringGuidGenerator stringGuidGenerator) {
         // 没 bean 可注入会提前报错，避免 NPE
         return new DefaultEntityIdGenerator(longGuidGenerator, stringGuidGenerator);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public BizIdGenerator bizIdGenerator() {
+        return new KeyFieldsBizIdGenerator();
     }
 
     /**

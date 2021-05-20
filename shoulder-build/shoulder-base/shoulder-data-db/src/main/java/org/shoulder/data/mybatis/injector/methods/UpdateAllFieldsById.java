@@ -15,16 +15,16 @@ import java.util.function.Predicate;
  * - 更新时要始终排除某个字段，防止被误更新
  *
  * @author lym
- * @see BaseMapper#updateAllById
+ * @see BaseMapper#updateAllFieldsById
  */
 @SuppressWarnings("serial")
-public class UpdateAllById extends AlwaysUpdateSomeColumnById {
+public class UpdateAllFieldsById extends AlwaysUpdateSomeColumnById {
 
-    public UpdateAllById() {
+    public UpdateAllFieldsById() {
         super();
     }
 
-    public UpdateAllById(final Predicate<TableFieldInfo> predicate) {
+    public UpdateAllFieldsById(final Predicate<TableFieldInfo> predicate) {
         super(predicate);
     }
 

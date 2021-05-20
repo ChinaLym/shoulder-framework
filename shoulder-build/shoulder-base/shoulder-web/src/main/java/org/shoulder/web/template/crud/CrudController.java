@@ -2,7 +2,11 @@ package org.shoulder.web.template.crud;
 
 import org.shoulder.core.util.ConvertUtil;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
+import org.shoulder.data.mybatis.template.entity.BizEntity;
 import org.shoulder.data.mybatis.template.service.BaseService;
+import org.shoulder.data.uid.BizIdGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -19,6 +23,7 @@ import java.io.Serializable;
  * @author lym
  */
 @SuppressWarnings("rawtypes")
+@RestController
 public abstract class CrudController<SERVICE extends BaseService<ENTITY>, ENTITY extends BaseEntity<ID>, ID extends Serializable, PageQuery, SaveDTO, UpdateDTO>
         extends BaseControllerImpl<SERVICE, ENTITY>
         implements
@@ -28,6 +33,9 @@ public abstract class CrudController<SERVICE extends BaseService<ENTITY>, ENTITY
         QueryController<ENTITY, ID, PageQuery> {
 
     protected Class[] genericClasses;
+
+    @Autowired(required = false)
+    protected BizIdGenerator bizIdGenerator;
 
     @PostConstruct
     @SuppressWarnings("unchecked")
@@ -63,4 +71,10 @@ public abstract class CrudController<SERVICE extends BaseService<ENTITY>, ENTITY
         }
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public String generateBizId(ENTITY entity) {
+        getService().checkEntityAs(BizEntity.class);
+        return bizIdGenerator.generateBizId((BizEntity) entity, (Class<? extends BizEntity>) entity.getClass());
+    }
 }

@@ -67,7 +67,7 @@ public interface UpdateController<ENTITY extends BaseEntity<? extends Serializab
         ENTITY entity = handleBeforeUpdate(dto);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             if (entity != null) {
-                OpLogContextHolder.setOperableObject((Operable) entity);
+                OpLogContextHolder.setOperableObject(entity);
             }
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
