@@ -2,8 +2,12 @@ package org.shoulder.web.template.crud;
 
 import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.model.Operable;
+import org.shoulder.core.util.AssertUtils;
+import org.shoulder.data.enums.DataErrorCodeEnum;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
+import org.shoulder.data.mybatis.template.entity.BizEntity;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
@@ -40,13 +44,26 @@ public interface SaveController<ENTITY extends BaseEntity<? extends Serializable
         ENTITY entity = handleBeforeSave(dto);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             if (entity != null) {
-                OpLogContextHolder.setOperableObject((Operable) entity);
+                OpLogContextHolder.setOperableObject(entity);
             }
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
+        }
+        if (entity == null) {
+            AssertUtils.notNull(entity, CommonErrorCodeEnum.UNKNOWN);
+        }
+        if (entity instanceof BizEntity) {
+            BizEntity<? extends Serializable> bizEntity = (BizEntity<? extends Serializable>) entity;
+            String bizId = generateBizId(entity);
+            bizEntity.setBizId(bizId);
+            ENTITY dataInDb = getService().lockByBizId(bizEntity.getBizId());
+            // 数据不存在
+            AssertUtils.isNull(dataInDb, DataErrorCodeEnum.DATA_ALREADY_EXISTS);
         }
         getService().save(entity);
         return BaseResult.success();
     }
+
+    String generateBizId(ENTITY entity);
 
     /**
      * 新增前扩展点

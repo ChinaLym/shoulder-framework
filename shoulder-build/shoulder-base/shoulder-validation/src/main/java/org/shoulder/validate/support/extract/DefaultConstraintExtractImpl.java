@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 /**
  * 默认约束提取器
+ * 当且实现依赖 hibernate 中的实现类 for JSR 的无法获取到 字段所在类信息
  *
  * @author lym
  */
@@ -38,17 +39,12 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
     public static final Logger log = LoggerFactory.getLogger(ConstraintExtract.class);
 
     /**
-     *
+     * 字段校验信息缓存
      */
     private final Map<String, Map<String, FieldValidationRuleDTO>> CACHE = new HashMap<>();
 
     /**
-     * JSR validate
-     */
-    private final Validator validator;
-
-    /**
-     * 校验注解提取 todo
+     * 校验注解提取
      */
     private BeanMetaDataManager beanMetaDataManager;
 
@@ -58,7 +54,6 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
     private final List<ConstraintConverter> constraintConverters;
 
     public DefaultConstraintExtractImpl(Validator validator, List<ConstraintConverter> constraintConverters) {
-        this.validator = validator;
         this.constraintConverters = constraintConverters;
         try {
             if (validator instanceof SpringValidatorAdapter) {
@@ -103,13 +98,13 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
             return;
         }
 
-        // todo 换成这个？
+        // JSR 标准中获取不到字段所在类信息，故先使用 hibernate 中的
         //validator.getConstraintsForClass(targetMethodClazz).getConstrainedProperties()
 
         BeanMetaData<?> beanMetaData = beanMetaDataManager.getBeanMetaData(targetMethodClazz);
         Set<MetaConstraint<?>> beanMetaConstraints = beanMetaData.getMetaConstraints();
         for (MetaConstraint<?> beanMetaConstraint : beanMetaConstraints) {
-            // todo 只获取一层？
+            // 这里认为 DTO 都是展平的，只获取一层，不再递归处理复杂类型字段
             builderFieldValidatorDesc(beanMetaConstraint, groupsOnMethod, fieldValidatorDesc);
         }
         // 字段自身：notNull 等；如果是基本类型，则还可能有基础校验注解
@@ -147,6 +142,7 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
             return;
         }
 
+        // 获取分组、类名、字段名、字段类型
         ConstraintLocation beanMetaConstraintLocation = beanMetaConstraint.getLocation();
         String beanClassName = beanMetaConstraintLocation.getDeclaringClass().getSimpleName();
         String fieldName = beanMetaConstraintLocation.getConstrainable().getName();
@@ -157,7 +153,8 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
         if (ruleDTO == null) {
             ruleDTO = new FieldValidationRuleDTO();
             ruleDTO.setField(fieldName);
-            ruleDTO.setFieldType(convertToJsType(beanMetaConstraintLocation.getConstrainable().getType().getTypeName()));
+            String fieldType = beanMetaConstraintLocation.getConstrainable().getType().getTypeName();
+            ruleDTO.setFieldType(convertToJsType(fieldType));
             ruleDTO.setConstraints(new ArrayList<>());
             fieldValidatorDesc.put(fieldKey, ruleDTO);
         }

@@ -70,7 +70,6 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
     @Override
     public String format(OperationLogDTO opLog) {
 
-        // todo 好多变量没有记录
         KeyValueContextBuilder builder = new KeyValueContextBuilder();
         // 反射拼接所有 String 类型
         opLogStrFields.forEach(field -> {

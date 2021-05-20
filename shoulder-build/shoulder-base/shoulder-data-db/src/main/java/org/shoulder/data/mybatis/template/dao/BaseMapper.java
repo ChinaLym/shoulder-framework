@@ -50,6 +50,14 @@ public interface BaseMapper<ENTITY extends BaseEntity<? extends Serializable>> e
      */
     ENTITY selectForUpdateById(Serializable id);
 
+    /**
+     * 锁定多条记录
+     *
+     * @param bizIds bizId
+     * @return 实体
+     */
+    List<ENTITY> selectBatchForUpdateByBizIds(Collection<? extends String> bizIds);
+
     // --------------
 
 
@@ -62,12 +70,13 @@ public interface BaseMapper<ENTITY extends BaseEntity<? extends Serializable>> e
     int updateByBizId(@Param(Constants.ENTITY) ENTITY entity);
 
     /**
-     * 根据 id 全量修改所有字段，与 updateById 区别：包括为 null 的字段，表示设置这个字段为 NULL
+     * 根据 id 全量修改所有包含的字段，与 updateById 区别：包括为 null 的字段，表示设置这个字段为 NULL
+     * 不常用
      *
      * @param entity 实体
      * @return 修改数量
      */
-    int updateAllById(@Param(Constants.ENTITY) ENTITY entity);
+    int updateAllFieldsById(@Param(Constants.ENTITY) ENTITY entity);
 
     /**
      * 批量插入（所有字段）

@@ -50,24 +50,24 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
     boolean updateAllById(ENTITY entity);
 
     /**
-     * 根据主键锁定
+     * 根据 id 锁定
      *
-     * @param entity 获取到的行数据
+     * @param id id
      * @return 非空，已经存在；空：不存在
      */
-    default ENTITY lockById(ENTITY entity) {
-        return getBaseMapper().selectForUpdateById(entity.getId());
+    default ENTITY lockById(String id) {
+        return getBaseMapper().selectForUpdateById(id);
     }
 
     /**
      * 根据 bizId 锁定
      *
-     * @param entity 获取到的行数据
+     * @param bizId bizId
      * @return 非空，已经存在；空：不存在
      */
-    default ENTITY lockByBizId(ENTITY entity) {
+    default ENTITY lockByBizId(String bizId) {
         checkEntityAs(BizEntity.class);
-        return getBaseMapper().selectForUpdateById(((BizEntity<? extends Serializable>) entity).getBizId());
+        return getBaseMapper().selectForUpdateById((bizId));
     }
 
 
@@ -311,9 +311,10 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
     }
 
     /**
-     * TableId 注解存在更新记录，否插入一条记录 todo 根据 bizId 判断
+     * TableId 注解存在更新记录，否插入一条记录
      *
      * @param entity 实体对象
+     * @implSpec 根据 bizId 判断
      */
     @Override
     boolean saveOrUpdate(ENTITY entity);

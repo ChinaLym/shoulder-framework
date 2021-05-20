@@ -57,7 +57,6 @@ public interface QueryController<ENTITY extends BaseEntity<ID>, ID extends Seria
     /**
      * 分页查询
      * service.page —— mapper.selectPage
-     * todo sql 拼接错误，拼了两个 limit
      *
      * @param pageQueryParam 分页参数
      * @return 分页数据

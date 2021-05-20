@@ -4,7 +4,6 @@ import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
-import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.injector.methods.*;
 
@@ -22,11 +21,11 @@ public class ShoulderSqlInjector extends DefaultSqlInjector {
         List<AbstractMethod> methodList = super.getMethodList(mapperClass);
 
         // 批量插入
-        methodList.add(new InsertBatchSomeColumn(i -> i.getFieldFill() != FieldFill.UPDATE));
+        methodList.add(new InsertBatch(i -> i.getFieldFill() != FieldFill.UPDATE));
         // 根据 id 锁定
         methodList.add(new SelectForUpdateById());
         // 根据 id 更新所有字段
-        methodList.add(new UpdateAllById(field -> !ArrayUtil.containsAny(new String[]{
+        methodList.add(new UpdateAllFieldsById(field -> !ArrayUtil.containsAny(new String[]{
                 DataBaseConsts.COLUMN_CREATE_TIME,
                 DataBaseConsts.COLUMN_CREATOR
         }, field.getColumn())));
@@ -37,8 +36,9 @@ public class ShoulderSqlInjector extends DefaultSqlInjector {
 
         // bizId 扩展
         methodList.add(new SelectByBizId());
-        methodList.add(new SelectBatchByBizIds());
         methodList.add(new SelectForUpdateByBizId());
+        methodList.add(new SelectBatchByBizIds());
+        methodList.add(new SelectBatchForUpdateByBizIds());
 
         methodList.add(new UpdateByBizId());
 

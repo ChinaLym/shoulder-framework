@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
  * <p>
  * 1. insert 时填充 id, createTime, updateTime, createdBy, updatedBy
  * 2. update 时填充 updateTime, updatedBy
+ * todo createTime update 时区问题：数据库采取的是 0 时区，则 NOW() 返回值和 java 的 LocalDateTime.now() 是不一样的
  * <p>
  * 值来源：
  * id： {@link EntityIdGenerator#next(String, String)}
@@ -56,11 +57,12 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
     }
 
     /**
+     * 创建者，创建时间
      * 修改者，修改时间
      */
     private void fillDateAndModifier(MetaObject metaObject, String timeField, String userField) {
-        Object updateTime = this.getFieldValByName(timeField, metaObject);
-        if (updateTime == null) {
+        Object timeFieldValue = this.getFieldValByName(timeField, metaObject);
+        if (timeFieldValue == null) {
             this.setFieldValByName(timeField, LocalDateTime.now(), metaObject);
         }
         String currentUserIdStr = AppContext.getUserId();
