@@ -1,7 +1,7 @@
 package org.shoulder.crypto.asymmetric;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;

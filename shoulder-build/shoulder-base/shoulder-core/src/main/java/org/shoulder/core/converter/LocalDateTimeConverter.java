@@ -15,17 +15,28 @@ import java.util.function.BiFunction;
  */
 public class LocalDateTimeConverter extends BaseLocalDateTimeConverter<LocalDateTime> {
 
+    public static final LocalDateTimeConverter INSTANCE = new LocalDateTimeConverter();
+
     @Override
     protected Map<String, String> initTimeParserMap() {
-        Map<String, String> formatMap = new LinkedHashMap<>(2);
+        Map<String, String> formatMap = new LinkedHashMap<>(6);
+        // normal
         formatMap.put("yyyy-MM-dd HH:mm:ss", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{2}:\\d{2}:\\d{2}$");
         formatMap.put("yyyy/MM/dd HH:mm:ss", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{2}:\\d{2}:\\d{2}$");
+        // ISO
+        formatMap.put("yyyy-MM-ddTHH:mm:ss", "^\\d{4}-\\d{1,2}-\\d{1,2}T{1}\\d{2}:\\d{2}:\\d{2}$");
+        formatMap.put("yyyy/MM/ddTHH:mm:ss", "^\\d{4}/\\d{1,2}/\\d{1,2}T{1}\\d{2}:\\d{2}:\\d{2}$");
+        // simple
+        formatMap.put("yyyy-MM-dd", "^\\d{4}-\\d{1,2}-\\d{1,2}$");
+        formatMap.put("yyyy/MM/dd", "^\\d{4}/\\d{1,2}/\\d{1,2}$");
         return formatMap;
     }
 
+    @Nonnull
     @Override
     protected String toStandFormat(@Nonnull String sourceDateString) {
-        if (sourceDateString.length() == 19) {
+        // format 长度
+        if (sourceDateString.length() == 19 || sourceDateString.length() == 10) {
             return sourceDateString;
         } else {
             String[] dateTimeParts = sourceDateString.split(" ");

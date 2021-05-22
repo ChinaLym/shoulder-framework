@@ -10,8 +10,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
+
+import javax.annotation.Nullable;
 
 /**
  * redis相关配置，提供 string 和 string-object 两种
@@ -36,12 +37,12 @@ public class RedisAutoConfiguration {
      * 必须配置 redis 相关参数
      * 应用专属
      */
-    @Bean
+    @Bean(name = "redisTemplate")
     @AppExclusive
     public RedisTemplate<String, Object> serviceExclusiveRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         //new StringRedisSerializer(ApplicationInfo.charset())
-        RedisSerializer<String> redisKeySerializer = new KeyStringRedisSerializer(getKeyPrefix());
+        RedisSerializer<String> redisKeySerializer = new WithPrefixKeyStringRedisSerializer(getKeyPrefix());
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(redisKeySerializer);
         redisTemplate.setHashKeySerializer(redisKeySerializer);
@@ -58,7 +59,7 @@ public class RedisAutoConfiguration {
     @AppExclusive
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         StringRedisTemplate redisTemplate = new StringRedisTemplate();
-        RedisSerializer<String> redisKeySerializer = new KeyStringRedisSerializer(getKeyPrefix());
+        RedisSerializer<String> redisKeySerializer = new WithPrefixKeyStringRedisSerializer(getKeyPrefix());
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(redisKeySerializer);
         redisTemplate.setHashKeySerializer(redisKeySerializer);
@@ -75,14 +76,14 @@ public class RedisAutoConfiguration {
     /**
      * redis key 包装
      */
-    static class KeyStringRedisSerializer extends StringRedisSerializer {
+    static class WithPrefixKeyStringRedisSerializer extends StringRedisSerializer {
 
         /**
          * key 前缀
          */
         private final String keyPrefix;
 
-        KeyStringRedisSerializer(String keyPrefix) {
+        WithPrefixKeyStringRedisSerializer(String keyPrefix) {
             this.keyPrefix = keyPrefix;
         }
 

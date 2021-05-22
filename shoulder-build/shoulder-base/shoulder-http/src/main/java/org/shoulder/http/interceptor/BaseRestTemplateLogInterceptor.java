@@ -88,7 +88,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
 
     /**
      * 默认记录日志的优先级最高
-     * 也可能有更高的，如监控。一般推荐 日志|监控 < 安全 < 框架功能 < 用户自定义业务拦截器
+     * 也可能有更高的，如监控。一般推荐 日志|监控 ＜ 安全 ＜ 框架功能 ＜ 用户自定义业务拦截器
      */
     @Override
     public int getOrder() {

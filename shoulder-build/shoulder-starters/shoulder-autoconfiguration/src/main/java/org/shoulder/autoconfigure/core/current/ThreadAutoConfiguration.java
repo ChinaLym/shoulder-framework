@@ -26,9 +26,12 @@ public class ThreadAutoConfiguration {
     @ConditionalOnMissingBean(name = Threads.SHOULDER_THREAD_POOL_NAME)
     public ExecutorService shoulderThreadPool() {
         // 默认使用 5 个线程，非守护线程
-        return new ThreadPoolExecutor(5, 5,
-            60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
-            new CustomizableThreadFactory("shoulder"));
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 5,
+                60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
+                new CustomizableThreadFactory("shoulder"));
+        // 提前设置，方便使用
+        Threads.setExecutorService(executor);
+        return executor;
     }
 
 

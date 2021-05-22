@@ -18,6 +18,11 @@ public interface SecurityConst {
     String URL_AUTHENTICATION_SMS = "/authentication/sms";
 
     /**
+     * 短信验证码认证（邮件验证码登录）
+     */
+    String URL_AUTHENTICATION_EMAIL = "/authentication/email";
+
+    /**
      * 注册新用户 url
      */
     String URL_REGISTER = "/user/register";
@@ -39,6 +44,8 @@ public interface SecurityConst {
     String URL_REQUIRE_AUTHENTICATION = "/authentication/require";
 
     String AUTHENTICATION_SMS_PARAMETER_NAME = "phoneNumber";
+
+    String AUTHENTICATION_EMAIL_PARAMETER_NAME = "email";
 
 
     String AUTH_FAIL_PARAM_NAME = "_auth_fail_reason";

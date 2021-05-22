@@ -13,7 +13,7 @@ import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.BeforeAuthEndpoint;
-import org.shoulder.security.authentication.handler.json.TokenAuthenticationSuccessHandler;
+import org.shoulder.security.authentication.handler.json.BasicAuthorizationTokenAuthenticationSuccessHandler;
 import org.shoulder.security.authentication.token.SimpleTokenIntrospector;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -25,7 +25,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.*;
@@ -38,6 +37,7 @@ import org.springframework.security.oauth2.server.resource.authentication.Opaque
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import javax.annotation.Nullable;
 import javax.sql.DataSource;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPublicKey;
@@ -75,7 +75,7 @@ public class TokenAuthBeanConfiguration {
     @ConditionalOnMissingBean
     public AuthenticationSuccessHandler tokenAuthenticationSuccessHandler(ClientDetailsService clientDetailsService,
                                                                           AuthorizationServerTokenServices authorizationServerTokenServices) {
-        return new TokenAuthenticationSuccessHandler(clientDetailsService, authorizationServerTokenServices);
+        return new BasicAuthorizationTokenAuthenticationSuccessHandler(clientDetailsService, authorizationServerTokenServices);
     }
 
 
@@ -221,7 +221,7 @@ public class TokenAuthBeanConfiguration {
             }
 
             /**
-             * todo 【开发】jwk 如果配置配了，从配置中拿，而非随机生成，便于使用者使用固定的
+             * todo 【优化】jwk 如果配置配了，从配置中拿，而非随机生成，便于使用者使用固定的
              * 目前不支持配置，但使用者可以通过注入 TokenStore 来实现自己的方案
              */
             @Bean

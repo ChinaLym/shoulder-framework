@@ -3,10 +3,10 @@ package org.shoulder.log.operation.context;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.OperationLogDTO;
-import org.shoulder.log.operation.dto.Operator;
-import org.shoulder.log.operation.dto.SystemOperator;
+import org.shoulder.core.model.Operable;
+import org.shoulder.log.operation.model.OperationLogDTO;
+import org.shoulder.log.operation.model.Operator;
+import org.shoulder.log.operation.model.SystemOperator;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -105,7 +105,8 @@ public class OpLogContext {
     }
 
     public static final class Builder {
-        private OpLogContext opLogContext;
+
+        private final OpLogContext opLogContext;
 
         private Builder() {
             opLogContext = new OpLogContext();

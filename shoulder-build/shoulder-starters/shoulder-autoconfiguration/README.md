@@ -28,6 +28,13 @@
 - 激活debug或其他选项或不配置时日志只默认在控制台输出。
 
 #### 修改日志配置
+
 ```properties
-logging.level.<包名> = <日志级别>
+logging.level.<包名>=<日志级别>
 ```
+
+----------------
+
+## 开发框架注意
+
+Properties 中嵌套其他 properties，最好初始 new 一个，避免用户使用不当产生 NPE 注入 controller 时候，返回值必须为 带注解的实现类

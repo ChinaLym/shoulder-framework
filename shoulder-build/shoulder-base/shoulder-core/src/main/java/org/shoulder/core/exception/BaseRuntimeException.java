@@ -6,7 +6,6 @@ import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.http.HttpStatus;
 
 import javax.annotation.Nonnull;
@@ -230,8 +229,8 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
 
     @Override
     public String getLocalizedMessage() {
-        BeanFactory bf = ContextUtils.getBeanFactory();
-        if (bf != null) {
+        // todo 【稳定性】 考虑是否去除该方法，因为目前多语言不完善
+        if (ContextUtils.hasContextRefreshed()) {
             ContextUtils.getBean(Translator.class).getMessage(this);
         }
         return getMessage();

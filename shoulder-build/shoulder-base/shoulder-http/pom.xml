@@ -21,6 +21,11 @@
             <artifactId>shoulder-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-http</artifactId>
+        </dependency>
+
         <!-- 获取方法行号使用 -->
         <dependency>
             <groupId>org.javassist</groupId>

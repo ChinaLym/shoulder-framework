@@ -8,8 +8,11 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 /**
@@ -27,6 +30,11 @@ import java.util.stream.Collectors;
 public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBundleMessageSource implements Translator {
 
     private final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+
+    /**
+     * 解决翻译报错：找不到文件 language.xml / language.properties —— 需要复写 calculateAllFilenames（目前考虑到无法调用它的缓存暂缓）
+     */
+    private final ConcurrentMap<String, Map<Locale, List<String>>> cachedFilenames = new ConcurrentHashMap();
 
     public ReloadableLocaleDirectoryMessageSource() {
         // 默认会加载 classpath*:language 中的多语言（便于自定义jar包中扩充，优先级较低，优先使用用户的）
@@ -57,8 +65,75 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
     }
 
     /**
+     * 仅用以解决翻译报错
+     */
+    @Override
+    @Nonnull
+    protected List<String> calculateAllFilenames(@Nonnull String basename, @Nonnull Locale locale) {
+        Map<Locale, List<String>> localeMap = this.cachedFilenames.get(basename);
+        if (localeMap != null) {
+            List<String> filenames = localeMap.get(locale);
+            if (filenames != null) {
+                return filenames;
+            }
+        }
+
+        // Filenames for given Locale
+        List<String> filenames = new ArrayList<>(7);
+        filenames.addAll(calculateFilenamesForLocale(basename, locale));
+
+        // Filenames for default Locale, if any
+        Locale defaultLocale = getDefaultLocale();
+        if (defaultLocale != null && !defaultLocale.equals(locale)) {
+            List<String> fallbackFilenames = calculateFilenamesForLocale(basename, defaultLocale);
+            for (String fallbackFilename : fallbackFilenames) {
+                if (!filenames.contains(fallbackFilename)) {
+                    // Entry for fallback locale that isn't already in filenames list.
+                    filenames.add(fallbackFilename);
+                }
+            }
+        }
+
+        // 与 spring 源码不同点：忽略 baseName [即不包含默认值]
+        //filenames.add(basename);
+        List<String> availableFileNames = Arrays.stream(new String[]{".xml", ".properties"})
+                .map(suffix -> extracted(basename, suffix))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        filenames.addAll(availableFileNames);
+
+        if (localeMap == null) {
+            localeMap = new ConcurrentHashMap<>();
+            Map<Locale, List<String>> existing = this.cachedFilenames.putIfAbsent(basename, localeMap);
+            if (existing != null) {
+                localeMap = existing;
+            }
+        }
+        localeMap.put(locale, filenames);
+
+        // 与 spring 源码不同点，添加过滤（因 shoulder 增加支持 * 引入导致）
+        return filenames.stream().filter(name -> !name.contains("*")).collect(Collectors.toList());
+    }
+
+    @Nullable
+    private String extracted(String basename, String suffix) {
+        try {
+            if (!basename.endsWith(suffix)) {
+                String xml = basename + suffix;
+                Resource xmlResource = resourcePatternResolver.getResource(xml);
+                String uri = xmlResource.getURI().toString();
+                if (withResolveSuffix(uri)) {
+                    return removeSuffix(uri);
+                }
+            }
+        } catch (Exception ignore) {
+            // ignore
+        }
+        return null;
+    }
+
+    /**
      * 加载特定语言对应的资源文件。在这里解析通配符
-     * todo 考虑覆盖 calculateAllFilenames 中的 获取默认语言
      *
      * @return 多语言资源路径
      */
@@ -66,11 +141,7 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
     @Override
     protected List<String> calculateFilenamesForLocale(@Nonnull String basename, @Nonnull Locale locale) {
         // 先放入 super 的，优先级最低（这里是用于兼容 jdk / spring 约定的翻译文件路径）
-        List<String> result = new LinkedList<>();
-        if (!"classpath*:language".equals(basename)) {
-            // todo getMessage 不存在时候，报错：加载 Illegal char <*> at index 25: src\main\webapp\classpath*:language_en.xml
-            result.addAll(super.calculateFilenamesForLocale(basename, locale));
-        }
+        List<String> result = new LinkedList<>(super.calculateFilenamesForLocale(basename, locale));
 
         String language = locale.getLanguage();
         String country = locale.getCountry();
@@ -101,7 +172,7 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
      * 列出 basename 目录下所有要加载多语言文件（支持 jar/文件系统）
      *
      * @param basename 多语言路径，如 classpath*:language
-     * @return 举例 language/zh_CN、language/en_US
+     * @return 举例 language/zh_CN、language/en_US，不包含 baseName 自身
      */
     @Nonnull
     private List<String> listLanguageSourceDir(String basename) {
@@ -119,18 +190,18 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
             return Collections.emptyList();
         }
         return Arrays.stream(resources)
-            .map(res -> {
-                try {
-                    return res.getURI().toString();
-                } catch (IOException e) {
-                    // 如果异常，说明无法读取，返回空即可
-                    return "";
-                }
-            })
-            // 只取 .properties .xml
-            .filter(this::withResolveSuffix)
-            .map(name -> name.replace(".properties", "").replace(".xml", ""))
-            .collect(Collectors.toList());
+                .map(res -> {
+                    try {
+                        return res.getURI().toString();
+                    } catch (IOException e) {
+                        // 如果异常，说明无法读取，返回空即可
+                        return "";
+                    }
+                })
+                // 只取 .properties .xml
+                .filter(this::withResolveSuffix)
+                .map(this::removeSuffix)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -139,8 +210,12 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
      * @param fileName 文件名 如 xxx.properties
      * @return 是否可以解析（properties、xml）
      */
-    private boolean withResolveSuffix(String fileName) {
+    private boolean withResolveSuffix(@Nonnull String fileName) {
         return fileName.endsWith(".properties") || fileName.endsWith(".xml");
+    }
+
+    private String removeSuffix(@Nonnull String uri) {
+        return uri.replace(".properties", "").replace(".xml", "");
     }
 
 

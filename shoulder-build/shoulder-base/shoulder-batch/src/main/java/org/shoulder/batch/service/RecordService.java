@@ -1,6 +1,6 @@
 package org.shoulder.batch.service;
 
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.core.dto.response.PageResult;
@@ -57,11 +57,11 @@ public interface RecordService {
     /**
      * 分页获取需要的结果数据
      *
-     * @param taskId    任务标识
+     * @param taskId  任务标识
      * @param results 记录类型
      * @return List<ImportRecordDetail>
      */
-    default List<BatchRecordDetail> findRecordDetailsByResults(String taskId, BatchResultEnum... results) {
+    default List<BatchRecordDetail> findRecordDetailsByResults(String taskId, ProcessStatusEnum... results) {
         return findRecordDetailsByResults(taskId, Arrays.stream(results).collect(Collectors.toList()));
     }
 
@@ -72,7 +72,7 @@ public interface RecordService {
      * @param results     需过滤的处理结果类型、若为空 / null 则查询全部
      * @return 批处理详情
      */
-    List<BatchRecordDetail> findRecordDetailsByResults(String taskId, List<BatchResultEnum> results);
+    List<BatchRecordDetail> findRecordDetailsByResults(String taskId, List<ProcessStatusEnum> results);
 
 
 }

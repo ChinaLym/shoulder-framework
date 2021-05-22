@@ -1,0 +1,98 @@
+<sqlMap namespace="shoulderExtConfigData">
+    <typeAlias alias="configDataDO" type="org.shoulder.extend.config.dal.do.ConfigDataDO"/>
+
+    <!--  select single  -->
+    <select id="selectSingleByBizId" resultClass="configDataDO">
+        SELECT
+        id as id,
+        gmt_create as gmtCreate,
+        gmt_modified as gmtModified,
+        tenant as tenant,
+        type as type,
+        biz_id as bizId,
+        version as version,
+        delete_flag as deleteFlag,
+        operator_no as operatorNo,
+        operator_name as operatorName,
+        business_value as businessValue
+        FROM shoulder_ext_config_data
+        WHERE
+        biz_id = #bizId# and delete_flag = 0
+        <dynamic>
+            <isEqual property="needLock" compareValue="true">FOR UPDATE</isEqual>
+        </dynamic>
+    </select>
+
+    <!--  select multi  -->
+    <select id="selectByMultiCondition" resultClass="configDataDO">
+        SELECT
+        id as id,
+        gmt_create as gmtCreate,
+        gmt_modified as gmtModified,
+        tenant as tenant,
+        type as type,
+        biz_id as bizId,
+        version as version,
+        delete_flag as deleteFlag,
+        operator_no as operatorNo,
+        operator_name as operatorName,
+        business_value as businessValue
+        FROM
+        shoulder_ext_config_data
+        WHERE
+        delete_flag = 0
+        <dynamic>
+            <isNotNull property="configDO.tenant" prepend="and">tenant = #configDO.tenant#</isNotNull>
+            <isNotNull property="configDO.type" prepend="and">type = #configDO.type#</isNotNull>
+            <isNotNull property="configDO.bizId" prepend="and">biz_id = #configDO.bizId#</isNotNull>
+            <isNotNull property="configDO.operatorNo" prepend="and">operator_no = #configDO.operatorNo#</isNotNull>
+            <isNotEmpty prepend="AND" property="bizIdList">
+                biz_id in
+                <iterate property="bizIdList" open="(" close=")" conjunction=",">#bizIdList[]#</iterate>
+            </isNotEmpty>
+        </dynamic>
+        order by id
+        <dynamic>
+            <isNotNull property="offset">LIMIT #offset#, #size#</isNotNull>
+        </dynamic>
+    </select>
+
+    <!--  select count -->
+    <select id="countByMultiCondition" resultClass="java.lang.Long">
+        select count(id) from shoulder_ext_config_data where delete_flag = 0
+        <dynamic>
+            <isNotNull property="configDO.tenant" prepend="and">tenant = #configDO.tenant#</isNotNull>
+            <isNotNull property="configDO.type" prepend="and">type = #configDO.type#</isNotNull>
+            <isNotNull property="configDO.bizId" prepend="and">biz_id = #configDO.bizId#</isNotNull>
+            <isNotNull property="configDO.operatorNo" prepend="and">operator_no = #configDO.operatorNo#</isNotNull>
+            <isNotEmpty prepend="AND" property="bizIdList">
+                biz_id in
+                <iterate property="bizIdList" open="(" close=")" conjunction=",">#bizIdList[]#</iterate>
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+    <!-- =========================== Manager =================================== -->
+
+    <!--  insert -->
+    <insert id="insert" parameterClass="configDataDO">
+        insert into
+        shoulder_ext_config_data(gmt_create,gmt_modified,tenant,type,biz_id,version,delete_flag,operator_no,operator_name,business_value)
+        values(now(),now(), #tenant#,#type#,#bizId#,0,0,#operatorNo#,#operatorName#,#businessValue#)
+    </insert>
+
+    <!--  update -->
+    <update id="updateByBizIdAndVersion" parameterClass="configDataDO">
+        update shoulder_ext_config_data set gmt_modified = now(), version = version + 1, operator_no = #operatorNo#,
+        operator_name = #operatorName#, business_value = #businessValue# where biz_id = #bizId# and version = #version#
+        and delete_flag = 0
+    </update>
+
+    <!--  delete -->
+    <delete id="deleteByBizIdAndVersion" parameterClass="configDataDO">
+        UPDATE shoulder_ext_config_data
+        SET delete_flag = 1, version = version + 1
+        WHERE biz_id = #bizId# and version =
+        #version# and delete_flag = 0
+    </delete>
+</sqlMap>

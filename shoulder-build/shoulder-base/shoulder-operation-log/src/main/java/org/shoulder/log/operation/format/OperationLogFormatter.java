@@ -1,7 +1,7 @@
 package org.shoulder.log.operation.format;
 
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.logger.impl.LogOperationLogger;
+import org.shoulder.log.operation.model.OperationLogDTO;
 
 /**
  * 操作日志格式化

@@ -86,7 +86,8 @@ public class EnhancedCallable<V> implements Callable<V> {
      *
      * @throws ClassCastException clazz 错误，未被目标类包装过
      */
-    public <T> T as(Class<T> clazz) {
+    @SuppressWarnings("unchecked")
+    public <T> T as(Class<T> clazz) throws ClassCastException {
         if (clazz.isAssignableFrom(getClass())) {
             return (T) this;
         }
@@ -104,7 +105,7 @@ public class EnhancedCallable<V> implements Callable<V> {
         // 开始剥皮
         Callable<V> target = this;
         do {
-            // todo 这里认为一定是 EnhancedCallable；
+            // 这里认为一定是 EnhancedCallable；若不是则抛出 classCastEx，其实也符合需求
             target = ((EnhancedCallable<V>) target).delegate;
             warpCount--;
         } while (warpCount >= 0);

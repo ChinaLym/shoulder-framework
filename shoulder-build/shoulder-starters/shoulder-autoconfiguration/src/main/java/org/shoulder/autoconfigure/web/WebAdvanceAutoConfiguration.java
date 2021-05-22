@@ -1,9 +1,6 @@
 package org.shoulder.autoconfigure.web;
 
-import org.shoulder.web.advice.RestControllerColorfulLogAspect;
-import org.shoulder.web.advice.RestControllerExceptionAdvice;
-import org.shoulder.web.advice.RestControllerJsonLogAspect;
-import org.shoulder.web.advice.RestControllerUnionResponseAdvice;
+import org.shoulder.web.advice.*;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -12,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DataAccessException;
 
 import java.util.List;
 
@@ -37,6 +35,22 @@ public class WebAdvanceAutoConfiguration {
         return new RestControllerExceptionAdvice();
     }
 
+    @Configuration
+    @ConditionalOnClass(DataAccessException.class)
+    @ConditionalOnProperty(name = "shoulder.web.handleGlobalException", havingValue = "true", matchIfMissing = true)
+    public static class RestControllerDataExceptionAdviceAutoConfiguration {
+
+        /**
+         * RestController 数据库异常处理
+         */
+        @Bean
+        @Order(value = 1)
+        public RestControllerDataExceptionAdvice restControllerDataExceptionAdvice() {
+            return new RestControllerDataExceptionAdvice();
+        }
+    }
+
+
     /**
      * RestController 全局异常处理器
      * 默认情况下该类优先用户自定义的全局处理器，如果使用者指定 @Order且小于0，则优先于本框架处理
@@ -45,7 +59,7 @@ public class WebAdvanceAutoConfiguration {
     @Order(value = 0)
     @ConditionalOnProperty(name = "shoulder.web.restResponse.auto-warp", havingValue = "true", matchIfMissing = true)
     public RestControllerUnionResponseAdvice restControllerUnionResponseAdvice(
-        @Value("#{'${shoulder.web.restResponse.skipWarpPathPatterns:}'.split(',')}") List<String> skipWarpPathPatterns) {
+            @Value("#{'${shoulder.web.restResponse.skipWarpPathPatterns:}'.split(',')}") List<String> skipWarpPathPatterns) {
         return new RestControllerUnionResponseAdvice(skipWarpPathPatterns);
     }
 

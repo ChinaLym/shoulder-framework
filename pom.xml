@@ -46,7 +46,7 @@
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
         <clirr-maven-plugin.version>2.7</clirr-maven-plugin.version>
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
     </properties>
 
@@ -258,7 +258,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
+                <version>1.6.8</version>
                 <extensions>true</extensions>
 
                 <configuration>

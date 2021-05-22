@@ -5,9 +5,9 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.BaseRuntimeException;
-import org.shoulder.log.operation.dto.OpLogParam;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
+import org.shoulder.log.operation.model.OpLogParam;
+import org.shoulder.log.operation.model.OperationLogDTO;
 
 import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
@@ -70,7 +70,6 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
     @Override
     public String format(OperationLogDTO opLog) {
 
-        // todo 好多变量没有记录
         KeyValueContextBuilder builder = new KeyValueContextBuilder();
         // 反射拼接所有 String 类型
         opLogStrFields.forEach(field -> {

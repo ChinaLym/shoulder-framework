@@ -1,7 +1,7 @@
 package org.shoulder.crypto.symmetric;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.shoulder.core.util.ByteUtils;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;

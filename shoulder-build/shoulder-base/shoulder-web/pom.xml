@@ -24,6 +24,21 @@
             <artifactId>shoulder-validation</artifactId>
         </dependency>
 
+        <!-- 数据库相关 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-data-db</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 操作日志相关 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-operation-log</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 一般开发web也会调用 http 接口 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-http</artifactId>

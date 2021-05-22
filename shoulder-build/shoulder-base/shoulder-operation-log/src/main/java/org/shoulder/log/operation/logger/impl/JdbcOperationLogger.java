@@ -1,9 +1,11 @@
 package org.shoulder.log.operation.logger.impl;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.util.JsonUtils;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.logger.AbstractOperationLogger;
 import org.shoulder.log.operation.logger.OperationLogger;
+import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.annotation.Nonnull;
@@ -31,14 +33,14 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    private static final String ALL_INSERT_COLUMNS = "component_id, instance_id, " +
-        "user_id, user_name, user_real_name, user_org_id, user_org_name, terminal_type, terminal_address, terminal_id, terminal_info, " +
-        "operation, object_type, object_id, object_name, detail, detail_key, detail_item, operation_param," +
-        "result, error_code, operation_time, end_time, duration, trace_id, relation_id, tenant_code, extended_field0";
+    private static final String ALL_INSERT_COLUMNS = "app_id, instance_id, " +
+            "user_id, user_name, user_real_name, user_org_id, user_org_name, terminal_type, terminal_address, terminal_id, terminal_info, " +
+            "operation, object_type, object_id, object_name, detail, detail_key, detail_item, operation_param," +
+            "result, error_code, operation_time, end_time, duration, trace_id, relation_id, tenant_code, extended_field0";
 
     private static final String VALUES = "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private static String BATCH_INSERT = "INSERT INTO log_operation (" + ALL_INSERT_COLUMNS + ") " + VALUES;
+    private static final String BATCH_INSERT = "INSERT INTO log_operation (" + ALL_INSERT_COLUMNS + ") " + VALUES;
 
     {
         // 由于字段过多，这里断言能对应上，没有缺少字段
@@ -68,7 +70,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
     private <T extends OperationLogDTO> Object[] flatFieldsToArray(T opLog) {
         Object[] fields = new Object[FIELD_NUM];
         fields[0] = opLog.getAppId();
-        fields[1] = null; // todo instanceId
+        fields[1] = opLog.getInstanceId();
         fields[2] = opLog.getUserId();
         fields[3] = opLog.getUserName();
         fields[4] = opLog.getUserRealName();
@@ -85,8 +87,8 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[14] = opLog.getObjectName();
         fields[15] = opLog.getDetail();
         fields[16] = opLog.getDetailKey();
-        fields[17] = JsonUtils.toJson(opLog.getDetailItems());
-        fields[18] = JsonUtils.toJson(opLog.getParams());
+        fields[17] = CollectionUtils.isEmpty(opLog.getDetailItems()) ? null : JsonUtils.toJson(opLog.getDetailItems());
+        fields[18] = CollectionUtils.isEmpty(opLog.getParams()) ? null : JsonUtils.toJson(opLog.getParams());
 
         fields[19] = opLog.getResult().getCode();
         fields[20] = opLog.getErrorCode();
@@ -98,7 +100,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[25] = null;// relation_id
         fields[26] = opLog.getTenantCode();
 
-        fields[27] = JsonUtils.toJson(opLog.getExtFields());
+        fields[27] = MapUtils.isEmpty(opLog.getExtFields()) ? null : JsonUtils.toJson(opLog.getExtFields());
 
         return fields;
     }

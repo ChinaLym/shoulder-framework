@@ -21,7 +21,7 @@ public class JsonTypeValidator implements ConstraintValidator<JsonType, String> 
             return true;
         }
         try {
-            JsonUtils.toObject(input, Map.class);
+            JsonUtils.parseObject(input, Map.class);
             return true;
         } catch (Exception e) {
             return false;

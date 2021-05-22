@@ -7,7 +7,7 @@ import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchProgress;
 import org.shoulder.batch.model.BatchRecord;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 导入相关
+ * 导入 API
  *
  * @author lym
  */
@@ -100,7 +100,9 @@ public class ImportController implements ImportRestfulApi {
     public BaseResult<ListResult<BatchRecordResult>> queryImportRecord() {
         return BaseResult.success(
                 Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
-                        .map(BatchModelConvert.CONVERT::toDTO).collect(Collectors.toList())
+                        .map(BatchModelConvert.CONVERT::toDTO)
+                        .collect(Collectors.toList()
+                        )
         );
     }
 
@@ -134,8 +136,8 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public void exportRecordDetail(HttpServletResponse response, QueryImportResultDetailParam condition) throws IOException {
         exportService.exportBatchDetail(response.getOutputStream(), BatchConstants.CSV, condition.getBusinessType(),
-            condition.getTaskId(), CollectionUtils.emptyIfNull(condition.getStatusList())
-                .stream().map(BatchResultEnum::of).collect(Collectors.toList()));
+                condition.getTaskId(), CollectionUtils.emptyIfNull(condition.getStatusList())
+                        .stream().map(ProcessStatusEnum::of).collect(Collectors.toList()));
     }
 
     /**

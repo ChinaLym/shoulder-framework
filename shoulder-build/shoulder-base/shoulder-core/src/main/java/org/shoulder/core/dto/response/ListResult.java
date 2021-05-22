@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 列表数据对象
@@ -22,7 +22,7 @@ public class ListResult<T> implements Serializable {
     private static final long serialVersionUID = -3134782461635924904L;
     //@Schema(name = "数据总数")
     @ApiModelProperty(value = "数据总数", dataType = "long", required = true, example = "4", position = 0)
-    private long total = 0L;
+    private Long total = 0L;
 
     //@Schema(name = "列表数据")
     @ApiModelProperty(value = "列表数据", dataType = "List", required = true, example = "[1,2,3,4]", position = 1)
@@ -48,12 +48,12 @@ public class ListResult<T> implements Serializable {
 
     }
 
-    public ListResult(Collection<? extends T> collection) {
-        this.list = new ArrayList<>(collection);
-        this.total = list.size();
+    public ListResult(Collection<? extends T> list) {
+        this.list = list.stream().collect(Collectors.toList());
+        this.total = (long) this.list.size();
     }
 
-    public static <T> ListResult<T> of(Collection<? extends T> collection) {
-        return new ListResult<>(collection);
+    public static <T> ListResult<T> of(Collection<? extends T> list) {
+        return new ListResult<>(list);
     }
 }

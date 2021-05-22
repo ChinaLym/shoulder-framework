@@ -1,9 +1,10 @@
 package org.shoulder.autoconfigure.operation;
 
-import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.springframework.security.core.Authentication;
 @Configuration
 @ConditionalOnClass(value = {OperationLogDTO.class, Authentication.class})
 @AutoConfigureBefore(OperationLogWebAutoConfiguration.class)
+@ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class SpringSecurityCurrentUserConfiguration {
 
     /**

@@ -3,18 +3,14 @@ package org.shoulder.web.advice;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.hibernate.validator.internal.engine.path.NodeImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
-import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
-import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.ExceptionUtil;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -42,21 +38,16 @@ import java.sql.SQLException;
  * RestController 全局异常处理器 - 请求方错误，提供默认统一场景错误返回值
  * 不同 RestControllerAdvice 类中的异常处理器优先级：与 @Order 接口定义有关，默认最低，用户可以定义，以覆盖框架实现
  * <p>
- * todo 组装返回值时，根据返回值类型判断，
+ * 组装响应时，未根据返回值类型判断，统一返回 JSON 格式标准响应
  *
  * @author lym
  */
+@SuppressWarnings("rawtypes")
 @Order(Ordered.LOWEST_PRECEDENCE)
 @RestControllerAdvice
 public class RestControllerExceptionAdvice {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private static final String GLOBAL_EXCEPTION_HANDLER_TIP = "RestControllerExceptionAdvice - ";
-
-    @Autowired(required = false)
-    private Translator translator;
-
 
     /**
      * 缺少参数
@@ -128,12 +119,12 @@ public class RestControllerExceptionAdvice {
 
 
     /**
-     * jsr303 验证不通过 todo 通过配置，可能未开启快速失败，因此会有多个错误原因，因此需要 getConstraintViolations
+     * jsr303 验证不通过
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public BaseResult constraintViolationExceptionHandler(ConstraintViolationException e) {
-        // 这里取了第一个错误作为校验错误原因，且默认使用 hibernate，未做其他实现判断
+        // 默认使用 hibernate，未做其他实现判断（可能未开启快速失败，因此会有多个错误原因，值取第一个）
         ConstraintViolationImpl firstConstraintViolation = (ConstraintViolationImpl) e.getConstraintViolations()
                 .stream().findFirst().orElse(null);
         assert firstConstraintViolation != null;
@@ -145,14 +136,9 @@ public class RestControllerExceptionAdvice {
         String msg = StringUtils.isEmpty(msgInAnnotation) ? ParamErrorCodeEnum.PARAM_ILLEGAL.getMessage() : msgInAnnotation;
         Logger logger = LoggerFactory.getLogger(firstConstraintViolation.getRootBeanClass().getName());
         if (logger.isInfoEnabled()) {
-            String logMessage = null;
-            if (translator == null) {
-                logMessage = ExceptionUtil.generateExceptionMessage(msg, paramName);
-            } else {
-                translator.getMessage(msg, paramName, AppInfo.defaultLocale());
-            }
             // 这里堆栈信息不必打印
-            logger.infoWithErrorCode(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(), GLOBAL_EXCEPTION_HANDLER_TIP + logMessage);
+            logger.infoWithErrorCode(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(),
+                    "RestControllerExceptionAdvice - " + paramName + " - " + msg);
         }
         return new BaseResult<>(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(), msg, new Object[]{paramName});
     }
@@ -245,7 +231,7 @@ public class RestControllerExceptionAdvice {
     /**
      * 其他异常
      * 对于这类不明确的异常，原始报错消息改成未知异常，日志打印详细内容并使用未知错误码，以避免暴露堆栈信息等
-     * todo 【可选】ClientAbortException tomcat中客户端连接断开，如浏览器请求了，还没响应就关闭了，服务器返回时发现response不能写
+     * 【可选】ClientAbortException tomcat中客户端连接断开，如浏览器请求了，还没响应就关闭了，服务器返回时发现response不能写
      */
     @ExceptionHandler(Exception.class)
     public BaseResult otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -275,11 +261,10 @@ public class RestControllerExceptionAdvice {
      * SQLException
      * 开发者配置信息不全，完整性（必填为空），唯一性约束（主键不完整）
      * DataIntegrityViolationException
-     * todo 【可选】DataAccessException spring 的数据持久层异常基类（依赖数据库） 新建 RestControllerAdvice 加 ConditionalOnClass
      */
 
     /**
-     * 数据库保存失败
+     * 数据库保存失败 (spring data 中不会抛 SQLException )
      */
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(SQLException.class)

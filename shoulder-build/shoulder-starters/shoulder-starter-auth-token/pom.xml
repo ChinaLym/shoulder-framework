@@ -17,7 +17,13 @@
 
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-core</artifactId>
+            <artifactId>shoulder-starter</artifactId>
+        </dependency>
+
+        <!-- 基本加密算法 -->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-crypto</artifactId>
         </dependency>
 
         <dependency>
@@ -25,27 +31,20 @@
             <artifactId>shoulder-security</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-web</artifactId>
+        </dependency>
+
         <!-- 授权服务器 -->
         <dependency>
             <groupId>org.springframework.security.oauth.boot</groupId>
             <artifactId>spring-security-oauth2-autoconfigure</artifactId>
-            <!-- 安全漏洞，特升级至 2.3.5 -->
-            <!--<exclusions>
-                <exclusion>
-                    <groupId>org.springframework.security.oauth</groupId>
-                    <artifactId>spring-security-oauth2</artifactId>
-                </exclusion>
-            </exclusions>-->
         </dependency>
+
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-crypto</artifactId>
         </dependency>
 
         <!-- resourceServer -->

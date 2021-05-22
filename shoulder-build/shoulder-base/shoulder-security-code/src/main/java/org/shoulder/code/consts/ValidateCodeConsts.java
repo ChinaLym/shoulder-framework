@@ -32,4 +32,10 @@ public interface ValidateCodeConsts {
      * 短信验证码
      */
     String SMS = "smsCode";
+
+    /**
+     * 短信验证码
+     */
+    String EMAIL = "emailCode";
+
 }

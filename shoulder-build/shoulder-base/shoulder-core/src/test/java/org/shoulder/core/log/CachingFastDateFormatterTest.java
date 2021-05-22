@@ -1,7 +1,7 @@
 package org.shoulder.core.log;
 
 import ch.qos.logback.core.util.CachingDateFormatter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.logback.pattern.CachingFastDateFormatter;
 import org.shoulder.core.util.DateUtils;

@@ -27,8 +27,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.lang.Nullable;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.annotation.Nullable;
 import javax.sql.DataSource;
 import java.security.Security;
 import java.util.List;
@@ -91,6 +92,7 @@ public class LocalCryptoAutoConfiguration {
         return new LocalTextCipherManager(judgeAbleLocalTextCiphers);
     }
 
+    @ConditionalOnCluster(cluster = false)
     @EnableConfigurationProperties(CryptoProperties.class)
     @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
     @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "file", matchIfMissing = true)
@@ -112,7 +114,7 @@ public class LocalCryptoAutoConfiguration {
                 fileDir = localProperties.getMetaInfoPath();
             } else {
                 log.warn("No LocalCryptoInfoRepository available,  fallback to FileLocalCryptoInfoRepository. " +
-                    "Consider create a bean(JdbcLocalCryptoInfoRepository.class) for better persistent and security.");
+                        "Consider create a bean(JdbcLocalCryptoInfoRepository.class) for better persistent and security.");
             }
             return new FileLocalCryptoInfoRepository(fileDir, AppInfo.charset());
         }
@@ -138,27 +140,28 @@ public class LocalCryptoAutoConfiguration {
 
     }
 
-    @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
     @ConditionalOnClass(RedisTemplate.class)
-    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "redis")
+    @AutoConfigureAfter(JdbcLocalCryptoInfoRepositoryAutoConfiguration.class)
+    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "redis", matchIfMissing = true)
     public static class RedisLocalCryptoInfoRepositoryAutoConfiguration {
         /**
          * 使用了 redis，通常并不推荐，因为 redis 大多时候是作缓存的，而加密元数据最好要持久化存储
          */
         @Bean
+        @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
         public LocalCryptoInfoRepository redisLocalCryptoInfoRepository(RedisTemplate<String, Object> redisTemplate) {
             return new RedisLocalCryptoInfoRepository(redisTemplate);
         }
     }
 
-    @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
-    @ConditionalOnClass(DataSource.class)
-    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "jdbc")
+    @ConditionalOnClass(JdbcTemplate.class)
+    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "jdbc", matchIfMissing = true)
     public static class JdbcLocalCryptoInfoRepositoryAutoConfiguration {
         /**
          * 使用了 redis，通常并不推荐，因为 redis 大多时候是作缓存的，而加密元数据最好要持久化存储
          */
         @Bean
+        @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
         public LocalCryptoInfoRepository jdbcLocalCryptoInfoRepository(DataSource dataSource) {
             return new JdbcLocalCryptoInfoRepository(dataSource);
         }

@@ -1,8 +1,8 @@
 package org.shoulder.log.operation.logger;
 
+import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.context.OpLogContextHolder;
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.OperationLogDTO;
+import org.shoulder.log.operation.model.OperationLogDTO;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;

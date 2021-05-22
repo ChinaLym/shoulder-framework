@@ -3,11 +3,11 @@ package org.shoulder.log.operation.context;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.log.operation.dto.Operable;
-import org.shoulder.log.operation.dto.OperationLogDTO;
-import org.shoulder.log.operation.dto.Operator;
-import org.springframework.lang.Nullable;
+import org.shoulder.core.model.Operable;
+import org.shoulder.log.operation.model.OperationLogDTO;
+import org.shoulder.log.operation.model.Operator;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,9 +31,12 @@ public class OperationLogFactory {
     public static OperationLogDTO create(String operation) {
         Operator currentOperator = OpLogContext.getCurrentOperator();
         return new OperationLogDTO(operation)
-            .setOperator(currentOperator)
-            .setAppId(AppInfo.appId())
-            .setTenantCode(AppContext.getTenantCode());
+                .setOperator(currentOperator)
+                .setAppId(AppInfo.appId())
+                // todo version
+                //.setVersion(AppInfo.version())
+                .setInstanceId(AppInfo.instanceId())
+                .setTenantCode(AppContext.getTenantCode());
     }
 
     /**

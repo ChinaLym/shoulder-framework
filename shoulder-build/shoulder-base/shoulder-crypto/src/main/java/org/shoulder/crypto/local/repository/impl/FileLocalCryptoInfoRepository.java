@@ -29,16 +29,17 @@ import java.util.stream.Collectors;
  */
 public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
-    private static final String DEFAULT_FILE_NAME = "_shoulder_aesInfo.json";
     private final Logger log = LoggerFactory.getLogger(getClass());
+
     /**
      * 存储文件字符集
      */
     private final Charset charset;
+
     /**
      * 文件存储路径
      */
-    private String rootKeyInfoPath;
+    private final String rootKeyInfoPath;
 
 
     public FileLocalCryptoInfoRepository(String rootKeyInfoPath, Charset charset) {
@@ -46,8 +47,14 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         this.charset = charset;
     }
 
+    /**
+     * 默认路径
+     *
+     * @return 运行时路径的 ./_shoulder_aesInfo.json
+     */
     private String getDefaultFilePath() {
-        String defaultPath = ClassUtils.getDefaultClassLoader().getResource("").getPath() + DEFAULT_FILE_NAME;
+        String defaultFileName = "_shoulder_aesInfo.json";
+        String defaultPath = ClassUtils.getDefaultClassLoader().getResource("").getPath() + defaultFileName;
         log.warn("no available localCrypto.MetaInfoFilePath config config, use default: {}. ", defaultPath);
         // windows 系统下，去掉 '/c:/xx' 前缀，改为 'c:/xx'，避免 Path.class 不支持的情况
         return new File(defaultPath).getAbsolutePath();
@@ -114,7 +121,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
             if (StringUtils.isBlank(jsonStr)) {
                 return Collections.emptyList();
             }
-            return JsonUtils.toObject(jsonStr, new TypeReference<>() {
+            return JsonUtils.parseObject(jsonStr, new TypeReference<>() {
             });
         } catch (IOException e) {
             // 大概率文件路径有问题，不可读
@@ -122,5 +129,13 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         }
     }
 
+    /**
+     * 可能支持集群
+     * 若挂载的磁盘为分布式文件存储，则支持，否则仅支持单机部署多实例
+     */
+    @Override
+    public boolean supportCluster() {
+        return false;
+    }
 
 }

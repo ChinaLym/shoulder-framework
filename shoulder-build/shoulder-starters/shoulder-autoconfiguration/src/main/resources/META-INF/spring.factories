@@ -1,4 +1,6 @@
 # Auto Configuration shoulder-autoconfiguration
+org.springframework.beans.factory.config=\
+  org.shoulder.autoconfigure.core.JacksonObjectMapperPostProcessor
 org.springframework.context.ApplicationListener=\
   org.shoulder.autoconfigure.core.DefaultPropertiesStartingListener
 org.springframework.boot.env.EnvironmentPostProcessor=\
@@ -11,10 +13,13 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.core.current.enhancer.EnhanceableAsyncDefaultAutoConfiguration, \
   org.shoulder.autoconfigure.core.ContextUtilsAutoConfiguration, \
   org.shoulder.autoconfigure.core.I18nAutoConfiguration, \
+  org.shoulder.autoconfigure.core.JacksonAutoConfiguration, \
   \
+  org.shoulder.autoconfigure.web.ShoulderDispatcherServletAutoConfiguration, \
   org.shoulder.autoconfigure.web.WebAdvanceAutoConfiguration, \
   org.shoulder.autoconfigure.web.MvcConverterAutoConfiguration, \
   org.shoulder.autoconfigure.web.WebMvcAutoConfiguration, \
+  org.shoulder.autoconfigure.web.WebExtAutoConfiguration, \
   \
   org.shoulder.autoconfigure.apidoc.ShoulderSensitiveApiGroupAutoConfiguration, \
   org.shoulder.autoconfigure.apidoc.SwaggerAutoConfiguration, \
@@ -23,6 +28,11 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.redis.LettuceEventConsumerConfiguration, \
   \
   org.shoulder.autoconfigure.lock.LockAutoConfiguration, \
+  \
+  org.shoulder.autoconfigure.validate.DynamicValidationRuleAutoConfiguration, \
+  \
+  org.shoulder.autoconfigure.guid.GuidAutoConfiguration, \
+  org.shoulder.autoconfigure.guid.InstanceIdProviderAutoConfiguration, \
   \
   org.shoulder.autoconfigure.http.RestTemplateLogAutoConfiguration, \
   org.shoulder.autoconfigure.http.RestTemplateCustomAutoConfiguration, \
@@ -45,6 +55,8 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.operation.OperationLogParamConverterAutoConfiguration,\
   org.shoulder.autoconfigure.operation.SpringSecurityCurrentUserConfiguration,\
   org.shoulder.autoconfigure.operation.OperationLogWebAutoConfiguration,\
+  org.shoulder.autoconfigure.operation.OperationLogOperableTypeResolverAutoConfiguration,\
+  org.shoulder.autoconfigure.operation.OperationLogUserAgentResolverAutoConfiguration,\
   \
   org.shoulder.autoconfigure.security.AuthenticationBeanConfig, \
   org.shoulder.autoconfigure.security.AuthenticationHandlerConfig, \
@@ -57,4 +69,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig, \
   \
   org.shoulder.autoconfigure.monitor.MonitorableThreadAutoConfiguration, \
-  org.shoulder.autoconfigure.monitor.MonitorRunnableAutoConfiguration
+  org.shoulder.autoconfigure.monitor.MonitorRunnableAutoConfiguration, \
+  org.shoulder.autoconfigure.monitor.PrometheusAutoConfiguration, \
+  \
+  org.shoulder.autoconfigure.endpoints.InstanceIdEndpoint

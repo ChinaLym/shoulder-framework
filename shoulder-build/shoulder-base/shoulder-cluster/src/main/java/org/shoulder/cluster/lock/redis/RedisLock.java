@@ -1,14 +1,16 @@
 package org.shoulder.cluster.lock.redis;
 
 import org.apache.commons.lang3.StringUtils;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.lock.AbstractDistributeLock;
 import org.shoulder.core.lock.LockInfo;
 import org.shoulder.core.lock.ServerLock;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
-import org.springframework.lang.Nullable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 
 /**
@@ -25,7 +27,7 @@ public class RedisLock extends AbstractDistributeLock implements ServerLock {
     /**
      * redis 模板
      */
-    private StringRedisTemplate redis;
+    private final StringRedisTemplate redis;
 
     public RedisLock(StringRedisTemplate redis) {
         this.redis = redis;
@@ -34,24 +36,14 @@ public class RedisLock extends AbstractDistributeLock implements ServerLock {
     public static final String SPLIT = "__";
 
     /**
-     * 服务实例唯一标识
-     */
-    private String instanceId = null;
-
-
-    public void setInstanceId(String instanceId) {
-        this.instanceId = instanceId;
-        log.info("RedisLock SET currentInstanceId=" + instanceId);
-    }
-
-    /**
-     * todo 【功能】这里为了保证最轻量化，只存储了部分信息，考虑改为使用 hash 存储
+     * todo 【功能】这里为轻量化，仅存储了部分信息，可考虑改为使用 hash 存储
+     *
      * @param resource 资源
      * @return 资源对应的锁信息
      */
     @Override
     @Nullable
-    public LockInfo getLockInfo(String resource) {
+    public LockInfo getLockInfo(@Nonnull String resource) {
         return new LockInfo(resource);
     }
 
@@ -65,14 +57,14 @@ public class RedisLock extends AbstractDistributeLock implements ServerLock {
     }
 
     @Override
-    public boolean holdLock(String resource, String token) {
+    public boolean holdLock(@Nonnull String resource, @Nonnull String token) {
         return genLockValue(token).equals(redis.opsForValue().get(resource));
     }
 
     @Override
-    public void unlock(String resource, String token) {
+    public void unlock(@Nonnull String resource, @Nonnull String token) {
         Long result = redis.execute(releaseLockScript(), Collections.singletonList(resource),
-            genLockValue(token));
+                genLockValue(token));
         if (result == null || 1 != result) {
             log.debug("invalid release operation: resource={}, token={}", resource, token);
         } else {
@@ -87,7 +79,7 @@ public class RedisLock extends AbstractDistributeLock implements ServerLock {
      * @return 添加了实例标识
      */
     private String genLockValue(String token) {
-        return instanceId + SPLIT + (StringUtils.isNotBlank(token) ? token : "");
+        return AppInfo.instanceId() + SPLIT + (StringUtils.isNotBlank(token) ? token : "");
     }
 
     private RedisScript<Long> releaseLockScript() {

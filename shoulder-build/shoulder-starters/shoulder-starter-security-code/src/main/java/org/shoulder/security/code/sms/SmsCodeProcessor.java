@@ -20,7 +20,7 @@ public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode
     /**
      * 短信验证码发送器
      */
-    private SmsCodeSender smsCodeSender;
+    private final SmsCodeSender smsCodeSender;
 
     public SmsCodeProcessor(BaseValidateCodeProperties baseValidateCodeProperties, ValidateCodeGenerator validateCodeGenerator,
                             ValidateCodeStore validateCodeStore, SmsCodeSender smsCodeSender) {

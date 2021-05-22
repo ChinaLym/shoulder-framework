@@ -41,11 +41,11 @@ public class KeyValueContextBuilder {
         return this;
     }
 
-    public KeyValueContextBuilder add(String key, String value) {
+    public KeyValueContextBuilder add(String key, Object value) {
         this.context.append(key)
-            .append(keyValueSplit).append("\"").
-            append(value)
-            .append("\"").append(keyPairSplit);
+                .append(keyValueSplit).append("\"")
+                .append(value)
+                .append("\"").append(keyPairSplit);
         return this;
     }
 

@@ -33,7 +33,7 @@ public class FileSystemLock {
     @SuppressWarnings("unchecked")
     private List<LockInfo> getAll() throws IOException {
         String jsonStr = Files.readString(LOCK_FILE, AppInfo.charset());
-        return JsonUtils.toObject(jsonStr, List.class, LockInfo.class);
+        return JsonUtils.parseObject(jsonStr, List.class, LockInfo.class);
     }
 
     public synchronized LockInfo get(String resource) throws Exception {

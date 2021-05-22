@@ -1,7 +1,5 @@
 package org.shoulder.core.util;
 
-import org.junit.Test;
-
 /**
  * 字典树测试
  * 字典树应用场景：
@@ -13,7 +11,7 @@ import org.junit.Test;
 public class TrieTreeTest {
 
 
-    @Test
+    //@Test
     public void testAdd() {
         TrieTree<Object> trieTree = new TrieTree<>();
         trieTree.put("abc", null);

@@ -1,6 +1,6 @@
 package org.shoulder.core.lock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.shoulder.core.lock.impl.MemoryLock;
 
 import java.time.Duration;

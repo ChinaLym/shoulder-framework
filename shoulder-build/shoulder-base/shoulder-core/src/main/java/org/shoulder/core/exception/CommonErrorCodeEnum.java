@@ -28,14 +28,16 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     AUTH_401_UNAUTHORIZED(12, "Authentication failed.", Level.INFO, HttpStatus.UNAUTHORIZED),
     /**
-     * @desc 认证过期，需要重新认证
+     * @desc 认证无效，需要先进行认证
+     * @sug 1.未携带正确认证标识（需要检查接口文档-认证）；2.过期的认证标识（需要重新登陆）
+     * @see org.springframework.security.web.access.ExceptionTranslationFilter#handleSpringSecurityException(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, javax.servlet.FilterChain, java.lang.RuntimeException) AccessDeny
      */
-    AUTH_401_EXPIRED(13, "Certification expired. Re-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
+    AUTH_401_EXPIRED(13, "Certification invalid. Do-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
 
     /**
      * 主动拒绝请求：权限不够
      */
-    AUTH_403_FORBIDDEN(18, "Permission deny.", Level.INFO, HttpStatus.FORBIDDEN),
+    PERMISSION_DENY(18, "Permission deny.", Level.INFO, HttpStatus.FORBIDDEN),
     /**
      * 主动拒绝请求：令牌无效
      */
@@ -133,7 +135,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     CONTENT_TYPE_INVALID(333, "HttpMediaTypeNotSupported. ContentType(%s) is not acceptable.", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
-     * 文件上传出错 todo 迁移
+     * 文件上传出错
      */
     MULTIPART_INVALID(334, "Request is not a validate multipart request, please check request or file size.", Level.WARN, HttpStatus.BAD_REQUEST),
 
@@ -153,11 +155,11 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     MID_WARE_CONNECT_FAIL(400, "Connect ", Level.ERROR),
     /**
-     * 数据存储失败
+     * 数据存储失败-未落库
      */
-    DATA_STORAGE_FAIL(401, "Persistent fail!", Level.ERROR),
+    DATA_STORAGE_FAIL(401, "Persistent fail! %s", Level.ERROR),
     /**
-     * 数据访问错误
+     * 数据访问错误-除了保存时
      */
     DATA_ACCESS_FAIL(402, "Data access fail!", Level.ERROR),
 

@@ -2,7 +2,6 @@ package org.shoulder.security.authentication;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.security.SecurityConst;
-import org.springframework.lang.Nullable;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
@@ -12,6 +11,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -22,13 +22,13 @@ import java.util.List;
  */
 public class FormAuthenticationSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private AuthenticationSuccessHandler authenticationSuccessHandler;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
-    private AuthenticationFailureHandler authenticationFailureHandler;
+    private final AuthenticationFailureHandler authenticationFailureHandler;
 
-    private LogoutSuccessHandler logoutSuccessHandler;
+    private final LogoutSuccessHandler logoutSuccessHandler;
 
-    private List<LogoutHandler> logoutHandlers;
+    private final List<LogoutHandler> logoutHandlers;
 
     private String loginPageUrl;
 

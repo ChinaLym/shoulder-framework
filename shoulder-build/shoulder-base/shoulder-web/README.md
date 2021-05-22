@@ -5,6 +5,8 @@
 能力：
 - 依赖管理（自动引入相关 jar）
     - 入参校验
+- Controller 快速开发模板
+- 入参注解解析（基于HandlerMethodArgumentResolver）
 - 全局异常处理
 - 全局返回值包装
 - 可扩展的全局安全过滤器
