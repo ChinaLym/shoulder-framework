@@ -17,6 +17,7 @@ import java.util.Map;
  * 传统授权服务器（spring-security-oauth2）不支持 /introspect。本类特地增加该端点，以更好地支持校验回调。
  *
  * @author lym
+ * TODO 废弃与 spring security oauth 项目相关的类，改为替代品
  */
 @Controller
 public class IntrospectEndpoint {

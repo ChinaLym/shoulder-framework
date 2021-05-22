@@ -1,9 +1,9 @@
 package org.shoulder.crypto.local.repository;
 
 import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
-import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -38,5 +38,14 @@ public interface LocalCryptoInfoRepository {
      */
     @Nonnull
     List<LocalCryptoMetaInfo> get(@Nonnull String appId) throws Exception;
+
+    /**
+     * 是否支持集群
+     *
+     * @return 默认不支持
+     */
+    default boolean supportCluster() {
+        return false;
+    }
 
 }

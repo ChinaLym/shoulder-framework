@@ -13,6 +13,17 @@ public class DefaultEnumMissMatchHandler implements EnumMissMatchHandler {
 
     //private final String defaultMethodName = "default";
 
+    private DefaultEnumMissMatchHandler() {
+    }
+
+    public static DefaultEnumMissMatchHandler getInstance() {
+        return DefaultEnumMissMatchHandlerHolder.INSTANCE;
+    }
+
+    static class DefaultEnumMissMatchHandlerHolder {
+        public static final DefaultEnumMissMatchHandler INSTANCE = new DefaultEnumMissMatchHandler();
+    }
+
     @Override
     public <T> T handleNullSource(@Nonnull Class<? extends Enum> enumType) {
         return null;

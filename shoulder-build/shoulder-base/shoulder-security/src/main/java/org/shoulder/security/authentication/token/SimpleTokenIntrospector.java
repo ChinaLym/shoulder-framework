@@ -23,6 +23,7 @@ import java.util.Set;
  * 推荐自行覆盖实现：因为每个系统中用户信息不同、 token 也是自己发的，解析用户信息和验证 token 有效性与具体的设计相关
  *
  * @author lym
+ * TODO 废弃与 spring security oauth 项目相关的类，改为替代品
  */
 public class SimpleTokenIntrospector implements OpaqueTokenIntrospector {
 

@@ -18,6 +18,7 @@
         <module>shoulder-starter</module>
 
         <module>shoulder-starter-web</module>
+        <module>shoulder-starter-mysql</module>
         <module>shoulder-starter-beanmap</module>
         <module>shoulder-starter-operation-log</module>
         <module>shoulder-starter-crypto</module>

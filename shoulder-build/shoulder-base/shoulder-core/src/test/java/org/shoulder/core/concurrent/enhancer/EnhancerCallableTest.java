@@ -1,6 +1,6 @@
 package org.shoulder.core.concurrent.enhancer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.shoulder.core.concurrent.enhance.EnhancedCallable;
 
 import java.util.concurrent.Callable;

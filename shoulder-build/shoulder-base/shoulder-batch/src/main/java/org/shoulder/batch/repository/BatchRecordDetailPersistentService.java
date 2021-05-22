@@ -1,6 +1,6 @@
 package org.shoulder.batch.repository;
 
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchRecordDetail;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public interface BatchRecordDetailPersistentService {
      * @param resultList 结果状态
      * @return 所有的批量处理记录
      */
-    List<BatchRecordDetail> findAllByResult(String recordId, List<BatchResultEnum> resultList);
+    List<BatchRecordDetail> findAllByResult(String recordId, List<ProcessStatusEnum> resultList);
 
     /**
      * 查询所有的批量处理记录

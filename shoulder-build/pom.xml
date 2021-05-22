@@ -26,6 +26,7 @@
     <modules>
         <module>shoulder-base</module>
         <module>shoulder-starters</module>
+        <module>shoulder-plugins</module>
     </modules>
 
 </project>

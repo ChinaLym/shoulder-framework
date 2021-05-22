@@ -13,7 +13,6 @@ import java.util.TimeZone;
 
 /**
  * 地区、字符编码
- * todo 时区、国家地区本地名称、i18nKey
  * 货币、日历、月份、数字、星期、时间周期、时间单位
  * 排序规则、单复数、省略号...
  * ISO、BCP 47
@@ -23,14 +22,14 @@ import java.util.TimeZone;
  */
 @Getter
 @EqualsAndHashCode
-public final class LocaleInfo implements Cloneable {
+public final class LocaleInfo implements BaseLocaleContext, Cloneable {
 
     private static final LocaleInfo SYSTEM_DEFAULT;
 
     private static LocaleInfo DEFAULT;
 
     static {
-        SYSTEM_DEFAULT = new LocaleInfo(Locale.getDefault(), Charset.defaultCharset(), TimeZone.getDefault());
+        SYSTEM_DEFAULT = new LocaleInfo(Locale.getDefault(), TimeZone.getDefault(), Charset.defaultCharset());
         DEFAULT = SYSTEM_DEFAULT;
     }
 
@@ -40,19 +39,19 @@ public final class LocaleInfo implements Cloneable {
     private final Locale locale;
 
     @Nonnull
-    private final Charset charset;
-
-    @Nonnull
     private final TimeZone timeZone;
 
-    // todo 为每种语言独立设置
+    @Nonnull
+    private final Charset charset;
+
+    // todo 【国际化】可考虑为每种语言独立设置
     @Nonnull
     private final String dateTimeFormat = AppInfo.UTC_DATE_TIME_FORMAT;
 
-    public LocaleInfo(@NonNull Locale locale, @NonNull Charset charset, @NonNull TimeZone timeZone) {
+    public LocaleInfo(@NonNull Locale locale, @NonNull TimeZone timeZone, @NonNull Charset charset) {
         this.locale = locale;
-        this.charset = charset;
         this.timeZone = timeZone;
+        this.charset = charset;
     }
 
     // -----------------------------------------------
@@ -69,11 +68,11 @@ public final class LocaleInfo implements Cloneable {
 
     public static void setDefault(Locale locale) {
         // charset 会随着 locale 改变而发生变化，因此使用 null
-        setDefault(LocaleUtils.buildLocaleInfo(locale, null, DEFAULT.getTimeZone()));
+        setDefault(LocaleUtils.buildLocaleInfo(locale, DEFAULT.getTimeZone(), null));
     }
 
     public static void setDefault(Locale locale, Charset charset) {
-        setDefault(LocaleUtils.buildLocaleInfo(locale, charset, DEFAULT.getTimeZone()));
+        setDefault(LocaleUtils.buildLocaleInfo(locale, DEFAULT.getTimeZone(), charset));
     }
 
     public static void setDefault(LocaleInfo localeInfo) {

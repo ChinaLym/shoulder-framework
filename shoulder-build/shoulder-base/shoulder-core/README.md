@@ -114,7 +114,7 @@ private static final org.shoulder.core.log.Logger log = org.shoulder.core.log.Lo
 
 # [GUID（全局唯一标识符生成器）](https://github.com/ChinaLym/Shoulder-Framework/tree/master/shoulder-build/shoulder-base/shoulder-core#guid%E5%85%A8%E5%B1%80%E5%94%AF%E4%B8%80%E6%A0%87%E8%AF%86%E7%AC%A6%E7%94%9F%E6%88%90%E5%99%A8)
 
-TODO shoulder-guid 文档补充
+全局唯一 id 生成器，接口有 LongGuidGenerator、StringGuidGenerator 两种，常用于生成流水数据的主键、标识字段，经测试分布式场景不会重复，且性能相当高，并容忍时间回拨。
 
 ## 各家类雪花算法性能对比
 
@@ -234,4 +234,5 @@ XML，可选依赖：Xstream：API简单，使用方便（这里适合读取配�
 # 其他
 
 - [阿里巴巴开发规约](https://github.com/alibaba/p3c)
+  Spring Boot 2.2.X以后 `org.junit.jupiter.api.Test` 替代之前的 `org.junit.Test` (JUnitTest 4->5)
 

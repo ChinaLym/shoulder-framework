@@ -64,4 +64,12 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
         return keyPrefix;
     }
 
+    /**
+     * 支持集群
+     */
+    @Override
+    public boolean supportCluster() {
+        return true;
+    }
+
 }

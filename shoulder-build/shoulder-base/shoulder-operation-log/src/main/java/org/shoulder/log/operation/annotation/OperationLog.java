@@ -4,8 +4,8 @@ import org.shoulder.log.operation.context.OpLogContext;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.context.OperationContextStrategyEnum;
 import org.shoulder.log.operation.context.OperationLogFactory;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.enums.TerminalType;
+import org.shoulder.log.operation.model.OperationLogDTO;
 
 import java.lang.annotation.*;
 
@@ -97,10 +97,16 @@ public @interface OperationLog {
      * @author lym
      */
     interface Operations {
+
         /**
          * 新增
          */
-        String ADD = "add";
+        String CREATE = "create";
+
+        /**
+         * 查询
+         */
+        String QUERY = "query";
 
         /**
          * 修改
@@ -111,11 +117,6 @@ public @interface OperationLog {
          * 删除
          */
         String DELETE = "delete";
-
-        /**
-         * 查询
-         */
-        String QUERY = "query";
 
         /**
          * 上传

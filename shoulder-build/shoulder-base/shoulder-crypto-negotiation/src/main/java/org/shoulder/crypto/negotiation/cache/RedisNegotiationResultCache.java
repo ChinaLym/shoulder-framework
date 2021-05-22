@@ -3,9 +3,9 @@ package org.shoulder.crypto.negotiation.cache;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,7 +57,7 @@ public class RedisNegotiationResultCache implements NegotiationResultCache {
         if (obj == null) {
             return null;
         }
-        return JsonUtils.toObject(String.valueOf(obj), NegotiationResult.class);
+        return JsonUtils.parseObject(String.valueOf(obj), NegotiationResult.class);
     }
 
     @Override

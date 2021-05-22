@@ -15,8 +15,8 @@ import java.util.Locale;
  * getMessage 时自动适配上下文，不再需要传语言标识，简化使用（默认语言标识为 {@link AppContext#getLocale}）
  * 语种取值顺序：从当前用户或请求头中获取语言标识、其次设置的默认语言、其次系统语言
  *
- * <a href="https://www.cnblogs.com/fsjohnhuang/p/4094777.html">String.format详解</>
- * <a href="https://blog.csdn.net/jeamking/article/details/7226656">大括号以及单引号问题</>
+ * <a href="https://www.cnblogs.com/fsjohnhuang/p/4094777.html">String.format详解</a>
+ * <a href="https://blog.csdn.net/jeamking/article/details/7226656">大括号以及单引号问题</a>
  *
  * @author lym
  * @see MessageSourceAccessor Spring 的该类也有类似的功能

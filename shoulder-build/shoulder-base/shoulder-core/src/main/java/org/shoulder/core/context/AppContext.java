@@ -4,9 +4,9 @@ import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
-import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Locale;
@@ -28,7 +28,8 @@ public class AppContext {
      * 获取 用户标识
      */
     public static String getUserId() {
-        return String.valueOf(get(ShoulderContextKey.USER_ID));
+        Object userId = get(ShoulderContextKey.USER_ID);
+        return userId == null ? null : String.valueOf(userId);
     }
 
     /**
@@ -38,7 +39,7 @@ public class AppContext {
      */
     public static void setUserId(Object userId) {
         log.trace("setUserId ({})", userId);
-        set(ShoulderContextKey.USER_ID, String.valueOf(userId));
+        set(ShoulderContextKey.USER_ID, userId);
     }
 
 
@@ -169,7 +170,11 @@ public class AppContext {
             map = new HashMap<>();
             THREAD_LOCAL.set(map);
         }
-        map.put(key, value);
+        if (value == null) {
+            map.remove(key);
+        } else {
+            map.put(key, value);
+        }
     }
 
     /**

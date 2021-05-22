@@ -64,7 +64,8 @@ public class LockInfo {
     public LockInfo(String resource, Duration holdTime) {
         this.resource = resource;
         // appId:instanceId:threadId 不用于区分是否唯一，token 需要唯一
-        this.owner = AddressUtils.getIp() + ":" + AppInfo.appId() + ":" + Thread.currentThread().getId();
+        this.owner = AddressUtils.getIp() + ":" +
+                AppInfo.appId() + ":" + AppInfo.instanceId() + ":" + Thread.currentThread().getId();
         this.token = UUID.randomUUID().toString();
         this.holdTime = holdTime;
         // 先填充一下

@@ -21,6 +21,8 @@ public class DateConverter extends BaseDateConverter<Date> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    public static final DateConverter INSTANCE = new DateConverter();
+
     /**
      * 严格模式，默认关
      */

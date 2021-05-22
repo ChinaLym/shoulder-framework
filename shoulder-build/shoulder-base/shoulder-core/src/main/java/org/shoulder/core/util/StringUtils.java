@@ -20,37 +20,53 @@ import java.util.regex.Pattern;
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
-    private static final char SEPARATOR = '_';
-    private static final Charset CHARSET = AppInfo.charset();
+    public static final String CLASS_NAME_STRING = "java.lang.String";
+    public static final String CLASS_NAME_LONG = "java.lang.Long";
+    public static final String CLASS_NAME_INTEGER = "java.lang.Integer";
+    public static final String CLASS_NAME_SHORT = "java.lang.Short";
+    public static final String CLASS_NAME_DOUBLE = "java.lang.Double";
+    public static final String CLASS_NAME_FLOAT = "java.lang.Float";
+    public static final String CLASS_NAME_BOOLEAN = "java.lang.Boolean";
+    public static final String CLASS_NAME_SET = "java.lang.Set";
+    public static final String CLASS_NAME_LIST = "java.lang.List";
+    public static final String CLASS_NAME_COLLECTION = "java.lang.Collection";
+    public static final String CLASS_NAME_DATE = "java.util.Date";
+    public static final String CLASS_NAME_LOCAL_DATE_TIME = "java.time.LocalDateTime";
+    public static final String CLASS_NAME_LOCAL_DATE = "java.time.LocalDate";
+    public static final String CLASS_NAME_LOCAL_TIME = "java.time.LocalTime";
+
+    public static final char UNDERSCORE = '_';
+
+    public static final Charset CHARSET = AppInfo.charset();
     /**
      * xss脚本正则
      */
-    private static final List<Pattern> XSS_SCRIPT_PATTERNS = Arrays.asList(
-        // Avoid anything between script tags
-        Pattern.compile("<(no)?script>(.*?)</(no)?script>", Pattern.CASE_INSENSITIVE),
-        // Avoid anything in a src='...' type of expression
-        Pattern.compile("src[\\s]*=[\\s]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("src[\\s]*=[\\s]*\\\"(.*?)\\\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Remove any lonesome </script> tag
-        Pattern.compile("</script>", Pattern.CASE_INSENSITIVE),
-        // Remove any lonesome <script ...> tag
-        Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Avoid eval(...) expressions
+    public static final List<Pattern> XSS_SCRIPT_PATTERNS = Arrays.asList(
+            // Avoid anything between script tags
+            Pattern.compile("<(no)?script>(.*?)</(no)?script>", Pattern.CASE_INSENSITIVE),
+            // Avoid anything in a src='...' type of expression
+            Pattern.compile("src[\\s]*=[\\s]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            Pattern.compile("src[\\s]*=[\\s]*\\\"(.*?)\\\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            // Remove any lonesome </script> tag
+            Pattern.compile("</script>", Pattern.CASE_INSENSITIVE),
+            // Remove any lonesome <script ...> tag
+            Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            // Avoid eval(...) expressions
         Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
         // Avoid expression(...) expressions
         Pattern.compile("expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
         // Avoid javascript:vbscript:view-source:xxx expressions
-        Pattern.compile("(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE),
-        // Avoid onload= expressions
-        Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("<(\"[^\"]*\"|\'[^\']*\'|[^\'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
+            Pattern.compile("(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE),
+            // Avoid onload= expressions
+            Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            Pattern.compile("<(\"[^\"]*\"|\'[^\']*\'|[^\'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            Pattern.compile("(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            Pattern.compile("<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
     );
     /**
      * html 转义符
      */
-    private static final Map<String, String> HTML_ESCAPE_CHARACTER_MAP = new HashMap<>();
+    public static final Map<String, String> HTML_ESCAPE_CHARACTER_MAP = new HashMap<>();
 
     static {
         HTML_ESCAPE_CHARACTER_MAP.put("<", "&lt;");
@@ -362,7 +378,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         for (int i = 0; i < len; i++) {
             char c = param.charAt(i);
             if (Character.isUpperCase(c)) {
-                sb.append(SEPARATOR);
+                sb.append(UNDERSCORE);
                 sb.append(Character.toLowerCase(c));
             } else {
                 sb.append(c);
@@ -380,7 +396,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             return "";
         }
         StringBuilder sb = new StringBuilder(param);
-        Matcher mc = Pattern.compile(String.valueOf(SEPARATOR)).matcher(param);
+        Matcher mc = Pattern.compile(String.valueOf(UNDERSCORE)).matcher(param);
         int i = 0;
         while (mc.find()) {
             int position = mc.end() - (i++);

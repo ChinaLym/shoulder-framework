@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 加密相关配置
+ *
  * @author lym
  */
 @Data
@@ -22,9 +24,8 @@ public class CryptoProperties {
 
     /**
      * 对称加密相关配置
-     * todo 【扩展】本地存储加密元信息
      */
-    private LocalCryptoProperties local;
+    private LocalCryptoProperties local = new LocalCryptoProperties();
 
     /**
      * @deprecated 不支持也不推荐使用配置方式，推荐使用 @Bean 注入方式
@@ -33,10 +34,17 @@ public class CryptoProperties {
 
     @Data
     public static class LocalCryptoProperties {
+
         /**
-         * 加密元数据存储位置
+         * 加密元数据存储方式
+         */
+        private String repository;
+
+        /**
+         * 当以文件存储时，存储文件位置
          */
         private String metaInfoPath;
+
     }
 
     @Data

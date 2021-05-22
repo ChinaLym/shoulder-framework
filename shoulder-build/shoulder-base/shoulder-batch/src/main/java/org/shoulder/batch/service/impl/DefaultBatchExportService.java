@@ -5,7 +5,7 @@ import org.shoulder.batch.cache.BatchProgressCache;
 import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.BatchI18nEnum;
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.*;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
@@ -215,21 +215,21 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
     @Override
     public void exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
-                                  String taskId, List<BatchResultEnum> resultTypes) throws IOException {
+                                  String taskId, List<ProcessStatusEnum> resultTypes) throws IOException {
         exportRecordLocal.set(Boolean.TRUE);
         //认为单次批量操作一般有上限，如1000，这里直接单次全捞出来了
         export(outputStream, exportType, List.of(() -> {
             List<BatchRecordDetail> recordDetailList = findRecordDetailsByResults(taskId, resultTypes);
             return recordDetailList.stream()
-                .map(batchRecordDetail -> {
-                    @SuppressWarnings("unchecked")
-                    Map<String, String> dataMap = JsonUtils.toObject(
-                        batchRecordDetail.getSource(), Map.class, String.class, String.class);
+                    .map(batchRecordDetail -> {
+                        @SuppressWarnings("unchecked")
+                        Map<String, String> dataMap = JsonUtils.parseObject(
+                                batchRecordDetail.getSource(), Map.class, String.class, String.class);
 
-                    dataMap.put(BatchConstants.INDEX, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getIndex()));
-                    dataMap.put(BatchConstants.RESULT, translator.getMessage(batchRecordDetail.getFailReason(),
-                        BatchResultEnum.of(batchRecordDetail.getStatus()).getTip()));
-                    dataMap.put(BatchConstants.DETAIL, translator.getMessage(batchRecordDetail.getFailReason()));
+                        dataMap.put(BatchConstants.INDEX, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getIndex()));
+                        dataMap.put(BatchConstants.RESULT, translator.getMessage(batchRecordDetail.getFailReason(),
+                                ProcessStatusEnum.of(batchRecordDetail.getStatus()).getTip()));
+                        dataMap.put(BatchConstants.DETAIL, translator.getMessage(batchRecordDetail.getFailReason()));
                     return dataMap;
                 })
                 .collect(Collectors.toList());
@@ -337,7 +337,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
     }
 
     @Override
-    public List<BatchRecordDetail> findRecordDetailsByResults(String taskId, List<BatchResultEnum> results) {
+    public List<BatchRecordDetail> findRecordDetailsByResults(String taskId, List<ProcessStatusEnum> results) {
         if (CollectionUtils.isEmpty(results)) {
             return findAllRecordDetail(taskId);
         }

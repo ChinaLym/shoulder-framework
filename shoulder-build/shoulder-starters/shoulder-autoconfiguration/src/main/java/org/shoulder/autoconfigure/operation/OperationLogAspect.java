@@ -14,14 +14,15 @@ import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.*;
-import org.shoulder.log.operation.dto.OpLogParam;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
+import org.shoulder.log.operation.model.OpLogParam;
+import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.expression.EvaluationContext;
@@ -53,6 +54,7 @@ import java.util.Objects;
     OperationLogParamConverterAutoConfiguration.class
 })
 @EnableConfigurationProperties(OperationLogProperties.class)
+@ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLogAspect {
 
     private final static Logger log = LoggerFactory.getLogger(OperationLogAspect.class);
@@ -60,7 +62,7 @@ public class OperationLogAspect {
     /**
      * 保存操作日志上次的上下文
      */
-    private static ThreadLocal<OpLogContext> lastOpLogContext = new ThreadLocal<>();
+    private static final ThreadLocal<OpLogContext> lastOpLogContext = new ThreadLocal<>();
 
     @Autowired
     private OperationLogProperties operationLogProperties;
@@ -70,7 +72,7 @@ public class OperationLogAspect {
     /**
      * 用于SpEL表达式解析.
      */
-    private SpelExpressionParser parser = new SpelExpressionParser();
+    private final SpelExpressionParser parser = new SpelExpressionParser();
 
     // ********************************* annotation AOP *********************************************
 
@@ -116,14 +118,17 @@ public class OperationLogAspect {
     public void doAfterThrowing(Throwable ex) {
         if (OpLogContextHolder.isEnableAutoLog() && OpLogContextHolder.isLogWhenThrow()) {
             OpLogContextHolder.getLog()
-                .setEndTime(Instant.now())
-                .setResultFail();
+                    .setEndTime(Instant.now())
+                    .setResultFail();
+            String[] errorReasons = ex.getMessage().split("\\r");
+            String originReason = errorReasons[errorReasons.length - 1];
+            // todo 日志常量固定
+            OpLogContextHolder.getLog()
+                    .setExtField("errorMsg", originReason)
+                    .setExtField("errorType", ex.getClass().getName());
+
             if (ex instanceof ErrorCode) {
-                ErrorCode errorCode = ((ErrorCode) ex);
-                OpLogContextHolder.getLog()
-                    .setErrorCode(errorCode.getCode())
-                    .setDetail(errorCode.getMessage())
-                ;
+                OpLogContextHolder.getLog().setErrorCode(((ErrorCode) ex).getCode());
             }
             OpLogContextHolder.log();
         }

@@ -7,11 +7,11 @@ import org.shoulder.core.lock.ServerLock;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -149,7 +149,7 @@ public class JdbcLock extends AbstractDistributeLock implements ServerLock {
             // DuplicateKeyException | DeadlockLoserDataAccessException
             // 已经存在：其他线程已经获取到锁
         }
-        log.debug("try lock {}! {}", locked ? "SUCCESS" : "FAIL", lockInfo);
+        log.trace("try lock {}! {}", locked ? "SUCCESS" : "FAIL", lockInfo);
         return locked;
     }
 
@@ -178,11 +178,11 @@ public class JdbcLock extends AbstractDistributeLock implements ServerLock {
         public LockInfo mapRow(@Nonnull ResultSet rs, int rowNum) throws SQLException {
             // owner, token, version, lock_time, release_time
             LockInfo entity = new LockInfo();
-            entity.setOwner(rs.getString(0));
-            entity.setToken(rs.getString(1));
-            entity.setVersion(rs.getInt(2));
-            entity.setLockTime(rs.getTimestamp(3).toLocalDateTime());
-            entity.setReleaseTime(rs.getTimestamp(4).toLocalDateTime());
+            entity.setOwner(rs.getString(1));
+            entity.setToken(rs.getString(2));
+            entity.setVersion(rs.getInt(3));
+            entity.setLockTime(rs.getTimestamp(4).toLocalDateTime());
+            entity.setReleaseTime(rs.getTimestamp(5).toLocalDateTime());
             return entity;
         }
     }

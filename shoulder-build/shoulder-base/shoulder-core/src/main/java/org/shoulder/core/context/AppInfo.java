@@ -1,8 +1,10 @@
 package org.shoulder.core.context;
 
+import org.shoulder.core.guid.InstanceIdProvider;
 import org.shoulder.core.i18.LocaleInfo;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.util.Assert;
 
@@ -12,7 +14,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * 应用信息 todo ip/domain 运行模式，如 docker / jar / war / side-car
+ * 应用信息
  * 需要保证该类的赋值实际要足够早，shoulder 会在应用启动时初始化该类配置
  *
  * @author lym
@@ -27,6 +29,13 @@ public class AppInfo {
      * 应用标识 / 服务名称 https://bbs.huaweicloud.com/blogs/115110
      */
     private static String appId = "";
+
+    /**
+     * 应用标识 / 服务名称 https://bbs.huaweicloud.com/blogs/115110
+     */
+    private static long instanceId = -1;
+
+    //private static String runningMode = "JAR"; ip/domain
 
     /**
      * 应用错误码前缀
@@ -66,6 +75,13 @@ public class AppInfo {
 
     public static String appId() {
         return appId;
+    }
+
+    public static long instanceId() {
+        if (instanceId == -1) {
+            instanceId = ContextUtils.getBean(InstanceIdProvider.class).getCurrentInstanceId();
+        }
+        return instanceId;
     }
 
     public static String errorCodePrefix() {
@@ -155,4 +171,29 @@ public class AppInfo {
         AppInfo.timeZone = timezone;
         log.info("initTimeZone: " + timezone);
     }
+
+    /**
+     * 运行方式 todo 【增强】运行模式 jar / war
+     */
+    public enum RunMode {
+        /**
+         * spring-boot jar 包
+         */
+        JAR,
+        /**
+         * 打成 war 包放到容器中跑
+         */
+        WAR,
+        /**
+         * docker 镜像
+         */
+        DOCKER,
+        /*
+         * 使用了边车模式的框架
+         */
+        //@Deprecated
+        //DOCKER_SIDE_CAR,
+        ;
+    }
+
 }

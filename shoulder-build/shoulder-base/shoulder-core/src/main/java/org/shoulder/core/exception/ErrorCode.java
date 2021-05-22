@@ -1,7 +1,6 @@
 package org.shoulder.core.exception;
 
 import org.shoulder.core.i18.Translatable;
-import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
@@ -16,7 +15,8 @@ import javax.annotation.Nullable;
  * <p>
  * 小提示：业务中可以按模块或按业务定义枚举 保存错误码、错误提示信息
  * 详细的错误码规范见 <a href="https://spec.itlym.cn/specs/base/errorCode.html">错误码规范<a/>
- * todo 考虑前缀区分来源，调用方出错（如参数）/ 系统内部错误（如取缓存时反序列失败） / 第三方服务失败（如调用其他服务，结果其他服务挂了，返回500）
+ * 也可考虑前缀区分来源，调用方出错（如参数）/ 系统内部错误（如取缓存时反序列失败） / 第三方服务失败（如调用其他服务，结果其他服务挂了，返回500）
+ * 当且shoulder 采用的以模块code区分，不够明显，不统一
  * <p>
  * 区分业务失败、业务状态未知
  *
@@ -56,7 +56,7 @@ public interface ErrorCode extends Translatable {
 
     /**
      * 获取完整错误码
-     * long -> String
+     * long → String
      * <code>String.format("0x%08x", code)<code/>
      * 或
      * <code>
@@ -160,17 +160,6 @@ public interface ErrorCode extends Translatable {
 
 
     // --------------------------- 【语法糖方法】 -----------------------------
-
-    /**
-     * 生成详情
-     * 仅在作为接口返回值、记录本地日志信息时使用
-     *
-     * @return 填充参数后的 msg
-     */
-    // todo 废弃
-    default String generateDetail() {
-        return ExceptionUtil.generateExceptionMessage(getMessage(), getArgs());
-    }
 
     /**
      * 快速转为异常

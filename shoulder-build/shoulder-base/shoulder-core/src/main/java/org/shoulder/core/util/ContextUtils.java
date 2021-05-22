@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 上下文工具类，方便获取bean
+ * Spring 上下文工具类，方便获取bean
  * 提供：从 Spring 环境中获取 Bean、配置信息、上下文路径、BeanFactory、应用上下文
  *
  * @author lym
@@ -37,7 +37,12 @@ public class ContextUtils {
      */
     private static ApplicationContext applicationContext;
 
-    private static final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+    /**
+     * resource loader
+     */
+    private static final ResourcePatternResolver RESOURCE_PATTERN_RESOLVER = new PathMatchingResourcePatternResolver();
+
+    private static boolean contextHasRefreshed = false;
 
     /**
      * 根据 bean 名称获取对象
@@ -118,7 +123,7 @@ public class ContextUtils {
 
     @Nonnull
     public static Resource getResource(String location) {
-        return applicationContext != null ? applicationContext.getResource(location) : resourcePatternResolver.getResource(location);
+        return applicationContext != null ? applicationContext.getResource(location) : RESOURCE_PATTERN_RESOLVER.getResource(location);
     }
 
     @Nullable
@@ -162,6 +167,14 @@ public class ContextUtils {
     @Nullable
     public static ApplicationContext getApplicationContext() throws IllegalStateException {
         return applicationContext;
+    }
+
+    public static void setContextRefreshed(boolean refreshed) {
+        ContextUtils.contextHasRefreshed = true;
+    }
+
+    public static boolean hasContextRefreshed() {
+        return ContextUtils.contextHasRefreshed;
     }
 
 }

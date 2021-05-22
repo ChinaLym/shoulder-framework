@@ -2,8 +2,10 @@ package org.shoulder.autoconfigure.operation;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.convert.DurationUnit;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 /**
  * 操作日志相关配置
@@ -29,6 +31,18 @@ public class OperationLogProperties {
      */
     private Integer interceptorOrder = 0;
 
+    /**
+     * 是否解析 UA，默认实现需要 hutool-http
+     *
+     * @see org.shoulder.log.operation.logger.intercept.UserAgentParserInterceptor
+     */
+    private Boolean resolveUserAgent = true;
+
+    /**
+     * 是否开启
+     */
+    private Boolean enable = true;
+
 
     @Data
     public static class LoggerProperties {
@@ -39,7 +53,8 @@ public class OperationLogProperties {
         private PersistenceType type = PersistenceType.LOGGER;
 
         /**
-         * 是否以异步线程记录 操作日志.
+         * 是否以异步线程记录 操作日志
+         * 默认开启
          */
         private boolean async = true;
 
@@ -54,7 +69,7 @@ public class OperationLogProperties {
         private String threadName = "shoulder-opLogger";
 
         /**
-         * 是否启用缓冲池。优化频繁记录单条，如：需将操作日志直接存数据库，每 0.2s 插入一次数据库 -> 每隔一段时间批量插入数据库
+         * 是否启用缓冲池。优化频繁记录单条，如：需将操作日志存数据库/发送至远程可使用，开启后每 0.2s 插入一次数据库 -> 每隔一段时间批量插入数据库
          * 默认 false，开启后可能无法查看到实时操作日志
          */
         private boolean buffered = false;
@@ -62,6 +77,7 @@ public class OperationLogProperties {
         /**
          * buffer 日志记录器，每隔多少秒刷一次
          */
+        @DurationUnit(ChronoUnit.SECONDS)
         private Duration flushInterval = Duration.ofSeconds(10);
 
         /**
@@ -95,6 +111,8 @@ public class OperationLogProperties {
          */
         JDBC,
 
+        // ---------------------------------- 不在默认实现 ----------------------------------
+
         /**
          * 保存到消息队列，RabbitMQ
          */
@@ -109,6 +127,11 @@ public class OperationLogProperties {
          * 调用日志服务接口
          */
         HTTP,
+
+        /**
+         * 调用日志服务接口
+         */
+        CUSTOMER,
         ;
 
     }

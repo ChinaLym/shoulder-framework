@@ -1,10 +1,11 @@
 package org.shoulder.core.converter;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
 import javax.annotation.Nonnull;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * 枚举转换工厂
@@ -13,15 +14,34 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-public class EnumConverterFactory implements ConverterFactory<String, Enum> {
+public class EnumConverterFactory implements ConverterFactory<String, Enum<? extends Enum<?>>> {
 
-    @Autowired
-    private EnumMissMatchHandler missMatchHandler = new DefaultEnumMissMatchHandler();
+    private final EnumMissMatchHandler missMatchHandler;
+
+    private static final ConcurrentMap<Class<? extends Enum<?>>, Converter<String, ? extends Enum<?>>>
+            CONVERTER_CACHE = new ConcurrentHashMap<>();
+
+    public EnumConverterFactory(EnumMissMatchHandler missMatchHandler) {
+        this.missMatchHandler = missMatchHandler;
+    }
+
+    public static EnumConverterFactory getDefaultInstance() {
+        return EnumConverterFactory.EnumConverterFactoryHolder.INSTANCE;
+    }
+
+    static class EnumConverterFactoryHolder {
+        private static final EnumConverterFactory INSTANCE =
+                new EnumConverterFactory(DefaultEnumMissMatchHandler.getInstance());
+    }
 
     @SuppressWarnings("unchecked")
     @Override
     @Nonnull
-    public <T extends Enum> Converter<String, T> getConverter(@Nonnull Class<T> targetType) {
-        return (Converter<String, T>) new EnumConverter(targetType, missMatchHandler);
+    public <T extends Enum<?>> Converter<String, T> getConverter(@Nonnull Class<T> targetType) {
+        return (Converter<String, T>) CONVERTER_CACHE.computeIfAbsent(targetType,
+                t -> new EnumConverter(t, missMatchHandler));
     }
+
+
+
 }

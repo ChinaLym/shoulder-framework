@@ -1,8 +1,10 @@
 package org.shoulder.core.dto.response;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiModel;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,43 +23,42 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
     /**
      * 当前页
      */
-    private int pageNum;
+    private Integer pageNum;
 
     /**
      * 每页的数量
      */
-    private int pageSize;
+    private Integer pageSize;
 
     /**
      * 当前页的数量
      */
-    private int size;
+    private Integer size;
 
     /**
      * 总页数
      */
-    private int totalPageNum;
+    private Integer totalPageNum;
 
     /**
      * 是否为第一页
      */
-    private boolean firstPage = false;
+    private Boolean firstPage = false;
 
     /**
      * 是否为最后一页
      */
-    private boolean lastPage = false;
+    private Boolean lastPage = false;
 
     /**
      * 有前一页
      */
-    private boolean hasPreviousPage = false;
+    private Boolean hasPreviousPage = false;
 
     /**
      * 有后一页
      */
-    private boolean hasNextPage = false;
-
+    private Boolean hasNextPage = false;
 
     public PageResult() {
     }
@@ -73,74 +74,74 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
         return pageResult;
     }
 
-    public int getPageNum() {
+    public Integer getPageNum() {
         return pageNum;
     }
 
-    public void setPageNum(int pageNum) {
+    public void setPageNum(Integer pageNum) {
         this.pageNum = pageNum;
     }
 
-    public int getPageSize() {
+    public Integer getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
+    public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
 
-    public int getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
-    public int getTotalPageNum() {
+    public Integer getTotalPageNum() {
         return totalPageNum;
     }
 
-    public void setTotalPageNum(int totalPageNum) {
+    public void setTotalPageNum(Integer totalPageNum) {
         this.totalPageNum = totalPageNum;
     }
 
-    public boolean isFirstPage() {
+    public Boolean getFirstPage() {
         return firstPage;
     }
 
-    public void setFirstPage(boolean firstPage) {
+    public void setFirstPage(Boolean firstPage) {
         this.firstPage = firstPage;
     }
 
-    public boolean isLastPage() {
+    public Boolean getLastPage() {
         return lastPage;
     }
 
-    public void setLastPage(boolean lastPage) {
+    public void setLastPage(Boolean lastPage) {
         this.lastPage = lastPage;
     }
 
-    public boolean isHasPreviousPage() {
+    public Boolean getHasPreviousPage() {
         return hasPreviousPage;
     }
 
-    public void setHasPreviousPage(boolean hasPreviousPage) {
+    public void setHasPreviousPage(Boolean hasPreviousPage) {
         this.hasPreviousPage = hasPreviousPage;
     }
 
-    public boolean isHasNextPage() {
+    public Boolean getHasNextPage() {
         return hasNextPage;
     }
 
-    public void setHasNextPage(boolean hasNextPage) {
+    public void setHasNextPage(Boolean hasNextPage) {
         this.hasNextPage = hasNextPage;
     }
-
 
     public static PageResultBuilder builder() {
         return new PageResultBuilder();
     }
+
 
     public static <T> PageResult<T> build(List<T> list, int pageNum, int pageSize, long totalCount) {
         PageResult<T> result = new PageResult<>();
@@ -156,96 +157,9 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
         return result;
     }
 
-    public static final class PageResultBuilder {
-        boolean firstPage = false;
-        private int pageNum;
-        private int pageSize;
-        private int size;
-        private int totalPageNum;
-        //@Schema(name = "数据总数")
-        private int total = 0;
-        private boolean lastPage = false;
-        private boolean hasPreviousPage = false;
-        //@Schema(name = "列表数据")
-        private List list;
-        private boolean hasNextPage = false;
-
-        private PageResultBuilder() {
-        }
-
-        public static PageResultBuilder create() {
-            return new PageResultBuilder();
-        }
-
-        public PageResultBuilder pageNum(int pageNum) {
-            this.pageNum = pageNum;
-            return this;
-        }
-
-        public PageResultBuilder pageSize(int pageSize) {
-            this.pageSize = pageSize;
-            return this;
-        }
-
-        public PageResultBuilder size(int size) {
-            this.size = size;
-            return this;
-        }
-
-        public PageResultBuilder totalPageNum(int totalPageNum) {
-            this.totalPageNum = totalPageNum;
-            return this;
-        }
-
-        public PageResultBuilder total(int total) {
-            this.total = total;
-            return this;
-        }
-
-        public PageResultBuilder firstPage(boolean firstPage) {
-            this.firstPage = firstPage;
-            return this;
-        }
-
-        public PageResultBuilder lastPage(boolean lastPage) {
-            this.lastPage = lastPage;
-            return this;
-        }
-
-        public PageResultBuilder hasPreviousPage(boolean hasPreviousPage) {
-            this.hasPreviousPage = hasPreviousPage;
-            return this;
-        }
-
-        public PageResultBuilder list(List list) {
-            this.list = list;
-            return this;
-        }
-
-        public PageResultBuilder hasNextPage(boolean hasNextPage) {
-            this.hasNextPage = hasNextPage;
-            return this;
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T> PageResult<T> build() {
-            PageResult<T> pageResult = new PageResult<>();
-            pageResult.setPageNum(pageNum);
-            pageResult.setPageSize(pageSize);
-            pageResult.setSize(size);
-            pageResult.setTotalPageNum(totalPageNum);
-            pageResult.setTotal(total);
-            pageResult.setFirstPage(firstPage);
-            pageResult.setLastPage(lastPage);
-            pageResult.setHasPreviousPage(hasPreviousPage);
-            pageResult.setList(list);
-            pageResult.setHasNextPage(hasNextPage);
-            return pageResult;
-        }
-    }
 
     public static class PageInfoConverter {
-        public static <T> PageResult<T> toResult(PageInfo<T> pageInfo) {
+        public static <T> PageResult<T> toResult(@Nonnull PageInfo<T> pageInfo) {
             if (pageInfo == null) {
                 return null;
             }
@@ -270,4 +184,117 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
         }
     }
 
+    public static class IPageConverter {
+        public static <T> PageResult<T> toResult(@Nonnull IPage<T> page) {
+            if (page == null) {
+                return null;
+            }
+
+            PageResult<T> pageResult = new PageResult<>();
+
+            pageResult.setFirstPage(page.getCurrent() == 1L);
+            pageResult.setLastPage(page.getCurrent() == page.getTotal());
+            pageResult.setTotalPageNum((int) page.getPages());
+            pageResult.setTotal(page.getTotal());
+            List<T> list = page.getRecords();
+            if (list != null) {
+                pageResult.setList(new ArrayList<>(list));
+            }
+            pageResult.setPageNum((int) page.getCurrent());
+            pageResult.setPageSize((int) page.getPages());
+            pageResult.setSize((int) page.getSize());
+            pageResult.setHasPreviousPage(!pageResult.getFirstPage());
+            pageResult.setHasNextPage(!pageResult.getLastPage());
+
+            return pageResult;
+        }
+    }
+
+    public static final class PageResultBuilder {
+        //@Schema(name = "数据总数")
+        private Long total = 0L;
+        //@Schema(name = "列表数据")
+        private List list;
+        private Integer pageNum;
+        private Integer pageSize;
+        private Integer size;
+        private Integer totalPageNum;
+        private Boolean firstPage = false;
+        private Boolean lastPage = false;
+        private Boolean hasPreviousPage = false;
+        private Boolean hasNextPage = false;
+
+        private PageResultBuilder() {
+        }
+
+        public static PageResultBuilder aPageResult() {
+            return new PageResultBuilder();
+        }
+
+        public PageResultBuilder total(Long total) {
+            this.total = total;
+            return this;
+        }
+
+        public PageResultBuilder list(List list) {
+            this.list = list;
+            return this;
+        }
+
+        public PageResultBuilder pageNum(Integer pageNum) {
+            this.pageNum = pageNum;
+            return this;
+        }
+
+        public PageResultBuilder pageSize(Integer pageSize) {
+            this.pageSize = pageSize;
+            return this;
+        }
+
+        public PageResultBuilder size(Integer size) {
+            this.size = size;
+            return this;
+        }
+
+        public PageResultBuilder totalPageNum(Integer totalPageNum) {
+            this.totalPageNum = totalPageNum;
+            return this;
+        }
+
+        public PageResultBuilder firstPage(Boolean firstPage) {
+            this.firstPage = firstPage;
+            return this;
+        }
+
+        public PageResultBuilder lastPage(Boolean lastPage) {
+            this.lastPage = lastPage;
+            return this;
+        }
+
+        public PageResultBuilder hasPreviousPage(Boolean hasPreviousPage) {
+            this.hasPreviousPage = hasPreviousPage;
+            return this;
+        }
+
+        public PageResultBuilder hasNextPage(Boolean hasNextPage) {
+            this.hasNextPage = hasNextPage;
+            return this;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> PageResult<T> build() {
+            PageResult<T> pageResult = new PageResult<>();
+            pageResult.setPageNum(pageNum);
+            pageResult.setPageSize(pageSize);
+            pageResult.setSize(size);
+            pageResult.setTotalPageNum(totalPageNum);
+            pageResult.setTotal(total);
+            pageResult.setFirstPage(firstPage);
+            pageResult.setLastPage(lastPage);
+            pageResult.setHasPreviousPage(hasPreviousPage);
+            pageResult.setList(list);
+            pageResult.setHasNextPage(hasNextPage);
+            return pageResult;
+        }
+    }
 }

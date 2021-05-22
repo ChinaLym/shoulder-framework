@@ -21,23 +21,23 @@ import java.util.List;
 public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
     /**
-     * todo 使用 resource Loader 加载 ddl
+     * todo 【SQL】使用 resource Loader 加载 ddl
      */
     private static final String CREATE_STATEMENT =
-            "create table crypt_info(" +
+            "create table crypto_info(" +
                     "    app_id        VARCHAR(32) NOT NULL COMMENT '应用标识'," +
                     "    header        VARCHAR(32) NOT NULL default '' COMMENT '密文前缀标识，算法标识'," +
                     "    data_key      VARCHAR(64) NOT NULL COMMENT '数据密钥（密文）'," +
                     "    root_key_part VARCHAR(64) COMMENT '根密钥部件'," +
                     "    vector        VARCHAR(64) COMMENT '初始偏移向量'," +
                     "    create_time   DATETIME             default now() COMMENT '创建时间'," +
-                    "    PRIMARY KEY pk_crypt_info (component_id, header)" +
+                    "    PRIMARY KEY pk_crypto_info (app_id, header)" +
                     ") ENGINE = INNODB" +
                     "  DEFAULT CHARSET = UTF8MB4 COMMENT = '加密元信息';";
 
     private static final String FIELDS = "app_id, header, data_key, root_key_part, vector, create_time";
 
-    private static final String TABLE_NAME = "crypt_info";
+    private static final String TABLE_NAME = "crypto_info";
 
     protected static final String SELECT_STATEMENT = "SELECT " + FIELDS + " FROM " + TABLE_NAME;
 
@@ -137,14 +137,23 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         @Override
         public LocalCryptoMetaInfo mapRow(@Nonnull ResultSet rs, int rowNum) throws SQLException {
             LocalCryptoMetaInfo entity = new LocalCryptoMetaInfo();
-            entity.setAppId(rs.getString(0));
-            entity.setHeader(rs.getString(1));
-            entity.setDataKey(rs.getString(2));
-            entity.setRootKeyPart(rs.getString(3));
-            entity.setVector(rs.getString(4));
-            entity.setCreateTime(rs.getDate(5));
+            // 第一个下标为 1
+            entity.setAppId(rs.getString(1));
+            entity.setHeader(rs.getString(2));
+            entity.setDataKey(rs.getString(3));
+            entity.setRootKeyPart(rs.getString(4));
+            entity.setVector(rs.getString(5));
+            entity.setCreateTime(rs.getDate(6));
             return entity;
         }
+    }
+
+    /**
+     * 支持集群
+     */
+    @Override
+    public boolean supportCluster() {
+        return true;
     }
 
 }

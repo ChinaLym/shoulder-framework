@@ -15,6 +15,7 @@ import javax.sql.DataSource;
  *
  * @see JdbcClientDetailsService
  */
+@Deprecated
 public class NameableJdbcClientDetailsService extends JdbcClientDetailsService implements ClientDetailsService,
     ClientRegistrationService {
 

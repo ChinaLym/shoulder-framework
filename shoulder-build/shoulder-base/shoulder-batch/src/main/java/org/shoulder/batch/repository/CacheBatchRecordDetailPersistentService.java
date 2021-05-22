@@ -1,7 +1,7 @@
 package org.shoulder.batch.repository;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.springframework.cache.Cache;
 
@@ -42,11 +42,11 @@ public class CacheBatchRecordDetailPersistentService implements BatchRecordDetai
      * @return 所有的批量处理记录
      */
     @Override
-    public List<BatchRecordDetail> findAllByResult(String recordId, List<BatchResultEnum> resultList) {
+    public List<BatchRecordDetail> findAllByResult(String recordId, List<ProcessStatusEnum> resultList) {
 
         return CollectionUtils.emptyIfNull(findAllByResult(recordId)).stream()
-            .filter(detail -> resultList.contains(BatchResultEnum.of(detail.getStatus())))
-            .collect(Collectors.toList());
+                .filter(detail -> resultList.contains(ProcessStatusEnum.of(detail.getStatus())))
+                .collect(Collectors.toList());
     }
 
     @Override

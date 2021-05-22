@@ -5,11 +5,14 @@ import org.shoulder.core.util.ContextUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 import javax.annotation.Nonnull;
 
@@ -19,7 +22,7 @@ import javax.annotation.Nonnull;
  * @author lym
  */
 @Configuration(proxyBeanMethods = false)
-public class ContextUtilsAutoConfiguration implements BeanFactoryAware, BeanFactoryPostProcessor, ApplicationContextAware {
+public class ContextUtilsAutoConfiguration implements BeanFactoryAware, BeanFactoryPostProcessor, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, DisposableBean {
 
     /**
      * BeanFactoryAware 获取时机可更早，但需要类型强转，在极端情况下可能存在异常
@@ -54,4 +57,13 @@ public class ContextUtilsAutoConfiguration implements BeanFactoryAware, BeanFact
         ContextUtils.setApplicationContext(applicationContext);
     }
 
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        ContextUtils.setContextRefreshed(true);
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        ContextUtils.setContextRefreshed(false);
+    }
 }

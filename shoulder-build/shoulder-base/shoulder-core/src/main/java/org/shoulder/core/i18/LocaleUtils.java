@@ -29,48 +29,11 @@ public class LocaleUtils extends org.apache.commons.lang3.LocaleUtils {
         AVAILABLE_TIME_ZONES = Arrays.stream(TimeZone.getAvailableIDs()).collect(Collectors.toUnmodifiableSet());
     }
 
-    @Deprecated
-    private static final ThreadLocal<LocaleInfo> contextLocaleInfoHolder = new ThreadLocal<>();
-
     /**
      * properties 文件中 key 不能包含 '-'/'#'/'$'，用 '_' 来分隔，这里用于还原
      */
     public static final String LANGUAGE_COUNTRY_SPLIT = "_";
 
-
-    // ------------------------- TODO delete ----------------------
-
-    public static LocaleInfo getContext() {
-        LocaleInfo contextLocaleInfo = contextLocaleInfoHolder.get();
-
-        return contextLocaleInfo == null ? LocaleInfo.getDefault() : contextLocaleInfo;
-    }
-
-    public static LocaleInfo setContext(Locale locale) {
-        LocaleInfo old = getContext();
-        contextLocaleInfoHolder.set(buildLocaleInfo(locale, null, LocaleInfo.getDefault().getTimeZone()));
-        return old;
-    }
-
-    public static LocaleInfo setContext(Locale locale, Charset charset) {
-        LocaleInfo old = getContext();
-        contextLocaleInfoHolder.set(buildLocaleInfo(locale, charset, LocaleInfo.getDefault().getTimeZone()));
-        return old;
-    }
-
-    public static LocaleInfo setContext(LocaleInfo localeInfo) {
-        if (localeInfo == null) {
-            return setContext(null, null);
-        } else {
-            LocaleInfo old = getContext();
-            contextLocaleInfoHolder.set(localeInfo);
-            return old;
-        }
-    }
-
-    public static void resetContext() {
-        contextLocaleInfoHolder.set(null);
-    }
 
     // ================================ Methods ==============================================
 
@@ -83,7 +46,7 @@ public class LocaleUtils extends org.apache.commons.lang3.LocaleUtils {
      * @param timeZone null 则默认值
      * @return LocaleInfo
      */
-    public static LocaleInfo buildLocaleInfo(@Nullable Locale locale, @Nullable Charset charset, @Nullable TimeZone timeZone) {
+    public static LocaleInfo buildLocaleInfo(@Nullable Locale locale, @Nullable TimeZone timeZone, @Nullable Charset charset) {
         if (locale == null) {
             locale = LocaleInfo.getDefault().getLocale();
         }
@@ -93,7 +56,7 @@ public class LocaleUtils extends org.apache.commons.lang3.LocaleUtils {
         if (timeZone == null) {
             timeZone = LocaleInfo.getDefault().getTimeZone();
         }
-        return new LocaleInfo(locale, charset, timeZone);
+        return new LocaleInfo(locale, timeZone, charset);
     }
 
     public static boolean isSupportedLocale(Locale locale) {

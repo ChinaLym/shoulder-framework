@@ -1,6 +1,8 @@
 package org.shoulder.core.guid;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.shoulder.core.guid.impl.ShoulderGuidGenerator;
+import org.shoulder.core.guid.impl.SnowFlakeGenerator;
 import org.shoulder.core.util.JsonUtils;
 
 import java.time.Duration;
@@ -318,7 +320,7 @@ public class ShoulderGuidTest {
     @Test
     public void decode() {
         long timeEpoch = System.currentTimeMillis();
-        long instanceIdBits = 10;
+        int instanceIdBits = 10;
         long instanceId = ThreadLocalRandom.current().nextInt(1 << instanceIdBits);
         LongGuidGenerator generator = new ShoulderGuidGenerator(
             41, timeEpoch, instanceIdBits, instanceId, 12, 1);

@@ -1,18 +1,39 @@
 package org.shoulder.data.mybatis.config.handler;
 
+import cn.hutool.core.util.ReflectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.reflection.MetaObject;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.StringUtils;
+import org.shoulder.data.constant.DataBaseConsts;
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
+import org.shoulder.data.uid.EntityIdGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
+import javax.annotation.Nonnull;
+import java.time.LocalDateTime;
 
 /**
- * 自动填充 创建时间、更新时间等
+ * 当基础字段为空时（创建时间、更新时间等）自动填充
+ * <p>
+ * 1. insert 时填充 id, createTime, updateTime, createdBy, updatedBy
+ * 2. update 时填充 updateTime, updatedBy
+ * todo createTime update 时区问题：数据库采取的是 0 时区，则 NOW() 返回值和 java 的 LocalDateTime.now() 是不一样的
+ * <p>
+ * 值来源：
+ * id： {@link EntityIdGenerator#next(String, String)}
+ * createTime updateTime：{@link LocalDateTime#now}
+ * createdBy updatedBy：{@link AppContext#getUserId}
  *
  * @author lym
  */
 public class ModelMetaObjectHandler implements MetaObjectHandler {
+
+    @Autowired(required = false)
+    private EntityIdGenerator entityIdGenerator;
 
     /**
      * 插入时添加创建时间
@@ -21,19 +42,8 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void insertFill(MetaObject metaObject) {
-        Date now = new Date();
-        Object createTime = this.getFieldValByName("createTime", metaObject);
-        if (createTime == null) {
-            this.setFieldValByName("createTime", now, metaObject);
-        }
-        String currentUserIdStr = AppContext.getUserId();
-        if (StringUtils.isNotEmpty(currentUserIdStr)) {
-            Long currentUserId = Long.valueOf(currentUserIdStr);
-            Object creator = this.getFieldValByName("creator", metaObject);
-            if (creator == null) {
-                this.setFieldValByName("creator", currentUserId, metaObject);
-            }
-        }
+        fillDateAndModifier(metaObject, DataBaseConsts.FIELD_CREATE_TIME, DataBaseConsts.FIELD_CREATOR);
+        fillId(metaObject);
     }
 
     /**
@@ -43,18 +53,61 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void updateFill(MetaObject metaObject) {
-        Date now = new Date();
-        Object updateTime = this.getFieldValByName("updateTime", metaObject);
-        if (updateTime == null) {
-            this.setFieldValByName("updateTime", now, metaObject);
+        fillDateAndModifier(metaObject, DataBaseConsts.FIELD_UPDATE_TIME, DataBaseConsts.FIELD_MODIFIER);
+    }
+
+    /**
+     * 创建者，创建时间
+     * 修改者，修改时间
+     */
+    private void fillDateAndModifier(MetaObject metaObject, String timeField, String userField) {
+        Object timeFieldValue = this.getFieldValByName(timeField, metaObject);
+        if (timeFieldValue == null) {
+            this.setFieldValByName(timeField, LocalDateTime.now(), metaObject);
         }
         String currentUserIdStr = AppContext.getUserId();
         if (StringUtils.isNotEmpty(currentUserIdStr)) {
             Long currentUserId = Long.valueOf(currentUserIdStr);
-            Object modifer = this.getFieldValByName("modifer", metaObject);
-            if (modifer == null) {
-                this.setFieldValByName("modifer", currentUserId, metaObject);
+            Object modifier = this.getFieldValByName(userField, metaObject);
+            if (modifier == null) {
+                this.setFieldValByName(userField, currentUserId, metaObject);
             }
         }
     }
+
+    /**
+     * 填充 id 值
+     *
+     * @param metaObject obj
+     */
+    private void fillId(MetaObject metaObject) {
+        String idFieldName = getIdFieldName(metaObject);
+        Object oldId = getFieldValByName(idFieldName, metaObject);
+        if (oldId != null) {
+            // id 有值，不管了
+            return;
+        }
+        // 否则新建一个 set 上
+        Class<?> idType = ReflectUtil.getField(metaObject.getOriginalObject().getClass(), idFieldName).getType();
+        Object newId = entityIdGenerator.genId(metaObject, idType);
+        setFieldValByName(idFieldName, newId, metaObject);
+    }
+
+    @Nonnull
+    protected String getIdFieldName(MetaObject metaObject) {
+        // 有 fieldName 为 id 的字段
+        if (metaObject.getOriginalObject() instanceof BaseEntity || metaObject.hasGetter(DataBaseConsts.FIELD_ID)) {
+            return "id";
+        }
+
+        // 3. 实体没有继承 Entity 和 BaseEntity，且 主键名为其他字段
+        TableInfo tableInfo = metaObject.hasGetter(Constants.MP_OPTLOCK_ET_ORIGINAL) ?
+                TableInfoHelper.getTableInfo(metaObject.getValue(Constants.MP_OPTLOCK_ET_ORIGINAL).getClass())
+                : TableInfoHelper.getTableInfo(metaObject.getOriginalObject().getClass());
+        if (tableInfo == null || tableInfo.getKeyProperty() == null) {
+            throw new IllegalArgumentException("tableInfo == null. obj=" + metaObject);
+        }
+        return tableInfo.getKeyProperty();
+    }
+
 }

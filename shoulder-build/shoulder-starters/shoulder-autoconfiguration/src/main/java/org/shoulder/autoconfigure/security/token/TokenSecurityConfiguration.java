@@ -120,6 +120,8 @@ public class TokenSecurityConfiguration extends WebSecurityConfigurerAdapter {
             // 配置校验规则（哪些请求要过滤）
             .authorizeRequests()
                 .antMatchers(
+                    // error
+                     "/error",
                     // 未认证的跳转
                     SecurityConst.URL_REQUIRE_AUTHENTICATION,
 

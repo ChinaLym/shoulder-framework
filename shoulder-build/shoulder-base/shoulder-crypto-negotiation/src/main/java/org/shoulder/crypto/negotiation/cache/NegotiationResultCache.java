@@ -1,9 +1,9 @@
 package org.shoulder.crypto.negotiation.cache;
 
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
-import org.springframework.lang.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * 密钥协商结果缓存

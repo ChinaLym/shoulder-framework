@@ -16,9 +16,9 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -62,7 +62,7 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
             Object cloned = ObjectUtil.clone(object);
             if (cloned == null) {
                 //使用 json 方式（性能差一点，备选）
-                cloned = JsonUtils.toObject(JsonUtils.toJson(object), objectClass);
+                cloned = JsonUtils.parseObject(JsonUtils.toJson(object), objectClass);
             }
             object = cloned;
 

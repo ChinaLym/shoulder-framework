@@ -27,7 +27,14 @@ public class TokenProperties {
      * 是否对颁发的 jwt 进行签名，若签名则验签时无需再次向授权服务器校验 token 合法性
      * 当 store 为 jwt才会生效，否则无用
      */
-    private boolean jwk = true;
+    private Boolean jwk = true;
+
+    /**
+     * 是否激活默认的 WebSecurityConfigurerAdapter
+     *
+     * @see TokenSecurityConfiguration
+     */
+    private Boolean defaultConfig = true;
 
     /**
      * 客户端配置
@@ -58,12 +65,20 @@ public class TokenProperties {
         this.store = store;
     }
 
-    public boolean isJwk() {
+    public Boolean getJwk() {
         return jwk;
     }
 
     public void setJwk(Boolean jwk) {
         this.jwk = jwk;
+    }
+
+    public Boolean getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    public void setDefaultConfig(Boolean defaultConfig) {
+        this.defaultConfig = defaultConfig;
     }
 
     /**
@@ -72,7 +87,7 @@ public class TokenProperties {
      * @author lym
      */
     @SuppressWarnings("PMD.ClassNamingShouldBeCamelRule")
-    public class OAuth2ClientProperties {
+    public static class OAuth2ClientProperties {
 
         /**
          * 第三方应用appId

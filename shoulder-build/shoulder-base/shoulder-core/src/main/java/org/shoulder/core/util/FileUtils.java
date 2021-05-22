@@ -67,7 +67,7 @@ public class FileUtils extends FileUtil {
     }
 
     public static <T> T readJson(InputStream inputStream, TypeReference<T> type) {
-        return JsonUtils.toObject(inputStream, type);
+        return JsonUtils.parseObject(inputStream, type);
     }
 
     // Xstream

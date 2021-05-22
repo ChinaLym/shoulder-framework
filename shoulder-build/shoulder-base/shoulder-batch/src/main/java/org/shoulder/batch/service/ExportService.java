@@ -1,6 +1,6 @@
 package org.shoulder.batch.service;
 
-import org.shoulder.batch.enums.BatchResultEnum;
+import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.core.context.AppInfo;
 
 import javax.servlet.http.HttpServletResponse;
@@ -42,7 +42,7 @@ public interface ExportService {
      * @throws IOException io异常
      */
     void exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
-                           String taskId, List<BatchResultEnum> resultTypes) throws IOException;
+                           String taskId, List<ProcessStatusEnum> resultTypes) throws IOException;
 
 
     /**

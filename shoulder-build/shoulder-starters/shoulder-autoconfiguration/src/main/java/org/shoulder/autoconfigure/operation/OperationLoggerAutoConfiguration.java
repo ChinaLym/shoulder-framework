@@ -2,7 +2,6 @@ package org.shoulder.autoconfigure.operation;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.log.operation.context.OpLogContextHolder;
-import org.shoulder.log.operation.dto.OperationLogDTO;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.format.impl.ShoulderOpLogFormatter;
 import org.shoulder.log.operation.logger.OperationLogger;
@@ -11,6 +10,7 @@ import org.shoulder.log.operation.logger.impl.AsyncOperationLogger;
 import org.shoulder.log.operation.logger.impl.BufferedOperationLogger;
 import org.shoulder.log.operation.logger.impl.JdbcOperationLogger;
 import org.shoulder.log.operation.logger.impl.LogOperationLogger;
+import org.shoulder.log.operation.model.OperationLogDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -42,6 +42,7 @@ import java.util.concurrent.*;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(OperationLogDTO.class)
 @EnableConfigurationProperties(OperationLogProperties.class)
+@ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLoggerAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger log = LoggerFactory.getLogger(OperationLoggerAutoConfiguration.class);
@@ -52,6 +53,9 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
         this.operationLogProperties = operationLogProperties;
     }
 
+    /**
+     * @see OperationLogProperties.LoggerProperties#async
+     */
     @Bean
     @Order(0)
     @ConditionalOnProperty(value = "shoulder.log.operation.logger.async", havingValue = "true", matchIfMissing = true)
@@ -70,15 +74,18 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
                 // 可以设置为 true，因为操作日志一般并不是非记录不可
                 // opLogThreadFactory.setDaemon(true);
                 ExecutorService opLogExecutorService = new ThreadPoolExecutor(threadNum, threadNum,
-                    60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000), opLogThreadFactory);
+                        60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000), opLogThreadFactory);
 
                 return new AsyncOperationLogger()
-                    .setExecutorService(opLogExecutorService)
-                    .setLogger((OperationLogger) bean);
+                        .setExecutorService(opLogExecutorService)
+                        .setLogger((OperationLogger) bean);
             }
         };
     }
 
+    /**
+     * @see OperationLogProperties.LoggerProperties#buffered
+     */
     @Bean
     @Order(1)
     @ConditionalOnProperty(value = "shoulder.log.operation.logger.buffered", havingValue = "true")
@@ -91,13 +98,13 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
                 }
                 String threadName = operationLogProperties.getLogger().getThreadName();
                 ScheduledExecutorService scheduledExecutorService =
-                    Executors.newScheduledThreadPool(1, new CustomizableThreadFactory(threadName));
+                        Executors.newScheduledThreadPool(1, new CustomizableThreadFactory(threadName));
 
                 long flushInterval = operationLogProperties.getLogger().getFlushInterval().toMillis();
                 int flushThreshold = operationLogProperties.getLogger().getFlushThreshold();
                 int perFlushMax = operationLogProperties.getLogger().getPerFlushMax();
                 return new BufferedOperationLogger(new ConcurrentLinkedQueue<>(), (OperationLogger) bean, scheduledExecutorService,
-                    flushInterval, flushThreshold, perFlushMax);
+                        flushInterval, flushThreshold, perFlushMax);
             }
         };
     }
