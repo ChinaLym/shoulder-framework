@@ -96,7 +96,7 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.16</version>
+            <version>1.4.17</version>
             <optional>true</optional>
         </dependency>
 
