@@ -43,12 +43,15 @@
 
 ## 快速创建一个包目录安排好的工程
 
-单模块工程：可以通过 shoulder 提供的 maven [shoulder-archetype-simple](https://github.com/ChinaLym/Shoulder-Framework/tree/master/shoulder-archetype-simple) 快速创建
+单模块工程：可以通过 shoulder 提供的
+maven [shoulder-archetype-simple](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-archetype-simple)
+快速创建
 
-多模块工程：可以通过 shoulder-platform 提供的 [shoulder-platform-archetype](https://github.com/ChinaLym/Shoulder-Platform/tree/main/shoulder-platform-common/shoulder-platform-archetype)
+多模块工程：可以通过 shoulder-platform
+提供的 [shoulder-platform-archetype](https://github.com/ChinaLym/shoulder-platform/tree/main/shoulder-platform-common/shoulder-platform-archetype)
 
 代码生成器（根据数据库表，自动生成 controller、service、entity，带有基本的增删改查、前端界面的web工程）
-[shoulder-generator](https://github.com/ChinaLym/Shoulder-Platform/tree/main/shoulder-generator)
+[shoulder-generator](https://github.com/ChinaLym/shoulder-platform/tree/main/shoulder-generator)
 
 ---
 

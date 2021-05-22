@@ -48,7 +48,7 @@ public class HttpLogDemoController {
     public String common(String param) {
         // 响应时间颜色会根据响应时间长短变化
         log.debug("准备发起请求。。。");
-        restTemplate.getForObject("http://gitee.com/ChinaLym/Shoulder-Framework", String.class);
+        restTemplate.getForObject("http://gitee.com/ChinaLym/shoulder-framework", String.class);
         log.debug("请求结束。。。");
         return "";
     }
