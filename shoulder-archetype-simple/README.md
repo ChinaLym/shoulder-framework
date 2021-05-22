@@ -1,4 +1,4 @@
-# [shoulder-archetype-simple](https://github.com/ChinaLym/Shoulder-Framework/tree/master/shoulder-archetype-simple)
+# [shoulder-archetype-simple](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-archetype-simple)
 
 单模块的 `maven` 骨架工程，适合微型或需要快速迭代的项目，如课设、毕设等
 

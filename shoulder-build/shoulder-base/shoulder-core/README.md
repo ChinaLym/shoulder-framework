@@ -112,7 +112,7 @@ private static final org.shoulder.core.log.Logger log = org.shoulder.core.log.Lo
 
 ----
 
-# [GUID（全局唯一标识符生成器）](https://github.com/ChinaLym/Shoulder-Framework/tree/master/shoulder-build/shoulder-base/shoulder-core#guid%E5%85%A8%E5%B1%80%E5%94%AF%E4%B8%80%E6%A0%87%E8%AF%86%E7%AC%A6%E7%94%9F%E6%88%90%E5%99%A8)
+# [GUID（全局唯一标识符生成器）](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-base/shoulder-core#guid%E5%85%A8%E5%B1%80%E5%94%AF%E4%B8%80%E6%A0%87%E8%AF%86%E7%AC%A6%E7%94%9F%E6%88%90%E5%99%A8)
 
 全局唯一 id 生成器，接口有 LongGuidGenerator、StringGuidGenerator 两种，常用于生成流水数据的主键、标识字段，经测试分布式场景不会重复，且性能相当高，并容忍时间回拨。
 
@@ -163,9 +163,10 @@ twitter 首个提出 GUID 的可行方案，该算法容易理解，为进一步
 
 百度提出了利用逻辑时钟 + 启动时机器号从外界获取不会重复唯一标识来解决时钟回拨，利用双 buffer，去伪共享，异步预填充机制降低并发读写同步带来地性能影响，保证了较高性能，但在超大规模场景还有待提升。
 
-### [ShoulderGuid](https://github.com/ChinaLym/Shoulder-Framework/blob/master/shoulder-build/shoulder-base/shoulder-core/src/main/java/org/shoulder/core/uuid/ShoulderGuidGenerator.java) （Shoulder Globally Unique Identifier 全局唯一标识符）
+### [ShoulderGuid](https://github.com/ChinaLym/shoulder-framework/blob/master/shoulder-build/shoulder-base/shoulder-core/src/main/java/org/shoulder/core/uuid/ShoulderGuidGenerator.java) （Shoulder Globally Unique Identifier 全局唯一标识符）
 
-测试代码见单元测试，与其他开源实现相比，除了提供`递增`、`唯一`的 `GUID` 算法与文档外，shoulder还有完善的[单元测试（性能、重复测试、扩展测试、多线程测试）](https://github.com/ChinaLym/Shoulder-Framework/blob/master/shoulder-build/shoulder-base/shoulder-core/src/test/java/org/shoulder/core/uuid/ShoulderGuidTest.java)
+测试代码见单元测试，与其他开源实现相比，除了提供`递增`、`唯一`的 `GUID`
+算法与文档外，shoulder还有完善的[单元测试（性能、重复测试、扩展测试、多线程测试）](https://github.com/ChinaLym/shoulder-framework/blob/master/shoulder-build/shoulder-base/shoulder-core/src/test/java/org/shoulder/core/uuid/ShoulderGuidTest.java)
 
 #### 测试 & 结果：
 

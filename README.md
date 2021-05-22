@@ -4,18 +4,17 @@
 
 > 如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
 
-[![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://github.com/ChinaLym/Shoulder-Framework)
+[![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://github.com/ChinaLym/shoulder-framework)
 [![](https://img.shields.io/badge/Author-lym-blue.svg)](https://github.com/ChinaLym)
-[![](https://img.shields.io/badge/version-0.1-brightgreen.svg)](https://github.com/ChinaLym/Shoulder-Framework)
+[![](https://img.shields.io/badge/version-0.1-brightgreen.svg)](https://github.com/ChinaLym/shoulder-framework)
 
 ![](https://img.shields.io/badge/Spring%20Boot%20Version-2.3.0-blue.svg)
 ![](https://img.shields.io/badge/Spring%20Cloud%20Version-Hotox.SR5-blue.svg)
 
-[![GitHub stars](https://img.shields.io/github/stars/ChinaLym/Shoulder-Framework.svg?style=social&label=Stars)](https://github.com/ChinaLym/Shoulder-Framework/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/ChinaLym/Shoulder-Framework.svg?style=social&label=Fork)](https://github.com/ChinaLym/Shoulder-Framework/network/members)
+[![GitHub stars](https://img.shields.io/github/stars/ChinaLym/shoulder-framework.svg?style=social&label=Stars)](https://github.com/ChinaLym/shoulder-framework/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/ChinaLym/shoulder-framework.svg?style=social&label=Fork)](https://github.com/ChinaLym/shoulder-framework/network/members)
 
-
-- 地址: [github](https://github.com/ChinaLym/Shoulder-Framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)
+- 地址: [github](https://github.com/ChinaLym/shoulder-framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)
 
 一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能。
 
@@ -125,7 +124,8 @@ Shoulder 不求使用最广，而是致力于成为使用体验最好的开发�
 
 ### 自动创建
 
-`shoulder` 提供了 maven [archetype](https://github.com/ChinaLym/Shoulder-Framework/tree/master/shoulder-archetype-simple) ，可通过该工程快速创建
+`shoulder` 提供了 maven [archetype](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-archetype-simple)
+，可通过该工程快速创建
 
 ### 在新的 Maven 项目中使用
 
@@ -272,8 +272,8 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 
 | 项目 | 开源地址 | 说明 |
 |---|---|---|
-| Shoulder Framework | [github](https://github.com/ChinaLym/Shoulder-Framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework) | 开发框架，在 Spring Boot 基础之上，结合[软件优雅设计与开发最佳实践](https://spec.itlym.cn)，增加常用的功能，任何基于`Spring Boot`/`Spring Cloud`的项目都可以使用。 |
-| Shoulder Platform | [github](https://github.com/ChinaLym/Shoulder-Platform)、[gitee](https://gitee.com/ChinaLym/shoulder-platform) | SaaS 开发平台，提供了基础通用能力，与具体业务无关 |
+| Shoulder Framework | [github](https://github.com/ChinaLym/shoulder-framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework) | 开发框架，在 Spring Boot 基础之上，结合[软件优雅设计与开发最佳实践](https://spec.itlym.cn)，增加常用的功能，任何基于`Spring Boot`/`Spring Cloud`的项目都可以使用。 |
+| Shoulder Platform | [github](https://github.com/ChinaLym/shoulder-platform)、[gitee](https://gitee.com/ChinaLym/shoulder-platform) | SaaS 开发平台，提供了基础通用能力，与具体业务无关 |
 | shoulder-framework-demo | [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework-demo) | 以简单的例子介绍 `Shoulder Framework` 的使用 |
 | shoulder-plugins | [github](https://gitee.com/ChinaLym/shoulder-plugins)、[gitee](https://gitee.com/ChinaLym/shoulder-plugins) | shoulder 提供的的减少开发工作量的`maven`插件（非必须，如遵循[软件优雅设计与开发最佳实践-国际化开发](https://doc.itlym.cn/specs/base/i18n.html)时推荐希望使用自动生成多语言翻译资源文件的插件减少开发工作量） |
 | shoulder-lombok | [github](https://github.com/ChinaLym/shoulder-lombok)、[gitee](https://gitee.com/ChinaLym/shoulder-lombok) | 在`lombok`之上，增加 `@SLog` 注解，用于简化[软件优雅设计与开发最佳实践-错误码与日志](https://spec.itlym.cn/specs/base/errorCode.html) -shoulder 实现的日志框架的使用（非必须） |
