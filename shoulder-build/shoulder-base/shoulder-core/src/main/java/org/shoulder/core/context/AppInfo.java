@@ -23,6 +23,12 @@ public class AppInfo {
 
     private static final Logger log = LoggerFactory.getLogger(AppInfo.class);
 
+    /**
+     * T can be replaced by any character
+     * Z +8
+     * ZZ +08
+     * ZZZ +08:00
+     */
     public static final String UTC_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
 
     /**

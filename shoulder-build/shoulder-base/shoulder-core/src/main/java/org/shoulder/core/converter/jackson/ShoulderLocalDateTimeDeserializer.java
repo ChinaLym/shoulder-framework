@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.deser.JSR310DateTimeDeserializerBase;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.converter.LocalDateTimeConverter;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class ShoulderLocalDateTimeDeserializer extends JSR310DateTimeDeserialize
 
     private static final long serialVersionUID = 1L;
 
-    private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern(AppInfo.dateTimeFormat());
 
     @Override
     protected JSR310DateTimeDeserializerBase<LocalDateTime> withShape(JsonFormat.Shape shape) {
