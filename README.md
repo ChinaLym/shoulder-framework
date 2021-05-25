@@ -33,6 +33,13 @@
 - demo6
     - TODO
 
+## 分支管理模型
+
+- 主干 master 开发，分支发布
+    - 主分支（`main`）上是最新的开发版代码；
+    - 分支名称与 `shoulder-framework 的版本号` 对应
+    - 如：想查看 0.6 版本的使用用例，则切换至 `0.6` 分支
+
 ## 下载、部署、运行
 
 - `git clone https://gitee.com/ChinaLym/shoulder-framework-demo` 下载本项目
