@@ -1,6 +1,7 @@
 package org.shoulder.core.util;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.shoulder.core.context.AppInfo;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -43,7 +44,7 @@ final class Log4jParameterFormatter {
     private static final char DELIMIT_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(AppInfo.dateTimeFormat());
 
     public static String formatMessage(String format, Object... arguments) {
         final int len = Math.max(1, format == null ? 0 : format.length() >> 1);
@@ -195,7 +196,7 @@ final class Log4jParameterFormatter {
             return false;
         }
         final Date date = (Date) o;
-        str.append(dateTimeFormatter.format(date.toInstant().atZone(ZoneId.systemDefault())));
+        str.append(DATE_TIME_FORMATTER.format(date.toInstant().atZone(ZoneId.systemDefault())));
         return true;
     }
 

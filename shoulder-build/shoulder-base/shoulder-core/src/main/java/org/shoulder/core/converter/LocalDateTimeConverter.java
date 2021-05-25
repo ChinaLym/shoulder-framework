@@ -24,7 +24,7 @@ public class LocalDateTimeConverter extends BaseLocalDateTimeConverter<LocalDate
         formatMap.put("yyyy-MM-dd HH:mm:ss", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{2}:\\d{2}:\\d{2}$");
         formatMap.put("yyyy/MM/dd HH:mm:ss", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{2}:\\d{2}:\\d{2}$");
         // ISO
-        formatMap.put("yyyy-MM-ddTHH:mm:ss", "^\\d{4}-\\d{1,2}-\\d{1,2}T{1}\\d{2}:\\d{2}:\\d{2}$");
+        formatMap.put("yyyy-MM-dd'T'HH:mm:ss", "^\\d{4}-\\d{1,2}-\\d{1,2}T{1}\\d{2}:\\d{2}:\\d{2}$");
         formatMap.put("yyyy/MM/ddTHH:mm:ss", "^\\d{4}/\\d{1,2}/\\d{1,2}T{1}\\d{2}:\\d{2}:\\d{2}$");
         // simple
         formatMap.put("yyyy-MM-dd", "^\\d{4}-\\d{1,2}-\\d{1,2}$");

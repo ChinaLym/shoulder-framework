@@ -30,12 +30,12 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
     /**
      * 日期格式化:高性能线程安全
      */
-    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(AppInfo.dateTimeFormat(), AppInfo.defaultLocale());
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(AppInfo.dateTimeFormat(), AppInfo.defaultLocale());
 
     /**
      * {@link OperationLogDTO} 类中所有 String 类型的字段
      */
-    private static List<Field> opLogStrFields;
+    private static final List<Field> opLogStrFields;
 
     static {
         // 反射获取所有文本字段并设置可访问
@@ -86,11 +86,11 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
 
         // 拼接特殊类型
         builder
-            .add("terminalType", String.valueOf(opLog.getTerminalType().getCode()))
-            .add("result", String.valueOf(opLog.getResult().getCode()))
-            .add("operationTime", dateTimeFormatter.format(ZonedDateTime.ofInstant(opLog.getOperationTime(), AppInfo.timeZone().toZoneId())));
+                .add("terminalType", String.valueOf(opLog.getTerminalType().getCode()))
+                .add("result", String.valueOf(opLog.getResult().getCode()))
+                .add("operationTime", DATE_TIME_FORMATTER.format(ZonedDateTime.ofInstant(opLog.getOperationTime(), AppInfo.timeZone().toZoneId())));
         if (opLog.getEndTime() != null) {
-            builder.add("endTime", dateTimeFormatter.format(ZonedDateTime.ofInstant(opLog.getEndTime(), AppInfo.timeZone().toZoneId())));
+            builder.add("endTime", DATE_TIME_FORMATTER.format(ZonedDateTime.ofInstant(opLog.getEndTime(), AppInfo.timeZone().toZoneId())));
         }
 
         // 拼接 List 类型（json格式）

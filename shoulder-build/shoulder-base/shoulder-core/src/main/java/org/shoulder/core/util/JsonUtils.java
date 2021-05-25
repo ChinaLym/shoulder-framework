@@ -174,11 +174,26 @@ public class JsonUtils {
     // ============================ ObjectMapper 创建 ============================
 
     public static ObjectMapper createObjectMapper() {
-        return createObjectMapper(null);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        enhancer(objectMapper);
+        /*BeanSerializerModifier modifier = null;
+        if (modifier != null) {
+            // 可以定制逻辑：类型为array，list、set时，当值为空时，序列化成[]
+            objectMapper.setSerializerFactory(
+                    objectMapper.getSerializerFactory().withSerializerModifier(modifier)
+            );
+        }*/
+        return objectMapper;
     }
 
-    public static ObjectMapper createObjectMapper(BeanSerializerModifier modifier) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public static ObjectMapper enhancer(ObjectMapper objectMapper) {
+        // 添加 jdk8 新增的时间序列化处理模块
+        objectMapper
+                .registerModule(new Jdk8Module())
+                .registerModule(new JavaTimeModule())
+                // 对于时间等，用更宽松的取代默认严格的格式匹配
+                .registerModule(new DateEnhancerJacksonModule());
 
         // 设置为配置中的统一 地区、时区、
         objectMapper
@@ -205,19 +220,6 @@ public class JsonUtils {
                 // 将 key 排序（更好的体验）
                 .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 
-        if (modifier != null) {
-            // 可以定制逻辑：类型为array，list、set时，当值为空时，序列化成[]
-            objectMapper.setSerializerFactory(
-                    objectMapper.getSerializerFactory().withSerializerModifier(modifier)
-            );
-        }
-        // 添加 jdk8 新增的时间序列化处理模块
-        objectMapper
-                .registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule())
-                // 对于时间等，用更宽松的取代默认严格的格式匹配
-                .registerModule(new DateEnhancerJacksonModule());
-
         // 激活所有通过 spi 注册的模块，如接口响应多种格式，统一反序列化为标准的，需要自行实现 StdDeserializer，new SimpleModule().addDeserializer
         objectMapper.findAndRegisterModules();
         return objectMapper;
@@ -236,12 +238,11 @@ public class JsonUtils {
     /**
      * 解决常见序列化失败问题：java 8 时间、Long 序列化，如果不加入，则可能需要这么写：
      *
-     * <code>
-     *
-     * @author lym
-     * @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+     * <code> @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
      * LocalDateTime time;
      * </code>
+     *
+     * @author lym
      */
     public static class DateEnhancerJacksonModule extends SimpleModule {
 
