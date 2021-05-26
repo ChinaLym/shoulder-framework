@@ -69,6 +69,7 @@ public class FileTypeValidatorForArray implements ConstraintValidator<FileType, 
                             long uploadSize = file.getSize();
                             return allowedMaxSize >= uploadSize;
                         }
+                        log.debug("PASS validate: {}", fileName);
                         return true;
                     }
                 }

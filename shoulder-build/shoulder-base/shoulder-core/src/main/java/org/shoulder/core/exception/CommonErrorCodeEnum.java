@@ -83,7 +83,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 请求错误：指定的请求方法不能被服务器处理
      */
-    REQUEST_METHOD_MISMATCH(202, "The request method can't be processed by the server.", Level.WARN),
+    REQUEST_METHOD_MISMATCH(202, "The request method('%s') can't be processed by the server. Only support %s.", Level.WARN),
     /**
      * 调用 xxx 返回了错误码:xxx
      */

@@ -177,4 +177,13 @@ public class ContextUtils {
         return ContextUtils.contextHasRefreshed;
     }
 
+    /**
+     * 发布消息
+     *
+     * @param event event
+     */
+    public static void publishEvent(Object event) {
+        applicationContext.publishEvent(event);
+    }
+
 }
