@@ -1,5 +1,6 @@
 package org.shoulder.web.advice;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.hibernate.validator.internal.engine.path.NodeImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
+import java.util.StringJoiner;
 
 /**
  * RestController 全局异常处理器 - 请求方错误，提供默认统一场景错误返回值
@@ -178,7 +180,13 @@ public class RestControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
     public BaseResult methodNotSupportedHandler(HttpRequestMethodNotSupportedException e) {
-        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.REQUEST_METHOD_MISMATCH, e);
+        String support = "";
+        if (CollectionUtils.isNotEmpty(e.getSupportedHttpMethods())) {
+            StringJoiner sj = new StringJoiner(",", "'", "'");
+            e.getSupportedHttpMethods().stream().map(Enum::name).forEach(sj::add);
+            support = sj.toString();
+        }
+        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.REQUEST_METHOD_MISMATCH, e, e.getMethod(), support);
         log.warn(ex);
         return ex.toResponse();
     }

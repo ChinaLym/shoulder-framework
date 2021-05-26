@@ -72,11 +72,12 @@ public class FileTypeValidator implements ConstraintValidator<FileType, Multipar
                     // 检查文件大小
                     long uploadSize = multipartFile.getSize();
                     if (StringUtils.isEmpty(maxSizeStr)) {
-                        log.debug("ignore fileSize, received bytes: {}", fileName);
+                        log.debug("PASS ignore fileSize, received bytes: {}", fileName);
                         return true;
                     }
                     long allowedMaxSize = parseSize(maxSizeStr);
                     if (allowedMaxSize >= uploadSize) {
+                        log.debug("PASS validate: {}", fileName);
                         return true;
                     } else {
                         log.warn("the file({}) size({}) exceed max({})", fileName, uploadSize, maxSizeStr);
