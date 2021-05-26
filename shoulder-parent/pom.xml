@@ -32,7 +32,7 @@
         <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
-        <errcode-maven-plugin.version>0.1-SNAPSHOT</errcode-maven-plugin.version>
+        <shoulder-maven-plugin.version>0.1-SNAPSHOT</shoulder-maven-plugin.version>
         <shoulder-framework.errcode-prefix>0x0000</shoulder-framework.errcode-prefix>
 
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
@@ -425,8 +425,8 @@
                 <!-- shoulder 开发的错误码插件 -->
                 <plugin>
                     <groupId>cn.itlym.shoulder</groupId>
-                    <artifactId>errcode-maven-plugin</artifactId>
-                    <version>${errcode-maven-plugin.version}</version>
+                    <artifactId>shoulder-maven-plugin</artifactId>
+                    <version>${shoulder-maven-plugin.version}</version>
                     <configuration>
                         <!-- 【必填】本组件对应的错误码前缀 -->
                         <!--<errorCodePrefix>0x0000</errorCodePrefix>-->
