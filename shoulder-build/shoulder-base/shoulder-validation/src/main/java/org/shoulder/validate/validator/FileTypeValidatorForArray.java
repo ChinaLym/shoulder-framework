@@ -49,7 +49,8 @@ public class FileTypeValidatorForArray implements ConstraintValidator<FileType, 
         for (int i = 0; i < multipartFiles.length; i++) {
             MultipartFile file = multipartFiles[i];
             String fileName = file.getOriginalFilename();
-            if (!checkName(fileName)) {
+            if (!isValidName(fileName)) {
+                log.warn("illegal fileName:" + fileName);
                 return false;
             }
             String suffix = FileUtils.getSuffix(fileName);
@@ -82,9 +83,11 @@ public class FileTypeValidatorForArray implements ConstraintValidator<FileType, 
         return false;
     }
 
-    private boolean checkName(String fileName) {
-        return (StringUtils.isEmpty(forbiddenNamePattern) || RegexpUtils.matches(fileName, allowNamePattern)) &&
-            (StringUtils.isEmpty(forbiddenNamePattern) || !RegexpUtils.matches(fileName, forbiddenNamePattern));
+    private boolean isValidName(String fileName) {
+        // no allowNamePattern or match
+        // no forbiddenNamePattern or disMatch
+        return (StringUtils.isEmpty(allowNamePattern) || RegexpUtils.matches(fileName, allowNamePattern)) &&
+                (StringUtils.isEmpty(forbiddenNamePattern) || !RegexpUtils.matches(fileName, forbiddenNamePattern));
 
     }
 
