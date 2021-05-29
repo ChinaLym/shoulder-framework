@@ -54,7 +54,7 @@ public class FileTypeValidator implements ConstraintValidator<FileType, Multipar
         }
         String fileName = multipartFile.getOriginalFilename();
         log.debug("fileName is {}", fileName);
-        if (!checkName(fileName)) {
+        if (!isValidName(fileName)) {
             log.warn("illegal fileName:" + fileName);
             return false;
         }
@@ -99,9 +99,11 @@ public class FileTypeValidator implements ConstraintValidator<FileType, Multipar
         return DataSize.parse(maxSizeStr).toBytes();
     }
 
-    private boolean checkName(String fileName) {
-        return (StringUtils.isEmpty(forbiddenNamePattern) || RegexpUtils.matches(fileName, allowNamePattern)) &&
-            (StringUtils.isEmpty(forbiddenNamePattern) || !RegexpUtils.matches(fileName, forbiddenNamePattern));
+    private boolean isValidName(String fileName) {
+        // no allowNamePattern or match
+        // no forbiddenNamePattern or disMatch
+        return (StringUtils.isEmpty(allowNamePattern) || RegexpUtils.matches(fileName, allowNamePattern)) &&
+                (StringUtils.isEmpty(forbiddenNamePattern) || !RegexpUtils.matches(fileName, forbiddenNamePattern));
 
     }
 
