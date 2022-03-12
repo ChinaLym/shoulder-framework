@@ -15,7 +15,7 @@ import java.util.Map;
  * @author lym
  */
 @Configuration
-@Endpoint(id = "instance-id") // 不能驼峰
+@Endpoint(id = "instanceId") // 不能驼峰
 public class InstanceIdEndpoint {
 
     private final InstanceIdProvider instanceIdProvider;

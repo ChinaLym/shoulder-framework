@@ -32,7 +32,7 @@ public class OperationLogParamConverterAutoConfiguration implements ApplicationC
      * 默认的 value 解析器
      */
     @Bean
-    public DefaultOperationLogParamValueConverter defaultOperationLogParamValueConverter(OperationLogProperties operationLogProperties) {
+    public static DefaultOperationLogParamValueConverter defaultOperationLogParamValueConverter(OperationLogProperties operationLogProperties) {
 
         return new DefaultOperationLogParamValueConverter(operationLogProperties.getNullParamOutput());
     }

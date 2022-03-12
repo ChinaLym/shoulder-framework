@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.web;
 
+import org.shoulder.core.util.ContextUtils;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.support.server.SensitiveRequestDecryptHandlerInterceptor;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
@@ -62,9 +63,6 @@ public class WebMvcAutoConfiguration {
     @ConditionalOnProperty(name = "shoulder.web.repeatSubmit.enable", havingValue = "true", matchIfMissing = true)
     protected static class RejectRepeatSubmitWebConfig implements WebMvcConfigurer {
 
-        @Autowired
-        private BaseRejectRepeatSubmitInterceptor rejectRepeatSubmitInterceptor;
-
         @Bean
         @ConditionalOnMissingBean(BaseRejectRepeatSubmitInterceptor.class)
         public SessionTokenRepeatSubmitInterceptor rejectRepeatSubmitInterceptor(
@@ -76,8 +74,11 @@ public class WebMvcAutoConfiguration {
 
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
-            registry.addInterceptor(rejectRepeatSubmitInterceptor).order(Ordered.HIGHEST_PRECEDENCE);
-            WebMvcConfigurer.super.addInterceptors(registry);
+            BaseRejectRepeatSubmitInterceptor rejectRepeatSubmitInterceptor = ContextUtils.getBeanOrNull(BaseRejectRepeatSubmitInterceptor.class);
+            if (rejectRepeatSubmitInterceptor != null) {
+                registry.addInterceptor(rejectRepeatSubmitInterceptor).order(Ordered.HIGHEST_PRECEDENCE);
+                WebMvcConfigurer.super.addInterceptors(registry);
+            }
         }
     }
 

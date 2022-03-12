@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author lym
  * @see SensitiveRequestDecryptAdvance 实际解密在这里完成
  */
-public class SensitiveRequestDecryptHandlerInterceptor extends HandlerInterceptorAdapter {
+public class SensitiveRequestDecryptHandlerInterceptor implements AsyncHandlerInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(SensitiveRequestDecryptHandlerInterceptor.class);
 

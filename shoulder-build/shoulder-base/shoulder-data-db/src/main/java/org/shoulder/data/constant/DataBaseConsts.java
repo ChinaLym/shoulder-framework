@@ -101,6 +101,11 @@ public interface DataBaseConsts {
     String METHOD_SELECT_FOR_UPDATE_BY_ID = "selectForUpdateById";
 
     /**
+     * 根据 id 锁定，悲观锁
+     */
+    String METHOD_SELECT_BATCH_FOR_UPDATE_BY_IDS = "selectBatchForUpdateByIds";
+
+    /**
      * 根据 bizId 锁定，悲观锁
      */
     String METHOD_SELECT_FOR_UPDATE_BY_BIZ_ID = "selectForUpdateByBizId";

@@ -17,6 +17,7 @@ public class PathFilterProperties {
     private List<String> pathPatterns = Collections.singletonList("/**");
     /**
      * 排除的路径，支持 antMatcher
+     * fixme 2.6后默认的 PathPatternParser 不支持
      */
     private List<String> excludePathPatterns = Collections.singletonList("/**/health");
 

@@ -13,6 +13,7 @@ import org.shoulder.ext.config.domain.enums.ConfigErrorCodeEnum;
 import org.shoulder.ext.config.domain.enums.TenantEnum;
 import org.shoulder.ext.config.domain.ex.ConfigException;
 import org.shoulder.ext.config.domain.model.ConfigData;
+import org.shoulder.ext.config.provider.controller.spi.OldConfigDataQueryService;
 import org.shoulder.ext.config.service.ConfigManagerCoreService;
 import org.shoulder.ext.config.service.ConfigQueryCoreService;
 import org.shoulder.validate.util.ValidateUtil;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -51,6 +51,8 @@ public class ConfigDataMigrationController {
     @Autowired
     private ConfigQueryCoreService configQueryCoreService;
 
+    @Autowired
+    private OldConfigDataQueryService oldConfigDataQueryService;
 
     /**
      * 迁移全部
@@ -94,7 +96,8 @@ public class ConfigDataMigrationController {
                 List<ConfigData> exists = configQueryCoreService.queryListByTenantAndConfigName(tenant, configType);
                 exists.forEach(configManagerCoreService::delete);
             }
-            List<Object> oldDataList = new ArrayList<>();
+            // 获取迁移之前系统的数据
+            List<Object> oldDataList = queryOldDataList(tenant, configTypeName);
             String configTypeId = configType.getConfigName() + "#" + tenant;
             log.info(configTypeId + " result size:" + (CollectionUtils.isNotEmpty(oldDataList) ? oldDataList.size() : 0));
             if (CollectionUtils.isEmpty(oldDataList)) {
@@ -139,7 +142,7 @@ public class ConfigDataMigrationController {
         ConfigType configType = ConfigType.getByName(configTypeName);
         String configTypeId = configType.getConfigName() + "#" + tenant;
         try {
-            List<Object> oldDataList = new ArrayList<>();
+            List<Object> oldDataList = queryOldDataList(tenant, configTypeName);
             List<ConfigData> configDataList = configQueryCoreService.queryListByTenantAndConfigName(tenant, configType);
             if (CollectionUtils.isEmpty(oldDataList)) {
                 return BaseResult.success("SUCCESS! center empty");
@@ -202,5 +205,8 @@ public class ConfigDataMigrationController {
         return BaseResult.success(result);
     }
 
+    protected List<Object> queryOldDataList(String tenant, String configTypeName) {
+        return oldConfigDataQueryService.queryOldDataList(tenant, configTypeName);
+    }
 
 }

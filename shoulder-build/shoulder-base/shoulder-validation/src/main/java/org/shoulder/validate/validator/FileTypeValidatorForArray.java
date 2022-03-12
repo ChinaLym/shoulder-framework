@@ -25,15 +25,16 @@ public class FileTypeValidatorForArray implements ConstraintValidator<FileType, 
 
     @Override
     public boolean isValid(MultipartFile[] multipartFiles, ConstraintValidatorContext context) {
-        for (int i = 0; i < multipartFiles.length; i++) {
-            MultipartFile file = multipartFiles[i];
+        if (multipartFiles == null || multipartFiles.length == 0) {
+            return fileValidatorProperties.isAllowEmpty();
+        }
+        for (MultipartFile file : multipartFiles) {
             if (!FileValidator.isValid(fileValidatorProperties, file)) {
                 return false;
             }
         }
         return true;
     }
-
 
 }
 

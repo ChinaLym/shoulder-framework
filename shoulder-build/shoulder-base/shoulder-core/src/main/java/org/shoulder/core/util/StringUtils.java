@@ -27,9 +27,9 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static final String CLASS_NAME_DOUBLE = "java.lang.Double";
     public static final String CLASS_NAME_FLOAT = "java.lang.Float";
     public static final String CLASS_NAME_BOOLEAN = "java.lang.Boolean";
-    public static final String CLASS_NAME_SET = "java.lang.Set";
-    public static final String CLASS_NAME_LIST = "java.lang.List";
-    public static final String CLASS_NAME_COLLECTION = "java.lang.Collection";
+    public static final String CLASS_NAME_SET = "java.util.Set";
+    public static final String CLASS_NAME_LIST = "java.util.List";
+    public static final String CLASS_NAME_COLLECTION = "java.util.Collection";
     public static final String CLASS_NAME_DATE = "java.util.Date";
     public static final String CLASS_NAME_LOCAL_DATE_TIME = "java.time.LocalDateTime";
     public static final String CLASS_NAME_LOCAL_DATE = "java.time.LocalDate";

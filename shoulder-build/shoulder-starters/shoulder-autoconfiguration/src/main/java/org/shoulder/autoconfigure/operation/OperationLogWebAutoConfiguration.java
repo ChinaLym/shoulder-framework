@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.Nonnull;
+
 /**
  * 操作日志-当前用户信息
  *
@@ -42,13 +44,13 @@ public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
     private OperationLogOperatorInfoInterceptor operationLogOperatorInfoInterceptor;
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(@Nonnull InterceptorRegistry registry) {
         if (operationLogOperatorInfoInterceptor != null) {
             registry.addInterceptor(operationLogOperatorInfoInterceptor)
-                .order(operationLogProperties.getInterceptorOrder());
+                    .order(operationLogProperties.getInterceptorOrder());
         } else {
             log.warn("no found any OperationLogOperatorInfoInterceptor, " +
-                "will always use application.name as default operator.");
+                    "will always use application.name as default operator.");
         }
         WebMvcConfigurer.super.addInterceptors(registry);
     }

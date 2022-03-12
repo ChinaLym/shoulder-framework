@@ -3,7 +3,7 @@ package org.shoulder.web.interceptor;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.http.interceptor.BaseRestTemplateLogInterceptor;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author lym
  */
-public abstract class BaseRejectRepeatSubmitInterceptor extends HandlerInterceptorAdapter {
+public abstract class BaseRejectRepeatSubmitInterceptor implements AsyncHandlerInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(BaseRestTemplateLogInterceptor.class);
 

@@ -2,7 +2,7 @@ package org.shoulder.web.template.tag.controller;
 
 import org.shoulder.web.template.crud.CrudCacheableController;
 import org.shoulder.web.template.tag.entity.TagEntity;
-import org.shoulder.web.template.tag.repository.TagService;
+import org.shoulder.web.template.tag.service.TagServiceImpl;
 
 /**
  * Tag 接口-默认实现
@@ -13,7 +13,7 @@ import org.shoulder.web.template.tag.repository.TagService;
 //@RestController
 //@RequestMapping(value = "${shoulder.web.ext.tag.path:/api/v1/tags}")
 public class TagCrudController extends CrudCacheableController<
-        TagService, TagEntity, Long, TagEntity, TagEntity, TagEntity
+        TagServiceImpl, TagEntity, Long, TagEntity, TagEntity, TagEntity
         > implements TagController {
 
 

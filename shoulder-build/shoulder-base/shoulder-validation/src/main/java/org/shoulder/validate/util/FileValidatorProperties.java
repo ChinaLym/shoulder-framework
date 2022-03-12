@@ -23,7 +23,10 @@ public class FileValidatorProperties {
 
     public FileValidatorProperties(FileType constraintAnnotation) {
         allowSuffixNameArray = constraintAnnotation.allowSuffix();
-        maxSizeStr = constraintAnnotation.maxSize();
+        maxSizeStr = constraintAnnotation.maxSize().toUpperCase();
+        if (!maxSizeStr.endsWith("B")) {
+            maxSizeStr = maxSizeStr + "B";
+        }
         allowEmpty = constraintAnnotation.allowEmpty();
         allowNamePattern = constraintAnnotation.nameAllowPattern();
         forbiddenNamePattern = constraintAnnotation.nameForbiddenPattern();

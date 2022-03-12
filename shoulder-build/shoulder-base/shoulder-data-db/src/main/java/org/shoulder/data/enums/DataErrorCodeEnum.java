@@ -30,6 +30,11 @@ public enum DataErrorCodeEnum implements ErrorCode {
      * 比如 bizId 通过 md5(name) 生成，更新时发现 bizId 正确，而 name 不正确
      */
     ILLEGAL("122", "数据非法"),
+
+    /**
+     * 请求数据过多
+     */
+    DATA_TOO_MUCH("123", "请求数据过多"),
     ;
 
 
