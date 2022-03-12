@@ -1,32 +1,12 @@
 package org.shoulder.data.mybatis.interceptor;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
-import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.plugin.*;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
-import org.shoulder.core.context.AppContext;
-import org.shoulder.core.exception.BaseRuntimeException;
-import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.util.RegexpUtils;
-import org.shoulder.core.util.ServletUtil;
-
-import java.sql.Connection;
-import java.util.Arrays;
-import java.util.Properties;
-
 /**
  * 写权限控制 拦截器
  * 该拦截器常用于演示环境
  *
  * @author lym
  */
+/*
 @SuppressWarnings("AlibabaUndefineMagicConstant")
 @Slf4j
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -100,12 +80,17 @@ public class ForbbidonWriteInterceptor extends AbstractSqlParserHandler implemen
         return invocation.proceed();
     }
 
-    /**
-     * 生成拦截对象的代理
-     *
-     * @param target 目标对象
-     * @return 代理对象
-     */
+    */
+/**
+ * 生成拦截对象的代理
+ *
+ * @param target 目标对象
+ * @return 代理对象
+ * <p>
+ * mybatis配置的属性
+ * @param properties mybatis配置的属性
+ *//*
+
     @Override
     public Object plugin(Object target) {
         if (target instanceof StatementHandler) {
@@ -114,14 +99,17 @@ public class ForbbidonWriteInterceptor extends AbstractSqlParserHandler implemen
         return target;
     }
 
-    /**
-     * mybatis配置的属性
-     *
-     * @param properties mybatis配置的属性
-     */
+    */
+/**
+ * mybatis配置的属性
+ *
+ * @param properties mybatis配置的属性
+ *//*
+
     @Override
     public void setProperties(Properties properties) {
 
     }
 
 }
+*/

@@ -7,6 +7,9 @@
     - 入参校验
 - Controller 快速开发模板
 - 入参注解解析（基于HandlerMethodArgumentResolver）
+    - 注意同时最多只有一个解析器会生效 HandlerMethodArgumentResolverComposite.getArgumentResolver
+- 优雅退出 https://blog.csdn.net/qq_17231297/article/details/117376991
+    - 退出前处理完当前的请求
 - 全局异常处理
 - 全局返回值包装
 - 可扩展的全局安全过滤器

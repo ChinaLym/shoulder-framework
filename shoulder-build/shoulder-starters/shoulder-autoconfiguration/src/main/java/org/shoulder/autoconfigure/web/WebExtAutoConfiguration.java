@@ -1,15 +1,12 @@
 package org.shoulder.autoconfigure.web;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.data.mybatis.template.service.BaseServiceImpl;
-import org.shoulder.web.template.dictionary.*;
-import org.shoulder.web.template.dictionary.repository.DictionaryItemRepository;
-import org.shoulder.web.template.dictionary.repository.DictionaryRepository;
-import org.shoulder.web.template.dictionary.service.DictionaryItemService;
-import org.shoulder.web.template.dictionary.service.DictionaryService;
+import org.shoulder.web.template.dictionary.DictionaryController;
+import org.shoulder.web.template.dictionary.DictionaryEnumController;
+import org.shoulder.web.template.dictionary.DictionaryItemController;
+import org.shoulder.web.template.dictionary.DictionaryItemEnumController;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -63,7 +60,7 @@ public class WebExtAutoConfiguration {
         }
     }
 
-    @Configuration
+    /*@Configuration
     @ConditionalOnClass(value = {BaseServiceImpl.class})
     @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "db")
     public static class BaseOnDbDictionaryConfiguration {
@@ -97,5 +94,5 @@ public class WebExtAutoConfiguration {
         }
 
 
-    }
+    }*/
 }

@@ -175,8 +175,7 @@ public class FileUtils extends FileUtil {
                 // byte[0] 意味着无要求
                 return true;
             }
-            byte[] headBytes = new byte[byteCount];
-            assert in.read(headBytes, 0, byteCount) == byteCount;
+            byte[] headBytes = in.readNBytes(byteCount);
             return Arrays.compare(headBytes, standHeaderBytes) == 0;
         } else {
             // 警告，不在里，未校验

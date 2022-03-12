@@ -4,7 +4,6 @@ import cn.hutool.core.util.ReflectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.reflection.MetaObject;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.StringUtils;
@@ -101,9 +100,7 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
         }
 
         // 3. 实体没有继承 Entity 和 BaseEntity，且 主键名为其他字段
-        TableInfo tableInfo = metaObject.hasGetter(Constants.MP_OPTLOCK_ET_ORIGINAL) ?
-                TableInfoHelper.getTableInfo(metaObject.getValue(Constants.MP_OPTLOCK_ET_ORIGINAL).getClass())
-                : TableInfoHelper.getTableInfo(metaObject.getOriginalObject().getClass());
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(metaObject.getOriginalObject().getClass());
         if (tableInfo == null || tableInfo.getKeyProperty() == null) {
             throw new IllegalArgumentException("tableInfo == null. obj=" + metaObject);
         }

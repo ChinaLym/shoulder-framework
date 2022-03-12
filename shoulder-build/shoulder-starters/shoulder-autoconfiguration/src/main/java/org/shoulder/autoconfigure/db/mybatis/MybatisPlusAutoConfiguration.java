@@ -1,6 +1,5 @@
 package org.shoulder.autoconfigure.db.mybatis;
 
-import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.core.MybatisPlusVersion;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
@@ -14,7 +13,6 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.data.mybatis.config.handler.ModelMetaObjectHandler;
 import org.shoulder.data.mybatis.injector.ShoulderSqlInjector;
-import org.shoulder.data.mybatis.interceptor.ForbbidonWriteInterceptor;
 import org.shoulder.data.mybatis.interceptor.tenants.SchemaModeInterceptor;
 import org.shoulder.data.mybatis.interceptor.typehandler.FullLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.LeftLikeTypeHandler;
@@ -55,11 +53,11 @@ public class MybatisPlusAutoConfiguration {
     /**
      * 新分页插件填坑
      */
-    @Bean
+    /*@Bean
     @Deprecated
     public ConfigurationCustomizer configurationCustomizer() {
         return configuration -> configuration.setUseDeprecatedExecutor(false);
-    }
+    }*/
 
     /**
      * 注意:
@@ -158,13 +156,13 @@ public class MybatisPlusAutoConfiguration {
     /**
      * 演示环境权限拦截器
      */
-    @Bean
+    //@Bean
     //@Order(15)
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "forbiddenWrite", havingValue = "true")
-    public ForbbidonWriteInterceptor forbbidonWriteInterceptor() {
-        return new ForbbidonWriteInterceptor();
-    }
+    //@ConditionalOnMissingBean
+    //@ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "forbiddenWrite", havingValue = "true")
+    //public ForbbidonWriteInterceptor forbbidonWriteInterceptor() {
+    //    return new ForbbidonWriteInterceptor();
+    //}
 
 
     // ***********************************************************

@@ -1,6 +1,10 @@
 # 更新记录
 
-## 0.7（PLAN）
+## 0.7（重大版本）
+
+- shoulder 不再为除spring boot外的三方jar定制能力（如 mybatis-plus）以减少三分jar定制功能学习成本。
+- 升级到了 SpringBoot 2.6.x,
+  关于springfox升级注意事项[spring boot2.x升级到2.6](https://springfox.github.io/springfox/docs/snapshot/#migrating-from-existing-2-x-version)
 
 - DB
   - 自动判断是否存在分布式事务问题，默认仅开发时生效
@@ -30,6 +34,26 @@
   - 注解形式，输出时自动脱敏
 
 - redis 连接池事件监听聚合接口
+
+- 依赖升级
+
+```bash
+springboot 2.4.5 -> 2.6.4
+spring-cloud 2020.0.2 -> 2021.0.1
+swagger2 1.6.2 -> 1.6.5（默认不引入）
+swagger3 2.1.9 -> 2.1.13（默认不引入）
+xstream 1.4.17 -> 1.4.19
+guava 30.1.1-jre -> 31.1-jre
+alibaba.transmittable 2.12.1 -> 2.12.5
+bcprov.jdk15on 1.68 -> 1.70
+bcpkix.jdk15on 1.68 -> 1.70
+caffeine 2.8.5 -> 3.0.5（默认不引入）
+tika-core 1.24.1 -> 2.3.0
+opencsv 4.1 -> 5.6
+h2 1.4.200 -> 2.1.210
+mybatis-plus 3.4.2 -> 3.5.1
+p6spy 3.3.2 -> 3.9.1
+```
 
 ## 0.6 （2021年5月21日 发布）
 

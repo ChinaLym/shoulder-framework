@@ -60,6 +60,17 @@ public class ContextUtils {
     }
 
     /**
+     * 获取类型为requiredType的对象 / null
+     */
+    public static <T> T getBeanOrNull(Class<T> clz) throws BeansException {
+        try {
+            return (T) getBeanFactory().getBean(clz);
+        } catch (BeansException e) {
+            return null;
+        }
+    }
+
+    /**
      * 如果BeanFactory包含一个与所给名称匹配的bean定义，则返回true
      *
      * @param name beanName

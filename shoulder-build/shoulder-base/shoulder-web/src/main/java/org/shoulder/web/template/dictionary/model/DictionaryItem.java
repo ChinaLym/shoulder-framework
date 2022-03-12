@@ -1,5 +1,7 @@
 package org.shoulder.web.template.dictionary.model;
 
+import java.util.Map;
+
 /**
  * 字典项
  *
@@ -44,6 +46,25 @@ public interface DictionaryItem<IDENTIFY> {
      */
     default String getDictionaryType() {
         return getClass().getSimpleName();
+    }
+
+    /**
+     * 某一个具体字典项是否满足某过滤条件（默认都满足、不过滤）
+     *
+     * @param key   k
+     * @param value v
+     * @return 是否满足
+     */
+    default boolean matchCondition(String key, String value) {
+        return true;
+    }
+
+    /**
+     * 多个条件，默认都满足才行
+     */
+    default boolean matchAllCondition(Map<String, String> conditionMap) {
+        return conditionMap.entrySet().stream()
+                .allMatch(e -> matchCondition(e.getKey(), e.getValue()));
     }
 
 }

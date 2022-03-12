@@ -4,6 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.injector.methods.*;
 
@@ -17,8 +18,8 @@ import java.util.List;
 public class ShoulderSqlInjector extends DefaultSqlInjector {
 
     @Override
-    public List<AbstractMethod> getMethodList(Class<?> mapperClass) {
-        List<AbstractMethod> methodList = super.getMethodList(mapperClass);
+    public List<AbstractMethod> getMethodList(Class<?> mapperClass, TableInfo tableInfo) {
+        List<AbstractMethod> methodList = super.getMethodList(mapperClass, tableInfo);
 
         // 批量插入
         methodList.add(new InsertBatch(i -> i.getFieldFill() != FieldFill.UPDATE));

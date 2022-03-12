@@ -38,3 +38,5 @@ logging.level.<包名>=<日志级别>
 ## 开发框架注意
 
 Properties 中嵌套其他 properties，最好初始 new 一个，避免用户使用不当产生 NPE 注入 controller 时候，返回值必须为 带注解的实现类
+
+如果上下文中存在 WebMvcConfigurationSupport Bean，则不会加载 WebMvcConfigurer，这时最好打印日志，告诉用户，由于自己装配了这个类，导致框架某些能力失效。

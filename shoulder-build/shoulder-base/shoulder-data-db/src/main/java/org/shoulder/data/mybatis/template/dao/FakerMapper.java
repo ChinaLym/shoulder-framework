@@ -60,8 +60,7 @@ public interface FakerMapper<ENTITY extends BaseEntity<? extends Serializable>> 
         throw createNotSupportException();
     }
 
-    @Override
-    default int deleteBatchIds(Collection<? extends Serializable> idList) {
+    default int deleteBatchIds(Collection<?> idList) {
         throw createNotSupportException();
     }
 
@@ -148,8 +147,7 @@ public interface FakerMapper<ENTITY extends BaseEntity<? extends Serializable>> 
         throw createNotSupportException();
     }
 
-    @Override
-    default Integer selectCount(Wrapper<ENTITY> queryWrapper) {
+    default Long selectCount(Wrapper<ENTITY> queryWrapper) {
         throw createNotSupportException();
     }
 

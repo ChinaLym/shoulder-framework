@@ -17,12 +17,12 @@ public class SessionTokenRepeatSubmitInterceptor extends BaseRejectRepeatSubmitI
     /**
      * 请求中 token 的参数名
      */
-    private String requestTokenName;
+    private final String requestTokenName;
 
     /**
      * 会话中 token 的 key
      */
-    private String sessionTokenName;
+    private final String sessionTokenName;
 
     public SessionTokenRepeatSubmitInterceptor(String requestTokenName, String sessionTokenName) {
         super();

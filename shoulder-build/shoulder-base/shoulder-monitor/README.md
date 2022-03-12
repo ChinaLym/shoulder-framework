@@ -211,7 +211,7 @@ prometheus.集的指标由`指标名称 metric name`、`标签 label name` 两�
 
 Spring Boot EndPoint
 
-- @EndPoint中的id不能使用驼峰法，需要以-分割
+- @EndPoint中的id~~不能使用驼峰法，需要以-分割，以规避大小写不敏感问题~~，新版本里不能用中划线，而是要求驼峰
 - @Spring Boot会去扫描@EndPoint注解下的 @ReadOperation, @WriteOperation, @DeleteOperation 注解，分别对应生成Get/Post/Delete的Mapping。
   注解中有个produces参数，可以指定media type, 如：application/json等。
 
