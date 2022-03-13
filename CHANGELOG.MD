@@ -1,8 +1,8 @@
 # 更新记录
 
-## 0.7（重大版本）
+## 0.7（较大更新）
 
-- shoulder 不再为除spring boot外的三方jar定制能力（如 mybatis-plus）以减少三分jar定制功能学习成本。
+- shoulder 不再为除spring boot外的三方jar定制能力（如 mybatis-plus）以减少三分jar定制功能学习成本，也不考虑没有spring上下文的情况，本框架强依赖Spring，定位为Spring的能力扩展。
 - 升级到了 SpringBoot 2.6.x,
   关于springfox升级注意事项[spring boot2.x升级到2.6](https://springfox.github.io/springfox/docs/snapshot/#migrating-from-existing-2-x-version)
 

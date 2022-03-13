@@ -26,24 +26,38 @@
 **高性能**（较上一层百倍性能提升）
 
 **[JMapper](https://github.com/jmapper-framework/jmapper-core/wiki)**
+
 - 配置更多（配置更灵活，但更繁琐）
 - 单次运行最快
 
 [MapStruct](https://github.com/mapstruct/mapstruct)
+
 - [官网](https://mapstruct.org/)
 - [https://www.baeldung.com/mapstruct](https://www.baeldung.com/mapstruct)
 - 单次运行较差
 - 原理为 JAP （与 `lombok` 类似）
+
+**Spring ConversionService**
+
+- Spring 官方提供接口，可以据此实现灵活的类转换，本质上是手写get/set，不存在反射等消耗性能操作
+- 需要手动写每个字段的映射，当然这也规避了字段名变更带来的潜在未赋值bug
+- 需要依赖 Spring 上下文，静态类不太友好，需要手动new ConversionService
 
 其他：Selma（与MapStruct设计类似，故应该有类似的性能，但由于其相对小众，暂不比较）
 
 ## 结论：
 
 单从性能上讲，MapStruct无疑是最佳选择，**JMapper** 性能也不错，但其需要的配置也更多，需要手动完成一些配置，且更新少，社区沉寂。
-又考虑到框架是为了方便使用者，降低使用者上手成本，且本框架作为服务端框架，忽略单次开销，**MapStruct**成了最佳的选择，
-且其基于注解的处理方式，消除了编译依赖，故 `Shoulder` 推荐使用 **[MapStruct](https://github.com/mapstruct/mapstruct)** 作为bean转换工具。
+又考虑到框架是为了方便使用者，降低使用者上手成本，且本框架作为服务端框架，忽略单次开销，**MapStruct**成了最佳的选择， 且其基于注解的处理方式，消除了编译依赖，故 `Shoulder`
+推荐使用 **[MapStruct](https://github.com/mapstruct/mapstruct)** 作为bean转换工具。
 
 快速入门：[https://blog.csdn.net/zhige_me/article/details/80699784](https://blog.csdn.net/zhige_me/article/details/80699784)
 
 参考：[https://www.baeldung.com/java-performance-mapping-frameworks](https://www.baeldung.com/java-performance-mapping-frameworks)
 [https://segmentfault.com/a/1190000020663215?utm_source=tag-newest](https://segmentfault.com/a/1190000020663215?utm_source=tag-newest)
+
+---
+
+## 0.7 版本补充：
+
+该模块即将废弃，推荐使用Spring的 `ConversionService`，手动映射，以避免字段名变更带来的潜在bug。

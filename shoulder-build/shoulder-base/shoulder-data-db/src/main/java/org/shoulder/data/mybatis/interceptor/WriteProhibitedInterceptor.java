@@ -1,31 +1,46 @@
 package org.shoulder.data.mybatis.interceptor;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.executor.statement.StatementHandler;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlCommandType;
+import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
+import org.shoulder.core.context.AppContext;
+import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.RegexpUtils;
+import org.shoulder.core.util.ServletUtil;
+
+import java.sql.Connection;
+import java.util.Arrays;
+import java.util.Properties;
+
 /**
  * 写权限控制 拦截器
  * 该拦截器常用于演示环境
  *
  * @author lym
  */
-/*
 @SuppressWarnings("AlibabaUndefineMagicConstant")
 @Slf4j
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
-public class ForbbidonWriteInterceptor extends AbstractSqlParserHandler implements Interceptor {
-
-    private final String[] allowList;
+public class WriteProhibitedInterceptor implements Interceptor {
 
     private final String[] importantDataList;
 
     private final String[] allowIpList;
 
-    public ForbbidonWriteInterceptor() {
-        allowList = new String[]{"uid", "resetPassErrorNum", "updateLastLoginTime"};
+    public WriteProhibitedInterceptor() {
         importantDataList = new String[]{"Tenant", "GlobalUser", "User", "Menu", "Resource", "Role", "Dictionary", "Parameter", "Application"};
         allowIpList = new String[]{"127.0.0.1"};
     }
 
-    public ForbbidonWriteInterceptor(String[] allowList, String[] importantDataList, String[] allowIpList) {
-        this.allowList = allowList;
+    public WriteProhibitedInterceptor(String[] importantDataList, String[] allowIpList) {
         this.importantDataList = importantDataList;
         this.allowIpList = allowIpList;
     }
@@ -34,20 +49,7 @@ public class ForbbidonWriteInterceptor extends AbstractSqlParserHandler implemen
     public Object intercept(Invocation invocation) throws Throwable {
         StatementHandler statementHandler = PluginUtils.realTarget(invocation.getTarget());
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-        sqlParser(metaObject);
         MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
-
-        // ip 白名单
-        if (ServletUtil.canGetRequest()) {
-            // 只处理可以获取到的，非请求触发 / 异步处理不能走白名单
-            String ip = ServletUtil.getRemoteAddress();
-            for (String allowIp : allowIpList) {
-                if (RegexpUtils.matches(ip, allowIp, true)) {
-                    // ip 白名单
-                    return invocation.proceed();
-                }
-            }
-        }
 
         // 读操作
         if (SqlCommandType.SELECT.equals(mappedStatement.getSqlCommandType())) {
@@ -76,21 +78,31 @@ public class ForbbidonWriteInterceptor extends AbstractSqlParserHandler implemen
             throw new BaseRuntimeException(CommonErrorCodeEnum.PERMISSION_DENY);
         }
 
+        // ip 白名单
+        if (ServletUtil.canGetRequest()) {
+            // 只处理可以获取到的，非请求触发 / 异步处理不能走白名单
+            String ip = ServletUtil.getRemoteAddress();
+            for (String allowIp : allowIpList) {
+                if (RegexpUtils.matches(ip, allowIp, true)) {
+                    // ip 白名单
+                    return invocation.proceed();
+                }
+            }
+        }
+
         //放行
         return invocation.proceed();
     }
 
-    */
-/**
- * 生成拦截对象的代理
- *
- * @param target 目标对象
- * @return 代理对象
- * <p>
- * mybatis配置的属性
- * @param properties mybatis配置的属性
- *//*
-
+    /**
+     * 生成拦截对象的代理
+     *
+     * @param target     目标对象
+     * @param properties mybatis配置的属性
+     * @return 代理对象
+     * <p>
+     * mybatis配置的属性
+     */
     @Override
     public Object plugin(Object target) {
         if (target instanceof StatementHandler) {
@@ -99,17 +111,14 @@ public class ForbbidonWriteInterceptor extends AbstractSqlParserHandler implemen
         return target;
     }
 
-    */
-/**
- * mybatis配置的属性
- *
- * @param properties mybatis配置的属性
- *//*
-
+    /**
+     * mybatis配置的属性
+     *
+     * @param properties mybatis配置的属性
+     */
     @Override
     public void setProperties(Properties properties) {
 
     }
 
 }
-*/
