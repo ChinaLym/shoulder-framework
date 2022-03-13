@@ -30,6 +30,7 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
+        <!-- Spring Boot 默认的 HikariCP 性能早就超过 druid 了，当然 druid 提供了更丰富的监控能力，但 shoulder 认为这不应该由应用程序承载该能力，而是依赖更专业的监控系统 -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>

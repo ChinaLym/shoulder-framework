@@ -16,6 +16,7 @@ public class PathFilterHelper {
 
     /**
      * 支持 ant 匹配
+     * 如果不用类似 |**|health 这种后缀匹配, PathPatternParser 性能会高一些
      */
     protected PathMatcher pathMatcher = new AntPathMatcher();
 
