@@ -78,6 +78,22 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
         return result;
     }
 
+    public static <T> boolean allNull(T[] arr) {
+        if(isEmpty(arr)) {
+            return true;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            if(arr[i] != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static <T> boolean notAllNull(T[] arr) {
+        return !allNull(arr);
+    }
+
     /**
      * 从数组中移除null的元素
      */
@@ -442,6 +458,14 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
         List<T> list = new ArrayList<T>(args.length + 16);
         list.addAll(Arrays.asList(args));
         return list;
+    }
+
+    public static String concatToStr(Object... objs) {
+        StringBuilder mergedStr = new StringBuilder();
+        for (Object obj : objs) {
+            mergedStr.append(obj);
+        }
+        return mergedStr.toString();
     }
 
     /**

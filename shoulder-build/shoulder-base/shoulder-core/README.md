@@ -37,9 +37,26 @@
 - 日期格式 yyyy-MM-dd
 - 日志 支持记录带错误码
 - HTTP RESTFUL 返回值
+- 日志划分：
+  - biz 摘要日志，记录一次请求关键信息：时间 / 业务 / 执行方法 / 结果 / 耗时
+  - 业务日志 info：记录执行信息
+  - 业务日志 warn 记录业务重要关注点，不常触发的兜底逻辑
+  - 业务日志 error 记录业务失败
+  - 通用 info/warn/error：业务无关代码 / 中间件依赖未分类时默认打印文件（理论都要分类）
+  - 通用 perf：记录线程池等表现，用于监控（可选，可以通过 endpoint 提供）
+  - integration-info
+  - integration-digest
+- 模块日志
+  - 超时上报的case，配置刷新，关键运行日志()
+  - 框架切面执行，耗时，异常、周期运行摘要、限流等
+    spring、core、mq、shoulder-common、shoulder-runtime（关键）、stdout.log、log-clean.log、gc.log、参数中心、mq等、sentinel、endpoint、thread、缓存、数据库、机器cpu等监控、tracelog
 
 [spring boot 注解解释](https://www.cnblogs.com/lovecindywang/p/9846846.html)
 
+## 插件
+提供加载机制，参考：
+https://gitee.com/core-lib/slot-maven-plugin
+https://github.com/zlt2000/springs-boot-plugin-test
 
 ## 简化异常日志处理
 
@@ -94,7 +111,7 @@ private static final org.shoulder.core.log.Logger log = org.shoulder.core.log.Lo
 
 #### Spring 多语言文件命名限制
  由于采用了 jdk 定义的 `ResourceBundle` 的思想加载多语言文件，故对多语言资源文件命名有 `ResourceBundle` 命名限制
- 
+
 #### Spring 的资源文件加载顺序
 默认共尝试加载7处
 - 按照传入 Locale，从详细到粗略加载一轮

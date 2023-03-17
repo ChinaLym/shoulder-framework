@@ -19,7 +19,22 @@ import javax.annotation.Nullable;
  * 当且shoulder 采用的以模块code区分，不够明显，不统一
  * <p>
  * 区分业务失败、业务状态未知
+ *      <br><b>新版本：</b></br>
+ *      <table border="1">
+ *           <tr>
+ *           <td><b>位置</b></td><td bgcolor="yellow">1</td><td bgcolor="yellow">2</td><td bgcolor="white">4</td><td bgcolor="red">4</td><td bgcolor="blue">5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td>
+ *          </tr>
+ *          <tr>
+ *           <td><b>示例</b></td><td>*</td><td>*</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>2</td><td>7</td><td>7</td><td>7</td><td>7</td><td>7</td>
+ *          </tr>
+ *          <tr>
+ *           <td><b>说明</b></td><td bgcolor="yellow" colspan=2>品牌<br>标识</td><td bgcolor="white">错<br>误<br>码<br>版<br>本</td><td bgcolor="red">错<br>误<br>级<br>别</td><td bgcolor="blue">错<br>误<br>类<br>型</td><td colspan=8>错误场景(8位)</td><td colspan=3>错误编<br>码(3位)</td>
+ *          </tr>
+ *      </table>
+ *      错误级别：INFO/WARN/ERROR/FATAL
+ *      错误类型：SYS / BIZ / THIRD
  *
+ * todo 支持错误码注册和查询
  * @author lym
  */
 public interface ErrorCode extends Translatable {
