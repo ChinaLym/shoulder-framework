@@ -3,9 +3,15 @@ package org.shoulder.validate.annotation;
 import org.shoulder.validate.validator.FileTypeValidator;
 import org.shoulder.validate.validator.JsonTypeValidator;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import java.lang.annotation.*;
 
 /**
  * 校验某 String 属性 不为空时，是否为 json 类型
@@ -28,4 +34,31 @@ public @interface JsonType {
 
     Class<? extends Payload>[] payload() default {};
 
+    FormType formType() default FormType.DEFAULT;
+
+    public static enum FormType {
+
+        /**
+         * 只要能被JSON PARSE就是合法的
+         */
+        DEFAULT,
+
+        /**
+         * 校验Json串能否转换成一个对象
+         */
+        OBJECT,
+
+        /**
+         * 校验Json串能否转换成一个MAP
+         */
+        MAP,
+
+        /**
+         * 校验Json串能否转换成一个LIST
+         */
+        LIST;
+
+        FormType() {
+        }
+    }
 }
