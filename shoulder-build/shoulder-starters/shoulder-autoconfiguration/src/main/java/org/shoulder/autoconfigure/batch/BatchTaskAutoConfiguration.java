@@ -48,13 +48,13 @@ public class BatchTaskAutoConfiguration {
     /**
      * 批处理线程池
      */
-    @Bean(BatchConstants.THREAD_NAME)
-    @ConditionalOnMissingBean(name = BatchConstants.THREAD_NAME)
+    @Bean(BatchConstants.BATCH_THREAD_POOL_NAME)
+    @ConditionalOnMissingBean(name = BatchConstants.BATCH_THREAD_POOL_NAME)
     public ThreadPoolExecutor shoulderBatchThreadPool() {
         // 默认使用 5 个线程
         return new ThreadPoolExecutor(5, 5,
-            60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
-            new CustomizableThreadFactory("shoulder-batch"));
+                60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
+                new CustomizableThreadFactory("shoulder-batch"));
     }
 
     /**

@@ -39,6 +39,12 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
         Threads.execute(genFlushProgressTask(task));
     }
 
+    @Override
+    public void triggerFlushProgress(BatchProgress batchProgress) {
+        importProgressCache.put(batchProgress.getTaskId(), batchProgress);
+        Threads.execute(genFlushProgressTask(batchProgress));
+    }
+
     /**
      * 获取任务进度
      *
@@ -68,5 +74,21 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
         };
     }
 
+    /**
+     * 创建一个刷进度的任务
+     *
+     * @param task 需要被刷进度的任务
+     * @return 刷进度的任务
+     */
+    private Runnable genFlushProgressTask(BatchProgress batchProgress) {
+        return () -> {
+            String id = batchProgress.getTaskId();
+            if (!batchProgress.hasFinish()) {
+                // 未处理完毕，仍需要执行这个任务
+                Threads.delay(genFlushProgressTask(batchProgress), 1, TimeUnit.SECONDS);
+            }
+            importProgressCache.put(id, batchProgress);
+        };
+    }
 
 }

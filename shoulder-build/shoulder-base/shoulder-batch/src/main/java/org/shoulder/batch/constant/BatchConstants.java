@@ -10,7 +10,7 @@ public interface BatchConstants {
     /**
      * 批处理专用线程池名
      */
-    String THREAD_NAME = "shoulderBatchThreadPool";
+    String BATCH_THREAD_POOL_NAME = "shoulderBatchThreadPool";
 
     String CSV = "csv";
 

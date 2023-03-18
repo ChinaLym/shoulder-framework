@@ -49,7 +49,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
      * 批处理线程池
      */
     @Autowired
-    @Qualifier(BatchConstants.THREAD_NAME)
+    @Qualifier(BatchConstants.BATCH_THREAD_POOL_NAME)
     private ThreadPoolExecutor batchThreadPool;
 
     @Autowired
