@@ -46,7 +46,7 @@ public class BatchManager implements Runnable, ProgressAble {
     /**
      * 线程池
      */
-    protected ExecutorService threadPool = ContextUtils.getBean(BatchConstants.THREAD_NAME);
+    protected ExecutorService threadPool = ContextUtils.getBean(BatchConstants.BATCH_THREAD_POOL_NAME);
 
     /**
      * 批量处理记录
