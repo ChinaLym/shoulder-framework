@@ -1,6 +1,6 @@
 package org.shoulder.batch.service.impl;
 
-import org.shoulder.batch.model.BatchProgress;
+import org.shoulder.batch.model.BatchProgressRecord;
 
 /**
  * 有进度的
@@ -14,6 +14,6 @@ public interface ProgressAble {
      *
      * @return 进度
      */
-    BatchProgress getBatchProgress();
+    BatchProgressRecord getBatchProgress();
 
 }

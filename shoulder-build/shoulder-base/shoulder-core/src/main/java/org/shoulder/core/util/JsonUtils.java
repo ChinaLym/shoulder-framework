@@ -5,10 +5,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -36,6 +33,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * JSON 和 Object 转换工具类
@@ -55,6 +53,19 @@ public class JsonUtils {
     public static String toJson(Object object) {
         try {
             return JSON_MAPPER.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new SerialException(e);
+        }
+    }
+
+    /**
+     * 序列化Object为 JSON 字符串
+     *
+     * @param object 待序列化对象
+     */
+    public static String toJson(Object object, Function<ObjectMapper, ObjectWriter> enhancer) {
+        try {
+            return enhancer.apply(JSON_MAPPER).writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new SerialException(e);
         }
@@ -188,12 +199,12 @@ public class JsonUtils {
     }
 
     public static ObjectMapper enhancer(ObjectMapper objectMapper) {
+        // 激活所有通过 spi 注册的模块，如接口响应多种格式，统一反序列化为标准的，需要自行实现 StdDeserializer，new SimpleModule().addDeserializer
+        objectMapper.findAndRegisterModules();
         // 添加 jdk8 新增的时间序列化处理模块
         objectMapper
                 .registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule())
-                // 对于时间等，用更宽松的取代默认严格的格式匹配
-                .registerModule(new DateEnhancerJacksonModule());
+                .registerModule(new JavaTimeModule());
 
         // 设置为配置中的统一 地区、时区、
         objectMapper
@@ -220,8 +231,9 @@ public class JsonUtils {
                 // 将 key 排序（更好的体验）
                 .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 
-        // 激活所有通过 spi 注册的模块，如接口响应多种格式，统一反序列化为标准的，需要自行实现 StdDeserializer，new SimpleModule().addDeserializer
-        objectMapper.findAndRegisterModules();
+        objectMapper
+                // 对于时间等，用更宽松的取代默认严格的格式匹配
+                .registerModule(new DateEnhancerJacksonModule());
         return objectMapper;
     }
 
@@ -249,6 +261,9 @@ public class JsonUtils {
         public DateEnhancerJacksonModule() {
             super(PackageVersion.VERSION);
 
+            // 枚举反序列化
+            this.addDeserializer(Enum.class, ShoulderEnumDeserializer.INSTANCE);
+
             // 解决 jdk8 日期序列化失败
             String dateFormatStr = "yyyy-MM-dd";
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(dateFormatStr);
@@ -264,9 +279,7 @@ public class JsonUtils {
             DateTimeFormatter datetimeFormat = DateTimeFormatter.ofPattern(datetimeFormatStr);
             this.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(datetimeFormat));
             this.addDeserializer(LocalDateTime.class, ShoulderLocalDateTimeDeserializer.INSTANCE);
-            this.addDeserializer(Enum.class, ShoulderEnumDeserializer.INSTANCE);
             // todo Date 是java旧的日期工具，暂不对其提供宽泛反序列化支持，后续版本支持
-            //  【考虑】LocalDate 支持带时间的，只取日期部分 LocalTime 同理
 
             // 解决 17位+的 Long 给前端导致精度丢失问题，前端将以 str 接收（序列换成json时,将所有的long变成string）
             // todo 【系统设计】JSON序列化时，枚举；long、BigInteger、BigDecimal 可以转为字符串处理
@@ -274,8 +287,6 @@ public class JsonUtils {
 //            this.addSerializer(Long.TYPE, ToStringSerializer.instance);
 //            this.addSerializer(BigInteger.class, ToStringSerializer.instance);
 //            this.addSerializer(BigDecimal.class, ToStringSerializer.instance);
-            //this.addSerializer(Long.class, ToStringSerializer.instance);
-            //this.addSerializer(Long.TYPE, ToStringSerializer.instance);
 
         }
     }

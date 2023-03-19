@@ -17,6 +17,13 @@ import org.shoulder.data.constant.DataBaseConsts;
 @SuppressWarnings("serial")
 public class SelectByBizId extends AbstractMethod {
 
+    /**
+     * @since 3.5.0
+     */
+    public SelectByBizId() {
+        super(DataBaseConsts.METHOD_SELECT_BY_BIZ_ID);
+    }
+
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         SqlMethod sqlMethod = SqlMethod.SELECT_BY_ID;
@@ -26,12 +33,7 @@ public class SelectByBizId extends AbstractMethod {
                 // change here
                 "biz_id", "bizId",
                 tableInfo.getLogicDeleteSql(true, true)), Object.class);
-        return this.addSelectMappedStatementForTable(mapperClass, getMethod(sqlMethod), sqlSource, tableInfo);
-    }
-
-    @Override
-    public String getMethod(SqlMethod sqlMethod) {
-        return DataBaseConsts.METHOD_SELECT_BY_BIZ_ID;
+        return this.addSelectMappedStatementForTable(mapperClass, methodName, sqlSource, tableInfo);
     }
 
 }

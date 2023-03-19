@@ -1,6 +1,5 @@
 package org.shoulder.data.mybatis.injector.methods;
 
-import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.extension.injector.methods.AlwaysUpdateSomeColumnById;
 import org.shoulder.data.constant.DataBaseConsts;
@@ -20,17 +19,8 @@ import java.util.function.Predicate;
 @SuppressWarnings("serial")
 public class UpdateAllFieldsById extends AlwaysUpdateSomeColumnById {
 
-    public UpdateAllFieldsById() {
-        super();
-    }
-
     public UpdateAllFieldsById(final Predicate<TableFieldInfo> predicate) {
-        super(predicate);
+        super(DataBaseConsts.METHOD_UPDATE_ALL_FIELDS_BY_ID, predicate);
     }
 
-    @Override
-    public String getMethod(SqlMethod sqlMethod) {
-        // 对应 mapper 里的方法名
-        return DataBaseConsts.METHOD_UPDATE_ALL_FIELDS_BY_ID;
-    }
 }

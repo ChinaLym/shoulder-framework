@@ -9,7 +9,7 @@ import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchData;
-import org.shoulder.batch.model.BatchProgress;
+import org.shoulder.batch.model.BatchProgressRecord;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.model.convert.BatchModelConvert;
@@ -88,7 +88,7 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     public BaseResult<BatchProcessResult> queryOperationProcess(String taskId) {
-        BatchProgress process = batchService.queryBatchProgress(taskId);
+        BatchProgressRecord process = batchService.queryBatchProgress(taskId);
         return BaseResult.success(BatchModelConvert.CONVERT.toDTO(process));
     }
 

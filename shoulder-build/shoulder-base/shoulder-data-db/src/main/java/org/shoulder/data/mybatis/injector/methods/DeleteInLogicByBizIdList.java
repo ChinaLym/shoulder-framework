@@ -1,12 +1,9 @@
 package org.shoulder.data.mybatis.injector.methods;
 
-import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
-
-import javax.annotation.Nullable;
 
 
 /**
@@ -18,6 +15,13 @@ import javax.annotation.Nullable;
  */
 @SuppressWarnings("serial")
 public class DeleteInLogicByBizIdList extends AbstractDeleteInLogicMethod {
+
+    /**
+     * @since 3.5.0
+     */
+    public DeleteInLogicByBizIdList() {
+        super(DataBaseConsts.METHOD_DELETE_LOGIC_BY_BIZ_ID_LIST);
+    }
 
     /**
      * 是否支持逻辑删除
@@ -34,12 +38,6 @@ public class DeleteInLogicByBizIdList extends AbstractDeleteInLogicMethod {
     protected String genWhereSql(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         return "biz_id in <foreach collection='entityList' item='entity' open='(' separator=',' close=')'>#{entity.bizId}</foreach>" +
                 " AND delete_version=0";
-    }
-
-    @Override
-    public String getMethod(@Nullable SqlMethod sqlMethod) {
-        // 对应 mapper 里的方法名
-        return DataBaseConsts.METHOD_DELETE_LOGIC_BY_BIZ_ID_LIST;
     }
 
 }

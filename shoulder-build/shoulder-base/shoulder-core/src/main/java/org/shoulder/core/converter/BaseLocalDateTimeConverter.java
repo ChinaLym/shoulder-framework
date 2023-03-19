@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.function.BiFunction;
 
 /**
- * 字符串转 JDK8 提供的日期或时间类型，模板方法
+ * 字符串 转 JDK8 提供的日期或时间类型，模板方法
  *
  * @author lym
  */

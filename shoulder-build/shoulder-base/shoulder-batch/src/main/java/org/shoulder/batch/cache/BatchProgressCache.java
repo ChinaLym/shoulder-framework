@@ -1,6 +1,6 @@
 package org.shoulder.batch.cache;
 
-import org.shoulder.batch.model.BatchProgress;
+import org.shoulder.batch.model.BatchProgressRecord;
 import org.shoulder.batch.service.impl.ProgressAble;
 
 /**
@@ -16,14 +16,14 @@ public interface BatchProgressCache {
      * @param id taskId
      * @return 任务
      */
-    BatchProgress getTaskProgress(String id);
+    BatchProgressRecord getTaskProgress(String id);
 
     /**
      * 触发异步刷进度（直接刷）
      *
      * @param batchProgress 进度
      */
-    void triggerFlushProgress(BatchProgress batchProgress);
+    void triggerFlushProgress(BatchProgressRecord batchProgress);
 
     /**
      * 触发异步刷进度（需要动态获取进度）

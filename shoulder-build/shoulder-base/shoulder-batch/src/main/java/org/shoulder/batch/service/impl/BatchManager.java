@@ -79,7 +79,7 @@ public class BatchManager implements Runnable, ProgressAble {
     /**
      * 当前进度
      */
-    protected BatchProgress progress;
+    protected BatchProgressRecord progress;
 
     /**
      * 本次任务结果汇总
@@ -107,7 +107,7 @@ public class BatchManager implements Runnable, ProgressAble {
         this.batchData.setFailList(ListUtils.emptyIfNull(batchData.getFailList()));
 
         // 初始化进度对象（保证在构造器中完成）
-        this.progress = new BatchProgress();
+        this.progress = new BatchProgressRecord();
         this.progress.setTaskId(UUID.randomUUID().toString());
         int total = batchData.getBatchListMap().values().stream()
             .map(List::size).reduce(Integer::sum).orElse(0);
@@ -402,7 +402,7 @@ public class BatchManager implements Runnable, ProgressAble {
     }
 
     @Override
-    public BatchProgress getBatchProgress() {
+    public BatchProgressRecord getBatchProgress() {
         return progress;
     }
 }

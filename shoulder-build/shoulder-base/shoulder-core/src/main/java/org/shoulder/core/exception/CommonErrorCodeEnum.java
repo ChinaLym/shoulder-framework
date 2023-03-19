@@ -93,7 +93,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     REQUEST_BODY_INCORRECT(204, "Entity format not supported.", Level.ERROR),
 
-    ILLEGAL_PARAM(200, "illegal param.", Level.ERROR),
+    ILLEGAL_PARAM(205, "illegal param.", Level.ERROR),
 
     // ----------------------- 作为服务提供者（要处理的HTTP请求参数校验未通过） ----------------------
 
@@ -140,6 +140,11 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      * 文件上传出错
      */
     MULTIPART_INVALID(334, "Request is not a validate multipart request, please check request or file size.", Level.WARN, HttpStatus.BAD_REQUEST),
+
+    /**
+     * 状态检查未通过
+     */
+    ILLEGAL_STATUS(340, "illegal status.", Level.ERROR),
 
     // ----------------------- 并发、达到瓶颈 error 级别 返回 500 ----------------------
 

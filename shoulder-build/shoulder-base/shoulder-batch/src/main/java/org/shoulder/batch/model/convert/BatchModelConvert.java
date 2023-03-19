@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordDetailResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
-import org.shoulder.batch.model.BatchProgress;
+import org.shoulder.batch.model.BatchProgressRecord;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
 
@@ -23,7 +23,7 @@ public interface BatchModelConvert {
     @Mapping(expression = "java((int) model.calculateProcessedTime())", target = "timeConsumed")
     @Mapping(expression = "java((int) model.calculateTimeLeft())", target = "timeLeft")
     @Mapping(expression = "java(model.hasFinish())", target = "finish")
-    BatchProcessResult toDTO(BatchProgress model);
+    BatchProcessResult toDTO(BatchProgressRecord model);
 
     @Mapping(source = "creator", target = "operator")
     @Mapping(source = "createTime", target = "executedTime")

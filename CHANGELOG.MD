@@ -2,9 +2,12 @@
 
 ## 0.7（较大更新）
 
-- shoulder 不再为除spring boot外的三方jar定制能力（如 mybatis-plus）以减少三分jar定制功能学习成本，也不考虑没有spring上下文的情况，本框架强依赖Spring，定位为Spring的能力扩展。
-- 升级到了 SpringBoot 2.6.x,
+- shoulder 不再为除spring boot外的三方jar定制能力（如
+  mybatis-plus）以减少三分jar定制功能学习成本，也不考虑没有spring上下文的情况，本框架强依赖Spring，定位为Spring的能力扩展。
+- 升级到了 **SpringBoot 2.7.x**,
   关于springfox升级注意事项[spring boot2.x升级到2.6](https://springfox.github.io/springfox/docs/snapshot/#migrating-from-existing-2-x-version)
+- 升级2.7注意： https://spring.io/blog/2022/05/19/spring-boot-2-7-0-available-now
+  - META-INF/spring.factories - META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
 
 - DB
   - 自动判断是否存在分布式事务问题，默认仅开发时生效
@@ -12,14 +15,23 @@
     - 且该方法是写的（CUD）支持扩展这里
     - 拿到数据源
     - 判断是否是同一个事务管理器（不是则可能有分布式事务问题）
-      - !null && 正在事务 && TransactionSynchronizationManager.getResource(dataSource) == null || 它的 isTransactionActive 为
+      - !null && 正在事务 && TransactionSynchronizationManager.getResource(dataSource) == null || 它的
+        isTransactionActive 为
         false
+
+- core
+  - 调整部分内置错误码定义
+  - json 日期格式按照统一设置
+
+- autoconfiguration
+  - 兼容性优化：调整功能自动激活逻辑，增加部分功能关闭开关
 
 - 操作日志
   - 优化扩展，支持自定义解析逻辑，以支持在记录操作日志时，同时记录其他信息:OperationLoggerInterceptor
 
 - batch
   - 批处理模块支持导出导出，进度条等基本逻辑，上升至无依赖任务批处理
+  - 新增支持并发 process，允许单独使用
 
 - log
   - Logger 分割，定义更明确，以满足更多的日志文件划分方式，以应对大业务量的场景
@@ -38,7 +50,7 @@
 
 - 依赖升级
 ```bash
-springboot 2.4.5 -> 2.6.4
+springboot 2.4.5 -> 2.7.9
 spring-cloud 2020.0.2 -> 2021.0.1
 swagger2 1.6.2 -> 1.6.5（默认不引入）
 swagger3 2.1.9 -> 2.1.13（默认不引入）

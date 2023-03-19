@@ -1,6 +1,6 @@
 package org.shoulder.batch.cache;
 
-import org.shoulder.batch.model.BatchProgress;
+import org.shoulder.batch.model.BatchProgressRecord;
 import org.shoulder.batch.service.impl.ProgressAble;
 import org.shoulder.core.concurrent.Threads;
 import org.springframework.cache.Cache;
@@ -17,15 +17,15 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     /**
      * 允许进度以多种方式保存在其他地方，如 redis
      */
-    private final Cache importProgressCache;
+    private final Cache progressCache;
 
     /**
      * 缓存名
      */
-    public static final String CACHE_NAME = "importProgressCache";
+    public static final String CACHE_NAME = "shoulder-batch-progressCache_DEFAULT";
 
-    public DefaultBatchProgressCache(Cache importProgressCache) {
-        this.importProgressCache = importProgressCache;
+    public DefaultBatchProgressCache(Cache progressCache) {
+        this.progressCache = progressCache;
     }
 
     /**
@@ -35,13 +35,13 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      */
     @Override
     public void triggerFlushProgress(ProgressAble task) {
-        importProgressCache.put(task.getBatchProgress().getTaskId(), task.getBatchProgress());
+        progressCache.put(task.getBatchProgress().getTaskId(), task.getBatchProgress());
         Threads.execute(genFlushProgressTask(task));
     }
 
     @Override
-    public void triggerFlushProgress(BatchProgress batchProgress) {
-        importProgressCache.put(batchProgress.getTaskId(), batchProgress);
+    public void triggerFlushProgress(BatchProgressRecord batchProgress) {
+        progressCache.put(batchProgress.getTaskId(), batchProgress);
         Threads.execute(genFlushProgressTask(batchProgress));
     }
 
@@ -52,9 +52,9 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      * @return 任务
      */
     @Override
-    public BatchProgress getTaskProgress(String id) {
-        Cache.ValueWrapper valueWrapper = importProgressCache.get(id);
-        return valueWrapper == null ? null : (BatchProgress) valueWrapper.get();
+    public BatchProgressRecord getTaskProgress(String id) {
+        Cache.ValueWrapper valueWrapper = progressCache.get(id);
+        return valueWrapper == null ? null : (BatchProgressRecord) valueWrapper.get();
     }
 
     /**
@@ -70,7 +70,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
                 // 未处理完毕，仍需要执行这个任务
                 Threads.delay(genFlushProgressTask(task), 1, TimeUnit.SECONDS);
             }
-            importProgressCache.put(id, task.getBatchProgress());
+            progressCache.put(id, task.getBatchProgress());
         };
     }
 
@@ -80,14 +80,14 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      * @param task 需要被刷进度的任务
      * @return 刷进度的任务
      */
-    private Runnable genFlushProgressTask(BatchProgress batchProgress) {
+    private Runnable genFlushProgressTask(BatchProgressRecord batchProgress) {
         return () -> {
             String id = batchProgress.getTaskId();
             if (!batchProgress.hasFinish()) {
                 // 未处理完毕，仍需要执行这个任务
                 Threads.delay(genFlushProgressTask(batchProgress), 1, TimeUnit.SECONDS);
             }
-            importProgressCache.put(id, batchProgress);
+            progressCache.put(id, batchProgress);
         };
     }
 

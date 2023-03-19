@@ -2,7 +2,7 @@ package org.shoulder.batch.service;
 
 
 import org.shoulder.batch.model.BatchData;
-import org.shoulder.batch.model.BatchProgress;
+import org.shoulder.batch.model.BatchProgressRecord;
 import org.shoulder.batch.service.ext.BatchTaskSliceHandler;
 import org.shoulder.core.context.AppContext;
 
@@ -63,6 +63,6 @@ public interface BatchService {
      * @param taskId 用户信息
      * @return Object 批量进度或者结果
      */
-    BatchProgress queryBatchProgress(String taskId);
+    BatchProgressRecord queryBatchProgress(String taskId);
 
 }
