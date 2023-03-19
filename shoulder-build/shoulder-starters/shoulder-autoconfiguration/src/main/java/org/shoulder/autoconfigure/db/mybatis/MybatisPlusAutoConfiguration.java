@@ -21,12 +21,12 @@ import org.shoulder.data.uid.BizIdGenerator;
 import org.shoulder.data.uid.DefaultEntityIdGenerator;
 import org.shoulder.data.uid.EntityIdGenerator;
 import org.shoulder.data.uid.KeyFieldsBizIdGenerator;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 import java.util.List;
@@ -37,7 +37,7 @@ import java.util.StringJoiner;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(MybatisPlusVersion.class)
 @EnableConfigurationProperties(DatabaseProperties.class)
 public class MybatisPlusAutoConfiguration {

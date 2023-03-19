@@ -5,11 +5,11 @@ import org.shoulder.cluster.lock.redis.RedisLock;
 import org.shoulder.core.lock.ServerLock;
 import org.shoulder.core.lock.impl.JdbcLock;
 import org.shoulder.core.lock.impl.MemoryLock;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
@@ -20,7 +20,7 @@ import javax.sql.DataSource;
  *
  * @author lym
  */
-@Configuration
+@AutoConfiguration
 @ConditionalOnClass(ServerLock.class)
 public class LockAutoConfiguration {
 
@@ -37,7 +37,7 @@ public class LockAutoConfiguration {
     }
 
 
-    @Configuration
+    @AutoConfiguration
     @ConditionalOnClass(DataSource.class)
     @ConditionalOnProperty(name = "shoulder.lock.type", havingValue = "jdbc")
     static class JdbcLockAutoConfiguration {
@@ -53,7 +53,7 @@ public class LockAutoConfiguration {
     }
 
 
-    @Configuration
+    @AutoConfiguration
     @ConditionalOnClass(RedisTemplate.class)
     @ConditionalOnProperty(name = "shoulder.lock.type", havingValue = "redis")
     static class RedisLockAutoConfiguration {

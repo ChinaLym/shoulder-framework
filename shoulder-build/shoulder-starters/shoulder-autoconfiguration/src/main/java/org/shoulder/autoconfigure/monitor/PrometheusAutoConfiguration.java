@@ -8,11 +8,11 @@ import org.shoulder.monitor.MetricsConst;
 import org.shoulder.monitor.concurrent.ThreadPoolMetrics;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Nonnull;
 
@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
  * @author lym
  */
 @ConditionalOnClass(MetricsConst.class)
-@Configuration
+@AutoConfiguration
 public class PrometheusAutoConfiguration implements ApplicationContextAware {
 
     /**

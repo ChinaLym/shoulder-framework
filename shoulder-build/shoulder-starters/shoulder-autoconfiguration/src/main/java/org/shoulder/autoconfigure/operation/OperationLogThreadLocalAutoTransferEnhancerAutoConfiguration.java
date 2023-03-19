@@ -1,10 +1,10 @@
 package org.shoulder.autoconfigure.operation;
 
 import org.shoulder.log.operation.async.OperationLogThreadLocalAutoTransferEnhancer;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * 日志自动跨线程
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @author lym
  */
 @ConditionalOnClass(OperationLogThreadLocalAutoTransferEnhancer.class)
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLogThreadLocalAutoTransferEnhancerAutoConfiguration {
 

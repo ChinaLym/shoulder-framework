@@ -2,10 +2,10 @@ package org.shoulder.autoconfigure.core.current;
 
 import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.util.ContextUtils;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 public class ThreadAutoConfiguration {
 
     @Bean(Threads.SHOULDER_THREAD_POOL_NAME)

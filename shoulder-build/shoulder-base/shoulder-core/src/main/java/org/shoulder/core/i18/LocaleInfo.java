@@ -46,7 +46,7 @@ public final class LocaleInfo implements BaseLocaleContext, Cloneable {
 
     // todo 【国际化】可考虑为每种语言独立设置
     @Nonnull
-    private final String dateTimeFormat = AppInfo.UTC_DATE_TIME_FORMAT;
+    private final String dateTimeFormat = AppInfo.dateTimeFormat();
 
     public LocaleInfo(@NonNull Locale locale, @NonNull TimeZone timeZone, @NonNull Charset charset) {
         this.locale = locale;

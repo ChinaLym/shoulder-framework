@@ -4,11 +4,11 @@ import org.shoulder.autoconfigure.apidoc.util.RequestHandlerSelectors;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.support.Sensitive;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author lym
  */
-@Configuration
+@AutoConfiguration
 @ConditionalOnClass(value = {NegotiationConstants.class, Docket.class})
 @ConditionalOnProperty(value = "shoulder.apidoc.sensitive.enable", havingValue = "true", matchIfMissing = true)
 public class ShoulderSensitiveApiGroupAutoConfiguration {

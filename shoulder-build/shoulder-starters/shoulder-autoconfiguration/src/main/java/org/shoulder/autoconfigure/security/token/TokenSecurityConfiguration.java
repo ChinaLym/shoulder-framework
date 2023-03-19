@@ -9,12 +9,11 @@ import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,9 +32,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
  * @author lym
  */
 @EnableWebSecurity// 就算不写 spring boot 也会自动识别。WebSecurityEnablerConfiguration
-@Configuration
+@AutoConfiguration(after = TokenAuthBeanConfiguration.class)
 @ConditionalOnClass(SecurityConst.class)
-@AutoConfigureAfter(value = TokenAuthBeanConfiguration.class)
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
 @ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
 @ConditionalOnProperty(name = "shoulder.security.auth.token.default-config", havingValue = "enable", matchIfMissing = true)

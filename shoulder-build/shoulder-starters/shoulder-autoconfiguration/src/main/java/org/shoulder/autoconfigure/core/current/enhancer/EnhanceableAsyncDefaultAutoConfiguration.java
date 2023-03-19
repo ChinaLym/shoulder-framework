@@ -1,15 +1,15 @@
 package org.shoulder.autoconfigure.core.current.enhancer;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * 默认的自动装配
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 public class EnhanceableAsyncDefaultAutoConfiguration {
 
     /**

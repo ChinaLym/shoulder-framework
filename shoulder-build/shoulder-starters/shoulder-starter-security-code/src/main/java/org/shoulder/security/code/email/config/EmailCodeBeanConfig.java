@@ -6,11 +6,10 @@ import org.shoulder.security.code.email.EmailCodeGenerator;
 import org.shoulder.security.code.email.EmailCodeProcessor;
 import org.shoulder.security.code.email.EmailCodeSender;
 import org.shoulder.security.code.email.MockEmailCodeSender;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
@@ -18,8 +17,7 @@ import org.springframework.context.annotation.Profile;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore(ValidateCodeBeanConfig.class)
+@AutoConfiguration(before = ValidateCodeBeanConfig.class)
 @EnableConfigurationProperties(EmailCodeProperties.class)
 public class EmailCodeBeanConfig {
 

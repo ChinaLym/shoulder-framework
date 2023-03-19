@@ -9,12 +9,12 @@ import org.shoulder.web.interceptor.HttpLocaleInterceptor;
 import org.shoulder.web.interceptor.SessionTokenRepeatSubmitInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -25,11 +25,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnWebApplication
 public class WebMvcAutoConfiguration {
 
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnClass(HttpLocaleInterceptor.class)
     protected static class LocaleInterceptorWebConfig implements WebMvcConfigurer {
         @Override
@@ -39,7 +39,7 @@ public class WebMvcAutoConfiguration {
         }
     }
 
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnClass(SensitiveRequestDecryptHandlerInterceptor.class)
     protected static class NegotiationInterceptorWebConfig implements WebMvcConfigurer {
 
@@ -58,7 +58,7 @@ public class WebMvcAutoConfiguration {
         }
     }
 
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnClass(SessionTokenRepeatSubmitInterceptor.class)
     @ConditionalOnProperty(name = "shoulder.web.repeatSubmit.enable", havingValue = "true", matchIfMissing = true)
     protected static class RejectRepeatSubmitWebConfig implements WebMvcConfigurer {

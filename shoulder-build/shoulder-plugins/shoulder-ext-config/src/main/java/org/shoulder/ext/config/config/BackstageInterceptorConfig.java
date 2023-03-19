@@ -5,13 +5,12 @@ import org.shoulder.ext.common.constant.ShoulderExtConstants;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 /**
  * @author lym
  */
-@Configuration
+//@AutoConfiguration // fixme 该类未测试！！！ 未自动装配
 public class BackstageInterceptorConfig {
 
     private static final String EXPRESSION

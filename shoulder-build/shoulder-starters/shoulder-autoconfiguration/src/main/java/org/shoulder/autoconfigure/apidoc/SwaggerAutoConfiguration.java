@@ -5,11 +5,11 @@ import org.shoulder.autoconfigure.apidoc.util.RequestHandlerSelectors;
 import org.shoulder.core.context.AppInfo;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
@@ -38,14 +38,14 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableSwagger2
 @Import(BeanValidatorPluginsConfiguration.class)
 @ConditionalOnClass(value = {Docket.class})
 @ConditionalOnProperty(value = "shoulder.apidoc.default.enable", havingValue = "true", matchIfMissing = true)
 public class SwaggerAutoConfiguration {
 
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnClass(EnableKnife4j.class)
     @EnableKnife4j
     public static class EnableKnife4jEnhance {
@@ -87,7 +87,7 @@ public class SwaggerAutoConfiguration {
     /**
      * Spring Boot 2.6 与 swagger 不兼容解决
      */
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnClass(WebMvcRequestHandlerProvider.class)
     public static class FixNpeForSpringfoxHandlerProviderBeanPostProcessorConfiguration {
 

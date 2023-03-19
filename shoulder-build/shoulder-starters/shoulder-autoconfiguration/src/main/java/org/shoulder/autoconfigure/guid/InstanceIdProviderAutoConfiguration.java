@@ -6,13 +6,13 @@ import org.shoulder.cluster.guid.RedisInstanceIdProvider;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.guid.FixedInstanceIdProvider;
 import org.shoulder.core.guid.InstanceIdProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -20,7 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  *
  * @author lym
  */
-@Configuration
+@AutoConfiguration
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 @ConditionalOnClass(InstanceIdProvider.class)
 @EnableConfigurationProperties(InstanceIdProperties.class)

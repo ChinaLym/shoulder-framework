@@ -4,13 +4,12 @@ import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticateService;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityConfig;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,10 +26,9 @@ import java.util.List;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration(after = AuthenticationHandlerConfig.class)
 @EnableConfigurationProperties(AuthenticationProperties.class)
 @ConditionalOnClass(SecurityConst.class)
-@AutoConfigureAfter(AuthenticationHandlerConfig.class)
 public class AuthenticationBeanConfig {
 
     /**

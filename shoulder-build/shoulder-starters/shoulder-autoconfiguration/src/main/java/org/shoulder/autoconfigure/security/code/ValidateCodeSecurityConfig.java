@@ -3,10 +3,9 @@ package org.shoulder.autoconfigure.security.code;
 import org.shoulder.code.ValidateCodeFilter;
 import org.shoulder.code.consts.ValidateCodeConsts;
 import org.shoulder.code.processor.ValidateCodeProcessor;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
@@ -18,8 +17,7 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
  * @author lym
  */
 @ConditionalOnClass(ValidateCodeConsts.class)
-@Configuration(proxyBeanMethods = false)
-@AutoConfigureAfter(ValidateCodeBeanConfig.class)
+@AutoConfiguration(after = ValidateCodeBeanConfig.class)
 @ConditionalOnBean(value = {ValidateCodeProcessor.class})
 public class ValidateCodeSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
