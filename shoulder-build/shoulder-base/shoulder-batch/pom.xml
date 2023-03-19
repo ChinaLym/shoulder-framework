@@ -88,7 +88,6 @@
         <dependency>
             <groupId>com.univocity</groupId>
             <artifactId>univocity-parsers</artifactId>
-            <version>2.9.1</version>
             <optional>true</optional>
         </dependency>
 
@@ -96,7 +95,6 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.16</version>
             <optional>true</optional>
         </dependency>
 

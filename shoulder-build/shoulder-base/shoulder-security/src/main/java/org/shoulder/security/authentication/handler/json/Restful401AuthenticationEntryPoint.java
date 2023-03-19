@@ -1,10 +1,10 @@
 package org.shoulder.security.authentication.handler.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -28,13 +28,13 @@ public class Restful401AuthenticationEntryPoint implements AuthenticationEntryPo
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.info("need auth 401 for: " + authException.getMessage(), authException);
+
         BaseResult<Void> result = BaseResult.error(CommonErrorCodeEnum.AUTH_401_EXPIRED);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
         response.setCharacterEncoding(AppInfo.charset().toString());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String resBody = objectMapper.writeValueAsString(result);
+
+        String resBody = JsonUtils.toJson(result);
         PrintWriter printWriter = response.getWriter();
         printWriter.print(resBody);
         printWriter.flush();

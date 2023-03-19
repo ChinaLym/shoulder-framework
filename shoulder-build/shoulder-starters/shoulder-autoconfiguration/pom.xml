@@ -86,6 +86,19 @@
             <artifactId>shoulder-batch</artifactId>
             <optional>true</optional>
         </dependency>
+        <!-- https://github.com/uniVocity/univocity-parsers/releases -->
+        <dependency>
+            <groupId>com.univocity</groupId>
+            <artifactId>univocity-parsers</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- xml 转换 https://github.com/x-stream/xstream/releases -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <dependency>
             <groupId>cn.itlym</groupId>

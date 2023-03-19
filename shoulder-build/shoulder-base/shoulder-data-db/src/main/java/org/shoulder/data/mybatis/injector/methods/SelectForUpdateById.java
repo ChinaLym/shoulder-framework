@@ -18,6 +18,7 @@ import org.shoulder.data.constant.DataBaseConsts;
 public class SelectForUpdateById extends AbstractMethod {
 
     public SelectForUpdateById() {
+        super(DataBaseConsts.METHOD_SELECT_FOR_UPDATE_BY_ID);
     }
 
     private static final String SQL_SELECT_FOR_UPDATE = SqlMethod.SELECT_BY_ID.getSql() + " FOR UPDATE";
@@ -37,11 +38,7 @@ public class SelectForUpdateById extends AbstractMethod {
                 Object.class
         );
 
-        return this.addSelectMappedStatementForTable(mapperClass, this.getMethod(null), sqlSource, tableInfo);
+        return this.addSelectMappedStatementForTable(mapperClass, methodName, sqlSource, tableInfo);
     }
 
-    @Override
-    public String getMethod(SqlMethod sqlMethod) {
-        return DataBaseConsts.METHOD_SELECT_FOR_UPDATE_BY_ID;
-    }
 }

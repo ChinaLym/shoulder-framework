@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.batch;
 
+import com.univocity.parsers.csv.CsvWriter;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.batch.cache.BatchProgressCache;
 import org.shoulder.batch.cache.DefaultBatchProgressCache;
@@ -11,6 +12,7 @@ import org.shoulder.batch.repository.JdbcBatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.JdbcBatchRecordPersistentService;
 import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.impl.CsvExporter;
+import org.shoulder.batch.service.impl.DataExporter;
 import org.shoulder.batch.service.impl.DefaultBatchExportService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -29,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 批处理相关自动装配
+ * 默认只提供 BatchProgressCache，方便使用管理进度，未激活其他功能
  *
  * @author lym
  */
@@ -36,10 +39,23 @@ import java.util.concurrent.TimeUnit;
 @Configuration(proxyBeanMethods = false)
 public class BatchTaskAutoConfiguration {
 
+
+    /**
+     * csvImpl
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(CsvWriter.class)
+    public CsvExporter csvExporter() {
+        return new CsvExporter();
+    }
+
+
     /**
      * service
      */
     @Bean
+    @ConditionalOnBean(DataExporter.class)
     @ConditionalOnMissingBean
     public BatchAndExportService batchAndExportService() {
         return new DefaultBatchExportService();
@@ -104,15 +120,6 @@ public class BatchTaskAutoConfiguration {
         public BatchRecordDetailPersistentService batchRecordDetailPersistentService(DataSource dataSource) {
             return new JdbcBatchRecordDetailPersistentService(dataSource);
         }
-    }
-
-    /**
-     * csvImpl
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public CsvExporter csvExporter() {
-        return new CsvExporter();
     }
 
 }

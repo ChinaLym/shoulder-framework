@@ -48,10 +48,10 @@ import java.util.Objects;
  */
 @Aspect
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(OperationLogDTO.class)
+@ConditionalOnClass(value = {OperationLogDTO.class, ProceedingJoinPoint.class})
 @AutoConfigureAfter(value = {
-    OperationLoggerAutoConfiguration.class,
-    OperationLogParamConverterAutoConfiguration.class
+        OperationLoggerAutoConfiguration.class,
+        OperationLogParamConverterAutoConfiguration.class
 })
 @EnableConfigurationProperties(OperationLogProperties.class)
 @ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)

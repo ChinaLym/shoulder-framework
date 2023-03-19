@@ -18,6 +18,7 @@ import org.shoulder.data.constant.DataBaseConsts;
 public class SelectBatchForUpdateByBizIds extends AbstractMethod {
 
     public SelectBatchForUpdateByBizIds() {
+        super(DataBaseConsts.METHOD_SELECT_BATCH_FOR_UPDATE_BY_BIZ_IDS);
     }
 
     private static final String SQL_SELECT_FOR_UPDATE = "<script>SELECT %s FROM %s WHERE biz_id IN (%s) %s FOR UPDATE</script>";
@@ -29,13 +30,8 @@ public class SelectBatchForUpdateByBizIds extends AbstractMethod {
                 sqlSelectColumns(tableInfo, false), tableInfo.getTableName(),
                 // change here
                 "biz_id",
-                SqlScriptUtils.convertForeach("#{item}", COLLECTION, null, "item", COMMA),
+                SqlScriptUtils.convertForeach("#{item}", COLL, null, "item", COMMA),
                 tableInfo.getLogicDeleteSql(true, true)), Object.class);
-        return addSelectMappedStatementForTable(mapperClass, getMethod(sqlMethod), sqlSource, tableInfo);
-    }
-
-    @Override
-    public String getMethod(SqlMethod sqlMethod) {
-        return DataBaseConsts.METHOD_SELECT_BATCH_FOR_UPDATE_BY_BIZ_IDS;
+        return addSelectMappedStatementForTable(mapperClass, methodName, sqlSource, tableInfo);
     }
 }

@@ -1,0 +1,3 @@
+org.shoulder.security.code.img.config.ImageCodeBeanConfig
+org.shoulder.security.code.sms.config.SmsCodeBeanConfig
+org.shoulder.security.code.email.config.EmailCodeBeanConfig

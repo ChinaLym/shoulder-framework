@@ -22,6 +22,14 @@ import org.shoulder.data.mybatis.template.entity.LogicDeleteEntity;
 @SuppressWarnings("serial")
 public abstract class AbstractDeleteInLogicMethod extends AbstractMethod {
 
+    /**
+     * @param methodName 方法名
+     * @since 3.5.0
+     */
+    protected AbstractDeleteInLogicMethod(String methodName) {
+        super(methodName);
+    }
+
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         if (!support(mapperClass, modelClass, tableInfo)) {
@@ -39,7 +47,7 @@ public abstract class AbstractDeleteInLogicMethod extends AbstractMethod {
                 genWhereSql(mapperClass, modelClass, tableInfo)
         );
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
-        return addUpdateMappedStatement(mapperClass, modelClass, getMethod(null), sqlSource);
+        return addUpdateMappedStatement(mapperClass, modelClass, methodName, sqlSource);
     }
 
     /**

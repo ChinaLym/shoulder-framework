@@ -16,11 +16,11 @@ import org.shoulder.data.constant.DataBaseConsts;
  */
 @SuppressWarnings("serial")
 public class SelectBatchForUpdateByIds extends AbstractMethod {
+    private static final String SQL_SELECT_FOR_UPDATE = SqlMethod.SELECT_BATCH_BY_IDS.getSql() + " FOR UPDATE";
 
     public SelectBatchForUpdateByIds() {
+        super(DataBaseConsts.METHOD_SELECT_BATCH_FOR_UPDATE_BY_IDS);
     }
-
-    private static final String SQL_SELECT_FOR_UPDATE = SqlMethod.SELECT_BATCH_BY_IDS.getSql() + " FOR UPDATE";
 
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
@@ -37,11 +37,7 @@ public class SelectBatchForUpdateByIds extends AbstractMethod {
                 Object.class
         );
 
-        return this.addSelectMappedStatementForTable(mapperClass, this.getMethod(null), sqlSource, tableInfo);
+        return this.addSelectMappedStatementForTable(mapperClass, methodName, sqlSource, tableInfo);
     }
 
-    @Override
-    public String getMethod(SqlMethod sqlMethod) {
-        return DataBaseConsts.METHOD_SELECT_BATCH_FOR_UPDATE_BY_IDS;
-    }
 }

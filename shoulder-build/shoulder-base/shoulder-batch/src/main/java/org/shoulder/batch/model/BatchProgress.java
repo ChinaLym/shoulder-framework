@@ -2,12 +2,20 @@ package org.shoulder.batch.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.shoulder.batch.service.impl.ProgressAble;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AssertUtils;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
- * 批量处理进度模型
+ * 批量处理进度并发模型
  * <p>
  * 没有进度条、预计剩余时间，已使用时间的等，这些可以通过给的字段计算，因此不给
  *
@@ -15,7 +23,8 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
-public class BatchProgress implements Serializable {
+@ThreadSafe
+public class BatchProgress implements Serializable, ProgressAble {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,66 +36,69 @@ public class BatchProgress implements Serializable {
     /**
      * 任务开始执行的时间
      */
-    private long startTime;
+    private LocalDateTime startTime;
 
     /**
      * 任务停止时间
      */
-    private long stopTime;
+    private LocalDateTime stopTime;
 
     /**
      * 任务需要处理的记录总数
      */
-    private int total;
+    private AtomicInteger total = new AtomicInteger();
 
     /**
      * 任务已经处理的记录数
      */
-    private int processed;
+    private AtomicInteger processed = new AtomicInteger();
 
     /**
      * 成功数
      */
-    private int successNum;
+    private AtomicInteger successNum = new AtomicInteger();
 
     /**
      * 失败数
      */
-    private int failNum;
+    private AtomicInteger failNum = new AtomicInteger();
 
     /**
      * 状态：
      * 0 未开始，1 执行中，2 异常结束，3正常结束
      */
-    public int status;
+    private AtomicInteger status = new AtomicInteger();
 
     public void start() {
-        status = 1;
-        startTime = System.currentTimeMillis();
-        if (total == 0) {
-            finish();
-        }
+        // 只能从未开始到开始
+        AssertUtils.notBlank(taskId, CommonErrorCodeEnum.ILLEGAL_STATUS);
+
+        AssertUtils.isTrue(status.compareAndSet(ProcessStatusEnum.WAITING.getCode(), ProcessStatusEnum.RUNNING.getCode()), CommonErrorCodeEnum.ILLEGAL_STATUS);
+        startTime = LocalDateTime.now();
+//        if (total.get() == 0) {
+//            AssertUtils.isTrue(status.compareAndSet(1, 3), CommonErrorCodeEnum.ILLEGAL_STATUS);
+//        }
     }
 
-    public void failStop() {
-        status = 2;
-        stopTime = System.currentTimeMillis();
+    public int setTotal(int total) {
+        return this.total.getAndSet(total);
     }
 
-    public void finish() {
-        assert total == processed;
-        status = 3;
-        stopTime = System.currentTimeMillis();
+    public int failStop() {
+        int oldStatus = status.getAndSet(ProcessStatusEnum.EXCEPTION.getCode());
+        stopTime = LocalDateTime.now();
+        return oldStatus;
+    }
+
+    public int finish() {
+        AssertUtils.equals(processed.get(), total.get(), CommonErrorCodeEnum.ILLEGAL_STATUS);
+        int oldStatus = status.getAndSet(ProcessStatusEnum.EXCEPTION.getCode());
+        stopTime = LocalDateTime.now();
+        return oldStatus;
     }
 
     public boolean hasFinish() {
-        if (status > 1) {
-            return true;
-        } else if (total == processed) {
-            status = 3;
-            return true;
-        }
-        return false;
+        return status.get() > ProcessStatusEnum.RUNNING.getCode();
     }
 
     /**
@@ -95,10 +107,13 @@ public class BatchProgress implements Serializable {
      * @return 已经花费的时间
      */
     public long calculateProcessedTime() {
-        if (hasFinish()) {
-            return stopTime - startTime;
+        if (status.get() == ProcessStatusEnum.WAITING.getCode()) {
+            return 0;
         }
-        return System.currentTimeMillis() - startTime;
+        if (hasFinish()) {
+            return Duration.between(startTime, stopTime).toMillis();
+        }
+        return Duration.between(startTime, LocalDateTime.now()).toMillis();
     }
 
     /**
@@ -111,7 +126,9 @@ public class BatchProgress implements Serializable {
             return 1;
         }
         // 即将完成 99%
-        return this.processed == total ? 0.999F : this.processed / (float) total;
+        int process = this.processed.get();
+        int totalNum = this.total.get();
+        return process == totalNum ? 0.999F : process / (float) totalNum;
     }
 
     /**
@@ -123,39 +140,52 @@ public class BatchProgress implements Serializable {
         if (hasFinish()) {
             return 0L;
         }
-        if (processed == 0) {
-            // 默认 15分钟
-            return 900_000;
+        int processedNum = processed.get();
+        int totalNum = total.get();
+        if (processedNum == 0) {
+            // 默认 30 分钟
+            return Duration.of(30, ChronoUnit.MINUTES).toMillis();
         }
-        return (calculateProcessedTime() / processed * (total - processed));
+        return (calculateProcessedTime() / processedNum * (totalNum - processedNum));
     }
 
     @Override
     public String toString() {
         return "BatchProgress{" +
-            "taskId='" + taskId + '\'' +
-            ", total=" + total +
-            ", processed=" + processed +
-            ", startTime=" + startTime +
-            ", status=" + status +
-            '}';
+                "taskId='" + taskId + '\'' +
+                ", total=" + total +
+                ", processed=" + processed +
+                ", startTime=" + startTime +
+                ", status=" + status +
+                '}';
     }
 
-    public void addSuccess(int successNum) {
-        this.successNum += successNum;
-        addProcessed(successNum);
+    public void addSuccess(int num) {
+        this.successNum.addAndGet(num);
+        this.processed.addAndGet(num);
     }
 
-    public void addFail(int failNum) {
-        this.failNum += failNum;
-        addProcessed(failNum);
+    public void addFail(int num) {
+        this.failNum.addAndGet(num);
+        this.processed.addAndGet(num);
     }
 
-    private void addProcessed(int processedNum) {
-        this.processed += processedNum;
-        if (processed == total) {
-            finish();
-        }
+    public BatchProgressRecord toRecord() {
+        // set 顺序按照不易变化 -> 易变化顺序设置，为了逻辑严谨部分字段内容、顺序单独处理
+        BatchProgressRecord record = new BatchProgressRecord();
+        record.setTaskId(taskId);
+        record.setStartTime(startTime);
+        record.setStopTime(stopTime);
+        record.setStatus(status.get());
+        record.setFailNum(failNum.get());
+        record.setSuccessNum(successNum.get());
+        record.setProcessed(record.getSuccessNum() + record.getFailNum());
+        record.setTotal(total.get());
+        return record;
     }
 
+    @Override
+    public BatchProgressRecord getBatchProgress() {
+        return toRecord();
+    }
 }
