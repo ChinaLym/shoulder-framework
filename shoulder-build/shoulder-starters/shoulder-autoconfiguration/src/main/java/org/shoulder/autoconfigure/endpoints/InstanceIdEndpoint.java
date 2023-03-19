@@ -4,7 +4,7 @@ import org.shoulder.core.guid.InstanceIdProvider;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author lym
  */
-@Configuration
+@AutoConfiguration
 @Endpoint(id = "instanceId") // 不能驼峰
 public class InstanceIdEndpoint {
 

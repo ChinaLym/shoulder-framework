@@ -5,17 +5,17 @@ import org.shoulder.crypto.symmetric.SymmetricCipher;
 import org.shoulder.crypto.symmetric.SymmetricTextCipher;
 import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;
 import org.shoulder.crypto.symmetric.impl.DefaultSymmetricTextCipher;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * 非对称加密自动配置
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(SymmetricTextCipher.class)
 public class SymmetricCryptoAutoConfiguration {
 

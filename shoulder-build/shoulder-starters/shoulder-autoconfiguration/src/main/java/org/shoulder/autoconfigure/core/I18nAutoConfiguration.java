@@ -2,11 +2,11 @@ package org.shoulder.autoconfigure.core;
 
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.i18.ReloadableLocaleDirectoryMessageSource;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.context.MessageSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.AbstractApplicationContext;
 
 import java.time.Duration;
@@ -16,7 +16,7 @@ import java.time.Duration;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 public class I18nAutoConfiguration {
 
     @Bean

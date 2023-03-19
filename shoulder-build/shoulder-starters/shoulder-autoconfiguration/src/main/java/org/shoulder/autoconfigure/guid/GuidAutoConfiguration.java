@@ -5,19 +5,19 @@ import org.shoulder.core.guid.LongGuidGenerator;
 import org.shoulder.core.guid.StringGuidGenerator;
 import org.shoulder.core.guid.impl.CompressedUUIDGenerator;
 import org.shoulder.core.guid.impl.SnowFlakeGenerator;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * 实例标识分配
  *
  * @author lym
  */
-@Configuration
+@AutoConfiguration
 @AutoConfigureAfter(InstanceIdProviderAutoConfiguration.class)
 @EnableConfigurationProperties(GuidProperties.class)
 public class GuidAutoConfiguration {

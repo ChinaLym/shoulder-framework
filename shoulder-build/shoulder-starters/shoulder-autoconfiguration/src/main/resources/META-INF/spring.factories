@@ -4,4 +4,4 @@ org.springframework.beans.factory.config=\
 org.springframework.context.ApplicationListener=\
   org.shoulder.autoconfigure.core.DefaultPropertiesStartingListener
 org.springframework.boot.env.EnvironmentPostProcessor=\
-  org.shoulder.autoconfigure.core.ShoulderBaseInfoAutoConfiguration
+  org.shoulder.autoconfigure.core.ShoulderBaseInfoEnvironmentPostProcessor

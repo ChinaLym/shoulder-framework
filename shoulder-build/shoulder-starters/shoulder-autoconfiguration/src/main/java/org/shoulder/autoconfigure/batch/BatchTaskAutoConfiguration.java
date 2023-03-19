@@ -14,6 +14,7 @@ import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.impl.CsvExporter;
 import org.shoulder.batch.service.impl.DataExporter;
 import org.shoulder.batch.service.impl.DefaultBatchExportService;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -21,7 +22,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import javax.sql.DataSource;
@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * @author lym
  */
 @ConditionalOnClass(BatchData.class)
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 public class BatchTaskAutoConfiguration {
 
 
@@ -96,7 +96,7 @@ public class BatchTaskAutoConfiguration {
     }
 
 
-    @Configuration
+    @AutoConfiguration
     @ConditionalOnClass(DataSource.class)
     @ConditionalOnProperty(name = "shoulder.batch.record.persistent.type", havingValue = "jdbc", matchIfMissing = true)
     static class JdbcLockAutoConfiguration {

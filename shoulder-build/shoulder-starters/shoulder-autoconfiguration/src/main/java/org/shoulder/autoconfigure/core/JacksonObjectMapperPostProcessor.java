@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Nonnull;
 
@@ -17,7 +16,6 @@ import javax.annotation.Nonnull;
  * @author lym
  */
 @ConditionalOnClass(ObjectMapper.class)
-@Configuration(proxyBeanMethods = false)
 public class JacksonObjectMapperPostProcessor implements BeanPostProcessor {
 
     private static final Logger log = LoggerFactory.getLogger(JacksonObjectMapperPostProcessor.class);

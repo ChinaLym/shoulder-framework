@@ -18,12 +18,11 @@ import org.shoulder.crypto.negotiation.support.service.impl.TransportNegotiation
 import org.shoulder.crypto.negotiation.util.TransportCryptoByteUtil;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.http.AppIdExtractor;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -34,9 +33,8 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration(after = {LocalCryptoAutoConfiguration.class, HttpAutoConfiguration.class})
 @ConditionalOnClass(TransportNegotiationService.class)
-@AutoConfigureAfter(value = {LocalCryptoAutoConfiguration.class, HttpAutoConfiguration.class})
 @ConditionalOnProperty(value = "shoulder.crypto.transport.enable", havingValue = "true", matchIfMissing = true)
 public class TransportCryptoAutoConfiguration {
 
@@ -68,7 +66,7 @@ public class TransportCryptoAutoConfiguration {
      * 密钥协商结果缓存（支持集群）
      */
     @ConditionalOnMissingBean(value = NegotiationResultCache.class)
-    @AutoConfigureAfter(RedisAutoConfiguration.class)
+    @AutoConfiguration(after = RedisAutoConfiguration.class)
     @ConditionalOnCluster
     @ConditionalOnClass(RestTemplate.class)
     public static class KeyNegotiationCacheClusterAutoConfiguration {
@@ -86,7 +84,7 @@ public class TransportCryptoAutoConfiguration {
      * 密钥协商结果缓存（内存缓存）
      */
     @ConditionalOnMissingBean(value = NegotiationResultCache.class)
-    @AutoConfigureAfter(RedisAutoConfiguration.class)
+    @AutoConfiguration(after = RedisAutoConfiguration.class)
     @ConditionalOnCluster(cluster = false)
     public static class KeyNegotiationCacheLocalAutoConfiguration {
 

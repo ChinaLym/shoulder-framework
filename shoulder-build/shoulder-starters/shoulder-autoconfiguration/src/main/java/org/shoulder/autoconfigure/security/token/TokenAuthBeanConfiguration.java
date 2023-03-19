@@ -15,7 +15,7 @@ import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.BeforeAuthEndpoint;
 import org.shoulder.security.authentication.handler.json.BasicAuthorizationTokenAuthenticationSuccessHandler;
 import org.shoulder.security.authentication.token.SimpleTokenIntrospector;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,7 +23,6 @@ import org.springframework.boot.autoconfigure.security.oauth2.authserver.Authori
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerTokenServicesConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
@@ -49,9 +48,8 @@ import java.util.List;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration(before = AuthenticationHandlerConfig.class)
 @ConditionalOnClass(SecurityConst.class)
-@AutoConfigureBefore(AuthenticationHandlerConfig.class)
 @EnableConfigurationProperties(TokenProperties.class)
 @ConditionalOnAuthType(type = AuthenticationType.TOKEN)
 public class TokenAuthBeanConfiguration {
@@ -119,7 +117,7 @@ public class TokenAuthBeanConfiguration {
      *
      * @see TokenStore 根据配置项，对 spring security 提供的存储做了自动装配，替代 dsl
      */
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnMissingBean(TokenStore.class)
     public static class TokenStoreConfig {
 
@@ -129,7 +127,7 @@ public class TokenAuthBeanConfiguration {
         /**
          * 使用 redis 作为 token 存储
          */
-        @Configuration(proxyBeanMethods = false)
+        @AutoConfiguration
         @ConditionalOnMissingBean(TokenStore.class)
         @ConditionalOnProperty(prefix = "shoulder.security.token", name = "store", havingValue = "redis")
         public static class RedisTokenStoreConfig {
@@ -142,7 +140,7 @@ public class TokenAuthBeanConfiguration {
         /**
          * 使用 db 作为 token 存储
          */
-        @Configuration(proxyBeanMethods = false)
+        @AutoConfiguration
         @ConditionalOnMissingBean(TokenStore.class)
         @ConditionalOnProperty(prefix = "shoulder.security.token", name = "store", havingValue = "jdbc")
         public static class JdbcTokenStoreConfig {
@@ -155,7 +153,7 @@ public class TokenAuthBeanConfiguration {
         /**
          * 使用内存 token 存储【由于非持久化，每次启动都会丢失，故仅供测试】
          */
-        @Configuration(proxyBeanMethods = false)
+        @AutoConfiguration
         @ConditionalOnMissingBean(TokenStore.class)
         @ConditionalOnProperty(prefix = "shoulder.security.token", name = "store", havingValue = "memory",
             matchIfMissing = true)
@@ -172,7 +170,7 @@ public class TokenAuthBeanConfiguration {
         /**
          * 使用 jwt 时的配置，默认生效
          */
-        @Configuration(proxyBeanMethods = false)
+        @AutoConfiguration
         @ConditionalOnMissingBean(TokenStore.class)
         @ConditionalOnProperty(prefix = "shoulder.security.token", name = "store", havingValue = "jwt", matchIfMissing = true)
         public static class JwtTokenStoreConfig {
