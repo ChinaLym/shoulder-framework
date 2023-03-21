@@ -202,7 +202,7 @@
                         <execution>
                             <id>attach-sources</id>
                             <!--<phase>package</phase>--><!-- docs / source -->
-                            <phase>deploy</phase><!-- docs / source -->
+                            <phase>deploy</phase><!-- maven-source-plugin deploy 发布才带源码，package 本地构建也带源码 -->
                             <goals>
                                 <goal>jar</goal>
                                 <goal>jar-no-fork</goal>
@@ -250,7 +250,7 @@
                         <execution>
                             <id>attach-javadocs</id>
                             <!--<phase>package</phase>--><!-- docs / source -->
-                            <phase>deploy</phase><!-- docs / source -->
+                            <phase>deploy</phase><!-- maven-javadoc-plugin deploy 发布才带javaDoc package 本地构建也带 -->
                             <goals>
                                 <goal>jar</goal>
                             </goals>
@@ -437,7 +437,7 @@
                         <!-- 开启插件的哪些功能 -->
                         <execution>
                             <!-- 在 mvn compile 阶段触发该插件 -->
-                            <phase>compile</phase>
+                            <phase>deploy</phase><!-- shoulder-maven-plugin deploy 发布才生成 erorCode标注，compile 打包编译就生成 -->
                             <goals>
                                 <!-- 执行该插件的 生成错误码翻译 能力 -->
                                 <goal>generateErrorCodeInfo</goal>
