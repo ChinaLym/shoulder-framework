@@ -129,3 +129,6 @@ sla（sli/slo）
 # 调度与定时任务
 提供统一入口，并允许使用者自由切换底层实现（无论是 spring/xxljob/）
 
+# 本工程维护
+shoulder-maven-plugin 未开源 / 发布maven仓库，导致 shoulder-framework 其他人不能打包 / 发布
+key 修改 支持 从pom读application.properties数据
