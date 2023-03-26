@@ -145,16 +145,14 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
 
         super.afterExecute(r, t);
 
-        boolean noException = t != null;
-
-        if (noException) {
+        if (t == null) {
             // 正常执行完毕
-
         } else {
             // 异常执行完毕
             metrics.exceptionCount(r).increment();
         }
 
+        this.metrics.activeCount().set(getActiveCount());
         // 可通过完成数 + 队列数计算，不精确，但可以避免锁竞争
         this.metrics.taskCount().set(getTaskCount());
         this.metrics.completedTaskCount().set(getCompletedTaskCount());
