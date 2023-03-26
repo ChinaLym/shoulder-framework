@@ -121,11 +121,11 @@ public class JsonUtils {
 
     /**
      * 反序列化 JSON 字符串为 Object
-     * 语法糖方法，但使用范围受 Java 泛型影响。泛型推断不能推断泛型参数类型，如 List、Map 这种
-     * 错误使用后果：可能导致 ClassCastException: LinkedHashMap cannot be cast to class xxx
-     * 因为本方法签名中返回值的为 T，未指明泛型参数，泛型参数将被抹为 Object，Jackson碰到 Object 将使用 LinkedHashMap
      *
      * @see #parseObject(String, TypeReference) 该方法中可以在使用除传入 new TypeReference<>() {} 能利用到java泛型自动推断
+     * @deprecated 语法糖方法，但使用范围受 Java 泛型影响。泛型推断不能推断泛型参数类型，如 List、Map 这种
+     * 错误使用后果：可能导致 ClassCastException: LinkedHashMap cannot be cast to class xxx
+     * 因为本方法签名中返回值的为 T，未指明泛型参数，泛型参数将被抹为 Object，Jackson碰到 Object 将使用 LinkedHashMap
      */
     public static <T> T parseObject(String json) {
         try {

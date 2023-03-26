@@ -5,11 +5,10 @@ import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.annotation.JsonType;
 import org.shoulder.validate.annotation.JsonType.FormType;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@link JsonType} 注解校验处理，支持数组
@@ -32,9 +31,10 @@ public class JsonTypeValidator implements ConstraintValidator<JsonType, String> 
             return true;
         }
         try {
-            if (jsonType == JsonType.FormType.DEFAULT) {
-                JsonUtils.parseObject(input);
-            } else if (jsonType == JsonType.FormType.OBJECT) {
+//            if (jsonType == JsonType.FormType.DEFAULT) {
+//                JsonUtils.parseObject(input);
+//            } else
+            if (jsonType == JsonType.FormType.OBJECT) {
                 JsonUtils.parseObject(input, Object.class);
             } else if (jsonType == JsonType.FormType.MAP) {
                 JsonUtils.parseObject(input, Map.class);

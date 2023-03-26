@@ -3,6 +3,7 @@ package org.shoulder.core.util;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.HexUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -13,6 +14,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -206,5 +208,31 @@ public class FileUtils extends FileUtil {
      */
     public static String byteCountToDisplay(long size) {
         return org.apache.commons.io.FileUtils.byteCountToDisplaySize(size);
+    }
+
+    /**
+     * 获取文件的MD5值大小
+     *
+     * @param file 文件对象
+     * @return md5
+     */
+    public static String getMD5(File file) {
+        // 最多只读前 10M 大小
+        int maxReadByteNum = 10_000_000;
+        int readBytesPerOp = 8192;
+        int alreadyRead = readBytesPerOp;
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            byte[] buffer = new byte[readBytesPerOp];
+            int length = 0;
+            while ((length = fileInputStream.read(buffer)) != -1 && alreadyRead < maxReadByteNum) {
+                md5.update(buffer, 0, length);
+                alreadyRead += readBytesPerOp;
+            }
+            return new String(Hex.encodeHex(md5.digest()));
+        } catch (Exception e) {
+            log.error("file{} MD5 fail", file.getAbsolutePath(), e);
+            return null;
+        }
     }
 }
