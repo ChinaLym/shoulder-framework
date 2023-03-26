@@ -10,7 +10,6 @@ import javax.annotation.concurrent.ThreadSafe;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -34,9 +33,14 @@ public class BatchProgress implements Serializable, ProgressAble {
     private String taskId;
 
     /**
-     * 任务开始执行的时间
+     * 任务开始执行的时间（若出现挂起，指最后一次开始运行的时间）任务创建时间不在进度中体现
      */
     private LocalDateTime startTime;
+
+    /**
+     * 如：上次运行时已经完成一部分了，在这里体现，用于预估结束时间
+     */
+    private int alreadyFinishedAtStart;
 
     /**
      * 任务停止时间
@@ -68,6 +72,10 @@ public class BatchProgress implements Serializable, ProgressAble {
      * 0 未开始，1 执行中，2 异常结束，3正常结束
      */
     private AtomicInteger status = new AtomicInteger();
+
+    public void setAlreadyFinishedAtStart(int alreadyFinishedAtStart) {
+        this.alreadyFinishedAtStart = alreadyFinishedAtStart;
+    }
 
     public void start() {
         // 只能从未开始到开始
@@ -145,11 +153,11 @@ public class BatchProgress implements Serializable, ProgressAble {
         }
         int processedNum = processed.get();
         int totalNum = total.get();
-        if (processedNum == 0) {
-            // 默认 30 分钟
-            return Duration.of(30, ChronoUnit.MINUTES).toMillis();
+        if (processedNum - alreadyFinishedAtStart <= 0) {
+            // 默认 99 天
+            return Duration.ofDays(99).toMillis();
         }
-        return (calculateProcessedTime() / processedNum * (totalNum - processedNum));
+        return (calculateProcessedTime() / (processedNum - alreadyFinishedAtStart) * (totalNum - processedNum));
     }
 
     @Override
@@ -178,6 +186,7 @@ public class BatchProgress implements Serializable, ProgressAble {
         BatchProgressRecord record = new BatchProgressRecord();
         record.setTaskId(taskId);
         record.setStartTime(startTime);
+        record.setAlreadyFinishedAtStart(alreadyFinishedAtStart);
         record.setStopTime(stopTime);
         record.setStatus(status.get());
         record.setFailNum(failNum.get());

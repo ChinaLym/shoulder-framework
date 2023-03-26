@@ -4,8 +4,12 @@ import org.shoulder.batch.model.BatchProgressRecord;
 import org.shoulder.batch.service.impl.ProgressAble;
 import org.shoulder.core.concurrent.Threads;
 import org.springframework.cache.Cache;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * 任务进度存储
@@ -45,6 +49,25 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
         Threads.execute(genFlushProgressTask(batchProgress));
     }
 
+    public List<String> getAllProcessId() {
+        if (ConcurrentMapCache.class.isAssignableFrom(progressCache.getClass())) {
+            return ((ConcurrentMapCache) progressCache).getNativeCache().keySet().stream().map(String::valueOf).collect(Collectors.toList());
+        }
+        throw new UnsupportedOperationException();
+//        return Collections.emptyList();
+    }
+
+    public Map<String, BatchProgressRecord> getAllProgress() {
+        if (ConcurrentMapCache.class.isAssignableFrom(progressCache.getClass())) {
+            return ((ConcurrentMapCache) progressCache).getNativeCache().entrySet().stream()
+                    .collect(Collectors.toMap(e -> String.valueOf(e.getKey()),
+                            e -> (BatchProgressRecord) ((ConcurrentMapCache) progressCache).getNativeCache().get(e.getValue()))
+                    );
+        }
+        throw new UnsupportedOperationException();
+//        return Collections.emptyList();
+    }
+
     /**
      * 获取任务进度
      *
@@ -77,7 +100,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     /**
      * 创建一个刷进度的任务
      *
-     * @param task 需要被刷进度的任务
+     * @param batchProgress 进度条
      * @return 刷进度的任务
      */
     private Runnable genFlushProgressTask(BatchProgressRecord batchProgress) {

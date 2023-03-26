@@ -34,6 +34,11 @@ public class BatchProgressRecord implements Serializable {
     private LocalDateTime startTime;
 
     /**
+     * 如：上次运行时已经完成一部分了，在这里体现，用于预估结束时间
+     */
+    private int alreadyFinishedAtStart;
+
+    /**
      * 任务停止时间
      */
     private LocalDateTime stopTime;
@@ -133,11 +138,11 @@ public class BatchProgressRecord implements Serializable {
         if (hasFinish()) {
             return 0L;
         }
-        if (processed == 0) {
-            // 默认 15分钟
-            return 900_000;
+        if (processed - alreadyFinishedAtStart <= 0) {
+            // 默认 99 天
+            return Duration.ofDays(99).toMillis();
         }
-        return (calculateProcessedTime() / processed * (total - processed));
+        return (calculateProcessedTime() / (processed - alreadyFinishedAtStart) * (total - processed));
     }
 
     @Override
