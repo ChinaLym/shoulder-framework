@@ -42,7 +42,7 @@ public class ThreadPoolMetrics {
     private final String metricsNamePrefix = DEFAULT_METRICS_NAME_PREFIX;
 
     /**
-     * 模块名称，默认标签 ThreadPool 名称
+     * 模块名称，默认标签 taskName 名称
      */
     private final String moduleName;
 
@@ -86,7 +86,7 @@ public class ThreadPoolMetrics {
     private final AtomicInteger maximumPoolSize = new AtomicInteger();
 
     /**
-     * 当前的线程数量（不一定在运行）
+     * 当前活的的线程数量（不一定在运行）一般在 core、max之间
      */
     private final AtomicInteger poolSize = new AtomicInteger();
 
