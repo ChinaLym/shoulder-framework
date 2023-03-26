@@ -103,6 +103,9 @@ public class BatchProgressRecord implements Serializable {
             return 0;
         }
         if (hasFinish()) {
+            if (stopTime == null) {
+                stopTime = LocalDateTime.now();
+            }
             return Duration.between(startTime, stopTime).toMillis();
         }
         return Duration.between(startTime, LocalDateTime.now()).toMillis();
