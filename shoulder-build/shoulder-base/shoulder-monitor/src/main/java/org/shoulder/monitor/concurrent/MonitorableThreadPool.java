@@ -138,7 +138,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
         long finishStamp = System.currentTimeMillis();
-        long consuming = workerStartTimeStamp.get() - finishStamp;
+        long consuming = finishStamp - workerStartTimeStamp.get();
         workerStartTimeStamp.remove();
         // 默认使用 ms 记录执行时间
         this.metrics.taskExecuteTime(r).record(consuming, TimeUnit.MILLISECONDS);
