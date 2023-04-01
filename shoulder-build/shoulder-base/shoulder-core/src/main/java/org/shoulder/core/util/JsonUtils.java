@@ -29,6 +29,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -145,6 +146,11 @@ public class JsonUtils {
         } catch (JsonProcessingException e) {
             throw new SerialException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> parseList(String json, Class<T> contentClass) {
+        return parseObject(json, List.class, contentClass);
     }
 
     /**

@@ -7,6 +7,7 @@ import org.shoulder.core.log.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.text.ParseException;
+import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -45,6 +46,11 @@ public class DateConverter extends BaseDateConverter<Date> {
         formatMap.put("yyyy/MM/dd HH:mm", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}:\\d{1,2}$");
         formatMap.put("yyyy/MM/dd HH:mm:ss", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$");
         return formatMap;
+    }
+
+    @Override
+    protected Date fromInstant(Instant instant) {
+        return Date.from(instant);
     }
 
 

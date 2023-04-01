@@ -152,10 +152,12 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
             metrics.exceptionCount(r).increment();
         }
 
-        this.metrics.activeCount().set(getActiveCount());
+        // 自身线程还没释放，去掉 active
+        this.metrics.activeCount().set(getActiveCount() - 1);
         // 可通过完成数 + 队列数计算，不精确，但可以避免锁竞争
         this.metrics.taskCount().set(getTaskCount());
-        this.metrics.completedTaskCount().set(getCompletedTaskCount());
+        // 完成任务 + 自身，因为自身线程还没释放
+        this.metrics.completedTaskCount().set(getCompletedTaskCount() + 1);
     }
 
     /**
