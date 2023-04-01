@@ -1,7 +1,9 @@
 package org.shoulder.core.converter;
 
 import javax.annotation.Nonnull;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,6 +24,11 @@ public class LocalDateConverter extends BaseLocalDateTimeConverter<LocalDate> {
         formatMap.put("yyyy-MM-dd", "^\\d{4}-\\d{1,2}-\\d{1,2}$");
         formatMap.put("yyyy/MM/dd", "^\\d{4}/\\d{1,2}/\\d{1,2}$");
         return formatMap;
+    }
+
+    @Override
+    protected LocalDate fromInstant(Instant instant) {
+        return LocalDate.ofInstant(instant, ZoneId.systemDefault());
     }
 
     @Nonnull
