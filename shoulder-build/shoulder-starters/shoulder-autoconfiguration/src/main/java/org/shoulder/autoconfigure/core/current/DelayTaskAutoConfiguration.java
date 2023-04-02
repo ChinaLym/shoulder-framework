@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import javax.annotation.Nonnull;
+import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Executor;
 
 /**
@@ -36,7 +37,7 @@ public class DelayTaskAutoConfiguration implements ApplicationListener<ContextRe
     @Bean
     @ConditionalOnMissingBean
     public DelayTaskHolder delayTaskHolder() {
-        DelayTaskHolder delayTaskHolder = new DelayQueueDelayTaskHolder();
+        DelayTaskHolder delayTaskHolder = new DelayQueueDelayTaskHolder(new DelayQueue<>());
         Threads.setDelayTaskHolder(delayTaskHolder);
         return delayTaskHolder;
     }

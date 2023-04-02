@@ -14,12 +14,16 @@ import java.util.concurrent.DelayQueue;
  */
 public class DelayQueueDelayTaskHolder implements DelayTaskHolder {
 
-    private static final Logger log = LoggerFactory.getLogger(DelayQueueDelayTaskHolder.class);
+    protected static final Logger log = LoggerFactory.getLogger(DelayQueueDelayTaskHolder.class);
 
     /**
-     * 延迟队列
+     * 延迟队列，默认不限制大小，需要限制可自定义
      */
-    private static final DelayQueue<DelayTask> DELAY_QUEUE = new DelayQueue<>();
+    private final DelayQueue<DelayTask> DELAY_QUEUE;
+
+    public DelayQueueDelayTaskHolder(DelayQueue<DelayTask> delayQueue) {
+        DELAY_QUEUE = delayQueue;
+    }
 
     /**
      * @param delayTask 已被封装的延时任务
