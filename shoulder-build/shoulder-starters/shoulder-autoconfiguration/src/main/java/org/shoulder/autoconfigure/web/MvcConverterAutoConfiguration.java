@@ -1,10 +1,13 @@
 package org.shoulder.autoconfigure.web;
 
 import org.shoulder.core.converter.*;
+import org.shoulder.core.util.ConvertUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 /**
  * MvcConverterAutoConfiguration
@@ -13,7 +16,7 @@ import org.springframework.context.annotation.Bean;
  */
 @AutoConfiguration
 @ConditionalOnWebApplication
-public class MvcConverterAutoConfiguration {
+public class MvcConverterAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
 
 
     /**
@@ -82,4 +85,13 @@ public class MvcConverterAutoConfiguration {
         return DefaultEnumMissMatchHandler.getInstance();
     }
 
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        ConvertUtil.addConverter(DateConverter.INSTANCE);
+        ConvertUtil.addConverter(LocalDateConverter.INSTANCE);
+        ConvertUtil.addConverter(LocalTimeConverter.INSTANCE);
+        ConvertUtil.addConverter(LocalDateTimeConverter.INSTANCE);
+        ConvertUtil.addConverterFactory(EnumConverterFactory.getDefaultInstance());
+
+    }
 }

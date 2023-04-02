@@ -18,7 +18,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.key.*;
 import com.fasterxml.jackson.datatype.jsr310.ser.*;
 import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.converter.jackson.ShoulderEnumDeserializer;
 import org.shoulder.core.converter.jackson.ShoulderLocalDateTimeDeserializer;
 import org.shoulder.core.exception.SerialException;
 import org.slf4j.LoggerFactory;
@@ -277,7 +276,7 @@ public class JsonUtils {
             super(PackageVersion.VERSION);
 
             // 枚举反序列化
-            this.addDeserializer(Enum.class, ShoulderEnumDeserializer.INSTANCE);
+            //this.addDeserializer(Enum.class, ShoulderEnumDeserializer.INSTANCE);
 
             // 解决 jdk8 日期序列化失败
             String dateFormatStr = "yyyy-MM-dd";
