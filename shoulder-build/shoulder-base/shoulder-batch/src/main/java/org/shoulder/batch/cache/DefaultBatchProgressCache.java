@@ -39,7 +39,8 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      */
     @Override
     public void triggerFlushProgress(ProgressAble task) {
-        progressCache.put(task.getBatchProgress().getTaskId(), task.getBatchProgress());
+        BatchProgressRecord batchProgressRecord = task.getBatchProgress();
+        progressCache.put(batchProgressRecord.getTaskId(), batchProgressRecord);
         Threads.execute(genFlushProgressTask(task));
     }
 
@@ -61,7 +62,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
         if (ConcurrentMapCache.class.isAssignableFrom(progressCache.getClass())) {
             return ((ConcurrentMapCache) progressCache).getNativeCache().entrySet().stream()
                     .collect(Collectors.toMap(e -> String.valueOf(e.getKey()),
-                            e -> (BatchProgressRecord) ((ConcurrentMapCache) progressCache).getNativeCache().get(e.getValue()))
+                            e -> (BatchProgressRecord) e.getValue())
                     );
         }
         throw new UnsupportedOperationException();
@@ -83,17 +84,20 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     /**
      * 创建一个刷进度的任务
      *
-     * @param task 需要被刷进度的任务
+     * @param progressHolder 需要被刷进度的任务
      * @return 刷进度的任务
      */
-    private Runnable genFlushProgressTask(ProgressAble task) {
+    private Runnable genFlushProgressTask(ProgressAble progressHolder) {
         return () -> {
-            String id = task.getBatchProgress().getTaskId();
-            if (!task.getBatchProgress().hasFinish()) {
+            BatchProgressRecord batchProgressRecord = progressHolder.getBatchProgress();
+            String id = batchProgressRecord.getTaskId();
+            if (!batchProgressRecord.hasFinish()) {
                 // 未处理完毕，仍需要执行这个任务
-                Threads.delay(genFlushProgressTask(task), 1, TimeUnit.SECONDS);
+                Threads.delay(genFlushProgressTask(progressHolder), 1, TimeUnit.SECONDS);
+            } else {
+                progressHolder.afterFinished(id, progressHolder);
             }
-            progressCache.put(id, task.getBatchProgress());
+            progressCache.put(id, batchProgressRecord);
         };
     }
 

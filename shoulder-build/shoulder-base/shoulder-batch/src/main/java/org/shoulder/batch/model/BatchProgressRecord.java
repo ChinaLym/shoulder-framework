@@ -7,6 +7,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 /**
@@ -68,6 +69,8 @@ public class BatchProgressRecord implements Serializable {
      * 0 未开始，1 执行中，2 异常结束，3正常结束
      */
     public int status;
+
+    private Map<String, Object> ext;
 
     public void start() {
         status = ProcessStatusEnum.RUNNING.getCode();
