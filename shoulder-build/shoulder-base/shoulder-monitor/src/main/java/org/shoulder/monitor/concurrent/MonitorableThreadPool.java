@@ -112,7 +112,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
         this.metrics.corePoolSize().set(getCorePoolSize());
         this.metrics.activeCount().set(getActiveCount());
         this.metrics.maximumPoolSize().set(getMaximumPoolSize());
-        this.metrics.largestPoolSize().set(getCorePoolSize());
+        this.metrics.largestPoolSize().set(0);
         this.metrics.queueCapacity().set(getQueue().remainingCapacity());
         //this.getKeepAliveTime(TimeUnit.MILLISECONDS)
 

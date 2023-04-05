@@ -10,7 +10,9 @@ import javax.annotation.concurrent.ThreadSafe;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 
 
 /**
@@ -26,6 +28,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BatchProgress implements Serializable, ProgressAble {
 
     private static final long serialVersionUID = 1L;
+
+    private boolean autoFished = true;
+
+    private BiConsumer<String, ProgressAble> afterFinishCallback = ProgressAble.super::afterFinished;
 
     /**
      * 任务标识
@@ -73,6 +79,12 @@ public class BatchProgress implements Serializable, ProgressAble {
      */
     private AtomicInteger status = new AtomicInteger();
 
+    private Map<String, Object> ext;
+
+    public BatchProgress(boolean autoFished) {
+        this.autoFished = autoFished;
+    }
+
     public void setAlreadyFinishedAtStart(int alreadyFinishedAtStart) {
         this.alreadyFinishedAtStart = alreadyFinishedAtStart;
     }
@@ -99,14 +111,21 @@ public class BatchProgress implements Serializable, ProgressAble {
     }
 
     public int finish() {
-        AssertUtils.equals(processed.get(), total.get(), CommonErrorCodeEnum.ILLEGAL_STATUS);
-        int oldStatus = status.getAndSet(ProcessStatusEnum.EXCEPTION.getCode());
+//        AssertUtils.equals(processed.get(), total.get(), CommonErrorCodeEnum.ILLEGAL_STATUS);
+        int oldStatus = status.getAndSet(ProcessStatusEnum.FINISHED.getCode());
         stopTime = LocalDateTime.now();
         return oldStatus;
     }
 
     public boolean hasFinish() {
-        return status.get() > ProcessStatusEnum.RUNNING.getCode();
+        if (status.get() > ProcessStatusEnum.RUNNING.getCode()) {
+            return true;
+        }
+        if (total.get() == processed.get() && autoFished) {
+            finish();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -193,11 +212,17 @@ public class BatchProgress implements Serializable, ProgressAble {
         record.setSuccessNum(successNum.get());
         record.setProcessed(record.getSuccessNum() + record.getFailNum());
         record.setTotal(total.get());
+        record.setExt(ext);
         return record;
     }
 
     @Override
     public BatchProgressRecord getBatchProgress() {
         return toRecord();
+    }
+
+    @Override
+    public void afterFinished(String id, ProgressAble task) {
+        afterFinishCallback.accept(id, task);
     }
 }

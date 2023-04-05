@@ -16,4 +16,12 @@ public interface ProgressAble {
      */
     BatchProgressRecord getBatchProgress();
 
+    /**
+     * 结束后的回调
+     */
+    default void afterFinished(String id, ProgressAble task) {
+
+
+    }
+
 }

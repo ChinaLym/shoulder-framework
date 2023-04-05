@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
  *
  * @author lym
  */
-@AutoConfiguration
+@AutoConfiguration(before = org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class)
 @ConditionalOnClass(RedisTemplate.class)
 public class RedisAutoConfiguration {
 

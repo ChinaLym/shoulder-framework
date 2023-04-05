@@ -235,6 +235,8 @@ public class JsonUtils {
                 // 反序列化时，可解析反斜杠引用的所有字符，忽略无法转移的字符
                 .configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true)
 
+                // 忽略类型检查：检查是否为 @class 中的子类，方便debug 避免 classLoader 不同报错
+                .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
                 // 忽略空bean转json错误，如使用 JPA FetchType.LAZY 时
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
                 // 忽略在json字符串中存在，在java类中不存在字段
