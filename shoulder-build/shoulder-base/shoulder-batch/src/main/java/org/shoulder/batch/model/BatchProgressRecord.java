@@ -16,6 +16,7 @@ import java.util.Map;
  * 没有进度条、预计剩余时间，已使用时间的等，这些可以通过给的字段计算，因此不给
  *
  * @author lym
+ * fixme 完整了 stopTime 为空，显示还剩1个未完成
  */
 @Data
 @NoArgsConstructor
@@ -92,13 +93,7 @@ public class BatchProgressRecord implements Serializable {
     }
 
     public boolean hasFinish() {
-        if (status > ProcessStatusEnum.RUNNING.getCode()) {
-            return true;
-        } else if (total == processed) {
-            status = ProcessStatusEnum.FINISHED.getCode();
-            return true;
-        }
-        return false;
+        return status > ProcessStatusEnum.RUNNING.getCode();
     }
 
     /**
