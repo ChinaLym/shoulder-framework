@@ -29,10 +29,10 @@
         <spring-boot.version>2.7.9</spring-boot.version>
         <!-- 由于Spring Boot提供了Maven BOM来管理依赖版本，因此您无需指定版本 -->
 
-        <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info -->
+        <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info https://www.json.cn/  -->
         <!-- 最新 spring cloud 版本：https://spring.io/projects/spring-cloud#learn -->
-        <spring-cloud.version>2022.0.1</spring-cloud.version>
-        <!--<spring-cloud.version>Hoxton.SR10</spring-cloud.version>-->
+        <!-- springboot 2.6-2.7 2021.0.6  springboot3: 2022.0.2 -->
+        <spring-cloud.version>2021.0.6</spring-cloud.version>
 
         <!-- build -->
         <java.version>11</java.version>
