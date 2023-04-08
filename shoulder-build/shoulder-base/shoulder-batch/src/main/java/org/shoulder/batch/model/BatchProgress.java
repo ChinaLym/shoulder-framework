@@ -121,11 +121,8 @@ public class BatchProgress implements Serializable, ProgressAble {
         if (status.get() > ProcessStatusEnum.RUNNING.getCode()) {
             return true;
         }
-        if (total.get() == processed.get() && autoFished) {
-            finish();
-            return true;
-        }
-        return false;
+        checkFinished();
+        return status.get() > ProcessStatusEnum.RUNNING.getCode();
     }
 
     /**
@@ -192,12 +189,12 @@ public class BatchProgress implements Serializable, ProgressAble {
 
     public void addSuccess(int num) {
         this.successNum.addAndGet(num);
-        this.processed.addAndGet(num);
+        addProcessed(num);
     }
 
     public void addFail(int num) {
         this.failNum.addAndGet(num);
-        this.processed.addAndGet(num);
+        addProcessed(num);
     }
 
     public BatchProgressRecord toRecord() {
@@ -206,8 +203,8 @@ public class BatchProgress implements Serializable, ProgressAble {
         record.setTaskId(taskId);
         record.setStartTime(startTime);
         record.setAlreadyFinishedAtStart(alreadyFinishedAtStart);
-        record.setStopTime(stopTime);
         record.setStatus(status.get());
+        record.setStopTime(stopTime);
         record.setFailNum(failNum.get());
         record.setSuccessNum(successNum.get());
         record.setProcessed(record.getSuccessNum() + record.getFailNum());
@@ -225,4 +222,16 @@ public class BatchProgress implements Serializable, ProgressAble {
     public void afterFinished(String id, ProgressAble task) {
         afterFinishCallback.accept(id, task);
     }
+
+    private void addProcessed(int processedNum) {
+        this.processed.addAndGet(processedNum);
+        checkFinished();
+    }
+
+    private void checkFinished() {
+        if (processed.get() == total.get() && autoFished) {
+            finish();
+        }
+    }
+
 }
