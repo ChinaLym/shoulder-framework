@@ -158,6 +158,8 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
         this.metrics.taskCount().set(getTaskCount());
         // 完成任务 + 自身，因为自身线程还没释放
         this.metrics.completedTaskCount().set(getCompletedTaskCount() + 1);
+        // 看看队列里还有多少
+        this.metrics.queueSize().set(getQueue().size());
     }
 
     /**

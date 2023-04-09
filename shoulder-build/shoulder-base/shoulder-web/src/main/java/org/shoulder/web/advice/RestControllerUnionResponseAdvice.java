@@ -18,12 +18,16 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 统一接口返回值
@@ -75,7 +79,7 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
 
         // 配置文件里明确指出不要包装
         if (CollectionUtils.isNotEmpty(skipWarpPathPatterns)) {
-            String requestPath = ServletUtil.getRequest().getPathInfo();
+            String requestPath = ServletUtil.getRequest().getRequestURI();
             for (String unWarpPathPattern : skipWarpPathPatterns) {
                 if (matcher.match(unWarpPathPattern, requestPath)) {
                     return false;
@@ -86,8 +90,14 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
         // 方法、或类上不能有 SkipResponseWrap 注解
         boolean withoutMethodAnnotation = returnType.getMethodAnnotation(SkipResponseWrap.class) == null;
         boolean withoutClassAnnotation = AnnotatedElementUtils.findMergedAnnotation(returnType.getContainingClass(),
-            SkipResponseWrap.class) == null;
-        return withoutMethodAnnotation && withoutClassAnnotation;
+                SkipResponseWrap.class) == null;
+        boolean restController = AnnotatedElementUtils.findMergedAnnotation(returnType.getContainingClass(),
+                RestController.class) != null;
+        boolean responseBody = AnnotatedElementUtils.findMergedAnnotation(returnType.getContainingClass(),
+                ResponseBody.class) != null;
+        boolean hasSpecialProduces = Optional.ofNullable(returnType.getMethodAnnotation(RequestMapping.class))
+                .map(RequestMapping::produces).map(StringUtils::isNoneBlank).orElse(false);
+        return !hasSpecialProduces && withoutMethodAnnotation && withoutClassAnnotation && (restController || responseBody);
     }
 
     @Override
