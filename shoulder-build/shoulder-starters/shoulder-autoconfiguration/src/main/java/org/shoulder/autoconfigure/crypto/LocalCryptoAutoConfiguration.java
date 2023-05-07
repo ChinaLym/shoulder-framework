@@ -16,6 +16,7 @@ import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.JdbcLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.RedisLocalCryptoInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -23,7 +24,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -39,7 +39,7 @@ import java.util.List;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(LocalTextCipher.class)
 @ConditionalOnProperty(value = "shoulder.crypto.local.enable", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(CryptoProperties.class)

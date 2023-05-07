@@ -1,8 +1,10 @@
 package org.shoulder.core.converter;
 
+import org.shoulder.core.util.RegexpUtils;
 import org.springframework.core.convert.converter.Converter;
 
 import javax.annotation.Nonnull;
+import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
@@ -40,12 +42,20 @@ public abstract class BaseDateConverter<T> implements Converter<String, T> {
         source = source.trim();
         // 匹配模板
         for (Map.Entry<String, String> entry : formatMap.entrySet()) {
-            if (source.matches(entry.getValue())) {
+            if (RegexpUtils.matches(source, entry.getValue())) {
                 return parseDateOrTime(source, entry.getKey());
             }
         }
+
+        if (RegexpUtils.matches(source, "1\\d{9,12}")) {
+            long l = Long.parseLong(source);
+            Instant instant = source.length() == 10 ? Instant.ofEpochSecond(l) : Instant.ofEpochMilli(l);
+            return fromInstant(instant);
+        }
         throw new IllegalArgumentException("invalid time format:'" + source + "'");
     }
+
+    protected abstract T fromInstant(Instant instant);
 
     /**
      * 根据特定模板，将 sourceDateString 转化为时间类

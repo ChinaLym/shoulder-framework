@@ -22,6 +22,28 @@ public interface ConfigType {
         return NAME_VALUES.values();
     }
 
+    /**
+     * 注册一个配置类
+     *
+     * @param configClass clazz
+     * @param description desc
+     * @return configType
+     */
+    static ConfigType register(@Nonnull Class<?> configClass, String description) {
+        ConfigType configType;
+        if ((configType = TYPE_VALUES.get(configClass)) != null) {
+            return configType;
+        }
+        synchronized (TYPE_VALUES) {
+            if ((configType = TYPE_VALUES.get(configClass)) != null) {
+                return configType;
+            }
+            configType = new ConfigTypeInfo(configClass, description);
+            TYPE_VALUES.put(configClass, configType);
+            NAME_VALUES.put(configClass.getSimpleName(), configType);
+            return configType;
+        }
+    }
 
     /**
      * configName
@@ -67,29 +89,6 @@ public interface ConfigType {
     @Nonnull
     static ConfigType getByType(Class<?> clazz) {
         return TYPE_VALUES.getOrDefault(clazz, register(clazz, "auto generate"));
-    }
-
-    /**
-     * 注册一个配置类
-     *
-     * @param configClass clazz
-     * @param description desc
-     * @return configType
-     */
-    static ConfigType register(@Nonnull Class<?> configClass, String description) {
-        ConfigType configType;
-        if ((configType = TYPE_VALUES.get(configClass)) != null) {
-            return configType;
-        }
-        synchronized (TYPE_VALUES) {
-            if ((configType = TYPE_VALUES.get(configClass)) != null) {
-                return configType;
-            }
-            configType = new ConfigTypeInfo(configClass, description);
-            TYPE_VALUES.put(configClass, configType);
-            NAME_VALUES.put(configClass.getSimpleName(), configType);
-            return configType;
-        }
     }
 
 

@@ -5,8 +5,8 @@ import org.shoulder.core.concurrent.enhance.ThreadEnhanceHelper;
 import org.shoulder.core.concurrent.enhance.ThreadEnhancer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Nonnull;
 
@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 public class ThreadEnhancerConfiguration {
 
     /**

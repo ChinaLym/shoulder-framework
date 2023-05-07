@@ -17,6 +17,10 @@ import org.shoulder.data.constant.DataBaseConsts;
 @SuppressWarnings("serial")
 public class SelectBatchByBizIds extends AbstractMethod {
 
+    public SelectBatchByBizIds() {
+        super(DataBaseConsts.METHOD_SELECT_BATCH_BY_BIZ_IDS);
+    }
+
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         SqlMethod sqlMethod = SqlMethod.SELECT_BATCH_BY_IDS;
@@ -24,14 +28,9 @@ public class SelectBatchByBizIds extends AbstractMethod {
                 sqlSelectColumns(tableInfo, false), tableInfo.getTableName(),
                 // change here
                 "biz_id",
-                SqlScriptUtils.convertForeach("#{item}", COLLECTION, null, "item", COMMA),
+                SqlScriptUtils.convertForeach("#{item}", COLL, null, "item", COMMA),
                 tableInfo.getLogicDeleteSql(true, true)), Object.class);
-        return addSelectMappedStatementForTable(mapperClass, getMethod(sqlMethod), sqlSource, tableInfo);
-    }
-
-    @Override
-    public String getMethod(SqlMethod sqlMethod) {
-        return DataBaseConsts.METHOD_SELECT_BATCH_BY_BIZ_IDS;
+        return addSelectMappedStatementForTable(mapperClass, methodName, sqlSource, tableInfo);
     }
 
 }

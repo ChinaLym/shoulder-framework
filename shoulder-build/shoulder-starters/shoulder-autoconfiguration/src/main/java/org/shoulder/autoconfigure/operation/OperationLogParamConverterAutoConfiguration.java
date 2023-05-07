@@ -5,13 +5,13 @@ import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueC
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.beans.BeansException;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -21,7 +21,7 @@ import java.util.Collection;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(OperationLogDTO.class)
 @EnableConfigurationProperties(OperationLogProperties.class)
 @ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
@@ -32,7 +32,7 @@ public class OperationLogParamConverterAutoConfiguration implements ApplicationC
      * 默认的 value 解析器
      */
     @Bean
-    public DefaultOperationLogParamValueConverter defaultOperationLogParamValueConverter(OperationLogProperties operationLogProperties) {
+    public static DefaultOperationLogParamValueConverter defaultOperationLogParamValueConverter(OperationLogProperties operationLogProperties) {
 
         return new DefaultOperationLogParamValueConverter(operationLogProperties.getNullParamOutput());
     }

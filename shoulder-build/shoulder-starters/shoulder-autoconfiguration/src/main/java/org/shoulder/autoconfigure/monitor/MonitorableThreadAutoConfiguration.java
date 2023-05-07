@@ -1,19 +1,20 @@
 package org.shoulder.autoconfigure.monitor;
 
+import org.shoulder.autoconfigure.core.current.DelayTaskAutoConfiguration;
 import org.shoulder.autoconfigure.core.current.ThreadAutoConfiguration;
 import org.shoulder.core.concurrent.Threads;
+import org.shoulder.core.concurrent.delay.DelayQueueDelayTaskHolder;
+import org.shoulder.core.concurrent.delay.DelayTaskHolder;
+import org.shoulder.core.context.AppInfo;
+import org.shoulder.monitor.concurrent.MonitorableDelayTaskHolder;
 import org.shoulder.monitor.concurrent.MonitorableThreadPool;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 线程相关的配置
@@ -21,8 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @author lym
  */
 @ConditionalOnClass(MonitorableThreadPool.class)
-@Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore(ThreadAutoConfiguration.class)
+@AutoConfiguration(before = {ThreadAutoConfiguration.class, DelayTaskAutoConfiguration.class})
 public class MonitorableThreadAutoConfiguration {
 
     @Bean(Threads.SHOULDER_THREAD_POOL_NAME)
@@ -35,6 +35,15 @@ public class MonitorableThreadAutoConfiguration {
         // 提前设置，方便使用
         Threads.setExecutorService(executor);
         return executor;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(DelayTaskHolder.class)
+    public MonitorableDelayTaskHolder delayTaskHolder() {
+        MonitorableDelayTaskHolder delayTaskHolder = new MonitorableDelayTaskHolder(new DelayQueueDelayTaskHolder(new DelayQueue<>()),
+                AppInfo.appId() + "_delayTaskHolder");
+        Threads.setDelayTaskHolder(delayTaskHolder);
+        return delayTaskHolder;
     }
 
 }

@@ -16,6 +16,13 @@ import org.shoulder.data.constant.DataBaseConsts;
 @SuppressWarnings("serial")
 public class UpdateByBizId extends AbstractMethod {
 
+    /**
+     * @since 3.5.0
+     */
+    public UpdateByBizId() {
+        super(DataBaseConsts.METHOD_UPDATE_BY_BIZ_ID);
+    }
+
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         SqlMethod sqlMethod = SqlMethod.UPDATE_BY_ID;
@@ -25,12 +32,8 @@ public class UpdateByBizId extends AbstractMethod {
                 // change here
                 "biz_id", ENTITY_DOT + "biz_type", additional);
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
-        return addUpdateMappedStatement(mapperClass, modelClass, getMethod(sqlMethod), sqlSource);
+        return addUpdateMappedStatement(mapperClass, modelClass, methodName, sqlSource);
     }
 
-    @Override
-    public String getMethod(SqlMethod sqlMethod) {
-        return DataBaseConsts.METHOD_UPDATE_BY_BIZ_ID;
-    }
 
 }

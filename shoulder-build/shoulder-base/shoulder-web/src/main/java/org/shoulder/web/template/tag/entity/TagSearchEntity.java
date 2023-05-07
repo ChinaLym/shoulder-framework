@@ -7,6 +7,8 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.shoulder.data.mybatis.template.entity.LogicDeleteEntity;
 
+import java.util.Set;
+
 /**
  * 标签查询，由于标签是用于搜索，因此采取倒排索引的方式
  * 注意：是倒排索引表，而不是关系表！本表仅为根据标签搜索提效！需要业务表中存放 text 字段存储加的标签，或其他方式存储!
@@ -24,15 +26,21 @@ import org.shoulder.data.mybatis.template.entity.LogicDeleteEntity;
 public class TagSearchEntity extends LogicDeleteEntity<Long> {
 
     /**
-     * 标签 bizId
+     * tag表id
      */
-    @TableField("tag_biz_id")
-    private String tagBizId;
+    @TableField(value = "tag_id")
+    private Long tagId;
 
     /**
-     * 外部业务表 标识
+     * ref 是什么类型，比如是某个表的id
      */
-    @TableField("ref_id")
-    private String refId;
+    @TableField(value = "ref_type")//typeHandler = JacksonTypeHandler.class
+    private String refType;
+
+    /**
+     * 外部业务表 标识 JSONArray
+     */
+    @TableField("ref_ids")
+    private Set<Long> refIds;
 
 }

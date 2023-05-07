@@ -1,6 +1,7 @@
 package org.shoulder.core.util;
 
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 日期工具
@@ -17,6 +18,7 @@ public class DateUtils {
      * 解决 linux 系统中高并发时 System.currentTimeMillis() 慢的问题（windows无影响：已经做了类似本类的事情）
      * http://pzemtsov.github.io/2017/07/23/the-slow-currenttimemillis.html
      * 使用该方法获取当前时间，无论什么系统一定比直接获取快，毫秒级别准确
+     * 不过使用 4c8g 机器测试发现，当获取时间的 QPS 达到4w/s才能抵消新开线程每毫秒自增的性能消耗
      */
     public static long lazyCurrentMills() {
         return mills;
@@ -54,7 +56,7 @@ public class DateUtils {
                     mills++;
                 }*/
                 try {
-                    Thread.sleep(1); //NOSONAR
+                    TimeUnit.MILLISECONDS.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

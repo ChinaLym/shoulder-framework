@@ -16,13 +16,12 @@ import org.shoulder.crypto.asymmetric.store.impl.RedisKeyPairCache;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
@@ -30,10 +29,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration(after = {AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class,
+        AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class})
 @ConditionalOnClass(AsymmetricTextCipher.class)
-@AutoConfigureAfter(value = {AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class,
-    AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class})
 @ConditionalOnProperty(value = "shoulder.crypto.asymmetric.enable", havingValue = "true", matchIfMissing = true)
 public class AsymmetricCryptoAutoConfiguration {
 
@@ -61,7 +59,7 @@ public class AsymmetricCryptoAutoConfiguration {
     /**
      * 默认使用 Hash Map 作为非对称密钥对存储
      */
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnCluster(cluster = false)
     @EnableConfigurationProperties(CryptoProperties.class)
     @ConditionalOnMissingBean(KeyPairCache.class)
@@ -78,7 +76,7 @@ public class AsymmetricCryptoAutoConfiguration {
     /**
      * 如果支持集群，则默认使用 redis 作为非对称密钥对存储，并将对应的私钥加密再存至 redis
      */
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnCluster
     @ConditionalOnClass(StringRedisTemplate.class)
     @EnableConfigurationProperties(CryptoProperties.class)

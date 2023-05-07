@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.6</version><!-- shoulder-version -->
+        <version>0.7-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -15,6 +15,18 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-core</artifactId>
         </dependency>
@@ -22,9 +34,7 @@
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
-            <version>3.13.6</version>
             <optional>true</optional>
-            <!--<version>3.14.0</version>-->
         </dependency>
 
         <dependency>

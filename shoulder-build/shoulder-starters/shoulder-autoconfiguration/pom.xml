@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.6</version><!-- shoulder-version -->
+        <version>0.7-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
 
@@ -84,6 +84,19 @@
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-batch</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- https://github.com/uniVocity/univocity-parsers/releases -->
+        <dependency>
+            <groupId>com.univocity</groupId>
+            <artifactId>univocity-parsers</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- xml 转换 https://github.com/x-stream/xstream/releases -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
             <optional>true</optional>
         </dependency>
 

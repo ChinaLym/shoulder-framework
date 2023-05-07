@@ -5,10 +5,11 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.ErrorCode;
 
-import javax.annotation.Nonnull;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
+
+import javax.annotation.Nonnull;
 
 /**
  * 错误信息处理类。
@@ -37,7 +38,11 @@ public class ExceptionUtil {
      * @return 填充参数后的信息
      */
     public static String generateExceptionMessage(String message, Object... args) {
-        if (StringUtils.isNotEmpty(message) && ArrayUtils.isNotEmpty(args)) {
+        if(ArrayUtils.allNull(args)) {
+            // 这里会把 args 丢掉。    暂不考虑 message == null 情况
+            return message;
+        }
+        if (StringUtils.isNotEmpty(message)) {
             // 顺序不要变，否则出问题
             if (message.contains("{}")) {
                 // log4j 格式
@@ -49,9 +54,13 @@ public class ExceptionUtil {
                 // 否则尝试 String format
                 message = String.format(message, args);
             }
+            return message;
         }
-        return message;
+        // message 不存在这三类占位符，且传了args，直接使用 args
+        // message 为空 arg 有值，将 args 连成 string 作为 msg
+        return ArrayUtils.concatToStr(args);
     }
+
 
     public static String generateExceptionMessageWithCode(String errorCode, String message, Object... args) {
         return "[errorCode=" + errorCode + "] " + generateExceptionMessage(message, args);

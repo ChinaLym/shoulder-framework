@@ -9,6 +9,8 @@ import java.util.concurrent.*;
 /**
  * 包装 ExecutorService
  * 如常用的 ThreadPoolExecutor
+ * todo 增强 ThreadPoolExecutor
+ * fixme 包装后类型被泛化，字类方法无法访问
  *
  * @author lym
  */

@@ -83,7 +83,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 请求错误：指定的请求方法不能被服务器处理
      */
-    REQUEST_METHOD_MISMATCH(202, "The request method can't be processed by the server.", Level.WARN),
+    REQUEST_METHOD_MISMATCH(202, "The request method('%s') can't be processed by the server. Only support [%s].", Level.WARN),
     /**
      * 调用 xxx 返回了错误码:xxx
      */
@@ -91,7 +91,9 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 请求错误：实体格式不支持
      */
-    REQUEST_BODY_INCORRECT(204, "Entity format not supported。", Level.ERROR),
+    REQUEST_BODY_INCORRECT(204, "Entity format not supported.", Level.ERROR),
+
+    ILLEGAL_PARAM(205, "illegal param.", Level.ERROR),
 
     // ----------------------- 作为服务提供者（要处理的HTTP请求参数校验未通过） ----------------------
 
@@ -138,6 +140,11 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      * 文件上传出错
      */
     MULTIPART_INVALID(334, "Request is not a validate multipart request, please check request or file size.", Level.WARN, HttpStatus.BAD_REQUEST),
+
+    /**
+     * 状态检查未通过
+     */
+    ILLEGAL_STATUS(340, "illegal status.", Level.ERROR),
 
     // ----------------------- 并发、达到瓶颈 error 级别 返回 500 ----------------------
 

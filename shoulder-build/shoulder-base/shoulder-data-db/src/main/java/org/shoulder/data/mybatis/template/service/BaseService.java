@@ -21,6 +21,8 @@ import org.shoulder.core.dto.response.PageResult;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
+import org.shoulder.data.uid.EntityIdGenerator;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -41,6 +43,12 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
     @Override
     BaseMapper<ENTITY> getBaseMapper();
 
+    ConversionService getConversionService();
+
+    Class<ENTITY> getModelClass();
+
+    EntityIdGenerator getIdGenerator();
+
     /**
      * 根据id修改 entity 的所有字段，包含 NULL
      *
@@ -55,8 +63,18 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
      * @param id id
      * @return 非空，已经存在；空：不存在
      */
-    default ENTITY lockById(String id) {
+    default ENTITY lockById(Serializable id) {
         return getBaseMapper().selectForUpdateById(id);
+    }
+
+    /**
+     * 根据 id 锁定
+     *
+     * @param id id
+     * @return 非空，已经存在；空：不存在
+     */
+    default List<ENTITY> lockByIds(List<? extends Serializable> id) {
+        return getBaseMapper().selectBatchForUpdateByIds(id);
     }
 
     /**

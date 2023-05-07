@@ -4,8 +4,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.http.interceptor.BaseRestTemplateLogInterceptor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(value = {RestTemplate.class, BaseRestTemplateLogInterceptor.class})
 public class RestTemplateCustomAutoConfiguration implements InitializingBean {
 

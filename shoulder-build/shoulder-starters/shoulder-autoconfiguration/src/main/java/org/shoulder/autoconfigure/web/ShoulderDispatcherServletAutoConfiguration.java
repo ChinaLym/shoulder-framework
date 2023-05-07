@@ -1,13 +1,12 @@
 package org.shoulder.autoconfigure.web;
 
 import org.shoulder.web.ShoulderDispatcherServlet;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.DispatcherServlet;
 
 /**
@@ -17,8 +16,7 @@ import org.springframework.web.servlet.DispatcherServlet;
  * @see DispatcherServletAutoConfiguration
  * @see ShoulderDispatcherServlet
  */
-@Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore(DispatcherServletAutoConfiguration.class)
+@AutoConfiguration(before = DispatcherServletAutoConfiguration.class)
 //@Conditional(DispatcherServletAutoConfiguration.DefaultDispatcherServletCondition.class)
 @ConditionalOnClass(ShoulderDispatcherServlet.class)
 @EnableConfigurationProperties(WebMvcProperties.class)

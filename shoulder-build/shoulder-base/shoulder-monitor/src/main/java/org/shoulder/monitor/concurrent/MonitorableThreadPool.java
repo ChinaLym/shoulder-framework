@@ -112,7 +112,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
         this.metrics.corePoolSize().set(getCorePoolSize());
         this.metrics.activeCount().set(getActiveCount());
         this.metrics.maximumPoolSize().set(getMaximumPoolSize());
-        this.metrics.largestPoolSize().set(getCorePoolSize());
+        this.metrics.largestPoolSize().set(0);
         this.metrics.queueCapacity().set(getQueue().remainingCapacity());
         //this.getKeepAliveTime(TimeUnit.MILLISECONDS)
 
@@ -138,26 +138,28 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
         long finishStamp = System.currentTimeMillis();
-        long consuming = workerStartTimeStamp.get() - finishStamp;
+        long consuming = finishStamp - workerStartTimeStamp.get();
         workerStartTimeStamp.remove();
         // 默认使用 ms 记录执行时间
         this.metrics.taskExecuteTime(r).record(consuming, TimeUnit.MILLISECONDS);
 
         super.afterExecute(r, t);
 
-        boolean noException = t != null;
-
-        if (noException) {
+        if (t == null) {
             // 正常执行完毕
-
         } else {
             // 异常执行完毕
             metrics.exceptionCount(r).increment();
         }
 
+        // 自身线程还没释放，去掉 active
+        this.metrics.activeCount().set(getActiveCount() - 1);
         // 可通过完成数 + 队列数计算，不精确，但可以避免锁竞争
         this.metrics.taskCount().set(getTaskCount());
-        this.metrics.completedTaskCount().set(getCompletedTaskCount());
+        // 完成任务 + 自身，因为自身线程还没释放
+        this.metrics.completedTaskCount().set(getCompletedTaskCount() + 1);
+        // 看看队列里还有多少
+        this.metrics.queueSize().set(getQueue().size());
     }
 
     /**

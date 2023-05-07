@@ -20,11 +20,10 @@ import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverte
 import org.shoulder.log.operation.model.OpLogParam;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -47,12 +46,11 @@ import java.util.Objects;
  * @author lym
  */
 @Aspect
-@Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(OperationLogDTO.class)
-@AutoConfigureAfter(value = {
-    OperationLoggerAutoConfiguration.class,
-    OperationLogParamConverterAutoConfiguration.class
+@AutoConfiguration(after = {
+        OperationLoggerAutoConfiguration.class,
+        OperationLogParamConverterAutoConfiguration.class
 })
+@ConditionalOnClass(value = {OperationLogDTO.class, ProceedingJoinPoint.class})
 @EnableConfigurationProperties(OperationLogProperties.class)
 @ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLogAspect {

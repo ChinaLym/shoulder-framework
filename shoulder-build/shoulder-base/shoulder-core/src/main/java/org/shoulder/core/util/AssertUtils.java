@@ -23,6 +23,7 @@ import java.util.function.Consumer;
  * 且实现构造方法: {@link BaseRuntimeException#BaseRuntimeException(String)}
  * {@link BaseRuntimeException#BaseRuntimeException(org.shoulder.core.exception.ErrorCode, Object[])}
  * </ul>
+ * todo add collection function
  *
  * @author lym
  */
@@ -99,7 +100,7 @@ public class AssertUtils {
                 exception = (BaseRuntimeException) constructor.newInstance(errorCode, args);
             } catch (Throwable e) {
                 throw new IllegalStateException(
-                        "AssertUtil has not been initialized correctly![constructor="
+                        "AssertUtils has not been initialized correctly![constructor="
                                 + constructor + ",errorCode=" + errorCode + ",args="
                                 + Arrays.toString(args) + "]", e);
             }

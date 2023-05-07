@@ -24,9 +24,9 @@ public class BaseAppProperties {
     private String id;
 
     /**
-     * 应用错误码前缀【推荐必填】
+     * 应用错误码前缀【推荐填写】
      */
-    private String errorCodePrefix = "";
+    private String errorCodePrefix = AppInfo.errorCodePrefix();
 
     /**
      * 应用版本（用于灰度发布、版本兼容等）【推荐填写】 的 version

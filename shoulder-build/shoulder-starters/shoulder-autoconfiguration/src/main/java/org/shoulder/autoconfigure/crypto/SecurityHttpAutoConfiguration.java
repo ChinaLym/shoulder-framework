@@ -9,10 +9,9 @@ import org.shoulder.crypto.negotiation.support.client.SensitiveResponseDecryptIn
 import org.shoulder.crypto.negotiation.support.service.TransportNegotiationService;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.http.AppIdExtractor;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -27,9 +26,8 @@ import java.util.List;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration(after = {HttpAutoConfiguration.class, TransportCryptoAutoConfiguration.class})
 @ConditionalOnClass(SecurityRestTemplate.class)
-@AutoConfigureAfter(value = {HttpAutoConfiguration.class, TransportCryptoAutoConfiguration.class})
 public class SecurityHttpAutoConfiguration {
 
     @Bean

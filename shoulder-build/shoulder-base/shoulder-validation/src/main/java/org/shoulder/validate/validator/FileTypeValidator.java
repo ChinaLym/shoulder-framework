@@ -1,15 +1,10 @@
 package org.shoulder.validate.validator;
 
-import org.shoulder.core.util.FileUtils;
-import org.shoulder.core.util.RegexpUtils;
-import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.annotation.FileType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.unit.DataSize;
+import org.shoulder.validate.util.FileValidator;
+import org.shoulder.validate.util.FileValidatorProperties;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Nonnull;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -25,83 +20,17 @@ import javax.validation.ConstraintValidatorContext;
  */
 public class FileTypeValidator implements ConstraintValidator<FileType, MultipartFile> {
 
-    private static final Logger log = LoggerFactory.getLogger(FileTypeValidator.class);
 
-    private String[] allowSuffixNameArray = {};
-
-    private String maxSizeStr = "";
-
-    private boolean allowEmpty;
-
-    private String allowNamePattern;
-
-    private String forbiddenNamePattern;
+    private FileValidatorProperties fileValidatorProperties;
 
     @Override
     public void initialize(FileType constraintAnnotation) {
-        allowSuffixNameArray = constraintAnnotation.allowSuffix();
-        maxSizeStr = constraintAnnotation.maxSize();
-        allowEmpty = constraintAnnotation.allowEmpty();
-        allowNamePattern = constraintAnnotation.nameAllowPattern();
-        forbiddenNamePattern = constraintAnnotation.nameForbiddenPattern();
+        fileValidatorProperties = new FileValidatorProperties(constraintAnnotation);
     }
 
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
-
-        if (multipartFile == null) {
-            return allowEmpty;
-        }
-        String fileName = multipartFile.getOriginalFilename();
-        log.debug("fileName is {}", fileName);
-        if (!checkName(fileName)) {
-            log.warn("illegal fileName:" + fileName);
-            return false;
-        }
-        String suffix = FileUtils.getSuffix(fileName);
-        log.debug("suffix is {}", suffix);
-        try {
-            for (String allowedSuffix : allowSuffixNameArray) {
-                if (StringUtils.equals(allowedSuffix, suffix)) {
-                    // 不仅仅是文件名要符合限制，还需要满足文件头限制，避免恶意文件上传
-                    boolean validHeader = FileUtils.checkHeader(multipartFile.getInputStream(), allowedSuffix, true);
-                    if (!validHeader) {
-                        log.warn("illegal fileHeader:" + fileName);
-                        return false;
-                    }
-                    // 检查文件大小
-                    long uploadSize = multipartFile.getSize();
-                    if (StringUtils.isEmpty(maxSizeStr)) {
-                        log.debug("ignore fileSize, received bytes: {}", fileName);
-                        return true;
-                    }
-                    long allowedMaxSize = parseSize(maxSizeStr);
-                    if (allowedMaxSize >= uploadSize) {
-                        return true;
-                    } else {
-                        log.warn("the file({}) size({}) exceed max({})", fileName, uploadSize, maxSizeStr);
-                        return false;
-                    }
-
-                }
-            }
-            // 类型 / 后缀名不允许(不在白名单)
-            log.warn("illegal fileSuffix:{} sourceFileName:{}", suffix, fileName);
-            return false;
-        } catch (Exception e) {
-            log.warn("validate mimeType fail", e);
-            return false;
-        }
-    }
-
-    private long parseSize(@Nonnull CharSequence maxSizeStr) {
-        return DataSize.parse(maxSizeStr).toBytes();
-    }
-
-    private boolean checkName(String fileName) {
-        return (StringUtils.isEmpty(forbiddenNamePattern) || RegexpUtils.matches(fileName, allowNamePattern)) &&
-            (StringUtils.isEmpty(forbiddenNamePattern) || !RegexpUtils.matches(fileName, forbiddenNamePattern));
-
+        return FileValidator.isValid(fileValidatorProperties, multipartFile);
     }
 
 }

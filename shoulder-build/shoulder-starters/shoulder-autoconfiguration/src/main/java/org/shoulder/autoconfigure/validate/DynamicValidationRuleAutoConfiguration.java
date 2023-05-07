@@ -6,11 +6,11 @@ import org.shoulder.validate.support.mateconstraint.ConstraintConverter;
 import org.shoulder.validate.support.mateconstraint.impl.*;
 import org.shoulder.web.validate.ValidateRuleEndPoint;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.validation.Validator;
@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author lym
  */
-@Configuration
+@AutoConfiguration
 @ConditionalOnClass(ConstraintExtract.class)
 @ConditionalOnProperty(value = "shoulder.validate.auto-rule.enable", havingValue = "true", matchIfMissing = true)
 public class DynamicValidationRuleAutoConfiguration {

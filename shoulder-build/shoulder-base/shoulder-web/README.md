@@ -7,6 +7,9 @@
     - 入参校验
 - Controller 快速开发模板
 - 入参注解解析（基于HandlerMethodArgumentResolver）
+    - 注意同时最多只有一个解析器会生效 HandlerMethodArgumentResolverComposite.getArgumentResolver
+- 优雅退出 https://blog.csdn.net/qq_17231297/article/details/117376991
+    - 退出前处理完当前的请求
 - 全局异常处理
 - 全局返回值包装
 - 可扩展的全局安全过滤器
@@ -37,7 +40,7 @@
       模板引擎xss 紧急开关 检查；双检查 encode cors allowHost redirect 白名单 ctoken（csrfToken）
     - 在 cookie 当前 host 下种 ctoken，这样其他网站发出同样请求则无效 uriWithFormated
 - xss
-  - 
+  -
 
 XXE：
 
@@ -80,33 +83,33 @@ http method
 - CharacterEncodingFilter
     - 用于设置请求接收和响应的字符集
     - 会自动配置：HttpEncodingAutoConfiguration
-    
+
 - CorsFilter
     - 支持跨域
     - 不会自动配置，需要用户手动注入
-    
+
 - OrderedHiddenHttpMethodFilter（HiddenHttpMethodFilter）
     - 普通浏览器form表单只支持 `GET` 与 `POST` 请求，而 `DELETE`、`PUT` 等 method 并不支持。spring 在接收请求时，
-    使用 ` <input type="hidden" name="_method" value="put" />` 的value当做http的method，常用与兼容 RestFul 风格请求 
+      使用 ` <input type="hidden" name="_method" value="put" />` 的value当做http的method，常用与兼容 RestFul 风格请求
     - 自动装配，`WebMvcAutoConfiguration` 可通过 `spring.mvc.hiddenmethod.filter.enabled=false` 关闭
-    
+
 - OrderedFormContentFilter（FormContentFilter）
     - 普通浏览器form表单只支持 `GET` 与 `POST` 请求，而 `DELETE`、`PUT` 等 method 并不支持。spring 在接收请求时，
-    使用 ` <input type="hidden" name="_method" value="put" />` 的value当做http的method，常用与兼容 RestFul 风格请求 
+      使用 ` <input type="hidden" name="_method" value="put" />` 的value当做http的method，常用与兼容 RestFul 风格请求
     - 自动装配，`WebMvcAutoConfiguration` 可通过 `spring.mvc.hiddenmethod.filter.enabled=false` 关闭
-    
+
 - ForwardedHeaderFilter（[5.1后不再推荐](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/filter/reactive/ForwardedHeaderFilter.html)）
     - 常用于作为请求代理时使用，如 spring cloud gateway 中
     - 未自动装配
-    
+
 - RelativeRedirectFilter
     - 通过RelativeRedirectResponseWrapper包装原Response对象,重写默认的sendRedirect重定向方法改为相对路径重定向
     - 未自动装配
-    
+
 - ShallowEtagHeaderFilter
     - 用于节省带宽，通过支持ETag，给客户端返回 `304`，让浏览器使用缓存。
     - 未自动装配
-    
+
 ----
 
 ## 参考

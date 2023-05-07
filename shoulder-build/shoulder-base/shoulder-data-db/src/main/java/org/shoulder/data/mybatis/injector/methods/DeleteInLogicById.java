@@ -1,11 +1,8 @@
 package org.shoulder.data.mybatis.injector.methods;
 
-import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.LogicDeleteEntity;
-
-import javax.annotation.Nullable;
 
 /**
  * 逻辑删除
@@ -18,10 +15,11 @@ import javax.annotation.Nullable;
 @SuppressWarnings("serial")
 public class DeleteInLogicById extends AbstractDeleteInLogicMethod {
 
-    @Override
-    public String getMethod(@Nullable SqlMethod sqlMethod) {
-        // 对应 mapper 里的方法名
-        return DataBaseConsts.METHOD_DELETE_LOGIC_BY_ID;
+    /**
+     * @since 3.5.0
+     */
+    public DeleteInLogicById() {
+        super(DataBaseConsts.METHOD_DELETE_LOGIC_BY_ID);
     }
 
 }

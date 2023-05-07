@@ -21,17 +21,17 @@ public class ThreadPoolMetrics {
     private static String DEFAULT_METRICS_NAME_PREFIX = "appId_thread_pool_";
 
     /**
-     * 指标所属模块 标签名
+     * 指标所属模块 标签名（线程池名称）
      */
     private static final String TAG_MODULE = "module";
 
     /**
-     * 指标名称 标签名
+     * 指标名称 标签名（指标名称，如 core、max）
      */
     private static final String TAG_NAME = "name";
 
     /**
-     * 任务名 标签名
+     * 任务指标
      */
     private static final String TAG_TASK = "task";
 
@@ -42,7 +42,7 @@ public class ThreadPoolMetrics {
     private final String metricsNamePrefix = DEFAULT_METRICS_NAME_PREFIX;
 
     /**
-     * 模块名称，默认标签
+     * 模块名称，默认标签 taskName 名称
      */
     private final String moduleName;
 
@@ -50,50 +50,50 @@ public class ThreadPoolMetrics {
     /**
      * 中正在执行任务的线程数量
      */
-    private AtomicInteger activeCount = new AtomicInteger();
+    private final AtomicInteger activeCount = new AtomicInteger();
 
     /**
      * 任务总数（已经执行 + 未执行）
      */
-    private AtomicLong taskCount = new AtomicLong();
+    private final AtomicLong taskCount = new AtomicLong();
 
     /**
      * 已完成的任务数量，该值小于等于 taskCount
      * AtomicLong 可以 set，LongAdder 没有 set 方法
      */
-    private AtomicLong completedTaskCount = new AtomicLong();
+    private final AtomicLong completedTaskCount = new AtomicLong();
 
     /**
      * 队列中的任务数（当前待执行的任务数）
      */
-    private AtomicInteger queueSize = new AtomicInteger();
+    private final AtomicInteger queueSize = new AtomicInteger();
 
     /**
      * 队列最大容量，可补充统计 剩余容量
      * （也可以在监控配置中写死）
      */
-    private AtomicInteger queueCapacity = new AtomicInteger();
+    private final AtomicInteger queueCapacity = new AtomicInteger();
 
 
     /**
      * 核心线程数量
      */
-    private AtomicInteger corePoolSize = new AtomicInteger();
+    private final AtomicInteger corePoolSize = new AtomicInteger();
 
     /**
      * 最大线程数量
      */
-    private AtomicInteger maximumPoolSize = new AtomicInteger();
+    private final AtomicInteger maximumPoolSize = new AtomicInteger();
 
     /**
-     * 当前的线程数量（不一定在运行）
+     * 当前活的的线程数量（不一定在运行）一般在 core、max之间
      */
-    private AtomicInteger poolSize = new AtomicInteger();
+    private final AtomicInteger poolSize = new AtomicInteger();
 
     /**
      * 线程池存在以来最大线程数量。通过该值可以判断是否满过（达到maximumPoolSize）
      */
-    private AtomicInteger largestPoolSize = new AtomicInteger();
+    private final AtomicInteger largestPoolSize = new AtomicInteger();
 
     public static String getDefaultMetricsNamePrefix() {
         return DEFAULT_METRICS_NAME_PREFIX;
@@ -122,13 +122,13 @@ public class ThreadPoolMetrics {
         String taskMetricsName = metricsNamePrefix + "tasks";
 
         Metrics.gauge(taskMetricsName, List.of(
-            new ImmutableTag(TAG_MODULE, moduleName),
-            new ImmutableTag(TAG_NAME, "total")
+                new ImmutableTag(TAG_MODULE, moduleName),
+                new ImmutableTag(TAG_NAME, "total")
         ), taskCount);
 
         Metrics.gauge(taskMetricsName, List.of(
-            new ImmutableTag(TAG_MODULE, moduleName),
-            new ImmutableTag(TAG_NAME, "completed")
+                new ImmutableTag(TAG_MODULE, moduleName),
+                new ImmutableTag(TAG_NAME, "completed")
         ), completedTaskCount);
 
 
@@ -136,13 +136,13 @@ public class ThreadPoolMetrics {
         String queueSizeMetricsName = metricsNamePrefix + "queue_tasks";
 
         Metrics.gauge(queueSizeMetricsName, List.of(
-            new ImmutableTag(TAG_MODULE, moduleName),
-            new ImmutableTag(TAG_NAME, "num")
+                new ImmutableTag(TAG_MODULE, moduleName),
+                new ImmutableTag(TAG_NAME, "num")
         ), queueSize);
 
         Metrics.gauge(queueSizeMetricsName, List.of(
-            new ImmutableTag(TAG_MODULE, moduleName),
-            new ImmutableTag(TAG_NAME, "capacity")
+                new ImmutableTag(TAG_MODULE, moduleName),
+                new ImmutableTag(TAG_NAME, "capacity")
         ), queueCapacity);
 
 
@@ -150,28 +150,28 @@ public class ThreadPoolMetrics {
         String threadMetricsName = metricsNamePrefix + "threads";
 
         Metrics.gauge(threadMetricsName, List.of(
-            new ImmutableTag(TAG_MODULE, moduleName),
-            new ImmutableTag(TAG_NAME, "active")
+                new ImmutableTag(TAG_MODULE, moduleName),
+                new ImmutableTag(TAG_NAME, "active")
         ), activeCount);
 
         Metrics.gauge(threadMetricsName, List.of(
-            new ImmutableTag(TAG_MODULE, moduleName),
-            new ImmutableTag(TAG_NAME, "current")
+                new ImmutableTag(TAG_MODULE, moduleName),
+                new ImmutableTag(TAG_NAME, "current")
         ), poolSize);
 
         Metrics.gauge(threadMetricsName, List.of(
-            new ImmutableTag(TAG_MODULE, moduleName),
-            new ImmutableTag(TAG_NAME, "core")
+                new ImmutableTag(TAG_MODULE, moduleName),
+                new ImmutableTag(TAG_NAME, "core")
         ), corePoolSize);
 
         Metrics.gauge(threadMetricsName, List.of(
-            new ImmutableTag(TAG_MODULE, moduleName),
-            new ImmutableTag(TAG_NAME, "max")
+                new ImmutableTag(TAG_MODULE, moduleName),
+                new ImmutableTag(TAG_NAME, "max")
         ), maximumPoolSize);
 
         Metrics.gauge(threadMetricsName, List.of(
-            new ImmutableTag(TAG_MODULE, moduleName),
-            new ImmutableTag(TAG_NAME, "largest")
+                new ImmutableTag(TAG_MODULE, moduleName),
+                new ImmutableTag(TAG_NAME, "largest")
         ), largestPoolSize);
 
     }
@@ -222,8 +222,8 @@ public class ThreadPoolMetrics {
      */
     public Timer taskExecuteTime() {
         return Metrics.timer(metricsNamePrefix + "timer",
-            TAG_MODULE, moduleName,
-            TAG_NAME, "execute");
+                TAG_MODULE, moduleName,
+                TAG_NAME, "execute");
     }
 
     public Timer taskExecuteTime(String taskName) {
@@ -231,9 +231,9 @@ public class ThreadPoolMetrics {
             return taskExecuteTime();
         }
         return Metrics.timer(metricsNamePrefix + "timer",
-            TAG_MODULE, moduleName,
-            TAG_NAME, "execute",
-            TAG_TASK, moduleName);
+                TAG_MODULE, moduleName,
+                TAG_NAME, "execute",
+                TAG_TASK, moduleName);
     }
 
     public Timer taskExecuteTime(Runnable runnable) {
@@ -245,8 +245,8 @@ public class ThreadPoolMetrics {
 
     public Counter exceptionCount() {
         return Metrics.counter(metricsNamePrefix + "exceptions",
-            TAG_MODULE, moduleName,
-            TAG_NAME, "exception");
+                TAG_MODULE, moduleName,
+                TAG_NAME, "exception");
     }
 
     public Counter exceptionCount(String taskName) {
@@ -254,9 +254,9 @@ public class ThreadPoolMetrics {
             return exceptionCount();
         }
         return Metrics.counter(metricsNamePrefix + "exceptions",
-            TAG_MODULE, moduleName,
-            TAG_NAME, "exception",
-            TAG_TASK, moduleName);
+                TAG_MODULE, moduleName,
+                TAG_NAME, "exception",
+                TAG_TASK, moduleName);
     }
 
     public Counter exceptionCount(Runnable runnable) {
@@ -271,8 +271,8 @@ public class ThreadPoolMetrics {
 
     public Counter rejectCount() {
         return Metrics.counter(metricsNamePrefix + "reject_nums",
-            TAG_MODULE, moduleName,
-            TAG_NAME, "rejectCount");
+                TAG_MODULE, moduleName,
+                TAG_NAME, "rejectCount");
     }
 
     public Counter rejectCount(String taskName) {
@@ -280,9 +280,9 @@ public class ThreadPoolMetrics {
             return rejectCount();
         }
         return Metrics.counter(metricsNamePrefix + "reject_nums",
-            TAG_MODULE, moduleName,
-            TAG_NAME, "rejectCount",
-            TAG_TASK, moduleName);
+                TAG_MODULE, moduleName,
+                TAG_NAME, "rejectCount",
+                TAG_TASK, moduleName);
     }
 
     public Counter rejectCount(Runnable runnable) {

@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
@@ -20,9 +19,8 @@ import java.util.TimeZone;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(BaseAppProperties.class)
-public class ShoulderBaseInfoAutoConfiguration implements EnvironmentPostProcessor, Ordered {
+public class ShoulderBaseInfoEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     private static final String SHOULDER_PROPERTIES = "shoulderProperties";
 

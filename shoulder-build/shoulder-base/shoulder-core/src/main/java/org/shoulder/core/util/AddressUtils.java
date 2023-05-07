@@ -23,15 +23,28 @@ public class AddressUtils {
      * https://www.safaribooksonline.com/library/view/regular-expressions-cookbook/9781449327453/ch08s16.html
      */
     private static final Pattern IPV4_PATTERN = Pattern.compile("^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$");
+    private static final Pattern PORT_PATTERN = Pattern.compile("^([0-9]{1,5})$");
     private static String LOCAL_IP_CACHE;
     private static String LOCAL_MAC_CACHE;
 
-    public static boolean validateIpv4(String ip) {
+    public static boolean isIpv4(String ip) {
         if (StringUtils.isEmpty(ip)) {
             return false;
         }
         Matcher matcher = IPV4_PATTERN.matcher(ip);
         return matcher.matches();
+    }
+
+    public static boolean isPort(int port) {
+        return port > 0 && port <= 65535;
+    }
+
+    public static boolean isPort(String port) {
+        boolean validStr = port != null && port.length() > 0 && port.length() <= 5 && PORT_PATTERN.matcher(port).matches();
+        if (!validStr) {
+            return false;
+        }
+        return isPort(Integer.parseInt(port));
     }
 
     /**

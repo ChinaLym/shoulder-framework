@@ -4,7 +4,6 @@ import cn.hutool.core.util.ReflectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.reflection.MetaObject;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.StringUtils;
@@ -21,7 +20,7 @@ import java.time.LocalDateTime;
  * <p>
  * 1. insert 时填充 id, createTime, updateTime, createdBy, updatedBy
  * 2. update 时填充 updateTime, updatedBy
- * todo createTime update 时区问题：数据库采取的是 0 时区，则 NOW() 返回值和 java 的 LocalDateTime.now() 是不一样的
+ * todo createTime update 时区问题：数据库采取的是 0 时区，则 NOW() 返回值和 java 的 LocalDateTime.now() 是不一样的，换成Instant
  * <p>
  * 值来源：
  * id： {@link EntityIdGenerator#next(String, String)}
@@ -101,9 +100,7 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
         }
 
         // 3. 实体没有继承 Entity 和 BaseEntity，且 主键名为其他字段
-        TableInfo tableInfo = metaObject.hasGetter(Constants.MP_OPTLOCK_ET_ORIGINAL) ?
-                TableInfoHelper.getTableInfo(metaObject.getValue(Constants.MP_OPTLOCK_ET_ORIGINAL).getClass())
-                : TableInfoHelper.getTableInfo(metaObject.getOriginalObject().getClass());
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(metaObject.getOriginalObject().getClass());
         if (tableInfo == null || tableInfo.getKeyProperty() == null) {
             throw new IllegalArgumentException("tableInfo == null. obj=" + metaObject);
         }

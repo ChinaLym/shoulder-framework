@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.6</version><!-- shoulder-version -->
+        <version>0.7-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
 
@@ -34,15 +34,15 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- ...................... lombok ...................... -->
-        <!--<dependency>
+        <!-- ...................... lombok - shoulder 框架内部应避免使用 lombok...................... -->
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>-->
-        <dependency>
+        </dependency>
+        <!--<dependency>
             <groupId>cn.itlym.shoulder</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- ...................... 工具 ...................... -->
 
@@ -190,8 +190,8 @@
 
             <!-- 自动生成错误码以及对应的翻译 可以在 target 目录生成所有实现 ErrorCode 接口错误码枚举类的翻译文件 -->
             <plugin>
-                <groupId>cn.itlym.shoulder</groupId>
-                <artifactId>errcode-maven-plugin</artifactId>
+                <groupId>cn.itlym</groupId>
+                <artifactId>shoulder-maven-plugin</artifactId>
                 <configuration>
                     <!-- 【必填】本组件对应的错误码前缀 -->
                     <errorCodePrefix>${shoulder-framework.errcode-prefix}</errorCodePrefix>

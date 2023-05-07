@@ -1,5 +1,7 @@
 package org.shoulder.core.dto.request;
 
+import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -57,6 +59,8 @@ public class PageQuery<DTO> implements Serializable {
      */
     private Map<String, Object> ext;
 
+    private Class<DTO> dtoType = resolveModelClass();
+
     public PageQuery() {
     }
 
@@ -69,7 +73,7 @@ public class PageQuery<DTO> implements Serializable {
         this.pageNo = Integer.parseInt(map.getOrDefault(PARAM_PAGE_NO, DEFAULT_PAGE_NO).toString());
         this.pageSize = Integer.parseInt(map.getOrDefault(PARAM_PAGE_SIZE, DEFAULT_PAGE_SIZE).toString());
         this.orderRules = (List<OrderRule>) map.getOrDefault(PARAM_SORT_BY, "");
-        this.condition = JsonUtils.parseObject(JsonUtils.toJson(map));
+        this.condition = JsonUtils.parseObject(JsonUtils.toJson(map), dtoType);
         map.remove(PARAM_PAGE_NO);
         map.remove(PARAM_PAGE_SIZE);
         map.remove(PARAM_SORT_BY);
@@ -111,7 +115,8 @@ public class PageQuery<DTO> implements Serializable {
         result.pageNo = StringUtils.isEmpty(pageNo) ? DEFAULT_PAGE_NO : Integer.parseInt(pageNo);
         result.pageSize = StringUtils.isEmpty(pageSize) ? DEFAULT_PAGE_SIZE : Integer.parseInt(pageSize);
         if (StringUtils.isNotEmpty(orderRules)) {
-            result.orderRules = JsonUtils.parseObject(orderRules);
+            result.orderRules = JsonUtils.parseObject(orderRules, new TypeReference<List<OrderRule>>() {
+            });
         }
         return result;
     }
@@ -165,6 +170,12 @@ public class PageQuery<DTO> implements Serializable {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    protected Class<DTO> resolveModelClass() {
+        return (Class<DTO>) ReflectionKit.getSuperClassGenericType(this.getClass(), PageQuery.class, 2);
     }
 
     @Data

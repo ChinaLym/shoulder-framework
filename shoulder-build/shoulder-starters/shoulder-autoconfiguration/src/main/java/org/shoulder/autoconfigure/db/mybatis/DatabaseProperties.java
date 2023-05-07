@@ -49,11 +49,6 @@ public class DatabaseProperties {
     private Boolean forbiddenWrite = false;
 
     /**
-     * 是否启用数据权限
-     */
-    private Boolean enableDataScope = true;
-
-    /**
      * 事务超时时间
      */
     private int txTimeout = 60 * 60;
@@ -66,7 +61,7 @@ public class DatabaseProperties {
     /**
      * 多租户模式
      */
-    private TenantMode tenantMode = TenantMode.SCHEMA;
+    private TenantMode tenantMode = TenantMode.NONE;
 
     /**
      * 租户id 列名
@@ -142,19 +137,19 @@ public class DatabaseProperties {
      */
     public enum TenantMode {
         /**
-         * 无租户
+         * 无租户；大多数系统不需要租户，只有提供基础服务的才会需要租户的概念来实现隔离
          */
         NONE,
         /**
-         * 字段区分：每个表包含 租户标识 字段
+         * 字段区分：每个表包含 租户标识 字段；弱隔离，租户往往是一个组织内部多个子组织
          */
         COLUMN,
         /**
-         * 独立schema模式（独立库）
+         * 独立schema模式（mysql里相当于独立库，数据分离）；一般不会做跨租户的查询、数据统计、数据分析
          */
         SCHEMA,
         /**
-         * 独立数据源模式
+         * 独立数据源模式，数据完全隔离
          */
         DATASOURCE,
         ;

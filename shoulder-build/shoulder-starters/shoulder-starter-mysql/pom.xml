@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.6</version><!-- shoulder-version -->
+        <version>0.7-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -26,10 +26,12 @@
         </dependency>
 
         <!-- mysql -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>mysql</groupId>-->
+        <!--            <artifactId>mysql-connector-java</artifactId>-->
+        <!--        <version>8.0.32</version>-->
+        <!--        </dependency>-->
+        <!-- Spring Boot 默认的 HikariCP 性能早就超过 druid 了，当然 druid 提供了更丰富的监控能力，但 shoulder 认为这不应该由应用程序承载该能力，而是依赖更专业的监控系统 -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>

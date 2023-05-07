@@ -3,11 +3,11 @@ package org.shoulder.autoconfigure.web;
 import org.shoulder.web.advice.*;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * @author lym
  */
 @ConditionalOnClass(value = SkipResponseWrap.class)
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnWebApplication
 public class WebAdvanceAutoConfiguration {
 
@@ -35,7 +35,7 @@ public class WebAdvanceAutoConfiguration {
         return new RestControllerExceptionAdvice();
     }
 
-    @Configuration
+    @AutoConfiguration
     @ConditionalOnClass(DataAccessException.class)
     @ConditionalOnProperty(name = "shoulder.web.handleGlobalException", havingValue = "true", matchIfMissing = true)
     public static class RestControllerDataExceptionAdviceAutoConfiguration {

@@ -2,9 +2,8 @@ package org.shoulder.autoconfigure.core.current.enhancer;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 
 import javax.annotation.Nonnull;
@@ -18,9 +17,8 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration(before = EnhanceableAsyncDefaultAutoConfiguration.class)
 @ConditionalOnBean(AsyncConfigurer.class)
-@AutoConfigureBefore(EnhanceableAsyncDefaultAutoConfiguration.class)
 public class EnhanceableAsyncCustomAutoConfiguration implements BeanPostProcessor {
 
     @Override

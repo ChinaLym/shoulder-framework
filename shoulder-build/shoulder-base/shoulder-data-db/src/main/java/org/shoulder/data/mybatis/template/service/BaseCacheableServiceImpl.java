@@ -32,7 +32,10 @@ import java.util.stream.Collectors;
  * @param <ENTITY>
  * @author lym
  */
-public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>, ENTITY extends BaseEntity<? extends Serializable>> extends BaseServiceImpl<MAPPER, ENTITY> implements BaseCacheableService<ENTITY> {
+public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>,
+        ENTITY extends BaseEntity<? extends Serializable>>
+        extends BaseServiceImpl<MAPPER, ENTITY>
+        implements BaseCacheableService<ENTITY> {
 
     // 选择特定的 Cache，便于管理 key格式 / 缓存有效时长
 
@@ -138,13 +141,13 @@ public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean removeByIds(Collection<? extends Serializable> idList) {
+    public boolean removeByIds(Collection<?> idList) {
         if (CollUtil.isEmpty(idList)) {
             return true;
         }
         boolean flag = super.removeByIds(idList);
 
-        evictCache(idList);
+        evictCache((Collection<? extends Serializable>) idList);
         return flag;
     }
 

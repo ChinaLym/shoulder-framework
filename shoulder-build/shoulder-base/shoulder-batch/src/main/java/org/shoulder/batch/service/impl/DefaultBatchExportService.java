@@ -49,7 +49,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
      * 批处理线程池
      */
     @Autowired
-    @Qualifier(BatchConstants.THREAD_NAME)
+    @Qualifier(BatchConstants.BATCH_THREAD_POOL_NAME)
     private ThreadPoolExecutor batchThreadPool;
 
     @Autowired
@@ -281,8 +281,8 @@ public class DefaultBatchExportService implements BatchAndExportService {
      * @return 处理进度或者结果
      */
     @Override
-    public BatchProgress queryBatchProgress(String taskId) {
-        BatchProgress result = batchProgressCache.getTaskProgress(taskId);
+    public BatchProgressRecord queryBatchProgress(String taskId) {
+        BatchProgressRecord result = batchProgressCache.getTaskProgress(taskId);
         if (result == null) {
             // 缓存过期无需从数据库中查，直接异常
             throw BatchErrorCodeEnum.TASK_ID_NOT_EXIST.toException(taskId);

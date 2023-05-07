@@ -1,6 +1,5 @@
 package org.shoulder.autoconfigure.db.mybatis;
 
-import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.core.MybatisPlusVersion;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
@@ -14,8 +13,7 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.data.mybatis.config.handler.ModelMetaObjectHandler;
 import org.shoulder.data.mybatis.injector.ShoulderSqlInjector;
-import org.shoulder.data.mybatis.interceptor.ForbbidonWriteInterceptor;
-import org.shoulder.data.mybatis.interceptor.tenants.SchemaModeInterceptor;
+import org.shoulder.data.mybatis.interceptor.WriteProhibitedInterceptor;
 import org.shoulder.data.mybatis.interceptor.typehandler.FullLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.LeftLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.RightLikeTypeHandler;
@@ -23,12 +21,12 @@ import org.shoulder.data.uid.BizIdGenerator;
 import org.shoulder.data.uid.DefaultEntityIdGenerator;
 import org.shoulder.data.uid.EntityIdGenerator;
 import org.shoulder.data.uid.KeyFieldsBizIdGenerator;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 import java.util.List;
@@ -39,7 +37,7 @@ import java.util.StringJoiner;
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnClass(MybatisPlusVersion.class)
 @EnableConfigurationProperties(DatabaseProperties.class)
 public class MybatisPlusAutoConfiguration {
@@ -50,15 +48,6 @@ public class MybatisPlusAutoConfiguration {
 
     public MybatisPlusAutoConfiguration(DatabaseProperties databaseProperties) {
         this.databaseProperties = databaseProperties;
-    }
-
-    /**
-     * 新分页插件填坑
-     */
-    @Bean
-    @Deprecated
-    public ConfigurationCustomizer configurationCustomizer() {
-        return configuration -> configuration.setUseDeprecatedExecutor(false);
     }
 
     /**
@@ -89,14 +78,6 @@ public class MybatisPlusAutoConfiguration {
     @Bean
     @Order(0)
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "tenantMode", havingValue = "SCHEMA")
-    public InnerInterceptor schemaModeInterceptor() {
-        return new SchemaModeInterceptor(databaseProperties.getTenantDatabasePrefix());
-    }
-
-    @Bean
-    @Order(0)
-    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "tenantMode", havingValue = "COLUMN")
     public InnerInterceptor tenantLineInnerInterceptor() {
         return new TenantLineInnerInterceptor(new TenantLineHandler() {
@@ -118,7 +99,7 @@ public class MybatisPlusAutoConfiguration {
     }
 
     /**
-     * todo 【安全】考虑继承 PaginationInnerInterceptor 处理分页查询页码溢出，风控可能需要
+     * todo 【安全|扩展】考虑继承 PaginationInnerInterceptor 处理分页查询页码溢出，风控可能认为不是系统本身发出的请求，而是外部伪造，需要记录本次请求的ip等端信息
      */
     @Bean
     @Order(20)
@@ -133,7 +114,7 @@ public class MybatisPlusAutoConfiguration {
         // 溢出总页数后是否进行处理；若查询目标页码大于总页码，true 查询第一页 false 不处理
         paginationInterceptor.setOverflow(false);
         // 开启 count 的 join 优化,只针对部分 left join https://github.com/baomidou/mybatis-plus/issues/2492
-        //paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
+        paginationInterceptor.setOptimizeJoin(true);
         return paginationInterceptor;
     }
 
@@ -146,6 +127,20 @@ public class MybatisPlusAutoConfiguration {
         return new BlockAttackInnerInterceptor();
     }
 
+    /**
+     * 必须使用到索引，包含left join连接字段，符合索引最左原则
+     * 如果因为动态SQL，bug导致update的where条件没有带上，全表更新上万条数据
+     * 如果检查到使用了索引，SQL性能基本不会太差
+     * SQL尽量单表执行，有查询left join的语句，必须在注释里面允许该SQL运行，否则会被拦截，有left join的语句，如果不能拆成单表执行的SQL，请leader商量在做，SQL尽量单表执行的好处：
+     * 查询条件简单、易于开理解和维护
+     * 扩展性极强；（可为分库分表做准备）
+     * 缓存利用率高
+     * where条件为空
+     * where条件使用了 !=
+     * where条件使用了 not 关键字
+     * where条件使用了 or 关键字
+     * where条件使用了 使用子查询
+     */
     @Bean
     @Order(100)
     @ConditionalOnMissingBean
@@ -159,11 +154,11 @@ public class MybatisPlusAutoConfiguration {
      * 演示环境权限拦截器
      */
     @Bean
-    //@Order(15)
+    @Order(15)
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "forbiddenWrite", havingValue = "true")
-    public ForbbidonWriteInterceptor forbbidonWriteInterceptor() {
-        return new ForbbidonWriteInterceptor();
+    public WriteProhibitedInterceptor writeProhibitedInterceptor() {
+        return new WriteProhibitedInterceptor();
     }
 
 

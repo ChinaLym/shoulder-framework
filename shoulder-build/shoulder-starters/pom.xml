@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-build</artifactId>
-        <version>0.6</version><!-- shoulder-version -->
+        <version>0.7-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -19,7 +19,6 @@
 
         <module>shoulder-starter-web</module>
         <module>shoulder-starter-mysql</module>
-        <module>shoulder-starter-beanmap</module>
         <module>shoulder-starter-operation-log</module>
         <module>shoulder-starter-crypto</module>
 

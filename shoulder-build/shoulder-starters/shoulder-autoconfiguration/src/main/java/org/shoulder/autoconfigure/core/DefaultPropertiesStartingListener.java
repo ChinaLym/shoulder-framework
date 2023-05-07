@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.core;
 
 import org.shoulder.core.constant.ShoulderFramework;
+import org.shoulder.core.context.AppInfo;
 import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.ApplicationListener;
 
@@ -34,13 +35,13 @@ public class DefaultPropertiesStartingListener implements ApplicationListener<Ap
 
         // =================== 应用信息默认值 ========================
         // 默认不使用前缀
-        properties.put("shoulder.application.errorCodePrefix", "0");
-        properties.put("shoulder.application.version", "v1");
-        properties.put("shoulder.application.cluster", "false");
-        properties.put("shoulder.application.dateTimeFormat", "yyyy-MM-dd'T'HH:mm:ss.SSS Z");
-        properties.put("shoulder.application.charset", "UTF-8");
-        properties.put("shoulder.application.defaultLocale", "zh_CN");
-        properties.put("shoulder.application.timeZone", "GMT+8:00");
+        properties.putIfAbsent("shoulder.application.errorCodePrefix", "0x0000");
+        properties.putIfAbsent("shoulder.application.version", "v1");
+        properties.putIfAbsent("shoulder.application.cluster", "false");
+        properties.putIfAbsent("shoulder.application.dateTimeFormat", AppInfo.UTC_DATE_TIME_FORMAT);
+        properties.putIfAbsent("shoulder.application.charset", "UTF-8");
+        properties.putIfAbsent("shoulder.application.defaultLocale", "zh_CN");
+        properties.putIfAbsent("shoulder.application.timeZone", "GMT+8:00");
 
         // 默认关闭 banner
         properties.put("mybatis-plus.global-config.banner=false", "false");

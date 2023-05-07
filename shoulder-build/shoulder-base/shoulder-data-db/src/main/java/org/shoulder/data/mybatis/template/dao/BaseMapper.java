@@ -53,6 +53,14 @@ public interface BaseMapper<ENTITY extends BaseEntity<? extends Serializable>> e
     /**
      * 锁定多条记录
      *
+     * @param ids 主键
+     * @return 实体
+     */
+    List<ENTITY> selectBatchForUpdateByIds(List<? extends Serializable> ids);
+
+    /**
+     * 锁定多条记录
+     *
      * @param bizIds bizId
      * @return 实体
      */

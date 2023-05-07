@@ -9,9 +9,7 @@
 
 - mybatis-plus 日志输出美化（）
 - JPA 类型转换
-- 通用简单业务代码
-    - 简单增删改接口
-    - 批量增删改
+- 通用简单业务模板代码
     - 应用内部广播变更通知
 
 - api 带版本
@@ -27,10 +25,10 @@
     - 自动推送
     - 插件生成网关可解析的格式
     - 推到系统中心/字典组件
-    
+
 #### 枚举与字典集成
 扫描特定枚举类，生成字典信息到统一目录，字典服务
-    
+
 ## spring-cache
 使用 ConversionService 代替 StringRedisSerializer 支持枚举等，获得更好的编码体验
 
@@ -44,18 +42,14 @@
 
 # 提供技术选型推荐
 
-【OK】 csv(xstream)、excel pdf(itextpdf) 导入导出
-JsonPath
+【OK】 csv(xstream)、excel pdf(itextpdf) 导入导出 JsonPath
 
-定时任务。 
+定时任务。
 
 考虑前缀区分大类，调用方出错（如参数）/ 系统内部错误（如取缓存时反序列失败） / 第三方服务失败（如调用其他服务，结果其他服务挂了，返回500）
 
-sessionKey枚举
-appInfo
- ip/domain 
- 运行模式，如 docker / jar / war / side-car
- 
+sessionKey枚举 appInfo ip/domain 运行模式，如 docker / jar / war / side-car
+
 # 国际化
 
 com.github.fge:msg-simple / json-patch / jackson-coreutils / btf
@@ -63,7 +57,7 @@ com.github.fge:msg-simple / json-patch / jackson-coreutils / btf
 
 # 编译时增强
 
-Error-prone,Google 
+Error-prone,Google
 
 # 标准
 
@@ -113,7 +107,7 @@ tracer 增加配置，如服务器（zipkinServer）保存的追踪日志
 增加方法级trace拦截方式
 - 基于类
 - 根据注解记录方法，这个注解最好是可扩展的（因为使用者可能已经自定义一套或者使用其他的了）
-    - 框架默认注解 * 
+    - 框架默认注解 *
     - 扩展注解
 - 自定义
 
@@ -135,3 +129,6 @@ sla（sli/slo）
 # 调度与定时任务
 提供统一入口，并允许使用者自由切换底层实现（无论是 spring/xxljob/）
 
+# 本工程维护
+shoulder-maven-plugin 未开源 / 发布maven仓库，导致 shoulder-framework 其他人不能打包 / 发布
+key 修改 支持 从pom读application.properties数据

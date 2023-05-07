@@ -6,6 +6,9 @@ import org.shoulder.core.i18.ReloadableLocaleDirectoryMessageSource;
 
 import java.util.Locale;
 
+/**
+ * 涉及资源文件加载，IDEA 要保证 resource 目录被标记为 Test Root Resource
+ */
 public class ShoulderResourceMessageTest {
 
     /**

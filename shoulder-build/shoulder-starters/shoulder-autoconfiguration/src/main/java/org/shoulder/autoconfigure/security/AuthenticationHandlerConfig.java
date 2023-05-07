@@ -8,12 +8,12 @@ import org.shoulder.security.authentication.handler.json.*;
 import org.shoulder.security.authentication.handler.url.RedirectAuthenticationFailureHandler;
 import org.shoulder.security.authentication.handler.url.RedirectAuthenticationSuccessHandler;
 import org.shoulder.security.authentication.handler.url.RedirectLogoutSuccessHandler;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @EnableConfigurationProperties(AuthenticationProperties.class)
 @ConditionalOnClass(SecurityConst.class)
 public class AuthenticationHandlerConfig {
@@ -33,7 +33,7 @@ public class AuthenticationHandlerConfig {
      */
     @EnableConfigurationProperties(BrowserSessionAuthProperties.class)
     @ConditionalOnAuthType(type = AuthenticationType.SESSION)
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnProperty(name = "shoulder.security.auth.responseType", havingValue = "redirect", matchIfMissing = true)
     static class RedirectResponseHandlerConfiguration {
 
@@ -66,7 +66,7 @@ public class AuthenticationHandlerConfig {
     /**
      * 认证响应格式为 json 时生效
      */
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnProperty(name = "shoulder.security.auth.responseType", havingValue = "json")
     static class JsonResponseHandlerConfiguration {
         @Bean

@@ -11,11 +11,10 @@ import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,9 +27,8 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
  *
  * @author lym
  */
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration(after = {AuthenticationBeanConfig.class, BrowserSessionAuthBeanConfiguration.class})
 @ConditionalOnClass(SecurityConst.class)
-@AutoConfigureAfter(value = {AuthenticationBeanConfig.class, BrowserSessionAuthBeanConfiguration.class})
 @ConditionalOnAuthType(type = AuthenticationType.SESSION)
 @ConditionalOnMissingBean(WebSecurityConfigurerAdapter.class)
 @ConditionalOnProperty(name = "shoulder.security.auth.session.default-config", havingValue = "enable", matchIfMissing = true)

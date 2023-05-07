@@ -1,21 +1,18 @@
 package org.shoulder.autoconfigure.web;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.data.mybatis.template.service.BaseServiceImpl;
-import org.shoulder.web.template.dictionary.*;
-import org.shoulder.web.template.dictionary.repository.DictionaryItemRepository;
-import org.shoulder.web.template.dictionary.repository.DictionaryRepository;
-import org.shoulder.web.template.dictionary.service.DictionaryItemService;
-import org.shoulder.web.template.dictionary.service.DictionaryService;
+import org.shoulder.web.template.dictionary.DictionaryController;
+import org.shoulder.web.template.dictionary.DictionaryEnumController;
+import org.shoulder.web.template.dictionary.DictionaryItemController;
+import org.shoulder.web.template.dictionary.DictionaryItemEnumController;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -26,10 +23,10 @@ import java.util.List;
  * @author lym
  */
 @ConditionalOnClass(DictionaryController.class)
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 public class WebExtAutoConfiguration {
 
-    @Configuration
+    @AutoConfiguration
     @ConditionalOnClass(value = {DictionaryEnumStore.class})
     @EnableConfigurationProperties(WebExProperties.class)
     @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "enum", matchIfMissing = true)
@@ -63,7 +60,7 @@ public class WebExtAutoConfiguration {
         }
     }
 
-    @Configuration
+    /*@Configuration
     @ConditionalOnClass(value = {BaseServiceImpl.class})
     @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "db")
     public static class BaseOnDbDictionaryConfiguration {
@@ -97,5 +94,5 @@ public class WebExtAutoConfiguration {
         }
 
 
-    }
+    }*/
 }

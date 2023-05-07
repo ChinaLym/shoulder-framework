@@ -4,10 +4,10 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.logger.OperationLoggerInterceptor;
 import org.shoulder.log.operation.logger.intercept.UserAgentParserInterceptor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * UserAgent 解析
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @author lym
  */
 @ConditionalOnClass({UserAgentUtil.class, OperationLogger.class})
-@Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 @ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLogUserAgentResolverAutoConfiguration {
 

@@ -1,7 +1,7 @@
 package org.shoulder.cluster.session;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration;
 import org.springframework.session.web.http.DefaultCookieSerializer;
@@ -10,8 +10,9 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
  * todo 【开发】配置
  * spring-session 支持的存储类型：见 StoreType
  * @author lym
+ * fixme 该类未测试！！！
  */
-@Configuration
+@AutoConfiguration // 未加载
 @EnableRedisHttpSession
 public class SessionConfig {
 

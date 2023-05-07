@@ -8,21 +8,26 @@ import org.shoulder.monitor.MetricsConst;
 import org.shoulder.monitor.concurrent.ThreadPoolMetrics;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
+import org.springframework.boot.actuate.metrics.export.prometheus.PrometheusScrapeEndpoint;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Nonnull;
 
 /**
  * 指标监控装配，推荐依赖 MeterRegistry 而不是 prometheus 的 CollectorRegistry
+ * <p>
+ * 访问： http://localhost:8080/actuator/prometheus
+ * 带参数 http://localhost:8080/actuator/prometheus?includedNames=n1,n2
  *
  * @author lym
+ * @see PrometheusScrapeEndpoint
  */
 @ConditionalOnClass(MetricsConst.class)
-@Configuration
+@AutoConfiguration
 public class PrometheusAutoConfiguration implements ApplicationContextAware {
 
     /**

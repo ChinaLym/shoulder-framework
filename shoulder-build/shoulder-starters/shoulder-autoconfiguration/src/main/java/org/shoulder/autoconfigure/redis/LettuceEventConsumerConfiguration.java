@@ -2,11 +2,11 @@ package org.shoulder.autoconfigure.redis;
 
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.resource.ClientResources;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.data.redis.LettuceClientConfigurationBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author lym
  */
-@Configuration
+@AutoConfiguration
 @ConditionalOnBean(LettuceEventConsumer.class)
 public class LettuceEventConsumerConfiguration {
 

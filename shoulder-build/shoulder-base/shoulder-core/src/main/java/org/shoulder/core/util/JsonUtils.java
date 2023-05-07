@@ -5,37 +5,34 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.core.util.VersionUtil;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.PackageVersion;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.*;
+import com.fasterxml.jackson.datatype.jsr310.deser.key.*;
+import com.fasterxml.jackson.datatype.jsr310.ser.*;
+import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
+import org.shoulder.core.constant.ShoulderFramework;
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.converter.jackson.ShoulderEnumDeserializer;
 import org.shoulder.core.converter.jackson.ShoulderLocalDateTimeDeserializer;
 import org.shoulder.core.exception.SerialException;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * JSON 和 Object 转换工具类
@@ -55,6 +52,19 @@ public class JsonUtils {
     public static String toJson(Object object) {
         try {
             return JSON_MAPPER.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new SerialException(e);
+        }
+    }
+
+    /**
+     * 序列化Object为 JSON 字符串
+     *
+     * @param object 待序列化对象
+     */
+    public static String toJson(Object object, Function<ObjectMapper, ObjectWriter> enhancer) {
+        try {
+            return enhancer.apply(JSON_MAPPER).writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new SerialException(e);
         }
@@ -112,11 +122,11 @@ public class JsonUtils {
 
     /**
      * 反序列化 JSON 字符串为 Object
-     * 语法糖方法，但使用范围受 Java 泛型影响。泛型推断不能推断泛型参数类型，如 List、Map 这种
-     * 错误使用后果：可能导致 ClassCastException: LinkedHashMap cannot be cast to class xxx
-     * 因为本方法签名中返回值的为 T，未指明泛型参数，泛型参数将被抹为 Object，Jackson碰到 Object 将使用 LinkedHashMap
      *
      * @see #parseObject(String, TypeReference) 该方法中可以在使用除传入 new TypeReference<>() {} 能利用到java泛型自动推断
+     * @deprecated 语法糖方法，但使用范围受 Java 泛型影响。泛型推断不能推断泛型参数类型，如 List、Map 这种
+     * 错误使用后果：可能导致 ClassCastException: LinkedHashMap cannot be cast to class xxx
+     * 因为本方法签名中返回值的为 T，未指明泛型参数，泛型参数将被抹为 Object，Jackson碰到 Object 将使用 LinkedHashMap
      */
     public static <T> T parseObject(String json) {
         try {
@@ -136,6 +146,11 @@ public class JsonUtils {
         } catch (JsonProcessingException e) {
             throw new SerialException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> parseList(String json, Class<T> contentClass) {
+        return parseObject(json, List.class, contentClass);
     }
 
     /**
@@ -174,11 +189,43 @@ public class JsonUtils {
     // ============================ ObjectMapper 创建 ============================
 
     public static ObjectMapper createObjectMapper() {
-        return createObjectMapper(null);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        enhancer(objectMapper);
+        /*BeanSerializerModifier modifier = null;
+        if (modifier != null) {
+            // 可以定制逻辑：类型为array，list、set时，当值为空时，序列化成[]
+            objectMapper.setSerializerFactory(
+                    objectMapper.getSerializerFactory().withSerializerModifier(modifier)
+            );
+        }*/
+        return objectMapper;
     }
 
-    public static ObjectMapper createObjectMapper(BeanSerializerModifier modifier) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public static ObjectMapper getInstance() {
+        return JSON_MAPPER;
+    }
+
+    /**
+     * 注意:在使用一次后再注册(反)序列化会失效,因缓存原因会继续用上次的
+     */
+    public static ObjectMapper enhancer(ObjectMapper objectMapper) {
+        // 激活所有通过 spi 注册的模块，如接口响应多种格式，统一反序列化为标准的，需要自行实现 StdDeserializer，new SimpleModule().addDeserializer
+        // 扫描到的优先
+        objectMapper.registerModules(
+                ObjectMapper.findModules().stream()
+                        .filter(m -> !(m instanceof JavaTimeModule))
+                        .collect(Collectors.toList())
+        );
+
+// 这些在默认的里面都有了
+//        objectMapper
+//                // 兼容 Optional
+//                .registerModule(new Jdk8Module())
+//                // 解决dto没有无参构造函数报错
+//                .registerModule(new ParameterNamesModule(JsonCreator.Mode.DEFAULT))
+//                // 添加 jdk8 新增的时间序列化处理模块
+//                .registerModule(new JavaTimeModule());
 
         // 设置为配置中的统一 地区、时区、
         objectMapper
@@ -196,6 +243,8 @@ public class JsonUtils {
                 // 反序列化时，可解析反斜杠引用的所有字符，忽略无法转移的字符
                 .configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true)
 
+                // 忽略类型检查：检查是否为 @class 中的子类，方便debug 避免 classLoader 不同报错
+                .configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false)
                 // 忽略空bean转json错误，如使用 JPA FetchType.LAZY 时
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
                 // 忽略在json字符串中存在，在java类中不存在字段
@@ -205,21 +254,9 @@ public class JsonUtils {
                 // 将 key 排序（更好的体验）
                 .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 
-        if (modifier != null) {
-            // 可以定制逻辑：类型为array，list、set时，当值为空时，序列化成[]
-            objectMapper.setSerializerFactory(
-                    objectMapper.getSerializerFactory().withSerializerModifier(modifier)
-            );
-        }
-        // 添加 jdk8 新增的时间序列化处理模块
         objectMapper
-                .registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule())
                 // 对于时间等，用更宽松的取代默认严格的格式匹配
-                .registerModule(new DateEnhancerJacksonModule());
-
-        // 激活所有通过 spi 注册的模块，如接口响应多种格式，统一反序列化为标准的，需要自行实现 StdDeserializer，new SimpleModule().addDeserializer
-        objectMapper.findAndRegisterModules();
+                .registerModule(DateEnhancerJacksonModule.INSTANCE);
         return objectMapper;
     }
 
@@ -236,17 +273,24 @@ public class JsonUtils {
     /**
      * 解决常见序列化失败问题：java 8 时间、Long 序列化，如果不加入，则可能需要这么写：
      *
-     * <code>
-     *
-     * @author lym
-     * @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+     * <code> @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
      * LocalDateTime time;
      * </code>
+     *
+     * @author lym
+     * @see com.fasterxml.jackson.datatype.jsr310.JavaTimeModule 替代默认的
      */
     public static class DateEnhancerJacksonModule extends SimpleModule {
 
+        public static final DateEnhancerJacksonModule INSTANCE = new DateEnhancerJacksonModule();
+
         public DateEnhancerJacksonModule() {
-            super(PackageVersion.VERSION);
+            super("shoulder-DateEnhancerJacksonModule",
+                    VersionUtil.parseVersion(ShoulderFramework.VERSION, "cn.itlym", "shoulder-parent")
+            );
+
+            // 枚举反序列化
+            //this.addDeserializer(Enum.class, ShoulderEnumDeserializer.INSTANCE);
 
             // 解决 jdk8 日期序列化失败
             String dateFormatStr = "yyyy-MM-dd";
@@ -263,9 +307,7 @@ public class JsonUtils {
             DateTimeFormatter datetimeFormat = DateTimeFormatter.ofPattern(datetimeFormatStr);
             this.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(datetimeFormat));
             this.addDeserializer(LocalDateTime.class, ShoulderLocalDateTimeDeserializer.INSTANCE);
-            this.addDeserializer(Enum.class, ShoulderEnumDeserializer.INSTANCE);
             // todo Date 是java旧的日期工具，暂不对其提供宽泛反序列化支持，后续版本支持
-            //  【考虑】LocalDate 支持带时间的，只取日期部分 LocalTime 同理
 
             // 解决 17位+的 Long 给前端导致精度丢失问题，前端将以 str 接收（序列换成json时,将所有的long变成string）
             // todo 【系统设计】JSON序列化时，枚举；long、BigInteger、BigDecimal 可以转为字符串处理
@@ -273,9 +315,44 @@ public class JsonUtils {
 //            this.addSerializer(Long.TYPE, ToStringSerializer.instance);
 //            this.addSerializer(BigInteger.class, ToStringSerializer.instance);
 //            this.addSerializer(BigDecimal.class, ToStringSerializer.instance);
-            //this.addSerializer(Long.class, ToStringSerializer.instance);
-            //this.addSerializer(Long.TYPE, ToStringSerializer.instance);
 
+
+            // jackson 自带的---复制
+            this.addDeserializer(Instant.class, InstantDeserializer.INSTANT);
+            this.addDeserializer(OffsetDateTime.class, InstantDeserializer.OFFSET_DATE_TIME);
+            this.addDeserializer(ZonedDateTime.class, InstantDeserializer.ZONED_DATE_TIME);
+            this.addDeserializer(Duration.class, DurationDeserializer.INSTANCE);
+            this.addDeserializer(MonthDay.class, MonthDayDeserializer.INSTANCE);
+            this.addDeserializer(OffsetTime.class, OffsetTimeDeserializer.INSTANCE);
+            this.addDeserializer(Period.class, JSR310StringParsableDeserializer.PERIOD);
+            this.addDeserializer(Year.class, YearDeserializer.INSTANCE);
+            this.addDeserializer(YearMonth.class, YearMonthDeserializer.INSTANCE);
+            this.addDeserializer(ZoneId.class, JSR310StringParsableDeserializer.ZONE_ID);
+            this.addDeserializer(ZoneOffset.class, JSR310StringParsableDeserializer.ZONE_OFFSET);
+            this.addSerializer(Duration.class, DurationSerializer.INSTANCE);
+            this.addSerializer(Instant.class, InstantSerializer.INSTANCE);
+            this.addSerializer(MonthDay.class, MonthDaySerializer.INSTANCE);
+            this.addSerializer(OffsetDateTime.class, OffsetDateTimeSerializer.INSTANCE);
+            this.addSerializer(OffsetTime.class, OffsetTimeSerializer.INSTANCE);
+            this.addSerializer(Period.class, new ToStringSerializer(Period.class));
+            this.addSerializer(Year.class, YearSerializer.INSTANCE);
+            this.addSerializer(YearMonth.class, YearMonthSerializer.INSTANCE);
+            this.addSerializer(ZonedDateTime.class, ZonedDateTimeSerializer.INSTANCE);
+            this.addSerializer(ZoneId.class, new ZoneIdSerializer());
+            this.addSerializer(ZoneOffset.class, new ToStringSerializer(ZoneOffset.class));
+            this.addKeySerializer(ZonedDateTime.class, ZonedDateTimeKeySerializer.INSTANCE);
+            this.addKeyDeserializer(Duration.class, DurationKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(Instant.class, InstantKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(LocalTime.class, LocalTimeKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(MonthDay.class, MonthDayKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(OffsetDateTime.class, OffsetDateTimeKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(OffsetTime.class, OffsetTimeKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(Period.class, PeriodKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(Year.class, YearKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(YearMonth.class, YearMonthKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(ZonedDateTime.class, ZonedDateTimeKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(ZoneId.class, ZoneIdKeyDeserializer.INSTANCE);
+            this.addKeyDeserializer(ZoneOffset.class, ZoneOffsetKeyDeserializer.INSTANCE);
         }
     }
 }

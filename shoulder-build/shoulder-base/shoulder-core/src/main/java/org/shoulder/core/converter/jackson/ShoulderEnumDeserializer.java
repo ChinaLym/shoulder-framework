@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
  * jackson enum 反序列化
  *
  * @author lym
+ * @deprecated jackson自身就支持
  */
 public class ShoulderEnumDeserializer extends StdDeserializer<Enum<?>> {
 

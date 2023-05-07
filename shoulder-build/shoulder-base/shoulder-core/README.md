@@ -37,9 +37,26 @@
 - 日期格式 yyyy-MM-dd
 - 日志 支持记录带错误码
 - HTTP RESTFUL 返回值
+- 日志划分：
+  - biz 摘要日志，记录一次请求关键信息：时间 / 业务 / 执行方法 / 结果 / 耗时
+  - 业务日志 info：记录执行信息
+  - 业务日志 warn 记录业务重要关注点，不常触发的兜底逻辑
+  - 业务日志 error 记录业务失败
+  - 通用 info/warn/error：业务无关代码 / 中间件依赖未分类时默认打印文件（理论都要分类）
+  - 通用 perf：记录线程池等表现，用于监控（可选，可以通过 endpoint 提供）
+  - integration-info
+  - integration-digest
+- 模块日志
+  - 超时上报的case，配置刷新，关键运行日志()
+  - 框架切面执行，耗时，异常、周期运行摘要、限流等
+    spring、core、mq、shoulder-common、shoulder-runtime（关键）、stdout.log、log-clean.log、gc.log、参数中心、mq等、sentinel、endpoint、thread、缓存、数据库、机器cpu等监控、tracelog
 
 [spring boot 注解解释](https://www.cnblogs.com/lovecindywang/p/9846846.html)
 
+## 插件
+提供加载机制，参考：
+https://gitee.com/core-lib/slot-maven-plugin
+https://github.com/zlt2000/springs-boot-plugin-test
 
 ## 简化异常日志处理
 
@@ -94,7 +111,7 @@ private static final org.shoulder.core.log.Logger log = org.shoulder.core.log.Lo
 
 #### Spring 多语言文件命名限制
  由于采用了 jdk 定义的 `ResourceBundle` 的思想加载多语言文件，故对多语言资源文件命名有 `ResourceBundle` 命名限制
- 
+
 #### Spring 的资源文件加载顺序
 默认共尝试加载7处
 - 按照传入 Locale，从详细到粗略加载一轮
@@ -112,7 +129,7 @@ private static final org.shoulder.core.log.Logger log = org.shoulder.core.log.Lo
 
 ----
 
-# [GUID（全局唯一标识符生成器）](https://github.com/ChinaLym/Shoulder-Framework/tree/master/shoulder-build/shoulder-base/shoulder-core#guid%E5%85%A8%E5%B1%80%E5%94%AF%E4%B8%80%E6%A0%87%E8%AF%86%E7%AC%A6%E7%94%9F%E6%88%90%E5%99%A8)
+# [GUID（全局唯一标识符生成器）](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-base/shoulder-core#guid%E5%85%A8%E5%B1%80%E5%94%AF%E4%B8%80%E6%A0%87%E8%AF%86%E7%AC%A6%E7%94%9F%E6%88%90%E5%99%A8)
 
 全局唯一 id 生成器，接口有 LongGuidGenerator、StringGuidGenerator 两种，常用于生成流水数据的主键、标识字段，经测试分布式场景不会重复，且性能相当高，并容忍时间回拨。
 
@@ -163,9 +180,10 @@ twitter 首个提出 GUID 的可行方案，该算法容易理解，为进一步
 
 百度提出了利用逻辑时钟 + 启动时机器号从外界获取不会重复唯一标识来解决时钟回拨，利用双 buffer，去伪共享，异步预填充机制降低并发读写同步带来地性能影响，保证了较高性能，但在超大规模场景还有待提升。
 
-### [ShoulderGuid](https://github.com/ChinaLym/Shoulder-Framework/blob/master/shoulder-build/shoulder-base/shoulder-core/src/main/java/org/shoulder/core/uuid/ShoulderGuidGenerator.java) （Shoulder Globally Unique Identifier 全局唯一标识符）
+### [ShoulderGuid](https://github.com/ChinaLym/shoulder-framework/blob/master/shoulder-build/shoulder-base/shoulder-core/src/main/java/org/shoulder/core/uuid/ShoulderGuidGenerator.java) （Shoulder Globally Unique Identifier 全局唯一标识符）
 
-测试代码见单元测试，与其他开源实现相比，除了提供`递增`、`唯一`的 `GUID` 算法与文档外，shoulder还有完善的[单元测试（性能、重复测试、扩展测试、多线程测试）](https://github.com/ChinaLym/Shoulder-Framework/blob/master/shoulder-build/shoulder-base/shoulder-core/src/test/java/org/shoulder/core/uuid/ShoulderGuidTest.java)
+测试代码见单元测试，与其他开源实现相比，除了提供`递增`、`唯一`的 `GUID`
+算法与文档外，shoulder还有完善的[单元测试（性能、重复测试、扩展测试、多线程测试）](https://github.com/ChinaLym/shoulder-framework/blob/master/shoulder-build/shoulder-base/shoulder-core/src/test/java/org/shoulder/core/uuid/ShoulderGuidTest.java)
 
 #### 测试 & 结果：
 
