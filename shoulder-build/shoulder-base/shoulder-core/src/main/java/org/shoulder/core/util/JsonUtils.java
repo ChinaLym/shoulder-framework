@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
@@ -12,11 +13,11 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.PackageVersion;
 import com.fasterxml.jackson.datatype.jsr310.deser.*;
 import com.fasterxml.jackson.datatype.jsr310.deser.key.*;
 import com.fasterxml.jackson.datatype.jsr310.ser.*;
 import com.fasterxml.jackson.datatype.jsr310.ser.key.ZonedDateTimeKeySerializer;
+import org.shoulder.core.constant.ShoulderFramework;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.converter.jackson.ShoulderLocalDateTimeDeserializer;
 import org.shoulder.core.exception.SerialException;
@@ -201,9 +202,16 @@ public class JsonUtils {
         return objectMapper;
     }
 
+    public static ObjectMapper getInstance() {
+        return JSON_MAPPER;
+    }
+
+    /**
+     * 注意:在使用一次后再注册(反)序列化会失效,因缓存原因会继续用上次的
+     */
     public static ObjectMapper enhancer(ObjectMapper objectMapper) {
         // 激活所有通过 spi 注册的模块，如接口响应多种格式，统一反序列化为标准的，需要自行实现 StdDeserializer，new SimpleModule().addDeserializer
-        // 默认不扫描
+        // 扫描到的优先
         objectMapper.registerModules(
                 ObjectMapper.findModules().stream()
                         .filter(m -> !(m instanceof JavaTimeModule))
@@ -248,7 +256,7 @@ public class JsonUtils {
 
         objectMapper
                 // 对于时间等，用更宽松的取代默认严格的格式匹配
-                .registerModule(new DateEnhancerJacksonModule());
+                .registerModule(DateEnhancerJacksonModule.INSTANCE);
         return objectMapper;
     }
 
@@ -274,8 +282,12 @@ public class JsonUtils {
      */
     public static class DateEnhancerJacksonModule extends SimpleModule {
 
+        public static final DateEnhancerJacksonModule INSTANCE = new DateEnhancerJacksonModule();
+
         public DateEnhancerJacksonModule() {
-            super(PackageVersion.VERSION);
+            super("shoulder-DateEnhancerJacksonModule",
+                    VersionUtil.parseVersion(ShoulderFramework.VERSION, "cn.itlym", "shoulder-parent")
+            );
 
             // 枚举反序列化
             //this.addDeserializer(Enum.class, ShoulderEnumDeserializer.INSTANCE);
