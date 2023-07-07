@@ -93,7 +93,7 @@
 
         <!-- dataBase-->
         <mysql.version>8.0.21</mysql.version>
-        <h2.version>2.1.214</h2.version>
+        <h2.version>2.2.220</h2.version>
         <!-- 1.2.4支持jdk8时间打印 -->
         <druid.version>1.2.8</druid.version>
         <!-- mybatis-plus 功能稳定性较差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
