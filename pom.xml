@@ -12,7 +12,7 @@
 
     <!-- mvn versions:set -DnewVersion=1.0.1-RELEASE、mvn versions:commit、mvn versions:revert -->
 
-    <!-- 简介: 方便统一编译打包发布的模块，无源码 -->
+    <!-- 简介: 方便统一编译打包发布的模块，仅配置无代码 -->
     <name>shoulder Build</name>
     <description>Modules to centralize common resources and configuration for shoulder Maven builds.</description>
     <url>https://github.com/ChinaLym/shoulder-framework</url>
@@ -29,7 +29,7 @@
         <module>shoulder-dependencies</module>
         <!-- 各模块通用配置 -->
         <module>shoulder-parent</module>
-        <!-- 源码 -->
+        <!-- 基础模块 -->
         <module>shoulder-build</module>
         <!-- 骨架工程 -->
         <module>shoulder-archetype-simple</module>

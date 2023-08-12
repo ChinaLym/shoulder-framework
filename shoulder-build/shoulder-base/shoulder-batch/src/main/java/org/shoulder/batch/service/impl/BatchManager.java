@@ -397,6 +397,7 @@ public class BatchManager implements Runnable, ProgressAble {
         OpLogContextHolder.enableAutoLog();
     }
 
+    @Override
     public String getTaskId() {
         return progress.getTaskId();
     }
@@ -404,5 +405,10 @@ public class BatchManager implements Runnable, ProgressAble {
     @Override
     public BatchProgressRecord getBatchProgress() {
         return progress;
+    }
+
+    @Override
+    public void finishPart(int partIndex) {
+        progress.finishPart(partIndex);
     }
 }

@@ -1,7 +1,8 @@
 package org.shoulder.batch.cache;
 
-import org.shoulder.batch.model.BatchProgressRecord;
 import org.shoulder.batch.service.impl.ProgressAble;
+
+import java.util.Map;
 
 /**
  * 批处理任务进度缓存
@@ -16,21 +17,24 @@ public interface BatchProgressCache {
      * @param id taskId
      * @return 任务
      */
-    BatchProgressRecord getTaskProgress(String id);
+    ProgressAble getTaskProgress(String id);
+
+    Iterable<String> getAllTaskProgressId();
+
+    Map<String, ProgressAble> getAllTaskProgress();
 
     /**
-     * 触发异步刷进度（直接刷）
+     * 刷一次进度
      *
      * @param batchProgress 进度
      */
-    void triggerFlushProgress(BatchProgressRecord batchProgress);
+    void flushProgress(ProgressAble batchProgress);
 
     /**
-     * 触发异步刷进度（需要动态获取进度）
+     * 触发异步刷进度
      *
-     * @param task 需要被刷进度的 task
+     * @param batchProgress 进度;注意需要维护该对象引用
      */
-    void triggerFlushProgress(ProgressAble task);
-
+    void triggerFlushProgress(ProgressAble batchProgress);
 
 }

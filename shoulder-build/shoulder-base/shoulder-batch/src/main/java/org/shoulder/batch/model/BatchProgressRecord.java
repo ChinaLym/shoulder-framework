@@ -2,6 +2,7 @@ package org.shoulder.batch.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.shoulder.batch.service.impl.ProgressAble;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import java.io.Serializable;
@@ -14,14 +15,15 @@ import java.util.Map;
  * 批量处理进度模型 record类
  * <p>
  * 没有进度条、预计剩余时间，已使用时间的等，这些可以通过给的字段计算，因此不给
+ * 线程不安全：适用于单机单线程管理进度的模块，绝大多数场景足够
  *
  * @author lym
- * fixme 完整了 stopTime 为空，显示还剩1个未完成
+ * fixme 完成了 stopTime 为空，显示还剩1个未完成
  */
 @Data
 @NoArgsConstructor
 @NotThreadSafe
-public class BatchProgressRecord implements Serializable {
+public class BatchProgressRecord implements Serializable, ProgressAble {
 
     private static final long serialVersionUID = 1L;
 
@@ -169,6 +171,16 @@ public class BatchProgressRecord implements Serializable {
         if (processed == total) {
             finish();
         }
+    }
+
+    @Override
+    public BatchProgressRecord getBatchProgress() {
+        return this;
+    }
+
+    @Override
+    public void finishPart(int partIndex) {
+        addSuccess(1);
     }
 
 }

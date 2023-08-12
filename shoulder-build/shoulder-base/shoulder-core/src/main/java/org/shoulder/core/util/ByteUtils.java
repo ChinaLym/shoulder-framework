@@ -3,9 +3,7 @@ package org.shoulder.core.util;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Objects;
@@ -111,10 +109,44 @@ public class ByteUtils {
 
     /**
      * int到byte[] 由高位到低位
+     *  相当于以下（性能无差异）：
+     byte[] result = new byte[4];
+     result[0] = (byte) ((i >> 24) & 0xFF);
+     result[1] = (byte) ((i >> 16) & 0xFF);
+     result[2] = (byte) ((i >> 8) & 0xFF);
+     result[3] = (byte) (i & 0xFF);
+     return result;
      *
-     * @param i 需要转换为byte数组的整行值。
+     * @param input 需要转换为byte数组的值。
      * @return byte数组
      */
+    public static byte[] toBytes(int input) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
+        byteBuffer.putInt(0, input);
+        return byteBuffer.array();
+    }
+
+    public static byte[] toBytes(long input) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(Long.SIZE / Byte.SIZE);
+        byteBuffer.putLong(0, input);
+        return byteBuffer.array();
+    }
+
+    /**
+     * byte[]转int
+     *
+     * @param bytes 需要转换成int的数组 位运算比 byteBuffer 快很多
+     * @return int值
+     */
+    public static int toInt(byte[] bytes) {
+        int value = 0;
+        value |= (bytes[0] & 0xFF) << 24;
+        value |= (bytes[1] & 0xFF) << 16;
+        value |= (bytes[2] & 0xFF) << 8;
+        value |= bytes[3] & 0xFF;
+        return value;
+    }
+
     public static byte[] intToBytes(int i) {
         byte[] result = new byte[4];
         result[0] = (byte) ((i >> 24) & 0xFF);
@@ -125,92 +157,42 @@ public class ByteUtils {
     }
 
     /**
-     * long 到byte[] 由高位到低位
-     *
-     * @param longNum 需要转换为byte数组的整行值。
-     * @return byte数组
-     */
-    public static byte[] toBytes(long longNum) {
-        int longBytes = 8;
-        int byteBits = 8;
-        byte[] result = new byte[longBytes];
-        int mask = (longBytes - 1) * byteBits;
-        for (int i = 0; i < result.length; i++, mask -= byteBits) {
-            result[i] = (byte) ((longNum >> mask) & 0xFF);
-        }
-        return result;
-    }
-
-    /**
-     * byte[]转int
-     *
-     * @param bytes 需要转换成int的数组
-     * @return int值
-     */
-    public static int bytesToInt(byte[] bytes) {
-        int value = 0;
-        for (int i = 0; i < 4; i++) {
-            int shift = (3 - i) * 8;
-            value += (bytes[i] & 0xFF) << shift;
-        }
-        return value;
-    }
-
-    /**
-     * int到byte[] 由高位到低位
-     *
-     * @param i 需要转换为byte数组的整行值。
-     * @return byte数组
-     */
-    public static byte[] toBytes(int i) {
-        byte[] result = new byte[4];
-        result[0] = (byte) ((i >> 24) & 0xFF);
-        result[1] = (byte) ((i >> 16) & 0xFF);
-        result[2] = (byte) ((i >> 8) & 0xFF);
-        result[3] = (byte) (i & 0xFF);
-        return result;
-    }
-
-    /**
-     * long 到byte[] 由高位到低位
-     *
-     * @param longNum 需要转换为byte数组的整行值。
-     * @return byte数组
-     */
-    /*public static byte[] toBytes(long longNum) throws IOException {
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        DataOutputStream dos =new DataOutputStream(bao);
-        dos.writeLong(longNum);
-        return bao.toByteArray();
-    }*/
-
-    /**
-     * byte[]转int
-     *
-     * @param bytes 需要转换成int的数组
-     * @return int值
-     */
-    public static int toInt(byte[] bytes) {
-        int value = 0;
-        for (int i = 0; i < 4; i++) {
-            int shift = (3 - i) * 8;
-            value += (bytes[i] & 0xFF) << shift;
-        }
-        return value;
-    }
-
-    /**
-     * byte[]转 long
+     * byte[]转 long（性能：位运算 > 缓冲区 ByteBuffer.allocate > ByteArrayInputStream、大端存储符合人类的阅读习惯）
      *
      * @param bytes 需要转换成 long 的数组
      * @return long 值
      */
-    public static long toLong(byte[] bytes) throws IOException {
-        ByteArrayInputStream bai = new ByteArrayInputStream(bytes);
-        DataInputStream dis = new DataInputStream(bai);
-        return dis.readLong();
+    public static long toLong(byte[] bytes) {
+        long value = 0;
+        value |= (bytes[0] & 0xFFL) << 56;
+        value |= (bytes[1] & 0xFFL) << 48;
+        value |= (bytes[2] & 0xFFL) << 40;
+        value |= (bytes[3] & 0xFFL) << 32;
+        value |= (bytes[4] & 0xFFL) << 24;
+        value |= (bytes[5] & 0xFFL) << 16;
+        value |= (bytes[6] & 0xFFL) << 8;
+        value |= bytes[7] & 0xFFL;
+        return value;
     }
 
+    /**
+     * long 到byte[] 由高位到低位大端存储符合人类的阅读习惯，位运算计算量较多，并无优势，建议用buffer
+     *
+     * @param input 需要转换为byte数组的值。
+     * @return byte数组
+     */
+//    public static byte[] toBytes2(long input) {
+//        byte[] result = new byte[8];
+//        result[0] = (byte) ((input >> 56) & 0xFF);
+//        result[1] = (byte) ((input >> 48) & 0xFF);
+//        result[2] = (byte) ((input >> 40) & 0xFF);
+//        result[3] = (byte) (input >> 32 & 0xFF);
+//        result[4] = (byte) (input >> 24 & 0xFF);
+//        result[5] = (byte) (input >> 16 & 0xFF);
+//        result[6] = (byte) (input >> 8 & 0xFF);
+//        result[7] = (byte) (input & 0xFF);
+//        return result;
+//    }
 
     public static boolean isEmpty(byte[] data) {
         return data == null || data.length == 0;

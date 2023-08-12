@@ -28,8 +28,7 @@ public class FileUtils extends FileUtil {
     private final static Logger log = LoggerFactory.getLogger(FileUtils.class);
     public static final String UPLOAD_FILE_ROOT_PATH = "upload";
     public static final String COMMA_SEPARATOR = ",";
-    private static final String TEMP_DIR_NAME = "temp";
-    private static final String FILE_SEPARATOR = File.separator;
+    public static final String TEMP_DIR_NAME = "temp";
 
     /**
      * 文件扩展名 - 数组
@@ -100,7 +99,7 @@ public class FileUtils extends FileUtil {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         ServletContext servletContext = request.getSession().getServletContext();
         if (servletContext != null) {
-            return servletContext.getRealPath(FILE_SEPARATOR + UPLOAD_FILE_ROOT_PATH);
+            return servletContext.getRealPath(File.separator + UPLOAD_FILE_ROOT_PATH);
         }
         throw new RuntimeException("not a servlet environment!");
     }
@@ -109,7 +108,7 @@ public class FileUtils extends FileUtil {
      * 获取上传文件的临时文件夹路径
      */
     public static String getUploadFileTempPath() {
-        return getUploadFileRootPath() + FILE_SEPARATOR + TEMP_DIR_NAME;
+        return getUploadFileRootPath() + File.separator + TEMP_DIR_NAME;
     }
 
     /**

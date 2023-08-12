@@ -282,12 +282,12 @@ public class DefaultBatchExportService implements BatchAndExportService {
      */
     @Override
     public BatchProgressRecord queryBatchProgress(String taskId) {
-        BatchProgressRecord result = batchProgressCache.getTaskProgress(taskId);
+        ProgressAble result = batchProgressCache.getTaskProgress(taskId);
         if (result == null) {
             // 缓存过期无需从数据库中查，直接异常
             throw BatchErrorCodeEnum.TASK_ID_NOT_EXIST.toException(taskId);
         }
-        return result;
+        return result.getBatchProgress();
     }
 
     @Override

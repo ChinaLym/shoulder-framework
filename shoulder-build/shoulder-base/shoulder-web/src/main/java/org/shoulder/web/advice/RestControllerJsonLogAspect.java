@@ -67,9 +67,8 @@ public class RestControllerJsonLogAspect extends BaseRestControllerLogAspect {
         }
         Map<String, String> argsMap = new HashMap<>(parameters.length);
         for (int i = 0; i < parameters.length; i++) {
-            //Class<?> argType = parameters[i].getType();
             String argName = parameterNames[i];
-            String argValue = JsonUtils.toJson(args[i]);
+            String argValue = RestControllerColorfulLogAspect.toLogValue(args[i]);
             // 过长的参数可能导致缓慢
             argsMap.put(argName, argValue);
             /*requestInfo

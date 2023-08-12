@@ -11,15 +11,15 @@ public class SerialException extends BaseRuntimeException {
     private static final long serialVersionUID = 5330049957369887114L;
 
     public SerialException(Throwable cause) {
-        super(cause);
+        this(CommonErrorCodeEnum.PROCESS_FAIL.getCode(), cause);
     }
 
     public SerialException(String message) {
-        super(message);
+        this(CommonErrorCodeEnum.PROCESS_FAIL.getCode(), message);
     }
 
     public SerialException(String message, Throwable cause) {
-        super(message, cause);
+        this(CommonErrorCodeEnum.PROCESS_FAIL.getCode(), message, cause);
     }
 
     public SerialException(String code, String message) {

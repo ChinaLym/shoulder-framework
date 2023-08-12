@@ -85,12 +85,15 @@ public class BatchTaskAutoConfiguration {
     }
 
     /**
-     * 进度缓存
+     * 进度缓存【说明，该注入方式无法通过 cache.getProgressId 写，且只能单节点写】
      * 集群模式从缓存管理器中获取
+     * CacheManager 的、来源：1. @EnableCaching 2. 自己new
+     * 如果不用自动装配，则自己造 BatchProgressCache 或者关掉该 batch 功能
      */
     @Bean
     @ConditionalOnCluster
     @ConditionalOnMissingBean
+    @ConditionalOnBean(CacheManager.class)
     public BatchProgressCache redisBatchProgressCache(CacheManager cacheManager) {
         return new DefaultBatchProgressCache(cacheManager.getCache(DefaultBatchProgressCache.CACHE_NAME));
     }

@@ -3,11 +3,14 @@ package org.shoulder.batch.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.shoulder.batch.service.impl.ProgressAble;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AssertUtils;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.BitSet;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -16,15 +19,15 @@ import java.util.function.BiConsumer;
 /**
  * 批量处理进度并发模型
  * <p>
- * 没有进度条、预计剩余时间，已使用时间的等，这些可以通过给的字段计算，因此不给
- * 线程安全：支持任务总数动态调整、支持单机多线程管理进度
+ * 额外附带了子任务幂等能力，适用于已经确定子任务数目的程序，且子任务id是从0连续有序的，只能记录完成数，不能记录失败数目
+ * 线程不安全：建议通过加锁保证
  *
  * @author lym
  */
 @Data
 @NoArgsConstructor
-@ThreadSafe
-public class BatchProgress implements Serializable, ProgressAble {
+@NotThreadSafe
+public class FixedNumProgress implements Serializable, ProgressAble {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,34 +46,13 @@ public class BatchProgress implements Serializable, ProgressAble {
     private LocalDateTime startTime;
 
     /**
-     * 如：上次运行时已经完成一部分了，在这里体现，用于预估结束时间
-     */
-    private int alreadyFinishedAtStart;
-
-    /**
      * 任务停止时间
      */
     private LocalDateTime stopTime;
 
-    /**
-     * 任务需要处理的记录总数
-     */
-    private AtomicInteger total = new AtomicInteger();
+    private BitSet set;
 
-    /**
-     * 任务已经处理的记录数
-     */
-    private AtomicInteger processed = new AtomicInteger();
-
-    /**
-     * 成功数
-     */
-    private AtomicInteger successNum = new AtomicInteger();
-
-    /**
-     * 失败数
-     */
-    private AtomicInteger failNum = new AtomicInteger();
+    private int total;
 
     /**
      * 状态：
@@ -80,21 +62,23 @@ public class BatchProgress implements Serializable, ProgressAble {
 
     private Map<String, Object> ext;
 
-    public BatchProgress(boolean autoFished) {
+    public FixedNumProgress(int totalNum, boolean autoFished) {
+        this.total = totalNum;
+        this.set = new BitSet(totalNum);
         this.autoFished = autoFished;
     }
 
-    public void setAlreadyFinishedAtStart(int alreadyFinishedAtStart) {
-        this.alreadyFinishedAtStart = alreadyFinishedAtStart;
-    }
 
     public void start() {
         // 只能从未开始到开始
+        AssertUtils.notBlank(taskId, CommonErrorCodeEnum.ILLEGAL_STATUS);
+        AssertUtils.isTrue(status.compareAndSet(ProcessStatusEnum.WAITING.getCode(), ProcessStatusEnum.RUNNING.getCode()), CommonErrorCodeEnum.ILLEGAL_STATUS);
         startTime = LocalDateTime.now();
     }
 
     public int setTotal(int total) {
-        return this.total.getAndSet(total);
+        this.total = total;
+        return total;
     }
 
     public int failStop() {
@@ -145,8 +129,8 @@ public class BatchProgress implements Serializable, ProgressAble {
             return 1;
         }
         // 即将完成 99%
-        int process = this.processed.get();
-        int totalNum = this.total.get();
+        int process = this.set.cardinality();
+        int totalNum = this.total;
         return process == totalNum ? 0.999F : process / (float) totalNum;
     }
 
@@ -159,13 +143,13 @@ public class BatchProgress implements Serializable, ProgressAble {
         if (hasFinish()) {
             return 0L;
         }
-        int processedNum = processed.get();
-        int totalNum = total.get();
-        if (processedNum - alreadyFinishedAtStart <= 0) {
+        int processedNum = this.set.cardinality();
+        int totalNum = total;
+        if (processedNum <= 0) {
             // 默认 99 天
             return Duration.ofDays(99).toMillis();
         }
-        return (calculateProcessedTime() / (processedNum - alreadyFinishedAtStart) * (totalNum - processedNum));
+        return (calculateProcessedTime() / (processedNum) * (totalNum - processedNum));
     }
 
     @Override
@@ -173,20 +157,10 @@ public class BatchProgress implements Serializable, ProgressAble {
         return "BatchProgress{" +
                 "taskId='" + taskId + '\'' +
                 ", total=" + total +
-                ", processed=" + processed +
+                ", processed=" + this.set.cardinality() +
                 ", startTime=" + startTime +
                 ", status=" + status +
                 '}';
-    }
-
-    public void addSuccess(int num) {
-        this.successNum.addAndGet(num);
-        addProcessed(num);
-    }
-
-    public void addFail(int num) {
-        this.failNum.addAndGet(num);
-        addProcessed(num);
     }
 
     public BatchProgressRecord toRecord() {
@@ -194,13 +168,13 @@ public class BatchProgress implements Serializable, ProgressAble {
         BatchProgressRecord record = new BatchProgressRecord();
         record.setTaskId(taskId);
         record.setStartTime(startTime);
-        record.setAlreadyFinishedAtStart(alreadyFinishedAtStart);
+        record.setAlreadyFinishedAtStart(0);
         record.setStatus(status.get());
         record.setStopTime(stopTime);
-        record.setFailNum(failNum.get());
-        record.setSuccessNum(successNum.get());
+        record.setFailNum(0);
+        record.setSuccessNum(this.set.cardinality());
         record.setProcessed(record.getSuccessNum() + record.getFailNum());
-        record.setTotal(total.get());
+        record.setTotal(total);
         record.setExt(ext);
         return record;
     }
@@ -212,7 +186,8 @@ public class BatchProgress implements Serializable, ProgressAble {
 
     @Override
     public void finishPart(int partIndex) {
-        addSuccess(1);
+        this.set.set(partIndex);
+        checkFinished();
     }
 
     @Override
@@ -220,13 +195,8 @@ public class BatchProgress implements Serializable, ProgressAble {
         afterFinishCallback.accept(id, task);
     }
 
-    private void addProcessed(int processedNum) {
-        this.processed.addAndGet(processedNum);
-        checkFinished();
-    }
-
     private void checkFinished() {
-        if (processed.get() == total.get() && autoFished) {
+        if (set.cardinality() == set.cardinality() && autoFished) {
             finish();
         }
     }

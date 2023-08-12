@@ -17,6 +17,15 @@ public interface ProgressAble {
     BatchProgressRecord getBatchProgress();
 
     /**
+     * 完成第 partIndex 个分片
+     *
+     * @param partIndex 分片标
+     */
+    String getTaskId();
+
+    void finishPart(int partIndex);
+
+    /**
      * 结束后的回调
      */
     default void afterFinished(String id, ProgressAble task) {

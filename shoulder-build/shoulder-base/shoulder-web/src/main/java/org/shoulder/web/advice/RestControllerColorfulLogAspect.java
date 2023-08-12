@@ -4,6 +4,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.beautify.ColorString;
 import org.shoulder.core.log.beautify.ColorStringBuilder;
@@ -23,8 +24,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.Closeable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
@@ -91,77 +91,61 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         // 记录请求方法、路径，Controller 信息与代码位置
         HttpServletRequest request = ServletUtil.getRequest();
         ColorStringBuilder requestInfo = new ColorStringBuilder()
-            .newLine()
-            .cyan("//========================================== ")
-            .yellow("Shoulder API Report", ColorString.Style.BOLD, true)
-            .cyan(" (" + SELF_CLASS_NAME + ")")
-            .cyan(" ==========================================\\\\")
-            .newLine();
+                .newLine()
+                .cyan("//========================================== ")
+                .yellow("Shoulder API Report", ColorString.Style.BOLD, true)
+                .cyan(" (" + SELF_CLASS_NAME + ")")
+                .cyan(" ==========================================\\\\")
+                .newLine();
 
         // 请求地址
         requestInfo
-            .green("Request   : ", ColorString.Style.BOLD)
-            .append("[")
-            .lBlue(request.getMethod().toUpperCase())
-            .append("] ")
-            .lBlue(request.getRequestURL().toString())
-            .newLine();
+                .green("Request   : ", ColorString.Style.BOLD)
+                .append("[")
+                .lBlue(request.getMethod().toUpperCase())
+                .append("] ")
+                .lBlue(request.getRequestURL().toString())
+                .newLine();
         // 处理的 Controller
         requestInfo
-            .green("Controller: ", ColorString.Style.BOLD)
-            .append(codeLocation)
-            .newLine();
+                .green("Controller: ", ColorString.Style.BOLD)
+                .append(codeLocation)
+                .newLine();
 
         Parameter[] parameters = method.getParameters();
         String[] parameterNames = methodSignature.getParameterNames();
         Object[] args = jp.getArgs();
 
         requestInfo
-            .green("From      : ", ColorString.Style.BOLD)
-            // 0:0:0:0:0:0:0:1 127.0.0.1 本机
-            .append(request.getRemoteAddr())
-            .newLine();
+                .green("From      : ", ColorString.Style.BOLD)
+                // 0:0:0:0:0:0:0:1 127.0.0.1 本机
+                .append(request.getRemoteAddr())
+                .newLine();
 
         requestInfo
-            .green("Headers   :", ColorString.Style.BOLD);
+                .green("Headers   :", ColorString.Style.BOLD);
 
         HttpLogHelper.appendHeader(requestInfo, ServletUtil.getRequestHeaders());
 
         // 记录 Controller 入参
         if (parameters.length > 0) {
             requestInfo.newLine()
-                .green("Params    :", ColorString.Style.BOLD);
+                    .green("Params    :", ColorString.Style.BOLD);
         }
 
         for (int i = 0; i < parameters.length; i++) {
             Class<?> argType = parameters[i].getType();
-            if (args[i] instanceof ServletResponse || args[i] instanceof ServletRequest ||
-                args[i] instanceof InputStream || args[i] instanceof OutputStream
-            ) {
-                // 流类型，或者带有流属性的DTO跳过
-                continue;
-            }
-
-            String argValue;
-            if (args[i] instanceof InputStreamSource) {
-                if (!(args[i] instanceof MultipartFile)) {
-                    continue;
-                }
-                // 专门记录 Multipart
-                argValue = genMultiPartFileInfo((MultipartFile) args[i]);
-            } else {
-                argValue = JsonUtils.toJson(args[i]);
-            }
+            String argValue = toLogValue(args[i]);
             String argName = parameterNames[i];
             requestInfo
-                .newLine().tab()
-                .lBlue(argType.getSimpleName())
-                .tab()
-                .append(" ")
-                .cyan(argName)
-                .tab()
-                .blue(": ")
-                .lMagenta(argValue);
+                    .newLine().tab()
+                    .lBlue(argType.getSimpleName())
+                    .tab()
+                    .append(" ")
+                    .cyan(argName)
+                    .tab()
+                    .blue(": ")
+                    .lMagenta(argValue);
         }
 
         requestInfo.newLine();
@@ -171,11 +155,23 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         requestTimeLocal.set(System.currentTimeMillis());
     }
 
-    private String genMultiPartFileInfo(MultipartFile arg) {
-        if (arg == null) {
+    static String toLogValue(Object value) {
+        if (value == null) {
             return "null";
         }
-        return new MultiFileInfo(arg).toString();
+        if (value instanceof MultipartFile) {
+            return new MultiFileInfo((MultipartFile) value).toString();
+        }
+        if (value instanceof ServletResponse || value instanceof ServletRequest || value instanceof Closeable || value instanceof InputStreamSource) {
+            // 流类型，或者带有流属性的DTO跳过
+            return "shoulder_SKIP:IOStream";
+        }
+        try {
+            return JsonUtils.toJson(value);
+        } catch (Exception e) {
+            logger.warnWithErrorCode(CommonErrorCodeEnum.UNKNOWN.getCode(), "This param type={} not support json, skip", value.getClass().getName());
+            return "shoulder_SKIP:JSON_FAIL";
+        }
     }
 
 
@@ -185,31 +181,31 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         HttpServletResponse response = ServletUtil.getResponse();
         ColorStringBuilder responseInfo = new ColorStringBuilder().newLine();
         responseInfo
-            .magenta("Controller : ", ColorString.Style.BOLD)
-            .append(codeLocationLocal.get())
-            .newLine();
+                .magenta("Controller : ", ColorString.Style.BOLD)
+                .append(codeLocationLocal.get())
+                .newLine();
 
         responseInfo
-            .magenta("Cost:      : ", ColorString.Style.BOLD)
-            .append(HttpLogHelper.cost(cost))
-            .newLine();
+                .magenta("Cost:      : ", ColorString.Style.BOLD)
+                .append(HttpLogHelper.cost(cost))
+                .newLine();
 
         String statusStr = String.valueOf(response.getStatus());
         responseInfo
-            .magenta("Status     : ", ColorString.Style.BOLD)
-            .color(statusStr, HttpLogHelper.httpStatusColor(statusStr))
-            .newLine();
+                .magenta("Status     : ", ColorString.Style.BOLD)
+                .color(statusStr, HttpLogHelper.httpStatusColor(statusStr))
+                .newLine();
 
         responseInfo
-            .magenta("Headers    : ", ColorString.Style.BOLD);
+                .magenta("Headers    : ", ColorString.Style.BOLD);
 
         ServletUtil.getResponseHeaders()
-            .forEach((headerName, headerValue) -> responseInfo
-                .newLine().tab()
-                .lMagenta(headerName)
-                .tab()
-                .green(": ")
-                .cyan(headerValue));
+                .forEach((headerName, headerValue) -> responseInfo
+                        .newLine().tab()
+                        .lMagenta(headerName)
+                        .tab()
+                        .green(": ")
+                        .cyan(headerValue));
 
         responseInfo.newLine();
 
@@ -218,26 +214,26 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
             ModelAndView modelAndView = (ModelAndView) returnObject;
             Map<String, Object> model = modelAndView.getModel();
             responseInfo
-                .magenta("Model      : ", ColorString.Style.BOLD);
+                    .magenta("Model      : ", ColorString.Style.BOLD);
 
             model.forEach((k, v) -> responseInfo
-                .newLine().tab()
-                .lMagenta(k)
-                .tab()
-                .green(": ")
-                .cyan(v instanceof CharSequence ? String.valueOf(v) : JsonUtils.toJson(v)));
+                    .newLine().tab()
+                    .lMagenta(k)
+                    .tab()
+                    .green(": ")
+                    .cyan(v instanceof CharSequence ? String.valueOf(v) : JsonUtils.toJson(v)));
         } else {
             // 打印返回值
             String responseStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
             responseInfo
-                .magenta("Result     : ", ColorString.Style.BOLD)
-                .append(responseStr);
+                    .magenta("Result     : ", ColorString.Style.BOLD)
+                    .append(responseStr);
         }
 
         responseInfo.newLine()
-            .cyan("\\\\========================== ")
-            .lBlue(codeLocationLocal.get())
-            .cyan(" ==========================//");
+                .cyan("\\\\========================== ")
+                .lBlue(codeLocationLocal.get())
+                .cyan(" ==========================//");
 
         log.debug(responseInfo.toString());
         cleanLocal();
@@ -314,12 +310,12 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         @Override
         public String toString() {
             return "{" +
-                "name='" + name + '\'' +
-                ", originalFilename='" + originalFilename + '\'' +
-                ", contentType='" + contentType + '\'' +
-                ", size=" + size + "byte (" + FileUtils.byteCountToDisplay(size) +
-                "), empty=" + empty +
-                '}';
+                    "name='" + name + '\'' +
+                    ", originalFilename='" + originalFilename + '\'' +
+                    ", contentType='" + contentType + '\'' +
+                    ", size=" + size + "byte (" + FileUtils.byteCountToDisplay(size) +
+                    "), empty=" + empty +
+                    '}';
         }
 
     }

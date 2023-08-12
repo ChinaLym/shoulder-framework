@@ -4,15 +4,13 @@ import org.shoulder.batch.model.BatchProgressRecord;
 import org.shoulder.batch.service.impl.ProgressAble;
 import org.shoulder.core.concurrent.Threads;
 import org.springframework.cache.Cache;
-import org.springframework.cache.concurrent.ConcurrentMapCache;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * 任务进度存储
+ * 任务进度存储：单机存储
  *
  * @author lym
  */
@@ -32,6 +30,11 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
         this.progressCache = progressCache;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T getNativeCache() {
+        return (T) progressCache.getNativeCache();
+    }
+
     /**
      * 触发异步刷进度
      *
@@ -44,27 +47,48 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
         Threads.execute(genFlushProgressTask(task));
     }
 
+    /**
+     * 刷缓存线程不安全，需要加锁，最少是 taskId 级别，这里默认实现直接用 sync 了
+     *
+     * @param batchProgress 进度
+     */
     @Override
-    public void triggerFlushProgress(BatchProgressRecord batchProgress) {
-        progressCache.put(batchProgress.getTaskId(), batchProgress);
-        Threads.execute(genFlushProgressTask(batchProgress));
+    public synchronized void flushProgress(ProgressAble batchProgress) {
+        BatchProgressRecord record = batchProgress.getBatchProgress();
+        progressCache.put(record.getTaskId(), record);
     }
 
-    public List<String> getAllProcessId() {
-        if (ConcurrentMapCache.class.isAssignableFrom(progressCache.getClass())) {
-            return ((ConcurrentMapCache) progressCache).getNativeCache().keySet().stream().map(String::valueOf).collect(Collectors.toList());
+    @Override
+    public Iterable<String> getAllTaskProgressId() {
+        Object nativeCache = getNativeCache();
+        if (nativeCache instanceof Map) {
+            Map<Object, Object> nMap = ((Map<Object, Object>) nativeCache);
+            return nMap.keySet().stream().map(String::valueOf).collect(Collectors.toSet());
         }
+//        if (ConcurrentMapCache.class.isAssignableFrom(progressCache.getClass())) {
+//
+//            return ((ConcurrentMapCache) progressCache).getNativeCache().keySet().stream().map(String::valueOf).collect(Collectors.toSet());
+//        }
         throw new UnsupportedOperationException();
 //        return Collections.emptyList();
     }
 
-    public Map<String, BatchProgressRecord> getAllProgress() {
-        if (ConcurrentMapCache.class.isAssignableFrom(progressCache.getClass())) {
-            return ((ConcurrentMapCache) progressCache).getNativeCache().entrySet().stream()
+    @Override
+    public Map<String, ProgressAble> getAllTaskProgress() {
+        Object nativeCache = getNativeCache();
+        if (nativeCache instanceof Map) {
+            Map<Object, Object> nMap = ((Map<Object, Object>) nativeCache);
+            return nMap.entrySet().stream()
                     .collect(Collectors.toMap(e -> String.valueOf(e.getKey()),
-                            e -> (BatchProgressRecord) e.getValue())
+                            e -> (ProgressAble) e.getValue())
                     );
         }
+//        if (ConcurrentMapCache.class.isAssignableFrom(progressCache.getClass())) {
+//            return ((ConcurrentMapCache) progressCache).getNativeCache().entrySet().stream()
+//                    .collect(Collectors.toMap(e -> String.valueOf(e.getKey()),
+//                            e -> (ProgressAble) e.getValue())
+//                    );
+//        }
         throw new UnsupportedOperationException();
 //        return Collections.emptyList();
     }
@@ -76,9 +100,9 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      * @return 任务
      */
     @Override
-    public BatchProgressRecord getTaskProgress(String id) {
+    public ProgressAble getTaskProgress(String id) {
         Cache.ValueWrapper valueWrapper = progressCache.get(id);
-        return valueWrapper == null ? null : (BatchProgressRecord) valueWrapper.get();
+        return valueWrapper == null ? null : (ProgressAble) valueWrapper.get();
     }
 
     /**

@@ -202,7 +202,7 @@
                         <execution>
                             <id>attach-sources</id>
                             <!--<phase>package</phase>--><!-- docs / source -->
-                            <phase>deploy</phase><!-- maven-source-plugin deploy 发布才带源码，package 本地构建也带源码 -->
+                            <phase>package</phase><!-- maven-source-plugin deploy 发布才带源码，package 本地构建也带源码 -->
                             <goals>
                                 <goal>jar</goal>
                                 <goal>jar-no-fork</goal>

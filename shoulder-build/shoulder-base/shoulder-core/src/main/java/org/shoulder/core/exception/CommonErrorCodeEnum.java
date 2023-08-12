@@ -100,7 +100,11 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 未知异常，谨慎使用该错误码，不利于排查；一般只用于断言正常一定怎样，如根据索引更新，更新影响数目一定小于等于1;或者编码时使用者未按照设计者的思路使用
      */
-    UNKNOWN(300, "Unknown error.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    UNKNOWN(300, "UNKNOWN ERROR.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    /**
+     * 未知异常，谨慎使用该错误码，不利于排查；一般只用于断言正常一定怎样，如根据索引更新，更新影响数目一定小于等于1;或者编码时使用者未按照设计者的思路使用
+     */
+    PROCESS_FAIL(301, "PROCESS FAIL.", Level.ERROR, HttpStatus.BAD_REQUEST),
     /**
      * 编码错误，仅在框架 / 工具内使用，提示使用者使用错误
      */
