@@ -2,19 +2,18 @@ kind: pipeline
 name: default
 
 steps:
-  - name: 发现SNAPSHOT依赖
-    image: cnlym/maven:3-jdk-11-alpine-aliyun
-    volumes:
-      - name: mvnCache
-        path: /root/.m2
-    commands:
-      - mvn dependency:tree -Dincludes=:::*-SNAPSHOT
-      - echo 'FINISHED dependencyCheck!'
-      # mvn versions:use-releases
-      # mvn versions:use-next-releases
-      # mvn versions:use-latest-releases
-      # mvn versions:display-dependency-updates
-
+  #  - name: 发现SNAPSHOT依赖
+  #    image: cnlym/maven:3-jdk-11-alpine-aliyun
+  #    volumes:
+  #      - name: mvnCache
+  #        path: /root/.m2
+  #    commands:
+  #      - mvn dependency:tree -Dincludes=:::*-SNAPSHOT
+  #      - echo 'FINISHED dependencyCheck!'
+  #      # mvn versions:use-releases
+  #      # mvn versions:use-next-releases
+  #      # mvn versions:use-latest-releases
+  #      # mvn versions:display-dependency-updates
 
   - name: 编译、打包、发布到 maven 仓库
     image: cnlym/maven:3-jdk-11-alpine-aliyun
@@ -22,54 +21,54 @@ steps:
       - name: mvnCache
         path: /root/.m2
     commands:
-      - mvn deploy -DskipTests=true -B -V
+      - mvn clean validate -DskipTests=true -B -V -T 1C
       - echo 'FINISHED deploy!'
-
-  - name: 根据 commit 自动生成 CHANGELOG、README
-    image: cnlym/maven:3-jdk-11-alpine-aliyun
-    commands:
-      - echo 'mock autogenerate changeLog!'
-
-  - name: 在CSDN、OSCHINA发文章宣布发布一个新版本
-    image: cnlym/maven:3-jdk-11-alpine-aliyun
-    commands:
-      - echo 'mock autogenerate new version blog!'
-
-  - name: 创建此版本的维护分支（创建一个新分支，并更新到下一个次版本）
-    image: cnlym/maven:3-jdk-11-alpine-aliyun
-    commands:
-      - echo 'mock autogenerate maintain branch!'
-
-  - name: 在官网，start上添加该版本
-    image: cnlym/maven:3-jdk-11-alpine-aliyun
-    commands:
-      - echo 'mock notify Official website!'
-
-  - name: 在GitHub上更新发行说明，有哪些新特性，修复了哪些bug(issue号)，感谢该版本的参与者
-    image: cnlym/maven:3-jdk-11-alpine-aliyun
-    commands:
-      - echo 'mock notify Official website!'
-
-  - name: 关闭/创建里程碑、标签。TODO spring 开源的 label robot
-    image: cnlym/maven:3-jdk-11-alpine-aliyun
-    commands:
-      - echo 'mock close issue!'
-
-  - name: 分支清理，删掉里程碑内的无用分支，包括开发分支，发布分支
-    image: cnlym/maven:3-jdk-11-alpine-aliyun
-    commands:
-      - echo 'mock delete useless branch!'
-
-  - name: 在其他频道、社交平台上宣布发行
-    image: cnlym/maven:3-jdk-11-alpine-aliyun
-    commands:
-      - echo 'mock announcement of issuance!'
-
-  - name: 钉钉通知、微信通知构建结果
-    image: guoxudongdocker/drone-dingtalk
-    settings:
-      token: 5f6c32b36e771df227b1ccb8898325158e12d851ae61982d1ec225a1aa58e251
-      type: markdown
+#
+#  - name: 根据 commit 自动生成 CHANGELOG、README
+#    image: cnlym/maven:3-jdk-11-alpine-aliyun
+#    commands:
+#      - echo 'mock autogenerate changeLog!'
+#
+#  - name: 在CSDN、OSCHINA发文章宣布发布一个新版本
+#    image: cnlym/maven:3-jdk-11-alpine-aliyun
+#    commands:
+#      - echo 'mock autogenerate new version blog!'
+#
+#  - name: 创建此版本的维护分支（创建一个新分支，并更新到下一个次版本）
+#    image: cnlym/maven:3-jdk-11-alpine-aliyun
+#    commands:
+#      - echo 'mock autogenerate maintain branch!'
+#
+#  - name: 在官网，start上添加该版本
+#    image: cnlym/maven:3-jdk-11-alpine-aliyun
+#    commands:
+#      - echo 'mock notify Official website!'
+#
+#  - name: 在GitHub上更新发行说明，有哪些新特性，修复了哪些bug(issue号)，感谢该版本的参与者
+#    image: cnlym/maven:3-jdk-11-alpine-aliyun
+#    commands:
+#      - echo 'mock notify Official website!'
+#
+#  - name: 关闭/创建里程碑、标签。TODO spring 开源的 label robot
+#    image: cnlym/maven:3-jdk-11-alpine-aliyun
+#    commands:
+#      - echo 'mock close issue!'
+#
+#  - name: 分支清理，删掉里程碑内的无用分支，包括开发分支，发布分支
+#    image: cnlym/maven:3-jdk-11-alpine-aliyun
+#    commands:
+#      - echo 'mock delete useless branch!'
+#
+#  - name: 在其他频道、社交平台上宣布发行
+#    image: cnlym/maven:3-jdk-11-alpine-aliyun
+#    commands:
+#      - echo 'mock announcement of issuance!'
+#
+#  - name: 钉钉通知、微信通知构建结果
+#    image: guoxudongdocker/drone-dingtalk
+#    settings:
+#      token: 5f6c32b36e771df227b1ccb8898325158e12d851ae61982d1ec225a1aa58e251
+#      type: markdown
 
 
 volumes:
