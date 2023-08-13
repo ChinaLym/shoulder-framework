@@ -22,7 +22,7 @@ steps:
         path: /root/.m2
     commands:
       - mvn clean install -DskipTests=true -B -V -T 1C
-      - echo 'FINISHED deploy!'
+      - echo 'FINISHED install!'
 #
 #  - name: 根据 commit 自动生成 CHANGELOG、README
 #    image: cnlym/maven:3-jdk-11-alpine-aliyun
