@@ -17,10 +17,8 @@ steps:
 
   - name: 编译、打包、发布到 maven 仓库
     image: cnlym/maven:3-jdk-11-alpine-aliyun
-    volumes:
-      - name: mvnCache
-        path: /root/.m2
     commands:
+      - sleep 100
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-dependencies -am
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-parent -am
       - mvn clean deploy -DskipTests=true -B -V -T 1C
@@ -71,12 +69,6 @@ steps:
 #    settings:
 #      token: 5f6c32b36e771df227b1ccb8898325158e12d851ae61982d1ec225a1aa58e251
 #      type: markdown
-
-
-volumes:
-  - name: mvnCache
-    host:
-      path: /tmp/cache/.m2
 
 trigger:
   branch:
