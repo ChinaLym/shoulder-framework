@@ -21,9 +21,9 @@ steps:
       - name: mvnCache
         path: /root/.m2
     commands:
-      - mvn clean install -Dmaven.test.skip=true -pl shoulder-dependencies -am
-      - mvn clean install -Dmaven.test.skip=true -pl shoulder-parent -am
-      - mvn clean install -DskipTests=true -B -V -T 1C
+      #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-dependencies -am
+      #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-parent -am
+      - mvn clean deploy -DskipTests=true -B -V -T 1C
       - echo 'FINISHED install!!'
 #
 #  - name: 根据 commit 自动生成 CHANGELOG、README
