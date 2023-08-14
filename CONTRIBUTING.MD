@@ -107,3 +107,6 @@ IDEA：settings - Editor - Code Style - enable formatter marks in comments
 IDEA 可以为我们自动转化：
 - 打开设置 `File -> Settings -> Editor -> File Encodings`
 - 勾选 `Transparent native-to-ascii conversion`
+
+gpg 发布错误
+https://blog.csdn.net/u011781521/article/details/130454386
