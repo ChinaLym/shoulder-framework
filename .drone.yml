@@ -21,6 +21,7 @@ steps:
       - name: mvnCache
         path: /root/.m2
     commands:
+      - sleep 100
       - mvn clean install -DskipTests=true -B -V -T 1C
       - echo 'FINISHED install!!'
 #
