@@ -21,8 +21,8 @@ steps:
       - name: mvnCache
         path: /root/.m2
     commands:
-      - mvn clean install -Dmaven.test.skip=true -pl shoulder-framework/shoulder-dependencies -am
-      - mvn clean install -Dmaven.test.skip=true -pl shoulder-framework/shoulder-parent -am
+      - mvn clean install -Dmaven.test.skip=true -pl shoulder-dependencies -am
+      - mvn clean install -Dmaven.test.skip=true -pl shoulder-parent -am
       - mvn clean install -DskipTests=true -B -V -T 1C
       - echo 'FINISHED install!!'
 #
