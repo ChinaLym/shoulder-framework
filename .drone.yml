@@ -18,7 +18,6 @@ steps:
   - name: 编译、打包、发布到 maven 仓库
     image: cnlym/maven:3-jdk-11-alpine-aliyun
     commands:
-      - sleep 200
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-dependencies -am
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-parent -am
       - mvn clean deploy -DskipTests=true -B -V -T 1C
