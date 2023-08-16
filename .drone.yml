@@ -35,7 +35,8 @@ steps:
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-dependencies -am
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-parent -am
       #- sudo export MAVEN_OPTS="-Xmx400m -Xms400m -XX:MaxPermSize=90m"
-      - mvn clean deploy -DskipTests=true -B -V -T 1C
+      # 2C 每个可用 C 2线程；deploy 主要是发布，与网络相关，-T 4 4个线程
+      - mvn clean deploy -DskipTests=true -B -V -T 4
       - echo 'FINISHED deploy!!'
 #
 #  - name: 根据 commit 自动生成 CHANGELOG、README
