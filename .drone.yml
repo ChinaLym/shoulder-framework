@@ -20,7 +20,7 @@ steps:
     commands:
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-dependencies -am
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-parent -am
-      - sudo export MAVEN_OPTS="-Xmx400m -Xms400m -XX:MaxPermSize=90m"
+      #- sudo export MAVEN_OPTS="-Xmx400m -Xms400m -XX:MaxPermSize=90m"
       - mvn clean deploy -DskipTests=true -B -V -T 1C
       - echo 'FINISHED install!!'
 #
