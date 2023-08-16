@@ -1,15 +1,26 @@
 kind: pipeline
 name: default
 
+#workspace:
+# 公共区域
+#  base: /step-common-disk
+# git clone 位置
+#  path: /test
+
+clone:
+  # 不需要拉取 commit 历史，加快速度
+  depth: 1
+  # 需要 clone
+  disable: false
+
+
 steps:
   #  - name: 发现SNAPSHOT依赖
   #    image: cnlym/maven:3-jdk-11-alpine-aliyun
-  #    volumes:
-  #      - name: mvnCache
-  #        path: /root/.m2
   #    commands:
   #      - mvn dependency:tree -Dincludes=:::*-SNAPSHOT
   #      - echo 'FINISHED dependencyCheck!'
+  # 自动化升级依赖项目版本号到release版本
   #      # mvn versions:use-releases
   #      # mvn versions:use-next-releases
   #      # mvn versions:use-latest-releases
@@ -17,12 +28,14 @@ steps:
 
   - name: 编译、打包、发布到 maven 仓库
     image: cnlym/maven:3-jdk-11-alpine-aliyun
+    # 加速，对于这种稳定的容器
+    pull: if-not-exists
     commands:
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-dependencies -am
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-parent -am
       #- sudo export MAVEN_OPTS="-Xmx400m -Xms400m -XX:MaxPermSize=90m"
       - mvn clean deploy -DskipTests=true -B -V -T 1C
-      - echo 'FINISHED install!!'
+      - echo 'FINISHED deploy!!'
 #
 #  - name: 根据 commit 自动生成 CHANGELOG、README
 #    image: cnlym/maven:3-jdk-11-alpine-aliyun
