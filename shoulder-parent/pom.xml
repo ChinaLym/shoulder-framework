@@ -32,7 +32,7 @@
         <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
-        <shoulder-maven-plugin.version>0.1</shoulder-maven-plugin.version>
+        <shoulder-maven-plugin.version>0.1-SNAPSHOT</shoulder-maven-plugin.version>
         <shoulder-framework.errcode-prefix>0x0000</shoulder-framework.errcode-prefix>
 
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
@@ -106,7 +106,7 @@
                         <!-- 开启插件的哪些功能 -->
                         <execution>
                             <!-- 在 mvn compile 阶段触发该插件 -->
-                            <phase>deploy</phase><!-- shoulder-maven-plugin deploy 发布才生成 erorCode标注，compile 打包编译就生成 -->
+                            <phase>package</phase><!-- shoulder-maven-plugin deploy 发布才生成 erorCode标注，compile 打包编译就生成 -->
                             <goals>
                                 <!-- 执行该插件的 生成错误码翻译 能力 -->
                                 <goal>generateErrorCodeInfo</goal>
