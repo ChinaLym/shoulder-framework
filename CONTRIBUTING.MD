@@ -65,7 +65,7 @@ v{x.y.z}.RELEASE
     - CHANGELOG、README 修订或使用工具 TODO 根据 commit 自动生成
 
 - **发布**
-    - 推送到`Maven Central`，提交至代码库（git）并触发(Jenkins) CICD
+  - 推送到`Maven Central`，提交至代码库（git）并触发 CI flow
     - 打TAG，推到 github
 
 - **发布后（清理）**
