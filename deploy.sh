@@ -10,7 +10,7 @@ mvn clean deploy -p oss -Dmaven.test.skip=true -T 1C
 # <version>0.6</version><!-- shoulder-version -->
 # <shoulder.version>0.6</shoulder.version><!-- shoulder-version -->
 # 开启部署前签名
-# 修改 <phase>verify</phase><!-- gpg phase verify deploy --> 至少提前至 verify 才可以保证发布前签名已经存在
+# 修改 <phase>verify</phase><!-- gpg phase verify deploy --> 至少提前至 verify 才可以保证发布前签名已经存在，而开发分支为了打包install更快，会设置为deploy跳过
 # 放开 gpg 插件的注释
 
 # ------------------

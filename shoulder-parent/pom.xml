@@ -93,7 +93,7 @@
 
                 <!-- shoulder 开发的错误码插件 -->
                 <plugin>
-                    <groupId>cn.itlym</groupId>
+                    <groupId>cn.itlym.shoulder</groupId>
                     <artifactId>shoulder-maven-plugin</artifactId>
                     <version>${shoulder-maven-plugin.version}</version>
                     <configuration>
@@ -294,7 +294,7 @@
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
-                            <phase>verify</phase><!-- gpg phase verify deploy -->
+                            <phase>deploy</phase><!-- gpg phase verify deploy -->
                             <goals>
                                 <goal>sign</goal>
                             </goals>
