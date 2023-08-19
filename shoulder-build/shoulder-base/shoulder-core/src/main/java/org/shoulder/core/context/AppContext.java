@@ -11,6 +11,7 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 当前应用（请求）上下文中的值，作为 Holder 的角色，维护当前请求中一些常用的数据。
@@ -146,13 +147,19 @@ public class AppContext {
      * @param key key
      * @return 值
      */
+    @SuppressWarnings("unchecked")
     @Nullable
-    public static Object get(String key) {
+    public static <T> T get(String key) {
         Map<String, Object> map = THREAD_LOCAL.get();
         if (MapUtils.isEmpty(map)) {
             return null;
         }
-        return map.get(key);
+        return (T) map.get(key);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getOrDefault(String key, T defaultValue) {
+        return Optional.ofNullable((T) get(key)).orElse(defaultValue);
     }
 
     /**

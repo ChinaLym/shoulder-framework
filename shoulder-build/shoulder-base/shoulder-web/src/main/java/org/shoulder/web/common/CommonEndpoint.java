@@ -1,5 +1,6 @@
 package org.shoulder.web.common;
 
+import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,9 +34,14 @@ public class CommonEndpoint {
     }
 
     @RequestMapping({"/current/user"})
-    public String currentUser() throws IOException {
-        return null;
+    public String currentUser() {
+        // todo
+        return AppContext.getUserId();
     }
 
+    @RequestMapping({"/health/check"})
+    public int healthCheck() {
+        return 0;
+    }
 
 }

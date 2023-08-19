@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.code.processor.ValidateCodeProcessor;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.util.AntPathMatcher;
@@ -28,7 +27,7 @@ import java.util.Set;
  *
  * @author lym
  */
-public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
+public class ValidateCodeFilter extends OncePerRequestFilter {
 
     /**
      * 验证码校验失败处理器
@@ -58,7 +57,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
      * 初始化要拦截的url配置信息（提交登录信息的url）
      */
     @Override
-    public void afterPropertiesSet() throws ServletException {
+    public void initFilterBean() throws ServletException {
         super.afterPropertiesSet();
 
         List<ValidateCodeProcessor> allProcessors = validateCodeProcessorHolder.getAllProcessors();
