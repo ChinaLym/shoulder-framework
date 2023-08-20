@@ -76,7 +76,7 @@ public class ServletUtil {
         getSession().setAttribute(sessionKey, value);
     }
 
-    public static boolean canGetRequest() {
+    public static boolean inServletContext() {
         return RequestContextHolder.getRequestAttributes() != null;
     }
 

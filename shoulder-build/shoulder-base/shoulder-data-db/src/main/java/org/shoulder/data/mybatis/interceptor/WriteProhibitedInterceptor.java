@@ -79,7 +79,7 @@ public class WriteProhibitedInterceptor implements Interceptor {
         }
 
         // ip 白名单
-        if (ServletUtil.canGetRequest()) {
+        if (ServletUtil.inServletContext()) {
             // 只处理可以获取到的，非请求触发 / 异步处理不能走白名单
             String ip = ServletUtil.getRemoteAddress();
             for (String allowIp : allowIpList) {

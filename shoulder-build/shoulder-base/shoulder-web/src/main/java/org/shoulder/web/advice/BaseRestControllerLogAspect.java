@@ -48,7 +48,7 @@ public abstract class BaseRestControllerLogAspect {
      */
     @Around("httpApiMethod()")
     public Object around(ProceedingJoinPoint jp) throws Throwable {
-        if (!ServletUtil.canGetRequest()) {
+        if (!ServletUtil.inServletContext()) {
             // 非HTTP请求，比如Controller实现了不带 RequestMapping 的public方法、监听AppContextEventListener、或者手动调用带了 @RequestMapping 方法等，
             // 总之不在HTTP上下文，直接执行，跳过切面
             return jp.proceed();
