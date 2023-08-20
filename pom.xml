@@ -137,7 +137,7 @@
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
-                            <phase>deploy</phase><!-- gpg phase verify deploy -->
+                            <phase>deploy</phase><!-- ACTIVE_WITH_verify -->
                             <goals>
                                 <goal>sign</goal>
                             </goals>

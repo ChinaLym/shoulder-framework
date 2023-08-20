@@ -2,6 +2,9 @@ package org.shoulder.web.common;
 
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.StringUtils;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +18,11 @@ import java.io.IOException;
  *
  * @author lym
  */
+@Order
 @RestController
-public class CommonEndpoint {
+public class CommonEndpoint implements ApplicationListener<ApplicationStartedEvent> {
+
+    private volatile boolean hasStart = false;
 
     @RequestMapping({"/redirect/**"})
     public String redirect(HttpServletRequest request, HttpServletResponse response,
@@ -41,7 +47,11 @@ public class CommonEndpoint {
 
     @RequestMapping({"/health/check"})
     public int healthCheck() {
-        return 0;
+        return hasStart ? 0 : 1;
     }
 
+    @Override
+    public void onApplicationEvent(ApplicationStartedEvent event) {
+        hasStart = true;
+    }
 }

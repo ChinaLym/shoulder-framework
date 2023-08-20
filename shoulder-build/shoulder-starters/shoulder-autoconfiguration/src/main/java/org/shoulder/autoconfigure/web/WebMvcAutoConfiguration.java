@@ -4,6 +4,7 @@ import org.shoulder.core.util.ContextUtils;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.support.server.SensitiveRequestDecryptHandlerInterceptor;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
+import org.shoulder.web.common.CommonEndpoint;
 import org.shoulder.web.interceptor.BaseRejectRepeatSubmitInterceptor;
 import org.shoulder.web.interceptor.HttpLocaleInterceptor;
 import org.shoulder.web.interceptor.SessionTokenRepeatSubmitInterceptor;
@@ -28,6 +29,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @AutoConfiguration
 @ConditionalOnWebApplication
 public class WebMvcAutoConfiguration {
+
+    @Bean
+    @ConditionalOnProperty(name = "shoulder.web.enableCommonEndpoint", havingValue = "true", matchIfMissing = true)
+    public CommonEndpoint commonEndpoint() {
+        return new CommonEndpoint();
+    }
 
     @AutoConfiguration
     @ConditionalOnClass(HttpLocaleInterceptor.class)

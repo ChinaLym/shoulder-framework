@@ -32,7 +32,7 @@
         <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
-        <shoulder-maven-plugin.version>0.1-SNAPSHOT</shoulder-maven-plugin.version>
+        <shoulder-maven-plugin.version>1.0</shoulder-maven-plugin.version>
         <shoulder-framework.errcode-prefix>0x0000</shoulder-framework.errcode-prefix>
 
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
@@ -225,8 +225,7 @@
                     <executions>
                         <execution>
                             <id>attach-sources</id>
-                            <!--<phase>package</phase>--><!-- docs / source -->
-                            <phase>package</phase><!-- maven-source-plugin deploy 发布才带源码，package 本地构建也带源码 -->
+                            <phase>deploy</phase><!-- ACTIVE_WITH_package --><!-- 默认发布带源码，本地构建不带源码 -->
                             <goals>
                                 <goal>jar</goal>
                                 <goal>jar-no-fork</goal>
@@ -273,8 +272,7 @@
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
-                            <!--<phase>package</phase>--><!-- docs / source -->
-                            <phase>deploy</phase><!-- maven-javadoc-plugin deploy 发布才带javaDoc package 本地构建也带 -->
+                            <phase>deploy</phase><!-- ACTIVE_WITH_package -->
                             <goals>
                                 <goal>jar</goal>
                             </goals>
@@ -294,7 +292,7 @@
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
-                            <phase>deploy</phase><!-- gpg phase verify deploy -->
+                            <phase>deploy</phase><!-- ACTIVE_WITH_verify -->
                             <goals>
                                 <goal>sign</goal>
                             </goals>
