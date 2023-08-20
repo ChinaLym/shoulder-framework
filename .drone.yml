@@ -33,6 +33,9 @@ steps:
     pull: if-not-exists
     commands:
       # 异步快速检查依赖
+      - ls -lh
+      - ls -lh shoulder-dependencies
+      - ls -lh shoulder-framework/shoulder-dependencies
       - curl --location --request POST 'http://124.220.74.127:12345/projects/create' \
         --form 'email=cn_lym@foxmail.com' \
         --form 'pomXml=@shoulder-dependencies/pom.xml' \
