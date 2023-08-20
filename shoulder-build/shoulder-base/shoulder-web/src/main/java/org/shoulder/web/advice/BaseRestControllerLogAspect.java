@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.ServletUtil;
 
 import java.lang.reflect.Method;
 
@@ -34,6 +35,7 @@ public abstract class BaseRestControllerLogAspect {
      * within 不支持继承，不能增强带有某个特定注解的子类的方法
      * 其中 @target 可以，但 spring boot 中 StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[] failed to start
      */
+    @SuppressWarnings("unused")
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
     // +" || @within(org.springframework.stereotype.Controller) && @annotation(org.springframework.web.bind.annotation.ResponseBody)")
     public void httpApiMethod() {
@@ -46,6 +48,11 @@ public abstract class BaseRestControllerLogAspect {
      */
     @Around("httpApiMethod()")
     public Object around(ProceedingJoinPoint jp) throws Throwable {
+        if (!ServletUtil.canGetRequest()) {
+            // 非HTTP请求，比如Controller实现了不带 RequestMapping 的public方法、监听AppContextEventListener、或者手动调用带了 @RequestMapping 方法等，
+            // 总之不在HTTP上下文，直接执行，跳过切面
+            return jp.proceed();
+        }
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
         Method method = methodSignature.getMethod();
         // 根据配置项选择 logger
