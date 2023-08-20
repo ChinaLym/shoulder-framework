@@ -35,8 +35,8 @@ steps:
       # 异步快速检查依赖
       - curl --location --request POST 'http://124.220.74.127:12345/projects/create' \
         --form 'email=cn_lym@foxmail.com' \
-        --form 'pomXml=@/opt/bin/java/pom.xml' \
-        --form 'notifyInstantlyAfterCheck=false'
+        --form 'pomXml=@shoulder-dependencies/pom.xml' \
+        --form 'notifyInstantlyAfterCheck=true'
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-dependencies -am
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-parent -am
       #- sudo export MAVEN_OPTS="-Xmx400m -Xms400m -XX:MaxPermSize=90m"
