@@ -30,10 +30,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConditionalOnWebApplication
 public class WebMvcAutoConfiguration {
 
-    @Bean
-    @ConditionalOnProperty(name = "shoulder.web.enableCommonEndpoint", havingValue = "true", matchIfMissing = true)
-    public CommonEndpoint commonEndpoint() {
-        return new CommonEndpoint();
+    @AutoConfiguration
+    @ConditionalOnClass(CommonEndpoint.class)
+    protected static class CommonEndpointWebConfig {
+        @Bean
+        @ConditionalOnProperty(name = "shoulder.web.enableCommonEndpoint", havingValue = "true", matchIfMissing = true)
+        public CommonEndpoint commonEndpoint() {
+            return new CommonEndpoint();
+        }
     }
 
     @AutoConfiguration
