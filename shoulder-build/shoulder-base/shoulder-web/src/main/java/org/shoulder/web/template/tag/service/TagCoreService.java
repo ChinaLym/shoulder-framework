@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * 标签服务
  *
- * @author liuyanming
+ * @author lym
  */
 public interface TagCoreService {
 

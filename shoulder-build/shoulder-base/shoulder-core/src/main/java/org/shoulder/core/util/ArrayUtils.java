@@ -175,6 +175,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     /**
      * 合并两个数组，消除重复的元素
+     * @see org.apache.commons.lang3.ArrayUtils#addAll(Object[], Object[]) 不去重
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] merge(T[] array1, T[] array2) {
