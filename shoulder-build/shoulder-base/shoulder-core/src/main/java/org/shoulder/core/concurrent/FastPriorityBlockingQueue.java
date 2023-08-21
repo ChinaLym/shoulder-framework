@@ -13,13 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -31,7 +25,7 @@ import java.util.function.Supplier;
  *
  * @author lym
  * @see java.util.concurrent.PriorityBlockingQueue 插入复杂度为 O(log n)，而Linked / Array BlockingQueue 插入复杂度为 O(1), 性能差距太大，
- *  故针优先级别数量较小的场景定制该类，时间复杂度也为 O(1)
+ * 故针优先级别数量较小的场景定制该类，时间复杂度也为 O(1)
  * https://developer.aliyun.com/article/84588
  */
 public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
@@ -47,20 +41,37 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
      */
     final Function<E, Integer> priorityFetcher;
 
+    /**
+     * true 【高性能 | 默认】严格按照先处理高优先，再处理低优先的，高优先处理不完，低优先永远得不到处理
+     * false 整体会先处理高优先，但实际低优先也不至于不会处理
+     */
+    final boolean alwaysAcquireHighPriorityFirst;
+
     final ThreadPoolExecutor threadPoolExecutor;
 
     public FastPriorityBlockingQueue(Supplier<BlockingQueue<E>> blockingQueueConstruction, Function<E, Integer> priorityFetcher, int priorityCount) {
+        this(blockingQueueConstruction, priorityFetcher, priorityCount, true);
+    }
+
+    public FastPriorityBlockingQueue(Supplier<BlockingQueue<E>> blockingQueueConstruction, Function<E, Integer> priorityFetcher, int priorityCount, boolean alwaysAcquireHighPriorityFirst) {
+        this(blockingQueueConstruction, priorityFetcher, priorityCount, alwaysAcquireHighPriorityFirst,
+                // 由于该线程池只是用于等待，故理论上不会占用什么 CPU 资源，核数调大，避免阻塞
+                new ThreadPoolExecutor(priorityCount * 32, priorityCount * 32,
+                        60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
+                        new NamedThreadFactory("FastPriorityBlockingQueue", true)
+                ));
+    }
+
+    public FastPriorityBlockingQueue(Supplier<BlockingQueue<E>> blockingQueueConstruction, Function<E, Integer> priorityFetcher, int priorityCount, boolean alwaysAcquireHighPriorityFirst, ThreadPoolExecutor threadPoolExecutor) {
         AssertUtils.isTrue(priorityCount < 30, CommonErrorCodeEnum.ILLEGAL_PARAM, "Too many priorityCount, use PriorityBlockingQueue pls.");
         this.queuesArray = new BlockingQueue[priorityCount];
         for (int i = 0; i < priorityCount; i++) {
             queuesArray[i] = blockingQueueConstruction.get();
         }
         this.priorityFetcher = priorityFetcher;
+        this.alwaysAcquireHighPriorityFirst = alwaysAcquireHighPriorityFirst;
         // 核数可以多点，主要是 wait
-        threadPoolExecutor = new ThreadPoolExecutor(priorityCount * 8, priorityCount * 8,
-            900, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
-            new NamedThreadFactory("FastPriorityBlockingQueue", true)
-        );
+        this.threadPoolExecutor = threadPoolExecutor;
     }
 
     private BlockingQueue<E> getQueue(E e) {
@@ -68,23 +79,28 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
     }
 
 
-    @Override public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
+    @Override
+    public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
         return getQueue(e).offer(e, timeout, unit);
     }
 
-    @Override public boolean add(E e) {
+    @Override
+    public boolean add(E e) {
         return getQueue(e).add(e);
     }
 
-    @Override public boolean offer(E e) {
+    @Override
+    public boolean offer(E e) {
         return getQueue(e).offer(e);
     }
 
-    @Override public void put(E e) throws InterruptedException {
+    @Override
+    public void put(E e) throws InterruptedException {
         getQueue(e).put(e);
     }
 
-    @Override public E peek() {
+    @Override
+    public E peek() {
         for (BlockingQueue<E> queue : queuesArray) {
             E e = queue.peek();
             if (e != null) {
@@ -94,7 +110,8 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         return null;
     }
 
-    @Override public Iterator<E> iterator() {
+    @Override
+    public Iterator<E> iterator() {
         // 非核心api，无锁; 特殊处理：聚合多个迭代器
         Iterator<E>[] iterators = new Iterator[queuesArray.length];
         for (int i = 0; i < iterators.length; i++) {
@@ -103,7 +120,8 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         return new MultiIterator<>(iterators);
     }
 
-    @Override public E poll() {
+    @Override
+    public E poll() {
         for (BlockingQueue<E> queue : queuesArray) {
             E e = queue.poll();
             if (e != null) {
@@ -113,11 +131,14 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         return null;
     }
 
-    @Override public E take() throws InterruptedException {
-        // 先尝试挨个 poll 避免阻塞（由于设计上，该类的优先级不会特别多，故不会有太多循环带来的额外性能损耗）
-        E result = poll();
-        if(result != null) {
-            return result;
+    @Override
+    public E take() throws InterruptedException {
+        if (alwaysAcquireHighPriorityFirst) {
+            // 先尝试挨个 poll 避免阻塞（由于设计上，该类的优先级不会特别多，故不会有太多循环带来的额外性能损耗）
+            E result = poll();
+            if (result != null) {
+                return result;
+            }
         }
         // 都是空的，再阻塞
         return concurrentTake(queue -> {
@@ -129,7 +150,15 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         });
     }
 
-    @Override public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+    @Override
+    public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+        if (alwaysAcquireHighPriorityFirst) {
+            // 先尝试挨个 poll 避免阻塞（由于设计上，该类的优先级不会特别多，故不会有太多循环带来的额外性能损耗）
+            E result = poll();
+            if (result != null) {
+                return result;
+            }
+        }
         return concurrentTake(queue -> {
             try {
                 return queue.poll(timeout, unit);
@@ -141,43 +170,34 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
 
     protected E concurrentTake(Function<BlockingQueue<E>, E> takeFunction) throws InterruptedException {
         // 并行take,拿多了放回去
-        Thread currentThread = Thread.currentThread();
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<E> finalTake = new AtomicReference<>();
-        E takedFinal;
-        Future<E>[] futureArr = (Future<E>[]) Arrays.stream(queuesArray).map(queue -> {
-            Callable<E> takeCallable = () -> {
+        for (BlockingQueue<E> queue : queuesArray) {
+            Runnable r = () -> {
                 E taked = null;
                 boolean setted = false;
                 try {
                     taked = takeFunction.apply(queue);
                     setted = finalTake.compareAndSet(null, taked);
                     if (setted) {
-                        currentThread.notifyAll();
-                        return taked;
-                    } else {
-                        // final 放回去
-                        return null;
+                        latch.countDown();
                     }
-                } catch (InterruptedExceptionWrapper e) {
-                    throw e.getCause();
                 } finally {
                     // 避免拿出来了，还没尝试 set，就cancel了
                     if (taked != null && !setted) {
                         // 加回去，改为返回 null，相当于没拿出来
                         queue.add(taked);
-                        return null;
                     }
                 }
             };
-            return takeCallable;
-        }).map(threadPoolExecutor::submit).toArray();
-
-        currentThread.wait();
+            threadPoolExecutor.execute(r);
+        }
+        latch.await();
         return finalTake.get();
     }
 
-    @Override public E remove() {
+    @Override
+    public E remove() {
         for (BlockingQueue<E> queue : queuesArray) {
             E e = queue.remove();
             if (e != null) {
@@ -187,9 +207,10 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         throw new NoSuchElementException("No such element");
     }
 
-    @Override public Object[] toArray() {
+    @Override
+    public Object[] toArray() {
         // 非核心api，仅实现无锁
-        if(size() == Integer.MAX_VALUE) {
+        if (size() == Integer.MAX_VALUE) {
             // 无法保证转的数据齐全：实际元素会更多，结果会丢
             throw new TooManyResultsException();
         }
@@ -204,14 +225,15 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
 
         int added = 0;
         for (int i = 0; i < arr.length; i++) {
-            int toCopy = ((Object[])arr[i]).length;
-            System.arraycopy(((Object[])arr[i]), 0, result, added, toCopy);
+            int toCopy = ((Object[]) arr[i]).length;
+            System.arraycopy(((Object[]) arr[i]), 0, result, added, toCopy);
             added += toCopy;
         }
         return result;
     }
 
-    @Override public <T> T[] toArray(T[] a) {
+    @Override
+    public <T> T[] toArray(T[] a) {
         // 非核心api，无锁，多次拷贝
         int size = this.size();
         if (a.length < size) {
@@ -222,7 +244,8 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         return a;
     }
 
-    @Override public E element() {
+    @Override
+    public E element() {
         for (BlockingQueue<E> queue : queuesArray) {
             E e = queue.element();
             if (e != null) {
@@ -232,15 +255,18 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         throw new NoSuchElementException("No such element");
     }
 
-    @Override public boolean remove(Object e) {
+    @Override
+    public boolean remove(Object e) {
         return getQueue((E) e).remove(e);
     }
 
-    @Override public boolean contains(Object e) {
+    @Override
+    public boolean contains(Object e) {
         return getQueue((E) e).contains(e);
     }
 
-    @Override public boolean addAll(Collection c) {
+    @Override
+    public boolean addAll(Collection c) {
         if (c == this) {
             throw new IllegalArgumentException();
         }
@@ -252,13 +278,15 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         return addedOne;
     }
 
-    @Override public void clear() {
+    @Override
+    public void clear() {
         for (BlockingQueue<E> queue : queuesArray) {
             queue.clear();
         }
     }
 
-    @Override public boolean retainAll(Collection c) {
+    @Override
+    public boolean retainAll(Collection c) {
         // 删除指定集合中不存在的那些元素
         boolean hasDelete = false;
         for (BlockingQueue<E> queue : queuesArray) {
@@ -268,7 +296,8 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         return hasDelete;
     }
 
-    @Override public boolean removeAll(Collection c) {
+    @Override
+    public boolean removeAll(Collection c) {
         // 删除指定集合中元素
         boolean hasDelete = false;
         for (Object o : c) {
@@ -278,7 +307,8 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         return hasDelete;
     }
 
-    @Override public boolean containsAll(Collection c) {
+    @Override
+    public boolean containsAll(Collection c) {
         for (Object o : c) {
             if (!contains(o)) {
                 return false;
@@ -287,7 +317,8 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         return true;
     }
 
-    @Override public int remainingCapacity() {
+    @Override
+    public int remainingCapacity() {
         long count = 0;
         for (BlockingQueue<E> queue : queuesArray) {
             count += queue.remainingCapacity();
@@ -299,7 +330,8 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         return (int) count;
     }
 
-    @Override public int size() {
+    @Override
+    public int size() {
         long count = 0;
         for (BlockingQueue<E> queue : queuesArray) {
             count += queue.size();
@@ -311,16 +343,19 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         return (int) count;
     }
 
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
         return Arrays.stream(queuesArray).allMatch(Collection::isEmpty);
     }
 
-    @Override public int drainTo(Collection c) {
+    @Override
+    public int drainTo(Collection c) {
         // 非阻塞的批量获取元素，等于 pool 多个，性能更好点
         return drainTo(c, Integer.MAX_VALUE);
     }
 
-    @Override public int drainTo(Collection c, int maxElements) {
+    @Override
+    public int drainTo(Collection c, int maxElements) {
         int pooled = 0;
         for (BlockingQueue<E> queue : queuesArray) {
             pooled += queue.drainTo(c, maxElements);
@@ -342,12 +377,14 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
             this.iterators = iterators;
         }
 
-        @Override public boolean hasNext() {
+        @Override
+        public boolean hasNext() {
             int c = current.get();
             return iterators[c].hasNext() || c < iterators.length - 1;
         }
 
-        @Override public synchronized X next() {
+        @Override
+        public synchronized X next() {
             int c = current.get();
             if (iterators[c].hasNext()) {
                 return iterators[c].next();
