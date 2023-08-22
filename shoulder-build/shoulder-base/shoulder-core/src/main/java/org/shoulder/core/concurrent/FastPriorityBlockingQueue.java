@@ -27,6 +27,8 @@ import java.util.function.Supplier;
  * @see java.util.concurrent.PriorityBlockingQueue 插入复杂度为 O(log n)，而Linked / Array BlockingQueue 插入复杂度为 O(1), 性能差距太大，
  * 故针优先级别数量较小的场景定制该类，时间复杂度也为 O(1)
  * https://developer.aliyun.com/article/84588
+ *
+ * todo 统计不同下标使用情况
  */
 public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
 

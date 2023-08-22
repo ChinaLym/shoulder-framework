@@ -23,7 +23,7 @@ public class AppContext {
 
     private static final Logger log = LoggerFactory.getLogger(AppContext.class);
 
-    private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(ShoulderContextKey.KEY_NUM));
+    private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(16));
 
     /**
      * 获取 用户标识
