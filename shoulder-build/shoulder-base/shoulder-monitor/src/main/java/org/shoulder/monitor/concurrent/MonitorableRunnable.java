@@ -3,6 +3,7 @@ package org.shoulder.monitor.concurrent;
 /**
  * 可监控的任务
  * 任务（Runnable）为监控指标添加（任务名）标签
+ * todo 跟踪进、出队列时间，执行完毕时间；装配等待超时时间...
  *
  * @author lym
  */
@@ -16,6 +17,8 @@ public interface MonitorableRunnable {
     default String getTaskName() {
         return this.getClass().getSimpleName();
     }
+
+//    String getTaskIdentifier();
 
 
 }
