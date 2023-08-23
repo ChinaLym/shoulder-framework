@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 被增强过的 runnable，可以保存所有的增强器
@@ -77,6 +78,16 @@ public class EnhancedRunnable implements Runnable {
             result = ((EnhancedRunnable) result).delegate;
         }
         return result;
+    }
+
+
+    public static <T> Optional<T> useAs(Runnable runnable, Class<T> runnableClass) {
+        Optional<?> result = Optional.ofNullable(runnable);
+        if (runnableClass.isAssignableFrom(runnableClass)) {
+            return result.map(runnableClass::cast);
+        } else if (runnable instanceof EnhancedRunnable && ((EnhancedRunnable) runnable).isInstanceOf(runnableClass)) {
+            return Optional.of(((EnhancedRunnable) runnable).as(runnableClass));
+        }
     }
 
     /**

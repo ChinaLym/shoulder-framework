@@ -238,10 +238,8 @@ public class ThreadPoolMetrics {
     }
 
     public Timer taskExecuteTime(Runnable runnable) {
-        if (runnable instanceof MonitorableRunnable) {
-            return taskExecuteTime(((MonitorableRunnable) runnable).getTaskName());
-        }
-        return taskExecuteTime();
+        String taskName = EnhancedRunnable.useAs(runnable, MonitorableRunnable.class).map(MonitorableRunnable::getTaskName).orElse(null);
+        return taskExecuteTime(taskName);
     }
 
     public Counter exceptionCount() {
