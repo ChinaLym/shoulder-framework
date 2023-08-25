@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 线程池监控指标
- * 等待
  *
  * @author lym
  */
@@ -47,7 +46,6 @@ public class ThreadPoolMetrics {
      */
     private final String moduleName;
 
-
     /**
      * 中正在执行任务的线程数量
      */
@@ -74,7 +72,6 @@ public class ThreadPoolMetrics {
      * （也可以在监控配置中写死）
      */
     private final AtomicInteger queueCapacity = new AtomicInteger();
-
 
     /**
      * 核心线程数量
@@ -123,60 +120,57 @@ public class ThreadPoolMetrics {
         String taskMetricsName = metricsNamePrefix + "tasks";
 
         Metrics.gauge(taskMetricsName, List.of(
-                new ImmutableTag(TAG_MODULE, moduleName),
-                new ImmutableTag(TAG_NAME, "total")
+            new ImmutableTag(TAG_MODULE, moduleName),
+            new ImmutableTag(TAG_NAME, "total")
         ), taskCount);
 
         Metrics.gauge(taskMetricsName, List.of(
-                new ImmutableTag(TAG_MODULE, moduleName),
-                new ImmutableTag(TAG_NAME, "completed")
+            new ImmutableTag(TAG_MODULE, moduleName),
+            new ImmutableTag(TAG_NAME, "completed")
         ), completedTaskCount);
-
 
         // 队列中的任务数
         String queueSizeMetricsName = metricsNamePrefix + "queue_tasks";
 
         Metrics.gauge(queueSizeMetricsName, List.of(
-                new ImmutableTag(TAG_MODULE, moduleName),
-                new ImmutableTag(TAG_NAME, "num")
+            new ImmutableTag(TAG_MODULE, moduleName),
+            new ImmutableTag(TAG_NAME, "num")
         ), queueSize);
 
         Metrics.gauge(queueSizeMetricsName, List.of(
-                new ImmutableTag(TAG_MODULE, moduleName),
-                new ImmutableTag(TAG_NAME, "capacity")
+            new ImmutableTag(TAG_MODULE, moduleName),
+            new ImmutableTag(TAG_NAME, "capacity")
         ), queueCapacity);
-
 
         // 线程池中线程数
         String threadMetricsName = metricsNamePrefix + "threads";
 
         Metrics.gauge(threadMetricsName, List.of(
-                new ImmutableTag(TAG_MODULE, moduleName),
-                new ImmutableTag(TAG_NAME, "active")
+            new ImmutableTag(TAG_MODULE, moduleName),
+            new ImmutableTag(TAG_NAME, "active")
         ), activeCount);
 
         Metrics.gauge(threadMetricsName, List.of(
-                new ImmutableTag(TAG_MODULE, moduleName),
-                new ImmutableTag(TAG_NAME, "current")
+            new ImmutableTag(TAG_MODULE, moduleName),
+            new ImmutableTag(TAG_NAME, "current")
         ), poolSize);
 
         Metrics.gauge(threadMetricsName, List.of(
-                new ImmutableTag(TAG_MODULE, moduleName),
-                new ImmutableTag(TAG_NAME, "core")
+            new ImmutableTag(TAG_MODULE, moduleName),
+            new ImmutableTag(TAG_NAME, "core")
         ), corePoolSize);
 
         Metrics.gauge(threadMetricsName, List.of(
-                new ImmutableTag(TAG_MODULE, moduleName),
-                new ImmutableTag(TAG_NAME, "max")
+            new ImmutableTag(TAG_MODULE, moduleName),
+            new ImmutableTag(TAG_NAME, "max")
         ), maximumPoolSize);
 
         Metrics.gauge(threadMetricsName, List.of(
-                new ImmutableTag(TAG_MODULE, moduleName),
-                new ImmutableTag(TAG_NAME, "largest")
+            new ImmutableTag(TAG_MODULE, moduleName),
+            new ImmutableTag(TAG_NAME, "largest")
         ), largestPoolSize);
 
     }
-
 
     public AtomicInteger corePoolSize() {
         return corePoolSize;
@@ -223,8 +217,8 @@ public class ThreadPoolMetrics {
      */
     public Timer taskExecuteTime() {
         return Metrics.timer(metricsNamePrefix + "timer",
-                TAG_MODULE, moduleName,
-                TAG_NAME, "execute");
+            TAG_MODULE, moduleName,
+            TAG_NAME, "execute");
     }
 
     public Timer taskExecuteTime(String taskName) {
@@ -232,20 +226,41 @@ public class ThreadPoolMetrics {
             return taskExecuteTime();
         }
         return Metrics.timer(metricsNamePrefix + "timer",
-                TAG_MODULE, moduleName,
-                TAG_NAME, "execute",
-                TAG_TASK, moduleName);
+            TAG_MODULE, moduleName,
+            TAG_NAME, "execute",
+            TAG_TASK, moduleName);
+    }
+
+    /**
+     * 可根据此值，统计最大、平均、90% 95% 99%、慢任务报警
+     */
+    public Timer taskQueuingTime() {
+        return Metrics.timer(metricsNamePrefix + "timer",
+            TAG_MODULE, moduleName,
+            TAG_NAME, "queuing");
+    }
+
+    public Timer taskQueuingTime(String taskName) {
+        if (StringUtils.isEmpty(taskName)) {
+            return taskExecuteTime();
+        }
+        return Metrics.timer(metricsNamePrefix + "timer",
+            TAG_MODULE, moduleName,
+            TAG_NAME, "queuing",
+            TAG_TASK, moduleName);
     }
 
     public Timer taskExecuteTime(Runnable runnable) {
-        String taskName = EnhancedRunnable.useAs(runnable, MonitorableRunnable.class).map(MonitorableRunnable::getTaskName).orElse(null);
+        String taskName = EnhancedRunnable.useAs(runnable, MonitorableRunnable.class)
+            .map(MonitorableRunnable::getTaskName)
+            .orElse(null);
         return taskExecuteTime(taskName);
     }
 
     public Counter exceptionCount() {
         return Metrics.counter(metricsNamePrefix + "exceptions",
-                TAG_MODULE, moduleName,
-                TAG_NAME, "exception");
+            TAG_MODULE, moduleName,
+            TAG_NAME, "exception");
     }
 
     public Counter exceptionCount(String taskName) {
@@ -253,25 +268,22 @@ public class ThreadPoolMetrics {
             return exceptionCount();
         }
         return Metrics.counter(metricsNamePrefix + "exceptions",
-                TAG_MODULE, moduleName,
-                TAG_NAME, "exception",
-                TAG_TASK, moduleName);
+            TAG_MODULE, moduleName,
+            TAG_NAME, "exception",
+            TAG_TASK, moduleName);
     }
 
     public Counter exceptionCount(Runnable runnable) {
-        if (runnable instanceof MonitorableRunnable) {
-            return exceptionCount(((MonitorableRunnable) runnable).getTaskName());
-        } else if (runnable instanceof EnhancedRunnable && ((EnhancedRunnable) runnable).isInstanceOf(MonitorableRunnable.class)) {
-            exceptionCount(((EnhancedRunnable) runnable).as(MonitorableRunnable.class).getTaskName());
-        }
-        return exceptionCount();
+        String taskName = EnhancedRunnable.useAs(runnable, MonitorableRunnable.class)
+            .map(MonitorableRunnable::getTaskName)
+            .orElse(null);
+        return exceptionCount(taskName);
     }
-
 
     public Counter rejectCount() {
         return Metrics.counter(metricsNamePrefix + "reject_nums",
-                TAG_MODULE, moduleName,
-                TAG_NAME, "rejectCount");
+            TAG_MODULE, moduleName,
+            TAG_NAME, "rejectCount");
     }
 
     public Counter rejectCount(String taskName) {
@@ -279,16 +291,16 @@ public class ThreadPoolMetrics {
             return rejectCount();
         }
         return Metrics.counter(metricsNamePrefix + "reject_nums",
-                TAG_MODULE, moduleName,
-                TAG_NAME, "rejectCount",
-                TAG_TASK, moduleName);
+            TAG_MODULE, moduleName,
+            TAG_NAME, "rejectCount",
+            TAG_TASK, moduleName);
     }
 
     public Counter rejectCount(Runnable runnable) {
-        if (runnable instanceof MonitorableRunnable) {
-            return rejectCount(((MonitorableRunnable) runnable).getTaskName());
-        }
-        return rejectCount();
+        String taskName = EnhancedRunnable.useAs(runnable, MonitorableRunnable.class)
+            .map(MonitorableRunnable::getTaskName)
+            .orElse(null);
+        return rejectCount(taskName);
     }
 
 }

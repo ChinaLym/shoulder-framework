@@ -1,10 +1,11 @@
 package org.shoulder.core.concurrent.enhance;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * 被增强过的 runnable，可以保存所有的增强器
@@ -29,6 +30,23 @@ public class EnhancedRunnable implements Runnable {
 
     public EnhancedRunnable(Runnable delegate) {
         this.delegate = delegate;
+    }
+
+    /**
+     *
+     * @param <T> 可以是 Runnable 子类 / 接口
+     */
+    public static <T> Optional<T> useAs(Runnable runnable, Class<T> clazz) {
+        if(runnable == null) {
+            return Optional.empty();
+        }
+        if(clazz.isAssignableFrom(runnable.getClass())) {
+            return Optional.of(runnable).map(clazz::cast);
+        }
+         if (runnable instanceof EnhancedRunnable && ((EnhancedRunnable) runnable).isInstanceOf(clazz)) {
+            return Optional.of(((EnhancedRunnable) runnable).as(clazz));
+        }
+        return Optional.empty();
     }
 
     /**
@@ -78,16 +96,6 @@ public class EnhancedRunnable implements Runnable {
             result = ((EnhancedRunnable) result).delegate;
         }
         return result;
-    }
-
-
-    public static <T> Optional<T> useAs(Runnable runnable, Class<T> runnableClass) {
-        Optional<?> result = Optional.ofNullable(runnable);
-        if (runnableClass.isAssignableFrom(runnableClass)) {
-            return result.map(runnableClass::cast);
-        } else if (runnable instanceof EnhancedRunnable && ((EnhancedRunnable) runnable).isInstanceOf(runnableClass)) {
-            return Optional.of(((EnhancedRunnable) runnable).as(runnableClass));
-        }
     }
 
     /**

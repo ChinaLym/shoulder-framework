@@ -2,6 +2,7 @@ package org.shoulder.core.concurrent.enhance;
 
 /**
  * 线程增强（装饰者模式-装饰器接口）
+ * 调用时间：ThreadPool:execute 时
  *
  * @author lym
  */
