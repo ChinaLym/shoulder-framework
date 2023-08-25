@@ -33,7 +33,7 @@ public class OperationLogFactory {
         return new OperationLogDTO(operation)
                 .setOperator(currentOperator)
                 .setAppId(AppInfo.appId())
-                // todo version
+                // todo 【可选优化】默认加入version
                 //.setVersion(AppInfo.version())
                 .setInstanceId(AppInfo.instanceId())
                 .setTenantCode(AppContext.getTenantCode());

@@ -34,7 +34,6 @@ public class FormTokenAuthenticationSuccessHandler extends BasicAuthorizationTok
 
     @Override
     protected String[] extractClientInfo(@Nonnull HttpServletRequest request) throws UnapprovedClientAuthenticationException {
-        // todo 参数
         AssertUtils.notNull(request.getParameterValues(usernameParamName), CommonErrorCodeEnum.PARAM_BODY_NOT_READABLE);
         AssertUtils.notNull(request.getParameterValues(passwordParamName), CommonErrorCodeEnum.PARAM_BODY_NOT_READABLE);
 

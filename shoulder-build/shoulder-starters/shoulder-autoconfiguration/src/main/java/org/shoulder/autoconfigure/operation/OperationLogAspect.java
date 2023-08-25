@@ -13,11 +13,7 @@ import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.annotation.OperationLogParam;
-import org.shoulder.log.operation.context.OpLogContext;
-import org.shoulder.log.operation.context.OpLogContextHolder;
-import org.shoulder.log.operation.context.OperationContextStrategy;
-import org.shoulder.log.operation.context.OperationContextStrategyEnum;
-import org.shoulder.log.operation.context.OperationLogFactory;
+import org.shoulder.log.operation.context.*;
 import org.shoulder.log.operation.format.OperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
@@ -33,6 +29,8 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.time.Instant;
@@ -40,9 +38,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 
 /**
@@ -125,7 +120,7 @@ public class OperationLogAspect {
                     .setResultFail();
             String[] errorReasons = ex.getMessage().split("\\r");
             String originReason = errorReasons[errorReasons.length - 1];
-            // todo 【优化】日志常量固定
+            // todo 【优化-代码格式】日志常量固定
             OpLogContextHolder.getLog()
                     .setExtField("errorMsg", originReason)
                     .setExtField("errorType", ex.getClass().getName());

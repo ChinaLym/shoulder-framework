@@ -13,7 +13,6 @@ import java.util.List;
  * 对数组和可迭代的对象做了展平处理。
  * 普通对象如DTO 则使用其 toString() 方法，如 XxxDTO(field1=1, field2=2,field3=3)
  * <p>
- * todo NULL log key?t
  *
  * @author lym
  */

@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 /**
  * 操作者信息
  * 主要用于兼容不同框架，其中不带 default 的方法返回值不得为空
- * todo certificate，密码类型；手机号，所属机构（租户编码），外部id，是否内部，扩展属性，用户状态。。
+ * todo 【可选优化】certificate，密码类型；手机号，所属机构（租户编码），外部id，是否内部，扩展属性，用户状态。。
  *
  * @author lym
  */

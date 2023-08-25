@@ -51,7 +51,7 @@ public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecificatio
      */
     private final String transformation;
     /**
-     * 需要初始化向量，固定长度 16*8=128，todo OCB 必须小于 128，解密必须传 iv，可以为空 byte[]
+     * 需要初始化向量，固定长度 16*8=128，todo 【优化-校验】OCB 必须小于 128，解密必须传 iv，可以为空 byte[]
      */
     private final boolean needIv;
 

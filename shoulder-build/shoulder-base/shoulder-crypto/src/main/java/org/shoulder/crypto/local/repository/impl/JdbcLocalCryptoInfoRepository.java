@@ -21,7 +21,7 @@ import java.util.List;
 public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
     /**
-     * todo 【SQL】使用 resource Loader 加载 ddl
+     * todo 【优化-编码】使用 resource Loader 加载 ddl
      */
     private static final String CREATE_STATEMENT =
             "create table crypto_info(" +
