@@ -29,4 +29,7 @@ public interface MonitorableRunnable {
 
     long getEnqueueTime();
 
+    long getWaitInQueueDuration();
+    void setWaitInQueueDuration(long enqueueTime);
+
 }

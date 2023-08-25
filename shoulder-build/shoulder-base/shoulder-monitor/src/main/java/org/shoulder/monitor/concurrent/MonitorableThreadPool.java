@@ -1,11 +1,18 @@
 package org.shoulder.monitor.concurrent;
 
+import org.shoulder.core.concurrent.enhance.EnhancedRunnable;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
 
 /**
  * 带指标可监控的线程池，推荐需要稳定执行、重要的业务使用，以更好的掌握系统运行状态
@@ -99,7 +106,8 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
      * @param poolName        线程池名称
      */
     public MonitorableThreadPool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler, String poolName) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
+        // warpper with MonitorableBlockingQueue
+        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, new MonitorableBlockingQueue(workQueue), threadFactory, handler);
 
         // 初始化指标
         this.poolName = poolName;
@@ -116,6 +124,15 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
         this.metrics.queueCapacity().set(getQueue().remainingCapacity());
         //this.getKeepAliveTime(TimeUnit.MILLISECONDS)
 
+    }
+
+    /**
+     * Getter method for property <tt>metrics</tt>.
+     *
+     * @return property value of metrics
+     */
+    public ThreadPoolMetrics getMetrics() {
+        return metrics;
     }
 
     @Override
@@ -137,11 +154,15 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
 
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
+        // 执行耗时
         long finishStamp = System.currentTimeMillis();
         long consuming = finishStamp - workerStartTimeStamp.get();
         workerStartTimeStamp.remove();
         // 默认使用 ms 记录执行时间
         this.metrics.taskExecuteTime(r).record(consuming, TimeUnit.MILLISECONDS);
+
+        // 队列等待耗时 MonitorableRunnable 才会记录
+        EnhancedRunnable.asOptional(r, MonitorableRunnable.class).ifPresent(metrics::queuingTime);
 
         super.afterExecute(r, t);
 

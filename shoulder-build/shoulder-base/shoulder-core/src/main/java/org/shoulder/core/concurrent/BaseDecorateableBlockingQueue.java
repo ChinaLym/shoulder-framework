@@ -26,11 +26,11 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
     }
 
 
-    protected void enQueue(E e) {
+    protected void beforeInQueue(E e) {
 
     }
 
-    protected E deQueue(E e) {
+    protected E afterOutQueue(E e) {
         return e;
     }
 
@@ -38,7 +38,7 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
     public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
         boolean added = delegateBlockingQueue.add(e);
         if (added) {
-            enQueue(e);
+            beforeInQueue(e);
         }
         return added;
     }
@@ -47,7 +47,7 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
     public boolean add(E e) {
         boolean added = delegateBlockingQueue.add(e);
         if (added) {
-            enQueue(e);
+            beforeInQueue(e);
         }
         return added;
     }
@@ -56,14 +56,14 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
     public boolean offer(E e) {
         boolean added = delegateBlockingQueue.offer(e);
         if (added) {
-            enQueue(e);
+            beforeInQueue(e);
         }
         return added;
     }
 
     @Override
     public void put(E e) throws InterruptedException {
-        enQueue(e);
+        beforeInQueue(e);
         delegateBlockingQueue.put(e);
     }
 
@@ -74,22 +74,22 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
 
     @Override
     public E poll() {
-        return deQueue(delegateBlockingQueue.poll());
+        return afterOutQueue(delegateBlockingQueue.poll());
     }
 
     @Override
     public E take() throws InterruptedException {
-        return deQueue(delegateBlockingQueue.take());
+        return afterOutQueue(delegateBlockingQueue.take());
     }
 
     @Override
     public E poll(long timeout, TimeUnit unit) throws InterruptedException {
-        return deQueue(delegateBlockingQueue.poll(timeout, unit));
+        return afterOutQueue(delegateBlockingQueue.poll(timeout, unit));
     }
 
     @Override
     public E remove() {
-        return deQueue(delegateBlockingQueue.remove());
+        return afterOutQueue(delegateBlockingQueue.remove());
     }
 
     @Override
@@ -100,7 +100,7 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
     @Override
     public boolean remove(Object e) {
         if (delegateBlockingQueue.remove(e)) {
-            deQueue((E) e);
+            afterOutQueue((E) e);
             return true;
         }
         return false;
@@ -113,7 +113,7 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
 
     @Override
     public boolean addAll(Collection c) {
-        Optional.ofNullable(c).stream().forEach(o -> enQueue((E) o));
+        Optional.ofNullable(c).stream().forEach(o -> beforeInQueue((E) o));
         return delegateBlockingQueue.addAll(c);
     }
 
@@ -138,7 +138,7 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
                 }
             } else {
                 // 触发增强
-                deQueue(e);
+                afterOutQueue(e);
                 hasRemove.compareAndSet(false, true);
             }
         });
@@ -170,7 +170,7 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
         for (Object o : c) {
             boolean d = remove(o);
             if (d) {
-                deQueue((E) o);
+                afterOutQueue((E) o);
             }
             hasDelete = hasDelete || d;
         }
@@ -202,7 +202,7 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
         // 非阻塞的批量获取元素，等于 pool 多个，性能更好点
         int i = delegateBlockingQueue.drainTo(c);
         for (Object o : c) {
-            deQueue((E) o);
+            afterOutQueue((E) o);
         }
         return i;
     }
@@ -211,7 +211,7 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
     public int drainTo(Collection c, int maxElements) {
         int i = delegateBlockingQueue.drainTo(c, maxElements);
         for (Object o : c) {
-            deQueue((E) o);
+            afterOutQueue((E) o);
         }
         return i;
     }

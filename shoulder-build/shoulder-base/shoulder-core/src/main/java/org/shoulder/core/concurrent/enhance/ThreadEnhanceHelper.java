@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
  */
 public class ThreadEnhanceHelper {
 
-    private static List<ThreadEnhancer> enhancers = new LinkedList<>();
+    private static final List<ThreadEnhancer> enhancers = new LinkedList<>();
 
     public static Runnable doEnhance(Runnable runnable) {
         EnhancedRunnable enhancedRunnable = new EnhancedRunnable(runnable);

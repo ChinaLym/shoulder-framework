@@ -8,6 +8,7 @@ import org.shoulder.core.concurrent.enhance.EnhancedRunnable;
 import org.shoulder.core.util.StringUtils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -231,16 +232,23 @@ public class ThreadPoolMetrics {
             TAG_TASK, moduleName);
     }
 
+    public Timer taskExecuteTime(Runnable runnable) {
+        String taskName = EnhancedRunnable.asOptional(runnable, MonitorableRunnable.class)
+                .map(MonitorableRunnable::getTaskName)
+                .orElse(null);
+        return taskExecuteTime(taskName);
+    }
+
     /**
      * 可根据此值，统计最大、平均、90% 95% 99%、慢任务报警
      */
-    public Timer taskQueuingTime() {
+    public Timer queuingTime() {
         return Metrics.timer(metricsNamePrefix + "timer",
             TAG_MODULE, moduleName,
             TAG_NAME, "queuing");
     }
 
-    public Timer taskQueuingTime(String taskName) {
+    public Timer queuingTime(String taskName) {
         if (StringUtils.isEmpty(taskName)) {
             return taskExecuteTime();
         }
@@ -250,11 +258,9 @@ public class ThreadPoolMetrics {
             TAG_TASK, moduleName);
     }
 
-    public Timer taskExecuteTime(Runnable runnable) {
-        String taskName = EnhancedRunnable.useAs(runnable, MonitorableRunnable.class)
-            .map(MonitorableRunnable::getTaskName)
-            .orElse(null);
-        return taskExecuteTime(taskName);
+    public void queuingTime(MonitorableRunnable runnable) {
+        Timer t = queuingTime(runnable.getTaskName());
+        t.record(runnable.getEnqueueTime(), TimeUnit.MILLISECONDS);
     }
 
     public Counter exceptionCount() {
@@ -274,7 +280,7 @@ public class ThreadPoolMetrics {
     }
 
     public Counter exceptionCount(Runnable runnable) {
-        String taskName = EnhancedRunnable.useAs(runnable, MonitorableRunnable.class)
+        String taskName = EnhancedRunnable.asOptional(runnable, MonitorableRunnable.class)
             .map(MonitorableRunnable::getTaskName)
             .orElse(null);
         return exceptionCount(taskName);
@@ -297,7 +303,7 @@ public class ThreadPoolMetrics {
     }
 
     public Counter rejectCount(Runnable runnable) {
-        String taskName = EnhancedRunnable.useAs(runnable, MonitorableRunnable.class)
+        String taskName = EnhancedRunnable.asOptional(runnable, MonitorableRunnable.class)
             .map(MonitorableRunnable::getTaskName)
             .orElse(null);
         return rejectCount(taskName);

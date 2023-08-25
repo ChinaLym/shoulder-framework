@@ -33,40 +33,13 @@ public class EnhancedRunnable implements Runnable {
     }
 
     /**
-     *
-     * @param <T> 可以是 Runnable 子类 / 接口
-     */
-    public static <T> Optional<T> useAs(Runnable runnable, Class<T> clazz) {
-        if(runnable == null) {
-            return Optional.empty();
-        }
-        if(clazz.isAssignableFrom(runnable.getClass())) {
-            return Optional.of(runnable).map(clazz::cast);
-        }
-         if (runnable instanceof EnhancedRunnable && ((EnhancedRunnable) runnable).isInstanceOf(clazz)) {
-            return Optional.of(((EnhancedRunnable) runnable).as(clazz));
-        }
-        return Optional.empty();
-    }
-
-    /**
      * 是否是一个 xxx
      *
      * @param clazz 目标类
      * @return 结果
      */
     public boolean isInstanceOf(Class<?> clazz) {
-        if (clazz.isInstance(this)) {
-            return true;
-        }
-        Runnable result = this;
-        while (result instanceof EnhancedRunnable) {
-            result = ((EnhancedRunnable) result).delegate;
-            if (clazz.isInstance(result)) {
-                return true;
-            }
-        }
-        return false;
+        return asOptional(this, clazz).isPresent();
     }
 
     /**
@@ -110,6 +83,24 @@ public class EnhancedRunnable implements Runnable {
             return result;
         }
         throw new ClassCastException("can't cast to " + clazz.getName());
+    }
+
+    /**
+     *
+     * @param <T> 可以是 Runnable 子类 / 接口
+     */
+    public static <T> Optional<T> asOptional(Runnable runnable, Class<T> clazz) {
+        if(runnable == null) {
+            return Optional.empty();
+        }
+        if(clazz.isInstance(runnable)) {
+            return Optional.of(runnable).map(clazz::cast);
+        }
+        if (runnable instanceof EnhancedRunnable) {
+            T t = ((EnhancedRunnable) runnable).unwrap(clazz);
+            return Optional.ofNullable(t);
+        }
+        return Optional.empty();
     }
 
     /**
