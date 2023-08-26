@@ -224,20 +224,6 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
         return list.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), list.size()));
     }
 
-    /**
-     * 包含任意一个元素
-     */
-    public static <T> boolean containsAny(T[] otherContains, T[] formats) {
-        for (T obj1 : otherContains) {
-            for (T obj2 : formats) {
-                if (obj1.equals(obj2)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public static <T> boolean notContains(T[] array, T obj) {
         return !contains(array, obj);
     }
