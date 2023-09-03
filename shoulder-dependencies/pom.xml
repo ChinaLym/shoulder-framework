@@ -57,7 +57,7 @@
 
         <!-- apache-common-tools -->
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
-        <commons-codec.version>1.15</commons-codec.version>
+        <commons-codec.version>1.16.0</commons-codec.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-exec.version>1.3</commons-exec.version>
         <commons-email.version>1.5</commons-email.version>
@@ -86,14 +86,14 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
 
         <!-- tools-file -->
-        <tika-core.version>2.8.0</tika-core.version>
+        <tika-core.version>2.9.0</tika-core.version>
         <opencsv.version>5.6</opencsv.version>
 
         <lombok.version>1.18.28</lombok.version>
 
         <!-- dataBase-->
         <mysql.version>8.0.21</mysql.version>
-        <h2.version>2.2.220</h2.version>
+        <h2.version>2.2.222</h2.version>
         <!-- 1.2.4支持jdk8时间打印 -->
         <druid.version>1.2.8</druid.version>
         <!-- mybatis-plus 功能稳定性较差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
@@ -172,7 +172,7 @@
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
-                <version>3.23.3</version>
+                <version>3.23.4</version>
             </dependency>
 
 
