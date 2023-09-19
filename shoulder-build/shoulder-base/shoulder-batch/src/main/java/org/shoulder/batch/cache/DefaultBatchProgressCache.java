@@ -48,6 +48,16 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
         Threads.execute(genFlushProgressTask(task));
     }
 
+    @Override
+    public void evict(String id) {
+        progressCache.evict(id);
+    }
+
+    @Override
+    public void clear() {
+        progressCache.clear();
+    }
+
     /**
      * 刷缓存线程不安全，需要加锁，最少是 taskId 级别，这里默认实现直接用 sync 了
      *

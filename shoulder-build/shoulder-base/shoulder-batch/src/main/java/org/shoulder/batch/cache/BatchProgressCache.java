@@ -47,4 +47,13 @@ public interface BatchProgressCache {
      */
     void triggerFlushProgress(ProgressAble batchProgress);
 
+    /**
+     * remove special
+     */
+    void evict(String id);
+
+    /**
+     * clean all
+     */
+    void clear();
 }
