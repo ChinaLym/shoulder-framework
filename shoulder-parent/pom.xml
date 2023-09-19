@@ -225,7 +225,7 @@
                     <executions>
                         <execution>
                             <id>attach-sources</id>
-                            <phase>deploy</phase><!-- ACTIVE_WITH_package --><!-- 默认发布带源码，本地构建不带源码 -->
+                            <phase>package</phase><!-- ACTIVE_WITH_package --><!-- 默认发布带源码，本地构建不带源码 -->
                             <goals>
                                 <goal>jar</goal>
                                 <goal>jar-no-fork</goal>

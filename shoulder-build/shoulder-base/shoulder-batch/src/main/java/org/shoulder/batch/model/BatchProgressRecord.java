@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -184,6 +185,11 @@ public class BatchProgressRecord implements Serializable, ProgressAble {
     @Override
     public void finishPart(int partIndex) {
         addSuccess(1);
+    }
+
+    @Override
+    public void setOnFinishCallback(BiConsumer<String, ProgressAble> onFinishedCallback) {
+        throw new UnsupportedOperationException("static record object not supported!");
     }
 
 }

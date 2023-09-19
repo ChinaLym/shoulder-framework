@@ -94,8 +94,8 @@ public class BatchProgress implements Serializable, ProgressAble {
         startTime = LocalDateTime.now();
     }
 
-    public int setTotal(int total) {
-        return this.total.getAndSet(total);
+    public void setTotal(int total) {
+        this.total.getAndSet(total);
     }
 
     public void failStop() {

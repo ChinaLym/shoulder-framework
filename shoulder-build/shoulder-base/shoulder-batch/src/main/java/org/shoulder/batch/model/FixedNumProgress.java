@@ -78,9 +78,8 @@ public class FixedNumProgress implements Serializable, ProgressAble {
         startTime = LocalDateTime.now();
     }
 
-    public int setTotal(int total) {
+    public void setTotal(int total) {
         this.total = total;
-        return total;
     }
 
     @Override

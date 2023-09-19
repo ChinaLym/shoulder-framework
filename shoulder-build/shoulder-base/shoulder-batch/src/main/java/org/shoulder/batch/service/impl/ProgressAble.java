@@ -2,6 +2,8 @@ package org.shoulder.batch.service.impl;
 
 import org.shoulder.batch.model.BatchProgressRecord;
 
+import java.util.function.BiConsumer;
+
 /**
  * 有进度的
  *
@@ -47,4 +49,7 @@ public interface ProgressAble {
 
     }
 
+    void setTotal(int total);
+
+    void setOnFinishCallback(BiConsumer<String, ProgressAble> onFinishedCallback);
 }
