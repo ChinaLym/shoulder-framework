@@ -37,6 +37,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
 
     /**
      * 触发异步刷进度
+     * 备注：场景适用于单个机器写，多个机器读
      *
      * @param task 需要被刷进度的 task
      */
@@ -119,7 +120,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
                 // 未处理完毕，仍需要执行这个任务
                 Threads.delay(genFlushProgressTask(progressHolder), 1, TimeUnit.SECONDS);
             } else {
-                progressHolder.afterFinished(id, progressHolder);
+                progressHolder.onFinished(id, progressHolder);
             }
             progressCache.put(id, batchProgressRecord);
         };

@@ -19,8 +19,18 @@ public interface BatchProgressCache {
      */
     ProgressAble getTaskProgress(String id);
 
+    /**
+     * 获取所有任务id
+     *
+     * @return 所有任务id
+     */
     Iterable<String> getAllTaskProgressId();
 
+    /**
+     * 获取所有任务进度
+     *
+     * @return 所有任务进度
+     */
     Map<String, ProgressAble> getAllTaskProgress();
 
     /**

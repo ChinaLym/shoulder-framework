@@ -28,7 +28,7 @@ public interface ProgressAble {
     /**
      * 结束后的回调
      */
-    default void afterFinished(String id, ProgressAble task) {
+    default void onFinished(String id, ProgressAble task) {
 
 
     }

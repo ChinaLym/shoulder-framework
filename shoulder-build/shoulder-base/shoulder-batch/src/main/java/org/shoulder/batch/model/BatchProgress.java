@@ -4,13 +4,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.shoulder.batch.service.impl.ProgressAble;
 
-import javax.annotation.concurrent.ThreadSafe;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+
+import javax.annotation.concurrent.ThreadSafe;
 
 
 /**
@@ -30,7 +31,7 @@ public class BatchProgress implements Serializable, ProgressAble {
 
     private boolean autoFished = true;
 
-    private BiConsumer<String, ProgressAble> afterFinishCallback = ProgressAble.super::afterFinished;
+    private BiConsumer<String, ProgressAble> onFinishCallback = ProgressAble.super::onFinished;
 
     /**
      * 任务标识
@@ -216,8 +217,8 @@ public class BatchProgress implements Serializable, ProgressAble {
     }
 
     @Override
-    public void afterFinished(String id, ProgressAble task) {
-        afterFinishCallback.accept(id, task);
+    public void onFinished(String id, ProgressAble task) {
+        onFinishCallback.accept(id, task);
     }
 
     private void addProcessed(int processedNum) {

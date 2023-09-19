@@ -6,7 +6,6 @@ import org.shoulder.batch.service.impl.ProgressAble;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -14,6 +13,8 @@ import java.util.BitSet;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+
+import javax.annotation.concurrent.NotThreadSafe;
 
 
 /**
@@ -33,7 +34,7 @@ public class FixedNumProgress implements Serializable, ProgressAble {
 
     private boolean autoFished = true;
 
-    private BiConsumer<String, ProgressAble> afterFinishCallback = ProgressAble.super::afterFinished;
+    private BiConsumer<String, ProgressAble> onFinishCallback = ProgressAble.super::onFinished;
 
     /**
      * 任务标识
@@ -186,13 +187,15 @@ public class FixedNumProgress implements Serializable, ProgressAble {
 
     @Override
     public void finishPart(int partIndex) {
-        this.set.set(partIndex);
-        checkFinished();
+        synchronized (this.set) {
+            this.set.set(partIndex);
+            checkFinished();
+        }
     }
 
     @Override
-    public void afterFinished(String id, ProgressAble task) {
-        afterFinishCallback.accept(id, task);
+    public void onFinished(String id, ProgressAble task) {
+        onFinishCallback.accept(id, task);
     }
 
     private void checkFinished() {
