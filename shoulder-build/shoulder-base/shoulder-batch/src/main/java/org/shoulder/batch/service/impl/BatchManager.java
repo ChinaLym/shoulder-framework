@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author lym
  */
-public class BatchManager implements Runnable, ProgressAble {
+public class BatchManager implements Runnable {
 
     protected final static Logger log = LoggerFactory.getLogger(BatchManager.class);
 
@@ -397,18 +397,12 @@ public class BatchManager implements Runnable, ProgressAble {
         OpLogContextHolder.enableAutoLog();
     }
 
-    @Override
     public String getTaskId() {
         return progress.getTaskId();
     }
 
-    @Override
     public BatchProgressRecord getBatchProgress() {
         return progress;
     }
 
-    @Override
-    public void finishPart(int partIndex) {
-        progress.finishPart(partIndex);
-    }
 }

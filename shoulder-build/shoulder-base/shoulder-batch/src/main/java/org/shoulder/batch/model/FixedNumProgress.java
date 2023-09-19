@@ -70,6 +70,7 @@ public class FixedNumProgress implements Serializable, ProgressAble {
     }
 
 
+    @Override
     public void start() {
         // 只能从未开始到开始
         AssertUtils.notBlank(taskId, CommonErrorCodeEnum.ILLEGAL_STATUS);
@@ -82,18 +83,19 @@ public class FixedNumProgress implements Serializable, ProgressAble {
         return total;
     }
 
-    public int failStop() {
-        int oldStatus = status.getAndSet(ProcessStatusEnum.EXCEPTION.getCode());
+    @Override
+    public void failStop() {
+        status.getAndSet(ProcessStatusEnum.EXCEPTION.getCode());
         stopTime = LocalDateTime.now();
-        return oldStatus;
     }
 
-    public int finish() {
-        int oldStatus = status.getAndSet(ProcessStatusEnum.FINISHED.getCode());
+    @Override
+    public void finish() {
+        status.getAndSet(ProcessStatusEnum.FINISHED.getCode());
         stopTime = LocalDateTime.now();
-        return oldStatus;
     }
 
+    @Override
     public boolean hasFinish() {
         if (status.get() > ProcessStatusEnum.RUNNING.getCode()) {
             return true;
@@ -107,6 +109,7 @@ public class FixedNumProgress implements Serializable, ProgressAble {
      *
      * @return 已经花费的时间
      */
+    @Override
     public long calculateProcessedTime() {
         if (status.get() == ProcessStatusEnum.WAITING.getCode()) {
             return 0;
@@ -125,6 +128,7 @@ public class FixedNumProgress implements Serializable, ProgressAble {
      *
      * @return 进度
      */
+    @Override
     public float calculateProgress() {
         if (hasFinish()) {
             return 1;
@@ -140,6 +144,7 @@ public class FixedNumProgress implements Serializable, ProgressAble {
      *
      * @return 剩余所需时间 ms
      */
+    @Override
     public long calculateTimeLeft() {
         if (hasFinish()) {
             return 0L;

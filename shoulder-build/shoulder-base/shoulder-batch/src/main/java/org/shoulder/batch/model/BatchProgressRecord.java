@@ -4,11 +4,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.shoulder.batch.service.impl.ProgressAble;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
+
+import javax.annotation.concurrent.NotThreadSafe;
 
 
 /**
@@ -83,11 +84,13 @@ public class BatchProgressRecord implements Serializable, ProgressAble {
         }
     }
 
+    @Override
     public void failStop() {
         status = ProcessStatusEnum.EXCEPTION.getCode();
         stopTime = LocalDateTime.now();
     }
 
+    @Override
     public void finish() {
         assert total == processed;
         status = ProcessStatusEnum.FINISHED.getCode();

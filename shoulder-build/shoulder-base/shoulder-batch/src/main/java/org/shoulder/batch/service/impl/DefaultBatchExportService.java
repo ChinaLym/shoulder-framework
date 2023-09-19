@@ -266,7 +266,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         } else {
             BatchManager batchManager = new BatchManager(batchData);
             //执行持久化
-            batchProgressCache.triggerFlushProgress(batchManager);
+            batchProgressCache.triggerFlushProgress(batchManager.getBatchProgress());
             batchThreadPool.execute(batchManager);
             return batchManager.getBatchProgress().getTaskId();
         }

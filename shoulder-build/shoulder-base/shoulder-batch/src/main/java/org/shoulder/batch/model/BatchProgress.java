@@ -98,16 +98,14 @@ public class BatchProgress implements Serializable, ProgressAble {
         return this.total.getAndSet(total);
     }
 
-    public int failStop() {
-        int oldStatus = status.getAndSet(ProcessStatusEnum.EXCEPTION.getCode());
+    public void failStop() {
+        status.getAndSet(ProcessStatusEnum.EXCEPTION.getCode());
         stopTime = LocalDateTime.now();
-        return oldStatus;
     }
 
-    public int finish() {
-        int oldStatus = status.getAndSet(ProcessStatusEnum.FINISHED.getCode());
+    public void finish() {
+        status.getAndSet(ProcessStatusEnum.FINISHED.getCode());
         stopTime = LocalDateTime.now();
-        return oldStatus;
     }
 
     public boolean hasFinish() {

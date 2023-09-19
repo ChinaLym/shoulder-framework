@@ -9,6 +9,20 @@ import org.shoulder.batch.model.BatchProgressRecord;
  */
 public interface ProgressAble {
 
+    void start();
+
+    void failStop();
+
+    void finish();
+
+    boolean hasFinish();
+
+    long calculateProcessedTime();
+
+    float calculateProgress();
+
+    long calculateTimeLeft();
+
     /**
      * 任务进度
      *
@@ -16,13 +30,13 @@ public interface ProgressAble {
      */
     BatchProgressRecord getBatchProgress();
 
+    String getTaskId();
+
     /**
      * 完成第 partIndex 个分片
      *
      * @param partIndex 分片标
      */
-    String getTaskId();
-
     void finishPart(int partIndex);
 
     /**
