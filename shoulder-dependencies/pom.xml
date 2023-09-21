@@ -89,7 +89,8 @@
         <tika-core.version>2.9.0</tika-core.version>
         <opencsv.version>5.6</opencsv.version>
 
-        <lombok.version>1.18.28</lombok.version>
+        <!-- JDK21 注意该版本： https://github.com/projectlombok/lombok/issues/3393-->
+        <lombok.version>1.18.30</lombok.version>
 
         <!-- dataBase-->
         <mysql.version>8.0.21</mysql.version>
