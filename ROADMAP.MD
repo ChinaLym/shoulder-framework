@@ -33,3 +33,5 @@ Google 等互联网顶尖公司已经探索 `ServiceMesh` 许久，虽然当前�
 - 生产/压测隔离【DONE】
 - redis6已经发布，有客户端缓存相关涉及，lettuce6.x已经支持，但spring boot 中暂未支持，预计 spring boot 2.5+ 支持
 - 启动速度（CRaC，spring 预计2023.11才支持）、启动预热
+
+- JDK 21 https://www.oracle.com/java/technologies/downloads/#jdk21-windows
