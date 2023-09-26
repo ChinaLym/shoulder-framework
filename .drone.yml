@@ -90,8 +90,7 @@ steps:
 #    commands:
 #      - echo 'mock announcement of issuance!'
 #
-  #  - name: 构建结果通知 Build Notification. --- with DingTalk
-  - name:
+  - name: 构建结果通知 Build Notification. --- with DingTalk
     image: guoxudongdocker/drone-dingtalk
     settings:
       token:
