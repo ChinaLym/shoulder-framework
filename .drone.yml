@@ -28,7 +28,7 @@ steps:
   #      # mvn versions:display-dependency-updates
 
   - name: 编译、打包、发布到 maven 仓库
-    image: cnlym/maven:3-jdk-11-alpine-aliyun
+    image: cnlym/maven:3-jdk-21-alpine-aliyun
     # 加速，对于这种稳定的容器
     pull: if-not-exists
     commands:
