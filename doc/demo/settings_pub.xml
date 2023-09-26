@@ -1,0 +1,90 @@
+<settings>
+<!--
+prod only
+<mirrors>
+<mirror>
+           <id>cccc</id>
+           <mirrorOf>central</mirrorOf>
+           <name>center</name>
+           <url>http://repo1.maven.org/maven2</url>
+       </mirror>
+</mirrors>
+-->
+<!---
+    <mirrors>
+<mirror>
+           <id>aliyun</id>
+           <mirrorOf>central</mirrorOf>
+           <name>maven.aliyun.com</name>
+           <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+       </mirror>
+       <mirror>
+           <id>crespo1</id>
+           <mirrorOf>central</mirrorOf>
+           <name>maven.aliyun.com</name>
+           <url>http://repository.cloudera.com/artifactory/cloudera-repos/</url>
+       </mirror>
+    </mirrors>
+    <profiles>
+    </profiles>
+
+-->
+<profiles>
+<profile>
+<activeByDefault>true</activeByDefault>
+<id>normal</id>
+<repositories>
+    <repository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>snapshot</id>
+      <name>oss snapshot Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+    </pluginRepository>
+<pluginRepository>
+      <id>oss-plugin-snapshot</id>
+      <name>oss-plugin-snapshot Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+</profile>
+</profiles>
+<activeProfiles>
+<activeProfile>normal</activeProfile>
+</activeProfiles>
+</settings>
