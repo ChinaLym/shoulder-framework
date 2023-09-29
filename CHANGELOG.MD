@@ -2,8 +2,8 @@
 
 ## 0.7（较大更新）
 
-- shoulder 不再为除spring boot外的三方jar定制能力（如
-  mybatis-plus）以减少三分jar定制功能学习成本，也不考虑没有spring上下文的情况，本框架强依赖Spring，定位为Spring的能力扩展。
+- shoulder 不再为除spring boot外的三方jar定制能力（如mybatis-plus）以减少三分jar定制功能学习成本，
+  也不考虑没有spring上下文的情况，本框架强依赖Spring，定位为Spring的能力扩展。
 - 升级到了 **SpringBoot 2.7.x**,
   关于springfox升级注意事项[spring boot2.x升级到2.6](https://springfox.github.io/springfox/docs/snapshot/#migrating-from-existing-2-x-version)
 - 升级2.7注意： https://spring.io/blog/2022/05/19/spring-boot-2-7-0-available-now
@@ -12,12 +12,10 @@
 - DB
   - 自动判断是否存在分布式事务问题，默认仅开发时生效
     - TransactionSynchronizationManager.isActualTransactionActive() 判断是否有 @Transactional
-    - 且该方法是写的（CUD）支持扩展这里
+    - 且该方法是写的（C/U/D）支持扩展这里
     - 拿到数据源
     - 判断是否是同一个事务管理器（不是则可能有分布式事务问题）
-      - !null && 正在事务 && TransactionSynchronizationManager.getResource(dataSource) == null || 它的
-        isTransactionActive 为
-        false
+      - `!null` && `正在事务` && `TransactionSynchronizationManager.getResource(dataSource) == null` || `isTransactionActive=false`
 
 - core
   - 调整部分内置错误码定义
@@ -31,7 +29,7 @@
 
 - batch
   - 批处理模块支持导出导出，进度条等基本逻辑，上升至无依赖任务批处理
-  - 新增支持并发 process，允许单独使用
+  - 新增支持并发 process，允许单独使用，见 [spider 项目](https://gitee.com/ChinaLym/learn-spider)
 
 - log
   - Logger 分割，定义更明确，以满足更多的日志文件划分方式，以应对大业务量的场景
@@ -41,19 +39,19 @@
   - 追踪日志更详细：digest、stat
 
 - ~~安全与加密-脱敏~~
-  - 敏感词过滤
-  - 字段名-脱敏 shielder 算法id-脱敏算法实现~~
-  - 注解形式，输出时自动脱敏
+  ~~- 敏感词过滤~~
+  ~~- 字段名-脱敏 shielder 算法id-脱敏算法实现~~
+  ~~- 注解形式，输出时自动脱敏~~
 
 - redis 连接池事件监听聚合接口
   - LettuceEventConsumer
 
 - 依赖升级
 ```bash
-springboot 2.4.5 -> 2.7.9
+springboot 2.4.5 -> 2.7.16
 spring-cloud 2020.0.2 -> 2021.0.1
-swagger2 1.6.2 -> 1.6.5（默认不引入）
-swagger3 2.1.9 -> 2.1.13（默认不引入）
+swagger2 1.6.2 -> 1.6.11（默认不引入）
+swagger3 2.1.9 -> 2.2.15（默认不引入）
 xstream 1.4.17 -> 1.4.20
 guava 30.1.1-jre -> 31.2-jre
 alibaba.transmittable 2.12.1 -> 2.14.3

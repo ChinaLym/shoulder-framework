@@ -26,7 +26,7 @@
         <nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
         <spring-oauth2-server.version>0.1.2</spring-oauth2-server.version>
 
-        <spring-boot.version>2.7.15</spring-boot.version>
+        <spring-boot.version>2.7.16</spring-boot.version>
         <!-- 由于Spring Boot提供了Maven BOM来管理依赖版本，因此您无需指定版本 -->
 
         <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info https://www.json.cn/  -->
