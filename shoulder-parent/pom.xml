@@ -20,17 +20,19 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 
         <mapstruct.version>1.3.1.Final</mapstruct.version>
-        <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
-        <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
+        <license-maven-plugin.version>2.2.0</license-maven-plugin.version>
+        <git-commit-id-plugin.version>6.0.0</git-commit-id-plugin.version>
+        <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
 
         <shoulder-maven-plugin.version>1.2.1-SNAPSHOT</shoulder-maven-plugin.version>
         <shoulder-framework.errcode-prefix>0x0000</shoulder-framework.errcode-prefix>
@@ -125,23 +127,23 @@
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
-<!--                        <compilerArgs>-->
-<!--                            <arg>-XDcompilePolicy=simple</arg>-->
-<!--                            <arg>-Xplugin:ErrorProne</arg>-->
-<!--                        </compilerArgs>-->
-<!--                        修复-->
-<!--                        <compilerArgs>-->
-<!--                            <arg>-XDcompilePolicy=simple</arg>-->
-<!--                            <arg>-Xplugin:ErrorProne -XepPatchChecks:ArrayEquals-->
-<!--                                -XepPatchLocation:IN_PLACE</arg>-->
-<!--                        </compilerArgs>-->
-<!--                        <annotationProcessorPaths>-->
-<!--                            <path>-->
-<!--                                <groupId>com.google.errorprone</groupId>-->
-<!--                                <artifactId>error_prone_core</artifactId>-->
-<!--                                <version>2.15.0</version>-->
-<!--                            </path>-->
-<!--                        </annotationProcessorPaths>-->
+                        <!--                        <compilerArgs>-->
+                        <!--                            <arg>-XDcompilePolicy=simple</arg>-->
+                        <!--                            <arg>-Xplugin:ErrorProne</arg>-->
+                        <!--                        </compilerArgs>-->
+                        <!--                        修复-->
+                        <!--                        <compilerArgs>-->
+                        <!--                            <arg>-XDcompilePolicy=simple</arg>-->
+                        <!--                            <arg>-Xplugin:ErrorProne -XepPatchChecks:ArrayEquals-->
+                        <!--                                -XepPatchLocation:IN_PLACE</arg>-->
+                        <!--                        </compilerArgs>-->
+                        <!--                        <annotationProcessorPaths>-->
+                        <!--                            <path>-->
+                        <!--                                <groupId>com.google.errorprone</groupId>-->
+                        <!--                                <artifactId>error_prone_core</artifactId>-->
+                        <!--                                <version>2.15.0</version>-->
+                        <!--                            </path>-->
+                        <!--                        </annotationProcessorPaths>-->
                     </configuration>
                 </plugin>
 
@@ -356,7 +358,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>cobertura-maven-plugin</artifactId>
-                    <version>${cobertura-maven-plugin}</version>
+                    <version>${cobertura-maven-plugin.version}</version>
                 </plugin>
 
                 <!-- 自动生成文档 支持 JSR-303 Bean Validation -->
@@ -386,14 +388,14 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
-                    <version>3.7.0.1746</version>
+                    <version>${sonar-maven-plugin.version}</version>
                 </plugin>
 
                 <!-- 管理版本号 mvn versions:set -DnewVersion=1.1-SNAPSHOT -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>${versions-maven-plugin}</version>
+                    <version>${versions-maven-plugin.version}</version>
                 </plugin>
 
                 <!-- 编辑 MANIFEST.MF -->
@@ -415,9 +417,9 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
-                    <version>2.1.5</version>
+                    <groupId>io.github.git-commit-id</groupId>
+                    <artifactId>git-commit-id-maven-plugin</artifactId>
+                    <version>${git-commit-id-plugin.version}</version>
                     <executions>
                         <execution>
                             <goals>

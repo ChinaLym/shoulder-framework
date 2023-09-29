@@ -23,7 +23,7 @@
         <!-- spring-security-oauth2-autoconfigure -->
         <spring-security-oauth2-autoconfigure.version>2.6.8</spring-security-oauth2-autoconfigure.version>
         <spring-security-oauth2.version>2.5.2.RELEASE</spring-security-oauth2.version>
-        <nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>9.35</nimbus-jose-jwt.version>
         <spring-oauth2-server.version>0.1.2</spring-oauth2-server.version>
 
         <spring-boot.version>2.7.16</spring-boot.version>
@@ -43,7 +43,7 @@
         <!-- api-doc -->
         <swagger2.version>1.6.11</swagger2.version>
         <!-- openApi(swagger)是行业标准，swagger 1.7 更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
-        <swagger3.version>2.2.15</swagger3.version>
+        <swagger3.version>2.2.16</swagger3.version>
 
         <!-- 使用 springfox 解析文档 -->
         <springfox.version>3.0.0</springfox.version>
@@ -71,7 +71,7 @@
         <jna.version>5.13.0</jna.version>
         <!-- useful tools -->
         <pinyin4j.version>2.5.1</pinyin4j.version>
-        <hutool.version>5.8.21</hutool.version>
+        <hutool.version>5.8.22</hutool.version>
         <javassist.version>3.29.2-GA</javassist.version>
         <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
 
@@ -94,8 +94,7 @@
 
         <!-- dataBase-->
         <mysql.version>8.0.21</mysql.version>
-        <h2.version>2.2.222</h2.version>
-        <!-- 1.2.4支持jdk8时间打印 -->
+        <h2.version>2.2.224</h2.version>
         <druid.version>1.2.8</druid.version>
         <!-- mybatis-plus 功能稳定性较差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
         <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
@@ -173,7 +172,7 @@
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
-                <version>3.23.4</version>
+                <version>3.23.5</version>
             </dependency>
 
 

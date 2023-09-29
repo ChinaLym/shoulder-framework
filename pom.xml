@@ -41,13 +41,15 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
-        <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
+        <license-maven-plugin.version>2.2.0</license-maven-plugin.version>
         <clirr-maven-plugin.version>2.7</clirr-maven-plugin.version>
-        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
+        <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+
     </properties>
 
     <!--发布前检查编译测试无用依赖 mvn dependency:analyze-->
@@ -258,7 +260,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.13</version>
+                <version>${nexus-staging-maven-plugin.version}</version>
                 <extensions>true</extensions>
 
                 <configuration>

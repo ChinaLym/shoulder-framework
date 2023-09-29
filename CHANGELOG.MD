@@ -51,7 +51,9 @@
 springboot 2.4.5 -> 2.7.16
 spring-cloud 2020.0.2 -> 2021.0.1
 swagger2 1.6.2 -> 1.6.11（默认不引入）
-swagger3 2.1.9 -> 2.2.15（默认不引入）
+swagger3 2.1.9 -> 2.2.16（默认不引入）
+nimbus-jose-jwt 8.21 -> 9.35
+hutool 5.8.22 -> 5.8.22
 xstream 1.4.17 -> 1.4.20
 guava 30.1.1-jre -> 31.2-jre
 alibaba.transmittable 2.12.1 -> 2.14.3
@@ -60,9 +62,27 @@ bcpkix.jdk15on 1.68 -> 1.70
 caffeine 2.8.5 -> 3.0.5（默认不引入）
 tika-core 1.24.1 -> 2.9.0
 opencsv 4.1 -> 5.6
-h2 1.4.200 -> 2.2.222
+h2 1.4.200 -> 2.2.224
+redisson -> 3.23.5
 mybatis-plus 3.4.2 -> 3.5.3.2
 p6spy 3.3.2 -> 3.9.1
+knife4j 3.0.2 -> 3.0.3
+jna 5.8 -> 5.13
+javassist 3.27.0-GA -> 3.29.2-GA
+lombok 1.18.30
+druid 1.2.4 -> 1.2.8
+---
+maven-compiler-plugin 3.8.1 -> 3.11.0
+maven-gpg-plugin 3.0.1 -> 3.1.0
+maven-source-plugin 3.2.1 -> 3.3.0
+maven-javadoc-plugin 3.2.0 -> 3.6.0
+maven-jar-plugin 3.2.0 -> 3.3.0
+maven-surefire-plugin 2.22.2 -> 3.1.2
+license-maven-plugin 2.0.0 -> 2.2.0
+sonar-maven-plugin 3.7.0.1746 -> 3.10.0.2594
+versions-maven-plugin 2.7 -> 2.16.1
+git-commit-id-plugin 2.1.5 -> 6.0.0（groupId变化）
+errcode-maven-plugin --> shoulder-maven-plugin
 ```
 
 ## 0.6 （2021年5月21日 发布）
