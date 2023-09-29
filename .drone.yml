@@ -92,12 +92,18 @@ steps:
 #
   - name: 构建结果通知 Build Notification. --- with DingTalk
     image: guoxudongdocker/drone-dingtalk
+    # 加速，对于这种稳定的容器
+    pull: if-not-exists
     settings:
       token:
         from_secret: ding_token
       type: markdown
-
-
+      message_color: true
+      message_pic: true
+      sha_link: true
+    when:
+      # CANLCEL 不通知
+      status: [failure, success]
 trigger:
   branch:
     - master

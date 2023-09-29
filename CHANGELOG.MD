@@ -54,16 +54,16 @@ springboot 2.4.5 -> 2.7.9
 spring-cloud 2020.0.2 -> 2021.0.1
 swagger2 1.6.2 -> 1.6.5（默认不引入）
 swagger3 2.1.9 -> 2.1.13（默认不引入）
-xstream 1.4.17 -> 1.4.19
-guava 30.1.1-jre -> 31.1-jre
-alibaba.transmittable 2.12.1 -> 2.12.5
+xstream 1.4.17 -> 1.4.20
+guava 30.1.1-jre -> 31.2-jre
+alibaba.transmittable 2.12.1 -> 2.14.3
 bcprov.jdk15on 1.68 -> 1.70
 bcpkix.jdk15on 1.68 -> 1.70
 caffeine 2.8.5 -> 3.0.5（默认不引入）
-tika-core 1.24.1 -> 2.3.0
+tika-core 1.24.1 -> 2.9.0
 opencsv 4.1 -> 5.6
-h2 1.4.200 -> 2.1.210
-mybatis-plus 3.4.2 -> 3.5.1
+h2 1.4.200 -> 2.2.222
+mybatis-plus 3.4.2 -> 3.5.3.2
 p6spy 3.3.2 -> 3.9.1
 ```
 

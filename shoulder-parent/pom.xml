@@ -32,7 +32,7 @@
         <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
-        <shoulder-maven-plugin.version>1.1-SNAPSHOT</shoulder-maven-plugin.version>
+        <shoulder-maven-plugin.version>1.1</shoulder-maven-plugin.version>
         <shoulder-framework.errcode-prefix>0x0000</shoulder-framework.errcode-prefix>
 
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>
