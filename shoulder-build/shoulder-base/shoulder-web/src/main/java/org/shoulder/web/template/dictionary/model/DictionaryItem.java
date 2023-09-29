@@ -33,6 +33,20 @@ public interface DictionaryItem<IDENTIFY> {
     }
 
     /**
+     * 备注、说明
+     */
+    default String getNote() {
+        return null;
+    }
+
+    /**
+     * 父节点
+     */
+    //default String getParent() {
+    //    return null;
+    //}
+
+    /**
      * 获取排序序号
      *
      * @return 排序号

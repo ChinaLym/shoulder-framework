@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
-import org.shoulder.web.template.dictionary.dto.BatchQueryParam;
+import org.shoulder.web.template.dictionary.dto.DictionaryBatchQueryParam;
 import org.shoulder.web.template.dictionary.dto.DictionaryDTO;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.model.DictionaryEnum;
@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 
 /**
  * 枚举型字典接口-默认实现
+ * http://localhost:8080/api/v1/dictionary/item/listByType/xxx
+ * http://localhost:8080/api/v1/dictionary/item/listByTypes?xxx
  *
  * @author lym
  */
@@ -63,7 +65,7 @@ public class DictionaryItemEnumController implements DictionaryItemController {
     })
     @ApiOperation(value = "查询多个字典项", notes = "查询多个字典项")
     @PostMapping("/listByTypes")
-    public BaseResult<ListResult<DictionaryDTO>> listAllByTypes(BatchQueryParam batchQueryParam) {
+    public BaseResult<ListResult<DictionaryDTO>> listAllByTypes(DictionaryBatchQueryParam batchQueryParam) {
         List<DictionaryDTO> dictionaryList = batchQueryParam.getDictionaryTypeList().stream()
                 .map(type -> new DictionaryDTO(type, query(type)))
                 .collect(Collectors.toList());

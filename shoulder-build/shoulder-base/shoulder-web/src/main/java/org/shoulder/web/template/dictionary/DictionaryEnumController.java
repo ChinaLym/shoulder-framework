@@ -14,6 +14,7 @@ import java.util.Collection;
 
 /**
  * 枚举型字典接口-默认实现
+ * http://localhost:8080/api/v1/dictionary/allTypes
  *
  * @author lym
  */
