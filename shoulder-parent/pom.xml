@@ -241,13 +241,14 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin.version}</version>
+                    <configuration>
+                        <attach>true</attach>
+                    </configuration>
                     <executions>
                         <execution>
-                            <id>attach-sources</id>
                             <phase>package</phase><!-- ACTIVE_WITH_package --><!-- 默认发布带源码，本地构建不带源码 -->
                             <goals>
                                 <goal>jar</goal>
-                                <goal>jar-no-fork</goal>
                             </goals>
                         </execution>
                     </executions>

@@ -20,6 +20,9 @@ public interface BatchModelConvert {
 
     BatchModelConvert CONVERT = Mappers.getMapper(BatchModelConvert.class);
 
+    /**
+     * Ignore compile Warning : Unmapped target properties: "totalNum, progressList".
+     */
     @Mapping(expression = "java((int) model.calculateProcessedTime())", target = "timeConsumed")
     @Mapping(expression = "java((int) model.calculateTimeLeft())", target = "timeLeft")
     @Mapping(expression = "java(model.hasFinish())", target = "finish")

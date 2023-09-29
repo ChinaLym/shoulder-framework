@@ -46,6 +46,8 @@
 - redis 连接池事件监听聚合接口
   - LettuceEventConsumer
 
+- 稳定性提升：bugfix、compile warning
+
 - 依赖升级
 ```bash
 springboot 2.4.5 -> 2.7.16
@@ -83,6 +85,10 @@ sonar-maven-plugin 3.7.0.1746 -> 3.10.0.2594
 versions-maven-plugin 2.7 -> 2.16.1
 git-commit-id-plugin 2.1.5 -> 6.0.0（groupId变化）
 errcode-maven-plugin --> shoulder-maven-plugin
+maven-resources-plugin 3.0.2 -> 3.3.1
+maven-archetype-plugin 3.2.0 -> 3.2.1
+archetype-packaging  3.2.0 -> 3.2.1
+
 ```
 
 ## 0.6 （2021年5月21日 发布）
