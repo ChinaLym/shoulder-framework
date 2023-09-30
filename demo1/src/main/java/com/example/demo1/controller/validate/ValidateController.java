@@ -8,6 +8,7 @@ import org.shoulder.validate.annotation.Enum;
 import org.shoulder.validate.groups.Update;
 import org.shoulder.web.validate.ValidateRuleEndPoint;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,20 +67,20 @@ public class ValidateController {
     }
 
     /**
-     * POST http://localhost:8080/validate/jsr/1?value=x
+     * POST http://localhost:8080/validate/jsr/2?value=x
      * 动态校验规则 <a href="http://localhost:8080/api/v1/validate/rule?method=get&uri=/validate/jsr/2" />
      */
-    @RequestMapping("jsr/2")
+    @PostMapping("jsr/2")
     public String caseJsr2(@Validated @Valid @NotBlank User user) {
         System.out.println(user);
         return "ok";
     }
 
     /**
-     * POST http://localhost:8080/validate/jsr/1?value=x
+     * POST http://localhost:8080/validate/jsr/3?value=x
      * 动态校验规则 <a href="http://localhost:8080/api/v1/validate/rule?method=get&uri=/validate/jsr/3" />
      */
-    @RequestMapping("jsr/3")
+    @PostMapping("jsr/3")
     @Validated(Update.class)
     public String caseJsr3(@Validated @NotBlank User user) {
         System.out.println(user);

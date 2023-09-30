@@ -2,9 +2,13 @@ package com.example.demo1.controller.log;
 
 import org.shoulder.autoconfigure.web.WebAdvanceAutoConfiguration;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.util.JsonUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 自动记录 api 接口日志示例
@@ -43,5 +47,13 @@ public class AutoApiLogDemoController {
     public String notRecommended() {
         throw new BaseRuntimeException("test ex");
     }
-
+    public static void main(String[] args) {
+        List<String> a = new ArrayList<>();
+        a.add("123");
+        a.add("a");
+        a.add("b");
+        System.out.println(a.toString());
+        System.out.println(a.toArray().toString());
+        System.out.println(JsonUtils.toJson(a));
+    }
 }

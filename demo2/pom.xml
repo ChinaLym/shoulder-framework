@@ -37,6 +37,10 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-batch</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.univocity</groupId>
+            <artifactId>univocity-parsers</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>cn.itlym</groupId>
