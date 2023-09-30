@@ -17,6 +17,10 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnMissingBean(AppIdExtractor.class)
 public class AppIdExtractorAutoConfiguration {
 
+    public AppIdExtractorAutoConfiguration() {
+        // just for debug
+    }
+
     @Bean
     @ConditionalOnMissingBean
     public AppIdExtractor appIdExtractor() {

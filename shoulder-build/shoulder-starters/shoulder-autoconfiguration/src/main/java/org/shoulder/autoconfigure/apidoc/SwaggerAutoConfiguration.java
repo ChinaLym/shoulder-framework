@@ -24,10 +24,11 @@ import springfox.documentation.spring.web.plugins.WebFluxRequestHandlerProvider;
 import springfox.documentation.spring.web.plugins.WebMvcRequestHandlerProvider;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
 
 /**
  * 访问
@@ -45,11 +46,15 @@ import java.util.stream.Collectors;
 @ConditionalOnProperty(value = "shoulder.apidoc.default.enable", havingValue = "true", matchIfMissing = true)
 public class SwaggerAutoConfiguration {
 
+    public SwaggerAutoConfiguration() {
+        // just for debug
+    }
+
     @AutoConfiguration
     @ConditionalOnClass(EnableKnife4j.class)
     @EnableKnife4j
     public static class EnableKnife4jEnhance {
-
+        // just for debug
     }
 
     /**

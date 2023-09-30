@@ -18,6 +18,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @AutoConfiguration(before = org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration.class)
 public class JacksonAutoConfiguration implements WebMvcConfigurer {
 
+    public JacksonAutoConfiguration() {
+        // just for debug
+    }
+
     @Bean
     @Primary
     @ConditionalOnMissingBean

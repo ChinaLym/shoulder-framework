@@ -30,6 +30,10 @@ import javax.annotation.Nonnull;
 @AutoConfiguration
 public class PrometheusAutoConfiguration implements ApplicationContextAware {
 
+    public PrometheusAutoConfiguration() {
+        // just for debug
+    }
+
     /**
      * 不用再在配置文件中显示配置 management.metrics.tags.application=${spring.application.name}
      * 但仍需要 management.endpoints.web.exposure.include=*

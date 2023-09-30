@@ -20,6 +20,10 @@ public class JacksonObjectMapperPostProcessor implements BeanPostProcessor {
 
     private static final Logger log = LoggerFactory.getLogger(JacksonObjectMapperPostProcessor.class);
 
+    public JacksonObjectMapperPostProcessor() {
+        // just for debug
+    }
+
     /**
      * 初始化前
      */

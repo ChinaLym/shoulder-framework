@@ -24,6 +24,9 @@ import javax.sql.DataSource;
 @ConditionalOnClass(ServerLock.class)
 public class LockAutoConfiguration {
 
+    public LockAutoConfiguration() {
+        // just for debug
+    }
 
     /**
      * 内存锁，默认实现

@@ -20,6 +20,10 @@ import javax.annotation.Nonnull;
 //@NotReactiveWebApplicationCondition
 public class HttpAutoConfiguration {
 
+    public HttpAutoConfiguration() {
+        // just for debug
+    }
+
     @ConditionalOnMissingBean
     @Bean
     public RestTemplate restTemplate(@Nonnull RestTemplateBuilder builder) {

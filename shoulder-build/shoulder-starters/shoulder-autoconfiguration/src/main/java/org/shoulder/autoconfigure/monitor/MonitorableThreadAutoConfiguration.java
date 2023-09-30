@@ -29,6 +29,10 @@ import java.util.concurrent.TimeUnit;
 @AutoConfiguration(before = {ThreadAutoConfiguration.class, DelayTaskAutoConfiguration.class})
 public class MonitorableThreadAutoConfiguration {
 
+    public MonitorableThreadAutoConfiguration() {
+        // just for debug
+    }
+
     @Bean(Threads.SHOULDER_THREAD_POOL_NAME)
     @ConditionalOnMissingBean(name = Threads.SHOULDER_THREAD_POOL_NAME)
     public ExecutorService shoulderThreadPool() {

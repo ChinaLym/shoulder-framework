@@ -36,6 +36,10 @@ import java.util.List;
 @ConditionalOnProperty(value = "shoulder.apidoc.sensitive.enable", havingValue = "true", matchIfMissing = true)
 public class ShoulderSensitiveApiGroupAutoConfiguration {
 
+    public ShoulderSensitiveApiGroupAutoConfiguration() {
+        // just for debug
+    }
+
     /**
      * swagger3的配置文件
      */

@@ -19,6 +19,10 @@ import java.time.Duration;
 @AutoConfiguration
 public class I18nAutoConfiguration {
 
+    public I18nAutoConfiguration() {
+        // just for debug
+    }
+
     @Bean
     @ConditionalOnMissingBean(MessageSourceProperties.class)
     @ConfigurationProperties(prefix = "spring.messages")

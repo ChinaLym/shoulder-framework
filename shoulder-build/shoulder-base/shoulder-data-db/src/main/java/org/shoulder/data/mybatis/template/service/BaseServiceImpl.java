@@ -23,7 +23,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
-import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -31,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * 通用业务实现类
@@ -86,7 +87,7 @@ public abstract class BaseServiceImpl<MAPPER extends BaseMapper<ENTITY>,
 
     @SuppressWarnings("unchecked")
     protected Class<ENTITY> resolveModelClass() {
-        return (Class<ENTITY>) ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 2);
+        return (Class<ENTITY>) currentModelClass();
     }
 
     @Override

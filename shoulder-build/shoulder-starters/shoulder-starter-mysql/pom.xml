@@ -26,11 +26,13 @@
         </dependency>
 
         <!-- mysql -->
+        <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.1.0</version>
         </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter -->
         <!--        <dependency>-->
@@ -39,7 +41,7 @@
         <!--            <version>1.2.18</version>-->
         <!--        </dependency>-->
 
-        <!-- Spring Boot 默认的 HikariCP 性能早就超过 druid 了，当然 druid 提供了更丰富的监控能力，但 shoulder 认为这不应该由应用程序承载该能力，而是依赖更专业的监控系统 -->
+        <!-- Spring Boot 默认的 HikariCP 性能早就超过 druid 了，druid 为单机应用提供了更丰富的可视化监控能力，但 shoulder 认为这不应该由应用程序承载该能力，而是依赖更专业的监控系统（如） -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>

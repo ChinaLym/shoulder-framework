@@ -6,6 +6,8 @@ import org.shoulder.cluster.guid.RedisInstanceIdProvider;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.guid.FixedInstanceIdProvider;
 import org.shoulder.core.guid.InstanceIdProvider;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -21,10 +23,12 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @author lym
  */
 @AutoConfiguration
-@AutoConfigureAfter(RedisAutoConfiguration.class)
 @ConditionalOnClass(InstanceIdProvider.class)
+@AutoConfigureAfter(RedisAutoConfiguration.class)
 @EnableConfigurationProperties(InstanceIdProperties.class)
 public class InstanceIdProviderAutoConfiguration {
+
+    private static final Logger log = LoggerFactory.getLogger(InstanceIdProviderAutoConfiguration.class);
 
     /**
      * 配置
@@ -43,9 +47,11 @@ public class InstanceIdProviderAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnCluster(cluster = false)
     @ConditionalOnProperty(value = InstanceIdProperties.PREFIX + ".type", havingValue = "fixed", matchIfMissing = true)
     public InstanceIdProvider fixedInstanceIdProvider() {
+        if(AppInfo.cluster() && instanceIdProperties.getId().equals(0)) {
+            log.warn("Active cluster mode, but instanceId is DEFAULT VALUE: 0! Please change shoulder.instance.id in application.properties!");
+        }
         return new FixedInstanceIdProvider(instanceIdProperties.getId());
     }
 

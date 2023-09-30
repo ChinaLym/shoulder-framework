@@ -19,6 +19,10 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnClass(SymmetricTextCipher.class)
 public class SymmetricCryptoAutoConfiguration {
 
+    public SymmetricCryptoAutoConfiguration() {
+        // just for debug
+    }
+
     /**
      * 默认使用 AES_CBC_PKCS5Padding 完成对称加密
      */

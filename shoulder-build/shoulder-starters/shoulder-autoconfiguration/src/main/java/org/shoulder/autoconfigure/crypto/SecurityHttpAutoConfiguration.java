@@ -16,10 +16,11 @@ import org.springframework.core.Ordered;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.HttpMessageConverter;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * http（RestTemplate） 相关配置
@@ -29,6 +30,10 @@ import java.util.List;
 @AutoConfiguration(after = {HttpAutoConfiguration.class, TransportCryptoAutoConfiguration.class})
 @ConditionalOnClass(SecurityRestTemplate.class)
 public class SecurityHttpAutoConfiguration {
+
+    public SecurityHttpAutoConfiguration() {
+        // just for debug
+    }
 
     @Bean
     @ConditionalOnClass

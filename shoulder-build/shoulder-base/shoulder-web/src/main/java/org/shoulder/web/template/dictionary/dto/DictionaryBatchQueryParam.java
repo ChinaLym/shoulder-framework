@@ -22,7 +22,7 @@ public class DictionaryBatchQueryParam implements Serializable {
      * 字典类型
      */
     @NotNull
-    @Size(max = 10)
+    @Size(max = 20)
     List<String> dictionaryTypeList;
 
 }

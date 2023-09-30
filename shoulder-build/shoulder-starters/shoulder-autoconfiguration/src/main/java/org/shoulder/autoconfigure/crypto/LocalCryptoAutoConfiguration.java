@@ -29,10 +29,11 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.annotation.Nullable;
-import javax.sql.DataSource;
 import java.security.Security;
 import java.util.List;
+
+import javax.annotation.Nullable;
+import javax.sql.DataSource;
 
 /**
  * 本地加解密默认配置
@@ -44,6 +45,10 @@ import java.util.List;
 @ConditionalOnProperty(value = "shoulder.crypto.local.enable", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(CryptoProperties.class)
 public class LocalCryptoAutoConfiguration {
+
+    public LocalCryptoAutoConfiguration() {
+        // just for debug
+    }
 
     private static final Logger log = LoggerFactory.getLogger(LocalCryptoAutoConfiguration.class);
 

@@ -40,6 +40,10 @@ public class TransportCryptoAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(TransportCryptoAutoConfiguration.class);
 
+    public TransportCryptoAutoConfiguration() {
+        // just for debug
+    }
+
 
     /**
      * 密钥协商工具，封装密钥协商相关基本方法单元

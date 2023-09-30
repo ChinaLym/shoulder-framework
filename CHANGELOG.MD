@@ -1,6 +1,18 @@
 # 更新记录
 
-## 0.7（较大更新）
+## 0.8（JDK 21准备，依赖）
+spring-boot
+spring-cloud
+spring security  --> auth server
+jdk21
+多线程优化，能力增强
+- Threads 区分IO、cpu
+- IO部分使用 VirtualThread
+- 完善 VirtualThread
+
+## 0.7（较大更新：依赖版本，新增功能）
+
+更新较多，列出主要更新：
 
 - shoulder 不再为除spring boot外的三方jar定制能力（如mybatis-plus）以减少三分jar定制功能学习成本，
   也不考虑没有spring上下文的情况，本框架强依赖Spring，定位为Spring的能力扩展。
@@ -20,9 +32,11 @@
 - core
   - 调整部分内置错误码定义
   - json 日期格式按照统一设置
+  - 增加了部分高性能的数据结构，以适用于企业级流量染色场景
 
 - autoconfiguration
   - 兼容性优化：调整功能自动激活逻辑，增加部分功能关闭开关
+  - 集群模式下不需要手动注入 instanceId，由依赖手动注入改为 默认配置 + WARN 日志提醒
 
 - 操作日志
   - 优化扩展，支持自定义解析逻辑，以支持在记录操作日志时，同时记录其他信息:OperationLoggerInterceptor
@@ -43,8 +57,12 @@
   ~~- 字段名-脱敏 shielder 算法id-脱敏算法实现~~
   ~~- 注解形式，输出时自动脱敏~~
 
+AuthServer 因 Spring Security OAuth 项目废弃，暂时废弃，将在下一版本待 spring-auth-server 稳定后一起回归
+
 - redis 连接池事件监听聚合接口
   - LettuceEventConsumer
+
+- monitor 部分能力增强
 
 - 稳定性提升：bugfix、compile warning
 
@@ -73,6 +91,7 @@ jna 5.8 -> 5.13
 javassist 3.27.0-GA -> 3.29.2-GA
 lombok 1.18.30
 druid 1.2.4 -> 1.2.8
+mysql-connector-j -> 8.1.0 mysql artifactId 变更
 ---
 maven-compiler-plugin 3.8.1 -> 3.11.0
 maven-gpg-plugin 3.0.1 -> 3.1.0

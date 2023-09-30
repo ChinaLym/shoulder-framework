@@ -16,6 +16,10 @@ import javax.sql.DataSource;
 @ConditionalOnClass(P6DataSource.class)
 public class DataSourceAutoConfiguration {
 
+    public DataSourceAutoConfiguration() {
+        // just for debug
+    }
+
     /**
      * dev 环境自动打印完整 SQL
      * 需要引入 p6spy

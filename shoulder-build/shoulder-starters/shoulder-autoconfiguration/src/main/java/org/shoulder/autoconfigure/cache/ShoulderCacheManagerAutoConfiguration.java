@@ -31,6 +31,10 @@ import java.time.Duration;
 //@AutoConfiguration
 public class ShoulderCacheManagerAutoConfiguration {
 
+    public ShoulderCacheManagerAutoConfiguration() {
+        // just for debug
+    }
+
     /**
      * 本地内存缓存默认使用 Spring Boot 推荐的 Caffeine
      * 为了减少GC压力，可选择堆外缓存替代（读写性能更高，减少复制）
@@ -41,7 +45,9 @@ public class ShoulderCacheManagerAutoConfiguration {
     @ConditionalOnCluster(cluster = false)
     @ConditionalOnClass(Caffeine.class)
     public static class CaffeineCacheManagerAutoConfiguration {
-
+        public CaffeineCacheManagerAutoConfiguration() {
+            // just for debug
+        }
     }
 
     /**

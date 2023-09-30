@@ -35,6 +35,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @ConditionalOnProperty(value = "shoulder.crypto.asymmetric.enable", havingValue = "true", matchIfMissing = true)
 public class AsymmetricCryptoAutoConfiguration {
 
+    public AsymmetricCryptoAutoConfiguration() {
+        // just for debug
+    }
+
     /**
      * 默认使用 ECC256 完成非对称加密
      */

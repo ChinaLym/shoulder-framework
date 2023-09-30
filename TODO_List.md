@@ -1,3 +1,8 @@
+# BUG
+demo2: batchService没注入？
+DEMO3: 编译问题？本地缓存？
+DEMO4: org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.springSecurityFilterChain
+
 # 实现
 
 ## 校验部分

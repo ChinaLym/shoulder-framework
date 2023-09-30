@@ -24,10 +24,11 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
-import javax.sql.DataSource;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import javax.sql.DataSource;
 
 /**
  * 批处理相关自动装配
@@ -39,6 +40,9 @@ import java.util.concurrent.TimeUnit;
 @AutoConfiguration
 public class BatchTaskAutoConfiguration {
 
+    public BatchTaskAutoConfiguration() {
+        // just for debug
+    }
 
     /**
      * csvImpl

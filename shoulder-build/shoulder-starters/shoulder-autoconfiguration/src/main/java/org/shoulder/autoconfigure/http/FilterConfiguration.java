@@ -14,7 +14,11 @@ import java.util.List;
  */
 @AutoConfiguration
 @ConditionalOnClass(CleanContextFilter.class)
-public class FilterConfig {
+public class FilterConfiguration {
+
+    public FilterConfiguration() {
+        // just for debug
+    }
 
     @Bean
     public FilterRegistrationBean<CleanContextFilter> requestFilterRegistration() {

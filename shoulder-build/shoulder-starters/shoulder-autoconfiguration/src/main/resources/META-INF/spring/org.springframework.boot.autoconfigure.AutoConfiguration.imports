@@ -23,7 +23,7 @@ org.shoulder.autoconfigure.http.RestTemplateLogAutoConfiguration
 org.shoulder.autoconfigure.http.RestTemplateCustomAutoConfiguration
 org.shoulder.autoconfigure.http.HttpAutoConfiguration
 org.shoulder.autoconfigure.http.AppIdExtractorAutoConfiguration
-org.shoulder.autoconfigure.http.FilterConfig
+org.shoulder.autoconfigure.http.FilterConfiguration
 org.shoulder.autoconfigure.crypto.LocalCryptoAutoConfiguration
 org.shoulder.autoconfigure.crypto.SymmetricCryptoAutoConfiguration
 org.shoulder.autoconfigure.crypto.AsymmetricCryptoAutoConfiguration

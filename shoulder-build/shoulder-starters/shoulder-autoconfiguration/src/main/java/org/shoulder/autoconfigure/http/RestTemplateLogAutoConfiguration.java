@@ -21,6 +21,11 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 @ConditionalOnClass(BaseRestTemplateLogInterceptor.class)
 @ConditionalOnMissingBean(BaseRestTemplateLogInterceptor.class)
 public class RestTemplateLogAutoConfiguration {
+
+    public RestTemplateLogAutoConfiguration() {
+        // just for debug
+    }
+
     /**
      * 多行彩色形式【用于开发态】日志打在多行，且带颜色，代码跳转
      */

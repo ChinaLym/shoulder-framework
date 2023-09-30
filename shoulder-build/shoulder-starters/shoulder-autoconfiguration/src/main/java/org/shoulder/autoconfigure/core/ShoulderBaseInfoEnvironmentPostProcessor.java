@@ -24,6 +24,10 @@ public class ShoulderBaseInfoEnvironmentPostProcessor implements EnvironmentPost
 
     private static final String SHOULDER_PROPERTIES = "shoulderProperties";
 
+    public ShoulderBaseInfoEnvironmentPostProcessor() {
+        // just for debug
+    }
+
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         initApplicationInfo(environment);
