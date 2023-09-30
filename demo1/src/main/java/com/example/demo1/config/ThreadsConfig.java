@@ -42,7 +42,7 @@ public class ThreadsConfig {
                             System.out.println("我要在所有线程池执行遇到异常干点事情");
                             throw t;
                         } finally {
-                            System.out.println("我要在所有线程执行之后干点事情");
+                            System.out.println("我要在所有线程执行之后干点事情，IDEA 里可以用查找快捷键来找到我在哪里写的");
                         }
                     });
                 }

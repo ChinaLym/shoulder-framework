@@ -53,7 +53,7 @@ public class RsaCryptoDemoController {
         log.info("text({}) sign result: {}", text, sign);
         // 3. 验签
         log.info("sign({}) verify result: {}", sign, asymmetricTextCipher.verify(text, sign));
-        return "";
+        return "ok";
     }
 
 }

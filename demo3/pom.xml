@@ -36,23 +36,10 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-beanmap</artifactId>
-        </dependency>
-
         <!--  ======================== db ===========================  -->
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-data-db</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <artifactId>shoulder-starter-mysql</artifactId>
         </dependency>
 
 

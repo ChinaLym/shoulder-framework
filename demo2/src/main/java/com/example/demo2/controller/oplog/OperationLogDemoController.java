@@ -1,6 +1,5 @@
 package com.example.demo2.controller.oplog;
 
-import lombok.extern.shoulder.SLog;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -33,7 +32,7 @@ import java.util.UUID;
 public class OperationLogDemoController {
 
     /**
-     * 定义 shoulder 的 logger， 使用注解 {@link SLog} 时则可不写这行代码
+     * 定义 shoulder 的 logger， 使用注解 {@link lombok.extern.shoulder.SLog} 时则可不写这行代码
      */
     private static final Logger log = LoggerFactory.getLogger(OperationLogDemoController.class);
 

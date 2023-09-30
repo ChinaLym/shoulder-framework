@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.example</groupId>
     <artifactId>demo7</artifactId>
 
     <dependencies>
@@ -21,15 +22,7 @@
 
         <dependency>
             <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-data-db</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <artifactId>shoulder-starter-mysql</artifactId>
         </dependency>
 
     </dependencies>

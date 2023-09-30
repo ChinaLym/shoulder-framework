@@ -9,18 +9,24 @@ import org.shoulder.web.template.dictionary.model.NameAsIdDictionaryEnum;
  *
  * @author lym
  */
-public enum DictionaryTestEnum implements NameAsIdDictionaryEnum<DictionaryTestEnum> {
+public enum DictionaryTestEnum2 implements NameAsIdDictionaryEnum<DictionaryTestEnum2> {
 
     /**
-     *
+     * pc
      */
-    BLUE,
-
-    YELLOW,
-
-    GREEN,
-
-    RED,
+    WEB,
+    /**
+     * 支持移动设备浏览器的 H5
+     */
+    WAP,
+    /**
+     * 移动 app
+     */
+    APP,
+    /**
+     * 轻 app
+     */
+    MINI_APP,
     ;
 
     @Override

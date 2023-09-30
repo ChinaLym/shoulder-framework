@@ -8,7 +8,11 @@ import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.batch.enums.ProcessStatusEnum;
-import org.shoulder.batch.model.*;
+import org.shoulder.batch.model.BatchData;
+import org.shoulder.batch.model.BatchProgressRecord;
+import org.shoulder.batch.model.BatchRecord;
+import org.shoulder.batch.model.BatchRecordDetail;
+import org.shoulder.batch.model.DataItem;
 import org.shoulder.batch.model.convert.BatchModelConvert;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
@@ -22,12 +26,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.servlet.http.HttpServletResponse;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -114,7 +124,7 @@ public class BatchController {
      */
     @RequestMapping(value = "progress", method = GET)
     public BaseResult<BatchProcessResult> queryOperationProcess(@Nullable String taskId) {
-        BatchProgress process = batchService.queryBatchProgress(taskId);
+        BatchProgressRecord process = batchService.queryBatchProgress(taskId);
         return BaseResult.success(BatchModelConvert.CONVERT.toDTO(process));
     }
 

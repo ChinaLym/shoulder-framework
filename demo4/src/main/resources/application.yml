@@ -1,11 +1,11 @@
 demo:
   auth:
-    host: authServer.com
+    #host: authServer.com
     port: 8081
     uri: http://${demo.auth.host:localhost}:${demo.auth.port:8081}
   resource:
     host: resourceServer.com
-    port: 8000
+    #port: 8000
     uri: http://${demo.resource.host:localhost}:${demo.resource.port:8000}
 
 spring:
@@ -39,3 +39,7 @@ shoulder:
     auth: # 如果使用者自行实现登录成功、退出成功处理器，则这些配置将失效，使用者实现的优先生效
       type: token # 测试环境这里设置为 token。session 方式已经可以在页面上尝试了！
       responseType: json
+
+  instance:
+    type: FIXED
+    id: 0

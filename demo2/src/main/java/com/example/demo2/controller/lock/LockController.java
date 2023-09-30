@@ -10,9 +10,10 @@ import org.shoulder.web.template.crud.BaseControllerImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.sql.DataSource;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
+
+import javax.sql.DataSource;
 
 /**
  * 使用 mybatis-plus，基本不需要写基础代码
@@ -52,8 +53,8 @@ public class LockController extends BaseControllerImpl<IUserService, UserEntity>
 
     /**
      * 尝试获取锁，最多等 5s，获取到后永久锁定
-     * 10天 http://localhost:8080/lock/tryLockMax5s?holdTime=p10d
      * 5秒 http://localhost:8080/lock/tryLockMax5s?holdTime=pt5s
+     * 10天 http://localhost:8080/lock/tryLockMax5s?holdTime=p10d
      */
     @RequestMapping("tryLockMax5s")
     public boolean tryLockMax5s(String holdTime) throws InterruptedException {
