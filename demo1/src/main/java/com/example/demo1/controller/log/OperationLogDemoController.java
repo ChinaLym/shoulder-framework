@@ -2,7 +2,6 @@ package com.example.demo1.controller.log;
 
 import com.example.demo1.bo.ShopBO;
 import com.example.demo1.enums.MyColorEnum;
-import lombok.extern.shoulder.SLog;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
@@ -38,7 +37,7 @@ import java.util.Date;
 public class OperationLogDemoController {
 
     /**
-     * 定义 shoulder 的 logger， 使用注解 {@link SLog} 时则可不写这行代码
+     * 定义 shoulder 的 logger， 使用注解 {@link lombok.extern.shoulder.SLog} 时则可不写这行代码
      */
     private static final Logger log = LoggerFactory.getLogger(OperationLogDemoController.class);
 

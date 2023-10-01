@@ -35,7 +35,7 @@ public class SecurityExceptionController {
      */
     @RequestMapping("base")
     public String base() {
-        throw new BaseRuntimeException("customer ex message.");
+        throw new BaseRuntimeException("123", "customer ex message.");
     }
 
     /**
