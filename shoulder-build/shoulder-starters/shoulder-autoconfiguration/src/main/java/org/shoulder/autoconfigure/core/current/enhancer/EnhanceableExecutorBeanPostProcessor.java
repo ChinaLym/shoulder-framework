@@ -61,7 +61,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
             // jdk 的线程池
             else if (bean instanceof ThreadPoolExecutor
                 && !(bean instanceof EnhanceableThreadPoolExecutor)) {
-                return wrapExecutorService(bean);
+                return wrapThreadPoolExecutor(bean);
             }
             // jdk 的执行器接口
             else if (bean instanceof ExecutorService
