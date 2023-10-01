@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
 public class CryptoConfig {
 
     /**
-     * fixme 这里使用了用于demo测试的 HashMapCryptoInfoRepository（每次运行将重置！）
+     * Note: 这里使用了用于demo测试的 HashMapCryptoInfoRepository（每次运行将重置！）
      * 生产环境需要配置为可持久化的，如使用 mysql 作为持久化！！！！！
      *
      * @see JdbcLocalCryptoInfoRepository

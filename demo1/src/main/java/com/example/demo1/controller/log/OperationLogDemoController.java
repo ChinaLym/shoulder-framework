@@ -136,7 +136,7 @@ public class OperationLogDemoController {
 
     /**
      * <a href="http://localhost:8080/oplog/2" />
-     * 添加被操作对象信息时，可以使用接口  fixme 后续示例需补充==================================================
+     * 添加被操作对象信息时，可以使用接口  todo 后续示例需补充==================================================
      */
     @GetMapping("2")
     @OperationLog(operation = "testOpLogAnnotation")
