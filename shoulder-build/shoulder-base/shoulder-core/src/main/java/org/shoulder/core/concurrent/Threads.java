@@ -30,6 +30,7 @@ public class Threads {
 
     /**
      * 通用线程池
+     * todo 使用带调度的线程池！！！ 0.8
      */
     private static ExecutorService SHOULDER_THREAD_POOL;
 

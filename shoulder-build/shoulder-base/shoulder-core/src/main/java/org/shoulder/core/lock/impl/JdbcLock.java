@@ -167,6 +167,11 @@ public class JdbcLock extends AbstractDistributeLock implements ServerLock {
         log.debug("unlock {} with token={}", resource, token);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true, rollbackFor = BaseRuntimeException.class)
+    public boolean cleanExpiredLock() {
+        return jdbc.update(CLEAN_LOCK_STATEMENT) > 0;
+    }
+
     protected RowMapper<LockInfo> getRowMapper() {
         return new LockInfoRowMapper();
     }

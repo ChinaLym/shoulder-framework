@@ -39,7 +39,7 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
     }
 
     /**
-     * 发送前，序列化前加密
+     * HttpClient 发送前，序列化前加密
      */
     @Override
     protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage)
@@ -74,6 +74,9 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
         super.writeInternal(object, type, outputMessage);
     }
 
+    /**
+     * HttpClient 接收前，反序列化 + 解密
+     */
     @Override
     public Object read(Type type, @Nullable Class<?> contextClass, HttpInputMessage inputMessage)
         throws IOException, HttpMessageNotReadableException {

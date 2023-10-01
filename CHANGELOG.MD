@@ -9,6 +9,9 @@ jdk21
 - Threads 区分IO、cpu
 - IO部分使用 VirtualThread
 - 完善 VirtualThread
+- 自动装饰线程池支持ThreadPoolExecutor
+
+安全：支持开关，将带@sensitive 注解的字段在自动打印日志中脱敏/不打印
 
 ## 0.7（较大更新：依赖版本，新增功能）
 

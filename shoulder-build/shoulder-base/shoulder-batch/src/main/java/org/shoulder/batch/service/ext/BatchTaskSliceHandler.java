@@ -14,6 +14,17 @@ import java.util.List;
 public interface BatchTaskSliceHandler {
 
     /**
+     * 是否支持
+     *
+     * @param dataType      数据类型
+     * @param operationType 操作方式
+     * @return 是否支持
+     */
+    default boolean support(String dataType, String operationType) {
+        return false;
+    }
+
+    /**
      * 处理数据
      *
      * @param task 任务，注意不要对该对象改动
@@ -33,16 +44,5 @@ public interface BatchTaskSliceHandler {
         resultList.add(result);
     }
         return resultList;*/
-
-    /**
-     * 是否支持
-     *
-     * @param dataType      数据类型
-     * @param operationType 操作方式
-     * @return 是否支持
-     */
-    default boolean support(String dataType, String operationType) {
-        return false;
-    }
 
 }

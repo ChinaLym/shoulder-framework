@@ -6,9 +6,11 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 通过装饰者模式实现重入次数计数
+ * 通过装饰者模式实现重入次数计数，让本不支持可重入的锁（如JdbcLock、RedisLock）也支持~
  * <p>
  * 因为每次重入时，只需判断是否持有锁即可，无需更新中间件中的值，减少网络通信与写开销
+ * <p>
+ *   注意，该类主要用于集群，单机模式的 JDKLock 本身就支持，故单机模式不需要本类包装，shoulder 也不会用它~
  *
  * @author lym
  */

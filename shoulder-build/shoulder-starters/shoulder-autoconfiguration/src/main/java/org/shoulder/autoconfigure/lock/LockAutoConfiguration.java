@@ -12,6 +12,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.sql.DataSource;
 
@@ -41,9 +43,17 @@ public class LockAutoConfiguration {
 
 
     @AutoConfiguration
+    @EnableScheduling
     @ConditionalOnClass(DataSource.class)
     @ConditionalOnProperty(name = "shoulder.lock.type", havingValue = "jdbc")
-    static class JdbcLockAutoConfiguration {
+    public static class JdbcLockAutoConfiguration {
+
+        /**
+         * 可以手动关闭
+         */
+        public static volatile boolean useJdbcLock = false;
+
+        public static volatile JdbcLock jdbcLock = null;
 
         /**
          * 数据库锁
@@ -51,7 +61,18 @@ public class LockAutoConfiguration {
         @Bean
         @ConditionalOnMissingBean
         public ServerLock jdbcLock(DataSource dataSource) {
-            return new JdbcLock(dataSource);
+            useJdbcLock = true;
+            jdbcLock = new JdbcLock(dataSource);
+            jdbcLock.cleanExpiredLock();
+            return jdbcLock;
+        }
+
+        @Scheduled(cron = "0/30 * * * * *")
+        public void cleanExpiredJdbcLock() {
+            // todo 后续放Threads 作为基础能力，左到可以不依赖 @EnableScheduling，尽量减少Bean启动
+            if (useJdbcLock && jdbcLock != null) {
+                jdbcLock.cleanExpiredLock();
+            }
         }
     }
 
