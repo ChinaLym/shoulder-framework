@@ -35,12 +35,14 @@ public class EnhanceableThreadPoolExecutor extends ThreadPoolExecutor {
 
     @Override
     public void shutdown() {
+        super.shutdown();
         this.delegate.shutdown();
     }
 
     @Nonnull
     @Override
     public List<Runnable> shutdownNow() {
+        super.shutdownNow();
         return this.delegate.shutdownNow();
     }
 
