@@ -4,6 +4,7 @@ import com.example.demo1.bo.ShopBO;
 import com.example.demo1.enums.MyColorEnum;
 import lombok.extern.shoulder.SLog;
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ContextUtils;
@@ -14,6 +15,7 @@ import org.shoulder.log.operation.enums.OperationResult;
 import org.shoulder.log.operation.enums.TerminalType;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.model.OperationLogDTO;
+import org.shoulder.log.operation.model.SystemOperator;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,17 +90,22 @@ public class OperationLogDemoController {
                 .addDetailItem(operableBo.getBoss().getName())
                 .addDetailItem(operableBo.getColor().name())
 
-                // 下面这些内容重复性较高，框架自动帮你填写！
+                // ------------- 下面这些内容重复性较高，框架自动帮你填写！-------------
 
                 // 从request中获取客户端类型
                 .setTerminalType(TerminalType.BROWSER)
                 // 根据请求取出当前用户、并填充用户信息
-                .setUserId(AppContext.getUserId())
-                .setUserName(AppContext.getUserName())
-                .setUserOrgId("xxx")
-                .setUserOrgName("xxx")
-                // 租户信息
+                .setUserId(StringUtils.isNotEmpty(AppContext.getUserId())? AppContext.getUserId() : SystemOperator.getInstance().getUserId())
+                .setUserName(StringUtils.isNotEmpty(AppContext.getUserName())? AppContext.getUserName() : SystemOperator.getInstance().getUserName())
+                .setUserOrgId("UserOrgId-xxx")
+                .setUserOrgName("UserOrgName-xxx")
+
+                // app / 租户信息
                 .setTenantCode(AppContext.getTenantCode())
+                .setAppId(AppInfo.appId())
+                .setInstanceId(AppInfo.instanceId())
+                .setTenantCode(AppContext.getTenantCode())
+
                 // 记录本次操作结果
                 .setResult(OperationResult.SUCCESS)
                 .setOperationTime(Instant.now())
@@ -130,7 +137,7 @@ public class OperationLogDemoController {
 
     /**
      * <a href="http://localhost:8080/oplog/2" />
-     * 添加被操作对象信息时，可以使用接口
+     * 添加被操作对象信息时，可以使用接口  fixme 后续示例需补充==================================================
      */
     @GetMapping("2")
     @OperationLog(operation = "testOpLogAnnotation")

@@ -39,7 +39,7 @@ public class PersonBatchTaskSliceHandler implements BatchTaskSliceHandler {
             // 设置每条处理结果信息
             BatchRecordDetail result = new BatchRecordDetail();
             result.setStatus(ProcessStatusEnum.IMPORT_SUCCESS.getCode());
-            // todo 目前还需要使用者设置，需要优化
+            // todo 目前还需要使用者设置，可以考虑优化
             result.setIndex(personRecord.getIndex());
 
             if (ThreadLocalRandom.current().nextInt(4) % 3 == 0) {

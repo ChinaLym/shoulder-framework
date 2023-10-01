@@ -42,6 +42,7 @@ public class TransportCryptoDemoController {
      *
      * @see SensitiveRequestEncryptMessageConverter#writeInternal 观察参数确实是自动加密处理的
      * @see SensitiveRequestEncryptMessageConverter#read 观察返回值确实是密文
+     * fixme client端拿到空响应，但是没报错
      */
     @GetMapping("send")
     public SimpleResult send() throws AsymmetricCryptoException {
