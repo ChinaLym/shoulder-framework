@@ -31,7 +31,6 @@ public class SecurityExceptionController {
     /**
      * 异常 message 设置为 xxx
      * http://localhost:8080/ex/base
-     * fixme 没catch？
      */
     @RequestMapping("base")
     public String base() {
@@ -39,14 +38,15 @@ public class SecurityExceptionController {
     }
 
     /**
-     * http://localhost:8080/ex/thread
-     * fixme 没catch？
+     * 由于异步线程不会返回给外部，故这部分错误码不会自动包装，依赖使用者主动catch
+     * 访问这个方法，可以看到 shoulder 不会对其包装 http://localhost:8080/ex/thread
+     * 因为异步线程排差问题往往依赖上下文信息，如错误根因、耗时、哪一步出错，影响量，业务等，故一定需要开发者手动去控制打印内容
      */
     @RequestMapping("thread")
     public String thread() {
         new Thread(() -> {
             throw new RuntimeException();
-        }).run();
+        }).start();
         return "";
     }
 }

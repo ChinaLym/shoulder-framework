@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * 处理人员校验
+ * 批处理插件：实现 BatchTaskSliceHandler 接口，可以在处理某些任务时候进行分片
+ *
  *
  * @author lym
  */
@@ -23,6 +24,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class PersonBatchTaskSliceHandler implements BatchTaskSliceHandler {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    @Override
+    public boolean support(String dataType, String operationType) {
+        return DemoBatchConstants.DATA_TYPE_PERSON.equals(dataType)
+                && DemoBatchConstants.OPERATION_VALIDATE.equals(operationType);
+    }
 
     @SneakyThrows
     @SuppressWarnings("unchecked")
@@ -50,11 +57,5 @@ public class PersonBatchTaskSliceHandler implements BatchTaskSliceHandler {
             processResult.add(result);
         }
         return processResult;
-    }
-
-    @Override
-    public boolean support(String dataType, String operationType) {
-        return DemoBatchConstants.DATA_TYPE_PERSON.equals(dataType)
-                && DemoBatchConstants.OPERATION_VALIDATE.equals(operationType);
     }
 }
