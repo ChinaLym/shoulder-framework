@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -20,11 +21,11 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-public class EnhanceableExecutorService implements ExecutorService {
+public class EnhanceableThreadPoolExecutor extends ThreadPoolExecutor {
 
     private final ExecutorService delegate;
 
-    public EnhanceableExecutorService(ExecutorService delegate) {
+    public EnhanceableThreadPoolExecutor(ExecutorService delegate) {
         this.delegate = delegate;
     }
 

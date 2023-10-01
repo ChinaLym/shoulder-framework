@@ -20,9 +20,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
-import java.io.Serializable;
 
 /**
  * 查询 API
@@ -74,10 +75,10 @@ public interface QueryController<ENTITY extends BaseEntity<ID>, ID extends Seria
 
 
     /**
-     * 批量查询
+     * 批量查询match入参的
      * service.list —— mapper.selectList
      *
-     * @param data 批量查询
+     * @param data 批量查询条件
      * @return 查询结果
      */
     @ApiOperation(value = "批量查询", notes = "批量查询")
