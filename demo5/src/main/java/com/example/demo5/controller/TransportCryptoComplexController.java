@@ -14,6 +14,7 @@ import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.support.client.SensitiveRequestEncryptMessageConverter;
 import org.shoulder.crypto.negotiation.support.server.SensitiveRequestDecryptHandlerInterceptor;
 import org.shoulder.crypto.negotiation.support.server.SensitiveResponseEncryptAdvice;
+import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -45,6 +46,7 @@ public class TransportCryptoComplexController {
      * @see SensitiveRequestEncryptMessageConverter writeInternal 观察参数确实是自动加密处理的
      * @see SensitiveRequestEncryptMessageConverter#read 观察返回值确实是密文
      */
+    @SkipResponseWrap
     @GetMapping("send")
     public ComplexResult send() throws AsymmetricCryptoException {
         SimpleParam inner = new SimpleParam();
@@ -74,6 +76,7 @@ public class TransportCryptoComplexController {
      * @see SensitiveResponseEncryptAdvice 观察返回值自动加密
      */
     @Sensitive
+    @SkipResponseWrap
     @RequestMapping(value = "receive", method = {RequestMethod.GET, RequestMethod.POST})
     public ComplexResult receive(@RequestBody(required = false) ComplexParam param) {
         System.out.println(param);
