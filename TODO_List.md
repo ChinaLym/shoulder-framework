@@ -1,5 +1,6 @@
 # BUG
-demo2:
+
+demo2:batchService没注入？引入 csv 依赖
 DEMO3\DEMO4: 编译问题？本地缓存？
 DEMO4: org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.springSecurityFilterChain
 demo5: 加解密

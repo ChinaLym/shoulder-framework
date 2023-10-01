@@ -692,7 +692,11 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
      * @param logger 第三方日志
      */
     private void uniformLog(String errorCode, GeneralLogger logger) {
-        // todo 校验 errorCode
+        // 校验 errorCode
+        if (org.shoulder.core.util.StringUtils.isEmpty(errorCode)) {
+            uniformLog(logger);
+            return;
+        }
         addErrorCodeInfo(errorCode);
         uniformLog(logger);
         cleanErrorCodeInfo();

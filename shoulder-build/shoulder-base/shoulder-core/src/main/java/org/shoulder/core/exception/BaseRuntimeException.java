@@ -22,10 +22,11 @@ import javax.annotation.Nonnull;
 public class BaseRuntimeException extends RuntimeException implements ErrorCode {
 
     private static final long serialVersionUID = 8917762936709850638L;
+
     /**
-     * 错误码 todo 默认用 UNKNOWN
+     * 错误码，默认unknown
      */
-    private String code;
+    private String code = CommonErrorCodeEnum.UNKNOWN.getCode();
 
     /**
      * 异常后，记录日志的级别是什么
