@@ -39,7 +39,6 @@ import javax.sql.DataSource;
  * 2. 锁是非常重要的，不仅仅要直到如何使用，还要知道锁的原理是什么才不容易出 bug
  *      shoulder 框架提供的锁，锁的持有者标志：资源id + 线程id + appId + appInstanceId；
  * 3. 由于这里演示 jdbc lock，故宕机后仍然持锁
- * todo 调整demo结构
  *
  * @author lym
  */
