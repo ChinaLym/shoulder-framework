@@ -5,6 +5,7 @@ import org.shoulder.core.concurrent.enhance.EnhanceableAsyncListenableTaskExecut
 import org.shoulder.core.concurrent.enhance.EnhanceableAsyncTaskExecutor;
 import org.shoulder.core.concurrent.enhance.EnhanceableExecutor;
 import org.shoulder.core.concurrent.enhance.EnhanceableExecutorService;
+import org.shoulder.core.concurrent.enhance.EnhanceableThreadPoolExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopConfigException;
@@ -16,12 +17,14 @@ import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Supplier;
+
+import javax.annotation.Nonnull;
 
 /**
  * 自动包装所有线程池，实现自动增强
@@ -56,6 +59,11 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
                 return wrapAsyncTaskExecutor(bean);
             }
             // jdk 的线程池
+            else if (bean instanceof ThreadPoolExecutor
+                && !(bean instanceof EnhanceableThreadPoolExecutor)) {
+                return wrapExecutorService(bean);
+            }
+            // jdk 的执行器接口
             else if (bean instanceof ExecutorService
                 && !(bean instanceof EnhanceableExecutorService)) {
                 return wrapExecutorService(bean);
@@ -111,7 +119,13 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
         return createAsyncTaskExecutorProxy(bean, cglibProxy, executor);
     }
 
-    private Object wrapExecutorService(Object bean) {
+    private Object wrapThreadPoolExecutor(Object bean) {
+        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
+        boolean cglibProxy = !classFinal;
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) bean;
+        return createThreadPoolExecutorProxy(bean, cglibProxy, executor);
+    }
+private Object wrapExecutorService(Object bean) {
         boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
         boolean cglibProxy = !classFinal;
         ExecutorService executor = (ExecutorService) bean;
@@ -131,6 +145,10 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
             () -> new EnhanceableAsyncTaskExecutor(executor));
     }
 
+    private Object createThreadPoolExecutorProxy(Object bean, boolean cglibProxy, ThreadPoolExecutor executor) {
+        return getProxiedObject(bean, cglibProxy, executor,
+            () -> new EnhanceableThreadPoolExecutor(executor));
+    }
     private Object createExecutorServiceProxy(Object bean, boolean cglibProxy, ExecutorService executor) {
         return getProxiedObject(bean, cglibProxy, executor,
             () -> new EnhanceableExecutorService(executor));
