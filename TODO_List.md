@@ -1,8 +1,8 @@
 # BUG
-demo2: batchService没注入？
-DEMO3: 编译问题？本地缓存？
+demo2:
+DEMO3\DEMO4: 编译问题？本地缓存？
 DEMO4: org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.springSecurityFilterChain
-高优先 EnhanceableExecutorService
+demo5: 加解密
 
 # 实现
 

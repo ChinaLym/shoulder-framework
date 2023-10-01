@@ -3,6 +3,7 @@ package org.shoulder.core.util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
 
 import java.io.PrintWriter;
@@ -87,6 +88,7 @@ public class ExceptionUtil {
 
 
     public static String formatErrorCode(@Nonnull String errorCode) {
+        AssertUtils.notBlank(errorCode, CommonErrorCodeEnum.CODING, "errorCode is null!");
         if (ErrorCode.SUCCESS_CODE.equals(errorCode)) {
             return ErrorCode.SUCCESS_CODE;
         }
@@ -95,6 +97,7 @@ public class ExceptionUtil {
     }
 
     public static String formatErrorCode(Long errorCode) {
+        AssertUtils.notNull(errorCode, CommonErrorCodeEnum.CODING, "errorCode is null!");
         return formatErrorCode(String.format("%08x", errorCode));
     }
 

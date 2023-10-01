@@ -23,7 +23,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
 
     private static final long serialVersionUID = 8917762936709850638L;
     /**
-     * 错误码
+     * 错误码 todo 默认用 UNKNOWN
      */
     private String code;
 
