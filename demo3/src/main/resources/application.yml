@@ -1,3 +1,8 @@
+REDIS_ADDR: itlym.cn
+MYSQL_ADDR: itlym.cn
+MYSQL_PWD: mysqlrootpwd!
+REDIS_PWD: redisssss
+
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource

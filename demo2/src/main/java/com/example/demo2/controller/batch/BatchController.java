@@ -42,7 +42,9 @@ import javax.servlet.http.HttpServletResponse;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 /**
- * 使用 mybatis-plus，基本不需要写基础代码
+ * 批处理 api 学习&测试
+ *
+ * todo 导入记录接口使用演示还没加
  *
  * @author lym
  */
@@ -50,6 +52,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @RequestMapping("batch")
 public class BatchController {
 
+    /**
+     * 一般是业务类，这里注入的是框架自带的 csv 导入导出能力
+     */
     @Autowired
     private BatchService batchService;
 
@@ -67,8 +72,9 @@ public class BatchController {
 
 
     /**
-     * 实现举例：上传一个 csv，准备导入一批人员信息
+     * 模拟场景：上传一个 csv，导入一批数据（这里为 person 信息），真正导入数据库前会先校验，而因为数据很多，校验比较慢，需要返回给前端一个进度条
      * http://localhost:8080/batch/validate
+     * fixme 异常了
      */
     @RequestMapping(value = "validate")
     public BaseResult<String> doValidate() throws Exception {
@@ -105,7 +111,7 @@ public class BatchController {
 
 
     /**
-     * 实现举例：批量导入
+     * 模拟场景：批量导入
      * http://localhost:8080/batch/validate?taskId=
      */
     @RequestMapping(value = "import")
@@ -119,7 +125,7 @@ public class BatchController {
     }
 
     /**
-     * 查询数据导入进度
+     * 查询数据导入进度，注意调用时候记得传入tastId
      * http://localhost:8080/batch/progress?taskId=
      */
     @RequestMapping(value = "progress", method = GET)

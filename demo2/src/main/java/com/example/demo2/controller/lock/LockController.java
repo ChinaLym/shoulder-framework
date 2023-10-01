@@ -16,7 +16,11 @@ import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 
 /**
- * 使用 mybatis-plus，基本不需要写基础代码
+ * 锁的使用介绍
+ * 注意：
+ * 1. 每个接口仅演示单个方法，测完需要注意记得 unlock ！！！！！
+ * 2. 锁是非常重要的，不仅仅要直到如何使用，还要知道锁的原理是什么才不容易出 bug
+ *      shoulder 框架提供的锁，锁的持有者标志：资源id + 线程id + appId + appInstanceId；
  *
  * @author lym
  */
@@ -24,7 +28,6 @@ import javax.sql.DataSource;
 @RestController
 @RequestMapping("lock")
 public class LockController extends BaseControllerImpl<IUserService, UserEntity> {
-
 
     private ServerLock lock;
 
@@ -35,17 +38,18 @@ public class LockController extends BaseControllerImpl<IUserService, UserEntity>
 
     private volatile String shareKey = "abc";
 
-    private volatile String operationToken = "xxx";
+    private volatile String globalOperationToken = "xxx";
 
 
     /**
      * http://localhost:8080/lock/tryLock
+     * @return 是否获取成功
      */
     @RequestMapping("tryLock")
     public boolean tryLock() {
         LockInfo lockInfo = new LockInfo(shareKey);
         if (lock.tryLock(lockInfo)) {
-            operationToken = lockInfo.getToken();
+            globalOperationToken = lockInfo.getToken();
             return true;
         }
         return false;
@@ -60,7 +64,7 @@ public class LockController extends BaseControllerImpl<IUserService, UserEntity>
     public boolean tryLockMax5s(String holdTime) throws InterruptedException {
         LockInfo lockInfo = new LockInfo(shareKey, Duration.parse(holdTime));
         if (lock.tryLock(lockInfo, Duration.ofSeconds(5))) {
-            operationToken = lockInfo.getToken();
+            globalOperationToken = lockInfo.getToken();
             return true;
         }
         return false;
@@ -69,45 +73,50 @@ public class LockController extends BaseControllerImpl<IUserService, UserEntity>
 
     /**
      * http://localhost:8080/lock/lock
+     * 如果可以上锁，会立马返回 true
+     * 否则将一直等待，直到有人 unlock
      */
     @RequestMapping("lock")
     public boolean lock() {
         LockInfo lockInfo = new LockInfo(shareKey);
         lock.lock(lockInfo);
-        operationToken = lockInfo.getToken();
+        globalOperationToken = lockInfo.getToken();
         return true;
     }
 
     /**
-     * http://localhost:8080/lock/holdLock?useShare=true   模拟持锁线程查看是否持锁
-     * http://localhost:8080/lock/holdLock?useShare=false  模拟新的线程查看是否持锁
+     * http://localhost:8080/lock/holdLock?global=true   模拟持锁线程查看是否持锁
+     * http://localhost:8080/lock/holdLock?global=false  模拟新的线程查看是否持锁
+     *
+     * @param global 是否用全局的共享锁
      */
     @RequestMapping("holdLock")
-    public boolean holdLock(Boolean useShare) {
+    public boolean holdLock(Boolean global) {
         LockInfo shareLock = new LockInfo(shareKey);
-        if (Boolean.TRUE.equals(useShare)) {
-            shareLock.setToken(operationToken);
+        if (Boolean.TRUE.equals(global)) {
+            shareLock.setToken(globalOperationToken);
         }
         return lock.holdLock(shareLock);
     }
 
     /**
-     * http://localhost:8080/lock/unlock?release=true
-     * http://localhost:8080/lock/unlock?release=false
+     * http://localhost:8080/lock/unlock?global=true
+     * http://localhost:8080/lock/unlock?global=false
      */
     @RequestMapping("unlock")
-    public String unlock(Boolean release) {
+    public String unlock(Boolean global) {
         LockInfo shareLock = new LockInfo(shareKey);
-        if (Boolean.TRUE.equals(release)) {
-            shareLock.setToken(operationToken);
+        if (Boolean.TRUE.equals(global)) {
+            shareLock.setToken(globalOperationToken);
         }
         lock.unlock(shareLock);
         return "ok";
     }
 
 
-    // ------------------- jdk interface --------------------
-
+    // ======================================================================================
+    // ===============================【 jdk interface 】=====================================
+    // ======================================================================================
 
     /**
      * http://localhost:8080/lock/jdk/lock
@@ -127,6 +136,7 @@ public class LockController extends BaseControllerImpl<IUserService, UserEntity>
 
     /**
      * http://localhost:8080/lock/jdk/tryLock
+     * 可以连续访问该接口，10s内只有一次可以
      */
     @RequestMapping("jdk/tryLock")
     public boolean jdkTryLock() {
@@ -143,6 +153,7 @@ public class LockController extends BaseControllerImpl<IUserService, UserEntity>
 
 
     /**
+     * 尝试加锁，最大等待时间为 5s，5s拿不到，则返回false
      * http://localhost:8080/lock/jdk/tryLockMax5s
      */
     @RequestMapping("jdk/tryLockMax5s")
@@ -153,11 +164,18 @@ public class LockController extends BaseControllerImpl<IUserService, UserEntity>
         return false;
     }
 
-    /**
-     * 可重入测试
-     * http://localhost:8080/lock/jdk/unlock
-     */
     @RequestMapping("jdk/unlock")
+    public String jdk_unlock() throws InterruptedException {
+        lock.unlock();
+        return "ok";
+    }
+    /**
+     * 可重入测试，测试前请确保已经将锁释放：
+     *    释放测试前面 api 时候加的锁：http://localhost:8080/lock/jdk/unlock
+     *
+     * 测试：http://localhost:8080/lock/jdk/reentrant
+     */
+    @RequestMapping("jdk/reentrant")
     public String reentrant_jdk() throws InterruptedException {
         lock.lock();
         try {

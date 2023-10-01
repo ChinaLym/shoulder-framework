@@ -37,6 +37,8 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-batch</artifactId>
         </dependency>
+        <!-- csv 导出导出使用，添加该依赖，框架会自动注入 csvWriter，从而自动注入 BatchService -->
+        <!-- 若希望使用其他 csv 工具，只需要 包装一个 DataExporter ，框架也会自动注入 BatchService -->
         <dependency>
             <groupId>com.univocity</groupId>
             <artifactId>univocity-parsers</artifactId>
@@ -54,12 +56,12 @@
         <!-- shoulder 继承了 spring boot 的所有特性，引入 spring boot 的jar 一样不需要写版本号 -->
 
         <!-- 热更新插件，修改代码无需重启 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-devtools</artifactId>-->
+<!--            <scope>runtime</scope>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
 
         <!-- 测试 -->
         <dependency>

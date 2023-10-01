@@ -1,5 +1,8 @@
 # demo2 使用 yaml 格式配置作为示例，properties转yaml: https://www.toyaml.com/index.html
-
+REDIS_ADDR: itlym.cn
+MYSQL_ADDR: itlym.cn
+MYSQL_PWD: mysqlrootpwd!
+REDIS_PWD: redisssss
 spring:
   application:
     name: demo2
