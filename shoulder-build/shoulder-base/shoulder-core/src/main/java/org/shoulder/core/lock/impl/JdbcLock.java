@@ -1,20 +1,24 @@
 package org.shoulder.core.lock.impl;
 
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.lock.AbstractDistributeLock;
 import org.shoulder.core.lock.LockInfo;
 import org.shoulder.core.lock.ServerLock;
+import org.shoulder.core.util.AssertUtils;
+import org.shoulder.core.util.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * 基于 数据库 的分布式锁
@@ -162,9 +166,22 @@ public class JdbcLock extends AbstractDistributeLock implements ServerLock {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = BaseRuntimeException.class)
-    public void unlock(String resource, String token) {
-        jdbc.update(RELEASE_LOCK_DELETE_STATEMENT, resource, token);
+    public void unlock(String resource, @Nonnull String token) {
+        if(StringUtils.isEmpty(token)) {
+            // 参数问题
+            AssertUtils.notEmpty(token, CommonErrorCodeEnum.ILLEGAL_PARAM, "unlock token can't be empty");
+        }
+        int changedLine = jdbc.update(RELEASE_LOCK_DELETE_STATEMENT, resource, token);
         log.debug("unlock {} with token={}", resource, token);
+        if(changedLine == 0) {
+            // 有可能是使用者代码写错：
+            // 1. token 传错；
+            // 2. resource 传错，当前未持锁；
+            // 3. 被其他线程误释放
+            // 4. （非代码bug）本节点执行时间过长，锁已经过期被清理释放了
+            // 这些都不是预期内的报错--抛异常
+            throw new BaseRuntimeException(CommonErrorCodeEnum.UNKNOWN.getCode(), "unlock " + resource + " but do nothing! with token=" + token);
+        }
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true, rollbackFor = BaseRuntimeException.class)

@@ -5,14 +5,15 @@ import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.ErrorCode;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * 断言工具
@@ -243,6 +244,28 @@ public class AssertUtils {
      */
     public static void notBlank(@Nonnull final String str, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
         isTrue(StringUtils.isNotBlank(str), errorCode, objs);
+    }
+
+    /**
+     * 断言对象为空，否则抛出指定错误信息。
+     *
+     * @param str       断言字符串
+     * @param errorCode 错误码
+     * @param objs      任意个异常描述信息的参数
+     */
+    public static void empty(@Nullable final String str, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
+        isTrue(StringUtils.isEmpty(str), errorCode, objs);
+    }
+
+    /**
+     * 断言对象为非空，否则抛出指定错误信息。
+     *
+     * @param str       断言字符串
+     * @param errorCode 错误码
+     * @param objs      任意个异常描述信息的参数
+     */
+    public static void notEmpty(@Nonnull final String str, final ErrorCode errorCode, final Object... objs) throws BaseRuntimeException {
+        isTrue(StringUtils.isNotEmpty(str), errorCode, objs);
     }
 
     /**

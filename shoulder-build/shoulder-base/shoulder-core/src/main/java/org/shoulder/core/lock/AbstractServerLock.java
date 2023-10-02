@@ -1,12 +1,16 @@
 package org.shoulder.core.lock;
 
-import javax.annotation.Nonnull;
-import javax.annotation.PreDestroy;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AssertUtils;
+
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
+import javax.annotation.PreDestroy;
 
 /**
  * 全局锁抽象类，支持 jdk 的方法
@@ -36,13 +40,13 @@ public abstract class AbstractServerLock implements ServerLock {
 
     @Override
     public void lock() {
-        lock(getThisLock());
+        lock(getThisLockNonNull());
     }
 
     @Override
     public void lockInterruptibly() throws InterruptedException {
         while (true) {
-            if (tryLock(getThisLock(), Duration.ofDays(1))) {
+            if (tryLock(getThisLockNonNull(), Duration.ofDays(1))) {
                 return;
             }
         }
@@ -50,17 +54,17 @@ public abstract class AbstractServerLock implements ServerLock {
 
     @Override
     public boolean tryLock() {
-        return tryLock(getThisLock());
+        return tryLock(getThisLockNonNull());
     }
 
     @Override
     public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
-        return tryLock(getThisLock(), Duration.of(time, toTemporalUnit(unit)));
+        return tryLock(getThisLockNonNull(), Duration.of(time, toTemporalUnit(unit)));
     }
 
     @Override
     public void unlock() {
-        unlock(getThisLock());
+        unlock(getThisLockNonNull());
     }
 
     /**
@@ -70,6 +74,12 @@ public abstract class AbstractServerLock implements ServerLock {
      */
     private LockInfo getThisLock() {
         return lockInfoLocal.get();
+    }
+
+    private LockInfo getThisLockNonNull() {
+        LockInfo lockInfo = lockInfoLocal.get();
+        AssertUtils.notNull(lockInfo, CommonErrorCodeEnum.CODING, "You are using not reccognized method, and internal lockInfo is null!");
+        return lockInfo;
     }
 
     private TemporalUnit toTemporalUnit(@Nonnull TimeUnit unit) {
