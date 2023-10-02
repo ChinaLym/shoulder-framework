@@ -25,7 +25,7 @@ public class SecurityExceptionController {
      */
     @RequestMapping("jdkRuntime")
     public String jdkRuntime() {
-        throw new RuntimeException();
+        throw new RuntimeException("just a test Ex");
     }
 
     /**
@@ -34,7 +34,7 @@ public class SecurityExceptionController {
      */
     @RequestMapping("base")
     public String base() {
-        throw new BaseRuntimeException("123", "customer ex message.");
+        throw new BaseRuntimeException("123", "Test customer ex message.");
     }
 
     /**
@@ -45,8 +45,8 @@ public class SecurityExceptionController {
     @RequestMapping("thread")
     public String thread() {
         new Thread(() -> {
-            throw new RuntimeException();
+            throw new RuntimeException("这部分因异步线程，错误码不会自动包装~");
         }).start();
-        return "";
+        return "去控制台日志查看";
     }
 }
