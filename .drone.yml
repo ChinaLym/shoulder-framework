@@ -104,6 +104,7 @@ steps:
     when:
       # CANLCEL 不通知
       status: [failure, success]
+
 trigger:
   branch:
     - master
