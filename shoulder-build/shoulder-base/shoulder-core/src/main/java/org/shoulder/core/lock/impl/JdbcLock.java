@@ -180,7 +180,7 @@ public class JdbcLock extends AbstractDistributeLock implements ServerLock {
             // 3. 被其他线程误释放
             // 4. （非代码bug）本节点执行时间过长，锁已经过期被清理释放了
             // 这些都不是预期内的报错--抛异常
-            throw new BaseRuntimeException(CommonErrorCodeEnum.UNKNOWN.getCode(), "unlock " + resource + " but do nothing! with token=" + token);
+            throw new BaseRuntimeException(CommonErrorCodeEnum.UNKNOWN.getCode(), "unlock FAIL! resource=" + resource + " token=" + token);
         }
     }
 
