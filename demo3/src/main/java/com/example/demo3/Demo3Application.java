@@ -1,5 +1,7 @@
 package com.example.demo3;
 
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.security.authentication.BeforeAuthEndpoint;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,6 +18,7 @@ import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 public class Demo3Application {
 
     public static void main(String[] args) {
+        AssertUtils.isTrue(false, CommonErrorCodeEnum.CODING, "0.7 版本不包含 demo3，可以去 0.6 分支查看使用");
         SpringApplication.run(Demo3Application.class, args);
     }
 

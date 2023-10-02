@@ -1,6 +1,5 @@
 package com.example.demo1.controller.log;
 
-import lombok.extern.shoulder.SLog;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lym
  */
-@SLog // 与 @Slf4j 类似，在希望打日志的类上添加 @SLog 注解，编译时将生成类似下面定义 logger 的代码
+//@SLog // 与 @Slf4j 类似，在希望打日志的类上添加 @SLog 注解，编译时将生成类似下面定义 logger 的代码
 @SkipResponseWrap // 该类所有方法的返回值将不被包装
 @RestController
 @RequestMapping("log")

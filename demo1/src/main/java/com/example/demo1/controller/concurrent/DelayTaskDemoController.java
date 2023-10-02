@@ -1,8 +1,8 @@
 package com.example.demo1.controller.concurrent;
 
-import lombok.extern.shoulder.SLog;
 import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.concurrent.delay.DelayTask;
+import org.shoulder.core.concurrent.delay.DelayTaskDispatcher;
 import org.shoulder.core.concurrent.delay.DelayTaskHolder;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+;
+
 /**
  * 延迟任务使用示例
  *
  * @author lym
  * @see DelayTaskDispatcher 阻塞式实现类
  */
-@SLog
 @SkipResponseWrap // 该类所有方法的返回值将不被包装
 @RestController
 @RequestMapping("delay")
