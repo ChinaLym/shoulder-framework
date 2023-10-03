@@ -6,15 +6,16 @@
 
 [![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://github.com/ChinaLym/shoulder-framework)
 [![](https://img.shields.io/badge/Author-lym-blue.svg)](https://github.com/ChinaLym)
-[![](https://img.shields.io/badge/version-0.1-brightgreen.svg)](https://github.com/ChinaLym/shoulder-framework)
+[![](https://img.shields.io/badge/version-0.7-brightgreen.svg)](https://github.com/ChinaLym/shoulder-framework)
 
-![](https://img.shields.io/badge/Spring%20Boot%20Version-2.3.0-blue.svg)
-![](https://img.shields.io/badge/Spring%20Cloud%20Version-Hotox.SR5-blue.svg)
+![](https://img.shields.io/badge/Spring%20Boot%20Version-2.7.16-blue.svg)
+![](https://img.shields.io/badge/Spring%20Cloud%20Version-2021.0.8-blue.svg)
 
 [![GitHub stars](https://img.shields.io/github/stars/ChinaLym/shoulder-framework.svg?style=social&label=Stars)](https://github.com/ChinaLym/shoulder-framework/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/ChinaLym/shoulder-framework.svg?style=social&label=Fork)](https://github.com/ChinaLym/shoulder-framework/network/members)
 
-- 地址: [github](https://github.com/ChinaLym/shoulder-framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)
+- Learn with
+  DEMO: [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
 
 一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能。
 
@@ -142,7 +143,7 @@ Shoulder 不求使用最广，而是致力于成为使用体验最好的开发�
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.6</version><!-- shoulder-version -->
+      <version>0.7.1</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- 你的 groupId -->
@@ -241,7 +242,7 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 # 设计 & 路线
 
 > **shoulder** 复用/优化当前业界成熟的解决方案（站在巨人的肩膀上），将 `开源社区` 中优秀的实现带给使用者，给使用者一个肩膀！
-为减少使用者的上手成本，在用法上借鉴了 `Spring Boot`，使用 `Shoulder` 就像使用 `Spring Boot` 的 `starter` 一样简单（开箱即用）！
+> 为减少使用者的上手成本，在用法上借鉴了 `Spring Boot`，使用 `Shoulder` 就像使用 `Spring Boot` 的 `starter` 一样简单（开箱即用）！
 
 - 实现上参照了 **[软件优雅设计与开发最佳实践](https://spec.itlym.cn)** 中提到的内容，但没与它完全绑定，仅将该实践方案作为默认实现，实际中可替换、可二次开发。
 - 可制定自己团队/项目的规范，在 **Shoulder** 基础上增加自己个性化部分，即可快速实现自定义规范并获得常用的功能实现。
