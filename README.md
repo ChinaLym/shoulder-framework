@@ -15,7 +15,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/ChinaLym/shoulder-framework.svg?style=social&label=Fork)](https://github.com/ChinaLym/shoulder-framework/network/members)
 
 - Learn with
-  DEMO: [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
+  DEMO：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
 
 一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能。
 
