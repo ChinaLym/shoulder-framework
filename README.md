@@ -1,4 +1,5 @@
-<h1 align="center"><a href="https://github.com/ChinaLym" target="_blank">Shoulder Framework（一个肩膀）</a></h1>
+![icon](.idea/icon.png=40x40)<h1 align="center"><a href="https://github.com/ChinaLym" target="_blank">Shoulder
+Framework（一个肩膀）</a></h1>
 
 ![LOGO](doc/img/logo.jpg)
 

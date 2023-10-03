@@ -36,9 +36,9 @@ steps:
       - curl --location --request POST 'http://10.10.10.1:12345/projects/create' --form 'email=cn_lym@foxmail.com' --form 'pomXml=@shoulder-dependencies/pom.xml' --form 'notifyInstantlyAfterCheck=true' --form 'notifyReason=CI-<a href="https://git.itlym.cn/gogs/${DRONE_REPO_NAME}">${DRONE_REPO_NAME}::${DRONE_REPO_BRANCH}</a><br> with <a href="https://drone.itlym.cn/gogs/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}">Drone Build-${DRONE_BUILD_NUMBER}</a><br>' || echo '======= SKIP dependency check. ======='
       # 改成部署前签名，否则不会上传
       # ---------【【【发布】】】------ release 版本时候更换 version，正式发布前还需要：清空所有jar，然后运行 shoulder-demos 保证发布功能全部ok；检查 shoulder-maven-plugin.version
-      - sed -i 's#-SNAPSHOT</shoulder.version>#</shoulder.version>#g' pom.xml
-      - sed -i 's#-SNAPSHOT</shoulder.version>#</shoulder.version>#g' shoulder-archetype-simple/src/main/resources/archetype-resources/pom.xml
-      - find . -name "pom.xml" | xargs sed -i 's#-SNAPSHOT</version><!-- shoulder-version -->#</shoulder.version>#g'
+      #- sed -i 's#-SNAPSHOT</shoulder.version>#</shoulder.version>#g' pom.xml
+      #- sed -i 's#-SNAPSHOT</shoulder.version>#</shoulder.version>#g' shoulder-archetype-simple/src/main/resources/archetype-resources/pom.xml
+      #- find . -name "pom.xml" | xargs sed -i 's#-SNAPSHOT</version><!-- shoulder-version -->#</shoulder.version>#g'
       #
       - sed -i 's#<phase>deploy</phase><!-- ACTIVE_WITH_package -->#<phase>package</phase><!-- ACTIVE_WITH_package -->#g' pom.xml
       - sed -i 's#<phase>deploy</phase><!-- ACTIVE_WITH_package -->#<phase>package</phase><!-- ACTIVE_WITH_package -->#g' shoulder-parent/pom.xml
@@ -48,7 +48,8 @@ steps:
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-dependencies -am
       #      - mvn clean install -Dmaven.test.skip=true -pl shoulder-parent -am
       #- sudo export MAVEN_OPTS="-Xmx400m -Xms400m -XX:MaxPermSize=90m"
-      - mvn clean deploy -P release -Dmaven.test.skip=true -B -V -T 1.5C
+      #- mvn clean deploy -P release -Dmaven.test.skip=true -B -V -T 1.5C
+      - mvn clean install -P release -Dmaven.test.skip=true -B -V -T 1.5C
       - echo 'FINISHED deploy!!'
 #
       #  - name: 根据 commit 自动生成 CHANGELOG、README https://github.com/mbinary-toys/csdn-tools
