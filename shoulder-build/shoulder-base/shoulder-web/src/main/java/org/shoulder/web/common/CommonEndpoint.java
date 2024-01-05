@@ -1,5 +1,7 @@
 package org.shoulder.web.common;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -9,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**

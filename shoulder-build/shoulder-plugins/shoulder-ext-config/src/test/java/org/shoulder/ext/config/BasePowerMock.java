@@ -7,7 +7,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
  *
  */
 @RunWith(PowerMockRunner.class)  //使用PowerMockRunner运行时
-//@PowerMockIgnore({"javax.management.*"}) //忽略一些mock异常
+//@PowerMockIgnore({"javax.management.*","jakarta.management.*"}) //忽略一些mock异常
 public class BasePowerMock {
 
 

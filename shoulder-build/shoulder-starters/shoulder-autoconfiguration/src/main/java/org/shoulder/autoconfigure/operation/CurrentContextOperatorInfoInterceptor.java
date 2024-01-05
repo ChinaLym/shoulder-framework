@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.operation;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.ServletUtil;
 import org.shoulder.core.util.StringUtils;
@@ -7,8 +8,6 @@ import org.shoulder.log.operation.enums.TerminalType;
 import org.shoulder.log.operation.model.Operator;
 import org.shoulder.log.operation.model.ShoulderCurrentUserOperator;
 import org.shoulder.log.operation.model.SystemOperator;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 操作日志的拦截器：将当前单点登录的用户作为操作日志的默认操作者

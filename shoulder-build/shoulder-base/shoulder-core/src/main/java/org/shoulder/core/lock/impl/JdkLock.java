@@ -1,11 +1,11 @@
 package org.shoulder.core.lock.impl;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.PreDestroy;
 import org.shoulder.core.lock.LockInfo;
 import org.shoulder.core.lock.ServerLock;
 import org.shoulder.core.util.StringUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.PreDestroy;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;

@@ -1,11 +1,10 @@
 package org.shoulder.core.exception;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.shoulder.core.i18.Translatable;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 
 /**

@@ -1,8 +1,8 @@
 package org.shoulder.web.filter;
 
+import jakarta.servlet.*;
 import org.shoulder.core.context.AppContext;
 
-import javax.servlet.*;
 import java.io.IOException;
 
 /**

@@ -1,10 +1,9 @@
 package org.shoulder.batch.enums;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.exception.ErrorCode;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
-
-import javax.annotation.Nonnull;
 
 /**
  * 批量相关错误码

@@ -1,12 +1,12 @@
 package org.shoulder.core.i18;
 
+import jakarta.annotation.Nonnull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.shoulder.core.context.AppInfo;
 
-import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.TimeZone;

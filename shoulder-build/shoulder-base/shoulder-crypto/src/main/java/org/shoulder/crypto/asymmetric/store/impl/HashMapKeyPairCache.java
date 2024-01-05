@@ -5,9 +5,9 @@ import org.shoulder.crypto.asymmetric.exception.NoSuchKeyPairException;
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

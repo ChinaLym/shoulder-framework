@@ -1,11 +1,11 @@
 package org.shoulder.crypto.local.impl;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.springframework.core.Ordered;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;

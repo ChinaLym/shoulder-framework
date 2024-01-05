@@ -1,12 +1,12 @@
 package org.shoulder.ext.config.service;
 
+import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.ext.config.domain.ConfigType;
 import org.shoulder.ext.config.domain.model.ConfigData;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 

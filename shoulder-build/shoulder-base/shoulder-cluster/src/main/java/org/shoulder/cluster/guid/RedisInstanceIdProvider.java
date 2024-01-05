@@ -1,5 +1,6 @@
 package org.shoulder.cluster.guid;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.guid.AbstractInstanceIdProvider;
 import org.shoulder.core.log.Logger;
@@ -11,7 +12,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 
-import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.List;
 

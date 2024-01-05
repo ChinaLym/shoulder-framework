@@ -1,6 +1,7 @@
 package org.shoulder.data.mybatis.template.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,6 @@ import org.shoulder.core.model.Operable;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.validate.groups.Update;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

@@ -1,10 +1,10 @@
 package org.shoulder.ext.config.dal.dao;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.ibatis.annotations.Mapper;
 import org.shoulder.ext.config.dal.dataobject.ConfigDataDO;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

@@ -1,10 +1,10 @@
 package org.shoulder.validate.support.mateconstraint.impl;
 
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.shoulder.validate.support.mateconstraint.ConstraintConverter;
 
-import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 

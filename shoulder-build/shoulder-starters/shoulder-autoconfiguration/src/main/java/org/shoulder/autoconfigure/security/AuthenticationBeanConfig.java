@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.security;
 
+import jakarta.annotation.Nullable;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
 import org.shoulder.security.authentication.sms.PhoneNumAuthenticateService;
@@ -18,7 +19,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

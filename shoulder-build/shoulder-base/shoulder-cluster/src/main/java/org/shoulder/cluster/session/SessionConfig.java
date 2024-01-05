@@ -6,6 +6,8 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
+import java.time.Duration;
+
 /**
  * todo 【开发】配置
  * spring-session 支持的存储类型：见 StoreType
@@ -20,8 +22,8 @@ public class SessionConfig {
     public RedisHttpSessionConfiguration redisHttpSessionConfiguration() {
         RedisHttpSessionConfiguration redisHttpSessionConfiguration = new RedisHttpSessionConfiguration();
         // 设置过期时间
-        redisHttpSessionConfiguration.setMaxInactiveIntervalInSeconds(3600);
-        redisHttpSessionConfiguration.setCookieSerializer(defaultCookieSerializer());
+        redisHttpSessionConfiguration.setMaxInactiveInterval(Duration.ofHours(1));
+//        redisHttpSessionConfiguration.setDefaultRedisSerializer(new WithPrefixKeyStringRedisSerializer());
         return redisHttpSessionConfiguration;
     }
 

@@ -1,12 +1,14 @@
 package org.shoulder.security.authentication.sms;
 
+import jakarta.annotation.Nullable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import javax.annotation.Nullable;
-
 /**
  * 手机号认证
+ *
+ * 使用方：框架SPI，使用者强感知，需要实现该接口获取用户信息，否则sms认证能力无法生效
+ * 类定位：根据手机号获取用户信息
  *
  * @author lym
  */

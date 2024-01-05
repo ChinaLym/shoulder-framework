@@ -4,7 +4,7 @@ import org.shoulder.code.dto.ValidateCodeDTO;
 import org.shoulder.code.store.ValidateCodeStore;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * 基于session的验证码存取器

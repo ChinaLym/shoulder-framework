@@ -1,8 +1,8 @@
 package org.shoulder.core.i18;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.util.StringUtils;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

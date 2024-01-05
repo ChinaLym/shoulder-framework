@@ -1,10 +1,10 @@
 package org.shoulder.crypto.asymmetric.store;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
 import org.shoulder.crypto.asymmetric.exception.NoSuchKeyPairException;
 
-import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**

@@ -1,5 +1,7 @@
 package org.shoulder.code.processor;
 
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.code.dto.ValidateCodeDTO;
 import org.shoulder.code.exception.ValidateCodeAuthenticationException;
@@ -12,8 +14,6 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;

@@ -1,8 +1,8 @@
 package org.shoulder.core.log.beautify;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.context.AppInfo;
 
-import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;

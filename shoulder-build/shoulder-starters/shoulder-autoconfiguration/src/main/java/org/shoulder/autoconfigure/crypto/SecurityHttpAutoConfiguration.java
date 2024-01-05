@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.crypto;
 
+import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.autoconfigure.http.HttpAutoConfiguration;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
@@ -19,8 +20,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 /**
  * http（RestTemplate） 相关配置

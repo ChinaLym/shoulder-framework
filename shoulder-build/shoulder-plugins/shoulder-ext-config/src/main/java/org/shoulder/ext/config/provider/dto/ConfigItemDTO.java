@@ -1,9 +1,9 @@
 package org.shoulder.ext.config.provider.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**

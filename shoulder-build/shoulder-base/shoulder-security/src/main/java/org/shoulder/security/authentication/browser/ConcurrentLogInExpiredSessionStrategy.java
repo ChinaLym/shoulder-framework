@@ -6,7 +6,7 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 import java.io.IOException;
 
 /**
- * 并发登录导致session失效时，默认的处理策略
+ * 达到并发登录限制上线导致session失效时，默认的处理策略
  *
  * @author lym
  */

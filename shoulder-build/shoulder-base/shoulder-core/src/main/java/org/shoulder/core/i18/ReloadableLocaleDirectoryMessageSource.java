@@ -1,5 +1,7 @@
 package org.shoulder.core.i18;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.shoulder.core.context.AppInfo;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -7,8 +9,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

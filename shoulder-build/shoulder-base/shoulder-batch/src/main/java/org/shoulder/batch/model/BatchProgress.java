@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 
 /**
  * 批量处理进度并发模型
@@ -24,7 +22,7 @@ import javax.annotation.concurrent.ThreadSafe;
  */
 @Data
 @NoArgsConstructor
-@ThreadSafe
+//@javax.annotation.concurrent.ThreadSafe
 public class BatchProgress implements Serializable, ProgressAble {
 
     private static final long serialVersionUID = 1L;

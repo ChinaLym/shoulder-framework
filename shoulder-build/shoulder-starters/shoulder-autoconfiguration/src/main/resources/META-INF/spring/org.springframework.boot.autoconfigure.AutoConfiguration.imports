@@ -42,10 +42,8 @@ org.shoulder.autoconfigure.operation.OperationLogUserAgentResolverAutoConfigurat
 org.shoulder.autoconfigure.security.AuthenticationBeanConfig
 org.shoulder.autoconfigure.security.AuthenticationHandlerConfig
 org.shoulder.autoconfigure.security.browser.BrowserSessionAuthBeanConfiguration
-org.shoulder.autoconfigure.security.browser.BrowserSecurityConfiguration
 org.shoulder.autoconfigure.security.token.TokenAuthBeanConfiguration
 org.shoulder.autoconfigure.security.token.TokenEndPointConfiguration
-org.shoulder.autoconfigure.security.token.TokenSecurityConfiguration
 org.shoulder.autoconfigure.security.code.ValidateCodeBeanConfig
 org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig
 org.shoulder.autoconfigure.monitor.MonitorableThreadAutoConfiguration

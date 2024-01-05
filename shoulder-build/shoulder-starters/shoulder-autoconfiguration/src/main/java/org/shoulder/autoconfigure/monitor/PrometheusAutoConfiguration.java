@@ -3,6 +3,7 @@ package org.shoulder.autoconfigure.monitor;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.config.MeterFilter;
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.monitor.MetricsConst;
 import org.shoulder.monitor.concurrent.ThreadPoolMetrics;
@@ -14,8 +15,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
-
-import javax.annotation.Nonnull;
 
 /**
  * 指标监控装配，推荐依赖 MeterRegistry 而不是 prometheus 的 CollectorRegistry

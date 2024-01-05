@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.apidoc;
 
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
+import jakarta.annotation.Nonnull;
 import org.shoulder.autoconfigure.apidoc.util.RequestHandlerSelectors;
 import org.shoulder.core.context.AppInfo;
 import org.springframework.beans.BeansException;
@@ -27,8 +28,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
 
 /**
  * 访问

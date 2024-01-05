@@ -1,5 +1,7 @@
 package org.shoulder.security.authentication.browser;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
@@ -14,12 +16,12 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.util.Assert;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * session 无效处理器
+ * session 无效处理器：
+ *  若请求页面，则跳转至登陆认证页面；
+ *  若请求接口，则返回401要求认证。
  *
  * @author lym
  */

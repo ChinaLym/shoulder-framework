@@ -11,10 +11,15 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class MonitorableRejectHandler implements RejectedExecutionHandler {
 
-
+    /**
+     * realHandler
+     */
     private RejectedExecutionHandler delegate;
 
 
+    /**
+     * for monitoring
+     */
     private ThreadPoolMetrics threadPoolMetrics;
 
     public MonitorableRejectHandler(RejectedExecutionHandler delegate, ThreadPoolMetrics threadPoolMetrics) {

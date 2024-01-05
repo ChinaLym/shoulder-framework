@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.validate;
 
+import jakarta.validation.Validator;
 import org.shoulder.validate.support.extract.ConstraintExtract;
 import org.shoulder.validate.support.extract.DefaultConstraintExtractImpl;
 import org.shoulder.validate.support.mateconstraint.ConstraintConverter;
@@ -13,7 +14,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.List;
 

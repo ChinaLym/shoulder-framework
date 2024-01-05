@@ -1,8 +1,8 @@
 package org.shoulder.core.i18;
 
+import jakarta.annotation.Nullable;
 import org.shoulder.core.util.StringUtils;
 
-import javax.annotation.Nullable;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;

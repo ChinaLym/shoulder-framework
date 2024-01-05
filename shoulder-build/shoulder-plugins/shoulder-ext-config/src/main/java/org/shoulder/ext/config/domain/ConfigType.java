@@ -1,10 +1,10 @@
 package org.shoulder.ext.config.domain;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.ext.config.domain.enums.ConfigErrorCodeEnum;
 import org.shoulder.ext.config.domain.ex.ConfigException;
 import org.shoulder.ext.config.domain.model.ConfigFieldInfo;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;

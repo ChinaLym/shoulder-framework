@@ -1,6 +1,7 @@
 package org.shoulder.core.cache;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
+
 import java.util.concurrent.Callable;
 
 /**

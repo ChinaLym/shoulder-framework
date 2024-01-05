@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.core.current;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.concurrent.delay.DelayQueueDelayTaskHolder;
 import org.shoulder.core.concurrent.delay.DelayTaskDispatcher;
@@ -16,7 +17,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import javax.annotation.Nonnull;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Executor;
 

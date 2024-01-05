@@ -1,9 +1,9 @@
 package org.shoulder.core.concurrent.delay;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.concurrent.DelayQueue;
 
 /**

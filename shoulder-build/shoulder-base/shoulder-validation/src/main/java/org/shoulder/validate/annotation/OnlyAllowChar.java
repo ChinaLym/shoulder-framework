@@ -1,15 +1,15 @@
 package org.shoulder.validate.annotation;
 
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import org.shoulder.validate.validator.OnlyAllowCharValidator;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
  * 只允许特定的字符出现（白名单）
  * 使用：加在 String 类型的字段上
- * 更推荐使用 JSR 303 规范中的 {@link javax.validation.constraints.Pattern}
+ * 更推荐使用 JSR 303 规范中的 {@link jakarta.validation.constraints.Pattern}
  *
  * @author lym
  */

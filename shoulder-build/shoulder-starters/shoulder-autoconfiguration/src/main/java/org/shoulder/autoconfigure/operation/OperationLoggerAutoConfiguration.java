@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.operation;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.format.OperationLogFormatter;
@@ -28,7 +29,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
-import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.StringJoiner;

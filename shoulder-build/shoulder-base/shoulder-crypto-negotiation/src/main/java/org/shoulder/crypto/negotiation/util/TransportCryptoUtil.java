@@ -1,5 +1,6 @@
 package org.shoulder.crypto.negotiation.util;
 
+import jakarta.annotation.Nullable;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.ByteUtils;
 import org.shoulder.core.util.StringUtils;
@@ -13,8 +14,6 @@ import org.shoulder.crypto.negotiation.support.dto.NegotiationResponse;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-
-import javax.annotation.Nullable;
 
 /**
  * 为 String 提供适配

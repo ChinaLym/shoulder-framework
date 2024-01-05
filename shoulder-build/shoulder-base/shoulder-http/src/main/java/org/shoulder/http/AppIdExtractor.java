@@ -1,12 +1,13 @@
 package org.shoulder.http;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.http.exception.ResolveFailException;
 
-import javax.annotation.Nonnull;
 import java.net.URI;
 
 /**
- * 应用标识提取器
+ * 应用标识提取器，用于给其他功能提供基础能力
+ *      服务发现、密钥交换
  *
  * @author lym
  */

@@ -1,9 +1,9 @@
 package org.shoulder.validate.annotation;
 
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import org.shoulder.validate.validator.NotAllFieldsNullValidator;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.*;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

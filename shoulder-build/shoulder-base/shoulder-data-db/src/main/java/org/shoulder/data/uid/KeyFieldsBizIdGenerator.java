@@ -2,13 +2,13 @@ package org.shoulder.data.uid;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ReflectUtil;
+import jakarta.annotation.Nonnull;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.data.annotation.BizIdSource;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

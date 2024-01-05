@@ -1,5 +1,7 @@
 package org.shoulder.cluster.lock.redis;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.lock.AbstractDistributeLock;
@@ -9,8 +11,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 
 /**

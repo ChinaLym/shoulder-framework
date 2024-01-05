@@ -1,10 +1,10 @@
 package org.shoulder.autoconfigure.apidoc.util;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.util.ClassUtils;
 import springfox.documentation.RequestHandler;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;

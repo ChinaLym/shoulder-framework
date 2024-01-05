@@ -1,6 +1,7 @@
 package org.shoulder.log.operation.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Nonnull;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.commons.collections4.CollectionUtils;
@@ -11,7 +12,6 @@ import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.enums.OperationResult;
 import org.shoulder.log.operation.enums.TerminalType;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -361,6 +361,12 @@ public class OperationLogDTO implements Cloneable, Serializable {
         clone.setExtFields(extFields);
 
         return clone;
+    }
+
+    public interface ExtFields {
+        String ERROR_MSG = "errorMsg";
+        String ERROR_TYPE = "errorType";
+        String USER_AGENT = "userAgent";
     }
 
 }

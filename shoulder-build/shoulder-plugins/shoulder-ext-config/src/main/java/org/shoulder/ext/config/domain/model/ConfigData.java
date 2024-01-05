@@ -1,5 +1,6 @@
 package org.shoulder.ext.config.domain.model;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
@@ -9,7 +10,6 @@ import org.shoulder.ext.config.domain.enums.ConfigErrorCodeEnum;
 import org.shoulder.ext.config.domain.ex.ConfigException;
 import org.shoulder.validate.util.ValidateUtil;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.HashMap;

@@ -3,8 +3,8 @@ package org.shoulder.core.dto.response;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiModel;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

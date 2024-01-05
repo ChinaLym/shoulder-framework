@@ -1,6 +1,6 @@
 package org.shoulder.core.concurrent.delay;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * 延时任务持有者

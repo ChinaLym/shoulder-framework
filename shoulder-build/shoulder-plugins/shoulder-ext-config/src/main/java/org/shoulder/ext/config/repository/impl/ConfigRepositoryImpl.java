@@ -1,5 +1,6 @@
 package org.shoulder.ext.config.repository.impl;
 
+import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
@@ -16,7 +17,6 @@ import org.shoulder.ext.config.repository.ConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;

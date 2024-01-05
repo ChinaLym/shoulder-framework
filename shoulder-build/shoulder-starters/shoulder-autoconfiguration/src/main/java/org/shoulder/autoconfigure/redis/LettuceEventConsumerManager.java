@@ -5,9 +5,9 @@ import io.lettuce.core.event.Event;
 import io.lettuce.core.event.cluster.AdaptiveRefreshTriggeredEvent;
 import io.lettuce.core.event.connection.*;
 import io.lettuce.core.event.metrics.CommandLatencyEvent;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 

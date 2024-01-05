@@ -1,5 +1,6 @@
 package org.shoulder.log.operation.logger.impl;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.util.JsonUtils;
@@ -8,7 +9,6 @@ import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.Duration;

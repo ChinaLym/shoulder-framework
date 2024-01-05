@@ -1,6 +1,7 @@
 package org.shoulder.core.concurrent.delay;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
+
 import java.time.Duration;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;

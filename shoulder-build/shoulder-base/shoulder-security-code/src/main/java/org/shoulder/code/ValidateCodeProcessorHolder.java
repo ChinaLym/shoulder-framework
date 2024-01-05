@@ -1,11 +1,11 @@
 package org.shoulder.code;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.code.exception.NoSuchValidateCodeProcessorException;
 import org.shoulder.code.exception.ValidateCodeAuthenticationException;
 import org.shoulder.code.processor.ValidateCodeProcessor;
 import org.springframework.beans.factory.InitializingBean;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

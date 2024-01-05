@@ -1,5 +1,7 @@
 package org.shoulder.crypto.negotiation.support.server;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -27,8 +29,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

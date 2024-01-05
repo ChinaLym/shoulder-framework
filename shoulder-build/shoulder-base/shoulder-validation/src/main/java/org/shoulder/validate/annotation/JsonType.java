@@ -1,17 +1,11 @@
 package org.shoulder.validate.annotation;
 
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import org.shoulder.validate.validator.FileTypeValidator;
 import org.shoulder.validate.validator.JsonTypeValidator;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import java.lang.annotation.*;
 
 /**
  * 校验某 String 属性 不为空时，是否为 json 类型

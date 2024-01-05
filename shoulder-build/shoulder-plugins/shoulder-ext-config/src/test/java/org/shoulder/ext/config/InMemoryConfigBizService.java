@@ -1,10 +1,10 @@
 package org.shoulder.ext.config;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.ext.config.domain.ConfigType;
 import org.shoulder.ext.config.domain.model.ConfigData;
 import org.shoulder.ext.config.service.ConfigBizService;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

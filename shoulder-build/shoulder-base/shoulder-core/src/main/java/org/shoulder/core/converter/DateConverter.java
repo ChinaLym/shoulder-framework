@@ -1,11 +1,11 @@
 package org.shoulder.core.converter;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;

@@ -3,6 +3,8 @@ package org.shoulder.web.template.crud;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jakarta.annotation.Nonnull;
+import jakarta.validation.Valid;
 import org.shoulder.core.dto.request.BasePageQuery;
 import org.shoulder.core.dto.request.PageQuery;
 import org.shoulder.core.dto.response.BaseResult;
@@ -21,9 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.Serializable;
-
-import javax.annotation.Nonnull;
-import javax.validation.Valid;
 
 /**
  * 查询 API

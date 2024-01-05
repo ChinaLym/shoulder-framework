@@ -1,6 +1,7 @@
 package org.shoulder.core.concurrent.enhance;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
+
 import java.util.concurrent.Executor;
 
 /**

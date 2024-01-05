@@ -1,12 +1,12 @@
 package org.shoulder.crypto.negotiation.util;
 
 import cn.hutool.core.util.ReflectUtil;
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
 import org.shoulder.crypto.negotiation.dto.SensitiveFieldWrapper;
 import org.shoulder.crypto.negotiation.support.Sensitive;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;

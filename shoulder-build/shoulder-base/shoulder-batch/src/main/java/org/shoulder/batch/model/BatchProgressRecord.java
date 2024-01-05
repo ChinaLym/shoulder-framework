@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 
 /**
  * 批量处理进度模型 record类
@@ -24,7 +22,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  */
 @Data
 @NoArgsConstructor
-@NotThreadSafe
+//@javax.annotation.concurrent.NotThreadSafe
 public class BatchProgressRecord implements Serializable, ProgressAble {
 
     private static final long serialVersionUID = 1L;

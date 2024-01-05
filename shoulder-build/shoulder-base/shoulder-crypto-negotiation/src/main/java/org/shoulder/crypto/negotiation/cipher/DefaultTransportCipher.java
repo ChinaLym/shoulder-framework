@@ -1,11 +1,10 @@
 package org.shoulder.crypto.negotiation.cipher;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
-
-import javax.annotation.Nonnull;
 
 /**
  * 传输加解密，使用者使用

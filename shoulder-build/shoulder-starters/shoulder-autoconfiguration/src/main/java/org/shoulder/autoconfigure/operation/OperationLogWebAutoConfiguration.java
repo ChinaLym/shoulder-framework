@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.operation;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import javax.annotation.Nonnull;
 
 /**
  * 操作日志-当前用户信息

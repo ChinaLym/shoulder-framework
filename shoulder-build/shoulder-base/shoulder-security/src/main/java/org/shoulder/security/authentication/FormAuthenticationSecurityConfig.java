@@ -11,8 +11,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import javax.annotation.Nullable;
 import java.util.List;
+
+import jakarta.annotation.Nullable;
 
 /**
  * 用户名、密码认证(表单登录)配置

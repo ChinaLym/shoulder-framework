@@ -1,5 +1,7 @@
 package org.shoulder.security.authentication.sms;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.security.SecurityConst;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -8,13 +10,13 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.Assert;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * 支持手机号码认证方式，用于拦截获取手机号，生成 {@link PhoneNumAuthenticationToken}，不关心如何认证
  * 参考了 {@link org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter}
- * 该 url 应该加在验证码过滤器之后，被其保护，否则会产生无条件登录现象！！！
+ * spring security 约定：需要确保该类（认证通过滤器类）加在验证码过滤器（认证校验过滤器）后，被其保护，否则会造成纯手机号无条件登录问题！！！
+ *
+ * 使用方：框架使用者，弱感知
+ * 类定位：添加 sms 认证接口路径，使得
  *
  * @author lym
  */

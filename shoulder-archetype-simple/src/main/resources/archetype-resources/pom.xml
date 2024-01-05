@@ -18,7 +18,7 @@
     <description>Demo project for Shoulder Framework</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <shoulder.version>0.8-SNAPSHOT</shoulder.version><!-- shoulder-version -->
 
         <errorCodePrefix>0x000b</errorCodePrefix>

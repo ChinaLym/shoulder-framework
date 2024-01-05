@@ -1,5 +1,6 @@
 package org.shoulder.web.template.crud;
 
+import jakarta.annotation.PostConstruct;
 import org.shoulder.core.util.ConvertUtil;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
@@ -8,7 +9,6 @@ import org.shoulder.data.uid.BizIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
 import java.io.Serializable;
 
 /**

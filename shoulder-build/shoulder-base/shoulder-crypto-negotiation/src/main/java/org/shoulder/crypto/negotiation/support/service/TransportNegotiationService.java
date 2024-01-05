@@ -1,5 +1,6 @@
 package org.shoulder.crypto.negotiation.support.service;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.SecurityRestTemplate;
@@ -7,7 +8,6 @@ import org.shoulder.crypto.negotiation.support.dto.NegotiationRequest;
 import org.shoulder.crypto.negotiation.support.dto.NegotiationResponse;
 import org.shoulder.crypto.negotiation.support.endpoint.NegotiationEndPoint;
 
-import javax.annotation.Nonnull;
 import java.net.URI;
 
 /**

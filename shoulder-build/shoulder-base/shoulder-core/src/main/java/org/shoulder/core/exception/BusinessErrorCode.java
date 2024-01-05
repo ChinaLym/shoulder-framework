@@ -1,8 +1,7 @@
 package org.shoulder.core.exception;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.context.AppInfo;
-
-import javax.annotation.Nonnull;
 
 /**
  * 错误码接口【业务代码使用】

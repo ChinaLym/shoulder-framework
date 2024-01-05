@@ -2,6 +2,7 @@ package org.shoulder.web.template.dictionary.model;
 
 import com.baomidou.mybatisplus.annotation.SqlCondition;
 import com.baomidou.mybatisplus.annotation.TableField;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,6 @@ import org.hibernate.validator.constraints.Length;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 /**

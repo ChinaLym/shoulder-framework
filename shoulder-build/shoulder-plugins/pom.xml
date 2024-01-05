@@ -21,6 +21,7 @@
         <module>shoulder-ext-dictionary</module>
 
         <module>shoulder-ext-autoconfiguration</module>
+        <module>shoulder-ext-comment</module>
     </modules>
 
 </project>

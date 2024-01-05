@@ -1,8 +1,7 @@
 package org.shoulder.crypto.local;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.crypto.TextCipher;
-
-import javax.annotation.Nonnull;
 
 /**
  * 本地数据加密解密：只能由本应用实现解密。

@@ -5,8 +5,8 @@ import org.shoulder.validate.util.FileValidator;
 import org.shoulder.validate.util.FileValidatorProperties;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * {@link FileType} 注解校验处理

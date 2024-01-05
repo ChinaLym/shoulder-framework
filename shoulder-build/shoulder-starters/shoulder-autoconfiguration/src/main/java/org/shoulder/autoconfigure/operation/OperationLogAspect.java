@@ -1,5 +1,7 @@
 package org.shoulder.autoconfigure.operation;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -19,6 +21,7 @@ import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueC
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
 import org.shoulder.log.operation.model.OpLogParam;
 import org.shoulder.log.operation.model.OperationLogDTO;
+import org.shoulder.log.operation.model.OperationLogDTO.ExtFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -29,8 +32,6 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.time.Instant;
@@ -118,12 +119,12 @@ public class OperationLogAspect {
             OpLogContextHolder.getLog()
                     .setEndTime(Instant.now())
                     .setResultFail();
+            // 默认用第一个 errorReason
             String[] errorReasons = ex.getMessage().split("\\r");
             String originReason = errorReasons[errorReasons.length - 1];
-            // todo 【优化-代码格式】日志常量固定
             OpLogContextHolder.getLog()
-                    .setExtField("errorMsg", originReason)
-                    .setExtField("errorType", ex.getClass().getName());
+                    .setExtField(ExtFields.ERROR_MSG, originReason)
+                    .setExtField(ExtFields.ERROR_TYPE, ex.getClass().getName());
 
             if (ex instanceof ErrorCode) {
                 OpLogContextHolder.getLog().setErrorCode(((ErrorCode) ex).getCode());

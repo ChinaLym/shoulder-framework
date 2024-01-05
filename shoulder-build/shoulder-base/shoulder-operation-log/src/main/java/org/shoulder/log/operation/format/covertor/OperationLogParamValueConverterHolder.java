@@ -1,9 +1,9 @@
 package org.shoulder.log.operation.format.covertor;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.log.operation.format.OperationLogParamValueConverter;
 
-import javax.annotation.Nonnull;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.HashMap;

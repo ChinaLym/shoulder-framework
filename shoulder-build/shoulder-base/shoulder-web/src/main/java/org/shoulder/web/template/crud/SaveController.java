@@ -1,6 +1,8 @@
 package org.shoulder.web.template.crud;
 
 import io.swagger.annotations.ApiOperation;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.model.Operable;
@@ -16,8 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**

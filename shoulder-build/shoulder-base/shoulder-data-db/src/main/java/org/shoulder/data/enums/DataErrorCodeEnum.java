@@ -1,8 +1,7 @@
 package org.shoulder.data.enums;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.exception.ErrorCode;
-
-import javax.annotation.Nonnull;
 
 /**
  * 业务错误码

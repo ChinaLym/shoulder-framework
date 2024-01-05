@@ -1,12 +1,11 @@
 package org.shoulder.crypto.negotiation.cache;
 
+import jakarta.annotation.Nullable;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
 import org.shoulder.crypto.negotiation.support.client.SensitiveRequestEncryptMessageConverter;
 import org.shoulder.crypto.negotiation.support.server.SensitiveResponseEncryptAdvice;
 import org.springframework.web.client.ResponseExtractor;
-
-import javax.annotation.Nullable;
 
 /**
  * 传输加解密处理器 缓存

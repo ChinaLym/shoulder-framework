@@ -1,5 +1,6 @@
 package org.shoulder.core.util;
 
+import jakarta.annotation.Nullable;
 import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.core.convert.TypeDescriptor;
@@ -7,8 +8,6 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
-
-import javax.annotation.Nullable;
 
 /**
  * 类型转换

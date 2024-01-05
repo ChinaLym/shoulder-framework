@@ -1,9 +1,8 @@
 package org.shoulder.crypto.negotiation.cipher;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.crypto.TextCipher;
 import org.shoulder.crypto.exception.CipherRuntimeException;
-
-import javax.annotation.Nonnull;
 
 /**
  * 传输加解密：仅用于传输

@@ -1,11 +1,11 @@
 package org.shoulder.core.cache;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cache.support.NullValue;
 import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;

@@ -1,5 +1,6 @@
 package org.shoulder.core.util;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.shoulder.core.context.AppInfo;
@@ -9,8 +10,6 @@ import org.shoulder.core.exception.ErrorCode;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
-
-import javax.annotation.Nonnull;
 
 /**
  * 错误信息处理类。

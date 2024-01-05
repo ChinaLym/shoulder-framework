@@ -15,8 +15,8 @@ Framework（一个肩膀）</a></h1>
 [![GitHub stars](https://img.shields.io/github/stars/ChinaLym/shoulder-framework.svg?style=social&label=Stars)](https://github.com/ChinaLym/shoulder-framework/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/ChinaLym/shoulder-framework.svg?style=social&label=Fork)](https://github.com/ChinaLym/shoulder-framework/network/members)
 
-- [Learn with DEMO IN GitHub](https://github.com/ChinaLym/shoulder-framework-demo)
-  or [Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
+- Learn with
+  DEMO：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
 
 一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能。
 
@@ -281,7 +281,6 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 | shoulder-lombok             | [github](https://github.com/ChinaLym/shoulder-lombok)、[gitee](https://gitee.com/ChinaLym/shoulder-lombok)                 | 在`lombok`之上，增加 `@SLog` 注解，用于简化[软件优雅设计与开发最佳实践-错误码与日志](https://spec.itlym.cn/specs/base/errorCode.html) -shoulder 实现的日志框架的使用（非必须）       |
 | shoulder-lombok-idea-plugin | [github](https://github.com/ChinaLym/lombok-intellij-plugin)、[gitee](https://gitee.com/ChinaLym/lombok-intellij-plugin)   | 在 `lombok-idea-plugin`之上，在 IDEA 中增加`@SLog`的编码提示，以更好的使用 `shoulder-lombok`（非必须，使用 shoulder-lombok 时推荐）                                  |
 | Shoulder iPaaS              | [github](https://github.com/ChinaLym/shoulder-ipaas)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS)                   | iPaaS 平台，介绍了常见中间件、监控系统、私有基础平台如何部署                                                                                                     |
-| pom-update                  | [github](https://github.com/ChinaLym/pom-update)、[gitee](https://gitee.com/ChinaLym/pom-update)                           | 秒级监测 pom.xml（Maven）工程的版本，包含自动检测与更新通知，使用了Shoulder-Framework                                                                            |
 
 ## 发行版本号说明
 

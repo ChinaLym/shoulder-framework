@@ -1,5 +1,6 @@
 package org.shoulder.crypto.symmetric.impl;
 
+import jakarta.annotation.Nonnull;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.StringUtils;
@@ -7,7 +8,6 @@ import org.shoulder.crypto.symmetric.SymmetricCipher;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.springframework.util.Assert;
 
-import javax.annotation.Nonnull;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;

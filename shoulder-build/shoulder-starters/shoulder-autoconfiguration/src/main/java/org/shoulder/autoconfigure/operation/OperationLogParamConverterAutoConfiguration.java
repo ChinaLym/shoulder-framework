@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.operation;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.log.operation.format.OperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
@@ -13,7 +14,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**

@@ -1,8 +1,8 @@
 package org.shoulder.validate.support.mateconstraint.impl;
 
+import jakarta.validation.Constraint;
 import org.shoulder.validate.support.mateconstraint.ConstraintConverter;
 
-import javax.validation.Constraint;
 import java.lang.annotation.Annotation;
 
 /**

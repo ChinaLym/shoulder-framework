@@ -1,9 +1,8 @@
 package org.shoulder.validate.validator;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.shoulder.validate.annotation.NotAllFieldsNull;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 /**
  * 判断多个字段不能同时为空

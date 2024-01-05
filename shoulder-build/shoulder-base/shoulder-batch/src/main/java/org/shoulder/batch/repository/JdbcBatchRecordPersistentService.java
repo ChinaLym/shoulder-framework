@@ -1,10 +1,10 @@
 package org.shoulder.batch.repository;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.batch.model.BatchRecord;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;

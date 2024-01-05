@@ -1,5 +1,6 @@
 package org.shoulder.crypto.local.impl;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.ByteUtils;
 import org.shoulder.crypto.digest.Sha256Utils;
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 import java.util.*;
 

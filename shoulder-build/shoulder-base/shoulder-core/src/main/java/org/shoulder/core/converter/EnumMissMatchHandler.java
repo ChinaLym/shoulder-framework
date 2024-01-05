@@ -1,6 +1,6 @@
 package org.shoulder.core.converter;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * String 转枚举失败时处理器

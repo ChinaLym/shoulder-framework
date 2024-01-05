@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 
 /**
  * 批量处理进度并发模型
@@ -27,7 +25,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  */
 @Data
 @NoArgsConstructor
-@NotThreadSafe
+//@javax.annotation.concurrent.NotThreadSafe
 public class FixedNumProgress implements Serializable, ProgressAble {
 
     private static final long serialVersionUID = 1L;

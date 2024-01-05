@@ -1,11 +1,10 @@
 package org.shoulder.ext.config.usecase;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.shoulder.ext.config.domain.ConfigField;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * @author lym

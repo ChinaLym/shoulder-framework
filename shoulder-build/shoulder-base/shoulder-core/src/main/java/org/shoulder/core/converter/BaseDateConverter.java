@@ -1,9 +1,9 @@
 package org.shoulder.core.converter;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.util.RegexpUtils;
 import org.springframework.core.convert.converter.Converter;
 
-import javax.annotation.Nonnull;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.Map;

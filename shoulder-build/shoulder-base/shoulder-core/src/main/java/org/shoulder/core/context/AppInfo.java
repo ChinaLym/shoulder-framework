@@ -1,5 +1,6 @@
 package org.shoulder.core.context;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.guid.InstanceIdProvider;
 import org.shoulder.core.i18.LocaleInfo;
 import org.shoulder.core.log.Logger;
@@ -8,7 +9,6 @@ import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.util.Assert;
 
-import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.TimeZone;

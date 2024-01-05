@@ -1,5 +1,7 @@
 package org.shoulder.core.log.beautify;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -7,8 +9,6 @@ import javassist.NotFoundException;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.util.ClassUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 
 /**

@@ -1,5 +1,7 @@
 package org.shoulder.web.template.tag.service;
 
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
@@ -14,8 +16,6 @@ import org.shoulder.web.template.tag.repository.TagRepository;
 import org.shoulder.web.template.tag.repository.TagSearchShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 

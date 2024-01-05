@@ -1,12 +1,11 @@
 package org.shoulder.autoconfigure.core.current.enhancer;
 
+import jakarta.annotation.Nonnull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
-
-import javax.annotation.Nonnull;
 
 /**
  * 即使其他地方覆盖了 AsyncConfigurer，也可以激活 shoulder 线程池增强能力

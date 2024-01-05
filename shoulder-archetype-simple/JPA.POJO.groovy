@@ -36,7 +36,7 @@ def generate(out, className, fields, table) {
     out.println "package $packageName"
     out.println ""
     out.println "import lombok.Data;"
-    out.println "import javax.persistence.*;"
+    out.println "import jakarta.persistence.*;"
     out.println ""
     out.println "/**"
     out.println " * entity class for ${table.getName()}"

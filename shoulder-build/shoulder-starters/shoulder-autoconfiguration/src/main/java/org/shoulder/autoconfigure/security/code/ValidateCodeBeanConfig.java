@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.security.code;
 
+import jakarta.annotation.Nullable;
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.code.ValidateCodeFilter;
@@ -23,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

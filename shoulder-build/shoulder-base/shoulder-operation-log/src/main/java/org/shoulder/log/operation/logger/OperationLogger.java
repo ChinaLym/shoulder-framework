@@ -1,10 +1,10 @@
 package org.shoulder.log.operation.logger;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.model.OperationLogDTO;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 

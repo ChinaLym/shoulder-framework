@@ -1,10 +1,10 @@
 package org.shoulder.web.template.dictionary.spi;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
 import org.shoulder.web.template.dictionary.model.DictionaryEnum;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

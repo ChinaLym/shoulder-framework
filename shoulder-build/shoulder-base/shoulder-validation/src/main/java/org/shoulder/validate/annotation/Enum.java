@@ -1,9 +1,9 @@
 package org.shoulder.validate.annotation;
 
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import org.shoulder.validate.validator.EnumValidator;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**

@@ -1,9 +1,9 @@
 package org.shoulder.crypto.local.repository;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

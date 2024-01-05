@@ -1,6 +1,7 @@
 package org.shoulder.core.log.beautify;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
+
 import java.util.stream.IntStream;
 
 import static org.shoulder.core.log.beautify.ColorString.*;

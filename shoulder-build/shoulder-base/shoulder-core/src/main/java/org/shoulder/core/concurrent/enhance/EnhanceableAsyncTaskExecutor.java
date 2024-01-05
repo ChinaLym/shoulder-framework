@@ -1,8 +1,8 @@
 package org.shoulder.core.concurrent.enhance;
 
+import jakarta.annotation.Nonnull;
 import org.springframework.core.task.AsyncTaskExecutor;
 
-import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 

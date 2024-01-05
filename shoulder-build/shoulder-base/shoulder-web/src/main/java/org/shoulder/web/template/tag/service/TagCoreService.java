@@ -1,11 +1,11 @@
 package org.shoulder.web.template.tag.service;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.web.template.tag.entity.TagEntity;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

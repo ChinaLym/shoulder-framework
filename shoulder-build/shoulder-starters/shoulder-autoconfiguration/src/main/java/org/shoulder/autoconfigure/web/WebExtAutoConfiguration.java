@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.web;
 
+import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.web.template.dictionary.DictionaryController;
 import org.shoulder.web.template.dictionary.DictionaryEnumController;
@@ -14,7 +15,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

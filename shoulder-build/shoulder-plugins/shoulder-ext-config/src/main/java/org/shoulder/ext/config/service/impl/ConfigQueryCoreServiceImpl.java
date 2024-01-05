@@ -1,5 +1,6 @@
 package org.shoulder.ext.config.service.impl;
 
+import jakarta.annotation.Nullable;
 import org.shoulder.ext.config.domain.ConfigType;
 import org.shoulder.ext.config.domain.PageInfo;
 import org.shoulder.ext.config.domain.model.ConfigData;
@@ -8,7 +9,6 @@ import org.shoulder.ext.config.service.ConfigQueryCoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 

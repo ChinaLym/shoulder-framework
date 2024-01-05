@@ -1,10 +1,9 @@
 package org.shoulder.log.operation.model;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.util.AddressUtils;
 import org.shoulder.log.operation.enums.TerminalType;
-
-import javax.annotation.Nonnull;
 
 /**
  * 有些操作（如定时任务）是非用户操作的，那么操作者就是系统了

@@ -1,12 +1,11 @@
 package org.shoulder.autoconfigure.operation;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.log.operation.context.OpLogContext;
 import org.shoulder.log.operation.model.Operator;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 当前用户信息解析，操作日志的拦截器

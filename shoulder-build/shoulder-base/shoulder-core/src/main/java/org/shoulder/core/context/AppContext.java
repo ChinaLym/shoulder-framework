@@ -1,12 +1,13 @@
 package org.shoulder.core.context;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Locale;
@@ -23,7 +24,7 @@ public class AppContext {
 
     private static final Logger log = LoggerFactory.getLogger(AppContext.class);
 
-    private static final ThreadLocal<Map<String, Object>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(16));
+    private static final ThreadLocal<Map<String, Serializable>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(16));
 
     /**
      * 获取 用户标识
@@ -38,7 +39,7 @@ public class AppContext {
      *
      * @param userId 用户标识
      */
-    public static void setUserId(Object userId) {
+    public static void setUserId(Serializable userId) {
         log.trace("setUserId ({})", userId);
         set(ShoulderContextKey.USER_ID, userId);
     }
@@ -78,7 +79,7 @@ public class AppContext {
      *
      * @param principal 认证凭证
      */
-    public static void setAuthentication(Principal principal) {
+    public static <T extends Serializable, Principal> void setAuthentication(T principal) {
         log.trace("setToken ({})", principal);
         set(ShoulderContextKey.AUTHENTICATION, principal);
     }
@@ -150,7 +151,7 @@ public class AppContext {
     @SuppressWarnings("unchecked")
     @Nullable
     public static <T> T get(String key) {
-        Map<String, Object> map = THREAD_LOCAL.get();
+        Map<String, Serializable> map = THREAD_LOCAL.get();
         if (MapUtils.isEmpty(map)) {
             return null;
         }
@@ -168,11 +169,11 @@ public class AppContext {
      * @param key   key，若 key 为空，则直接返回
      * @param value value
      */
-    public static void set(String key, @Nullable Object value) {
+    public static void set(String key, @Nullable Serializable value) {
         if (StringUtils.isEmpty(key)) {
             return;
         }
-        Map<String, Object> map = THREAD_LOCAL.get();
+        Map<String, Serializable> map = THREAD_LOCAL.get();
         if (map == null) {
             map = new HashMap<>();
             THREAD_LOCAL.set(map);
@@ -203,15 +204,15 @@ public class AppContext {
      *
      * @param contextMap 上下文属性
      */
-    public static void setAttributes(Map<String, Object> contextMap) {
+    public static void setAttributes(Map<String, Serializable> contextMap) {
         THREAD_LOCAL.set(contextMap);
     }
 
-    public static Map<String, Object> getAll() {
+    public static Map<String, Serializable> getAll() {
         return THREAD_LOCAL.get();
     }
 
-    public static void set(Map<String, Object> attributes) {
+    public static void set(Map<String, Serializable> attributes) {
         THREAD_LOCAL.set(attributes);
     }
 

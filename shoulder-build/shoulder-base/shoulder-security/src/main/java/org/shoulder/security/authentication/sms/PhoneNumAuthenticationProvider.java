@@ -1,15 +1,17 @@
 package org.shoulder.security.authentication.sms;
 
+import jakarta.annotation.Nonnull;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.annotation.Nonnull;
-
 /**
  * 负责手机号认证处理，可以结合其他安全过滤器实现 手机号 + 短信验证码登录、手机号 + 密码登录、手机号 + 邮件验证码登录等。
+ *
+ *  使用方：框架使用者，弱感知
+ *  类定位：sms 认证逻辑
  *
  * @author lym
  */

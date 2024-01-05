@@ -1,5 +1,6 @@
 package org.shoulder.security.authentication.endpoint;
 
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -16,8 +17,9 @@ import java.util.Map;
  * <p>
  * 传统授权服务器（spring-security-oauth2）不支持 /introspect。本类特地增加该端点，以更好地支持校验回调。
  *
+ * TODO 废弃与 spring security oauth 项目相关的类，改为替代品 {@link OAuth2ResourceServerConfigurer}
+ * 校验接口用处：与 {@link JwkSetEndpoint}类似，提供了远程校验 token 是否有效，不需要客户端理解：
  * @author lym
- * TODO 废弃与 spring security oauth 项目相关的类，改为替代品
  */
 @Controller
 public class IntrospectEndpoint {

@@ -1,5 +1,6 @@
 package org.shoulder.core.exception;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.ArrayUtils;
@@ -7,8 +8,6 @@ import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
-
-import javax.annotation.Nonnull;
 
 /**
  * 基础通用异常

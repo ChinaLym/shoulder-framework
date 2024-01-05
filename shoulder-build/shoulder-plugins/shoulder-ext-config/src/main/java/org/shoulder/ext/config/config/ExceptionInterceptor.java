@@ -1,6 +1,8 @@
 package org.shoulder.ext.config.config;
 
 import com.google.common.collect.Lists;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.shoulder.core.dto.response.BaseResult;
@@ -11,8 +13,6 @@ import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Set;
 

@@ -1,5 +1,6 @@
 package org.shoulder.crypto.asymmetric.impl;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.crypto.asymmetric.AsymmetricCipher;
@@ -11,7 +12,6 @@ import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
 
 /**

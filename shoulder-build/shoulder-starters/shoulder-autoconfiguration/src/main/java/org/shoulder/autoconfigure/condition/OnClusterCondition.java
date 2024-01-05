@@ -1,12 +1,11 @@
 package org.shoulder.autoconfigure.condition;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.context.AppInfo;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.type.AnnotatedTypeMetadata;
-
-import javax.annotation.Nonnull;
 
 /**
  * 判断是否开启了集群模式

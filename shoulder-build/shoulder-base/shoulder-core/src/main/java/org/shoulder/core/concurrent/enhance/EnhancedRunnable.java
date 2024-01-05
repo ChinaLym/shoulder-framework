@@ -1,11 +1,11 @@
 package org.shoulder.core.concurrent.enhance;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * 被增强过的 runnable，可以保存所有的增强器

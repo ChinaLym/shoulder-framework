@@ -1,8 +1,7 @@
 package org.shoulder.data.jpa;
 
+import jakarta.persistence.AttributeConverter;
 import org.shoulder.core.util.JsonUtils;
-
-import javax.persistence.AttributeConverter;
 
 /**
  * Json 格式转换器

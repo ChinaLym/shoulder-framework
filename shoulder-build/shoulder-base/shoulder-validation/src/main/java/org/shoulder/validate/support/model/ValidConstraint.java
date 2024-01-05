@@ -1,6 +1,7 @@
 package org.shoulder.validate.support.model;
 
-import javax.validation.groups.Default;
+import jakarta.validation.groups.Default;
+
 import java.lang.annotation.Annotation;
 
 /**

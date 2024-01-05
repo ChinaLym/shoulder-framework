@@ -32,6 +32,8 @@ Google 等互联网顶尖公司已经探索 `ServiceMesh` 许久，虽然当前�
 计划
 - 生产/压测隔离【DONE】
 - redis6已经发布，有客户端缓存相关涉及，lettuce6.x已经支持，但spring boot 中暂未支持，预计 spring boot 2.5+ 支持
-- 启动速度（CRaC，spring 预计2023.11才支持）、启动预热
+- 启动速度（CRaC，spring boot 3.2
+  2023.11才支持）、启动预热 https://docs.spring.io/spring-framework/reference/integration/checkpoint-restore.html
+- 默认容器由 alpaquita 替换 alpine，以获得更好的内存管理支持（musl-perf，JDK16后兼容）、支持 Graavl VN
 
 - JDK 21 https://www.oracle.com/java/technologies/downloads/#jdk21-windows

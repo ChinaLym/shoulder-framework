@@ -1,9 +1,9 @@
 package org.shoulder.crypto.negotiation.cache;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.shoulder.crypto.negotiation.dto.NegotiationResult;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

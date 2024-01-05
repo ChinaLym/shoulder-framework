@@ -248,36 +248,49 @@ public class Threads {
         private final Duration maxWait;
 
         /**
-         * @param maxWait 最长等待时间
+         * 最长等待时间 null 代表永远阻塞，直至放入
          */
-        public Block(Duration maxWait) {
+        private final Duration warnWait;
+        /**
+         * @param maxWait  最长等待时间
+         * @param warnWait
+         */
+        public Block(Duration maxWait, Duration warnWait) {
             this.maxWait = maxWait;
+            this.warnWait = warnWait;
         }
 
         /**
-         * 默认一直阻塞，直至放入
+         * 默认一直阻塞，直至放入，阻塞时长超过50ms，则日志由debug转为warn
          */
         public Block() {
             this.maxWait = null;
+            this.warnWait = Duration.ofMillis(50);
         }
 
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
             if (executor.isShutdown()) {
-                throw new RejectedExecutionException("Executor has been shut down");
+                throw new RejectedExecutionException("Executor has been shutdown");
             }
             try {
+                long start = System.currentTimeMillis();
                 BlockingQueue<Runnable> queue = executor.getQueue();
                 if (maxWait == null) {
                     log.debug("Attempting to queue task execution till success, blocking...");
                     queue.put(r);
                 } else {
-                    log.debug("Attempting to queue task execution, maxWait: {}", this.maxWait);
+                    log.debug("Attempting to queue task execution, maxWait: {}ms", this.maxWait.toMillis());
                     if (!queue.offer(r, this.maxWait.toNanos(), TimeUnit.NANOSECONDS)) {
-                        throw new RejectedExecutionException("Max wait time expired to queue task");
+                        throw new RejectedExecutionException("Max wait time(" + this.maxWait.toMillis() + "ms) expired to queue task.");
                     }
                 }
-                log.debug("Task execution queued");
+                long cost = System.currentTimeMillis() - start;
+                if (cost > warnWait.toMillis()) {
+                    log.warn("Task queued slowly, cost={}ms", cost);
+                } else {
+                    log.debug("Task queued, cost={}ms", cost);
+                }
             } catch (InterruptedException e) {
                 log.debug("Interrupted while queuing task execution");
                 Thread.currentThread().interrupt();

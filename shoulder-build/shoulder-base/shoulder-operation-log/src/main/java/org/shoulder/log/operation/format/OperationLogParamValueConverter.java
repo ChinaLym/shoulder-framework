@@ -1,9 +1,9 @@
 package org.shoulder.log.operation.format;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.shoulder.log.operation.model.OperationLogDTO;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

@@ -1,14 +1,13 @@
 package org.shoulder.autoconfigure.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-
-import javax.annotation.Nonnull;
 
 /**
  * 为 JsonUtils 设置，使得即使用户主动设置了 ObjectMapper ，则使用用户设置的格式

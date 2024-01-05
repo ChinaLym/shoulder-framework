@@ -1,9 +1,9 @@
 package org.shoulder.validate.support.extract;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.validate.support.dto.FieldValidationRuleDTO;
 import org.shoulder.validate.support.model.ValidConstraint;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 

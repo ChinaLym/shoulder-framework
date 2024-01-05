@@ -22,20 +22,21 @@
 
         <!-- spring-security-oauth2-autoconfigure -->
         <spring-security-oauth2-autoconfigure.version>2.6.8</spring-security-oauth2-autoconfigure.version>
+        <!-- spring security oauth2 不再维护，不引入-->
         <spring-security-oauth2.version>2.5.2.RELEASE</spring-security-oauth2.version>
         <nimbus-jose-jwt.version>9.35</nimbus-jose-jwt.version>
         <spring-oauth2-server.version>0.1.2</spring-oauth2-server.version>
 
-        <spring-boot.version>2.7.16</spring-boot.version>
+        <spring-boot.version>3.1.7</spring-boot.version>
         <!-- 由于Spring Boot提供了Maven BOM来管理依赖版本，因此您无需指定版本 -->
 
         <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info https://www.json.cn/  -->
         <!-- 最新 spring cloud 版本：https://spring.io/projects/spring-cloud#learn -->
-        <!-- springboot 2.6-2.7 2021.0.8  springboot3: 2022.0.2 -->
-        <spring-cloud.version>2021.0.8</spring-cloud.version>
+        <!-- springboot 2.6-2.7 2021.0.9  springboot3.0/1: 2022.0.4  springboot3.2: 2023.0.x -->
+        <spring-cloud.version>2022.0.4</spring-cloud.version>
 
         <!-- build -->
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -73,10 +74,11 @@
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <hutool.version>5.8.22</hutool.version>
         <javassist.version>3.29.2-GA</javassist.version>
-        <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
+        <jakarta.ws.rs-api.version>2.1.1</jakarta.ws.rs-api.version>
 
         <guava.version>32.1.2-jre</guava.version>
-        <findbugs-annotations.version>3.0.1</findbugs-annotations.version>
+        <!-- google 最新 3.0.1版本（jdk1.7+）还用的javax.xxx 不支持 jakarta.xxx 暂时移除  https://findbugs.sourceforge.net/ -->
+        <!--        <findbugs-annotations.version>3.0.1</findbugs-annotations.version>-->
         <!-- inheritable threadLocal https://github.com/alibaba/transmittable-thread-local/releases -->
         <alibaba.transmittable.version>2.14.3</alibaba.transmittable.version>
 
@@ -486,9 +488,9 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>javax.ws.rs-api</artifactId>
-                <version>${javax.ws.rs-api.version}</version>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>${jakarta.ws.rs-api.version}</version>
             </dependency>
 
             <dependency>
@@ -522,11 +524,12 @@
                 <version>${guava.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>annotations</artifactId>
-                <version>${findbugs-annotations.version}</version>
-            </dependency>
+            <!-- @Nonnull / @Nullable 提示 -->
+            <!--            <dependency>-->
+            <!--                <groupId>com.google.code.findbugs</groupId>-->
+            <!--                <artifactId>annotations</artifactId>-->
+            <!--                <version>${findbugs-annotations.version}</version>-->
+            <!--            </dependency>-->
 
             <!-- java native access -->
             <dependency>

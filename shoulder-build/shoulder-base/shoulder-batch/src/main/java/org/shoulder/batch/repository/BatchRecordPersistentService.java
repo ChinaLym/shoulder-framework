@@ -1,9 +1,9 @@
 package org.shoulder.batch.repository;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.shoulder.batch.model.BatchRecord;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

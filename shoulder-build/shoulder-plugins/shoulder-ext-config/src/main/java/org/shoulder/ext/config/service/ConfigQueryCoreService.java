@@ -1,10 +1,10 @@
 package org.shoulder.ext.config.service;
 
+import jakarta.annotation.Nullable;
 import org.shoulder.ext.config.domain.ConfigType;
 import org.shoulder.ext.config.domain.PageInfo;
 import org.shoulder.ext.config.domain.model.ConfigData;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 

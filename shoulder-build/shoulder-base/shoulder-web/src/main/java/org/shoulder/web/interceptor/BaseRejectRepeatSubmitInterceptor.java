@@ -1,12 +1,11 @@
 package org.shoulder.web.interceptor;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.http.interceptor.BaseRestTemplateLogInterceptor;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 防止重复提交拦截器

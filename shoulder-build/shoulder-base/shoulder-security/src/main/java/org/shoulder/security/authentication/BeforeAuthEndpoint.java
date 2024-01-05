@@ -1,9 +1,13 @@
 package org.shoulder.security.authentication;
 
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.security.SecurityConst;
+import org.shoulder.security.authentication.browser.AbstractSessionStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -18,17 +22,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
 /**
  * 默认的 待认证请求处理器。当未认证（未登录）时访问需要认证才能访问的资源时，会统一跳转至这里
  *
+ * {@link AbstractSessionStrategy} 里约定了未登录跳转到/xxx，/xxx相当于 SPI，这个类用于处理/xxx请求，相当于框架的默认 SPI 实现，使用者可以替换掉
+ * @see LoginUrlAuthenticationEntryPoint spring security 也提供了默认的处理器，但只支持page跳转、且配置不慎会有死循环跳转，本类优化了其缺点并提供了json返回。
+ *
  * @author lym
- * @see LoginUrlAuthenticationEntryPoint spring security 默认
  */
 @RestController
 public class BeforeAuthEndpoint {

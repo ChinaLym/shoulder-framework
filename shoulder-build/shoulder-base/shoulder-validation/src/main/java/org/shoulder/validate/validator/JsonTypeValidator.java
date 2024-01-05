@@ -1,12 +1,12 @@
 package org.shoulder.validate.validator;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.annotation.JsonType;
 import org.shoulder.validate.annotation.JsonType.FormType;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 import java.util.Map;
 

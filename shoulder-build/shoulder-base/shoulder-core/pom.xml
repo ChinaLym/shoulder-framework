@@ -11,11 +11,11 @@
     </parent>
 
     <dependencies>
-        <!-- @Nonnull / @Nullable 提示 -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
-        </dependency>
+
+        <!--        <dependency>-->
+        <!--            <groupId>com.google.code.findbugs</groupId>-->
+        <!--            <artifactId>annotations</artifactId>-->
+        <!--        </dependency>-->
 
         <!-- json 解析: jackson 的安全性和功能都比 fastJson 强，也是 spring 的首选 -->
         <dependency>

@@ -1,9 +1,9 @@
 package org.shoulder.core.exception;
 
+import jakarta.annotation.Nonnull;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -30,7 +30,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * @desc 认证无效，需要先进行认证
      * @sug 1.未携带正确认证标识（需要检查接口文档-认证）；2.过期的认证标识（需要重新登陆）
-     * @see org.springframework.security.web.access.ExceptionTranslationFilter#handleSpringSecurityException(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, javax.servlet.FilterChain, java.lang.RuntimeException) AccessDeny
+     * @see org.springframework.security.web.access.ExceptionTranslationFilter#handleSpringSecurityException(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, jakarta.servlet.FilterChain, java.lang.RuntimeException) AccessDeny
      */
     AUTH_401_EXPIRED(13, "Certification invalid. Do-auth please.", Level.INFO, HttpStatus.UNAUTHORIZED),
 

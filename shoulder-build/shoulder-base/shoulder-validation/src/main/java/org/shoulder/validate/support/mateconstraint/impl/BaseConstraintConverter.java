@@ -1,10 +1,10 @@
 package org.shoulder.validate.support.mateconstraint.impl;
 
 import cn.hutool.core.util.ReflectUtil;
+import jakarta.annotation.Nonnull;
 import org.shoulder.validate.support.dto.ConstraintInfoDTO;
 import org.shoulder.validate.support.mateconstraint.ConstraintConverter;
 
-import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;

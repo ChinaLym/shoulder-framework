@@ -1,5 +1,6 @@
 package org.shoulder.ext.config.usecase;
 
+import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
@@ -13,7 +14,6 @@ import org.shoulder.ext.config.domain.ex.ConfigException;
 import org.shoulder.ext.config.domain.model.ConfigFieldInfo;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import javax.validation.constraints.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

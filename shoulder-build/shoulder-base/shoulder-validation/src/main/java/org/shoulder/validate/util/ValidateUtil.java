@@ -1,13 +1,13 @@
 package org.shoulder.validate.util;
 
 import com.google.common.collect.Lists;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
+import jakarta.validation.Validation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.util.StringUtils;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
-import javax.validation.Validation;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public class ValidateUtil {
 
-    private static final javax.validation.Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
+    private static final jakarta.validation.Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
 
     /**
      * validate主动校验方式

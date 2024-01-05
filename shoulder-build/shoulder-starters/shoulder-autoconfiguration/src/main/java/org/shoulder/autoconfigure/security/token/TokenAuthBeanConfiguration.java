@@ -3,6 +3,7 @@ package org.shoulder.autoconfigure.security.token;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
+import jakarta.annotation.Nullable;
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationHandlerConfig;
 import org.shoulder.core.log.LoggerFactory;
@@ -36,7 +37,6 @@ import org.springframework.security.oauth2.server.resource.authentication.Opaque
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import javax.annotation.Nullable;
 import javax.sql.DataSource;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPublicKey;

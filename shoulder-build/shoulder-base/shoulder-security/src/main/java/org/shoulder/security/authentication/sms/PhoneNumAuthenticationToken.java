@@ -9,9 +9,9 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 import java.util.Collection;
 
 /**
- * 手机号码认证 token，用于保存请求中的手机号。
+ * 手机号码认证 token DTO，用于保存请求中的手机号。
  * 实现了 AbstractAuthenticationToken 相当于一种策略类
- * 参考 {@link org.springframework.security.authentication.UsernamePasswordAuthenticationToken}
+ * 参考了 {@link org.springframework.security.authentication.UsernamePasswordAuthenticationToken}
  *
  * @author lym
  */

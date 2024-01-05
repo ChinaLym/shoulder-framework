@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.operation;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.log.operation.enums.TerminalType;
 import org.shoulder.log.operation.model.Operator;
@@ -9,8 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 操作日志的拦截器：根据 spring security 的上下文中的认证凭证解析用户，并作为当前上下文 操作日志的默认操作者

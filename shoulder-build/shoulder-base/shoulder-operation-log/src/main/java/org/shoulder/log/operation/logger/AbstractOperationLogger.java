@@ -1,12 +1,12 @@
 package org.shoulder.log.operation.logger;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.context.OperationLogFactory;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;

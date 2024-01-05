@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.core.current.enhancer;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.concurrent.enhance.AppContextThreadLocalAutoTransferEnhancer;
 import org.shoulder.core.concurrent.enhance.ThreadEnhanceHelper;
 import org.shoulder.core.concurrent.enhance.ThreadEnhancer;
@@ -7,8 +8,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-
-import javax.annotation.Nonnull;
 
 /**
  * 线程池自动增强

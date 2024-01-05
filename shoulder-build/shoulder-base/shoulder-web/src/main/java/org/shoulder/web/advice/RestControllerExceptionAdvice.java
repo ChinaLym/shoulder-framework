@@ -1,5 +1,8 @@
 package org.shoulder.web.advice;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.hibernate.validator.internal.engine.path.NodeImpl;
@@ -14,6 +17,7 @@ import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -30,9 +34,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 import java.util.StringJoiner;
 
@@ -183,7 +184,7 @@ public class RestControllerExceptionAdvice {
         String support = "";
         if (CollectionUtils.isNotEmpty(e.getSupportedHttpMethods())) {
             StringJoiner sj = new StringJoiner(",", "'", "'");
-            e.getSupportedHttpMethods().stream().map(Enum::name).forEach(sj::add);
+            e.getSupportedHttpMethods().stream().map(HttpMethod::name).forEach(sj::add);
             support = sj.toString();
         }
         BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.REQUEST_METHOD_MISMATCH, e, e.getMethod(), support);

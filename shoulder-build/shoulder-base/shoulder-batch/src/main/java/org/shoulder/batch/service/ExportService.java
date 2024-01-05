@@ -1,9 +1,9 @@
 package org.shoulder.batch.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.core.context.AppInfo;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;

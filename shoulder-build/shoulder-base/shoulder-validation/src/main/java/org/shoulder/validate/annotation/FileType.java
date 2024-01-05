@@ -4,8 +4,8 @@ import org.shoulder.validate.validator.FileTypeValidator;
 import org.shoulder.validate.validator.FileTypeValidatorForArray;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 /**

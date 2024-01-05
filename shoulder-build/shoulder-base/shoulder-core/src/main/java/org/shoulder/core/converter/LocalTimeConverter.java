@@ -1,8 +1,8 @@
 package org.shoulder.core.converter;
 
+import jakarta.annotation.Nonnull;
 import org.springframework.core.convert.converter.Converter;
 
-import javax.annotation.Nonnull;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;

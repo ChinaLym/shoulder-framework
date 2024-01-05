@@ -2,6 +2,7 @@ package org.shoulder.core.concurrent.enhance;
 
 import org.shoulder.core.context.AppContext;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -19,7 +20,7 @@ public class AppContextThreadLocalAutoTransferEnhancer implements ThreadEnhancer
      */
     @Override
     public EnhancedRunnable doEnhance(EnhancedRunnable runnable) {
-        Map<String, Object> temp = AppContext.getAll();
+        Map<String, Serializable> temp = AppContext.getAll();
         return new EnhancedRunnable(() -> {
             try {
                 AppContext.set(temp);
@@ -39,7 +40,7 @@ public class AppContextThreadLocalAutoTransferEnhancer implements ThreadEnhancer
      */
     @Override
     public <T> EnhancedCallable<T> doEnhance(EnhancedCallable<T> callable) {
-        Map<String, Object> temp = AppContext.getAll();
+        Map<String, Serializable> temp = AppContext.getAll();
         return new EnhancedCallable<>(() -> {
             try {
                 AppContext.set(temp);

@@ -1,6 +1,6 @@
 package org.shoulder.log.operation.context;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * shoulder 定义的业务，传播。

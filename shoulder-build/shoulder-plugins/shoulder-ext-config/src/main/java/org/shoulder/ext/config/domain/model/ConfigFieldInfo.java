@@ -1,9 +1,9 @@
 package org.shoulder.ext.config.domain.model;
 
+import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 
 /**

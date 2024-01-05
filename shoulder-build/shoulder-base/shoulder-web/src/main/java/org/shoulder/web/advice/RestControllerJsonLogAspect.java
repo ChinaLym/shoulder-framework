@@ -1,5 +1,6 @@
 package org.shoulder.web.advice;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -7,7 +8,6 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Enumeration;

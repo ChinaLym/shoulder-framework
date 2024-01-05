@@ -1,11 +1,11 @@
 package org.shoulder.autoconfigure.core;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.constant.ShoulderFramework;
 import org.shoulder.core.context.AppInfo;
 import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.ApplicationListener;
 
-import javax.annotation.Nonnull;
 import java.util.Properties;
 
 /**

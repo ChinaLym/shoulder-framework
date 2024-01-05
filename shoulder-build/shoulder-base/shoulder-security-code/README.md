@@ -1,6 +1,6 @@
 # 灵活，扩展性强，使用简单的验证码框架核
 
-使用者可以基于这一核心部分轻松实现一个配置灵活，低依赖的验证码框架
+使用者可以基于这一核心部分轻松实现一个配置灵活，低依赖、松耦合、高性能，非常轻量的验证码框架（仅几十kb）
 
 - TODO
     - 调用频率保护，如防止同一手机号频发调用短信验证码接口（优先级低，可以通过其他方式实现）
@@ -13,7 +13,7 @@
 
 该方法会根据配置项判定是否要需要检查验证码，
 
-如果未通过校验，则交给
+如果未通过校验，则交给登陆失败处理器
 
 ## 设计和实现说明
 
@@ -29,7 +29,7 @@
                     - 校验通过，请求放行
                     - 校验不通过（可能是：验证码错误、验证码过期、验证码不存在等），抛出 `ValidateCodeAuthenticationException`
             - 未找到
-                - 抛出 `NoSuchValidateCodeProcessorException` 异常，交给 `AuthenticationFailureHandler` 处理 
+                - 抛出 `NoSuchValidateCodeProcessorException` 异常，交给 `AuthenticationFailureHandler` 处理
     - 不需要校验（未在配置文件配置）
         - 放行
 

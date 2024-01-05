@@ -1,10 +1,10 @@
 package org.shoulder.validate.support.mateconstraint.impl;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.shoulder.validate.support.mateconstraint.ConstraintConverter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 

@@ -1,5 +1,7 @@
 package org.shoulder.core.lock;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.PreDestroy;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 
@@ -8,9 +10,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nonnull;
-import javax.annotation.PreDestroy;
 
 /**
  * 全局锁抽象类，支持 jdk 的方法

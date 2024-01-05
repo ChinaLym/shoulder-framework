@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.crypto;
 
+import jakarta.annotation.Nullable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.core.concurrent.Threads;
@@ -29,11 +30,9 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.sql.DataSource;
 import java.security.Security;
 import java.util.List;
-
-import javax.annotation.Nullable;
-import javax.sql.DataSource;
 
 /**
  * 本地加解密默认配置

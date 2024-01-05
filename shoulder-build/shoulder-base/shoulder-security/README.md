@@ -153,7 +153,8 @@ Token（JWT）：
     - `RoleVoter<Object>`基于角色的投票器（适用于 用户-角色-权限）
     - `RoleHierarchyVoter<Object>` 基于角色(额外支持继承)的投票器
     - `AuthenticatedVoter<Object>` 基于角色(支持继承)的投票器（适用于 用户-权限）
-    - `Jsr250Voter<Object>` 用于支持 JSR250 的投票器（`javax.annotation.security`）
+  - `Jsr250Voter<Object>` 用于支持 JSR250 的投票器（`jakarta.annotation.security`
+    ）【已更新为 `org.springframework.security.authorization.method.Jsr250AuthorizationManager`】
         - `@DeclareRoles` 声明角色
         - `@DenyAll` 拒绝所有角色
         - `@PermitAll` 按照角色授权

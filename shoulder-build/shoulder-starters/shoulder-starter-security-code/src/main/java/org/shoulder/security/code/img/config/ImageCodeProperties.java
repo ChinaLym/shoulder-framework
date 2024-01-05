@@ -1,13 +1,13 @@
 package org.shoulder.security.code.img.config;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import org.shoulder.code.consts.ValidateCodeConsts;
 import org.shoulder.code.propertities.BaseValidateCodeProperties;
 import org.shoulder.security.SecurityConst;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;

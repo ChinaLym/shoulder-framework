@@ -11,8 +11,10 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * 短信验证码登录相关配置
- * 扩展 spring security 认证方式，提供短信验证码认证
+ * 短信验证码登录相关自动配置，扩展 spring security 认证方式，提供短信验证码认证
+ *
+ * 使用方：框架 bean 自动注入管理
+ * 类定位：依赖管理，sms 认证相关能力需要的bean梳理
  *
  * @author lym
  */

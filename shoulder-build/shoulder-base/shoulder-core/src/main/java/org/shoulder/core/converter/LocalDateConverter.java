@@ -1,6 +1,7 @@
 package org.shoulder.core.converter;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;

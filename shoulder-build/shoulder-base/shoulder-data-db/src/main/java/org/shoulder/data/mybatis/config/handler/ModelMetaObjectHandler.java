@@ -4,6 +4,7 @@ import cn.hutool.core.util.ReflectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import jakarta.annotation.Nonnull;
 import org.apache.ibatis.reflection.MetaObject;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.StringUtils;
@@ -12,7 +13,6 @@ import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.uid.EntityIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
 
 /**

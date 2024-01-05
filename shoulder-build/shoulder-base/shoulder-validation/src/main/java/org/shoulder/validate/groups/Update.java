@@ -1,6 +1,6 @@
 package org.shoulder.validate.groups;
 
-import javax.validation.groups.Default;
+import jakarta.validation.groups.Default;
 
 /**
  * 验证组分组-保存时

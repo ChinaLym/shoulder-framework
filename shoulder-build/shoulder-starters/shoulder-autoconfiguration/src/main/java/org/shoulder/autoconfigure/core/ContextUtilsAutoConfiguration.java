@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.core;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ContextUtils;
 import org.springframework.beans.BeansException;
@@ -13,8 +14,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-
-import javax.annotation.Nonnull;
 
 /**
  * 为 ContextUtils 设置值

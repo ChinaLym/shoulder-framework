@@ -2,13 +2,12 @@ package org.shoulder.monitor.concurrent;
 
 import io.micrometer.core.instrument.ImmutableTag;
 import io.micrometer.core.instrument.Metrics;
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.concurrent.delay.DelayTask;
 import org.shoulder.core.concurrent.delay.DelayTaskHolder;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.Nonnull;
 
 /**
  * 包了一层延迟队列的数量
