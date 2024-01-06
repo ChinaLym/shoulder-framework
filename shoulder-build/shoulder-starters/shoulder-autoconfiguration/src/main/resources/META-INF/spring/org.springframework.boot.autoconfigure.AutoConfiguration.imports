@@ -11,8 +11,6 @@ org.shoulder.autoconfigure.web.WebAdvanceAutoConfiguration
 org.shoulder.autoconfigure.web.MvcConverterAutoConfiguration
 org.shoulder.autoconfigure.web.WebMvcAutoConfiguration
 org.shoulder.autoconfigure.web.WebExtAutoConfiguration
-org.shoulder.autoconfigure.apidoc.ShoulderSensitiveApiGroupAutoConfiguration
-org.shoulder.autoconfigure.apidoc.SwaggerAutoConfiguration
 org.shoulder.autoconfigure.redis.RedisAutoConfiguration
 org.shoulder.autoconfigure.redis.LettuceEventConsumerConfiguration
 org.shoulder.autoconfigure.lock.LockAutoConfiguration

@@ -33,7 +33,7 @@
         <module>shoulder-cluster</module>
         <module>shoulder-batch</module>
 
-        <module>shoulder-api-doc</module>
+        <!--        <module>shoulder-api-doc</module> temp_removal_for_not_support_spring_boot_3-->
         <module>shoulder-monitor</module>
     </modules>
 
