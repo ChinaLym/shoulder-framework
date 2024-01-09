@@ -24,7 +24,7 @@
         <spring-security-oauth2-autoconfigure.version>2.6.8</spring-security-oauth2-autoconfigure.version>
         <!-- spring security oauth2 不再维护，不引入-->
         <spring-security-oauth2.version>2.5.2.RELEASE</spring-security-oauth2.version>
-        <nimbus-jose-jwt.version>9.35</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
         <spring-oauth2-server.version>0.1.2</spring-oauth2-server.version>
 
         <spring-boot.version>3.1.7</spring-boot.version>
@@ -42,9 +42,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- api-doc -->
-        <swagger2.version>1.6.11</swagger2.version>
+        <swagger2.version>1.6.12</swagger2.version>
         <!-- openApi(swagger)是行业标准，swagger 1.7 更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
-        <swagger3.version>2.2.16</swagger3.version>
+        <swagger3.version>2.2.20</swagger3.version>
 
         <!-- 使用 springfox 解析文档 暂时移除，其核心类 WebMvcOpenApiTransformationFilter 还依赖 javax.servlet -->
         <springfox.version>3.0.0_temp_removal_for_not_support_spring_boot_3</springfox.version>
@@ -62,48 +62,50 @@
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-exec.version>1.3</commons-exec.version>
         <commons-email.version>1.5</commons-email.version>
-        <commons-io.version>2.13.0</commons-io.version>
-        <commons-configuration.version>1.10</commons-configuration.version>
-        <commons-lang3.version>3.13.0</commons-lang3.version>
+        <commons-io.version>2.15.1</commons-io.version>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
         <commons-net.version>3.6</commons-net.version>
+        <commons-configuration.version>1.10</commons-configuration.version>
         <commons-daemon.version>1.3.4</commons-daemon.version>
 
         <!-- java native access -->
-        <jna.version>5.13.0</jna.version>
+        <jna.version>5.14.0</jna.version>
         <!-- useful tools -->
         <pinyin4j.version>2.5.1</pinyin4j.version>
-        <hutool.version>5.8.22</hutool.version>
-        <javassist.version>3.29.2-GA</javassist.version>
-        <jakarta.ws.rs-api.version>2.1.1</jakarta.ws.rs-api.version>
+        <hutool.version>5.8.24</hutool.version>
+        <javassist.version>3.30.2-GA</javassist.version>
+        <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
 
-        <guava.version>32.1.2-jre</guava.version>
+        <guava.version>33.0.0-jre</guava.version>
         <!-- google 最新 3.0.1版本（jdk1.7+）还用的javax.xxx 不支持 jakarta.xxx 暂时移除  https://findbugs.sourceforge.net/ -->
         <findbugs-annotations.version>3.0.1_temp_removal_for_not_support_spring_boot_3</findbugs-annotations.version>
         <!-- inheritable threadLocal https://github.com/alibaba/transmittable-thread-local/releases -->
-        <alibaba.transmittable.version>2.14.3</alibaba.transmittable.version>
+        <alibaba.transmittable.version>2.14.5</alibaba.transmittable.version>
 
-        <bcprov.jdk15on.version>1.70</bcprov.jdk15on.version>
-        <bcpkix.jdk15on.version>1.70</bcpkix.jdk15on.version>
+        <bcprov.jdk18on.version>1.77</bcprov.jdk18on.version>
+        <bcpkix.jdk18on.version>1.77</bcpkix.jdk18on.version>
+
         <caffeine.version>3.0.5</caffeine.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
 
         <!-- tools-file -->
-        <tika-core.version>2.9.0</tika-core.version>
+        <tika-core.version>2.9.1</tika-core.version>
         <opencsv.version>5.6</opencsv.version>
 
         <!-- JDK21 注意该版本： https://github.com/projectlombok/lombok/issues/3393-->
         <lombok.version>1.18.30</lombok.version>
 
         <!-- dataBase-->
-        <mysql.version>8.0.21</mysql.version>
+        <mysql-connector-j.version>8.2.0</mysql-connector-j.version>
         <h2.version>2.2.224</h2.version>
         <druid.version>1.2.8</druid.version>
         <!-- mybatis-plus 功能稳定性较差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
-        <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
-        <pagehelper.version>5.3.3</pagehelper.version>
-        <pagehelper-starter.version>1.4.7</pagehelper-starter.version>
-        <beecp.version>3.4.2</beecp.version>
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
+        <pagehelper.version>6.1.0</pagehelper.version>
+        <pagehelper-starter.version>2.1.0</pagehelper-starter.version>
+        <beecp.version>3.5.0</beecp.version>
         <p6spy.version>3.9.1</p6spy.version>
+        <redisson.version>3.25.2</redisson.version>
 
         <!-- test -->
         <mockito-all.version>1.10.19</mockito-all.version>
@@ -174,7 +176,7 @@
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
-                <version>3.23.5</version>
+                <version>${redisson.version}</version>
             </dependency>
 
 
@@ -560,14 +562,14 @@
             <!-- crypto -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>${bcprov.jdk15on.version}</version>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bcprov.jdk18on.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcpkix-jdk15on</artifactId>
-                <version>${bcpkix.jdk15on.version}</version>
+                <artifactId>bcpkix-jdk18on</artifactId>
+                <version>${bcpkix.jdk18on.version}</version>
             </dependency>
 
             <!-- spring boot已经管掉 JDK 11 兼容 jdk8 的相关依赖 -->
@@ -592,7 +594,13 @@
                 <artifactId>p6spy</artifactId>
                 <version>${p6spy.version}</version>
             </dependency>
-
+            <!-- mysql -->
+            <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>${mysql-connector-j.version}</version>
+            </dependency>
             <!-- h2 database -->
             <dependency>
                 <groupId>com.h2database</groupId>

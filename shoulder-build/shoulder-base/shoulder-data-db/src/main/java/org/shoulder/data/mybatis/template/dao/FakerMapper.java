@@ -157,11 +157,6 @@ public interface FakerMapper<ENTITY extends BaseEntity<? extends Serializable>> 
     }
 
     @Override
-    default List<Object> selectObjs(Wrapper<ENTITY> queryWrapper) {
-        throw createNotSupportException();
-    }
-
-    @Override
     default <E extends IPage<Map<String, Object>>> E selectMapsPage(E page, Wrapper<ENTITY> queryWrapper) {
         throw createNotSupportException();
     }

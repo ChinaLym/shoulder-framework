@@ -1,4 +1,4 @@
-# Auto Configuration shoulder-autoconfiguration todo check valid
+# Auto Configuration shoulder-autoconfiguration
 org.springframework.beans.factory.config=\
   org.shoulder.autoconfigure.core.JacksonObjectMapperPostProcessor
 org.springframework.context.ApplicationListener=\
