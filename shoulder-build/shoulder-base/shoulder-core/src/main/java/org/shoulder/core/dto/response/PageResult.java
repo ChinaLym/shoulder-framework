@@ -63,7 +63,7 @@ public class PageResult<T> extends ListResult<T> implements Serializable {
     public PageResult() {
     }
 
-    public static <T> PageResult<T> empty(int pageSize, int pageNum) {
+    public static <T> PageResult<T> empty(int pageNum, int pageSize) {
         PageResult<T> pageResult = new PageResult<>();
         pageResult.firstPage = true;
         pageResult.lastPage = true;
