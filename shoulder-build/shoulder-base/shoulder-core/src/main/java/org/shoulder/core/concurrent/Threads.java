@@ -112,7 +112,10 @@ public class Threads {
             }
         }
         if (log.isDebugEnabled()) {
-            StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "delay", true);
+            StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "execute", true);
+            if(caller!= null && caller.getClassName().startsWith("java")) {
+                caller = LogHelper.findStackTraceElement(Threads.class, "executeAndWait", true);
+            }
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
             log.debug("{} create a new Thread.", callerName);
         }
@@ -143,7 +146,7 @@ public class Threads {
         throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(tasks.size());
         tasks.forEach(runnable -> execute(new NotifyOnFinishRunnable(runnable, latch::countDown)));
-        return latch.await(timeout.getNano(), TimeUnit.NANOSECONDS);
+        return latch.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
 
 

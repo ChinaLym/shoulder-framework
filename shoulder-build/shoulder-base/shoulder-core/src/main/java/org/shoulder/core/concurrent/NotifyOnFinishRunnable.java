@@ -7,12 +7,13 @@ package org.shoulder.core.concurrent;
  */
 public class NotifyOnFinishRunnable implements Runnable {
 
-    private Runnable delegate;
+    private final Runnable delegate;
 
-    private Callback callback;
+    private final Callback callback;
 
     public NotifyOnFinishRunnable(Runnable delegate, Callback callback) {
         this.delegate = delegate;
+        this.callback = callback;
     }
 
     @Override
@@ -23,7 +24,6 @@ public class NotifyOnFinishRunnable implements Runnable {
             callback.callBack();
         }
     }
-
 
     @FunctionalInterface
     public interface Callback {
