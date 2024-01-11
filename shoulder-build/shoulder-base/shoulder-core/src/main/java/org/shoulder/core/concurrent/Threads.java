@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -97,6 +98,23 @@ public class Threads {
      * @param runnable 要执行的任务
      */
     public static void execute(Runnable runnable) {
+        ensureInit();
+        debugLog("execute");
+        SHOULDER_THREAD_POOL.execute(runnable);
+    }
+
+    private static void debugLog(String methodName) {
+        if (log.isDebugEnabled()) {
+            StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, methodName, true);
+//            if(caller!= null && caller.getClassName().startsWith("java")) {
+//                caller = LogHelper.findStackTraceElement(Threads.class, "executeAndWait", true);
+//            }
+            String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
+            log.debug("{} create new Thread.", callerName);
+        }
+    }
+
+    private static void ensureInit() {
         // 是否去掉 null 判断，这里应该认为一定不为空
         if (SHOULDER_THREAD_POOL == null) {
             synchronized (Threads.class) {
@@ -111,27 +129,6 @@ public class Threads {
                 }
             }
         }
-        if (log.isDebugEnabled()) {
-            StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "execute", true);
-            if(caller!= null && caller.getClassName().startsWith("java")) {
-                caller = LogHelper.findStackTraceElement(Threads.class, "executeAndWait", true);
-            }
-            String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
-            log.debug("{} create a new Thread.", callerName);
-        }
-        SHOULDER_THREAD_POOL.execute(runnable);
-    }
-
-    /**
-     * 提交线程池内一批任务，且阻塞至所有的任务执行完毕
-     *
-     * @param tasks runnable
-     * @throws InterruptedException runnable
-     */
-    public static void executeAndWait(@NonNull Collection<? extends Runnable> tasks) throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(tasks.size());
-        tasks.forEach(runnable -> execute(new NotifyOnFinishRunnable(runnable, latch::countDown)));
-        latch.await();
     }
 
     /**
@@ -143,9 +140,14 @@ public class Threads {
      * @throws InterruptedException executeAndWait
      */
     public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout)
-        throws InterruptedException {
+            throws InterruptedException {
+        ensureInit();
+        debugLog("executeAndWait");
         CountDownLatch latch = new CountDownLatch(tasks.size());
-        tasks.forEach(runnable -> execute(new NotifyOnFinishRunnable(runnable, latch::countDown)));
+        List<Callable<Object>> callList = tasks.stream().map(runnable -> new NotifyOnFinishRunnable(runnable, latch::countDown))
+                .map(Executors::callable)
+                .toList();
+        SHOULDER_THREAD_POOL.invokeAll(callList, timeout.toNanos(), TimeUnit.NANOSECONDS);
         return latch.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
 
@@ -198,11 +200,11 @@ public class Threads {
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
             if (!executor.isShutdown()) {
                 if (r instanceof FutureTask) {
-                    ((FutureTask) r).cancel(true);
+                    ((FutureTask<?>) r).cancel(true);
                 }
             }
             log.warn("Discard for the executor's queue is full. Task({}), Executor({})", r.toString(),
-                executor.toString());
+                    executor);
         }
     }
 
@@ -221,7 +223,7 @@ public class Threads {
                 }
             }
             log.warn("Discard for the executor's queue is full. Task({}), Executor({})", r.toString(),
-                executor.toString());
+                    executor.toString());
         }
     }
 
@@ -233,7 +235,7 @@ public class Threads {
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
             throw new RejectedExecutionException("Discard for the executor's queue is full. " +
-                "Task(" + r.toString() + "), Executor({" + executor.toString() + "})");
+                    "Task(" + r.toString() + "), Executor({" + executor.toString() + "})");
         }
     }
 
@@ -254,6 +256,7 @@ public class Threads {
          * 最长等待时间 null 代表永远阻塞，直至放入
          */
         private final Duration warnWait;
+
         /**
          * @param maxWait  最长等待时间
          * @param warnWait
