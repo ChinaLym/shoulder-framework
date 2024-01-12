@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * 枚举型字典接口-默认实现
+ * todo暂时不支持search，过滤由前端缓存后过滤，也避免每次咨询后端api
  * http://localhost:8080/api/v1/dictionary/item/listByType/xxx
  * http://localhost:8080/api/v1/dictionary/item/listByTypes?xxx
  *
@@ -48,7 +49,7 @@ public class DictionaryItemEnumController implements DictionaryItemController {
      * @return 查询结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "dictionaryType", value = "字典类型", dataType = "String", paramType = "path"),
+        @ApiImplicitParam(name = "dictionaryType", value = "字典类型", dataType = "String", paramType = "path"),
     })
     @ApiOperation(value = "查询单个字典项", notes = "查询单个字典项")
     @GetMapping("/listByType/{dictionaryType}")
@@ -64,23 +65,24 @@ public class DictionaryItemEnumController implements DictionaryItemController {
      * @return 查询结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "batchQueryParam", value = "字典类型 list", dataType = "List", paramType = "body"),
+        @ApiImplicitParam(name = "batchQueryParam", value = "字典类型 list", dataType = "List", paramType = "body"),
     })
     @ApiOperation(value = "查询多个字典项", notes = "查询多个字典项")
-    @RequestMapping(value = "/listByTypes", method = { RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/listByTypes", method = { RequestMethod.GET, RequestMethod.POST })
     public BaseResult<ListResult<DictionaryDTO>> listAllByTypes(@Validated DictionaryBatchQueryParam batchQueryParam) {
         List<DictionaryDTO> dictionaryList = batchQueryParam.getDictionaryTypeList().stream()
-                .map(type -> new DictionaryDTO(type, query(type)))
-                .collect(Collectors.toList());
+            .map(type -> new DictionaryDTO(type, query(type)))
+            .collect(Collectors.toList());
         return BaseResult.success(dictionaryList);
     }
 
     @SuppressWarnings("rawtypes")
     private List<DictionaryItemDTO> query(String dictionaryType) {
-        List<DictionaryEnum> enumItems = dictionaryEnumStore.listAllAsDictionaryEnum(dictionaryType);
+        List<Enum<? extends DictionaryEnum>> enumItems = dictionaryEnumStore.listAllAsDictionaryEnum(dictionaryType);
         return enumItems.stream()
-                .map(d -> new DictionaryItemDTO(d.getName(), d.getDisplayName()))
-                .collect(Collectors.toList());
+            .map(e -> (DictionaryEnum) e)
+            .map(d -> new DictionaryItemDTO(d.getName(), d.getDisplayName()))
+            .collect(Collectors.toList());
     }
 
 }

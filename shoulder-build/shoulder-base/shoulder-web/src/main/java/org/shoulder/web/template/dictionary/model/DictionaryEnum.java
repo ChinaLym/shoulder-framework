@@ -14,8 +14,8 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<E, IDENT
      * @param id        id
      * @return Enum
      */
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> ENUM fromId(Class<ENUM> enumClass, ID id) {
-        return fromId(enumClass.getEnumConstants(), id);
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> ENUM fromId(Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, ID id) {
+        return fromIdWithEnumConstants(enumClass.getEnumConstants(), id);
     }
 
     /**
@@ -26,10 +26,10 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<E, IDENT
      * @return Enum
      */
     @SuppressWarnings("unchecked")
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> ENUM fromId(ENUM[] enumValues, ID id) {
-        for (ENUM e : enumValues) {
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> ENUM fromIdWithEnumConstants(Enum<? extends DictionaryEnum<?, ID>>[] enumValues, ID id) {
+        for (Enum<? extends DictionaryEnum<?, ID>> e : enumValues) {
             if (((DictionaryEnum<ENUM, ID>) e).getItemId().equals(id)) {
-                return e;
+                return (ENUM) e;
             }
         }
         return onMissMatch((Class<ENUM>) enumValues.getClass().getComponentType(), id);
@@ -42,8 +42,8 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<E, IDENT
      * @param name      name
      * @return Enum
      */
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> ENUM fromName(Class<ENUM> enumClass, String name) {
-        return fromName(enumClass.getEnumConstants(), name);
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> ENUM fromName(Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, String name) {
+        return fromNameWithEnumConstants(enumClass.getEnumConstants(), name);
     }
 
     /**
@@ -56,10 +56,10 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<E, IDENT
      * @return 枚举项
      */
     @SuppressWarnings("unchecked")
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> ENUM fromName(ENUM[] enumValues, String name) {
-        for (ENUM e : enumValues) {
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> ENUM fromNameWithEnumConstants(Enum<? extends DictionaryEnum<?, ID>>[] enumValues, String name) {
+        for (Enum<? extends DictionaryEnum<?, ID>> e : enumValues) {
             if (((DictionaryEnum<ENUM, ID>) e).getName().equalsIgnoreCase(name)) {
-                return e;
+                return (ENUM) e;
             }
         }
         return onMissMatch((Class<ENUM>) enumValues.getClass().getComponentType(), name);

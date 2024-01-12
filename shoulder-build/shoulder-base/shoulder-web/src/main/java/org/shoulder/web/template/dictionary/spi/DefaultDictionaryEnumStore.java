@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unchecked, rawtypes")
 public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
 
-    private final ConcurrentMap<String, Class<? extends DictionaryEnum>> repo = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Class<? extends Enum<? extends DictionaryEnum>>> repo = new ConcurrentHashMap<>();
 
     /**
      * 是否忽略字典类型名称大小写
@@ -33,7 +33,7 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
     }
 
     @Override
-    public <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> void register(@Nonnull Class<? extends DictionaryEnum<ENUM, ID>> dictionaryEnum, @Nonnull String dictionaryType) {
+    public <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryEnum<?, ?>>> dictionaryEnum, @Nonnull String dictionaryType) {
         repo.put(processDictionaryTypeName(dictionaryType), dictionaryEnum);
     }
 
@@ -49,8 +49,8 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
 
     @Nonnull
     @Override
-    public List<DictionaryEnum> listAllAsDictionaryEnum(String enumClassType) {
-        Class<? extends DictionaryEnum> dictionaryEnumClass = repo.get(processDictionaryTypeName(enumClassType));
+    public List<Enum<? extends DictionaryEnum>> listAllAsDictionaryEnum(String enumClassType) {
+        Class<? extends Enum<? extends DictionaryEnum>> dictionaryEnumClass = repo.get(processDictionaryTypeName(enumClassType));
         if (dictionaryEnumClass == null) {
             throw createDictionaryTypeNotFoundException(enumClassType);
         }
@@ -65,7 +65,7 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
 
     @Nonnull
     @Override
-    public Collection<Class<? extends DictionaryEnum>> listAllTypes() {
+    public Collection<Class<? extends Enum<? extends DictionaryEnum>>> listAllTypes() {
         return repo.values();
     }
 

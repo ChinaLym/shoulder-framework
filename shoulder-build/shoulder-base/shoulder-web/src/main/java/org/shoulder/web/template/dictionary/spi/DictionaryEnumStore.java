@@ -20,7 +20,7 @@ public interface DictionaryEnumStore {
      * @param <ID>           枚举标识类型
      * @param <ENUM>         枚举
      */
-    default <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> void register(@Nonnull Class<? extends DictionaryEnum<ENUM, ID>> dictionaryEnum) {
+    default <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryEnum<?, ?>>> dictionaryEnum) {
         register(dictionaryEnum, dictionaryEnum.getSimpleName());
     }
 
@@ -33,7 +33,7 @@ public interface DictionaryEnumStore {
      * @param dictionaryEnum 枚举类
      * @param dictionaryType 枚举类型名称
      */
-    <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> void register(@Nonnull Class<? extends DictionaryEnum<ENUM, ID>> dictionaryEnum, @Nonnull String dictionaryType);
+    <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryEnum<?, ?>>> dictionaryEnum, @Nonnull String dictionaryType);
 
 
     /**
@@ -68,7 +68,7 @@ public interface DictionaryEnumStore {
      */
     @Nonnull
     @SuppressWarnings("rawtypes")
-    List<DictionaryEnum> listAllAsDictionaryEnum(String enumClassType);
+    List<Enum<? extends DictionaryEnum>> listAllAsDictionaryEnum(String enumClassType);
 
     /**
      * 列出所有支持的枚举类名
@@ -85,5 +85,5 @@ public interface DictionaryEnumStore {
      */
     @Nonnull
     @SuppressWarnings("rawtypes")
-    Collection<Class<? extends DictionaryEnum>> listAllTypes();
+    Collection<Class<? extends Enum<? extends DictionaryEnum>>> listAllTypes();
 }
