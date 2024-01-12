@@ -37,7 +37,7 @@ public interface Dictionary<IDENTIFY> {
      * @return 枚举类型
      */
     default String getDictionaryType() {
-        return getClass().getSimpleName();
+        return getName();
     }
 
     /**
