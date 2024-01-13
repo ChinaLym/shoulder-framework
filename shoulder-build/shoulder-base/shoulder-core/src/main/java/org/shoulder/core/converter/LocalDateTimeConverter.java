@@ -21,6 +21,8 @@ public class LocalDateTimeConverter extends BaseLocalDateTimeConverter<LocalDate
 
     public static final LocalDateTimeConverter INSTANCE = new LocalDateTimeConverter();
 
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @Override
     protected Map<String, String> initTimeParserMap() {
         Map<String, String> formatMap = new LinkedHashMap<>(10);

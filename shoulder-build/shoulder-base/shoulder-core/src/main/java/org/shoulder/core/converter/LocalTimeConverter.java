@@ -20,6 +20,8 @@ public class LocalTimeConverter extends BaseDateConverter<LocalTime> implements 
 
     public static final LocalTimeConverter INSTANCE = new LocalTimeConverter();
 
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+
     @Override
     protected Map<String, String> initTimeParserMap() {
         Map<String, String> formatMap = new LinkedHashMap<>(3);

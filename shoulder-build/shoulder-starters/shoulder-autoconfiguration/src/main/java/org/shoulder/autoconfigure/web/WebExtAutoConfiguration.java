@@ -6,6 +6,8 @@ import org.shoulder.web.template.dictionary.DictionaryController;
 import org.shoulder.web.template.dictionary.DictionaryEnumController;
 import org.shoulder.web.template.dictionary.DictionaryItemController;
 import org.shoulder.web.template.dictionary.DictionaryItemEnumController;
+import org.shoulder.web.template.dictionary.base.ShoulderConversionService;
+import org.shoulder.web.template.dictionary.base.ShoulderGenericConversionServiceImpl;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -26,11 +28,19 @@ import java.util.List;
 @AutoConfiguration
 public class WebExtAutoConfiguration {
 
+
     @AutoConfiguration
     @ConditionalOnClass(value = {DictionaryEnumStore.class})
     @EnableConfigurationProperties(WebExProperties.class)
     @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "enum", matchIfMissing = true)
     public static class BaseOnEnumDictionaryConfiguration {
+
+        @Bean
+        @ConditionalOnMissingBean
+        public ShoulderConversionService shoulderConversionService(DictionaryEnumStore dictionaryEnumStore) {
+            return new ShoulderGenericConversionServiceImpl(dictionaryEnumStore);
+        }
+
         /**
          * 将 String 类型入参，转为 LocalDate 类型
          *

@@ -24,6 +24,8 @@ public class DateConverter extends BaseDateConverter<Date> {
 
     public static final DateConverter INSTANCE = new DateConverter();
 
+    public static FastDateFormat FORMATTER = FastDateFormat.getInstance(AppInfo.dateTimeFormat());
+
     /**
      * 严格模式，默认关
      */

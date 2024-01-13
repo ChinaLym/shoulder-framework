@@ -1,5 +1,7 @@
 package org.shoulder.autoconfigure.web;
 
+import org.apache.commons.lang3.time.FastDateFormat;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.converter.*;
 import org.shoulder.core.util.ConvertUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -27,6 +29,8 @@ public class MvcConverterAutoConfiguration implements ApplicationListener<Contex
     @Bean
     @ConditionalOnMissingBean
     public DateConverter dateConverter() {
+        // 重置日期格式，以配置为准
+        DateConverter.FORMATTER = FastDateFormat.getInstance(AppInfo.dateTimeFormat());
         return DateConverter.INSTANCE;
     }
 
