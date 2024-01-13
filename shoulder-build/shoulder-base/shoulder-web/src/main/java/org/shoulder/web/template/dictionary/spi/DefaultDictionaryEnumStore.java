@@ -69,6 +69,11 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
         return repo.values();
     }
 
+    @Override
+    public boolean contains(Class<?> enumClass) {
+        return repo.containsKey(enumClass);
+    }
+
     protected BaseRuntimeException createDictionaryTypeNotFoundException(String dictionaryType) {
         return new BaseRuntimeException(ParamErrorCodeEnum.PARAM_ILLEGAL, "The dictionary type('" + dictionaryType + "') not exist!");
     }

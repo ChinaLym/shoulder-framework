@@ -23,6 +23,7 @@ public class ConfigAbleDictionaryItem implements DictionaryItem<String>, Seriali
 
     private static final SpelExpressionParser EXPRESS_PARSER = new SpelExpressionParser();
     private static final long serialVersionUID = -1;
+    public static final String INVALID_TYPE = "JUST_INVALID";
 
     @NotNull
     @NotBlank
@@ -30,6 +31,8 @@ public class ConfigAbleDictionaryItem implements DictionaryItem<String>, Seriali
     @Pattern(regexp = "\\w+")
     //@ConfigField(chineseName = "字典 bizType", indexKey = true, description = "用于标识字典类型")
     private String dictionaryType;
+
+    // todo parentCode fixme 关联的代码
 
     @NotNull
     @NotBlank
@@ -54,6 +57,10 @@ public class ConfigAbleDictionaryItem implements DictionaryItem<String>, Seriali
     //        + "例如：币种枚举，业务上有个根据产品来搜索支持的币种，某个只支持GOL的币种表达式可以为 #key == 'product' and {'AUTO DEBIT','CASHIER'}.contains(#value)")
     private String spelFilterExpression;
 
+    @Size(max = 1024)
+    //@ConfigField(chineseName = "说明", description = "注释信息"
+    private String note;
+
     @Override
     public String getItemId() {
         return code;
@@ -70,7 +77,7 @@ public class ConfigAbleDictionaryItem implements DictionaryItem<String>, Seriali
     }
 
     @Override
-    public long getDisplayOrder() {
+    public Integer getDisplayOrder() {
         return displayOrder;
     }
 

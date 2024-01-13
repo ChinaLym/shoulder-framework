@@ -7,8 +7,6 @@ com.alibaba.citrus.springext.support.parser.AbstractNamedProxyBeanDefinitionPars
 com.alibaba.citrus.springext.util.SpringExtUtil.AbstractProxy
 com.alibaba.druid.pool.DruidDataSource
 com.alibaba.hotcode.internal.org.apache.commons.collections.functors.InvokerTransformer
-com.alipay.custrelation.service.model.redress.Pair
-com.alipay.oceanbase.obproxy.druid.pool.DruidDataSource
 com.caucho.config.types.ResourceRef
 com.caucho.hessian.test.TestCons
 com.caucho.naming.QName

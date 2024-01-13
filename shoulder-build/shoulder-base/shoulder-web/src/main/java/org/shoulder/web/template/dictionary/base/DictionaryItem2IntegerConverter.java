@@ -1,7 +1,4 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2019 All Rights Reserved.
- */
+
 package org.shoulder.web.template.dictionary.base;
 
 import org.shoulder.web.template.dictionary.model.DictionaryItem;

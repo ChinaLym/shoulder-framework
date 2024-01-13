@@ -1,7 +1,4 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2023 All Rights Reserved.
- */
+
 package org.shoulder.core.concurrent;
 
 import cn.hutool.core.thread.NamedThreadFactory;

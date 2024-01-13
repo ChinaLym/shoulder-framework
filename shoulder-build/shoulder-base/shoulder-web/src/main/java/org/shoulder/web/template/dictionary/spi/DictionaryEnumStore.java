@@ -86,4 +86,6 @@ public interface DictionaryEnumStore {
     @Nonnull
     @SuppressWarnings("rawtypes")
     Collection<Class<? extends Enum<? extends DictionaryEnum>>> listAllTypes();
+
+    boolean contains(Class<?> enumClass);
 }

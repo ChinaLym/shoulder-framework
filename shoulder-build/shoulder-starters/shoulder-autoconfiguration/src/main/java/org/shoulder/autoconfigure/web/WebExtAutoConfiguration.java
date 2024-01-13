@@ -65,8 +65,9 @@ public class WebExtAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(value = DictionaryItemController.class)
-        public DictionaryItemEnumController dictionaryItemController(DictionaryEnumStore dictionaryEnumStore) {
-            return new DictionaryItemEnumController(dictionaryEnumStore);
+        public DictionaryItemEnumController dictionaryItemController(DictionaryEnumStore dictionaryEnumStore,
+                                                                     ShoulderConversionService conversionService) {
+            return new DictionaryItemEnumController(dictionaryEnumStore, conversionService);
         }
     }
 

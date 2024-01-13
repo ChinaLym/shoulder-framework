@@ -51,7 +51,7 @@ public interface DictionaryItem<IDENTIFY> {
      *
      * @return 排序号
      */
-    long getDisplayOrder();
+    Integer getDisplayOrder();
 
     /**
      * 获取对应的枚举类型，通常是类名等 【非必须实现】

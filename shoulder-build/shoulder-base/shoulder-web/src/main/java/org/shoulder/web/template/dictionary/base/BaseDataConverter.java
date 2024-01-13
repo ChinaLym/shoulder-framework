@@ -46,7 +46,7 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
      *
      *
      * \((.*?)\.getItemCode\(\)\)\;
-     * (conversionService.convert($1, DictionaryItemVO.class));
+     * (conversionService.convert($1, DictionaryItemDTO.class));
      * 去掉多余 getItemCode 前判空
      */
 

@@ -100,7 +100,7 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<?, IDENT
         return ((Enum<?>) this).name();
     }
 
-    default long getDisplayOrder() {
+    default Integer getDisplayOrder() {
         return ((Enum<?>) this).ordinal();
     }
 

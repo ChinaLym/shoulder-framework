@@ -59,7 +59,7 @@ public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID>
     }
 
     @Override
-    public long getDisplayOrder() {
+    public Integer getDisplayOrder() {
         return sortNo;
     }
 

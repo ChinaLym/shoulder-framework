@@ -6,17 +6,14 @@ import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.log.operation.annotation.OperationLogParam;
+import org.shoulder.web.template.dictionary.base.ShoulderConversionService;
 import org.shoulder.web.template.dictionary.dto.DictionaryBatchQueryParam;
 import org.shoulder.web.template.dictionary.dto.DictionaryDTO;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.model.DictionaryEnum;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,8 +35,11 @@ public class DictionaryItemEnumController implements DictionaryItemController {
      */
     private final DictionaryEnumStore dictionaryEnumStore;
 
-    public DictionaryItemEnumController(DictionaryEnumStore dictionaryEnumStore) {
+    protected final ShoulderConversionService conversionService;
+
+    public DictionaryItemEnumController(DictionaryEnumStore dictionaryEnumStore, ShoulderConversionService conversionService) {
         this.dictionaryEnumStore = dictionaryEnumStore;
+        this.conversionService = conversionService;
     }
 
     /**
@@ -81,7 +81,7 @@ public class DictionaryItemEnumController implements DictionaryItemController {
         List<Enum<? extends DictionaryEnum>> enumItems = dictionaryEnumStore.listAllAsDictionaryEnum(dictionaryType);
         return enumItems.stream()
             .map(e -> (DictionaryEnum) e)
-            .map(d -> new DictionaryItemDTO(d.getName(), d.getDisplayName()))
+                .map(d -> conversionService.convert(d, DictionaryItemDTO.class))
             .collect(Collectors.toList());
     }
 
