@@ -21,7 +21,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID> implements Dictionary<ID> {
+public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID> implements Dictionary {
 
     /**
      * 展示名称
@@ -33,6 +33,11 @@ public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID>
      * 字典项类型（int / String ...）
      */
     private String type;
+
+    @Override
+    public String getDictionaryCode() {
+        return getType();
+    }
 
     /*@Override
     public String getDictionaryType() {

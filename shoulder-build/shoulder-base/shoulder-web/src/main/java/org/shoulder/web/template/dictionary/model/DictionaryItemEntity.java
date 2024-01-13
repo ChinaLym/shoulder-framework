@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 /**
  * 字典项
- *
+ * itemId 用 bizId 实现
  * @param <ID> 字典表 、 字典项表主键类型
  * @author lym
  */
@@ -25,10 +25,10 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID> implements Dictionary<ID> {
+public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID> implements DictionaryItem<String> {
 
     /**
-     * 字典类型 / 业务类型
+     * 字典类型 / 业务类型，关联到 {@link DictionaryEntity}
      */
     @TableField("dictionary_id")
     ID dictionaryId;
@@ -53,4 +53,18 @@ public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID>
     @TableField("display_name")
     private String displayName;
 
+    @Override
+    public String getItemId() {
+        return name;
+    }
+
+    @Override
+    public long getDisplayOrder() {
+        return sortNo;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return displayName;
+    }
 }
