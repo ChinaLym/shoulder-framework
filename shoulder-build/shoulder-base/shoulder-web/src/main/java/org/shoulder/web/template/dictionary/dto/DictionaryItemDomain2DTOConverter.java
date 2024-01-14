@@ -12,7 +12,7 @@ import org.shoulder.web.template.dictionary.model.DictionaryItem;
  *
  * @author lym
  */
-public class DictionaryItemDomain2ConverDTOter extends BaseDataConverter<DictionaryItem, DictionaryItemDTO> {
+public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<DictionaryItem, DictionaryItemDTO> {
 
     @Override
     public void doConvert(@Nonnull DictionaryItem sourceModel, @Nonnull DictionaryItemDTO targetModel) {
@@ -21,6 +21,7 @@ public class DictionaryItemDomain2ConverDTOter extends BaseDataConverter<Diction
 //            targetModel.setParentCode(StringUtils.isBlank(parentCode) ? Constants.ZERO : parentCode);
         }
 
+        targetModel.setCode(sourceModel.getItemId().toString());
         targetModel.setBizType(sourceModel.getDictionaryType());
         targetModel.setDisplayName(sourceModel.getDisplayName());
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());

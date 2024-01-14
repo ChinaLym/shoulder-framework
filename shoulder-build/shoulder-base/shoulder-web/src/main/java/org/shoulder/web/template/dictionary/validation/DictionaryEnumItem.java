@@ -40,7 +40,7 @@ public @interface DictionaryEnumItem {
     String dictionaryType() default ConfigAbleDictionaryItem.INVALID_TYPE;
 
     /**
-     * 允许的值不，默认为空，表示都允许，
+     * 允许的值，默认为空，表示都允许，
      */
     String[] allowCodes() default {};
 

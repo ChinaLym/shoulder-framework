@@ -1,7 +1,7 @@
 package org.shoulder.web.template.dictionary.model;
 
 /**
- * 字典型枚举
+ * 字典型枚举，枚举类选择实现该类
  * todo 【功能】基于数据库的、基于 RPC 调用的、带缓存的、混合的；放到 ext 模块
  * 泛型是为了让持久化存储时对象实现该接口时可选择 int/string、枚举无需该泛型
  *

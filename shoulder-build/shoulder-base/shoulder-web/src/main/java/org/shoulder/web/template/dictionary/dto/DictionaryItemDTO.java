@@ -1,6 +1,7 @@
 package org.shoulder.web.template.dictionary.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @author lym
  */
 @Data
+@NoArgsConstructor
 public class DictionaryItemDTO implements Serializable, Comparable<DictionaryItemDTO> {
 
     private static final long serialVersionUID = 1L;

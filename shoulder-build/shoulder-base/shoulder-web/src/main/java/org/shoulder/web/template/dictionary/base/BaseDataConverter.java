@@ -116,7 +116,7 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
                     .append(targetEntityClass.getSimpleName());
             //LogUtil.error(LOGGER, e, bf.toString());
             // convertFail
-            throw new BaseRuntimeException(CommonErrorCodeEnum.CODING, bf.toString(), e);
+            throw new BaseRuntimeException(CommonErrorCodeEnum.CODING, e, bf.toString());
         }
         return targetModel;
     }
@@ -227,7 +227,7 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
      * @see #doConvert(Object) 跳过时必须实现
      */
     protected boolean skipPreHandle() {
-        return skipPreHandle;
+        return skipPreHandle || targetEntityClass.isEnum() || targetEntityClass.isInterface() || targetEntityClass.isPrimitive();
     }
 
     /**

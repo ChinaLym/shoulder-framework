@@ -9,7 +9,7 @@ import org.shoulder.web.template.dictionary.DictionaryItemEnumController;
 import org.shoulder.web.template.dictionary.base.DictionaryItemDTO2DomainConverterRegister;
 import org.shoulder.web.template.dictionary.base.ShoulderConversionService;
 import org.shoulder.web.template.dictionary.base.ShoulderGenericConversionServiceImpl;
-import org.shoulder.web.template.dictionary.dto.DictionaryItemDomain2ConverDTOter;
+import org.shoulder.web.template.dictionary.dto.DictionaryItemDomain2DTOConverter;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -66,9 +66,9 @@ public class WebExtAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean(value = DictionaryItemDomain2ConverDTOter.class)
-        public DictionaryItemDomain2ConverDTOter dictionaryItemDomain2DTOConverter() {
-            return new DictionaryItemDomain2ConverDTOter();
+        @ConditionalOnMissingBean(value = DictionaryItemDomain2DTOConverter.class)
+        public DictionaryItemDomain2DTOConverter dictionaryItemDomain2DTOConverter() {
+            return new DictionaryItemDomain2DTOConverter();
         }
 
         @Bean
