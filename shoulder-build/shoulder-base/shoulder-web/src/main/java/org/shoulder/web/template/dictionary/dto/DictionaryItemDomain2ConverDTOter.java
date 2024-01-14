@@ -6,15 +6,13 @@ import jakarta.annotation.Nonnull;
 import org.shoulder.web.template.dictionary.base.BaseDataConverter;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItem;
-import org.springframework.stereotype.Component;
 
 /**
  * DictionaryItem domain -> VO
  *
  * @author lym
  */
-@Component
-public class DictionaryItemDomain2VOConverter extends BaseDataConverter<DictionaryItem, DictionaryItemDTO> {
+public class DictionaryItemDomain2ConverDTOter extends BaseDataConverter<DictionaryItem, DictionaryItemDTO> {
 
     @Override
     public void doConvert(@Nonnull DictionaryItem sourceModel, @Nonnull DictionaryItemDTO targetModel) {

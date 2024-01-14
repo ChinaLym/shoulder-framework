@@ -69,8 +69,8 @@ public class DictionaryEnumItemValidatorForCharSequence implements ConstraintVal
         DictionaryItem dictionaryItem = null;
 
         if (enumClass == ConfigAbleDictionaryItem.class) {
-            // 动态枚举
-            AssertUtils.notEquals(dictionaryType, ConfigAbleDictionaryItem.INVALID_TYPE, CommonErrorCodeEnum.ILLEGAL_PARAM);
+            // 动态枚举 type 肯定不是 INVALID_TYPE，不然就是开发没完成
+            AssertUtils.notEquals(dictionaryType, ConfigAbleDictionaryItem.INVALID_TYPE, CommonErrorCodeEnum.CODING);
             // 判断配置表中是否存在该字典项
 //            dictionaryItem = configBizService.queryByDictionaryTypeAndCode( example);
         } else {

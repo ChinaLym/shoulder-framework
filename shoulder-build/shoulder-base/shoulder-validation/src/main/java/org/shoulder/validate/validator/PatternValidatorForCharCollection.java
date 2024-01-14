@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary.validation.validator;
+package org.shoulder.validate.validator;
 
 
 import jakarta.validation.ConstraintValidator;

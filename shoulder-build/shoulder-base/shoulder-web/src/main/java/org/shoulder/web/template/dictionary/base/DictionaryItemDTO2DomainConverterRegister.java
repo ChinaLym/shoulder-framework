@@ -12,17 +12,15 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
 /**
- * DictionaryItem VO -> domain
+ * DictionaryItemDTO -> domain
  *
  * @author lym
  */
 @SuppressWarnings("unchecked, rawtypes")
-@Component
 public class DictionaryItemDTO2DomainConverterRegister {
 
     @Order(Ordered.HIGHEST_PRECEDENCE)
