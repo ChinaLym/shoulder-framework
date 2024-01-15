@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +35,8 @@ public class DictionaryEnumController implements DictionaryController {
      */
     private final DictionaryEnumStore dictionaryEnumStore;
 
-    @Value("${shoulder.web.ext.dictionary.enum.page:true}")
-    private Boolean enablePage;
+    @Value("${shoulder.web.ext.dictionary.enum.page.host:http://localhost:8080}")
+    private String pageHost;
 
     private String page;
 
@@ -61,7 +62,7 @@ public class DictionaryEnumController implements DictionaryController {
     @SkipResponseWrap
     @GetMapping("/page")
     public String hello() {
-        if (enablePage) {
+        if (StringUtils.isNoneBlank(pageHost)) {
             return loadPage();
         } else {
             return "";
@@ -78,7 +79,8 @@ public class DictionaryEnumController implements DictionaryController {
             Resource[] resources = resolver.getResources(classPath);
             if (resources.length > 0) {
                 Resource resource = resources[0];
-                page = resource.getContentAsString(StandardCharsets.UTF_8);
+                pageHost = pageHost.endsWith("/") ? pageHost.subSequence(0, pageHost.length() - 1).toString() : pageHost;
+                page = resource.getContentAsString(StandardCharsets.UTF_8).replaceFirst("CONFIG_PAGE_HOST", pageHost);
             }
         } catch (IOException e) {
             page = "";

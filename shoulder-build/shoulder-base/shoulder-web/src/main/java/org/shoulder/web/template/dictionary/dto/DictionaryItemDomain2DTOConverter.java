@@ -18,7 +18,11 @@ import java.util.Optional;
  */
 public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<DictionaryItem, DictionaryItemDTO> {
 
-    private Translator translator;
+    private final Translator translator;
+
+    public DictionaryItemDomain2DTOConverter(Translator translator) {
+        this.translator = translator;
+    }
 
     @Override
     public void doConvert(@Nonnull DictionaryItem sourceModel, @Nonnull DictionaryItemDTO targetModel) {
@@ -30,7 +34,8 @@ public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<Diction
         targetModel.setCode(sourceModel.getItemId().toString());
         targetModel.setDictionaryType(sourceModel.getDictionaryType());
         String displayI18nName = Optional.ofNullable(ContextUtils.getBean(Translator.class))
-                .map(t -> t.getMessage(sourceModel.getDisplayName()))
+                .map(t -> t.getMessage(sourceModel.getDisplayName(), new Object[0],
+                        "sourceModel.getDisplayName()", translator.currentLocale()))
                 .orElse(sourceModel.getDisplayName());
         targetModel.setDisplayName(displayI18nName);
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());

@@ -2,6 +2,8 @@ package org.shoulder.autoconfigure.web;
 
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
+import org.shoulder.core.i18.Translator;
 import org.shoulder.web.template.dictionary.DictionaryController;
 import org.shoulder.web.template.dictionary.DictionaryEnumController;
 import org.shoulder.web.template.dictionary.DictionaryItemController;
@@ -31,7 +33,7 @@ import java.util.List;
 public class WebExtAutoConfiguration {
 
 
-    @AutoConfiguration
+    @AutoConfiguration(after = {I18nAutoConfiguration.class})
     @ConditionalOnClass(value = {DictionaryEnumStore.class})
     @EnableConfigurationProperties(WebExProperties.class)
     @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "enum", matchIfMissing = true)
@@ -67,8 +69,8 @@ public class WebExtAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(value = DictionaryItemDomain2DTOConverter.class)
-        public DictionaryItemDomain2DTOConverter dictionaryItemDomain2DTOConverter() {
-            return new DictionaryItemDomain2DTOConverter();
+        public DictionaryItemDomain2DTOConverter dictionaryItemDomain2DTOConverter(Translator translator) {
+            return new DictionaryItemDomain2DTOConverter(translator);
         }
 
         @Bean
