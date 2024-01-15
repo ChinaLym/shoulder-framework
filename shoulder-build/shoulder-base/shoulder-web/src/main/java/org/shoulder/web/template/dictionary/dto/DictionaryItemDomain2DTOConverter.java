@@ -3,9 +3,13 @@ package org.shoulder.web.template.dictionary.dto;
 
 
 import jakarta.annotation.Nonnull;
+import org.shoulder.core.i18.Translator;
+import org.shoulder.core.util.ContextUtils;
 import org.shoulder.web.template.dictionary.base.BaseDataConverter;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItem;
+
+import java.util.Optional;
 
 /**
  * DictionaryItem domain -> VO
@@ -13,6 +17,8 @@ import org.shoulder.web.template.dictionary.model.DictionaryItem;
  * @author lym
  */
 public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<DictionaryItem, DictionaryItemDTO> {
+
+    private Translator translator;
 
     @Override
     public void doConvert(@Nonnull DictionaryItem sourceModel, @Nonnull DictionaryItemDTO targetModel) {
@@ -22,8 +28,11 @@ public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<Diction
         }
 
         targetModel.setCode(sourceModel.getItemId().toString());
-        targetModel.setBizType(sourceModel.getDictionaryType());
-        targetModel.setDisplayName(sourceModel.getDisplayName());
+        targetModel.setDictionaryType(sourceModel.getDictionaryType());
+        String displayI18nName = Optional.ofNullable(ContextUtils.getBean(Translator.class))
+                .map(t -> t.getMessage(sourceModel.getDisplayName()))
+                .orElse(sourceModel.getDisplayName());
+        targetModel.setDisplayName(displayI18nName);
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
         targetModel.setNote(sourceModel.getNote());
     }

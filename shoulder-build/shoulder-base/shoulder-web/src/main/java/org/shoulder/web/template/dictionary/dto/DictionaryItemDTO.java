@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 字典
+ * 字典项
  *
  * @author lym
  */
@@ -17,32 +17,27 @@ public class DictionaryItemDTO implements Serializable, Comparable<DictionaryIte
     private static final long serialVersionUID = 1L;
 
     /**
-     * 字典码
-     * * CASHIER
-     * 前后交互的值
+     * 字典类型，如性别 SEX
+     */
+    private String dictionaryType;
+
+    /**
+     * 字典码，该类型下(前后交互)唯一标记，如 MALE
      */
     private String code;
 
     /**
-     * 字典类型
-     * * product
-     */
-    private String bizType;
-
-    /**
-     * 展示名称
-     * * 收银台
-     * 页面山显示的内容
+     * 字典项的展示名称 页面上显示的内容，如 男性
      */
     private String displayName;
 
     /**
-     * 展示顺序
+     * 展示顺序 如 0
      */
     private Integer displayOrder;
 
     /**
-     * 上级节点
+     * 上级节点 如 0
      */
     private String parentCode;
 
