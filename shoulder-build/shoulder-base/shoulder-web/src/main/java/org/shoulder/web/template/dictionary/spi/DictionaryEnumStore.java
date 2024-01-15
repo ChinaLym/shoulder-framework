@@ -87,5 +87,9 @@ public interface DictionaryEnumStore {
     @SuppressWarnings("rawtypes")
     Collection<Class<? extends Enum<? extends DictionaryEnum>>> listAllTypes();
 
-    boolean contains(Class<?> enumClass);
+    default boolean contains(Class<?> enumClass) {
+        return contains(enumClass.getSimpleName());
+    }
+
+    boolean contains(String dictionaryType);
 }

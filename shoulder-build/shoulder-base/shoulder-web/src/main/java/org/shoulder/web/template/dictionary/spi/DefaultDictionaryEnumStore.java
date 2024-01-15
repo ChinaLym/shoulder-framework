@@ -2,6 +2,8 @@ package org.shoulder.web.template.dictionary.spi;
 
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
 import org.shoulder.web.template.dictionary.model.DictionaryEnum;
 
@@ -34,7 +36,10 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
 
     @Override
     public <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryEnum<?, ?>>> dictionaryEnum, @Nonnull String dictionaryType) {
-        repo.put(processDictionaryTypeName(dictionaryType), dictionaryEnum);
+        AssertUtils.notNull(dictionaryEnum, ParamErrorCodeEnum.PARAM_ILLEGAL);
+        Class<? extends Enum<? extends DictionaryEnum>> oldValue =
+            repo.put(processDictionaryTypeName(dictionaryType), dictionaryEnum);
+        AssertUtils.isTrue(oldValue == null || oldValue == dictionaryEnum, CommonErrorCodeEnum.CODING, "not support repeat name of enum.");
     }
 
     @Nonnull
@@ -70,8 +75,8 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
     }
 
     @Override
-    public boolean contains(Class<?> enumClass) {
-        return repo.containsKey(enumClass);
+    public boolean contains(String dictionaryType) {
+        return repo.containsKey(processDictionaryTypeName(dictionaryType));
     }
 
     protected BaseRuntimeException createDictionaryTypeNotFoundException(String dictionaryType) {
