@@ -14,6 +14,9 @@ import org.springframework.util.Assert;
  * 支持 int/string 到 DictionaryEnum 的转换
  * DictionaryItemDTO 到 DictionaryEnum 的转换
  *
+ *
+ * todo 配置
+ *
  * @author lym
  */
 public class ToDictionaryEnumConversionService extends GenericConversionService {

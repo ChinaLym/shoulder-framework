@@ -53,6 +53,12 @@ public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID>
     @TableField("display_name")
     private String displayName;
 
+    /**
+     * 备注
+     */
+    @TableField("note")
+    private String note;
+
     @Override
     public String getItemId() {
         return name;

@@ -3,9 +3,9 @@ package org.shoulder.web.template.dictionary.dto;
 
 
 import jakarta.annotation.Nonnull;
+import org.shoulder.core.converter.BaseDataConverter;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.ContextUtils;
-import org.shoulder.core.converter.BaseDataConverter;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItem;
 
@@ -38,6 +38,7 @@ public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<Diction
                 .map(t -> t.getMessage(sourceModel.getDisplayName(), new Object[0],
                         sourceModel.getDisplayName(), translator.currentLocale()))
                 .orElse(sourceModel.getDisplayName());
+        targetModel.setName(sourceModel.getName());
         targetModel.setDisplayName(displayI18nName);
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
         targetModel.setNote(sourceModel.getNote());

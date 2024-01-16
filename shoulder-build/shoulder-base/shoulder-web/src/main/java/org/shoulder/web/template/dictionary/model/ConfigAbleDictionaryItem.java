@@ -38,8 +38,15 @@ public class ConfigAbleDictionaryItem implements DictionaryItem<String>, Seriali
     @NotBlank
     @Size(max = 64)
     @Pattern(regexp = "\\w+")
-    //@ConfigField(chineseName = "字典 code", indexKey = true, description = "存在数据库的值")
+    //@ConfigField(chineseName = "字典 code", indexKey = true, description = "存在数据库的值（压缩后的）")
     private String code;
+
+    @NotNull
+    @NotBlank
+    @Size(max = 64)
+    @Pattern(regexp = "\\w+")
+    //@ConfigField(chineseName = "字典 name", indexKey = true, description = "由于代码搜索的值")
+    private String name;
 
     @NotNull
     @NotBlank

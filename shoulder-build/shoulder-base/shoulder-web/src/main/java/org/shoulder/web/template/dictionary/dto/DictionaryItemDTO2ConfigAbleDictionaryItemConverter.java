@@ -20,6 +20,7 @@ public class DictionaryItemDTO2ConfigAbleDictionaryItemConverter extends BaseDat
         // 为空或者为0，都代表一级节点
 //        targetModel.setParentCode(StringUtils.isBlank(sourceModel.getParentCode()) ? Constants.ZERO : sourceModel.getParentCode());
         targetModel.setDictionaryType(sourceModel.getDictionaryType());
+        targetModel.setName(targetModel.getName());
         targetModel.setDisplayName(sourceModel.getDisplayName());
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
         targetModel.setNote(sourceModel.getNote());
