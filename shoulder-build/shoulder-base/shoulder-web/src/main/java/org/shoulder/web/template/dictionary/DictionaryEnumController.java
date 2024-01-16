@@ -24,6 +24,10 @@ import java.util.Collection;
  * http://localhost:8080/api/v1/dictionary/allTypes
  * http://localhost:8080/api/v1/dictionary/page
  *
+ * 页面使用了 bootstrap，下面是一些 bootstraps 技术参考和说明
+ * https://bootstrapshuffle.com/cn/classes
+ * https://www.w3schools.com/bootstrap4/bootstrap_colors.asp
+ *
  * @author lym
  */
 @RestController

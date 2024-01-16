@@ -3,23 +3,26 @@ package org.shoulder.core.dto.request;
 import jakarta.annotation.Nonnull;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import org.shoulder.core.dto.ToStringObj;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AssertUtils;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.shoulder.core.constant.PageConst.*;
+import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_NO;
+import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_SIZE;
+import static org.shoulder.core.constant.PageConst.MAX_PAGE_SIZE;
+import static org.shoulder.core.constant.PageConst.MIN_PAGE_NO;
 
 /**
  * 分页参数 BO
  *
  * @author lym
  */
-public class BasePageQuery<T> implements Serializable {
+public class BasePageQuery<T> extends ToStringObj {
 
     private static final long serialVersionUID = 6532091359995631065L;
     /**
@@ -53,6 +56,7 @@ public class BasePageQuery<T> implements Serializable {
     @SuppressWarnings("unchecked")
     public static <ENTITY, DTO> BasePageQuery<ENTITY> create(@Nonnull PageQuery<DTO> pageQuery) {
         // convertUtil 支持泛型?
+        AssertUtils.isTrue(false, CommonErrorCodeEnum.CODING, "function not support!");
         return create(pageQuery, dto -> (ENTITY) dto);
     }
 
@@ -119,12 +123,6 @@ public class BasePageQuery<T> implements Serializable {
     public void setExt(Map<String, Object> ext) {
         this.ext = ext;
     }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
 
     @Data
     public static class OrderRule {

@@ -24,7 +24,7 @@ import java.util.function.Function;
  * @param <UPDATE_DTO> DTO
  * @author lym
  */
-public interface UpdateController<ENTITY extends BaseEntity<? extends Serializable>, UPDATE_DTO> extends BaseController<ENTITY> {
+public interface UpdateController<ENTITY extends BaseEntity<? extends Serializable>, UPDATE_DTO extends Serializable> extends BaseController<ENTITY> {
 
     /**
      * 修改
@@ -83,6 +83,6 @@ public interface UpdateController<ENTITY extends BaseEntity<? extends Serializab
      */
     @SuppressWarnings("unchecked")
     default ENTITY handleBeforeUpdate(UPDATE_DTO dto) {
-        return (ENTITY) dto;
+        return getConversionService().convert(dto, getEntityClass());
     }
 }

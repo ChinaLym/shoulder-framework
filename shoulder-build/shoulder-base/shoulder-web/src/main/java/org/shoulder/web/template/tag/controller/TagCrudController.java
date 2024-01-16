@@ -1,6 +1,7 @@
 package org.shoulder.web.template.tag.controller;
 
 import org.shoulder.web.template.crud.CrudCacheableController;
+import org.shoulder.web.template.tag.dto.TagDTO;
 import org.shoulder.web.template.tag.entity.TagEntity;
 import org.shoulder.web.template.tag.service.TagServiceImpl;
 
@@ -13,7 +14,7 @@ import org.shoulder.web.template.tag.service.TagServiceImpl;
 //@RestController
 //@RequestMapping(value = "${shoulder.web.ext.tag.path:/api/v1/tags}")
 public class TagCrudController extends CrudCacheableController<
-        TagServiceImpl, TagEntity, Long, TagEntity, TagEntity, TagEntity
+        TagServiceImpl, TagEntity, Long, TagDTO, TagDTO, TagDTO, TagDTO
         > implements TagController {
 
 

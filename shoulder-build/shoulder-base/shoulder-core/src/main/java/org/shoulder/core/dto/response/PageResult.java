@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiModel;
 import jakarta.annotation.Nonnull;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
  * @author lym
  */
 @ApiModel(value = "分页数据返回格式")
-public class PageResult<T> extends ListResult<T> implements Serializable {
+public class PageResult<T> extends ListResult<T> {
 
     private static final long serialVersionUID = -1451879834966540928L;
     /**

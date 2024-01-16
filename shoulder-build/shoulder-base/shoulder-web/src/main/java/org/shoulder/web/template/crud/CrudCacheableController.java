@@ -16,8 +16,15 @@ import java.io.Serializable;
  *
  * @author lym
  */
-public abstract class CrudCacheableController<SERVICE extends BaseCacheableService<ENTITY>, ENTITY extends BaseEntity<ID>, ID extends Serializable, PageQuery, SaveDTO, UpdateDTO>
-        extends CrudController<SERVICE, ENTITY, ID, PageQuery, SaveDTO, UpdateDTO> {
+public abstract class CrudCacheableController<
+    SERVICE extends BaseCacheableService<ENTITY>,
+    ENTITY extends BaseEntity<ID>,
+    ID extends Serializable,
+    QueryResultDTO extends Serializable,
+    PageQuery extends Serializable,
+    SaveDTO extends Serializable,
+    UpdateDTO extends Serializable
+    > extends CrudController<SERVICE, ENTITY, ID, QueryResultDTO, PageQuery, SaveDTO, UpdateDTO> {
 
     /**
      * 查询

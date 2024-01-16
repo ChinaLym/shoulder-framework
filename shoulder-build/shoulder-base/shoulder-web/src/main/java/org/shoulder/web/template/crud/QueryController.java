@@ -1,5 +1,6 @@
 package org.shoulder.web.template.crud;
 
+import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +34,13 @@ import java.io.Serializable;
  * @author lym
  */
 @Validated
-public interface QueryController<ENTITY extends BaseEntity<ID>, ID extends Serializable, PAGE_QUERY_PARAM> extends BaseController<ENTITY> {
+public interface QueryController<
+    ENTITY extends BaseEntity<ID>,
+    ID extends Serializable,
+    PAGE_QUERY_PARAM extends Serializable,
+    QueryResultDTO extends Serializable
+    >
+    extends BaseController<ENTITY> {
 
     /**
      * 查询
@@ -43,7 +50,7 @@ public interface QueryController<ENTITY extends BaseEntity<ID>, ID extends Seria
      * @return 查询结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name = DataBaseConsts.FIELD_ID, value = "主键", dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = DataBaseConsts.FIELD_ID, value = "主键", dataType = "long", paramType = "path"),
     })
     @ApiOperation(value = "单个查询", notes = "单个查询")
     @GetMapping("/{id}")
@@ -64,14 +71,14 @@ public interface QueryController<ENTITY extends BaseEntity<ID>, ID extends Seria
     @ApiOperation(value = "分页查询")
     @PostMapping(value = "/page")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<PageResult<ENTITY>> page(@OperationLogParam @RequestBody @Valid @Nonnull PageQuery<PAGE_QUERY_PARAM> pageQueryParam) {
+    default BaseResult<PageResult<ENTITY>> page(
+        @OperationLogParam @RequestBody @Valid @Nonnull PageQuery<PAGE_QUERY_PARAM> pageQueryParam) {
         // convert to BO
         BasePageQuery<ENTITY> pageQuery = BasePageQuery.create(pageQueryParam, this::convertToEntity);
         OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         PageResult<ENTITY> queryResult = getService().page(pageQuery);
         return BaseResult.success(queryResult);
     }
-
 
     /**
      * 批量查询match入参的
@@ -101,8 +108,16 @@ public interface QueryController<ENTITY extends BaseEntity<ID>, ID extends Seria
      */
     @SuppressWarnings("unchecked")
     default ENTITY convertToEntity(PAGE_QUERY_PARAM pageQueryParam) {
-        return (ENTITY) pageQueryParam;
+        return getConversionService().convert(pageQueryParam, getEntityClass());
     }
 
+    @SuppressWarnings("unchecked")
+    default QueryResultDTO convertToDTO(ENTITY entity) {
+        return getConversionService().convert(entity, getQueryDtoClass());
+    }
+
+    default Class<QueryResultDTO> getQueryDtoClass() {
+        return (Class<QueryResultDTO>) GenericTypeUtils.resolveTypeArguments(this.getClass(), QueryController.class)[3];
+    }
 
 }

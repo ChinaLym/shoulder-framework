@@ -2,8 +2,8 @@ package org.shoulder.core.dto.response;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.shoulder.core.dto.ToStringObj;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 @ApiModel(value = "列表数据返回格式")
 //@Schema(description = "列表数据返回内容")
-public class ListResult<T> implements Serializable {
+public class ListResult<T> extends ToStringObj {
 
     private static final long serialVersionUID = -3134782461635924904L;
     //@Schema(name = "数据总数")

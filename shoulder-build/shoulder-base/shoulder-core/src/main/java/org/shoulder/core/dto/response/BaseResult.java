@@ -3,13 +3,13 @@ package org.shoulder.core.dto.response;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.shoulder.core.dto.ToStringObj;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.exception.ErrorContext;
 import org.shoulder.core.util.ExceptionUtil;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ import java.util.Map;
  */
 @ApiModel(value = "接口响应统一返回值包装类 Restful 风格")
 //@Schema(name = "接口响应统一返回值包装类 Restful 风格")
-public class BaseResult<T> implements Serializable {
+public class BaseResult<T> extends ToStringObj {
 
     private static final long serialVersionUID = -3829563105110651627L;
 

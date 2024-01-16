@@ -27,7 +27,7 @@ import java.io.Serializable;
  * @param <SAVE_DTO> DTO
  * @author lym
  */
-public interface SaveController<ENTITY extends BaseEntity<? extends Serializable>, SAVE_DTO> extends BaseController<ENTITY> {
+public interface SaveController<ENTITY extends BaseEntity<? extends Serializable>, SAVE_DTO extends Serializable> extends BaseController<ENTITY> {
 
     /**
      * 新增
@@ -73,7 +73,7 @@ public interface SaveController<ENTITY extends BaseEntity<? extends Serializable
      */
     @SuppressWarnings("unchecked")
     default ENTITY handleBeforeSave(SAVE_DTO dto) {
-        return (ENTITY) dto;
+        return getConversionService().convert(dto, getEntityClass());
     }
 
 }

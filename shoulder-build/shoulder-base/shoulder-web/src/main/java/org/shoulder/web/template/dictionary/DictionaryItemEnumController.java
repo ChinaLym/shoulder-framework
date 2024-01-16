@@ -55,6 +55,7 @@ public class DictionaryItemEnumController implements DictionaryItemController {
     @GetMapping("/listByType/{dictionaryType}")
     public BaseResult<ListResult<DictionaryItemDTO>> listByType(@OperationLogParam @PathVariable("dictionaryType") String dictionaryType) {
         List<DictionaryItemDTO> dictionaryItemList = query(dictionaryType);
+        //dictionaryItemList.sort(DictionaryItemDTO::compareTo); // 枚举添加的时候已经排序了，暂不需要这行代码
         return BaseResult.success(dictionaryItemList);
     }
 

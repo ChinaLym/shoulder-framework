@@ -1,6 +1,7 @@
 package org.shoulder.web.template.dictionary;
 
 import org.shoulder.web.template.crud.CrudCacheableController;
+import org.shoulder.web.template.dictionary.dto.DictionaryDTO;
 import org.shoulder.web.template.dictionary.model.DictionaryEntity;
 import org.shoulder.web.template.dictionary.service.DictionaryService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,13 @@ import java.io.Serializable;
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}")
 public class DictionaryCrudController<ID extends Serializable> extends CrudCacheableController<
-        DictionaryService<ID>, DictionaryEntity<ID>, ID, DictionaryEntity<ID>, DictionaryEntity<ID>, DictionaryEntity<ID>
-        > implements DictionaryController {
+    DictionaryService<ID>,
+    DictionaryEntity<ID>,
+    ID,
+    DictionaryDTO,
+    DictionaryDTO,
+    DictionaryDTO,
+    DictionaryDTO
+    > implements DictionaryController {
 
 }

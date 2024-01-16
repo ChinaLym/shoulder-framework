@@ -1,8 +1,7 @@
 package org.shoulder.core.dto.response;
 
 import lombok.Data;
-
-import java.io.Serializable;
+import org.shoulder.core.dto.ToStringObj;
 
 /**
  * 树状数据
@@ -10,7 +9,7 @@ import java.io.Serializable;
  * @author lym
  */
 @Data
-public class TreeNodeResult implements Serializable {
+public class TreeNodeResult extends ToStringObj {
 
     private static final long serialVersionUID = -3515352250874606693L;
     /**

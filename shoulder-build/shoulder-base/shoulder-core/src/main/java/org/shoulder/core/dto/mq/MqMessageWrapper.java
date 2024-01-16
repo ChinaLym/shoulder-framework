@@ -1,6 +1,7 @@
 package org.shoulder.core.dto.mq;
 
 import lombok.Data;
+import org.shoulder.core.dto.ToStringObj;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Map;
  * @author lym
  */
 @Data
-public class MqMessageWrapper implements Serializable {
+public class MqMessageWrapper extends ToStringObj {
 
     private static final long serialVersionUID = -7520329108105397099L;
     /**

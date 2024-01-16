@@ -6,19 +6,24 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import org.shoulder.core.dto.ToStringObj;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import static org.shoulder.core.constant.PageConst.*;
+import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_NO;
+import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_SIZE;
+import static org.shoulder.core.constant.PageConst.MAX_PAGE_SIZE;
+import static org.shoulder.core.constant.PageConst.MIN_PAGE_NO;
+import static org.shoulder.core.constant.PageConst.PARAM_PAGE_NO;
+import static org.shoulder.core.constant.PageConst.PARAM_PAGE_SIZE;
+import static org.shoulder.core.constant.PageConst.PARAM_RULES;
+import static org.shoulder.core.constant.PageConst.PARAM_SORT_BY;
 
 /**
  * 分页参数 DTO
@@ -26,7 +31,7 @@ import static org.shoulder.core.constant.PageConst.*;
  * @author lym
  */
 @ApiModel("分页查询 DTO param")
-public class PageQuery<DTO> implements Serializable {
+public class PageQuery<DTO> extends ToStringObj {
 
     private static final long serialVersionUID = -3462907130101674607L;
 
@@ -165,11 +170,6 @@ public class PageQuery<DTO> implements Serializable {
 
     public void setExt(Map<String, Object> ext) {
         this.ext = ext;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 
