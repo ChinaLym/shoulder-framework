@@ -35,7 +35,7 @@ public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<Diction
         targetModel.setDictionaryType(sourceModel.getDictionaryType());
         String displayI18nName = Optional.ofNullable(ContextUtils.getBean(Translator.class))
                 .map(t -> t.getMessage(sourceModel.getDisplayName(), new Object[0],
-                        "sourceModel.getDisplayName()", translator.currentLocale()))
+                        sourceModel.getDisplayName(), translator.currentLocale()))
                 .orElse(sourceModel.getDisplayName());
         targetModel.setDisplayName(displayI18nName);
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
