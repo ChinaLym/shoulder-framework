@@ -32,11 +32,25 @@ public class DictionaryItemDTO2DomainConverterRegister {
         Collection<Class<? extends Enum<? extends DictionaryEnum>>> enumClassList = event.getApplicationContext().getBean(DictionaryEnumStore.class)
                 .listAllTypes();
 
+        // enum/dynamic 2 dto
+        conversionService.addConverter(DictionaryItem.class, DictionaryItemDTO.class, source -> {
+            DictionaryItemDTO dto = new DictionaryItemDTO();
+            dto.setCode(source.getItemId().toString());
+            dto.setDictionaryType(source.getDictionaryType());
+            dto.setDisplayName(source.getDisplayName());
+            dto.setDisplayOrder(source.getDisplayOrder());
+            //dto.setParentCode();
+            return dto;
+        });
+
+        // todo integer/string special
+
+        // dto -> enum
         for (Class<? extends Enum<? extends DictionaryEnum>> enumClass : enumClassList) {
             DictionaryItemDTO2DomainConverter converter = new DictionaryItemDTO2DomainConverter(enumClass);
             conversionService.addConverter(DictionaryItemDTO.class, enumClass, converter);
         }
-        // 动态配置字典
+        // dto -> 动态 model
         conversionService.addConverter(DictionaryItemDTO.class, ConfigAbleDictionaryItem.class, new DictionaryItemDTO2ConfigAbleDictionaryItemConverter());
     }
 

@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-//@Component
 public class DictionaryItemDTO2ConfigAbleDictionaryItemConverter extends BaseDataConverter<DictionaryItemDTO, ConfigAbleDictionaryItem> {
 
     @Override

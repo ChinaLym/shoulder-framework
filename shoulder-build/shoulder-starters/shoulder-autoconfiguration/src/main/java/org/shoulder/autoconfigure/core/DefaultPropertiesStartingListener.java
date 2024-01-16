@@ -38,7 +38,7 @@ public class DefaultPropertiesStartingListener implements ApplicationListener<Ap
         properties.putIfAbsent("shoulder.application.errorCodePrefix", "0x0000");
         properties.putIfAbsent("shoulder.application.version", "v1");
         properties.putIfAbsent("shoulder.application.cluster", "false");
-        properties.putIfAbsent("shoulder.application.dateTimeFormat", AppInfo.UTC_DATE_TIME_FORMAT);
+        properties.putIfAbsent(BaseAppProperties.dateTimeFormatConfigPath, AppInfo.UTC_DATE_TIME_FORMAT);
         properties.putIfAbsent("shoulder.application.charset", "UTF-8");
         properties.putIfAbsent("shoulder.application.defaultLocale", "zh_CN");
         properties.putIfAbsent("shoulder.application.timeZone", "GMT+8:00");

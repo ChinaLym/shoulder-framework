@@ -2,17 +2,15 @@ package org.shoulder.web.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.lang.invoke.MethodHandle;
 
 /**
- * 阻止浏览器缓存接口返回值【适用于非查询类的管理 web 应用，达到展示实时数据的效果，默认不生效】
+ * 阻止浏览器缓存接口返回值【适用于非查询类的管理 web 应用，达到展示实时数据的效果，默认不生效，用户想用则自行注入该类】
  *
  * @author lym
  */
-@Component
 public class ApiResponseNoCacheInterceptor implements HandlerInterceptor {
 
     /**

@@ -19,6 +19,9 @@ import java.util.List;
  */
 public class ConvertUtil {
 
+    /**
+     * ex: 2024-01-16T21:26:08.219982
+     */
     public static final String ISO_DATE_FORMAT = "iso";
 
     private static volatile ShoulderConversionService CONVERSION_SERVICE = new ShoulderGenericConversionServiceImpl(

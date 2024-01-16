@@ -3,6 +3,7 @@ package org.shoulder.autoconfigure.web;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
+import org.shoulder.autoconfigure.web.WebExtAutoConfiguration.BaseOnEnumDictionaryConfiguration;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.converter.ShoulderGenericConversionServiceImpl;
 import org.shoulder.core.i18.Translator;
@@ -11,8 +12,8 @@ import org.shoulder.web.template.dictionary.DictionaryController;
 import org.shoulder.web.template.dictionary.DictionaryEnumController;
 import org.shoulder.web.template.dictionary.DictionaryItemController;
 import org.shoulder.web.template.dictionary.DictionaryItemEnumController;
-import org.shoulder.web.template.dictionary.base.ToDictionaryEnumConversionService;
 import org.shoulder.web.template.dictionary.base.DictionaryItemDTO2DomainConverterRegister;
+import org.shoulder.web.template.dictionary.base.ToDictionaryEnumConversionService;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDomain2DTOConverter;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
@@ -21,6 +22,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration.EnableWebMvcConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.ConversionService;
@@ -34,14 +36,8 @@ import java.util.Optional;
  * @author lym
  */
 @ConditionalOnClass(DictionaryController.class)
-@AutoConfiguration
+@AutoConfiguration(before = { EnableWebMvcConfiguration.class }, after = { BaseOnEnumDictionaryConfiguration.class })
 public class WebExtAutoConfiguration {
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ToDictionaryEnumConversionService dictionaryConversionService() {
-        return new ToDictionaryEnumConversionService();
-    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -50,18 +46,17 @@ public class WebExtAutoConfiguration {
             .dateFormat(ConvertUtil.ISO_DATE_FORMAT)
             .timeFormat(ConvertUtil.ISO_DATE_FORMAT)
             .dateTimeFormat(ConvertUtil.ISO_DATE_FORMAT);
-        ShoulderGenericConversionServiceImpl conversionService =  new ShoulderGenericConversionServiceImpl(dateTimeFormatters);
+        ShoulderGenericConversionServiceImpl conversionService = new ShoulderGenericConversionServiceImpl(dateTimeFormatters);
         Optional.ofNullable(conversionServiceList).ifPresent(l -> l.forEach(conversionService::addConversionService));
         ConvertUtil.setConversionService(conversionService);
         return conversionService;
     }
 
-    @AutoConfiguration(after = {I18nAutoConfiguration.class})
-    @ConditionalOnClass(value = {DictionaryEnumStore.class})
+    @AutoConfiguration(after = { I18nAutoConfiguration.class })
+    @ConditionalOnClass(value = { DictionaryEnumStore.class })
     @EnableConfigurationProperties(WebExProperties.class)
     @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "enum", matchIfMissing = true)
     public static class BaseOnEnumDictionaryConfiguration {
-
 
         /**
          * 将 String 类型入参，转为 LocalDate 类型
@@ -70,13 +65,20 @@ public class WebExtAutoConfiguration {
          */
         @Bean
         @ConditionalOnMissingBean
-        public DictionaryEnumStore dictionaryEnumRepository(@Nullable List<DictionaryEnumRepositoryCustomizer> customizers, WebExProperties webExProperties) {
+        public DictionaryEnumStore dictionaryEnumRepository(@Nullable List<DictionaryEnumRepositoryCustomizer> customizers,
+                                                            WebExProperties webExProperties) {
             DictionaryEnumStore repository =
-                    new DefaultDictionaryEnumStore(webExProperties.getDictionary().getIgnoreDictionaryTypeCase());
+                new DefaultDictionaryEnumStore(webExProperties.getDictionary().getIgnoreDictionaryTypeCase());
             if (CollectionUtils.isNotEmpty(customizers)) {
                 customizers.forEach(c -> c.customize(repository));
             }
             return repository;
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        public ToDictionaryEnumConversionService dictionaryConversionService(DictionaryEnumStore dictionaryEnumStore) {
+            return new ToDictionaryEnumConversionService(dictionaryEnumStore);
         }
 
         @Bean

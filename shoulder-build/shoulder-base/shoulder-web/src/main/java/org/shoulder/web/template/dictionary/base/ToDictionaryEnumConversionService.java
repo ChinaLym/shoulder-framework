@@ -18,7 +18,9 @@ import org.springframework.util.Assert;
  */
 public class ToDictionaryEnumConversionService extends GenericConversionService {
 
-    private DictionaryEnumStore dictionaryEnumStore;
+    private final DictionaryEnumStore dictionaryEnumStore;
+
+    public ToDictionaryEnumConversionService(DictionaryEnumStore dictionaryEnumStore) {this.dictionaryEnumStore = dictionaryEnumStore;}
 
     @Override
     public boolean canConvert(@Nullable TypeDescriptor sourceType, TypeDescriptor targetType) {

@@ -12,7 +12,6 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,11 +77,11 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
 
     private void registerJdk8DateConverters() {
         // convert to each
-        addConverter(Date.class, Instant.class, d -> d.toInstant().minus(Duration.ZERO));
+        //addConverter(Date.class, Instant.class, Date::toInstant);
         addConverter(Date.class, LocalDateTime.class, d -> d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         addConverter(Date.class, LocalDate.class, d -> d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 
-        addConverter(Instant.class, Date.class, Date::from);
+        //addConverter(Instant.class, Date.class, Date::from);
         addConverter(Instant.class, LocalDateTime.class, i -> LocalDateTime.ofInstant(i, ZoneId.systemDefault()));
         addConverter(Instant.class, LocalDate.class,
                 in -> LocalDateTime.ofInstant(in, ZoneId.systemDefault()).toLocalDate());
@@ -96,8 +95,8 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
         addConverter(LocalDate.class, Instant.class, d -> convert(convert(d, LocalDateTime.class), Instant.class));
 
         // parse 时间戳
-        addConverter(Long.class, Instant.class, instant -> instant <= 9999999999L ? Instant.ofEpochSecond(instant) : Instant.ofEpochMilli(instant));
-        addConverter(Long.class, Date.class, d -> convert(convert(d, Instant.class), Date.class));
+        //addConverter(Long.class, Instant.class, instant -> instant <= 9999999999L ? Instant.ofEpochSecond(instant) : Instant.ofEpochMilli(instant));
+        //addConverter(Long.class, Date.class, d -> convert(convert(d, Instant.class), Date.class));
 
         // parse Str
         addConverter(String.class, Date.class, new DateConverter());
@@ -110,11 +109,11 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
         addConverter(String.class, LocalDate.class, new LocalDateConverter());
 
         // formatter
-        addConverter(Date.class, String.class, DateConverter.FORMATTER::format);
-        addConverter(LocalTime.class, String.class, LocalTimeConverter.FORMATTER::format);
-        addConverter(LocalDateTime.class, String.class, LocalDateTimeConverter.FORMATTER::format);
-        addConverter(Instant.class, String.class, source -> LocalDateTimeConverter.FORMATTER.format(convert(source, LocalDateTime.class)));
-        addConverter(LocalDate.class, String.class, LocalDateConverter.FORMATTER::format);
+        //addConverter(Date.class, String.class, DateConverter.FORMATTER::format);
+        //addConverter(LocalTime.class, String.class, LocalTimeConverter.FORMATTER::format);
+        //addConverter(LocalDateTime.class, String.class, LocalDateTimeConverter.FORMATTER::format);
+        //addConverter(Instant.class, String.class, source -> LocalDateTimeConverter.FORMATTER.format(convert(source, LocalDateTime.class)));
+        //addConverter(LocalDate.class, String.class, LocalDateConverter.FORMATTER::format);
     }
 
     @Override

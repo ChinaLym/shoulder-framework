@@ -13,6 +13,7 @@ import java.util.Optional;
 
 /**
  * DictionaryItem domain -> VO
+ * fixme 没生效？
  *
  * @author lym
  */
