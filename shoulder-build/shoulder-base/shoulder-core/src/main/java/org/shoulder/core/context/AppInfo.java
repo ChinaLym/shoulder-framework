@@ -61,6 +61,7 @@ public class AppInfo {
 
     /**
      * 全局统一日期格式，默认世界标准时间格式
+     * @see org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties.Format
      */
     private static String dateTimeFormat = UTC_DATE_TIME_FORMAT;
 

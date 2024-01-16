@@ -1,12 +1,7 @@
 
 package org.shoulder.web.template.dictionary.dto;
 
-import org.shoulder.web.template.dictionary.base.BaseDataConverter;
-import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.shoulder.core.converter.BaseDataConverter;
 
 /**
  * VO 模型转换器
@@ -48,17 +43,6 @@ public abstract class AbstractVODataConverter<S, T> extends BaseDataConverter<S,
 //            vo.setModifier(conversionService.convert(domain.getModifier(), OperatorVO.class));
 //        }
 
-    }
-
-    protected ConfigAbleDictionaryItem convertToConfigAbleDictionaryItem(String dictionaryCode, DictionaryItemDTO dictionaryItemDTO) {
-        return dictionaryItemDTO == null ? null
-                : string2ConfigAbleDictionaryItemConverter.convertToConfigAbleDictionaryItem(dictionaryCode, dictionaryItemDTO.getCode());
-    }
-
-    protected List<ConfigAbleDictionaryItem> convertToConfigAbleDictionaryItem(String dictionaryCode, Collection<? extends DictionaryItemDTO> dictionaryItemDTOList) {
-        return dictionaryItemDTOList == null ? null
-                : dictionaryItemDTOList.stream().map(vo -> convertToConfigAbleDictionaryItem(dictionaryCode, vo))
-                .collect(Collectors.toList());
     }
 
 }

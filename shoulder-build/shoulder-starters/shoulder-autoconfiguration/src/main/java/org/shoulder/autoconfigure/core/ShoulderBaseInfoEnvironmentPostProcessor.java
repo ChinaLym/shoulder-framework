@@ -68,7 +68,7 @@ public class ShoulderBaseInfoEnvironmentPostProcessor implements EnvironmentPost
         // 这些设置了默认值，不必担心为 null
         AppInfo.initErrorCodePrefix(environment.getProperty("shoulder.application.errorCodePrefix"));
         AppInfo.initVersion(environment.getProperty("shoulder.application.version"));
-        AppInfo.initDateTimeFormat(environment.getProperty("shoulder.application.dateTimeFormat"));
+        AppInfo.initDateTimeFormat(environment.getProperty(BaseAppProperties.dateTimeFormatConfigPath));
         AppInfo.initCharset(environment.getProperty("shoulder.application.charset"));
         AppInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
         AppInfo.initDefaultLocale(StringUtils.parseLocale(environment.getProperty("shoulder.application.defaultLocale")));

@@ -30,6 +30,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConditionalOnWebApplication
 public class WebMvcAutoConfiguration {
 
+    //@Bean fixme 配置一致性
+    //public Object justDoNothing(WebMvcProperties mvcProperties) {
+    //    Format format = mvcProperties.getFormat();
+    //    boolean matchSpringConfig = AppInfo.dateTimeFormat().equals(format.getDateTime());
+    //    if(!matchSpringConfig) {
+    //        LoggerFactory.getLogger(WebMvcAutoConfiguration.class)
+    //            .warn("Configuration inconsistent detected: spring.mvc.format.datetime, not match "
+    //                  + BaseAppProperties.dateTimeFormatConfigPath
+    //                  + ", use spring config first! please keep the configuration consistent.");
+    //    }
+    //    WebConversionService conversionService = new WebConversionService(
+    //        new DateTimeFormatters().dateFormat(format.getDate())
+    //            .timeFormat(format.getTime())
+    //            .dateTimeFormat(format.getDateTime()));
+    //    return new Object();
+    //}
+
     @AutoConfiguration
     @ConditionalOnClass(CommonEndpoint.class)
     protected static class CommonEndpointWebConfig {

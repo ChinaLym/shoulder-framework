@@ -6,7 +6,7 @@ import org.shoulder.core.util.ContextUtils;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseService;
 import org.shoulder.log.operation.support.OperableObjectTypeRepository;
-import org.shoulder.web.template.dictionary.base.ShoulderConversionService;
+import org.shoulder.core.converter.ShoulderConversionService;
 
 import java.io.Serializable;
 

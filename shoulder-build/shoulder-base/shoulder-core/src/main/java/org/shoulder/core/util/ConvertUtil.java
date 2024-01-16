@@ -1,13 +1,16 @@
 package org.shoulder.core.util;
 
 import jakarta.annotation.Nullable;
+import org.shoulder.core.converter.ShoulderConversionService;
+import org.shoulder.core.converter.ShoulderGenericConversionServiceImpl;
 import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
-import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.core.convert.converter.GenericConverter;
-import org.springframework.core.convert.support.ConfigurableConversionService;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 类型转换
@@ -16,9 +19,9 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
  */
 public class ConvertUtil {
 
-    private static final String ISO_DATE_FORMAT = "iso";
+    public static final String ISO_DATE_FORMAT = "iso";
 
-    private static final ConfigurableConversionService CONVERSION_SERVICE = new WebConversionService(
+    private static volatile ShoulderConversionService CONVERSION_SERVICE = new ShoulderGenericConversionServiceImpl(
             new DateTimeFormatters()
                     .dateFormat(ISO_DATE_FORMAT)
                     .timeFormat(ISO_DATE_FORMAT)
@@ -43,6 +46,10 @@ public class ConvertUtil {
         return CONVERSION_SERVICE.convert(source, sourceType, targetType);
     }
 
+    public <S, T> List<T> convert(Collection<? extends S> source, Class<T> targetType) {
+        return CONVERSION_SERVICE.convert(source, targetType);
+    }
+
     public static void addConverter(Converter<?, ?> converter) {
         CONVERSION_SERVICE.addConverter(converter);
     }
@@ -63,5 +70,8 @@ public class ConvertUtil {
         CONVERSION_SERVICE.removeConvertible(sourceType, targetType);
     }
 
+    public static void setConversionService(ShoulderConversionService globalConversionService) {
+        CONVERSION_SERVICE = globalConversionService;
+    }
 
 }

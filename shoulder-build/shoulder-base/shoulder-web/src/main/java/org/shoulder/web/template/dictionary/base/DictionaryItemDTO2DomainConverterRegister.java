@@ -1,6 +1,7 @@
 package org.shoulder.web.template.dictionary.base;
 
 import jakarta.annotation.Nonnull;
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO2ConfigAbleDictionaryItemConverter;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;

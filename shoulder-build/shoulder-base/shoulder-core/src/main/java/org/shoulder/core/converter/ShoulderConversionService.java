@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary.base;
+package org.shoulder.core.converter;
 
 import org.springframework.core.convert.support.ConfigurableConversionService;
 
@@ -8,6 +8,8 @@ import java.util.List;
 /**
  * Shoulder ConversionService
  * 比 spring 多了转换集合接口
+ *
+ * @author lym
  */
 public interface ShoulderConversionService extends ConfigurableConversionService {
 

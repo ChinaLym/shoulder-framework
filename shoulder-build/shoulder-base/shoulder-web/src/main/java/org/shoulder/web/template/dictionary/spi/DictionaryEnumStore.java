@@ -92,4 +92,6 @@ public interface DictionaryEnumStore {
     }
 
     boolean contains(String dictionaryType);
+
+    Class<? extends Enum<? extends DictionaryEnum>> getActuallyType(String dictionaryType);
 }

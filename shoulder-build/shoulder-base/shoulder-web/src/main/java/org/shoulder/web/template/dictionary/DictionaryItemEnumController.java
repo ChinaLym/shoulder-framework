@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.log.operation.annotation.OperationLogParam;
-import org.shoulder.web.template.dictionary.base.ShoulderConversionService;
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.web.template.dictionary.dto.DictionaryBatchQueryParam;
 import org.shoulder.web.template.dictionary.dto.DictionaryDTO;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;

@@ -5,7 +5,7 @@ package org.shoulder.web.template.dictionary.dto;
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.ContextUtils;
-import org.shoulder.web.template.dictionary.base.BaseDataConverter;
+import org.shoulder.core.converter.BaseDataConverter;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItem;
 

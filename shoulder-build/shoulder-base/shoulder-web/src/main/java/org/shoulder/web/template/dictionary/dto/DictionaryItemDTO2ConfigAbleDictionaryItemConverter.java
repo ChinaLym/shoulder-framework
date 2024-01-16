@@ -2,7 +2,7 @@
 package org.shoulder.web.template.dictionary.dto;
 
 
-import org.shoulder.web.template.dictionary.base.BaseDataConverter;
+import org.shoulder.core.converter.BaseDataConverter;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 
 import javax.annotation.Nonnull;

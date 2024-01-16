@@ -18,6 +18,8 @@ public class BaseAppProperties {
 
     public static final String APPLICATION_CONFIG_PREFIX = KEY_PREFIX + "application";
 
+    public static final String dateTimeFormatConfigPath = "shoulder.application.dateTimeFormat";
+
     /**
      * 应用标识 appId/identify，推荐为 maven 的 artifactId。若不填写则取 spring.application.name
      */

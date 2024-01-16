@@ -3,12 +3,12 @@ package org.shoulder.web.template.dictionary.dto;
 
 
 import jakarta.annotation.Nonnull;
-import org.shoulder.web.template.dictionary.base.BaseDataConverter;
+import org.shoulder.core.converter.BaseDataConverter;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.springframework.stereotype.Component;
 
 /**
- * @author feng wang
+ * @author lym
  */
 @Component
 public class ConfigAbleDictionaryItem2DictionaryItemDTOConverter extends BaseDataConverter<ConfigAbleDictionaryItem, DictionaryItemDTO> {

@@ -1,36 +1,45 @@
-package org.shoulder.web.template.dictionary.base;
+package org.shoulder.core.converter;
 
-import jakarta.validation.constraints.NotNull;
-import org.shoulder.core.converter.DateConverter;
-import org.shoulder.core.converter.LocalDateConverter;
-import org.shoulder.core.converter.LocalDateTimeConverter;
-import org.shoulder.core.converter.LocalTimeConverter;
-import org.shoulder.web.template.dictionary.model.DictionaryEnum;
-import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
+import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
+import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 /**
+ * shoulder 通用转换器 spring 的增强：
+ *  1. 增加 conversionServiceList 便于扩展特定通用场景转换（复杂范型场景）
+ *  2. 支持 集合批量转换
+ *
  * @author lym
  */
-public class ShoulderGenericConversionServiceImpl extends DefaultConversionService implements ShoulderConversionService {
+public class ShoulderGenericConversionServiceImpl extends WebConversionService implements ShoulderConversionService {
 
-    private final DictionaryEnumStore dictionaryEnumStore;
+    /**
+     * 优先级更高的
+     */
+    private final List<ConversionService> conversionServiceList = new ArrayList<>(3);
 
-    public ShoulderGenericConversionServiceImpl(DictionaryEnumStore dictionaryEnumStore) {
-        super();
-        this.dictionaryEnumStore = dictionaryEnumStore;
+    public ShoulderGenericConversionServiceImpl(DateTimeFormatters dateTimeFormatters) {
+        super(dateTimeFormatters);
         registerDictionaryEnumConverters();
         registerJdk8DateConverters();
     }
@@ -109,20 +118,15 @@ public class ShoulderGenericConversionServiceImpl extends DefaultConversionServi
     }
 
     @Override
-    public <T> T convert(Object source, @NotNull Class<T> targetType) {
+    public Object convert(@Nullable Object source, @Nullable TypeDescriptor sourceType, TypeDescriptor targetType) {
         // 特殊支持从 int / string 转换为 DictionaryEnum
-        if (DictionaryEnum.class.isAssignableFrom(targetType)) {
-            if (source == null) {
-                return null;
-            }
-            if (source.getClass() == Integer.class) {
-                return (T) DictionaryEnum.fromId((Class<? extends Enum<? extends DictionaryEnum<?, Integer>>>) targetType, (Integer) source);
-            }
-            if (source.getClass() == String.class) {
-                return (T) DictionaryEnum.fromId((Class<? extends Enum<? extends DictionaryEnum<?, String>>>) targetType, (String) source);
+        Assert.notNull(targetType, "Target type to convert to cannot be null");
+        for (ConversionService conversionService : conversionServiceList) {
+            if(conversionService.canConvert(sourceType, targetType)) {
+                return conversionService.convert(source, sourceType, targetType);
             }
         }
-        return super.convert(source, targetType);
+        return super.convert(source, sourceType, targetType);
     }
 
     @Override
@@ -153,16 +157,24 @@ public class ShoulderGenericConversionServiceImpl extends DefaultConversionServi
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @EventListener(ContextRefreshedEvent.class)
     public void onContextRefreshedEvent(ContextRefreshedEvent event) {
-        Collection<BaseDataConverter> dataConverters = event.getApplicationContext().getBeansOfType(BaseDataConverter.class)
-                .values();
-        dataConverters.forEach(this::addConverter);
+        //Collection<BaseDataConverter> dataConverters = event.getApplicationContext().getBeansOfType(BaseDataConverter.class)
+        //        .values();
+        //dataConverters.forEach(this::addConverter);
     }
 
     @Override
     public void addConverter(Converter<?, ?> converter) {
-        if (converter instanceof BaseDataConverter) {
-            ((BaseDataConverter) converter).setConversionService(this);
-        }
+        //if (converter instanceof BaseDataConverter) {
+        //    ((BaseDataConverter) converter).setConversionService(this);
+        //}
         super.addConverter(converter);
+    }
+
+    public void addConversionService(ConversionService conversionService) {
+        conversionServiceList.add(conversionService);
+    }
+
+    public List<ConversionService> getConversionServiceList() {
+        return conversionServiceList;
     }
 }

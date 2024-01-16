@@ -3,14 +3,16 @@ package org.shoulder.autoconfigure.web;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
+import org.shoulder.core.converter.ShoulderConversionService;
+import org.shoulder.core.converter.ShoulderGenericConversionServiceImpl;
 import org.shoulder.core.i18.Translator;
+import org.shoulder.core.util.ConvertUtil;
 import org.shoulder.web.template.dictionary.DictionaryController;
 import org.shoulder.web.template.dictionary.DictionaryEnumController;
 import org.shoulder.web.template.dictionary.DictionaryItemController;
 import org.shoulder.web.template.dictionary.DictionaryItemEnumController;
+import org.shoulder.web.template.dictionary.base.ToDictionaryEnumConversionService;
 import org.shoulder.web.template.dictionary.base.DictionaryItemDTO2DomainConverterRegister;
-import org.shoulder.web.template.dictionary.base.ShoulderConversionService;
-import org.shoulder.web.template.dictionary.base.ShoulderGenericConversionServiceImpl;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDomain2DTOConverter;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
@@ -18,10 +20,13 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.convert.ConversionService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 自动装配 字典 api，用于动态下拉框
@@ -32,6 +37,24 @@ import java.util.List;
 @AutoConfiguration
 public class WebExtAutoConfiguration {
 
+    @Bean
+    @ConditionalOnMissingBean
+    public ToDictionaryEnumConversionService dictionaryConversionService() {
+        return new ToDictionaryEnumConversionService();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ShoulderConversionService shoulderConversionService(@Nullable List<ConversionService> conversionServiceList) {
+        DateTimeFormatters dateTimeFormatters = new DateTimeFormatters()
+            .dateFormat(ConvertUtil.ISO_DATE_FORMAT)
+            .timeFormat(ConvertUtil.ISO_DATE_FORMAT)
+            .dateTimeFormat(ConvertUtil.ISO_DATE_FORMAT);
+        ShoulderGenericConversionServiceImpl conversionService =  new ShoulderGenericConversionServiceImpl(dateTimeFormatters);
+        Optional.ofNullable(conversionServiceList).ifPresent(l -> l.forEach(conversionService::addConversionService));
+        ConvertUtil.setConversionService(conversionService);
+        return conversionService;
+    }
 
     @AutoConfiguration(after = {I18nAutoConfiguration.class})
     @ConditionalOnClass(value = {DictionaryEnumStore.class})
@@ -39,11 +62,6 @@ public class WebExtAutoConfiguration {
     @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "enum", matchIfMissing = true)
     public static class BaseOnEnumDictionaryConfiguration {
 
-        @Bean
-        @ConditionalOnMissingBean
-        public ShoulderConversionService shoulderConversionService(DictionaryEnumStore dictionaryEnumStore) {
-            return new ShoulderGenericConversionServiceImpl(dictionaryEnumStore);
-        }
 
         /**
          * 将 String 类型入参，转为 LocalDate 类型

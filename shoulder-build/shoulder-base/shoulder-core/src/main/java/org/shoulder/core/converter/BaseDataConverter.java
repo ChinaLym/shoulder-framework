@@ -1,17 +1,14 @@
-package org.shoulder.web.template.dictionary.base;
+package org.shoulder.core.converter;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.util.AssertUtils;
-import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
-import org.shoulder.web.template.dictionary.spi.String2ConfigAbleDictionaryItemConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.NonNull;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -71,9 +68,6 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
     @Autowired
     protected ShoulderConversionService conversionService;
 
-    @Autowired(required = false)
-    protected String2ConfigAbleDictionaryItemConverter string2ConfigAbleDictionaryItemConverter;
-
     /**
      * 构造方法，约束泛型类型
      */
@@ -85,7 +79,7 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
             targetEntityClass = (Class<T>) parameterizedType.getActualTypeArguments()[1];
         } catch (Exception e) {
             throw new BaseRuntimeException("Undefined generics! Inherited from:" + BaseDataConverter.class.getCanonicalName()
-                    + "must declare the generic type of the entity it operates on");
+                    + "must declare the generic type of the entity it operates on", e);
         }
     }
 
@@ -218,7 +212,7 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
      * @param sourceModel 源模型
      * @param targetModel 目标模型
      */
-    public abstract void doConvert(@NotNull S sourceModel, @NotNull T targetModel);
+    public abstract void doConvert(@NonNull S sourceModel, @NonNull T targetModel);
 
     /**
      * 是否跳过预处理
@@ -238,14 +232,8 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
      * @see #skipPreHandle true 时必须实现
      */
     @Nullable
-    public T doConvert(@NotNull S sourceModel) {
+    public T doConvert(@NonNull S sourceModel) {
         throw new IllegalStateException("please implements the method when skipPreHandle() return true!");
-    }
-
-    protected ConfigAbleDictionaryItem convertToConfigAbleDictionaryItem(String dictionaryCode, String code) {
-        AssertUtils.notNull(string2ConfigAbleDictionaryItemConverter, CommonErrorCodeEnum.CODING,
-                "No qualifying bean of type 'org.lym.pom.dto.moments.convert.base.String2ConfigAbleDictionaryItemConverter' available: expected at least 1 bean which qualifies as autowire candidate.");
-        return string2ConfigAbleDictionaryItemConverter.convertToConfigAbleDictionaryItem(dictionaryCode, code);
     }
 
 }

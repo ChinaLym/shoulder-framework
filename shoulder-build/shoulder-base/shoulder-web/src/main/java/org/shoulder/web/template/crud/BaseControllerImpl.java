@@ -4,7 +4,7 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseService;
-import org.shoulder.web.template.dictionary.base.ShoulderConversionService;
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
