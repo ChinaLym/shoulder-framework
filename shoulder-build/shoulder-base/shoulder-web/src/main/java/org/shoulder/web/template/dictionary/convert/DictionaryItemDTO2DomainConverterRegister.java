@@ -24,20 +24,20 @@ import java.util.Set;
 
 /**
  * 专门为 dictionary 实现的通用转换逻辑，这样代码少，更容易JIT编译加速
- *
+ * <p>
  * 所有需要转换的类型：
  * 非业务逻辑层：DictionaryItemDTO、Integer、String
  * 业务逻辑层：DictionaryItem、DictionaryItemEntity、ConfigAbleDictionaryItem
- *
+ * <p>
  * 转为core模型（DTO/PO -> Core.BizModel）
  * DictionaryItemDTO -> Enum、DictionaryItemEntity、ConfigAbleDictionaryItem
  * Integer/String -> Enum
- *
+ * <p>
  * 转为外部类型 (Core.BizModel -> DTO/PO)
  * Enum -> Integer/String
  * DictionaryItem -> String
  * DictionaryItem -> DictionaryItemDTO
- *
+ * <p>
  * 其他（model.of 已实现）
  * DictionaryItem -> DictionaryItemEntity、ConfigAbleDictionaryItem
  *
@@ -52,8 +52,8 @@ public class DictionaryItemDTO2DomainConverterRegister {
         ShoulderConversionService conversionService = event.getApplicationContext().getBean(ShoulderConversionService.class);
         // 枚举字典
         Collection<Class<? extends Enum<? extends DictionaryEnum>>> enumClassList = event.getApplicationContext().getBean(
-                DictionaryEnumStore.class)
-            .listAllTypes();
+                        DictionaryEnumStore.class)
+                .listAllTypes();
 
         // enum/dynamic 2 dto
         //        conversionService.addConverter(DictionaryItem.class, DictionaryItemDTO.class, source -> {
@@ -83,11 +83,13 @@ public class DictionaryItemDTO2DomainConverterRegister {
      */
     public static class DictionaryDTO2DictionaryItemGenericConverter implements GenericConverter {
 
-        @Override public Set<ConvertiblePair> getConvertibleTypes() {
+        @Override
+        public Set<ConvertiblePair> getConvertibleTypes() {
             return Set.of(new ConvertiblePair(DictionaryItemDTO.class, DictionaryItem.class));
         }
 
-        @Override public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
+        @Override
+        public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
             if (source == null) {
                 return null;
             }
@@ -131,17 +133,20 @@ public class DictionaryItemDTO2DomainConverterRegister {
      * Int/String -> Enum
      */
     public static class ToDictionaryEnumGenericConverter implements ConditionalGenericConverter {
-        @Override public Set<ConvertiblePair> getConvertibleTypes() {
+        @Override
+        public Set<ConvertiblePair> getConvertibleTypes() {
             return Set.of(new ConvertiblePair(String.class, DictionaryItem.class),
-                new ConvertiblePair(Integer.class, DictionaryItem.class));
+                    new ConvertiblePair(Integer.class, DictionaryItem.class));
         }
 
-        @Override public boolean matches(@NonNull TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
+        @Override
+        public boolean matches(@NonNull TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
             return targetType.getType().isEnum();
         }
 
 
-        @Override public Object convert(Object source, @NonNull TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
+        @Override
+        public Object convert(Object source, @NonNull TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
             if (source == null) {
                 return null;
             }
@@ -156,30 +161,37 @@ public class DictionaryItemDTO2DomainConverterRegister {
 
         private static Enum<? extends DictionaryEnum> parseStr2Enum(String sourceString, Class<?> targetEnumClass) {
             // String -> Enum
-            Class<?> identifyType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(targetEnumClass, DictionaryEnum.class)).orElseThrow()[0];
-            if (identifyType == String.class) {
-                // 1. fromId
-                return DictionaryEnum.fromId((Class<? extends Enum<? extends DictionaryEnum<?, String>>>) targetEnumClass,
-                    sourceString);
-            }
-            // 2. from name with onMissMatch 尝试转为数字识别
+            Class<?> identifyType = getEnumItemIdClass(targetEnumClass);
             Class<? extends Enum<? extends DictionaryEnum<?, String>>> enumClass = (Class<? extends Enum<? extends DictionaryEnum<?, String>>>) targetEnumClass;
-            return DictionaryEnum.decideActualEnum(enumClass.getEnumConstants(), sourceString, DictionaryEnum.compareWithId(),
-                (enumCls, sourceStr) -> DictionaryEnum.decideActualEnum(enumClass.getEnumConstants(), sourceString, DictionaryEnum.compareWithEnumCodingName(),
+            if (identifyType == String.class) {
+
+                // 1. fromId
+                return DictionaryEnum.decideActualEnum(enumClass.getEnumConstants(), sourceString, DictionaryEnum.compareWithId(),
+                        // 2. from name with
+                        (enumCls, sourceStr) -> parseStrToIntEnum(sourceString, targetEnumClass));
+            }
+            return parseStrToIntEnum(sourceString, targetEnumClass);
+
+
+        }
+
+        private static Enum<? extends DictionaryEnum<?, String>> parseStrToIntEnum(String sourceString, Class<?> targetEnumClass) {
+            Class<? extends Enum<? extends DictionaryEnum<?, String>>> enumClass = (Class<? extends Enum<? extends DictionaryEnum<?, String>>>) targetEnumClass;
+            return DictionaryEnum.decideActualEnum((enumClass).getEnumConstants(), sourceString, DictionaryEnum.compareWithEnumCodingName(),
                     (enumCls2, sourceStr2) -> {
-                        // 兜底判断是否为数字，尝试用数字转换
-                        if(StringUtils.isNumeric((String) sourceStr2)) {
+                        // 3. 兜底判断是否为数字，尝试用数字转换
+                        if (StringUtils.isNumeric((String) sourceStr2)) {
                             int intVal = Integer.parseInt((String) sourceStr2);
                             return (Enum<? extends DictionaryEnum<?, String>>) parseInt2Enum(intVal, targetEnumClass);
                         }
                         // 找不到，肯定输入和当前代码版本不一致且这种使用方式无法兼容，报错
                         return DictionaryEnum.onMissMatch(enumCls2, sourceStr2);
-                    }));
+                    });
         }
 
         public static Object parseInt2Enum(Integer sourceInteger, Class<?> targetEnumClass) {
             // int -> Enum
-            Class<?> identifyType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(targetEnumClass, DictionaryEnum.class)).orElseThrow()[0];
+            Class<?> identifyType = getEnumItemIdClass(targetEnumClass);
             if (identifyType == Integer.class) {
                 // 1. fromId
                 return DictionaryEnum.fromId((Class<? extends Enum<? extends DictionaryEnum<?, Integer>>>) targetEnumClass, sourceInteger);
@@ -201,19 +213,22 @@ public class DictionaryItemDTO2DomainConverterRegister {
      * Core.Dictionary -> String
      */
     public static class DictionaryItemToStrGenericConverter implements ConditionalGenericConverter {
-        @Override public Set<ConvertiblePair> getConvertibleTypes() {
+        @Override
+        public Set<ConvertiblePair> getConvertibleTypes() {
             return Set.of(new ConvertiblePair(DictionaryItem.class, String.class));
         }
 
-        @Override public boolean matches(TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
+        @Override
+        public boolean matches(TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
             return !sourceType.getType().isEnum();
         }
 
-        @Override public Object convert(Object source, @NonNull TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
+        @Override
+        public Object convert(Object source, @NonNull TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
             if (source == null) {
                 return null;
             }
-            return ((DictionaryItem<String>)source).getItemId();
+            return ((DictionaryItem<String>) source).getItemId();
         }
     }
 
@@ -221,40 +236,48 @@ public class DictionaryItemDTO2DomainConverterRegister {
      * Enum -> Int/String
      */
     public static class DictionaryEnumSerialGenericConverter implements ConditionalGenericConverter {
-        @Override public Set<ConvertiblePair> getConvertibleTypes() {
+        @Override
+        public Set<ConvertiblePair> getConvertibleTypes() {
             return Set.of(new ConvertiblePair(DictionaryItem.class, String.class),
-                new ConvertiblePair(DictionaryItem.class, Integer.class));
+                    new ConvertiblePair(DictionaryItem.class, Integer.class));
         }
 
-        @Override public boolean matches(TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
+        @Override
+        public boolean matches(TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
             return sourceType.getType().isEnum();
         }
 
-        @Override public Object convert(Object source, @NonNull TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
+        @Override
+        public Object convert(Object source, @NonNull TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
             if (source == null) {
                 return null;
             }
             Class<?> sourceEnumClass = sourceType.getType();
             Class<?> targetIntStringClass = targetType.getType();
-            Class<?> identifyType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(sourceEnumClass, DictionaryEnum.class)).orElseThrow()[0];
+            Class<?> identifyType = getEnumItemIdClass(sourceEnumClass);
             if (targetIntStringClass == Integer.class) {
                 // toInt
                 if (identifyType == Integer.class) {
                     // 1. id
-                    return ((DictionaryItem<Integer>)source).getItemId();
+                    return ((DictionaryItem<Integer>) source).getItemId();
                 }
                 // 2. index
-                return ((Enum<?>)source).ordinal();
+                return ((Enum<?>) source).ordinal();
             } else if (targetIntStringClass == String.class) {
                 // toString
                 if (identifyType == String.class) {
                     // 1. id
-                    return ((DictionaryItem<String>)source).getItemId();
+                    return ((DictionaryItem<String>) source).getItemId();
                 }
                 // 2. enumName
-                return ((Enum<?>)source).name();
+                return ((Enum<?>) source).name();
             }
             throw new IllegalStateException("cannot reachable");
         }
+    }
+
+    private static Class<?> getEnumItemIdClass(Class<?> enumClass) {
+        // 第二个泛型是 itemId 类型
+        return Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(enumClass, DictionaryEnum.class)).orElseThrow()[1];
     }
 }

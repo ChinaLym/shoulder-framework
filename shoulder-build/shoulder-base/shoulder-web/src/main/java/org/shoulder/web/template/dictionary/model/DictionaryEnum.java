@@ -5,11 +5,16 @@ import java.util.function.BiFunction;
 /**
  * 字典型枚举
  *
- * 不用更强的泛型校验：E extends Enum<? extends DictionaryEnum<E, IDENTIFY>>
+ * 1. 为什么有第一个泛型参数？
+ * 自引用，约束子类必须是枚举，见到该接口就可以放心的转化为枚举调用枚举特性方法；
+ * 编译安全检查，借助java编译器优势做代码类型检查，避免泛型滥用，类型安全转换；
+ * GPT 也认为该参数确实非常有必要，由于泛型的存在，避免了使用者经常强制类型转换，复杂性由框架承担，而非业务代码。
+ *
+ * 2. 不用更强的泛型校验？如 E extends Enum<? extends DictionaryEnum<E, IDENTIFY>>
  * 是为了其他工具类用 Class<?> 调静态方法可以编译通过，做到代码复用，故采用了松泛型编译校验写法，
- * 是复用和简化的权衡
+ * 是复用和简化的权衡。
+ *
  * 不建议用户枚举直接继承该类，采用 {@link NameAsIdDictionaryEnum}{@link IntDictionaryEnum}
- * todo 是否需要用户感知泛型？？
  *
  * @author lym
  */
