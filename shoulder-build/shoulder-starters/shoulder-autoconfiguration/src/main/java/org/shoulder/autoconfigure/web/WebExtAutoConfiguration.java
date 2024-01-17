@@ -13,8 +13,7 @@ import org.shoulder.web.template.dictionary.DictionaryEnumController;
 import org.shoulder.web.template.dictionary.DictionaryItemController;
 import org.shoulder.web.template.dictionary.DictionaryItemEnumController;
 import org.shoulder.web.template.dictionary.base.DictionaryItemDTO2DomainConverterRegister;
-import org.shoulder.web.template.dictionary.base.ToDictionaryEnumConversionService;
-import org.shoulder.web.template.dictionary.dto.DictionaryItemDomain2DTOConverter;
+import org.shoulder.web.template.dictionary.base.DictionaryItemDomain2DTOConverter;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -73,12 +72,6 @@ public class WebExtAutoConfiguration {
                 customizers.forEach(c -> c.customize(repository));
             }
             return repository;
-        }
-
-        @Bean
-        @ConditionalOnMissingBean
-        public ToDictionaryEnumConversionService dictionaryConversionService(DictionaryEnumStore dictionaryEnumStore) {
-            return new ToDictionaryEnumConversionService(dictionaryEnumStore);
         }
 
         @Bean

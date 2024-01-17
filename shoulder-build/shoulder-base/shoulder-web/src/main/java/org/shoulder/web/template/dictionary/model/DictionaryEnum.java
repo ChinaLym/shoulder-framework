@@ -1,11 +1,13 @@
 package org.shoulder.web.template.dictionary.model;
 
+import java.util.function.BiFunction;
+
 /**
  * 字典型枚举
  *
  * 不用更强的泛型校验：E extends Enum<? extends DictionaryEnum<E, IDENTIFY>>
- *     是为了其他工具类用 Class<?> 调静态方法可以编译通过，做到代码复用，故采用了松泛型编译校验写法，
- *     是复用和简化的权衡
+ * 是为了其他工具类用 Class<?> 调静态方法可以编译通过，做到代码复用，故采用了松泛型编译校验写法，
+ * 是复用和简化的权衡
  * 不建议用户枚举直接继承该类，采用 {@link NameAsIdDictionaryEnum}{@link IntDictionaryEnum}
  * todo 是否需要用户感知泛型？？
  *
@@ -20,7 +22,8 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<?, IDENT
      * @param id        id
      * @return Enum
      */
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromId(Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, ID id) {
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromId(
+        Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, ID id) {
         return fromIdWithEnumConstants(enumClass.getEnumConstants(), id);
     }
 
@@ -32,7 +35,8 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<?, IDENT
      * @return Enum
      */
     @SuppressWarnings("unchecked")
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromIdWithEnumConstants(Enum<? extends DictionaryEnum<?, ID>>[] enumValues, ID id) {
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromIdWithEnumConstants(
+        Enum<? extends DictionaryEnum<?, ID>>[] enumValues, ID id) {
         for (Enum<? extends DictionaryEnum<?, ID>> e : enumValues) {
             if (((DictionaryEnum<ENUM, ID>) e).getItemId().equals(id)) {
                 return (ENUM) e;
@@ -48,8 +52,9 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<?, IDENT
      * @param name      name
      * @return Enum
      */
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromName(Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, String name) {
-        return fromNameWithEnumConstants(enumClass.getEnumConstants(), name);
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromName(
+        Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, String name) {
+        return fromNameWithEnumConstants(enumClass.getEnumConstants(), name, DictionaryEnum::onMissMatch);
     }
 
     /**
@@ -62,13 +67,15 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<?, IDENT
      * @return 枚举项
      */
     @SuppressWarnings("unchecked")
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromNameWithEnumConstants(Enum<? extends DictionaryEnum<?, ID>>[] enumValues, String name) {
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromNameWithEnumConstants(
+        Enum<? extends DictionaryEnum<?, ID>>[] enumValues, String name, BiFunction<Class<ENUM>, Object, ENUM> onMissMatch) {
+
         for (Enum<? extends DictionaryEnum<?, ID>> e : enumValues) {
             if (((DictionaryEnum<ENUM, ID>) e).getName().equalsIgnoreCase(name)) {
                 return (ENUM) e;
             }
         }
-        return onMissMatch((Class<ENUM>) enumValues.getClass().getComponentType(), name);
+        return onMissMatch.apply((Class<ENUM>) enumValues.getClass().getComponentType(), name);
     }
 
     /**
@@ -80,7 +87,7 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<?, IDENT
      */
     static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM onMissMatch(Class<ENUM> enumClass, Object source) {
         throw new IllegalArgumentException(
-                "can't convert '" + source + "' to " + enumClass.getSimpleName());
+            "can't convert '" + source + "' to " + enumClass.getSimpleName());
     }
 
     /**
@@ -103,6 +110,5 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<?, IDENT
     default Integer getDisplayOrder() {
         return ((Enum<?>) this).ordinal();
     }
-
 
 }

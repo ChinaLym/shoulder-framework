@@ -48,4 +48,17 @@ public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID>
     public String getObjectType() {
         return super.getObjectType();
     }*/
+
+    public static DictionaryItemEntity of(DictionaryItem source) {
+        // core.model -> 基于存储的 model
+        DictionaryItemEntity entity = new DictionaryItemEntity<>();
+        // to confirm dictionaryType.code
+        entity.setDictionaryId(source.getDictionaryType());
+        entity.setBizId(source.getItemId().toString());
+        entity.setName(source.getName());
+        entity.setDisplayName(source.getDisplayName());
+        entity.setSortNo(source.getDisplayOrder());
+        entity.setNote(source.getNote());
+        return entity;
+    }
 }

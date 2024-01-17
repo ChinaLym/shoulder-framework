@@ -109,4 +109,18 @@ public class ConfigAbleDictionaryItem implements DictionaryItem<String>, Seriali
         }
     }
 
+    public static ConfigAbleDictionaryItem of(DictionaryItem source) {
+        ConfigAbleDictionaryItem targetModel = new ConfigAbleDictionaryItem();
+        targetModel.setCode(source.getItemId().toString());
+        // 为空或者为0，都代表一级节点
+        //        targetModel.setParentCode(StringUtils.isBlank(source.getParentCode()) ? Constants.ZERO : source
+        //        .getParentCode());
+        targetModel.setDictionaryType(source.getDictionaryType());
+        targetModel.setName(targetModel.getName());
+        targetModel.setDisplayName(source.getDisplayName());
+        targetModel.setDisplayOrder(source.getDisplayOrder());
+        targetModel.setNote(source.getNote());
+        return targetModel;
+    }
+
 }

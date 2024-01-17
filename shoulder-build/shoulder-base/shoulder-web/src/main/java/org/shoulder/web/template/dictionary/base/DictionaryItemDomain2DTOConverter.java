@@ -1,11 +1,12 @@
 
-package org.shoulder.web.template.dictionary.dto;
+package org.shoulder.web.template.dictionary.base;
 
 
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.converter.BaseDataConverter;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.ContextUtils;
+import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItem;
 
@@ -13,7 +14,6 @@ import java.util.Optional;
 
 /**
  * DictionaryItem domain -> VO
- * fixme 没生效？
  *
  * @author lym
  */
