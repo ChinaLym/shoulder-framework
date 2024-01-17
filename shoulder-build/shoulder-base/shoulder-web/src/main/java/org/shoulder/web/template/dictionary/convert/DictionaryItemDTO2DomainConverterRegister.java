@@ -164,16 +164,17 @@ public class DictionaryItemDTO2DomainConverterRegister {
             }
             // 2. from name with onMissMatch 尝试转为数字识别
             Class<? extends Enum<? extends DictionaryEnum<?, String>>> enumClass = (Class<? extends Enum<? extends DictionaryEnum<?, String>>>) targetEnumClass;
-            return DictionaryEnum.decideActualEnum(enumClass.getEnumConstants(), sourceString, DictionaryEnum.compareWithEnumCodingName(),
-                (enumCls, sourceStr) -> {
-                // 兜底判断是否为数字，尝试用数字转换
-                if(StringUtils.isNumeric((String) sourceStr)) {
-                    int intVal = Integer.parseInt((String) sourceStr);
-                    return (Enum<? extends DictionaryEnum<?, String>>) parseInt2Enum(intVal, targetEnumClass);
-                }
-                // 找不到，肯定输入和当前代码版本不一致且这种使用方式无法兼容，报错
-                return DictionaryEnum.onMissMatch(enumCls, sourceStr);
-            });
+            return DictionaryEnum.decideActualEnum(enumClass.getEnumConstants(), sourceString, DictionaryEnum.compareWithId(),
+                (enumCls, sourceStr) -> DictionaryEnum.decideActualEnum(enumClass.getEnumConstants(), sourceString, DictionaryEnum.compareWithEnumCodingName(),
+                    (enumCls2, sourceStr2) -> {
+                        // 兜底判断是否为数字，尝试用数字转换
+                        if(StringUtils.isNumeric((String) sourceStr2)) {
+                            int intVal = Integer.parseInt((String) sourceStr2);
+                            return (Enum<? extends DictionaryEnum<?, String>>) parseInt2Enum(intVal, targetEnumClass);
+                        }
+                        // 找不到，肯定输入和当前代码版本不一致且这种使用方式无法兼容，报错
+                        return DictionaryEnum.onMissMatch(enumCls2, sourceStr2);
+                    }));
         }
 
         public static Object parseInt2Enum(Integer sourceInteger, Class<?> targetEnumClass) {
