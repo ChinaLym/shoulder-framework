@@ -1,5 +1,5 @@
 
-package org.shoulder.web.template.dictionary.dto;
+package org.shoulder.web.template.crud;
 
 import org.shoulder.core.converter.BaseDataConverter;
 

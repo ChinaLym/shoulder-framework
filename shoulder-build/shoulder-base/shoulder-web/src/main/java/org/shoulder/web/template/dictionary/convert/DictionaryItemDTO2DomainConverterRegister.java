@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary.base;
+package org.shoulder.web.template.dictionary.convert;
 
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.util.StringUtils;

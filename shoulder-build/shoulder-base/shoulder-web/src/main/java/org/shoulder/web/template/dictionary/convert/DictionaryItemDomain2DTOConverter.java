@@ -1,5 +1,5 @@
 
-package org.shoulder.web.template.dictionary.base;
+package org.shoulder.web.template.dictionary.convert;
 
 
 import jakarta.annotation.Nonnull;

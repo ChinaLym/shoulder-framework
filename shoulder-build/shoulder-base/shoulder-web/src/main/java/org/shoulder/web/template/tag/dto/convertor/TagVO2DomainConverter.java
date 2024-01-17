@@ -4,7 +4,7 @@
  */
 package org.shoulder.web.template.tag.dto.convertor;
 
-import org.shoulder.web.template.dictionary.dto.AbstractVODataConverter;
+import org.shoulder.web.template.crud.AbstractVODataConverter;
 import org.shoulder.web.template.tag.dto.TagDTO;
 import org.shoulder.web.template.tag.entity.TagEntity;
 import org.springframework.stereotype.Service;
