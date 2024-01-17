@@ -127,10 +127,11 @@
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
-                        <!--                        <compilerArgs>-->
-                        <!--                            <arg>-XDcompilePolicy=simple</arg>-->
-                        <!--                            <arg>-Xplugin:ErrorProne</arg>-->
-                        <!--                        </compilerArgs>-->
+                        <compilerArgs>
+                            <!--                                                    <arg>-XDcompilePolicy=simple</arg>-->
+                            <!--                                                    <arg>-Xplugin:ErrorProne</arg>-->
+                            <arg>-parameters</arg>
+                        </compilerArgs>
                         <!--                        修复-->
                         <!--                        <compilerArgs>-->
                         <!--                            <arg>-XDcompilePolicy=simple</arg>-->

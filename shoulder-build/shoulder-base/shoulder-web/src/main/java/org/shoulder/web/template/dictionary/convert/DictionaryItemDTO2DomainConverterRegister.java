@@ -148,46 +148,49 @@ public class DictionaryItemDTO2DomainConverterRegister {
             Class<?> sourceIntStringClass = sourceType.getType();
             if (sourceIntStringClass == Integer.class) {
                 return parseInt2Enum((Integer) source, targetType.getType());
-            } else if (sourceType.getObjectType() == String.class) {
+            } else if (sourceType.getType() == String.class) {
                 return parseStr2Enum((String) source, targetType.getType());
             }
             throw new IllegalStateException("cannot reachable");
         }
 
-        private static Enum<? extends DictionaryEnum> parseStr2Enum(String source, Class<?> targetClass) {
+        private static Enum<? extends DictionaryEnum> parseStr2Enum(String sourceString, Class<?> targetEnumClass) {
             // String -> Enum
-            Class<?> identifyType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(targetClass, DictionaryEnum.class)).orElseThrow()[0];
+            Class<?> identifyType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(targetEnumClass, DictionaryEnum.class)).orElseThrow()[0];
             if (identifyType == String.class) {
                 // 1. fromId
-                return DictionaryEnum.fromId((Class<? extends Enum<? extends DictionaryEnum<?, String>>>) targetClass,
-                    source);
+                return DictionaryEnum.fromId((Class<? extends Enum<? extends DictionaryEnum<?, String>>>) targetEnumClass,
+                    sourceString);
             }
             // 2. from name with onMissMatch 尝试转为数字识别
-            Class<? extends Enum<? extends DictionaryEnum<?, String>>> enumClass = (Class<? extends Enum<? extends DictionaryEnum<?, String>>>) targetClass;
-            return DictionaryEnum.fromNameWithEnumConstants(enumClass.getEnumConstants(), source, (enumCls, sourceStr) -> {
+            Class<? extends Enum<? extends DictionaryEnum<?, String>>> enumClass = (Class<? extends Enum<? extends DictionaryEnum<?, String>>>) targetEnumClass;
+            return DictionaryEnum.decideActualEnum(enumClass.getEnumConstants(), sourceString, DictionaryEnum.compareWithEnumCodingName(),
+                (enumCls, sourceStr) -> {
+                // 兜底判断是否为数字，尝试用数字转换
                 if(StringUtils.isNumeric((String) sourceStr)) {
                     int intVal = Integer.parseInt((String) sourceStr);
-                    return (Enum<? extends DictionaryEnum<?, String>>) parseInt2Enum(intVal, targetClass);
+                    return (Enum<? extends DictionaryEnum<?, String>>) parseInt2Enum(intVal, targetEnumClass);
                 }
+                // 找不到，肯定输入和当前代码版本不一致且这种使用方式无法兼容，报错
                 return DictionaryEnum.onMissMatch(enumCls, sourceStr);
             });
         }
 
-        public static Object parseInt2Enum(Integer source, Class<?> targetClass) {
+        public static Object parseInt2Enum(Integer sourceInteger, Class<?> targetEnumClass) {
             // int -> Enum
-            Class<?> identifyType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(targetClass, DictionaryEnum.class)).orElseThrow()[0];
+            Class<?> identifyType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(targetEnumClass, DictionaryEnum.class)).orElseThrow()[0];
             if (identifyType == Integer.class) {
                 // 1. fromId
-                return DictionaryEnum.fromId((Class<? extends Enum<? extends DictionaryEnum<?, Integer>>>) targetClass, source);
+                return DictionaryEnum.fromId((Class<? extends Enum<? extends DictionaryEnum<?, Integer>>>) targetEnumClass, sourceInteger);
             }
 
             // 2. from index
-            Object[] enumItems = targetClass.getEnumConstants();
-            if (source >= 0 && source < enumItems.length) {
-                return enumItems[source];
+            Object[] enumItems = targetEnumClass.getEnumConstants();
+            if (sourceInteger >= 0 && sourceInteger < enumItems.length) {
+                return enumItems[sourceInteger];
             } else {
                 // out of index
-                throw new IllegalArgumentException("cannot convert [" + source + "] To [" + targetClass + "]");
+                throw new IllegalArgumentException("cannot convert [" + sourceInteger + "] To [" + targetEnumClass + "]");
             }
         }
     }
@@ -230,10 +233,10 @@ public class DictionaryItemDTO2DomainConverterRegister {
             if (source == null) {
                 return null;
             }
-            Class<?> sourceIntStringClass = sourceType.getType();
-            Class<?> targetEnumClass = targetType.getType();
-            Class<?> identifyType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(targetEnumClass, DictionaryEnum.class)).orElseThrow()[0];
-            if (sourceIntStringClass == Integer.class) {
+            Class<?> sourceEnumClass = sourceType.getType();
+            Class<?> targetIntStringClass = targetType.getType();
+            Class<?> identifyType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(sourceEnumClass, DictionaryEnum.class)).orElseThrow()[0];
+            if (targetIntStringClass == Integer.class) {
                 // toInt
                 if (identifyType == Integer.class) {
                     // 1. id
@@ -241,7 +244,7 @@ public class DictionaryItemDTO2DomainConverterRegister {
                 }
                 // 2. index
                 return ((Enum<?>)source).ordinal();
-            } else if (sourceType.getObjectType() == String.class) {
+            } else if (targetIntStringClass == String.class) {
                 // toString
                 if (identifyType == String.class) {
                     // 1. id

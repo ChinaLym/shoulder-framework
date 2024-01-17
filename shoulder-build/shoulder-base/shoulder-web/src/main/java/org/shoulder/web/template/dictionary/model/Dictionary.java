@@ -30,7 +30,7 @@ public interface Dictionary {
     /**
      * 是否字典项个数固定
      *
-     * @return 是否字典项个数固定；默认不固定
+     * @return 是否字典项个数固定；默认不固定，一般枚举固定，个性化存储不固定
      */
     default boolean hasFixItems() {
         return false;

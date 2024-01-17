@@ -24,7 +24,45 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<?, IDENT
      */
     static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromId(
         Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, ID id) {
-        return fromIdWithEnumConstants(enumClass.getEnumConstants(), id);
+        return decideActualEnum(enumClass.getEnumConstants(), id, compareWithId(), DictionaryEnum::onMissMatch);
+    }
+
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromName(
+        Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, String name) {
+        return decideActualEnum(enumClass.getEnumConstants(), name, compareWithName(), DictionaryEnum::onMissMatch);
+    }
+
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromOrder(
+        Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, ID id) {
+        return decideActualEnum(enumClass.getEnumConstants(), id, compareWithEnumOrdinal(), DictionaryEnum::onMissMatch);
+    }
+
+    /**
+     * 将 name 转为 Enum
+     *
+     * @param enumClass 枚举类
+     * @param name      name
+     * @return Enum
+     */
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromEnumCodingName(
+        Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, String name) {
+        return decideActualEnum(enumClass.getEnumConstants(), name, compareWithEnumCodingName(), DictionaryEnum::onMissMatch);
+    }
+
+    static BiFunction<Enum<? extends DictionaryEnum<?, ?>>, Object, Boolean> compareWithId() {
+        return (e, id) -> ((DictionaryEnum<?, ?>) e).getItemId().equals(id);
+    }
+
+    static BiFunction<Enum<? extends DictionaryEnum<?, ?>>, Object, Boolean> compareWithName() {
+        return (e, str) -> ((DictionaryEnum<?, ?>) e).getName().equals(str);
+    }
+
+    static BiFunction<Enum<? extends DictionaryEnum<?, ?>>, Object, Boolean> compareWithEnumOrdinal() {
+        return (e, integer) -> integer.equals(e.ordinal());
+    }
+
+    static BiFunction<Enum<? extends DictionaryEnum<?, ?>>, Object, Boolean> compareWithEnumCodingName() {
+        return (e, str) -> e.name().equals(str);
     }
 
     /**
@@ -35,26 +73,17 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<?, IDENT
      * @return Enum
      */
     @SuppressWarnings("unchecked")
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromIdWithEnumConstants(
-        Enum<? extends DictionaryEnum<?, ID>>[] enumValues, ID id) {
+    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM decideActualEnum(
+        Enum<? extends DictionaryEnum<?, ID>>[] enumValues,
+        Object input,
+        BiFunction<Enum<? extends DictionaryEnum<?, ?>>, Object, Boolean> compare,
+        BiFunction<Class<ENUM>, Object, ENUM> onMissMatch) {
         for (Enum<? extends DictionaryEnum<?, ID>> e : enumValues) {
-            if (((DictionaryEnum<ENUM, ID>) e).getItemId().equals(id)) {
+            if (compare.apply(e, input)) {
                 return (ENUM) e;
             }
         }
-        return onMissMatch((Class<ENUM>) enumValues.getClass().getComponentType(), id);
-    }
-
-    /**
-     * 将 name 转为 Enum
-     *
-     * @param enumClass 枚举类
-     * @param name      name
-     * @return Enum
-     */
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromName(
-        Class<? extends Enum<? extends DictionaryEnum<?, ID>>> enumClass, String name) {
-        return fromNameWithEnumConstants(enumClass.getEnumConstants(), name, DictionaryEnum::onMissMatch);
+        return onMissMatch.apply((Class<ENUM>) enumValues.getClass().getComponentType(), input);
     }
 
     /**
@@ -67,16 +96,17 @@ public interface DictionaryEnum<E extends Enum<? extends DictionaryEnum<?, IDENT
      * @return 枚举项
      */
     @SuppressWarnings("unchecked")
-    static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromNameWithEnumConstants(
-        Enum<? extends DictionaryEnum<?, ID>>[] enumValues, String name, BiFunction<Class<ENUM>, Object, ENUM> onMissMatch) {
-
-        for (Enum<? extends DictionaryEnum<?, ID>> e : enumValues) {
-            if (((DictionaryEnum<ENUM, ID>) e).getName().equalsIgnoreCase(name)) {
-                return (ENUM) e;
-            }
-        }
-        return onMissMatch.apply((Class<ENUM>) enumValues.getClass().getComponentType(), name);
-    }
+    //static <ID, ENUM extends Enum<? extends DictionaryEnum<?, ID>>> ENUM fromNameWithEnumConstants(
+    //    Enum<? extends DictionaryEnum<?, ID>>[] enumValues, String name,
+    //    BiFunction<Enum<? extends DictionaryEnum<?, ?>>, Object, Boolean> compare, BiFunction<Class<ENUM>, Object, ENUM> onMissMatch) {
+    //
+    //    for (Enum<? extends DictionaryEnum<?, ID>> e : enumValues) {
+    //        if (((DictionaryEnum<ENUM, ID>) e).getName().equalsIgnoreCase(name)) {
+    //            return (ENUM) e;
+    //        }
+    //    }
+    //    return onMissMatch.apply((Class<ENUM>) enumValues.getClass().getComponentType(), name);
+    //}
 
     /**
      * 没找到对应的 枚举

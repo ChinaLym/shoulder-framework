@@ -8,9 +8,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -39,40 +37,7 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
 
     public ShoulderGenericConversionServiceImpl(DateTimeFormatters dateTimeFormatters) {
         super(dateTimeFormatters);
-        registerDictionaryEnumConverters();
         registerJdk8DateConverters();
-    }
-
-    private void registerDictionaryEnumConverters() {
-        // enum to str
-//        addConverter(new DictionaryItem2StringConverter());
-
-//        Collection<Class<? extends Enum<? extends DictionaryEnum>>> allDictionaryEnums =
-//                dictionaryEnumStore.listAllTypes();
-//        for (Class<? extends Enum<? extends DictionaryEnum>> dictionaryEnumClass : allDictionaryEnums) {
-//            Class<?> itemIdClassType = ((DictionaryEnum) dictionaryEnumClass.getEnumConstants()[0]).getItemId().getClass();
-//            if (itemIdClassType == Integer.class) {
-//                Converter<Integer, ? extends Enum<? extends DictionaryEnum<?, Integer>>> converter = new Integer2DictionaryEnumConverter<>((Class<? extends Enum<? extends DictionaryEnum<?, Integer>>>) dictionaryEnumClass);
-//                addConverter((Integer.class)itemIdClassType, (Class<? extends Enum<? extends DictionaryEnum<?, Integer>>>)dictionaryEnumClass, converter);
-//            } else if (itemIdClassType == String.class) {
-//                addConverter((String.class)itemIdClassType, dictionaryEnumClass,
-//                        new String2DictionaryEnumConverter<>((Class<? extends Enum<? extends DictionaryEnum<?, String>>>) dictionaryEnumClass)
-//                );
-//
-//            }
-//        }
-
-        // str to enum
-//        List<? extends Class<? extends Enum<? extends DictionaryEnum<?, ?>>>> enumClassList =
-//                Arrays.stream(DictionaryTypeEnum.values())
-//                        .map(DictionaryTypeEnum::getEnumClass)
-//                        .collect(Collectors.toList());
-//        for (Class<? extends Enum<? extends DictionaryEnum<?, ?>>> enumClass : enumClassList) {
-//            String2DictionaryEnumConverter converter = new String2DictionaryEnumConverter<>(enumClass);
-//            addConverter(String.class, enumClass, converter);
-//        }
-        // str 无法到 dynamicDictionary，必须手动转换的暂时没有（）
-
     }
 
     private void registerJdk8DateConverters() {
@@ -119,12 +84,12 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
     @Override
     public Object convert(@Nullable Object source, @Nullable TypeDescriptor sourceType, TypeDescriptor targetType) {
         // 特殊支持从 int / string 转换为 DictionaryEnum
-        Assert.notNull(targetType, "Target type to convert to cannot be null");
-        for (ConversionService conversionService : conversionServiceList) {
-            if(conversionService.canConvert(sourceType, targetType)) {
-                return conversionService.convert(source, sourceType, targetType);
-            }
-        }
+        //Assert.notNull(targetType, "Target type to convert to cannot be null");
+        //for (ConversionService conversionService : conversionServiceList) {
+        //    if(conversionService.canConvert(sourceType, targetType)) {
+        //        return conversionService.convert(source, sourceType, targetType);
+        //    }
+        //}
         return super.convert(source, sourceType, targetType);
     }
 
@@ -159,14 +124,6 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
         //Collection<BaseDataConverter> dataConverters = event.getApplicationContext().getBeansOfType(BaseDataConverter.class)
         //        .values();
         //dataConverters.forEach(this::addConverter);
-    }
-
-    @Override
-    public void addConverter(Converter<?, ?> converter) {
-        //if (converter instanceof BaseDataConverter) {
-        //    ((BaseDataConverter) converter).setConversionService(this);
-        //}
-        super.addConverter(converter);
     }
 
     public void addConversionService(ConversionService conversionService) {
