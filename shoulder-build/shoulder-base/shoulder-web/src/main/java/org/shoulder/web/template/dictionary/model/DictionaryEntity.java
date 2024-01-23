@@ -36,7 +36,7 @@ public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID>
 
     @Override
     public String getDictionaryCode() {
-        return getType();
+        return getBizId();
     }
 
     /*@Override

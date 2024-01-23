@@ -171,8 +171,6 @@ public class DictionaryItemDTO2DomainConverterRegister {
                         (enumCls, sourceStr) -> parseStrToIntEnum(sourceString, targetEnumClass));
             }
             return parseStrToIntEnum(sourceString, targetEnumClass);
-
-
         }
 
         private static Enum<? extends DictionaryEnum<?, String>> parseStrToIntEnum(String sourceString, Class<?> targetEnumClass) {
