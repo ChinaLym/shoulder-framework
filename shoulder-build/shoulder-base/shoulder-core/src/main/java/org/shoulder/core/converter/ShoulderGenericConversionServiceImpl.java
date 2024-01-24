@@ -1,17 +1,15 @@
 package org.shoulder.core.converter;
 
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AssertUtils;
 import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -37,12 +35,9 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
     }
 
     private void registerJdk8DateConverters() {
-        // convert to each
-        //addConverter(Date.class, Instant.class, Date::toInstant);
         addConverter(Date.class, LocalDateTime.class, d -> d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         addConverter(Date.class, LocalDate.class, d -> d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 
-        //addConverter(Instant.class, Date.class, Date::from);
         addConverter(Instant.class, LocalDateTime.class, i -> LocalDateTime.ofInstant(i, ZoneId.systemDefault()));
         addConverter(Instant.class, LocalDate.class,
                 in -> LocalDateTime.ofInstant(in, ZoneId.systemDefault()).toLocalDate());
@@ -55,10 +50,6 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
         addConverter(LocalDate.class, LocalDateTime.class, LocalDate::atStartOfDay);
         addConverter(LocalDate.class, Instant.class, d -> convert(convert(d, LocalDateTime.class), Instant.class));
 
-        // parse 时间戳
-        //addConverter(Long.class, Instant.class, instant -> instant <= 9999999999L ? Instant.ofEpochSecond(instant) : Instant.ofEpochMilli(instant));
-        //addConverter(Long.class, Date.class, d -> convert(convert(d, Instant.class), Date.class));
-
         // parse Str
         addConverter(String.class, Date.class, new DateConverter());
         addConverter(String.class, Instant.class, s -> {
@@ -69,7 +60,10 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
         addConverter(String.class, LocalDateTime.class, new LocalDateTimeConverter());
         addConverter(String.class, LocalDate.class, new LocalDateConverter());
 
-        // formatter
+        //addConverter(Long.class, Instant.class, instant -> instant <= 9999999999L ? Instant.ofEpochSecond(instant) : Instant.ofEpochMilli(instant));
+        //addConverter(Long.class, Date.class, d -> convert(convert(d, Instant.class), Date.class));
+        //addConverter(Date.class, Instant.class, Date::toInstant);
+        //addConverter(Instant.class, Date.class, Date::from);
         //addConverter(Date.class, String.class, DateConverter.FORMATTER::format);
         //addConverter(LocalTime.class, String.class, LocalTimeConverter.FORMATTER::format);
         //addConverter(LocalDateTime.class, String.class, LocalDateTimeConverter.FORMATTER::format);
@@ -78,14 +72,14 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
     }
 
     @Override
-    public Object convert(@Nullable Object source, @Nullable TypeDescriptor sourceType, TypeDescriptor targetType) {
+    public Object convert(@Nullable Object source, @Nullable TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
         // 特殊支持从 int / string 转换为 DictionaryEnum
-        //Assert.notNull(targetType, "Target type to convert to cannot be null");
-        //for (ConversionService conversionService : conversionServiceList) {
-        //    if(conversionService.canConvert(sourceType, targetType)) {
-        //        return conversionService.convert(source, sourceType, targetType);
-        //    }
-        //}
+        AssertUtils.notNull(targetType, CommonErrorCodeEnum.CODING, "Target type to convert to cannot be null");
+        for (ConversionService conversionService : conversionServiceList) {
+            if (conversionService.canConvert(sourceType, targetType)) {
+                return conversionService.convert(source, sourceType, targetType);
+            }
+        }
         return super.convert(source, sourceType, targetType);
     }
 

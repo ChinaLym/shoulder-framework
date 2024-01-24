@@ -7,17 +7,21 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.boot.type.classreading.ConcurrentReferenceCachingMetadataReaderFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
+import java.io.IOException;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Spring 上下文工具类，方便获取bean
@@ -41,6 +45,11 @@ public class ContextUtils {
      * resource loader
      */
     private static final ResourcePatternResolver RESOURCE_PATTERN_RESOLVER = new PathMatchingResourcePatternResolver();
+
+    /**
+     * MetadataReaderFactory
+     */
+    public static final MetadataReaderFactory METADATA_READER_FACTORY = new ConcurrentReferenceCachingMetadataReaderFactory();
 
     private static boolean contextHasRefreshed = false;
 
@@ -133,8 +142,13 @@ public class ContextUtils {
     }
 
     @Nonnull
+    public static ResourcePatternResolver getResourceResolver() {
+        return applicationContext != null ? applicationContext : RESOURCE_PATTERN_RESOLVER;
+    }
+
+    @Nonnull
     public static Resource getResource(String location) {
-        return applicationContext != null ? applicationContext.getResource(location) : RESOURCE_PATTERN_RESOLVER.getResource(location);
+        return getResourceResolver().getResource(location);
     }
 
     @Nullable
@@ -195,6 +209,36 @@ public class ContextUtils {
      */
     public static void publishEvent(Object event) {
         applicationContext.publishEvent(event);
+    }
+
+    public static List<Class<?>> loadClassInPackage(String packageName, Function<Class<?>, Boolean> classFilter,
+                                                    Consumer<Class<?>> consumer) {
+
+        return Arrays.stream(readPackageAllClassResource(packageName))
+                .map(ContextUtils::readResourceToClass)
+                .filter(classFilter::apply)
+                .peek(consumer)
+                .collect(Collectors.toList());
+    }
+
+    public static Resource[] readPackageAllClassResource(String packageName) {
+        try {
+            packageName = packageName.replace('.', '/');
+            String classPath = "classpath*:" + packageName + (packageName.endsWith("/") ? "" : "/") + "**/*.class";
+            return getResourceResolver().getResources(classPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Class<?> readResourceToClass(Resource res) {
+        try {
+            // 先获取resource的元信息，然后获取class元信息，最后得到 class 全路径,通过名称加载
+            String clsName = METADATA_READER_FACTORY.getMetadataReader(res).getClassMetadata().getClassName();
+            return Class.forName(clsName);
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

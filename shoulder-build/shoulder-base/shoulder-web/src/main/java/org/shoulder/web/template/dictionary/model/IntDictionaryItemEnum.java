@@ -5,7 +5,7 @@ package org.shoulder.web.template.dictionary.model;
  *
  * @author lym
  */
-public interface IntDictionaryEnum<E extends Enum<? extends IntDictionaryEnum<E>>> extends DictionaryEnum<E, Integer> {
+public interface IntDictionaryItemEnum<E extends Enum<? extends IntDictionaryItemEnum<E>>> extends DictionaryItemEnum<E, Integer> {
 
     /**
      * 获取该字典项的 id，默认使用字典的 ordinal();

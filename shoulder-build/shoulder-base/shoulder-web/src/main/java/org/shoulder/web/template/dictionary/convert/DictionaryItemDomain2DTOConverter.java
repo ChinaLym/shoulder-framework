@@ -14,7 +14,9 @@ import java.util.Optional;
  * DictionaryItem domain -> VO
  *
  * @author lym
+ * @author lym
  */
+@SuppressWarnings("rawtypes")
 public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<DictionaryItem, DictionaryItemDTO> {
 
     public static DictionaryItemDomain2DTOConverter INSTANCE = new DictionaryItemDomain2DTOConverter(null);

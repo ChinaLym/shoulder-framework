@@ -5,7 +5,7 @@ import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
-import org.shoulder.web.template.dictionary.model.DictionaryEnum;
+import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unchecked, rawtypes")
 public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
 
-    private final ConcurrentMap<String, Class<? extends Enum<? extends DictionaryEnum>>> repo = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Class<? extends Enum<? extends DictionaryItemEnum>>> repo = new ConcurrentHashMap<>();
 
     /**
      * 是否忽略字典类型名称大小写
@@ -35,17 +35,17 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
     }
 
     @Override
-    public <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryEnum<?, ?>>> dictionaryEnum, @Nonnull String dictionaryType) {
+    public <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>> dictionaryEnum, @Nonnull String dictionaryType) {
         AssertUtils.notNull(dictionaryEnum, ParamErrorCodeEnum.PARAM_ILLEGAL);
-        Class<? extends Enum<? extends DictionaryEnum>> oldValue =
+        Class<? extends Enum<? extends DictionaryItemEnum>> oldValue =
             repo.put(processDictionaryTypeName(dictionaryType), dictionaryEnum);
         AssertUtils.isTrue(oldValue == null || oldValue == dictionaryEnum, CommonErrorCodeEnum.CODING, "not support repeat name of enum.");
     }
 
     @Nonnull
     @Override
-    public <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> List<DictionaryEnum<ENUM, ID>> list(@Nonnull String enumClassType) {
-        Class<? extends DictionaryEnum<ENUM, ID>> dictionaryEnumClass = (Class<? extends DictionaryEnum<ENUM, ID>>) repo.get(processDictionaryTypeName(enumClassType));
+    public <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> List<DictionaryItemEnum<ENUM, ID>> list(@Nonnull String enumClassType) {
+        Class<? extends DictionaryItemEnum<ENUM, ID>> dictionaryEnumClass = (Class<? extends DictionaryItemEnum<ENUM, ID>>) repo.get(processDictionaryTypeName(enumClassType));
         if (dictionaryEnumClass == null) {
             throw createDictionaryTypeNotFoundException(enumClassType);
         }
@@ -54,8 +54,8 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
 
     @Nonnull
     @Override
-    public List<Enum<? extends DictionaryEnum>> listAllAsDictionaryEnum(String enumClassType) {
-        Class<? extends Enum<? extends DictionaryEnum>> dictionaryEnumClass = repo.get(processDictionaryTypeName(enumClassType));
+    public List<Enum<? extends DictionaryItemEnum>> listAllAsDictionaryEnum(String enumClassType) {
+        Class<? extends Enum<? extends DictionaryItemEnum>> dictionaryEnumClass = repo.get(processDictionaryTypeName(enumClassType));
         if (dictionaryEnumClass == null) {
             throw createDictionaryTypeNotFoundException(enumClassType);
         }
@@ -70,7 +70,7 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
 
     @Nonnull
     @Override
-    public Collection<Class<? extends Enum<? extends DictionaryEnum>>> listAllTypes() {
+    public Collection<Class<? extends Enum<? extends DictionaryItemEnum>>> listAllTypes() {
         return repo.values();
     }
 
@@ -80,7 +80,7 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
     }
 
     @Override
-    public Class<? extends Enum<? extends DictionaryEnum>> getActuallyType(String dictionaryType) {
+    public Class<? extends Enum<? extends DictionaryItemEnum>> getActuallyType(String dictionaryType) {
         return repo.get(processDictionaryTypeName(dictionaryType));
     }
 

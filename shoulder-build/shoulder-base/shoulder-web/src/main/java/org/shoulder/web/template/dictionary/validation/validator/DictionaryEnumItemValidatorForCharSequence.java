@@ -8,8 +8,8 @@ import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
-import org.shoulder.web.template.dictionary.model.DictionaryEnum;
 import org.shoulder.web.template.dictionary.model.DictionaryItem;
+import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
 
@@ -77,7 +77,7 @@ public class DictionaryEnumItemValidatorForCharSequence implements ConstraintVal
             // 判断该字典是否存在
             AssertUtils.isTrue(dictionaryEnumStore.contains(enumClass), CommonErrorCodeEnum.ILLEGAL_PARAM);
             // 判断该字典项是否存在
-            dictionaryItem = (DictionaryItem) DictionaryEnum.fromId((Class) enumClass, code);
+            dictionaryItem = (DictionaryItem) DictionaryItemEnum.fromId((Class) enumClass, code);
         }
         AssertUtils.notNull(dictionaryItem, CommonErrorCodeEnum.ILLEGAL_PARAM);
 

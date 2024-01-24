@@ -1,7 +1,7 @@
 package org.shoulder.web.template.dictionary.spi;
 
 import jakarta.annotation.Nonnull;
-import org.shoulder.web.template.dictionary.model.DictionaryEnum;
+import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +20,7 @@ public interface DictionaryEnumStore {
      * @param <ID>           枚举标识类型
      * @param <ENUM>         枚举
      */
-    default <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryEnum<?, ?>>> dictionaryEnum) {
+    default <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>> dictionaryEnum) {
         register(dictionaryEnum, dictionaryEnum.getSimpleName());
     }
 
@@ -33,7 +33,7 @@ public interface DictionaryEnumStore {
      * @param dictionaryEnum 枚举类
      * @param dictionaryType 枚举类型名称
      */
-    <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryEnum<?, ?>>> dictionaryEnum, @Nonnull String dictionaryType);
+    <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>> dictionaryEnum, @Nonnull String dictionaryType);
 
 
     /**
@@ -45,7 +45,7 @@ public interface DictionaryEnumStore {
      * @return 所有符合条件的枚举
      */
     @Nonnull
-    default <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> List<DictionaryEnum<ENUM, ID>> list(@Nonnull Class<? extends DictionaryEnum<ENUM, ID>> enumClass) {
+    default <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> List<DictionaryItemEnum<ENUM, ID>> list(@Nonnull Class<? extends DictionaryItemEnum<ENUM, ID>> enumClass) {
         return list(enumClass.getTypeName());
     }
 
@@ -58,7 +58,7 @@ public interface DictionaryEnumStore {
      * @return 所有符合条件的枚举
      */
     @Nonnull
-    <ID, ENUM extends Enum<? extends DictionaryEnum<ENUM, ID>>> List<DictionaryEnum<ENUM, ID>> list(@Nonnull String enumClassType);
+    <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> List<DictionaryItemEnum<ENUM, ID>> list(@Nonnull String enumClassType);
 
     /**
      * 列出所有 enumClassType 下的字典项 （返回值去掉泛型）
@@ -68,7 +68,7 @@ public interface DictionaryEnumStore {
      */
     @Nonnull
     @SuppressWarnings("rawtypes")
-    List<Enum<? extends DictionaryEnum>> listAllAsDictionaryEnum(String enumClassType);
+    List<Enum<? extends DictionaryItemEnum>> listAllAsDictionaryEnum(String enumClassType);
 
     /**
      * 列出所有支持的枚举类名
@@ -85,7 +85,7 @@ public interface DictionaryEnumStore {
      */
     @Nonnull
     @SuppressWarnings("rawtypes")
-    Collection<Class<? extends Enum<? extends DictionaryEnum>>> listAllTypes();
+    Collection<Class<? extends Enum<? extends DictionaryItemEnum>>> listAllTypes();
 
     default boolean contains(Class<?> enumClass) {
         return contains(enumClass.getSimpleName());
@@ -93,5 +93,5 @@ public interface DictionaryEnumStore {
 
     boolean contains(String dictionaryType);
 
-    Class<? extends Enum<? extends DictionaryEnum>> getActuallyType(String dictionaryType);
+    Class<? extends Enum<? extends DictionaryItemEnum>> getActuallyType(String dictionaryType);
 }

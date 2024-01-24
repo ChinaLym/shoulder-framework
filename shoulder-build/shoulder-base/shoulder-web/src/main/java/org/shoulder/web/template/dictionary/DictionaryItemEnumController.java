@@ -3,14 +3,14 @@ package org.shoulder.web.template.dictionary;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.log.operation.annotation.OperationLogParam;
-import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.web.template.dictionary.dto.DictionaryBatchQueryParam;
 import org.shoulder.web.template.dictionary.dto.DictionaryDTO;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
-import org.shoulder.web.template.dictionary.model.DictionaryEnum;
+import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -79,9 +79,9 @@ public class DictionaryItemEnumController implements DictionaryItemController {
 
     @SuppressWarnings("rawtypes")
     private List<DictionaryItemDTO> query(String dictionaryType) {
-        List<Enum<? extends DictionaryEnum>> enumItems = dictionaryEnumStore.listAllAsDictionaryEnum(dictionaryType);
+        List<Enum<? extends DictionaryItemEnum>> enumItems = dictionaryEnumStore.listAllAsDictionaryEnum(dictionaryType);
         return enumItems.stream()
-            .map(e -> (DictionaryEnum) e)
+                .map(e -> (DictionaryItemEnum) e)
                 .map(d -> conversionService.convert(d, DictionaryItemDTO.class))
             .collect(Collectors.toList());
     }
