@@ -1,11 +1,9 @@
 
 package org.shoulder.web.template.dictionary.convert;
 
-
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.converter.BaseDataConverter;
 import org.shoulder.core.i18.Translator;
-import org.shoulder.core.util.ContextUtils;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItem;
@@ -18,6 +16,8 @@ import java.util.Optional;
  * @author lym
  */
 public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<DictionaryItem, DictionaryItemDTO> {
+
+    public static DictionaryItemDomain2DTOConverter INSTANCE = new DictionaryItemDomain2DTOConverter(null);
 
     private final Translator translator;
 
@@ -34,7 +34,7 @@ public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<Diction
 
         targetModel.setCode(sourceModel.getItemId().toString());
         targetModel.setDictionaryType(sourceModel.getDictionaryType());
-        String displayI18nName = Optional.ofNullable(ContextUtils.getBean(Translator.class))
+        String displayI18nName = Optional.ofNullable(translator)
                 .map(t -> t.getMessage(sourceModel.getDisplayName(), new Object[0],
                         sourceModel.getDisplayName(), translator.currentLocale()))
                 .orElse(sourceModel.getDisplayName());

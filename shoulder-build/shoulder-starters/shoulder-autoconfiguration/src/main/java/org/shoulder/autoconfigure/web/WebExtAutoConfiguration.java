@@ -83,7 +83,8 @@ public class WebExtAutoConfiguration {
         @Bean
         @ConditionalOnMissingBean(value = DictionaryItemDomain2DTOConverter.class)
         public DictionaryItemDomain2DTOConverter dictionaryItemDomain2DTOConverter(Translator translator) {
-            return new DictionaryItemDomain2DTOConverter(translator);
+            DictionaryItemDomain2DTOConverter.INSTANCE = new DictionaryItemDomain2DTOConverter(translator);
+            return DictionaryItemDomain2DTOConverter.INSTANCE;
         }
 
         @Bean

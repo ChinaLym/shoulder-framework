@@ -11,6 +11,7 @@ public interface DictionaryItem<IDENTIFY> {
 
     /**
      * 获取该字典项的 id
+     * 建议在 持久化，接口出口，用该字段作为字典项标志
      *
      * @return id
      */
@@ -18,13 +19,14 @@ public interface DictionaryItem<IDENTIFY> {
 
     /**
      * 获取该字典项的名称 / 多语言 key
+     * 通常用于java代码辅助获取枚举名、后台管理时透出方便和代码对应
      *
      * @return source
      */
     String getName();
 
     /**
-     * 获取该字典项的展示名称
+     * 获取该字典项的展示名称，便于前端使用，小项目中减少前端工作量
      *
      * @return 展示名称
      */
@@ -33,7 +35,7 @@ public interface DictionaryItem<IDENTIFY> {
     }
 
     /**
-     * 备注、说明
+     * 备注、说明，便于前端使用，小项目中减少前端工作量
      */
     default String getNote() {
         return null;
