@@ -67,13 +67,13 @@ public class DictionaryItemDTO2DomainConverterRegister {
         //        });
 
         // dto -> Enum、DictionaryItemEntity、ConfigAbleDictionaryItem
-        conversionService.addConverter(new DictionaryDTO2DictionaryItemGenericConverter());
+        conversionService.addConverter(DictionaryDTO2DictionaryItemGenericConverter.INSTANCE);
         // integer/string -> Enum
-        conversionService.addConverter(new ToDictionaryEnumGenericConverter());
+        conversionService.addConverter(ToDictionaryEnumGenericConverter.INSTANCE);
         // Core.Enum -> integer/string
-        conversionService.addConverter(new DictionaryEnumSerialGenericConverter());
+        conversionService.addConverter(DictionaryEnumSerialGenericConverter.INSTANCE);
         // Core.DictionaryItem(!Enum) -> String
-        conversionService.addConverter(new DictionaryItemToStrGenericConverter());
+        conversionService.addConverter(DictionaryItemToStrGenericConverter.INSTANCE);
         // core.DictionaryItem -> dto
         conversionService.addConverter(event.getApplicationContext().getBean(DictionaryItemDomain2DTOConverter.class));
     }
@@ -82,6 +82,8 @@ public class DictionaryItemDTO2DomainConverterRegister {
      * DictionaryItemDTO -> Enum、DictionaryItemEntity、ConfigAbleDictionaryItem
      */
     public static class DictionaryDTO2DictionaryItemGenericConverter implements GenericConverter {
+
+        public static final DictionaryDTO2DictionaryItemGenericConverter INSTANCE = new DictionaryDTO2DictionaryItemGenericConverter();
 
         @Override
         public Set<ConvertiblePair> getConvertibleTypes() {
@@ -133,6 +135,9 @@ public class DictionaryItemDTO2DomainConverterRegister {
      * Int/String -> Enum
      */
     public static class ToDictionaryEnumGenericConverter implements ConditionalGenericConverter {
+
+        public static final ToDictionaryEnumGenericConverter INSTANCE = new ToDictionaryEnumGenericConverter();
+
         @Override
         public Set<ConvertiblePair> getConvertibleTypes() {
             return Set.of(new ConvertiblePair(String.class, DictionaryItem.class),
@@ -211,6 +216,9 @@ public class DictionaryItemDTO2DomainConverterRegister {
      * Core.Dictionary -> String
      */
     public static class DictionaryItemToStrGenericConverter implements ConditionalGenericConverter {
+
+        public static final DictionaryItemToStrGenericConverter INSTANCE = new DictionaryItemToStrGenericConverter();
+
         @Override
         public Set<ConvertiblePair> getConvertibleTypes() {
             return Set.of(new ConvertiblePair(DictionaryItem.class, String.class));
@@ -234,6 +242,8 @@ public class DictionaryItemDTO2DomainConverterRegister {
      * Enum -> Int/String
      */
     public static class DictionaryEnumSerialGenericConverter implements ConditionalGenericConverter {
+        public static final DictionaryEnumSerialGenericConverter INSTANCE = new DictionaryEnumSerialGenericConverter();
+
         @Override
         public Set<ConvertiblePair> getConvertibleTypes() {
             return Set.of(new ConvertiblePair(DictionaryItem.class, String.class),

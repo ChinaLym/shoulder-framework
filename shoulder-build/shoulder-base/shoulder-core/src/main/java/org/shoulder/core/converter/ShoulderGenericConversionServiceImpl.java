@@ -2,10 +2,6 @@ package org.shoulder.core.converter;
 
 import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.boot.autoconfigure.web.format.WebConversionService;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.Nullable;
@@ -115,15 +111,6 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
             }
         }
         return listResult;
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    @EventListener(ContextRefreshedEvent.class)
-    public void onContextRefreshedEvent(ContextRefreshedEvent event) {
-        //Collection<BaseDataConverter> dataConverters = event.getApplicationContext().getBeansOfType(BaseDataConverter.class)
-        //        .values();
-        //dataConverters.forEach(this::addConverter);
     }
 
     public void addConversionService(ConversionService conversionService) {
