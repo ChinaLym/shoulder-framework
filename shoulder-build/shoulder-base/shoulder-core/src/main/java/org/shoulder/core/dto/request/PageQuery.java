@@ -1,11 +1,12 @@
 package org.shoulder.core.dto.request;
 
-import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.shoulder.core.dto.ToStringObj;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.StringUtils;
@@ -18,8 +19,6 @@ import java.util.Map;
 
 import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_NO;
 import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_SIZE;
-import static org.shoulder.core.constant.PageConst.MAX_PAGE_SIZE;
-import static org.shoulder.core.constant.PageConst.MIN_PAGE_NO;
 import static org.shoulder.core.constant.PageConst.PARAM_PAGE_NO;
 import static org.shoulder.core.constant.PageConst.PARAM_PAGE_SIZE;
 import static org.shoulder.core.constant.PageConst.PARAM_RULES;
@@ -30,6 +29,8 @@ import static org.shoulder.core.constant.PageConst.PARAM_SORT_BY;
  *
  * @author lym
  */
+@Getter
+@Setter
 @ApiModel("分页查询 DTO param")
 public class PageQuery<DTO> extends ToStringObj {
 
@@ -37,15 +38,16 @@ public class PageQuery<DTO> extends ToStringObj {
 
     /**
      * 页码
+     * 不设置默认值，有些框架（如 JPA）页码是从0开始
      */
     @ApiModelProperty(value = "", dataType = "int", example = "1")
-    private int pageNo = DEFAULT_PAGE_NO;
+    private Integer pageNo;
 
     /**
      * 每页大小
      */
     @ApiModelProperty(value = "", dataType = "int", example = "20")
-    private int pageSize = DEFAULT_PAGE_SIZE;
+    private Integer pageSize;
 
     /**
      * 排序规则
@@ -126,56 +128,11 @@ public class PageQuery<DTO> extends ToStringObj {
         return result;
     }
 
-    public int getPageNo() {
-        if (pageNo <= MIN_PAGE_NO) {
-            pageNo = DEFAULT_PAGE_NO;
-        }
-        return pageNo;
-    }
-
-    public void setPageNo(int pageNo) {
-        this.pageNo = pageNo;
-    }
-
-    public int getPageSize() {
-        if (pageSize > MAX_PAGE_SIZE) {
-            pageSize = MAX_PAGE_SIZE;
-        }
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public DTO getCondition() {
-        return condition;
-    }
-
-    public void setCondition(DTO condition) {
-        this.condition = condition;
-    }
-
-    public List<OrderRule> getOrderRules() {
-        return orderRules;
-    }
-
-    public void setOrderRules(List<OrderRule> orderRules) {
-        this.orderRules = orderRules;
-    }
-
-    public Map<String, Object> getExt() {
-        return ext;
-    }
-
-    public void setExt(Map<String, Object> ext) {
-        this.ext = ext;
-    }
-
 
     @SuppressWarnings("unchecked")
     protected Class<DTO> resolveModelClass() {
-        return (Class<DTO>) ReflectionKit.getSuperClassGenericType(this.getClass(), PageQuery.class, 2);
+        return dtoType = condition == null ? null : (Class<DTO>) condition.getClass();
+        //return (Class<DTO>) GenericTypeResolver.resolveTypeArguments(this.getClass(), PageQuery.class)[2];
     }
 
     @Data
