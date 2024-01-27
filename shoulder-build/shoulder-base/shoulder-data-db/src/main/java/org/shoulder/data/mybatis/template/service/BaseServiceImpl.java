@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.StringUtils;
@@ -46,7 +47,7 @@ public abstract class BaseServiceImpl<MAPPER extends BaseMapper<ENTITY>,
      * 转换
      */
     @Autowired
-    protected ConversionService conversionService;
+    protected ShoulderConversionService conversionService;
 
     /**
      * idG

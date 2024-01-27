@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.UnapprovedClientAuthenticationException;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 import java.io.IOException;
@@ -32,7 +33,9 @@ import java.util.Collections;
  * nodeJs 将认证token保存在 session 中，每次使用 session 中的 token 来调用后端 api
  *
  * @author lym
- * TODO 废弃与 spring security oauth 项目相关的类，改为替代品
+ * TODO 替换 spring security oauth2 项目相关的类，改为替代品
+ * 但考虑到 spring-auth-server 还非常不成熟，功能远不及spring security oauth2；短期不换
+ * @see RegisteredClientRepository
  */
 public class BasicAuthorizationTokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 

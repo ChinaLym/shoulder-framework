@@ -13,7 +13,9 @@ import javax.sql.DataSource;
  * Basic, JDBC implementation of the client details service.
  * 复制自 spring security，新增了可以修改表名、列名
  *
- * @see JdbcClientDetailsService
+ * @see JdbcClientDetailsService 旧版本
+ * 新版本功能少
+ * @see org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository
  */
 @Deprecated
 public class NameableJdbcClientDetailsService extends JdbcClientDetailsService implements ClientDetailsService,

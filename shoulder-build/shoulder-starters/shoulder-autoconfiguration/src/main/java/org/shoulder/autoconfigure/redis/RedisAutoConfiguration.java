@@ -3,8 +3,10 @@ package org.shoulder.autoconfigure.redis;
 import jakarta.annotation.Nullable;
 import org.shoulder.cluster.redis.annotation.AppExclusive;
 import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.exception.BaseRuntimeException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,6 +14,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.util.StringUtils;
+import redis.embedded.RedisServer;
 
 /**
  * redis相关配置，提供 string 和 string-object 两种
@@ -22,6 +25,28 @@ import org.springframework.util.StringUtils;
 @AutoConfiguration(before = org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class)
 @ConditionalOnClass(RedisTemplate.class)
 public class RedisAutoConfiguration {
+
+    @ConditionalOnProperty(name = "shoulder.test.mock.redis.enable", havingValue = "true", matchIfMissing = true)
+    @AutoConfiguration(before = {org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class, RedisAutoConfiguration.class})
+    @ConditionalOnClass(value = {RedisTemplate.class, RedisServer.class})
+    public static class RedisMockAutoConfiguration {
+        @Bean
+        public RedisServer redisServer() {
+            try {
+                RedisServer redisServer = RedisServer.builder()
+                        .port(6379)
+                        .setting("maxmemory 128M") //maxheap 128M
+                        .build();
+                redisServer.start();
+                Runtime.getRuntime().addShutdownHook(new Thread(redisServer::stop));
+                return redisServer;
+            } catch (Exception e) {
+                // 用 mock 肯定时本地/单侧，打印
+                e.printStackTrace();
+                throw new BaseRuntimeException(e.getMessage());
+            }
+        }
+    }
 
     /*@SuppressWarnings("unchecked")
     @Bean

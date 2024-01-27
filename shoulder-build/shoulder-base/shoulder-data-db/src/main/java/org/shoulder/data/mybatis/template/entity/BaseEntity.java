@@ -13,6 +13,7 @@ import org.shoulder.core.model.Operable;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.validate.groups.Update;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -27,7 +28,10 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseEntity<ID extends Serializable> implements Operable {
+public class BaseEntity<ID extends Serializable> implements Operable, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -7975111840965852408L;
 
     @TableId(value = DataBaseConsts.COLUMN_ID, type = IdType.INPUT)
     @NotNull(message = "id can't be null", groups = Update.class)

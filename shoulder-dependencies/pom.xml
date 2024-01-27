@@ -607,7 +607,12 @@
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
             </dependency>
-
+            <dependency>
+                <!-- mock redis -->
+                <groupId>com.github.kstyrc</groupId>
+                <artifactId>embedded-redis</artifactId>
+                <version>0.6</version>
+            </dependency>
             <!-- mybatis-plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>

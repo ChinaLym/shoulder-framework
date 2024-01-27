@@ -35,9 +35,23 @@ public class TagEntity extends BizEntity<Long> {
     private String name;
 
     /**
+     * 图标
+     */
+    @TableField("icon")
+    private String icon;
+
+    /**
      * display 名称
      */
     @TableField("display_name")
     private Long displayName;
+
+    /**
+     * 描述
+     */
+    @TableField("description")
+    private String description;
+
+    // viewCount likeCount commentCount refCount
 
 }

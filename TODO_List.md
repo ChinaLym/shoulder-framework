@@ -5,6 +5,11 @@ DEMO3\DEMO4: 编译问题？本地缓存？
 DEMO4: org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.springSecurityFilterChain
 demo5: 加解密
 
+## 依赖优化
+
+demo 改为 h2 方便本地启动
+op-log, local-crypto 在db引入后,表未创建,采用打印log的兜底逻辑
+
 # 实现
 
 ## 校验部分

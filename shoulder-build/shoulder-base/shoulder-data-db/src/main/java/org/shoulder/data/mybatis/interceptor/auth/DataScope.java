@@ -15,8 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class DataScope extends HashMap {
     /**
-     * 限制范围的字段名称 （\
-     * 个人外）
+     * 限制范围的字段名称 （个人外）
      */
     private String scopeName = "org_id";
     /**

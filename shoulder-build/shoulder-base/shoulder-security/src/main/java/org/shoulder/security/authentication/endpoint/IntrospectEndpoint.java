@@ -17,8 +17,8 @@ import java.util.Map;
  * <p>
  * 传统授权服务器（spring-security-oauth2）不支持 /introspect。本类特地增加该端点，以更好地支持校验回调。
  *
- * TODO 废弃与 spring security oauth 项目相关的类，改为替代品 {@link OAuth2ResourceServerConfigurer}
- * 校验接口用处：与 {@link JwkSetEndpoint}类似，提供了远程校验 token 是否有效，不需要客户端理解：
+ * TODO 替换 spring security oauth2 项目相关的类，改为替代品 {@link OAuth2ResourceServerConfigurer}
+ * 校验接口用处：与 {@link JwkSetEndpoint}类似，提供了远程校验 token 是否有效，不需要客户端理解 token(jwt) 结构/原理：
  * @author lym
  */
 @Controller

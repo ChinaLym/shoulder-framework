@@ -30,7 +30,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConditionalOnWebApplication
 public class WebMvcAutoConfiguration {
 
-    //@Bean fixme 配置一致性
+    //@Bean fixme 日期格式 shoulder / spring 配置一致性
     //public Object justDoNothing(WebMvcProperties mvcProperties) {
     //    Format format = mvcProperties.getFormat();
     //    boolean matchSpringConfig = AppInfo.dateTimeFormat().equals(format.getDateTime());

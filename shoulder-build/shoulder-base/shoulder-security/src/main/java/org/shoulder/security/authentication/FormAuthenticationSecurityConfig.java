@@ -1,10 +1,10 @@
 package org.shoulder.security.authentication;
 
+import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.security.SecurityConst;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -12,8 +12,6 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import java.util.List;
-
-import jakarta.annotation.Nullable;
 
 /**
  * 用户名、密码认证(表单登录)配置
@@ -53,21 +51,26 @@ public class FormAuthenticationSecurityConfig extends SecurityConfigurerAdapter<
         }
         // @formatter:off
         http
-            .formLogin()
-                .loginPage(loginPageUrl)
-                .loginProcessingUrl(SecurityConst.URL_AUTHENTICATION_FORM)
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler);
+            .formLogin(formLoginConfig ->
+                    formLoginConfig.loginPage(loginPageUrl)
+                    .loginProcessingUrl(SecurityConst.URL_AUTHENTICATION_FORM)
+                    .successHandler(authenticationSuccessHandler)
+                    .failureHandler(authenticationFailureHandler));
+
 
         // @formatter:on
 
-        LogoutConfigurer<HttpSecurity> logoutConfigurer = http.logout().logoutSuccessHandler(logoutSuccessHandler);
+        http.logout(
+                logoutConfiguration -> {
+                    logoutConfiguration.logoutSuccessHandler(logoutSuccessHandler);
+                    if (CollectionUtils.isNotEmpty(logoutHandlers)) {
+                        for (LogoutHandler logoutHandler : logoutHandlers) {
+                            logoutConfiguration.addLogoutHandler(logoutHandler);
+                        }
+                    }
+                });
 
-        if (CollectionUtils.isNotEmpty(logoutHandlers)) {
-            for (LogoutHandler logoutHandler : logoutHandlers) {
-                logoutConfigurer.addLogoutHandler(logoutHandler);
-            }
-        }
+
     }
 
     public void setLoginPageUrl(String loginPageUrl) {

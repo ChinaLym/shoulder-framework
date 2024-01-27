@@ -26,6 +26,12 @@
             <artifactId>shoulder-cluster</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <!-- mock redis -->
+            <groupId>com.github.kstyrc</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <dependency>
             <groupId>cn.itlym</groupId>
