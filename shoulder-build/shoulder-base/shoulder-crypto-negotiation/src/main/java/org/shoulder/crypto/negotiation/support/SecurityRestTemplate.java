@@ -2,8 +2,10 @@ package org.shoulder.crypto.negotiation.support;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -20,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.lang.NonNull;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
@@ -63,16 +66,16 @@ public class SecurityRestTemplate extends RestTemplate {
 
     @Override
     @Nullable
-    protected <T> T doExecute(URI uri, @Nullable HttpMethod method, @Nullable RequestCallback requestCallback,
+    protected <T> T doExecute(@NonNull URI uri, @Nullable String uriTemplate, @Nullable HttpMethod method, @Nullable RequestCallback requestCallback,
                               @Nullable ResponseExtractor<T> responseExtractor) throws RestClientException {
         // 是否为密钥交换接口，如果标记为跳过（为协商 url、协商 param）则不需要握手
         if (transportNegotiationService.isNegotiationUrl(uri)) {
             // 不做任何处理
-            return super.doExecute(uri, method, requestCallback, responseExtractor);
+            return super.doExecute(uri, uriTemplate, method, requestCallback, responseExtractor);
         }
         // 确保已经交换密钥，增强
         URI_LOCAL.set(uri);
-        T result = super.doExecute(uri, method, requestCallback, responseExtractor);
+        T result = super.doExecute(uri, uriTemplate, method, requestCallback, responseExtractor);
         if (result instanceof ResponseEntity) {
             HttpHeaders responseHeaders = ((ResponseEntity) result).getHeaders();
             List<String> negotiationInvalidHeader = responseHeaders.get(NegotiationConstants.NEGOTIATION_INVALID_TAG);
@@ -86,7 +89,7 @@ public class SecurityRestTemplate extends RestTemplate {
                 NegotiationResultCache.CLIENT_LOCAL_CACHE.remove();
                 log.info("sensitive request FAIL for response with a invalid negotiation(xSessionId) mark, negotiate and retry once.");
                 // 重新执行一次即可，此时已经将密钥交换缓存删除，将发起密钥交换
-                result = super.doExecute(uri, method, requestCallback, responseExtractor);
+                result = super.doExecute(uri, uriTemplate, method, requestCallback, responseExtractor);
             }
         }
         URI_LOCAL.remove();
@@ -97,14 +100,14 @@ public class SecurityRestTemplate extends RestTemplate {
     @Override
     public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody) {
         return new EnsureNegotiatedRequestCallback(super.httpEntityCallback(requestBody),
-            transportNegotiationService, cryptoUtil);
+                transportNegotiationService, cryptoUtil);
     }
 
     @Nonnull
     @Override
     public <T> RequestCallback httpEntityCallback(@Nullable Object requestBody, @Nonnull Type responseType) {
         return new EnsureNegotiatedRequestCallback(super.httpEntityCallback(requestBody, responseType),
-            transportNegotiationService, cryptoUtil);
+                transportNegotiationService, cryptoUtil);
     }
 
 
@@ -129,7 +132,9 @@ public class SecurityRestTemplate extends RestTemplate {
         public void doWithRequest(@Nonnull ClientHttpRequest request) throws IOException {
             try {
                 // 协商密钥并添加需要的请求头
-                HttpHeaders headers = negotiateBeforeExecute(URI_LOCAL.get());
+                URI currentUri = URI_LOCAL.get();
+                AssertUtils.notNull(currentUri, CommonErrorCodeEnum.CODING);
+                HttpHeaders headers = negotiateBeforeExecute(currentUri);
                 HttpHeaders httpHeaders = request.getHeaders();
                 headers.forEach((key, values) -> httpHeaders.put(key, new LinkedList<>(values)));
             } catch (SymmetricCryptoException | AsymmetricCryptoException e) {
