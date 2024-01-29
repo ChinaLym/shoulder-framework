@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
 import redis.embedded.RedisServer;
+import redis.embedded.core.RedisServerBuilder;
 
 @ConditionalOnProperty(name = "shoulder.test.mock.redis.enable", havingValue = "true", matchIfMissing = true)
 @AutoConfiguration(
@@ -28,13 +29,15 @@ public class EmbeddedRedisAutoConfiguration {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public RedisServer redisServer() {
         try {
-            RedisServer redisServer = RedisServer.builder()
+            // 默认仅 本机访问，其他 ip 机器无法访问内嵌 redis
+            RedisServer redisServer = new RedisServerBuilder()
                     .port(6379)
                     //maxHeap
                     .setting("maxmemory 64M")
                     .build();
             redisServer.start();
-            Runtime.getRuntime().addShutdownHook(new Thread(redisServer::stop));
+            // java进程退出时，自动关闭 redisServer
+            //Runtime.getRuntime().addShutdownHook(new Thread(redisServer::stop));
             return redisServer;
         } catch (Exception e) {
             // 用 mock 肯定时本地/单侧，启动失败打印异常

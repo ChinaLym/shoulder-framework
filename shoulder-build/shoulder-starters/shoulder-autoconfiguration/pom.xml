@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <!-- mock redis -->
-            <groupId>com.github.kstyrc</groupId>
+            <groupId>com.github.codemonstur</groupId>
             <artifactId>embedded-redis</artifactId>
             <optional>true</optional>
         </dependency>
