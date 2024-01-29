@@ -7,9 +7,7 @@ import org.shoulder.web.template.tag.entity.TagEntity;
 import java.util.List;
 
 /**
- * 字典类型存储
- * <p>
- * 不要使用 @Mapper / @Repository
+ * 标签数据访问层
  *
  * @author lym
  */

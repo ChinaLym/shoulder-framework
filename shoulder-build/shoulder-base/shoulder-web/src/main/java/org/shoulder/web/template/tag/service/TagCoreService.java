@@ -156,4 +156,24 @@ public interface TagCoreService {
     }
 
     void ensureExistOrCreateTagList(List<TagEntity> tagList);
+
+    default void ensureExistOrCreateTag(TagEntity tag) {
+        ensureExistOrCreateTagList(Collections.singletonList(tag));
+    }
+
+
+    /**
+     * 通过refId包含关系 剔除当前关联 并更新
+     * 删除所有 refId
+     */
+    void updateTagSearchForRemoveRefId(Long refId);
+
+    /**
+     * 删除标签、标签关联关系
+     * 主要用于动态生成的 tag，如tagName=merchantId，merchant删除时，则清理和该标签所有内容
+     */
+    void deleteTagAndTagSearch(List<Long> ids);
+
+    //void deleteTagAndTagSearch(BizType bizType, List<String> tagNameList);
+
 }

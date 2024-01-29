@@ -49,8 +49,17 @@ public class TagDTO extends ToStringObj {
     /**
      * 展示名称
      * 页面显示的内容
-     * * 重要
      */
     private String displayName;
+
+    /**
+     * 图标
+     */
+    private String icon;
+
+    /**
+     * 描述
+     */
+    private String description;
 }
 
