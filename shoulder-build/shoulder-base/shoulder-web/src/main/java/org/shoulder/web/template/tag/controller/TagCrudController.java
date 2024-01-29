@@ -24,6 +24,9 @@ public class TagCrudController extends CrudCacheableController<
     TagDTO,
     TagDTO> implements TagController {
 
+    /**
+     * 常用于前端根据用户输入信息进行提示
+     */
     //@Validated
     //@RequestMapping(method = RequestMethod.GET, value = "search.json")
     //@ResponseBody

@@ -7,6 +7,8 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 
+import java.util.Map;
+
 /**
  * 标签
  * <p>
@@ -29,6 +31,12 @@ public class TagEntity extends BizEntity<Long> {
     private String bizType;
 
     /**
+     * 域
+     */
+    @TableField("domain")
+    private String domain;
+
+    /**
      * 名称
      */
     @TableField("name")
@@ -49,8 +57,32 @@ public class TagEntity extends BizEntity<Long> {
     /**
      * 描述
      */
+    @TableField("order")
+    private Integer order;
+
+    /**
+     * 描述
+     */
     @TableField("description")
     private String description;
+
+    /**
+     * 来源
+     */
+    @TableField("source")
+    private String source;
+
+    /**
+     * 状态
+     */
+    @TableField("status")
+    private String status;
+
+    /**
+     * 扩展字段
+     */
+    @TableField("ext")
+    private Map<String, String> ext;
 
     // viewCount likeCount commentCount refCount
 

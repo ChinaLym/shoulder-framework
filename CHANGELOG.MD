@@ -1,10 +1,12 @@
 # 更新记录
 
-## 0.8（JDK 21准备，依赖）
-spring-boot
-spring-cloud
-spring security  --> auth server
-jdk21
+## 0.8（升级 spring boot3, JDK 17）
+
+升级并支持 spring-boot3（jdk、spring-cloud 等）
+升级并支持 spring security6
+提供增强的 ConversionService，支持集合、更多的类转换，比如日期解析时支持多种格式，Jdk8的各类时间互转
+提供低代码，可扩展的字典服务，并添加配套支持（HTTP-API、相关工具类、ConversionService、JPA、Mybatis-plus、MongoDb...）
+支持内嵌 redis 启动，方便测试
 多线程优化，能力增强
 - Threads 区分IO、cpu
 - IO部分使用 VirtualThread

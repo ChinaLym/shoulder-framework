@@ -1,20 +1,21 @@
 package org.shoulder.web.template.tag.service;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.core.dto.request.BasePageQuery;
+import org.shoulder.core.dto.response.PageResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
-import org.shoulder.core.util.StringUtils;
 import org.shoulder.data.enums.DataErrorCodeEnum;
+import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseCacheableServiceImpl;
 import org.shoulder.web.template.tag.dao.TagMapper;
 import org.shoulder.web.template.tag.entity.TagEntity;
-import org.shoulder.web.template.tag.entity.TagSearchEntity;
-import org.shoulder.web.template.tag.repository.TagRelationShipService;
+import org.shoulder.web.template.tag.entity.TagMappingEntity;
+import org.shoulder.web.template.tag.repository.TagMappingService;
 import org.shoulder.web.template.tag.repository.TagRepository;
-import org.shoulder.web.template.tag.repository.TagSearchShipService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,7 +24,6 @@ import java.util.stream.Collectors;
  * TagService
  *
  * @author lym
- * @deprecated 暂未实现完善，无法使用
  */
 public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntity> implements TagCoreService {
 
@@ -31,12 +31,10 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     private TagRepository tagRepository;
 
     @Autowired(required = false)
-    private TagSearchShipService tagSearchShipService;
-
-    @Autowired(required = false)
-    private TagRelationShipService relationShipService;
+    private TagMappingService tagMappingService;
 
 
+    @Transactional(rollbackFor = Exception.class)
     public boolean createTags(List<TagEntity> tagEntityList) {
         // max 100
         assert tagEntityList.size() < 100;
@@ -59,31 +57,60 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         return getBaseMapper().insertBatch(toSaveEntityList) == toSaveEntityList.size();
     }
 
-    boolean attachTags(String bizType, String refId, List<Long> tagIds) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean attachTags(String bizType, String oid, List<Long> tagIds) {
         // max 20
-        assert tagIds.size() < 20;
-        // select for update 这些 tagIds 对应的标签关系
-        // 过滤出没有的
-        // 创建标签
-        // 创建标签关联关系
+        AssertUtils.notEmpty(tagIds, CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.isTrue(tagIds.size() < 20, CommonErrorCodeEnum.ILLEGAL_PARAM);
+
+        // 确认数据库中标签存在
+        List<TagEntity> tagListInDb = tagRepository.listByIds(tagIds);
+        Set<Long> tagIdsInDb = tagListInDb.stream()
+                .map(TagEntity::getId)
+                .collect(Collectors.toSet());
+        boolean someTagsNotExist = tagIds.stream()
+                .map(tagIdsInDb::contains)
+                .anyMatch(contain -> !contain);
+        AssertUtils.isFalse(someTagsNotExist, CommonErrorCodeEnum.ILLEGAL_PARAM);
+
+        // for 循环创建标签关联关系（通过多次IO减少单次锁的范围）
         for (Long tagId : tagIds) {
-            attachTag(bizType, refId, tagId);
+            attachTag(bizType, oid, tagId);
         }
         return true;
     }
+
     // max 100 batch｜ insert
-
-    boolean attachTag(String bizType, String refId, Long tagId) {
+    public boolean attachTag(String bizType, String oid, Long tagId) {
         // select for update tagId 对应的标签关系
+        TagEntity tagInDb = tagRepository.getBaseMapper().selectForUpdateById(tagId);
+        AssertUtils.notNull(tagInDb, DataErrorCodeEnum.DATA_NOT_EXISTS);
 
-        // 有则返回，没有则创建标签
-        return false;
+        TagMappingEntity tagMappingInDb = tagMappingService.getBaseMapper().selectForUpdate(tagId, bizType, oid);
+        if (tagMappingInDb != null) {
+            // 有则返回
+            return true;
+        }
+        // 没有则创建标签
+        TagMappingEntity tagMappingEntity = new TagMappingEntity();
+        tagMappingEntity.setRefType(bizType);
+        tagMappingEntity.setTagId(tagId);
+        tagMappingEntity.setOid(oid);
+        return tagMappingService.save(tagMappingEntity);
     }
 
 
-    List<String> searchByTagId(Long id) {
+    PageResult<TagMappingEntity> searchByTagId(BasePageQuery<TagMappingEntity> pageQueryCondition) {
         // 查标签id，获取外部业务表 bizId
-        return null;
+        AssertUtils.notNull(pageQueryCondition, CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.notNull(pageQueryCondition.getCondition(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        Long tagId = pageQueryCondition.getCondition().getTagId();
+        AssertUtils.notNull(tagId, CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.notNull(pageQueryCondition.getCondition().getRefType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        TagEntity tagEntity = tagRepository.getById(tagId);
+        AssertUtils.notNull(tagEntity, DataErrorCodeEnum.DATA_NOT_EXISTS);
+        // TODO 根据标签 order排序？
+        return tagMappingService.page(pageQueryCondition);
     }
 
     //List<String> searchByAllTagIds(List<Long> ids);
@@ -133,77 +160,22 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
     @SuppressWarnings("unchecked")
     @Override
-    public Set<Long> queryAllRefIdByStorageSourceAndTagIdList(String refType, List<Long> tagIdList) {
+    public List<TagMappingEntity> queryAllRefIdByStorageSourceAndTagIdList(String refType, List<Long> tagIdList) {
         if (CollectionUtils.isEmpty(tagIdList)) {
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
         // 限制一下最多标签数量
         AssertUtils.isTrue(tagIdList.size() < 10, DataErrorCodeEnum.DATA_TOO_MUCH);
 
-        List<TagSearchEntity> tagSearchList = tagSearchShipService
+        return tagMappingService
                 .lambdaQuery()
-                .eq(TagSearchEntity::getRefType, refType)
-                .in(TagSearchEntity::getRefIds, tagIdList)
+                .eq(TagMappingEntity::getRefType, refType)
+                .in(TagMappingEntity::getTagId, tagIdList)
                 .list();
-        if (CollectionUtils.isEmpty(tagSearchList)) {
-            return Collections.emptySet();
-        }
-
-        Collection<Long>[] refIdsArr = tagSearchList.stream()
-                .map(TagSearchEntity::getRefIds).toArray(Set[]::new);
-        // 取交集
-        Collection<Long> refIds = intersection(refIdsArr);
-        AssertUtils.notNull(refIds, CommonErrorCodeEnum.UNKNOWN);
-        return new HashSet<>(refIds);
-    }
-
-
-    /**
-     * 取交集
-     *
-     * @param collectionArr 参数
-     * @param <T>           范
-     * @return 参数全是 null 时才会返回 null，否则非空
-     */
-    public static <T> Collection<T> intersection(@NotNull Collection<T>... collectionArr) {
-        Collection<T> resultSet = null;
-        for (Collection<T> collection : collectionArr) {
-            if (collection == null) {
-                continue;
-            }
-            if (resultSet == null) {
-                resultSet = collection;
-            } else {
-                resultSet = org.apache.commons.collections4.CollectionUtils.intersection(resultSet, collection);
-                if (resultSet.size() == 0) {
-                    return Collections.emptySet();
-                }
-            }
-        }
-        return resultSet;
     }
 
     @Override
-    public void attachTags(String refType, Long refId, List<TagEntity> tagList) {
-        for (TagEntity t : tagList) {
-            // TODO lock
-            TagSearchEntity tagSearch = null;//tagSearchShipService.lockBy(refType, t.getId());
-            if (tagSearch == null) {
-                tagSearch = new TagSearchEntity();
-                tagSearch.setTagId(t.getId());
-                tagSearch.setRefType(refType);
-                tagSearch.setRefIds(Collections.singleton(refId));
-                tagSearchShipService.save(tagSearch);
-            } else if (!tagSearch.getRefIds().contains(refId)) {
-                tagSearch.getRefIds().add(refId);
-                tagSearchShipService.updateById(tagSearch);
-            }
-            // 否则是已经有了
-        }
-    }
-
-    @Override
-    public List<TagEntity> attachTags(String refType, Long refId, String bizType,
+    public List<TagEntity> attachTags(String refType, String oid, String bizType,
                                       List<String> tagNameList) {
         if (CollectionUtils.isEmpty(tagNameList)) {
             return new LinkedList<>();
@@ -211,80 +183,57 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         // 限制一下最多标签数量
         AssertUtils.isTrue(tagNameList.size() < 10, DataErrorCodeEnum.DATA_TOO_MUCH);
         List<TagEntity> allTags = ensureExistOrCreateTag(bizType, tagNameList);
-        attachTags(refType, refId, allTags);
+        attachTags(refType, oid, allTags.stream().map(BaseEntity::getId).collect(Collectors.toList()));
 
         return allTags;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public void removeTagSearches(String refType, Long refId, List<Long> tagIdList) {
+    public void removeTagMappings(String refType, String oid, List<Long> tagIdList) {
         if (CollectionUtils.isEmpty(tagIdList)) {
             return;
         }
-        // TODO DUMP CODE
-        List<TagSearchEntity> tagSearchList = tagSearchShipService
+        // 批量锁定
+        List<TagMappingEntity> tagMappingListInDb = tagMappingService
                 .lambdaQuery()
-                .eq(TagSearchEntity::getRefType, refType)
-                .in(TagSearchEntity::getRefIds, tagIdList)
-                .list();
-        AssertUtils.notEmpty(tagSearchList, DataErrorCodeEnum.DATA_NOT_EXISTS);
-        // 找出标签关联
-        for (TagSearchEntity tagSearch : tagSearchList) {
-            tagSearch.getRefIds().remove(refId);
-            if (tagSearch.getRefIds().isEmpty()) {
-                // 这个标签和这类存储再也没有任何关联，可以删除 tagSearch，并尝试清理 tag
-                tagSearchShipService.removeById(tagSearch.getId());
-                tryDeleteTag(tagSearch.getTagId());
-            } else {
-                tagSearchShipService.updateById(tagSearch);
-            }
-        }
+                .eq(TagMappingEntity::getRefType, refType)
+                .eq(TagMappingEntity::getOid, oid)
+                .in(TagMappingEntity::getTagId, tagIdList)
+                .last("for update").list();
+
+        // 确认数据都在
+        List<Long> mappingIdList = tagMappingListInDb.stream().map(BaseEntity::getId).collect(Collectors.toList());
+        AssertUtils.equals(tagIdList.size(), mappingIdList.size(), DataErrorCodeEnum.DATA_NOT_EXISTS);
+
+        // 删掉
+        tagMappingService.getBaseMapper().deleteInLogicByIdList(mappingIdList);
     }
 
     @Override
-    public void updateTagSearches(String refType, String bizType, Long refId, String oldName,
-                                  String newName) {
-        if (StringUtils.isNotBlank(oldName)) {
-            //旧的mcc有值，先移除tagSearch表中的值
-            TagEntity tag = queryTagByBizTypeAndName(bizType,
-                    oldName);
-            if (null != tag) {
-                List<Long> tags = new ArrayList<>();
-                tags.add(tag.getId());
-                removeTagSearches(refType, refId, tags);
-            }
-        }
-        if (StringUtils.isNotBlank(newName)) {
-            //商服有数据的话，直接插入search表方便后续搜索
-            List<String> tagNameList = new ArrayList<>();
-            tagNameList.add(newName);
-            attachTags(refType, refId, bizType,
-                    tagNameList);
-        }
+    public void updateTagMappings(String refType, String bizType, String oid, String oldName, String newName) {
+        // todo
     }
 
     @Override
-    public void batchUpdateTagSearches(String refType, String bizType, Long refId, List<String> oldNames,
+    public void batchUpdateTagMappings(String refType, String bizType, String oid, List<String> oldNames,
                                        List<String> newNames) {
         if (CollectionUtils.isNotEmpty(oldNames)) {
-            //旧的BizRoleTypes有值，先移除tagSearch表中的值
+            // oldNames 有值，先移除TagMapping表中的值
+            List<Long> tags = new ArrayList<>();
             for (String oldName : oldNames) {
-                TagEntity tag = queryTagByBizTypeAndName(bizType,
-                        oldName);
+                TagEntity tag = queryTagByBizTypeAndName(bizType, oldName);
                 AssertUtils.notNull(tag, DataErrorCodeEnum.DATA_NOT_EXISTS);
-                List<Long> tags = new ArrayList<>();
                 tags.add(tag.getId());
-                removeTagSearches(refType, refId, tags);
             }
+            removeTagMappings(refType, oid, tags);
         }
-        if (CollectionUtils
-                .isNotEmpty(newNames)) {
+        if (CollectionUtils.isNotEmpty(newNames)) {
             for (String newName : newNames) {
                 //商服有数据的话，直接插入search表方便后续搜索
                 List<String> tagNameList = new ArrayList<>();
                 tagNameList.add(newName);
-                attachTags(refType, refId,
-                        bizType, tagNameList);
+                attachTags(refType, oid, bizType, tagNameList);
             }
         }
     }
@@ -292,10 +241,10 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     private void tryDeleteTag(Long tagId) {
         TagEntity tag = tagRepository.lockById(tagId);
         AssertUtils.notNull(tag, DataErrorCodeEnum.DATA_NOT_EXISTS);
-        TagSearchEntity tagSearch = new TagSearchEntity();
-        tagSearch.setTagId(tagId);
+        TagMappingEntity tagMapping = new TagMappingEntity();
+        tagMapping.setTagId(tagId);
         // todo count
-        int existCount = 0;//tagSearchShipService.count(query(tagSearch));
+        long existCount = tagMappingService.count(tagMappingService.query(tagMapping, null));
         if (existCount == 0) {
             // 当且仅当没有引用才删除
             tagRepository.removeById(tagId);
@@ -328,8 +277,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
     public List<TagEntity> ensureExistOrCreateTag(String bizType, List<String> tagNameList) {
         AssertUtils.isTrue(tagNameList.size() < 10, DataErrorCodeEnum.DATA_TOO_MUCH);
-        // TODO lock
-        List<TagEntity> existsTags = null;//tagRepository.lockById(bizType,  );
+        List<TagEntity> existsTags = tagRepository.getBaseMapper().lockByTypeAndNameList(bizType, tagNameList);
         Set<String> existTagNameSet = null == existsTags ? new HashSet<>()
                 : new HashSet<>(existsTags.stream().map(TagEntity::getName).collect(Collectors.toSet()));
 

@@ -53,6 +53,11 @@ public interface DataBaseConsts {
     String COLUMN_PARENT_ID = "parent_id";
 
     /**
+     * 父级标识
+     */
+    String COLUMN_DEPTH = "depth";
+
+    /**
      * 排序序号
      */
     String COLUMN_SORT_NO = "sort_no";

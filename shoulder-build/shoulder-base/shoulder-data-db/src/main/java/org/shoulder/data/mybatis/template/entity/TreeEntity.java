@@ -20,6 +20,10 @@ import java.util.List;
  * 举例：组织类、位置类（）
  * 第一个泛型为 id 类型，第二个泛型通常为自身类型
  *
+ * 【本类结构】邻接模式（存储信息精简；仅保存父子节点关系，ext：深度、根id）；优点：结构简单、存储成本低、CRUD简单；缺点：层级深时候，查询/删除当前节点以及子节点时可能触发递归
+ *      适用情况：深度有限制；查询时逐级查看，不涉及整个树结构查询
+ * 知识拓展：闭包模式（存储信息全面，写扩散代替读扩散），引入新一张关系表， parentId、child_id、distance 记录所有节点关系；优点：可以高性能支撑任意深度查询、快速获取树结构、跳级查看等复杂查询；缺点：多一张表；更多的关系存储成本；节点移动时要更新所有父关系、所有子关系、所有子的父子关系（归级别更新）；
+ *      适用情况：深度无限制且可能很多；需要查询整个树结构查询；读多写少；节点移动少
  * @author lym
  */
 @Getter
@@ -40,6 +44,12 @@ public class TreeEntity<ID extends Serializable> extends Entity<ID> {
      */
     @TableField(value = DataBaseConsts.COLUMN_PARENT_ID)
     protected ID parentId;
+
+    /**
+     * 树形深度
+     */
+    @TableField(value = DataBaseConsts.COLUMN_DEPTH)
+    protected Integer depth;
 
     /**
      * 排序

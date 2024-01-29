@@ -10,9 +10,9 @@ import org.shoulder.data.mybatis.template.entity.LogicDeleteEntity;
 import java.util.Set;
 
 /**
- * 标签查询，由于标签是用于搜索，因此采取倒排索引的方式
- * 注意：是倒排索引表，而不是关系表！本表仅为根据标签搜索提效！需要业务表中存放 text 字段存储加的标签，或其他方式存储!
- * <p>
+ * 标签映射
+ * 建立索引时使用 biz_type - ref_id - tag_biz_id - deleteVersion
+ *
  * tagId -> [xx1,xx3,xx8,xx12] 在 SQL 中表示为 biz_type - id - n bizId
  * 建立索引时 tag_biz_id - ref_id - deleteVersion
  *
@@ -23,7 +23,7 @@ import java.util.Set;
 @Accessors(chain = true)
 @ToString(callSuper = true)
 //@TableName("tb_tag_search")
-public class TagSearchEntity extends LogicDeleteEntity<Long> {
+public class TagMappingEntity extends LogicDeleteEntity<Long> {
 
     /**
      * tag表id
@@ -32,15 +32,27 @@ public class TagSearchEntity extends LogicDeleteEntity<Long> {
     private Long tagId;
 
     /**
-     * ref 是什么类型，比如是某个表的id
+     * ref 是什么类型，比如 User、Post、Photo
      */
     @TableField(value = "ref_type")//typeHandler = JacksonTypeHandler.class
     private String refType;
+
+    /**
+     * 业务类型
+     */
+//    @TableField("biz_type")
+//    private String bizType;
 
     /**
      * 外部业务表 标识 JSONArray
      */
     @TableField("ref_ids")
     private Set<Long> refIds;
+
+    /**
+     * 关联 Object id
+     */
+    @TableField("oid")
+    private String oid;
 
 }
