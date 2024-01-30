@@ -2,6 +2,7 @@ package org.shoulder.autoconfigure.web;
 
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.autoconfigure.core.CacheAutoConfiguration;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.autoconfigure.web.WebExtAutoConfiguration.BaseOnEnumDictionaryConfiguration;
 import org.shoulder.core.converter.ShoulderConversionService;
@@ -20,6 +21,8 @@ import org.shoulder.web.template.tag.controller.TagController;
 import org.shoulder.web.template.tag.controller.TagCrudController;
 import org.shoulder.web.template.tag.converter.TagDTO2DomainConverter;
 import org.shoulder.web.template.tag.converter.TagDomain2DTOConverter;
+import org.shoulder.web.template.tag.repository.TagMappingService;
+import org.shoulder.web.template.tag.repository.TagRepository;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -56,7 +59,7 @@ public class WebExtAutoConfiguration {
     }
 
 
-    @AutoConfiguration(after = { I18nAutoConfiguration.class })
+    @AutoConfiguration(after = {I18nAutoConfiguration.class, CacheAutoConfiguration.class})
     @ConditionalOnClass(value = { TagController .class })
     @EnableConfigurationProperties(WebExProperties.class)
     @ConditionalOnProperty(value = "shoulder.web.ext.tag.enable", havingValue = "true", matchIfMissing = false)
@@ -80,6 +83,17 @@ public class WebExtAutoConfiguration {
             return new TagCrudController();
         }
 
+        @Bean
+        @ConditionalOnMissingBean(value = TagMappingService.class)
+        public TagMappingService tagMappingService() {
+            return new TagMappingService();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(value = TagRepository.class)
+        public TagRepository tagRepository() {
+            return new TagRepository();
+        }
     }
 
     @AutoConfiguration(after = { I18nAutoConfiguration.class })

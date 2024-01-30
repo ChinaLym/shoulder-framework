@@ -15,6 +15,9 @@ import org.shoulder.core.cache.Cache;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,12 +38,19 @@ import java.util.stream.Collectors;
 public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>,
         ENTITY extends BaseEntity<? extends Serializable>>
         extends BaseServiceImpl<MAPPER, ENTITY>
-        implements BaseCacheableService<ENTITY> {
+        implements BaseCacheableService<ENTITY>,
+        ApplicationListener<ApplicationStartedEvent> {
 
     // 选择特定的 Cache，便于管理 key格式 / 缓存有效时长
 
-    @Autowired
+    @Lazy
+    @Autowired(required = false)
     protected Cache cache;
+
+    @Override
+    public void onApplicationEvent(ApplicationStartedEvent event) {
+        aa
+    }
 
     /**
      * 一次查多个 key 时，最多多少个
