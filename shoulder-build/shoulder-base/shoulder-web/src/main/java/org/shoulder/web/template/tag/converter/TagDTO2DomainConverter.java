@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
  * @author lym
  */
 @Service
-public class TagVO2DomainConverter extends AbstractVODataConverter<TagDTO, TagEntity> {
+public class TagDTO2DomainConverter extends AbstractVODataConverter<TagDTO, TagEntity> {
 
     @Override
     public void doConvert(@Nonnull TagDTO sourceModel, @Nonnull TagEntity targetModel) {

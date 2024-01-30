@@ -16,6 +16,10 @@ import org.shoulder.web.template.dictionary.convert.DictionaryItemDTO2DomainConv
 import org.shoulder.web.template.dictionary.convert.DictionaryItemDomain2DTOConverter;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
+import org.shoulder.web.template.tag.controller.TagController;
+import org.shoulder.web.template.tag.controller.TagCrudController;
+import org.shoulder.web.template.tag.converter.TagDTO2DomainConverter;
+import org.shoulder.web.template.tag.converter.TagDomain2DTOConverter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -49,6 +53,33 @@ public class WebExtAutoConfiguration {
         Optional.ofNullable(conversionServiceList).ifPresent(l -> l.forEach(conversionService::addConversionService));
         ConvertUtil.setConversionService(conversionService);
         return conversionService;
+    }
+
+
+    @AutoConfiguration(after = { I18nAutoConfiguration.class })
+    @ConditionalOnClass(value = { TagController .class })
+    @EnableConfigurationProperties(WebExProperties.class)
+    @ConditionalOnProperty(value = "web.ext.tag.enable", havingValue = "true", matchIfMissing = false)
+    public static class ExtTagAutoConfiguration {
+
+        @Bean
+        @ConditionalOnMissingBean(value = TagDomain2DTOConverter.class)
+        public TagDomain2DTOConverter tagDomain2DTOConverter() {
+            return new TagDomain2DTOConverter();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(value = TagDTO2DomainConverter .class)
+        public TagDTO2DomainConverter  tagDTO2DomainConverter() {
+            return new TagDTO2DomainConverter ();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(value = TagController.class)
+        public TagCrudController tagCrudController() {
+            return new TagCrudController();
+        }
+
     }
 
     @AutoConfiguration(after = { I18nAutoConfiguration.class })
