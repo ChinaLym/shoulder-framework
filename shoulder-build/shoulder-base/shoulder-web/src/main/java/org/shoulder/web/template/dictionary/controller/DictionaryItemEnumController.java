@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary;
+package org.shoulder.web.template.dictionary.controller;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

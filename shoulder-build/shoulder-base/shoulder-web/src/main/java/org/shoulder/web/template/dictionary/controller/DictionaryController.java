@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary;
+package org.shoulder.web.template.dictionary.controller;
 
 /**
  * 枚举型字典接口

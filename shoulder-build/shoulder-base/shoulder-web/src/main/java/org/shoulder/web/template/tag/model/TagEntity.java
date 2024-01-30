@@ -1,6 +1,7 @@
-package org.shoulder.web.template.tag.entity;
+package org.shoulder.web.template.tag.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,7 +22,7 @@ import java.util.Map;
 @Setter
 @Accessors(chain = true)
 @ToString(callSuper = true)
-//@TableName("tb_tag")
+@TableName("tb_tag")
 public class TagEntity extends BizEntity<Long> {
 
     /**

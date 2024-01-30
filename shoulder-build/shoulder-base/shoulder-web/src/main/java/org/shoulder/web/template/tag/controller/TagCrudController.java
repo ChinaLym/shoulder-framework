@@ -2,7 +2,7 @@ package org.shoulder.web.template.tag.controller;
 
 import org.shoulder.web.template.crud.CrudCacheableController;
 import org.shoulder.web.template.tag.dto.TagDTO;
-import org.shoulder.web.template.tag.entity.TagEntity;
+import org.shoulder.web.template.tag.model.TagEntity;
 import org.shoulder.web.template.tag.service.TagServiceImpl;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

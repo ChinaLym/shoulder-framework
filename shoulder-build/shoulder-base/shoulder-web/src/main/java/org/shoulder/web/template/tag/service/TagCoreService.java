@@ -3,8 +3,8 @@ package org.shoulder.web.template.tag.service;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
-import org.shoulder.web.template.tag.entity.TagEntity;
-import org.shoulder.web.template.tag.entity.TagMappingEntity;
+import org.shoulder.web.template.tag.model.TagEntity;
+import org.shoulder.web.template.tag.model.TagMappingEntity;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;

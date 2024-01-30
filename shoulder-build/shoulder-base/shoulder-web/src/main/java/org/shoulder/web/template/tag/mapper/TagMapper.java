@@ -1,9 +1,9 @@
-package org.shoulder.web.template.tag.dao;
+package org.shoulder.web.template.tag.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
-import org.shoulder.web.template.tag.entity.TagEntity;
+import org.shoulder.web.template.tag.model.TagEntity;
 
 import java.util.List;
 

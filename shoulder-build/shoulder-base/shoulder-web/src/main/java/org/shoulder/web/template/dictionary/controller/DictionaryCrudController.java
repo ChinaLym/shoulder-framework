@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary;
+package org.shoulder.web.template.dictionary.controller;
 
 import org.shoulder.web.template.crud.CrudCacheableController;
 import org.shoulder.web.template.dictionary.dto.DictionaryDTO;

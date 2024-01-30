@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary.repository;
+package org.shoulder.web.template.dictionary.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
@@ -14,6 +14,6 @@ import java.io.Serializable;
  * @author lym
  */
 @Mapper
-public interface DictionaryItemRepository<ID extends Serializable> extends BaseMapper<DictionaryItemEntity<ID>> {
+public interface DictionaryItemMapper<ID extends Serializable> extends BaseMapper<DictionaryItemEntity<ID>> {
 
 }

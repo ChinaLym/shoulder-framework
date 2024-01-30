@@ -5,7 +5,7 @@
 `spring boot` 的 `org.springframework.boot.actuate.autoconfigure.metrics` 包下已经提供了很多可以用的监控，无特殊需求可直接使用其提供的。
 如：`org.springframework.boot.actuate.autoconfigure.metrics.web.client.HttpClientMetricsAutoConfiguration`
 
-spring boot 2.x 支持的是 `io.micrometer` 
+spring boot 2.x 支持的是 `io.micrometer`
 
 `EnableSpringBootMetricsCollector` 等 `prometheus` 下的不再支持
 
@@ -25,7 +25,7 @@ management.endpoints.web.exposure.include=*
   static_configs:
     - targets:
       - host.docker.internal:8081
-      
+
 #### Grafana Dashboard 配置
 
 如 [6756](https://grafana.com/grafana/dashboards/6756)
@@ -35,7 +35,7 @@ management.endpoints.web.exposure.include=*
 Dashboard Setting -> Variables，选择相应的变量进行修改，这里修改两个：application 和 instance
 
 - label_values(application)
-- label_values(jvm_memory_used_bytes{application="$application"},instance) 
+- label_values(jvm_memory_used_bytes{application="$application"},instance)
 
 
 ---
@@ -95,7 +95,7 @@ Gauge 关注的度量统计角度是VALUE(值)，它的构建方法中依赖于�
 		//全局静态方法，返回值竟然是依赖值，有点奇怪，暂时不选用
 		Metrics.addRegistry(new SimpleMeterRegistry());
 		AtomicInteger other = Metrics.gauge("gauge", atomicInteger, AtomicInteger::get);
-		
+
 ```
 ###Timer
 Timer(计时器)同时测量一个特定的代码逻辑块的调用(执行)速度和它的时间分布。简单来说，就是在调用结束的时间点记录整个调用块执行的总时间，适用于测量短时间执行的事件的耗时分布，例如消息队列消息的消费速率。
@@ -145,7 +145,8 @@ Summary的度量统计角度主要包括记录过的数据中的`最大值`、`�
 
 - count，事件的个数，聚合指标，如响应的个数
 - sum，综合，聚合指标，如响应大小的综合
-- histogram，分布，聚合指标，包含le标签用于区分bucket，例如web.response.size.historgram{le=512} = 99,表示响应大小不超过512（Byte)的响应个数是99个。一般有多个bucket，如le=128，le=256，le=512，le=1024,le=+Inf等。 
+- histogram，分布，聚合指标，包含le标签用于区分bucket，例如web.response.size.historgram{le=512} =
+  99,表示响应大小不超过512（Byte)的响应个数是99个。一般有多个bucket，如le=128，le=256，le=512，le=1024,le=+Inf等。
 
 每个bucket展示为一条时间序列，会得到类似下面的图。
 

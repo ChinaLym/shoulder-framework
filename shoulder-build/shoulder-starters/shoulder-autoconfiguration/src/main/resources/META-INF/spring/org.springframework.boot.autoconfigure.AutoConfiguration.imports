@@ -3,6 +3,7 @@ org.shoulder.autoconfigure.core.current.DelayTaskAutoConfiguration
 org.shoulder.autoconfigure.core.current.enhancer.ThreadEnhancerConfiguration
 org.shoulder.autoconfigure.core.current.enhancer.EnhanceableAsyncCustomAutoConfiguration
 org.shoulder.autoconfigure.core.current.enhancer.EnhanceableAsyncDefaultAutoConfiguration
+org.shoulder.autoconfigure.core.CacheAutoConfiguration
 org.shoulder.autoconfigure.core.ContextUtilsAutoConfiguration
 org.shoulder.autoconfigure.core.I18nAutoConfiguration
 org.shoulder.autoconfigure.core.JacksonAutoConfiguration

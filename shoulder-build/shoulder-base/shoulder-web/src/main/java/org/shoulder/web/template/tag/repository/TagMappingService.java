@@ -1,8 +1,8 @@
 package org.shoulder.web.template.tag.repository;
 
 import org.shoulder.data.mybatis.template.service.BaseCacheableServiceImpl;
-import org.shoulder.web.template.tag.dao.TagMappingMapper;
-import org.shoulder.web.template.tag.entity.TagMappingEntity;
+import org.shoulder.web.template.tag.mapper.TagMappingMapper;
+import org.shoulder.web.template.tag.model.TagMappingEntity;
 
 /**
  * TagService

@@ -6,7 +6,7 @@ package org.shoulder.web.template.tag.converter;
 
 import org.shoulder.web.template.crud.AbstractVODataConverter;
 import org.shoulder.web.template.tag.dto.TagDTO;
-import org.shoulder.web.template.tag.entity.TagEntity;
+import org.shoulder.web.template.tag.model.TagEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;

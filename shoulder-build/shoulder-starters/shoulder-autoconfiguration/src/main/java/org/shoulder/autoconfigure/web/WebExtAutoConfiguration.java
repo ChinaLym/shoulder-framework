@@ -8,10 +8,10 @@ import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.converter.ShoulderGenericConversionServiceImpl;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.ConvertUtil;
-import org.shoulder.web.template.dictionary.DictionaryController;
-import org.shoulder.web.template.dictionary.DictionaryEnumController;
-import org.shoulder.web.template.dictionary.DictionaryItemController;
-import org.shoulder.web.template.dictionary.DictionaryItemEnumController;
+import org.shoulder.web.template.dictionary.controller.DictionaryController;
+import org.shoulder.web.template.dictionary.controller.DictionaryEnumController;
+import org.shoulder.web.template.dictionary.controller.DictionaryItemController;
+import org.shoulder.web.template.dictionary.controller.DictionaryItemEnumController;
 import org.shoulder.web.template.dictionary.convert.DictionaryItemDTO2DomainConverterRegister;
 import org.shoulder.web.template.dictionary.convert.DictionaryItemDomain2DTOConverter;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
@@ -59,7 +59,7 @@ public class WebExtAutoConfiguration {
     @AutoConfiguration(after = { I18nAutoConfiguration.class })
     @ConditionalOnClass(value = { TagController .class })
     @EnableConfigurationProperties(WebExProperties.class)
-    @ConditionalOnProperty(value = "web.ext.tag.enable", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(value = "shoulder.web.ext.tag.enable", havingValue = "true", matchIfMissing = false)
     public static class ExtTagAutoConfiguration {
 
         @Bean
@@ -85,7 +85,7 @@ public class WebExtAutoConfiguration {
     @AutoConfiguration(after = { I18nAutoConfiguration.class })
     @ConditionalOnClass(value = { DictionaryEnumStore.class })
     @EnableConfigurationProperties(WebExProperties.class)
-    @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "enum", matchIfMissing = true)
+    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.storageType", havingValue = "enum", matchIfMissing = true)
     public static class BaseOnEnumDictionaryConfiguration {
 
         /**
@@ -134,7 +134,7 @@ public class WebExtAutoConfiguration {
 
     /*@Configuration
     @ConditionalOnClass(value = {BaseServiceImpl.class})
-    @ConditionalOnProperty(value = "web.ext.dictionary.storageType", havingValue = "db")
+    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.storageType", havingValue = "db")
     public static class BaseOnDbDictionaryConfiguration {
 
         @Bean

@@ -14,7 +14,8 @@ import java.util.List;
  * @param <ENTITY> Entity
  * @author lym
  */
-public interface BaseMapper<ENTITY extends BaseEntity<? extends Serializable>> extends com.baomidou.mybatisplus.core.mapper.BaseMapper<ENTITY> {
+public interface BaseMapper<ENTITY extends BaseEntity<? extends Serializable>>
+        extends com.baomidou.mybatisplus.core.mapper.BaseMapper<ENTITY> {
 
 
     /**
