@@ -27,14 +27,14 @@ public class TagEntity extends BizEntity<Long> {
     /**
      * 业务类型
      */
-    @TableField("biz_type")
-    private String bizType;
+    @TableField("type")
+    private String type;
 
     /**
      * 域
      */
-    @TableField("domain")
-    private String domain;
+    @TableField("tenant")
+    private String tenant;
 
     /**
      * 名称
@@ -59,12 +59,6 @@ public class TagEntity extends BizEntity<Long> {
      */
     @TableField("order")
     private Integer order;
-
-    /**
-     * 描述
-     */
-    @TableField("description")
-    private String description;
 
     /**
      * 来源

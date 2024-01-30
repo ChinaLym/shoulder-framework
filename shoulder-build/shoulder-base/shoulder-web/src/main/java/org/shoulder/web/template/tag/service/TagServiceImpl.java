@@ -120,7 +120,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     @Override
     public List<TagEntity> searchTagByBizTypeAndName(String type, String searchContent) {
         return tagRepository.lambdaQuery()
-                .eq(TagEntity::getBizType, type)
+                .eq(TagEntity::getType, type)
                 .likeRight(TagEntity::getName, searchContent)
                 .last("limit 50")
                 .list();
@@ -142,7 +142,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     @Override
     public TagEntity queryTagByBizTypeAndName(String bizType, String name) {
         List<TagEntity> tagEntityList = tagRepository.lambdaQuery()
-                .eq(TagEntity::getBizType, bizType)
+                .eq(TagEntity::getType, bizType)
                 .eq(TagEntity::getName, name)
                 //.last("limit 50")
                 .list();
@@ -152,7 +152,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     @Override
     public List<TagEntity> queryTagByBizTypeAndNameList(String bizType, List<String> nameList) {
         return tagRepository.lambdaQuery()
-                .eq(TagEntity::getBizType, bizType)
+                .eq(TagEntity::getType, bizType)
                 .in(TagEntity::getName, nameList)
                 //.last("limit 50")
                 .list();
@@ -286,7 +286,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
                 .filter(name -> !existTagNameSet.contains(name))
                 .map(n -> {
                     TagEntity t = new TagEntity();
-                    t.setBizType(bizType);
+                    t.setType(bizType);
                     t.setName(n);
                     return t;
                 }).collect(Collectors.toList());

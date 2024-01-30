@@ -153,7 +153,7 @@ public interface TagCoreService {
         for (TagEntity tag : tagList1) {
             boolean existInTagList2 = false;
             for (TagEntity tag2 : tagList2) {
-                if (StringUtils.equals(tag.getBizType(), tag2.getBizType()) && StringUtils.equals(tag.getName(), tag2.getName())) {
+                if (StringUtils.equals(tag.getType(), tag2.getType()) && StringUtils.equals(tag.getName(), tag2.getName())) {
                     existInTagList2 = true;
                 }
             }
