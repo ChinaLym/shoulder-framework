@@ -45,7 +45,7 @@ public class BizTreeEntity<ID extends Serializable> extends TreeEntity<ID> imple
     /**
      * 描述
      */
-    @Version
+    @TableField("description")
     private String description;
 
 }

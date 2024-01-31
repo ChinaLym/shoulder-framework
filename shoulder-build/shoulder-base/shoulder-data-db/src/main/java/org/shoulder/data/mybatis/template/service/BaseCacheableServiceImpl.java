@@ -5,24 +5,33 @@ import cn.hutool.core.convert.Convert;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.*;
+import com.baomidou.mybatisplus.core.toolkit.Assert;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.session.SqlSession;
 import org.shoulder.core.cache.Cache;
+import org.shoulder.core.cache.CacheDecorate;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -43,13 +52,17 @@ public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>
 
     // 选择特定的 Cache，便于管理 key格式 / 缓存有效时长
 
-    @Lazy
-    @Autowired(required = false)
     protected Cache cache;
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
-        aa
+        // 获取cache 入股没有 cache则降级缓存
+        try {
+            cache = event.getApplicationContext().getBean(Cache.class);
+        } catch (Exception e) {
+            cache = new CacheDecorate(new ConcurrentMapCache("cacheService_" + getClass().getName()));
+            log.warn("No cache bean, fail back to memory: " + getClass().getName());
+        }
     }
 
     /**

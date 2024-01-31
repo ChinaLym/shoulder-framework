@@ -7,7 +7,6 @@ package org.shoulder.web.template.tag.converter;
 import org.shoulder.web.template.crud.AbstractVODataConverter;
 import org.shoulder.web.template.tag.dto.TagDTO;
 import org.shoulder.web.template.tag.model.TagEntity;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 
@@ -16,7 +15,6 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-@Service
 public class TagDTO2DomainConverter extends AbstractVODataConverter<TagDTO, TagEntity> {
 
     @Override

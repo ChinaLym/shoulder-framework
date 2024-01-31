@@ -58,8 +58,8 @@ public class TagEntity extends BizEntity<Long> {
     /**
      * 描述
      */
-    @TableField("order")
-    private Integer order;
+    @TableField("display_order")
+    private Integer displayOrder;
 
     /**
      * 来源

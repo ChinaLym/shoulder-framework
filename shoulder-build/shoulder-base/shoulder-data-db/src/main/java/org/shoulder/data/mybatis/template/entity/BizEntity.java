@@ -38,7 +38,7 @@ public class BizEntity<ID extends Serializable> extends LogicDeleteEntity<ID> {
     /**
      * 描述
      */
-    @Version
+    @TableField("description")
     private String description;
 
     public BizEntity() {

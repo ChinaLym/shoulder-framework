@@ -23,6 +23,8 @@ import org.shoulder.web.template.tag.converter.TagDTO2DomainConverter;
 import org.shoulder.web.template.tag.converter.TagDomain2DTOConverter;
 import org.shoulder.web.template.tag.repository.TagMappingService;
 import org.shoulder.web.template.tag.repository.TagRepository;
+import org.shoulder.web.template.tag.service.TagCoreService;
+import org.shoulder.web.template.tag.service.TagServiceImpl;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -78,12 +80,6 @@ public class WebExtAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean(value = TagController.class)
-        public TagCrudController tagCrudController() {
-            return new TagCrudController();
-        }
-
-        @Bean
         @ConditionalOnMissingBean(value = TagMappingService.class)
         public TagMappingService tagMappingService() {
             return new TagMappingService();
@@ -94,6 +90,18 @@ public class WebExtAutoConfiguration {
         public TagRepository tagRepository() {
             return new TagRepository();
         }
+        @Bean
+        @ConditionalOnMissingBean(value = TagCoreService.class)
+        public TagCoreService tagCoreService() {
+            return new TagServiceImpl();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(value = TagController.class)
+        public TagCrudController tagCrudController() {
+            return new TagCrudController();
+        }
+
     }
 
     @AutoConfiguration(after = { I18nAutoConfiguration.class })
