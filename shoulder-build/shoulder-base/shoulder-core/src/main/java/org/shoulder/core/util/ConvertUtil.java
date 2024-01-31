@@ -2,7 +2,7 @@ package org.shoulder.core.util;
 
 import jakarta.annotation.Nullable;
 import org.shoulder.core.converter.ShoulderConversionService;
-import org.shoulder.core.converter.ShoulderGenericConversionServiceImpl;
+import org.shoulder.core.converter.ShoulderConversionServiceImpl;
 import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.Converter;
@@ -24,7 +24,7 @@ public class ConvertUtil {
      */
     public static final String ISO_DATE_FORMAT = "iso";
 
-    private static volatile ShoulderConversionService CONVERSION_SERVICE = new ShoulderGenericConversionServiceImpl(
+    private static volatile ShoulderConversionService CONVERSION_SERVICE = new ShoulderConversionServiceImpl(
             new DateTimeFormatters()
                     .dateFormat(ISO_DATE_FORMAT)
                     .timeFormat(ISO_DATE_FORMAT)

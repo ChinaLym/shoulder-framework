@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
+import org.shoulder.data.annotation.BizIdSource;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 
@@ -31,6 +32,7 @@ public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID>
      * 字典类型 / 业务类型，关联到 {@link DictionaryEntity}
      */
     @TableField("dictionary_id")
+    @BizIdSource
     ID dictionaryId;
 
     /**
@@ -39,6 +41,7 @@ public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID>
     @NotEmpty(message = "name can't be null")
     @Length(max = 255, message = "name length must less than 255")
     @TableField(value = DataBaseConsts.COLUMN_LABEL, condition = SqlCondition.LIKE)
+    @BizIdSource
     protected String name;
 
     /**

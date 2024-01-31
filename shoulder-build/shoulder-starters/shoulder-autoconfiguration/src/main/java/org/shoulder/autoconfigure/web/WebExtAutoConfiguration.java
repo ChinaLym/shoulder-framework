@@ -6,9 +6,7 @@ import org.shoulder.autoconfigure.core.CacheAutoConfiguration;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.autoconfigure.web.WebExtAutoConfiguration.BaseOnEnumDictionaryConfiguration;
 import org.shoulder.core.converter.ShoulderConversionService;
-import org.shoulder.core.converter.ShoulderGenericConversionServiceImpl;
 import org.shoulder.core.i18.Translator;
-import org.shoulder.core.util.ConvertUtil;
 import org.shoulder.web.template.dictionary.controller.DictionaryController;
 import org.shoulder.web.template.dictionary.controller.DictionaryEnumController;
 import org.shoulder.web.template.dictionary.controller.DictionaryItemController;
@@ -29,14 +27,11 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration.EnableWebMvcConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.convert.ConversionService;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 自动装配 字典 api，用于动态下拉框
@@ -46,19 +41,6 @@ import java.util.Optional;
 @ConditionalOnClass(DictionaryController.class)
 @AutoConfiguration(before = { EnableWebMvcConfiguration.class }, after = { BaseOnEnumDictionaryConfiguration.class })
 public class WebExtAutoConfiguration {
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ShoulderConversionService shoulderConversionService(@Nullable List<ConversionService> conversionServiceList) {
-        DateTimeFormatters dateTimeFormatters = new DateTimeFormatters()
-            .dateFormat(ConvertUtil.ISO_DATE_FORMAT)
-            .timeFormat(ConvertUtil.ISO_DATE_FORMAT)
-            .dateTimeFormat(ConvertUtil.ISO_DATE_FORMAT);
-        ShoulderGenericConversionServiceImpl conversionService = new ShoulderGenericConversionServiceImpl(dateTimeFormatters);
-        Optional.ofNullable(conversionServiceList).ifPresent(l -> l.forEach(conversionService::addConversionService));
-        ConvertUtil.setConversionService(conversionService);
-        return conversionService;
-    }
 
 
     @AutoConfiguration(after = {I18nAutoConfiguration.class, CacheAutoConfiguration.class})
@@ -92,7 +74,7 @@ public class WebExtAutoConfiguration {
         }
         @Bean
         @ConditionalOnMissingBean(value = TagCoreService.class)
-        public TagCoreService tagCoreService() {
+        public TagServiceImpl tagCoreService() {
             return new TagServiceImpl();
         }
 

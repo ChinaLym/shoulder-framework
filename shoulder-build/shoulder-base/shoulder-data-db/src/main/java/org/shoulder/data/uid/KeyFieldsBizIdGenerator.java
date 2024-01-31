@@ -4,8 +4,9 @@ import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ReflectUtil;
 import jakarta.annotation.Nonnull;
 import org.apache.commons.codec.digest.Md5Crypt;
-import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.constant.ByteSpecification;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.data.annotation.BizIdSource;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 
@@ -60,10 +61,8 @@ public class KeyFieldsBizIdGenerator implements BizIdGenerator {
     @Nonnull
     protected List<Object> calculateSource(@Nonnull BizEntity<? extends Serializable> entity,
                                            @Nonnull List<Field> fields) {
-        if (CollectionUtils.isEmpty(fields)) {
-            // there were not any @BizIdSource fields
-            throw new IllegalStateException("key field empty!");
-        }
+        AssertUtils.notEmpty(fields, CommonErrorCodeEnum.CODING, "bizId generate Fail: [" + entity.getClass()
+                                                                 + "] no fields annotated with @BizIdSource, please check code or input bizId!");
         return fields.stream()
                 .map(f -> ReflectUtil.getFieldValue(entity, f))
                 .collect(Collectors.toList());

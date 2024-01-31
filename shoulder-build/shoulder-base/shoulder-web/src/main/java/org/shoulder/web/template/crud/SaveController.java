@@ -53,8 +53,10 @@ public interface SaveController<ENTITY extends BaseEntity<? extends Serializable
         }
         if (entity instanceof BizEntity) {
             BizEntity<? extends Serializable> bizEntity = (BizEntity<? extends Serializable>) entity;
-            String bizId = generateBizId(entity);
-            bizEntity.setBizId(bizId);
+            if(bizEntity.getBizId() == null) {
+                String bizId = generateBizId(entity);
+                bizEntity.setBizId(bizId);
+            }
             ENTITY dataInDb = getService().lockByBizId(bizEntity.getBizId());
             // 数据不存在
             AssertUtils.isNull(dataInDb, DataErrorCodeEnum.DATA_ALREADY_EXISTS);

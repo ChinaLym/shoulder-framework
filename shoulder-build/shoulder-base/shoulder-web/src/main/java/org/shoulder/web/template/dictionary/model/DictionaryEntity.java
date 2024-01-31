@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.shoulder.data.annotation.BizIdSource;
 import org.shoulder.data.mybatis.template.entity.BizTreeEntity;
 
 import java.io.Serializable;
@@ -24,6 +25,13 @@ import java.io.Serializable;
 public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID> implements Dictionary {
 
     /**
+     * 字典编码
+     */
+    @TableField("code")
+    @BizIdSource
+    private String code;
+
+    /**
      * 展示名称
      */
     @TableField("display_name")
@@ -36,7 +44,7 @@ public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID>
 
     @Override
     public String getDictionaryCode() {
-        return getBizId();
+        return code;
     }
 
     /*@Override

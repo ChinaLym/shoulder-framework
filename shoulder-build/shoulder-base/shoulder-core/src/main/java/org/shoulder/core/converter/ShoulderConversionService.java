@@ -1,5 +1,6 @@
 package org.shoulder.core.converter;
 
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 
 import java.util.Collection;
@@ -32,4 +33,5 @@ public interface ShoulderConversionService extends ConfigurableConversionService
      */
     <S, T> List<T> convert(Collection<? extends S> source, Class<T> targetType);
 
+    void addConversionService(ConversionService conversionService);
 }

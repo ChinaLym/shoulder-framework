@@ -9,7 +9,12 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,14 +27,14 @@ import java.util.List;
  *
  * @author lym
  */
-public class ShoulderGenericConversionServiceImpl extends WebConversionService implements ShoulderConversionService {
+public class ShoulderConversionServiceImpl extends WebConversionService implements ShoulderConversionService {
 
     /**
      * 优先级更高的
      */
     private final List<ConversionService> conversionServiceList = new ArrayList<>(3);
 
-    public ShoulderGenericConversionServiceImpl(DateTimeFormatters dateTimeFormatters) {
+    public ShoulderConversionServiceImpl(DateTimeFormatters dateTimeFormatters) {
         super(dateTimeFormatters);
         registerJdk8DateConverters();
     }
@@ -107,6 +112,7 @@ public class ShoulderGenericConversionServiceImpl extends WebConversionService i
         return listResult;
     }
 
+    @Override
     public void addConversionService(ConversionService conversionService) {
         conversionServiceList.add(conversionService);
     }

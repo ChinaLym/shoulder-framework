@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.shoulder.data.annotation.BizIdSource;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -15,6 +16,8 @@ import java.time.LocalDateTime;
  * 可变记录型实体: 带有 id、创建时间、最后修改时间、创建者、最后修改者
  * <p>
  * 索引：biz_id - delete_version - version （加 version 主要是为了 lock for update 时候避免锁表）
+ *
+ * 实现类必须有字段标注{@link BizIdSource}供框架自行生成 {@link BizEntity#bizId}，或创建时自行填写，否则创建时失败
  *
  * @author lym
  */
