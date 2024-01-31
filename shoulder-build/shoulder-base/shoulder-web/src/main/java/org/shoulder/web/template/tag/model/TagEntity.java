@@ -29,7 +29,7 @@ public class TagEntity extends BizEntity<Long> {
     /**
      * 业务类型
      */
-    @TableField("type")
+    @TableField("tag_type")
     @BizIdSource
     private String type;
 
@@ -57,7 +57,7 @@ public class TagEntity extends BizEntity<Long> {
      * display 名称
      */
     @TableField("display_name")
-    private Long displayName;
+    private String displayName;
 
     /**
      * 描述

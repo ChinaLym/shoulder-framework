@@ -14,6 +14,15 @@ public class TagDTO extends ToStringObj {
      * id (long)
      */
     protected String id;
+    /**
+     * bizId
+     */
+    protected String bizId;
+
+    /**
+     * name
+     */
+    protected String name;
 
     /**
      * 创建时间
@@ -42,9 +51,8 @@ public class TagDTO extends ToStringObj {
 
     /**
      * 标签类型
-     * * issue
      */
-    private String bizType;
+    private String type;
 
     /**
      * 展示名称
