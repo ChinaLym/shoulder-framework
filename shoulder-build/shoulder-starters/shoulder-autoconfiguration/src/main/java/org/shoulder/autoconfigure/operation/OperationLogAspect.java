@@ -39,7 +39,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-
+import java.util.Optional;
 
 /**
  * 激活操作日志 OperationLog 注解 AOP
@@ -114,26 +114,37 @@ public class OperationLogAspect {
      * 2. 清除 threadLocal
      */
     @AfterThrowing(throwing = "ex", pointcut = "methodAnnotatedByOperationLog()")
-    public void doAfterThrowing(Throwable ex) {
-        if (OpLogContextHolder.isEnableAutoLog() && OpLogContextHolder.isLogWhenThrow()) {
-            OpLogContextHolder.getLog()
+    public void doAfterThrowing(Throwable ex) throws Throwable {
+        try {
+            if (OpLogContextHolder.isEnableAutoLog() && OpLogContextHolder.isLogWhenThrow()) {
+                OpLogContextHolder.getLog()
                     .setEndTime(Instant.now())
                     .setResultFail();
-            // 默认用第一个 errorReason
-            String[] errorReasons = ex.getMessage().split("\\r");
-            String originReason = errorReasons[errorReasons.length - 1];
-            OpLogContextHolder.getLog()
-                    .setExtField(ExtFields.ERROR_MSG, originReason)
+                // 默认用第一个 errorReason
+                String errorMsg = Optional.of(ex.getMessage())
+                    .map(m -> m.split("\\r"))
+                    .map(msgLines -> msgLines[msgLines.length - 1])
+                    .orElse("");
+                OpLogContextHolder.getLog()
+                    .setExtField(ExtFields.ERROR_MSG, errorMsg)
                     .setExtField(ExtFields.ERROR_TYPE, ex.getClass().getName());
 
-            if (ex instanceof ErrorCode) {
-                OpLogContextHolder.getLog().setErrorCode(((ErrorCode) ex).getCode());
+                if (ex instanceof ErrorCode) {
+                    OpLogContextHolder.getLog().setErrorCode(((ErrorCode) ex).getCode());
+                }
             }
+        } catch (Exception e) {
+            // 打印 info 日志：继续抛出原始异常，不阻断使用者的异常处理等逻辑，操作日志记录
+            log.info("OperationLogAspect.doAfterThrowing process fail! Drop current operationLog! error ", e);
+            OpLogContextHolder.getLog()
+                .setExtField(ExtFields.ERROR_MSG, "UNKNOWN_OperationLogAspect#doAfterThrowing PROCESS FAIL!")
+                .setExtField(ExtFields.ERROR_TYPE, ex.getClass().getName());
+            throw ex;
+        } finally {
+            // 恢复之前的上下文
+            popLastContext();
             OpLogContextHolder.log();
         }
-
-        // 恢复之前的上下文
-        popLastContext();
     }
 
     // ************************************* 私有方法 ***********************************

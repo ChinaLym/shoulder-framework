@@ -72,7 +72,7 @@ public interface FakerMapper<ENTITY extends BaseEntity<? extends Serializable>> 
     }
 
     @Override
-    default List<ENTITY> selectBatchBizIds(Collection<String> bizId) {
+    default List<ENTITY> selectBatchByBizIds(Collection<String> bizId) {
         throw createNotSupportException();
     }
 

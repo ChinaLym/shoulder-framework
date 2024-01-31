@@ -85,7 +85,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
      */
     default ENTITY lockByBizId(String bizId) {
         checkEntityAs(BizEntity.class);
-        return getBaseMapper().selectForUpdateById((bizId));
+        return getBaseMapper().selectForUpdateByBizId(bizId);
     }
 
 
@@ -325,7 +325,9 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
      */
     @SuppressWarnings("unchecked")
     default boolean updateBatchByBizId(Collection<? extends ENTITY> entityList, int batchSize) {
-        return updateBatchById((Collection<ENTITY>) entityList, batchSize);
+        // todo fxime
+        throw new RuntimeException();
+        //return updateBatchByBizId((Collection<ENTITY>) entityList, batchSize);
     }
 
     /**
@@ -354,7 +356,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
      */
     default List<ENTITY> listByBizIds(Collection<String> bizIdList) {
         checkEntityAs(BizEntity.class);
-        return getBaseMapper().selectBatchBizIds(bizIdList);
+        return getBaseMapper().selectBatchByBizIds(bizIdList);
     }
 
     /**

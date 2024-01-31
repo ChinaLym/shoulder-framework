@@ -12,8 +12,10 @@ import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.uid.EntityIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.GenericTypeResolver;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * 当基础字段为空时（创建时间、更新时间等）自动填充
@@ -87,7 +89,14 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
             return;
         }
         // 否则新建一个 set 上
-        Class<?> idType = ReflectUtil.getField(metaObject.getOriginalObject().getClass(), idFieldName).getType();
+        Class<?> actuallyClass = metaObject.getOriginalObject().getClass();
+        Class<?> idType = null;
+        if(BaseEntity.class.isAssignableFrom(actuallyClass)) {
+            idType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(actuallyClass, BaseEntity.class)).orElseThrow()[0];
+        } else {
+            idType = ReflectUtil.getField(actuallyClass, idFieldName).getType();
+        }
+
         Object newId = entityIdGenerator.genId(metaObject, idType);
         setFieldValByName(idFieldName, newId, metaObject);
     }

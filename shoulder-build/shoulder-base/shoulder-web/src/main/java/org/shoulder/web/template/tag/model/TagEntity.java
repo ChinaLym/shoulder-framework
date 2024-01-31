@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.shoulder.data.annotation.BizIdSource;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 
 import java.util.Map;
@@ -29,18 +30,21 @@ public class TagEntity extends BizEntity<Long> {
      * 业务类型
      */
     @TableField("type")
+    @BizIdSource
     private String type;
 
     /**
      * 域
      */
     @TableField("tenant")
+    @BizIdSource
     private String tenant;
 
     /**
      * 名称
      */
     @TableField("name")
+    @BizIdSource
     private String name;
 
     /**

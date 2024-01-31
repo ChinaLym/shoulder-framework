@@ -32,7 +32,7 @@ public interface BaseMapper<ENTITY extends BaseEntity<? extends Serializable>>
      * @param bizIdList bizId 列表(不能为 null 以及 empty)
      * @return entity
      */
-    List<ENTITY> selectBatchBizIds(@Param(Constants.COLLECTION) Collection<String> bizId);
+    List<ENTITY> selectBatchByBizIds(@Param(Constants.COLLECTION) Collection<String> bizId);
 
 
     /**

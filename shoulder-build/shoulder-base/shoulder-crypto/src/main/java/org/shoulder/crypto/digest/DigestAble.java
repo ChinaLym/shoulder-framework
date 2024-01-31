@@ -25,5 +25,5 @@ public interface DigestAble {
      * @param cipher
      * @return
      */
-    boolean veritfy(byte[] text, byte[] cipher);
+    boolean verify(byte[] text, byte[] cipher);
 }
