@@ -28,7 +28,10 @@ import java.util.stream.Collectors;
  * @param <ID>     主键
  * @author lym
  */
-public interface DeleteController<ENTITY extends BaseEntity<ID>, ID extends Serializable> extends BaseController<ENTITY> {
+public interface DeleteController<
+        ENTITY extends BaseEntity<ID>,
+        ID extends Serializable,
+        UPDATE_RESULT_DTO extends Serializable> extends BaseController<ENTITY> {
 
     /**
      * 删除单个

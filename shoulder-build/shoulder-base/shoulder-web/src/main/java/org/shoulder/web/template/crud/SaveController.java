@@ -30,7 +30,10 @@ import java.io.Serializable;
  * @param <SAVE_DTO> DTO
  * @author lym
  */
-public interface SaveController<ENTITY extends BaseEntity<? extends Serializable>, SAVE_DTO extends Serializable> extends BaseController<ENTITY> {
+public interface SaveController<
+        ENTITY extends BaseEntity<? extends Serializable>,
+        SAVE_DTO extends Serializable,
+        UPDATE_RESULT_DTO extends Serializable> extends BaseController<ENTITY> {
 
     /**
      * 新增

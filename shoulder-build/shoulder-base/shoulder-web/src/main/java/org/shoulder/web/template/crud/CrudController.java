@@ -33,9 +33,9 @@ public abstract class CrudController<
     UpdateDTO extends Serializable>
         extends BaseControllerImpl<SERVICE, ENTITY>
         implements
-        SaveController<ENTITY, SaveDTO>,
-        UpdateController<ENTITY, UpdateDTO>,
-        DeleteController<ENTITY, ID>,
+        SaveController<ENTITY, SaveDTO, QueryResultDTO>,
+        UpdateController<ENTITY, UpdateDTO, QueryResultDTO>,
+        DeleteController<ENTITY, ID, QueryResultDTO>,
         QueryController<ENTITY, ID, PageQuery, QueryResultDTO> {
 
     protected Class[] genericClasses = GenericTypeResolver.resolveTypeArguments(getClass(), CrudController.class);

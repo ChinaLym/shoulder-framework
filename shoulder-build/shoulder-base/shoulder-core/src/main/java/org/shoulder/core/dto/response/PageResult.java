@@ -170,6 +170,10 @@ public class PageResult<T> extends ListResult<T> {
             totalFullPage++;
         }
         result.setTotalPageNum(totalFullPage);
+        result.setHasPreviousPage(pageNum > 1);
+        result.setFirstPage(pageNum == 1);
+        result.setLastPage(pageNum == totalFullPage);
+        result.setHasNextPage(pageNum < totalFullPage);
         return result;
     }
 

@@ -1,5 +1,6 @@
 package org.shoulder.web.template.crud;
 
+import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -27,7 +28,10 @@ import java.util.function.Function;
  * @param <UPDATE_DTO> DTO
  * @author lym
  */
-public interface UpdateController<ENTITY extends BaseEntity<? extends Serializable>, UPDATE_DTO extends Serializable> extends BaseController<ENTITY> {
+public interface UpdateController<
+        ENTITY extends BaseEntity<? extends Serializable>,
+        UPDATE_DTO extends Serializable,
+        UPDATE_RESULT_DTO extends Serializable> extends BaseController<ENTITY> {
 
     /**
      * 修改
@@ -40,8 +44,11 @@ public interface UpdateController<ENTITY extends BaseEntity<? extends Serializab
     @PutMapping
     @OperationLog(operation = OperationLog.Operations.UPDATE)
     @Validated(Update.class)
-    default BaseResult<Boolean> update(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
-        return update(dto, getService()::updateById);
+    default BaseResult<UPDATE_RESULT_DTO> update(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
+        ENTITY entity = handleBeforeUpdateAndConvertToEntity(dto);
+        boolean success = update(dto, getService()::updateById);
+        ENTITY updated = getService().getById(entity.getId());
+        return BaseResult.success(handleAfterUpdateAndConvertToDTO(updated));
     }
 
     /**
@@ -56,7 +63,8 @@ public interface UpdateController<ENTITY extends BaseEntity<? extends Serializab
     @OperationLog(operation = OperationLog.Operations.UPDATE)
     @Validated(Update.class)
     default BaseResult<Boolean> updateAll(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
-        return update(dto, getService()::updateAllById);
+        boolean updateAll = update(dto, getService()::updateAllById);
+        return BaseResult.success(updateAll);
     }
 
     /**
@@ -66,7 +74,7 @@ public interface UpdateController<ENTITY extends BaseEntity<? extends Serializab
      * @param updateMethod m
      * @return boolean
      */
-    private BaseResult<Boolean> update(UPDATE_DTO dto, Function<ENTITY, Boolean> updateMethod) {
+    private boolean update(UPDATE_DTO dto, Function<ENTITY, Boolean> updateMethod) {
         ENTITY entity = handleBeforeUpdateAndConvertToEntity(dto);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             if (entity != null) {
@@ -74,7 +82,7 @@ public interface UpdateController<ENTITY extends BaseEntity<? extends Serializab
             }
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
-        return BaseResult.success(updateMethod.apply(entity));
+        return updateMethod.apply(entity);
     }
 
     /**
@@ -87,5 +95,21 @@ public interface UpdateController<ENTITY extends BaseEntity<? extends Serializab
     @SuppressWarnings("unchecked")
     default ENTITY handleBeforeUpdateAndConvertToEntity(UPDATE_DTO dto) {
         return getConversionService().convert(dto, getEntityClass());
+    }
+
+    /**
+     * 更新前扩展点（模型转换）
+     * 直接强转
+     *
+     * @param dto DTO
+     * @return entity
+     */
+    @SuppressWarnings("unchecked")
+    default UPDATE_RESULT_DTO handleAfterUpdateAndConvertToDTO(ENTITY entity) {
+        return getConversionService().convert(entity, getUpdateResultDtoClass());
+    }
+
+    default Class<UPDATE_RESULT_DTO> getUpdateResultDtoClass() {
+        return (Class<UPDATE_RESULT_DTO>) GenericTypeUtils.resolveTypeArguments(this.getClass(), UpdateController.class)[2];
     }
 }
