@@ -7,6 +7,8 @@ import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 分页数据
@@ -137,19 +139,34 @@ public class PageResult<T> extends ListResult<T> {
         this.hasNextPage = hasNextPage;
     }
 
+    public <R> PageResult<R> convertTo(Function<T, R> converter) {
+        PageResult<R> result = new PageResult<>();
+        result.setList(getList().stream().map(converter).collect(Collectors.toList()));
+        result.setPageNum(getPageNum());
+        result.setPageSize(getPageSize());
+        result.setTotal(getTotal());
+        result.setSize(getSize());
+        result.setTotalPageNum(getTotalPageNum());
+        result.setFirstPage(getFirstPage());
+        result.setLastPage(getLastPage());
+        result.setHasPreviousPage(getHasPreviousPage());
+        result.setHasNextPage(getHasNextPage());
+        return result;
+    }
+
     public static PageResultBuilder builder() {
         return new PageResultBuilder();
     }
 
 
-    public static <T> PageResult<T> build(List<T> list, int pageNum, int pageSize, long totalCount) {
+    public static <T> PageResult<T> build(List<T> list, int pageNum, int pageSize, long total) {
         PageResult<T> result = new PageResult<>();
         result.setList(list);
         result.setPageNum(pageNum);
         result.setPageSize(pageSize);
-        result.setTotal(totalCount);
-        int totalFullPage = (int) (totalCount / pageSize);
-        if (totalCount % pageSize != 0) {
+        result.setTotal(total);
+        int totalFullPage = (int) (total / pageSize);
+        if (total % pageSize != 0) {
             totalFullPage++;
         }
         result.setTotalPageNum(totalFullPage);

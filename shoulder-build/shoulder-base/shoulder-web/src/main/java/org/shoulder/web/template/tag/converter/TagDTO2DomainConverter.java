@@ -21,11 +21,15 @@ public class TagDTO2DomainConverter extends AbstractVODataConverter<TagDTO, TagE
     public void doConvert(@Nonnull TagDTO sourceModel, @Nonnull TagEntity targetModel) {
         //date version creator 不转换
         targetModel.setId(conversionService.convert(sourceModel.getId(), Long.class));
+        targetModel.setVersion(sourceModel.getVersion());
+        targetModel.setTenant(sourceModel.getTenant());
+        targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
         targetModel.setBizId(sourceModel.getBizId());
         targetModel.setName(sourceModel.getName());
         targetModel.setType(sourceModel.getType());
         targetModel.setDisplayName(sourceModel.getDisplayName());
         targetModel.setIcon(sourceModel.getIcon());
+        targetModel.setSource(sourceModel.getSource());
         targetModel.setDescription(sourceModel.getDescription());
     }
 

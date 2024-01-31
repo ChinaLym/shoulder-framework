@@ -5,7 +5,6 @@ import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseCacheableService;
 import org.shoulder.log.operation.annotation.OperationLog;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.Serializable;
@@ -29,14 +28,15 @@ public abstract class CrudCacheableController<
     /**
      * 查询
      *
+     *  todo 处理缓存失效策略
      * @param id 主键id
      * @return 查询结果
      */
-    @Override
-    @OperationLog(operation = OperationLog.Operations.QUERY)
-    public BaseResult<ENTITY> get(@PathVariable ID id) {
-        return BaseResult.success(service.getByIdFromCache(id));
-    }
+//    @Override
+//    @OperationLog(operation = OperationLog.Operations.QUERY)
+//    public BaseResult<QueryResultDTO> get(@PathVariable ID id) {
+//        return BaseResult.success(convertEntityToQueryResult(service.getByIdFromCache(id)));
+//    }
 
 
     /**

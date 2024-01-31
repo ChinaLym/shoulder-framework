@@ -51,4 +51,7 @@ public class BizTreeEntity<ID extends Serializable> extends TreeEntity<ID> imple
     @TableField("description")
     private String description;
 
+    public String generateBizId() {
+        return null;
+    }
 }

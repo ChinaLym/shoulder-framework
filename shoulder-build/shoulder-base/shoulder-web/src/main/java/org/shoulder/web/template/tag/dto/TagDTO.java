@@ -17,6 +17,10 @@ public class TagDTO extends ToStringObj {
     /**
      * bizId
      */
+    protected String tenant;
+    /**
+     * bizId
+     */
     protected String bizId;
 
     /**
@@ -61,13 +65,28 @@ public class TagDTO extends ToStringObj {
     private String displayName;
 
     /**
+     * 展示顺序
+     */
+    private Integer displayOrder;
+
+    /**
      * 图标
      */
     private String icon;
 
     /**
+     * 来源
+     */
+    private String source;
+
+    /**
      * 描述
      */
     private String description;
+
+    /**
+     * 数据版本
+     */
+    private Long deleteVersion;
 }
 

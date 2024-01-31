@@ -23,6 +23,9 @@ import java.io.Serializable;
 /**
  * 新增 API
  *
+ * 暴露以下接口：
+ * POST /    新建一个，可根据 bizId 或 biz源字段自动幂等
+ *
  * @param <ENTITY>   实体
  * @param <SAVE_DTO> DTO
  * @author lym
@@ -41,19 +44,17 @@ public interface SaveController<ENTITY extends BaseEntity<? extends Serializable
     @OperationLog(operation = OperationLog.Operations.CREATE)
     @Validated(Create.class)
     default BaseResult<Void> save(@OperationLogParam @RequestBody @Valid @NotNull SAVE_DTO dto) {
-        ENTITY entity = handleBeforeSave(dto);
+        ENTITY entity = handleBeforeSaveAndConvertToEntity(dto);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             if (entity != null) {
                 OpLogContextHolder.setOperableObject(entity);
             }
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
-        if (entity == null) {
-            AssertUtils.notNull(entity, CommonErrorCodeEnum.UNKNOWN);
-        }
+        AssertUtils.notNull(entity, CommonErrorCodeEnum.ILLEGAL_PARAM);
         if (entity instanceof BizEntity) {
             BizEntity<? extends Serializable> bizEntity = (BizEntity<? extends Serializable>) entity;
-            if(bizEntity.getBizId() == null) {
+            if (bizEntity.getBizId() == null) {
                 String bizId = generateBizId(entity);
                 bizEntity.setBizId(bizId);
             }
@@ -74,7 +75,7 @@ public interface SaveController<ENTITY extends BaseEntity<? extends Serializable
      * @return entity
      */
     @SuppressWarnings("unchecked")
-    default ENTITY handleBeforeSave(SAVE_DTO dto) {
+    default ENTITY handleBeforeSaveAndConvertToEntity(SAVE_DTO dto) {
         return getConversionService().convert(dto, getEntityClass());
     }
 

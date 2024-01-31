@@ -20,6 +20,10 @@ import java.util.stream.Collectors;
 /**
  * 删除 API
  *
+ * 暴露以下接口：
+ * DELETE /{id}  根据 id 删除单个
+ * DELETE /      根据 idList 删除多个
+ *
  * @param <ENTITY> 实体
  * @param <ID>     主键
  * @author lym

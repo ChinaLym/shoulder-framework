@@ -19,6 +19,9 @@ import java.util.function.Function;
 
 /**
  * 修改 API
+ * 暴露以下接口：
+ * PUT /      更新单个 byId
+ * PUT /all   条件更新
  *
  * @param <ENTITY>     实体
  * @param <UPDATE_DTO> DTO
@@ -64,7 +67,7 @@ public interface UpdateController<ENTITY extends BaseEntity<? extends Serializab
      * @return boolean
      */
     private BaseResult<Boolean> update(UPDATE_DTO dto, Function<ENTITY, Boolean> updateMethod) {
-        ENTITY entity = handleBeforeUpdate(dto);
+        ENTITY entity = handleBeforeUpdateAndConvertToEntity(dto);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             if (entity != null) {
                 OpLogContextHolder.setOperableObject(entity);
@@ -82,7 +85,7 @@ public interface UpdateController<ENTITY extends BaseEntity<? extends Serializab
      * @return entity
      */
     @SuppressWarnings("unchecked")
-    default ENTITY handleBeforeUpdate(UPDATE_DTO dto) {
+    default ENTITY handleBeforeUpdateAndConvertToEntity(UPDATE_DTO dto) {
         return getConversionService().convert(dto, getEntityClass());
     }
 }

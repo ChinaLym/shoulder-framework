@@ -44,6 +44,7 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         fillDateAndModifier(metaObject, DataBaseConsts.FIELD_CREATE_TIME, DataBaseConsts.FIELD_CREATOR);
+        fillDateAndModifier(metaObject, DataBaseConsts.FIELD_UPDATE_TIME, DataBaseConsts.FIELD_MODIFIER);
         fillId(metaObject);
     }
 
@@ -85,10 +86,10 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
         String idFieldName = getIdFieldName(metaObject);
         Object oldId = getFieldValByName(idFieldName, metaObject);
         if (oldId != null) {
-            // id 有值，不管了
+            // id 有值，无需框架赋值
             return;
         }
-        // 否则新建一个 set 上
+        // 否则生成并 set
         Class<?> actuallyClass = metaObject.getOriginalObject().getClass();
         Class<?> idType = null;
         if(BaseEntity.class.isAssignableFrom(actuallyClass)) {

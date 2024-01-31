@@ -25,7 +25,7 @@ public class Entity<ID extends Serializable> extends BaseEntity<ID> {
     @TableField(value = DataBaseConsts.COLUMN_CREATOR, fill = FieldFill.INSERT)
     protected Long creator;
 
-    @TableField(value = DataBaseConsts.COLUMN_MODIFIER, fill = FieldFill.UPDATE)
+    @TableField(value = DataBaseConsts.COLUMN_MODIFIER, fill = FieldFill.INSERT_UPDATE)
     protected Long modifier;
 
     public Entity() {

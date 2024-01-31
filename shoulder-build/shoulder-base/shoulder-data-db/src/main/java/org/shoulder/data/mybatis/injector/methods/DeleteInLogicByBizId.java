@@ -30,9 +30,6 @@ public class DeleteInLogicByBizId extends AbstractDeleteInLogicMethod {
         return BizEntity.class.isAssignableFrom(modelClass);
     }
 
-    /**
-     * 这里未加 and version=version
-     */
     @Override
     protected String genWhereSql(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         return "biz_id=#{bizId} AND delete_version=0";

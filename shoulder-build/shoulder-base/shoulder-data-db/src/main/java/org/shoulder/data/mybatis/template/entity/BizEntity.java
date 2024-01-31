@@ -33,7 +33,7 @@ public class BizEntity<ID extends Serializable> extends LogicDeleteEntity<ID> {
     private String bizId;
 
     /**
-     * 版本号
+     * 版本号 todo 没效果？
      */
     @Version
     private Integer version;
@@ -56,4 +56,7 @@ public class BizEntity<ID extends Serializable> extends LogicDeleteEntity<ID> {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
+    public String generateBizId() {
+        return null;
+    }
 }

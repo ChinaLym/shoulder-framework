@@ -40,7 +40,7 @@ public class BaseEntity<ID extends Serializable> implements Operable, Serializab
     @TableField(value = DataBaseConsts.COLUMN_CREATE_TIME, fill = FieldFill.INSERT)
     protected LocalDateTime createTime;
 
-    @TableField(value = DataBaseConsts.COLUMN_UPDATE_TIME, fill = FieldFill.UPDATE)
+    @TableField(value = DataBaseConsts.COLUMN_UPDATE_TIME, fill = FieldFill.INSERT_UPDATE)
     protected LocalDateTime updateTime;
 
     @Override
@@ -57,4 +57,5 @@ public class BaseEntity<ID extends Serializable> implements Operable, Serializab
     public String getObjectName() {
         return getObjectId();
     }
+
 }
