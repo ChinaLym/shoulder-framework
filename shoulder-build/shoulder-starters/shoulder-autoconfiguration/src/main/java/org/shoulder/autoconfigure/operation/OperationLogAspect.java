@@ -35,11 +35,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 激活操作日志 OperationLog 注解 AOP
@@ -121,7 +117,7 @@ public class OperationLogAspect {
                     .setEndTime(Instant.now())
                     .setResultFail();
                 // 默认用第一个 errorReason
-                String errorMsg = Optional.of(ex.getMessage())
+                String errorMsg = Optional.ofNullable(ex.getMessage())
                     .map(m -> m.split("\\r"))
                     .map(msgLines -> msgLines[msgLines.length - 1])
                     .orElse("");
