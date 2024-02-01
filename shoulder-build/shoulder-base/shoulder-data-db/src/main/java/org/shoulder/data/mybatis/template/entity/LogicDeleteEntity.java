@@ -1,5 +1,6 @@
 package org.shoulder.data.mybatis.template.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class LogicDeleteEntity<ID extends Serializable> extends Entity<ID> imple
      * 0 未删除
      * n 删除时设置为当前时间戳
      */
-    @TableField("delete_version")
+    @TableField(value = "delete_version", fill = FieldFill.INSERT)
     @TableLogic(value = "0")
     private Long deleteVersion;
 

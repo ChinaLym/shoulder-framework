@@ -6,10 +6,10 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.conditions.AbstractChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
@@ -169,14 +169,11 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
      * @return 结果
      */
     default Wrapper<ENTITY> query(ENTITY entity, Map<String, Object> ext) {
-        if (entity == null) {
-            // todo log
+        QueryChainWrapper<ENTITY> wrapper = query();
+        if (entity != null) {
+            wrapper.setEntity(entity);
         }
         // 后面还可以加字符串，表示需要输出的列名
-        QueryWrapper<ENTITY> wrapper = new QueryWrapper<>(entity);
-        /*Wrapper<ENTITY> wrapper = query()
-                .setEntity(entity)
-                .setEntityClass(getEntityClass());*/
         return query(wrapper, ext, getEntityClass());
     }
 

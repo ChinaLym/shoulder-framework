@@ -1,7 +1,6 @@
 package org.shoulder.data.mybatis.template.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.shoulder.core.model.Operable;
 import org.shoulder.data.constant.DataBaseConsts;
-import org.shoulder.validate.groups.Update;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -34,7 +32,7 @@ public class BaseEntity<ID extends Serializable> implements Operable, Serializab
     private static final long serialVersionUID = -7975111840965852408L;
 
     @TableId(value = DataBaseConsts.COLUMN_ID, type = IdType.INPUT)
-    @NotNull(message = "id can't be null", groups = Update.class)
+//    @NotNull(message = "id can't be null", groups = Update.class)
     protected ID id;
 
     @TableField(value = DataBaseConsts.COLUMN_CREATE_TIME, fill = FieldFill.INSERT)

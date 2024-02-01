@@ -45,7 +45,19 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         fillDateAndModifier(metaObject, DataBaseConsts.FIELD_CREATE_TIME, DataBaseConsts.FIELD_CREATOR);
         fillDateAndModifier(metaObject, DataBaseConsts.FIELD_UPDATE_TIME, DataBaseConsts.FIELD_MODIFIER);
+        fillVersion(metaObject, DataBaseConsts.FIELD_VERSION, DataBaseConsts.FIELD_DELETE_VERSION);
         fillId(metaObject);
+    }
+
+    private void fillVersion(MetaObject metaObject, String fieldVersion, String fieldDeleteVersion) {
+        Object dataVersion = this.getFieldValByName(fieldVersion, metaObject);
+        if (dataVersion == null) {
+            this.setFieldValByName(fieldVersion, 0, metaObject);
+        }
+        Object dataDeleteVersion = this.getFieldValByName(fieldDeleteVersion, metaObject);
+        if (dataDeleteVersion == null) {
+            this.setFieldValByName(fieldDeleteVersion, 0L, metaObject);
+        }
     }
 
     /**

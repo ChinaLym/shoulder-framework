@@ -1,5 +1,6 @@
 package org.shoulder.data.mybatis.template.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Getter;
@@ -28,6 +29,11 @@ public class BizEntity<ID extends Serializable> extends LogicDeleteEntity<ID> {
 
     /**
      * 业务唯一索引键
+     * 是什么：bizId 往往具有特定的业务逻辑含义，如订单号、用户账号、项目编号等。这对用户看到、业务人员理解和操作数据非常直观和便捷。
+     * 跨系统集成：在分布式或微服务架构中，与具体数据库无关且能跨越多个系统
+     * 外部系统关联：在与其他第三方系统进行数据交换使用：业务单据、发票、合同等相关联，具有法律效力或对外可见性。
+     * 预定义规则：可按照特定格式或规则生成，比如按时间序列、地区信息、特定算法等组合而成
+     * 无序增长和不可预测性：id 的往往连续递增的，易暴露业务量大小或记录创建顺序等敏感信息。而 bizId 可设计为不连续或不可预测的，有助于保护一定的业务隐私。
      */
     @TableField("biz_id")
     private String bizId;
@@ -36,6 +42,7 @@ public class BizEntity<ID extends Serializable> extends LogicDeleteEntity<ID> {
      * 版本号 todo 没效果？
      */
     @Version
+    @TableField(value = "version", fill = FieldFill.INSERT)
     private Integer version;
 
     /**

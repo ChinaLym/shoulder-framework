@@ -17,6 +17,8 @@ import java.util.Map;
  * 唯一索引 bizId - deleteVersion
  * 唯一索引 bizType - name
  *
+ * name可能相同，但bizId是url友好的，方便 SEO，比如 name='富裕'  bizId可以是 ‘user_wealth_richer’
+ *
  * @author lym
  */
 @Getter

@@ -189,4 +189,13 @@ public interface DataBaseConsts {
      */
     String FIELD_MODIFIER = "modifier";
 
+    /**
+     * 数据版本号
+     */
+    String FIELD_VERSION = "version";
+
+    /**
+     * 逻辑删除标
+     */
+    String FIELD_DELETE_VERSION = "deleteVersion";
 }
