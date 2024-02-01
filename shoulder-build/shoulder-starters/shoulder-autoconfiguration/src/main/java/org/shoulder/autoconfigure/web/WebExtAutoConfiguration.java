@@ -2,6 +2,7 @@ package org.shoulder.autoconfigure.web;
 
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.mybatis.spring.annotation.MapperScan;
 import org.shoulder.autoconfigure.core.CacheAutoConfiguration;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.autoconfigure.web.WebExtAutoConfiguration.BaseOnEnumDictionaryConfiguration;
@@ -30,6 +31,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration.EnableWebMvcConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 
 import java.util.List;
 
@@ -42,7 +44,7 @@ import java.util.List;
 @AutoConfiguration(before = { EnableWebMvcConfiguration.class }, after = { BaseOnEnumDictionaryConfiguration.class })
 public class WebExtAutoConfiguration {
 
-
+    @MapperScan("org.shoulder.web.template.tag.mapper")
     @AutoConfiguration(after = {I18nAutoConfiguration.class, CacheAutoConfiguration.class})
     @ConditionalOnClass(value = { TagController .class })
     @EnableConfigurationProperties(WebExProperties.class)
@@ -79,6 +81,7 @@ public class WebExtAutoConfiguration {
         }
 
         @Bean
+        @DependsOn({"tagCoreService", "conversionService"})
         @ConditionalOnMissingBean(value = TagController.class)
         public TagCrudController tagCrudController() {
             return new TagCrudController();
