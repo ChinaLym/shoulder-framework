@@ -1,5 +1,6 @@
 package org.shoulder.web.template.crud;
 
+import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -33,7 +34,7 @@ import java.io.Serializable;
 public interface SaveController<
         ENTITY extends BaseEntity<? extends Serializable>,
         SAVE_DTO extends Serializable,
-        UPDATE_RESULT_DTO extends Serializable> extends BaseController<ENTITY> {
+        SAVE_RESULT_DTO extends Serializable> extends BaseController<ENTITY> {
 
     /**
      * 新增
@@ -46,7 +47,7 @@ public interface SaveController<
     @PostMapping
     @OperationLog(operation = OperationLog.Operations.CREATE)
     @Validated(Create.class)
-    default BaseResult<Void> save(@OperationLogParam @RequestBody @Valid @NotNull SAVE_DTO dto) {
+    default BaseResult<SAVE_RESULT_DTO> save(@OperationLogParam @RequestBody @Valid @NotNull SAVE_DTO dto) {
         ENTITY entity = handleBeforeSaveAndConvertToEntity(dto);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             if (entity != null) {
@@ -66,7 +67,7 @@ public interface SaveController<
             AssertUtils.isNull(dataInDb, DataErrorCodeEnum.DATA_ALREADY_EXISTS);
         }
         getService().save(entity);
-        return BaseResult.success();
+        return BaseResult.success(convertEntityToSaveResultDTO(entity));
     }
 
     String generateBizId(ENTITY entity);
@@ -80,6 +81,15 @@ public interface SaveController<
     @SuppressWarnings("unchecked")
     default ENTITY handleBeforeSaveAndConvertToEntity(SAVE_DTO dto) {
         return getConversionService().convert(dto, getEntityClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    default Class<SAVE_RESULT_DTO> getSaveResultDTOClass() {
+        return (Class<SAVE_RESULT_DTO>) GenericTypeUtils.resolveTypeArguments(this.getClass(), SaveController.class)[2];
+    }
+
+    default SAVE_RESULT_DTO convertEntityToSaveResultDTO(ENTITY entity) {
+        return getConversionService().convert(entity, getSaveResultDTOClass());
     }
 
 }
