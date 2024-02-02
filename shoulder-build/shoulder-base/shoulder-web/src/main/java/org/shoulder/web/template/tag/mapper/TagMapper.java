@@ -23,6 +23,6 @@ public interface TagMapper extends BaseMapper<TagEntity> {
 
     List<String> searchByTagIds(List<List<Long>> ids);
 
-    @Update("SELECT * FROM tb_tag WHERE biz_type = #{bizType} and name IN #{tagNameList} FOR UPDATE")
-    List<TagEntity> lockByTypeAndNameList(String bizType, List<String> tagNameList);
+    @Update("SELECT * FROM tb_tag WHERE type = #{type} and name IN #{tagNameList} FOR UPDATE")
+    List<TagEntity> lockByTypeAndNameList(String type, List<String> tagNameList);
 }

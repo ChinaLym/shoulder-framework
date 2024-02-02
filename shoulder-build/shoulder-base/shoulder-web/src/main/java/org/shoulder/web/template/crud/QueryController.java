@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Range;
 import org.shoulder.core.dto.request.BasePageQuery;
 import org.shoulder.core.dto.request.PageQuery;
 import org.shoulder.core.dto.response.BaseResult;
@@ -18,10 +20,7 @@ import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -98,14 +97,15 @@ public interface QueryController<
     @ApiOperation(value = "批量查询", notes = "批量查询")
     @PostMapping("/listAll")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<ListResult<QueryResultDTO>> listAll(@OperationLogParam @RequestBody ENTITY data) {
+    default BaseResult<ListResult<QueryResultDTO>> listAll(@OperationLogParam @RequestBody ENTITY data,
+                                                           @OperationLogParam @NotNull @RequestParam @Range(min = 1, max = 1000) Integer limit) {
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             if (data != null) {
                 OpLogContextHolder.setOperableObject((Operable) data);
             }
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
-        List<ENTITY> entityList = getService().list(data);
+        List<ENTITY> entityList = getService().list(data, limit);
         List<QueryResultDTO> dtoList = getConversionService().convert((Collection<ENTITY>) entityList, getQueryDtoClass());
         return BaseResult.success(dtoList);
     }

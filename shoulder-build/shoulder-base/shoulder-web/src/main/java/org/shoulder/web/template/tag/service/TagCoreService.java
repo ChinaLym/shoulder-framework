@@ -105,13 +105,13 @@ public interface TagCoreService {
      *
      * @param refType 需要添加标签的记录存储类型
      * @param oid   需要添加标签的记录的标识 long / String
-     * @param bizType bizType
+     * @param type type
      * @param tagName 需要添加的标签(最好不要包含已有的)
      * @return tag
      */
     @Nonnull
-    default TagEntity attachTag(String refType, String oid, String bizType, String tagName) {
-        return attachTags(refType, oid, bizType, Collections.singletonList(tagName)).get(0);
+    default TagEntity attachTag(String refType, String oid, String type, String tagName) {
+        return attachTags(refType, oid, type, Collections.singletonList(tagName)).get(0);
     }
 
     /**

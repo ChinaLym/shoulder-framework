@@ -37,7 +37,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     @Transactional(rollbackFor = Exception.class)
     public boolean createTags(List<TagEntity> tagEntityList) {
         // max 100
-        assert tagEntityList.size() < 100;
+        AssertUtils.isTrue(tagEntityList.size() < 100, DataErrorCodeEnum.DATA_TOO_MUCH);
 
         // 尝试 select for update 这些
         List<String> bizIdList = tagEntityList.stream()
@@ -175,14 +175,14 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     }
 
     @Override
-    public List<TagEntity> attachTags(String refType, String oid, String bizType,
+    public List<TagEntity> attachTags(String refType, String oid, String type,
                                       List<String> tagNameList) {
         if (CollectionUtils.isEmpty(tagNameList)) {
             return new LinkedList<>();
         }
         // 限制一下最多标签数量
         AssertUtils.isTrue(tagNameList.size() < 10, DataErrorCodeEnum.DATA_TOO_MUCH);
-        List<TagEntity> allTags = ensureExistOrCreateTag(bizType, tagNameList);
+        List<TagEntity> allTags = ensureExistOrCreateTag(type, tagNameList);
         attachTags(refType, oid, allTags.stream().map(BaseEntity::getId).collect(Collectors.toList()));
 
         return allTags;
@@ -275,9 +275,9 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         tagRepository.saveBatch(toSaveTagList);
     }
 
-    public List<TagEntity> ensureExistOrCreateTag(String bizType, List<String> tagNameList) {
+    public List<TagEntity> ensureExistOrCreateTag(String type, List<String> tagNameList) {
         AssertUtils.isTrue(tagNameList.size() < 10, DataErrorCodeEnum.DATA_TOO_MUCH);
-        List<TagEntity> existsTags = tagRepository.getBaseMapper().lockByTypeAndNameList(bizType, tagNameList);
+        List<TagEntity> existsTags = tagRepository.getBaseMapper().lockByTypeAndNameList(type, tagNameList);
         Set<String> existTagNameSet = null == existsTags ? new HashSet<>()
                 : new HashSet<>(existsTags.stream().map(TagEntity::getName).collect(Collectors.toSet()));
 
@@ -286,7 +286,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
                 .filter(name -> !existTagNameSet.contains(name))
                 .map(n -> {
                     TagEntity t = new TagEntity();
-                    t.setType(bizType);
+                    t.setType(type);
                     t.setName(n);
                     return t;
                 }).collect(Collectors.toList());

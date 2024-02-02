@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.db.mybatis;
 
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusInnerInterceptorAutoConfiguration;
 import com.baomidou.mybatisplus.core.MybatisPlusVersion;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
@@ -37,7 +38,7 @@ import java.util.StringJoiner;
  *
  * @author lym
  */
-@AutoConfiguration
+@AutoConfiguration(before = MybatisPlusInnerInterceptorAutoConfiguration.class)
 @ConditionalOnClass(MybatisPlusVersion.class)
 @EnableConfigurationProperties(DatabaseProperties.class)
 public class MybatisPlusAutoConfiguration {
@@ -79,7 +80,7 @@ public class MybatisPlusAutoConfiguration {
     @Order(0)
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "tenantMode", havingValue = "COLUMN")
-    public InnerInterceptor tenantLineInnerInterceptor() {
+    public TenantLineInnerInterceptor tenantLineInnerInterceptor() {
         return new TenantLineInnerInterceptor(new TenantLineHandler() {
             @Override
             public String getTenantIdColumn() {
@@ -104,7 +105,7 @@ public class MybatisPlusAutoConfiguration {
     @Bean
     @Order(20)
     @ConditionalOnMissingBean
-    public InnerInterceptor paginationInnerInterceptor() {
+    public PaginationInnerInterceptor paginationInnerInterceptor() {
         // 分页插件
         PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
         // 单页分页条数限制 默认 500 条，-1 不受限制，这里从配置中拿
@@ -122,7 +123,7 @@ public class MybatisPlusAutoConfiguration {
     @Order(80)
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "blockWriteFullTable", havingValue = "true")
-    public InnerInterceptor blockWriteFullTable() {
+    public BlockAttackInnerInterceptor blockWriteFullTable() {
         //防止全表更新与删除插件
         return new BlockAttackInnerInterceptor();
     }
@@ -145,7 +146,7 @@ public class MybatisPlusAutoConfiguration {
     @Order(100)
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "checkSqlPerformance", havingValue = "true")
-    public InnerInterceptor illegalSQLInnerInterceptor() {
+    public IllegalSQLInnerInterceptor illegalSQLInnerInterceptor() {
         // sql性能规范插件
         return new IllegalSQLInnerInterceptor();
     }

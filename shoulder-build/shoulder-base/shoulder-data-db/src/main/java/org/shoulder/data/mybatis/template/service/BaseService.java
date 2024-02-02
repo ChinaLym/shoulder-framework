@@ -40,7 +40,8 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
-public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> extends IService<ENTITY> {
+public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
+        extends IService<ENTITY> {
 
     @Override
     BaseMapper<ENTITY> getBaseMapper();
@@ -142,11 +143,12 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
     /**
      * 列出符合条件的数据
      *
-     * @param example example
+     * @param example  example
+     * @param limitNum 限制查询数量
      * @return 符合条件的数据
      */
-    default List<ENTITY> list(ENTITY example) {
-        return list(example, null);
+    default List<ENTITY> list(ENTITY example, Integer limitNum) {
+        return list(example, null, limitNum);
     }
 
 
@@ -157,8 +159,10 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
      * @param ext     扩展条件
      * @return 符合条件的数据
      */
-    default List<ENTITY> list(ENTITY example, Map<String, Object> ext) {
-        return getBaseMapper().selectList(query(example, ext));
+    default List<ENTITY> list(ENTITY example, Map<String, Object> ext, Integer limitNum) {
+        QueryWrapper<ENTITY> queryWrapper = query(example, ext)
+                .last("limit " + limitNum);
+        return getBaseMapper().selectList(queryWrapper);
     }
 
     /* ======================================= 工具类 ======================================= */
@@ -170,13 +174,10 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
      * @param ext    扩展条件
      * @return 结果
      */
-    default Wrapper<ENTITY> query(ENTITY entity, Map<String, Object> ext) {
+    default QueryWrapper<ENTITY> query(ENTITY entity, Map<String, Object> ext) {
         QueryWrapper<ENTITY> wrapper = new QueryWrapper<>(entity);
-        //if (entity != null) {
-        //    wrapper.setEntity(entity);
-        //}
         // 后面还可以加字符串，表示需要输出的列名
-        return query(wrapper, ext, getEntityClass());
+        return (QueryWrapper<ENTITY>) query(wrapper, ext, getEntityClass());
     }
 
     /**
@@ -312,6 +313,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
         ENTITY dbData = lockByBizId(param.getBizId());
 
         // check version
+        AssertUtils.notNull(dbData, DataErrorCodeEnum.DATA_NOT_EXISTS);
         AssertUtils.equals(param.getVersion(), ((BizEntity) dbData).getVersion(), DataErrorCodeEnum.DATA_VERSION_EXPIRED);
         // remove common fields change
         param.setId(null);

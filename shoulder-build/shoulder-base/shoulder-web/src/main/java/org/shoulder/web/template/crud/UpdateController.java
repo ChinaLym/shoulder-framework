@@ -61,14 +61,14 @@ public interface UpdateController<
      * @param dto 修改DTO
      * @return 修改后的实体数据
      */
-    @ApiOperation(value = "修改所有字段", notes = "修改所有字段，没有传递的字段会被置空")
-    @PutMapping("/all")
-    @OperationLog(operation = OperationLog.Operations.UPDATE)
-    @Validated(Update.class)
-    default BaseResult<Boolean> updateAll(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
-        boolean updateAll = update(dto, getService()::updateAllByBizId);
-        // todo bizId
-        return BaseResult.success(updateAll);
+//    @ApiOperation(value = "修改所有字段", notes = "修改所有字段，没有传递的字段会被置空")
+//    @PutMapping("/all")
+//    @OperationLog(operation = OperationLog.Operations.UPDATE)
+//    @Validated(Update.class)
+    default BaseResult<Void> updateAll(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
+//        boolean updateAll = update(dto, getService()::updateBatchByBizId);
+        // 暂不支持
+        return BaseResult.error(CommonErrorCodeEnum.CODING);
     }
 
     /**
