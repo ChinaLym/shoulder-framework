@@ -8,8 +8,9 @@ import org.shoulder.web.template.crud.AbstractVODataConverter;
 import org.shoulder.web.template.tag.dto.TagDTO;
 import org.shoulder.web.template.tag.model.TagEntity;
 
-import javax.annotation.Nonnull;
 import java.util.Date;
+
+import javax.annotation.Nonnull;
 
 /**
  * Tag domain -> VO
@@ -20,7 +21,7 @@ public class TagDomain2DTOConverter extends AbstractVODataConverter<TagEntity, T
 
     @Override
     public void doConvert(@Nonnull TagEntity sourceModel, @Nonnull TagDTO targetModel) {
-        targetModel.setId(conversionService.convert(sourceModel.getId(), String.class));
+        //targetModel.setId(conversionService.convert(sourceModel.getId(), String.class));
         targetModel.setVersion(sourceModel.getVersion());
         targetModel.setDeleteVersion(sourceModel.getDeleteVersion());
         targetModel.setCreateTime(conversionService.convert(sourceModel.getCreateTime(), Date.class));

@@ -36,7 +36,7 @@ public class DeleteInLogicByBizIdList extends AbstractDeleteInLogicMethod {
      */
     @Override
     protected String genWhereSql(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
-        return "biz_id in <foreach collection='entityList' item='entity' open='(' separator=',' close=')'>#{entity.bizId}</foreach>" +
+        return "biz_id in <foreach collection='bizIdList' item='bizId' open='(' separator=',' close=')'>#{bizId}</foreach>" +
                 " AND delete_version=0";
     }
 

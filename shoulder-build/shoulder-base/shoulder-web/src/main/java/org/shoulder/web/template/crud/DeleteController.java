@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
  * 删除 API
  *
  * 暴露以下接口：
- * DELETE /{id}  根据 id 删除单个
- * DELETE /      根据 idList 删除多个
+ * DELETE /{bizId}  根据 bizId 删除单个
+ * DELETE /         根据 bizIdList 删除多个
  *
- * @param <ENTITY> 实体
- * @param <ID>     主键
+ * @param <ENTITY>  实体
+ * @param <ID>      主键
  * @author lym
  */
 public interface DeleteController<
@@ -37,19 +37,19 @@ public interface DeleteController<
      * 删除单个
      * service.removeById —— mapper.deleteById
      *
-     * @param id id
+     * @param bizId bizId
      * @return 是否成功
      */
     @ApiOperation(value = "删除")
-    @DeleteMapping("{id}")
+    @DeleteMapping("{bizId}")
     @OperationLog(operation = OperationLog.Operations.DELETE)
-    default BaseResult<Boolean> delete(@OperationLogParam @PathVariable("id") ID id) {
-        ID realWantDeleteId = handlerBeforeDelete(id);
+    default BaseResult<Boolean> delete(@OperationLogParam @PathVariable("bizId") String bizId) {
+        String realWantDeleteBizId = handlerBeforeDelete(bizId);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
-            OpLogContextHolder.getLog().setObjectId(String.valueOf(realWantDeleteId));
+            OpLogContextHolder.getLog().setObjectId(String.valueOf(realWantDeleteBizId));
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
-        return BaseResult.success(getService().removeById(realWantDeleteId));
+        return BaseResult.success(getService().removeByBizId(realWantDeleteBizId));
     }
 
     /**
@@ -57,30 +57,30 @@ public interface DeleteController<
      * service.removeByIds —— mapper.deleteBatchIds
      * todo 请求体转为 json 格式，而非 Array
      *
-     * @param ids id
+     * @param bizIdList
      * @return 是否成功
      */
     @ApiOperation(value = "删除")
     @DeleteMapping
     @OperationLog(operation = OperationLog.Operations.DELETE)
-    default BaseResult<Boolean> deleteBatch(@OperationLogParam @RequestBody List<ID> ids) {
-        List<ID> realWantDeleteIds = handlerBeforeDelete(ids);
+    default BaseResult<Boolean> deleteBatch(@OperationLogParam @RequestBody List<String> bizIdList) {
+        List<String> realWantDeleteIds = handlerBeforeDelete(bizIdList);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             OpLogContextHolder.setOperableObjects(OperableObject.ofIds(realWantDeleteIds));
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
-        return BaseResult.success(getService().removeByIds(realWantDeleteIds));
+        return BaseResult.success(getService().removeByBizIds(realWantDeleteIds) > 0);
     }
 
     /**
      * 删除前置处理
      *
-     * @param ids ids
-     * @return 返回需要删除的 ids
+     * @param bizIdList bizIdList
+     * @return 返回需要删除的 bizIdList
      */
-    default List<ID> handlerBeforeDelete(List<ID> ids) {
-        return CollectionUtils.isEmpty(ids) ? ids :
-                ids.stream()
+    default List<String> handlerBeforeDelete(List<String> bizIdList) {
+        return CollectionUtils.isEmpty(bizIdList) ? bizIdList :
+                bizIdList.stream()
                         .map(this::handlerBeforeDelete)
                         .collect(Collectors.toList());
     }
@@ -88,11 +88,11 @@ public interface DeleteController<
     /**
      * 删除前置处理
      *
-     * @param ids ids
-     * @return 返回需要删除的 ids
+     * @param bizId bizId
+     * @return 返回需要删除的 bizId
      */
-    default ID handlerBeforeDelete(ID ids) {
-        return ids;
+    default String handlerBeforeDelete(String bizId) {
+        return bizId;
     }
 
 }

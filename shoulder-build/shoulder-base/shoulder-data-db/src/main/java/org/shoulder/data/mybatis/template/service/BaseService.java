@@ -6,10 +6,10 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.conditions.AbstractChainWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
@@ -18,6 +18,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.converter.DateConverter;
 import org.shoulder.core.dto.request.BasePageQuery;
 import org.shoulder.core.dto.response.PageResult;
+import org.shoulder.core.util.AssertUtils;
+import org.shoulder.data.enums.DataErrorCodeEnum;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
@@ -169,10 +171,10 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
      * @return 结果
      */
     default Wrapper<ENTITY> query(ENTITY entity, Map<String, Object> ext) {
-        QueryChainWrapper<ENTITY> wrapper = query();
-        if (entity != null) {
-            wrapper.setEntity(entity);
-        }
+        QueryWrapper<ENTITY> wrapper = new QueryWrapper<>(entity);
+        //if (entity != null) {
+        //    wrapper.setEntity(entity);
+        //}
         // 后面还可以加字符串，表示需要输出的列名
         return query(wrapper, ext, getEntityClass());
     }
@@ -273,24 +275,28 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
     /**
      * 根据 bizId 删除
      *
-     * @param entity entity
+     * @param bizId bizId
+     * @return 是否删除成功
      */
-    default boolean removeByBizId(ENTITY entity) {
+    @Transactional(rollbackFor = Exception.class)
+    default boolean removeByBizId(String bizId) {
         checkEntityAs(BizEntity.class);
-        return SqlHelper.retBool(getBaseMapper().deleteInLogicByBizId(entity));
+        return SqlHelper.retBool(getBaseMapper().deleteInLogicByBizId(bizId));
     }
 
     /**
      * 删除（根据bizId 批量删除）
      *
-     * @param entities entities 列表
+     * @param bizIdList bizId 列表
+     * @return 删除数
      */
-    default boolean removeByBizIds(Collection<ENTITY> entities) {
-        if (CollectionUtils.isEmpty(entities)) {
-            return false;
+    @Transactional(rollbackFor = Exception.class)
+    default int removeByBizIds(Collection<String> bizIdList) {
+        if (CollectionUtils.isEmpty(bizIdList)) {
+            return 0;
         }
         checkEntityAs(BizEntity.class);
-        return SqlHelper.retBool(getBaseMapper().deleteInLogicByBizIdList(entities));
+        return getBaseMapper().deleteInLogicByBizIdList(bizIdList);
     }
 
     /**
@@ -298,9 +304,31 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>> 
      *
      * @param entity 实体对象
      */
+    @Transactional(rollbackFor = Exception.class)
     default boolean updateByBizId(ENTITY entity) {
         checkEntityAs(BizEntity.class);
-        return SqlHelper.retBool(getBaseMapper().updateByBizId(entity));
+        // lock by BizId
+        BizEntity param = (BizEntity) entity;
+        ENTITY dbData = lockByBizId(param.getBizId());
+
+        // check version
+        AssertUtils.equals(param.getVersion(), ((BizEntity) dbData).getVersion(), DataErrorCodeEnum.DATA_VERSION_EXPIRED);
+        // remove common fields change
+        param.setId(null);
+        param.setCreator(null);
+        param.setModifier(null);
+        param.setCreateTime(null);
+        param.setUpdateTime(null);
+        param.setDeleteVersion(null);
+
+        // merge data
+        ENTITY newData = mergeChangeOnUpdate(entity, dbData);
+
+        return SqlHelper.retBool(getBaseMapper().updateByBizId(newData));
+    }
+
+    default ENTITY mergeChangeOnUpdate(ENTITY requestParam, ENTITY dbData) {
+        return requestParam;
     }
 
     /**

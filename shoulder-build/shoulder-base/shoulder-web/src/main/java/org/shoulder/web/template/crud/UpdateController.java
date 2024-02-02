@@ -5,7 +5,9 @@ import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.shoulder.core.dto.response.BaseResult;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.model.Operable;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
@@ -46,7 +48,8 @@ public interface UpdateController<
     @Validated(Update.class)
     default BaseResult<UPDATE_RESULT_DTO> update(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
         ENTITY entity = handleBeforeUpdateAndConvertToEntity(dto);
-        boolean success = update(dto, getService()::updateById);
+        boolean success = update(dto, getService()::updateByBizId);
+        AssertUtils.isTrue(success, CommonErrorCodeEnum.DATA_STORAGE_FAIL);
         ENTITY updated = getService().getById(entity.getId());
         return BaseResult.success(handleAfterUpdateAndConvertToDTO(updated));
     }
@@ -63,7 +66,8 @@ public interface UpdateController<
     @OperationLog(operation = OperationLog.Operations.UPDATE)
     @Validated(Update.class)
     default BaseResult<Boolean> updateAll(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
-        boolean updateAll = update(dto, getService()::updateAllById);
+        boolean updateAll = update(dto, getService()::updateAllByBizId);
+        // todo bizId
         return BaseResult.success(updateAll);
     }
 

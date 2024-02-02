@@ -13,7 +13,7 @@ public class TagDTO extends ToStringObj {
     /**
      * id (long)
      */
-    protected String id;
+    //protected String id;
     /**
      * bizId
      */

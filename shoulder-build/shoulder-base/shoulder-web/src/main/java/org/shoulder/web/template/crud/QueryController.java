@@ -31,7 +31,7 @@ import java.util.List;
  * 查询 API
  *
  * 暴露以下接口：
- * GET /{id}      根据 id 查询
+ * GET /{bizId}   根据 bizId 查询
  * POST /page     条件查询，分页
  * POST /listAll  条件查询，不分页
  *
@@ -57,15 +57,15 @@ public interface QueryController<
      * @return 查询结果
      */
     @ApiImplicitParams({
-        @ApiImplicitParam(name = DataBaseConsts.FIELD_ID, value = "主键", dataType = "long", paramType = "path"),
+        @ApiImplicitParam(name = DataBaseConsts.FIELD_BIZ_ID, value = "bizId", dataType = "String", paramType = "path"),
     })
     @ApiOperation(value = "单个查询", notes = "单个查询")
-    @GetMapping("/{id}")
+    @GetMapping("/{bizId}")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<QueryResultDTO> get(@OperationLogParam @PathVariable(name = "id") ID id) {
-        OpLogContextHolder.getLog().setObjectId(String.valueOf(id));
+    default BaseResult<QueryResultDTO> get(@OperationLogParam @PathVariable(name = "bizId") String bizId) {
+        OpLogContextHolder.getLog().setObjectId(bizId);
         OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
-        ENTITY entity = getService().getById(id);
+        ENTITY entity = getService().getByBizId(bizId);
         return BaseResult.success(convertEntityToQueryResult(entity));
     }
 
@@ -107,7 +107,7 @@ public interface QueryController<
         }
         List<ENTITY> entityList = getService().list(data);
         List<QueryResultDTO> dtoList = getConversionService().convert((Collection<ENTITY>) entityList, getQueryDtoClass());
-        return BaseResult.success();
+        return BaseResult.success(dtoList);
     }
 
     /**

@@ -63,7 +63,13 @@ public class BizEntity<ID extends Serializable> extends LogicDeleteEntity<ID> {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
+    // 用于扩展
     public String generateBizId() {
         return null;
+    }
+
+    @Override
+    public String getObjectId() {
+        return bizId;
     }
 }

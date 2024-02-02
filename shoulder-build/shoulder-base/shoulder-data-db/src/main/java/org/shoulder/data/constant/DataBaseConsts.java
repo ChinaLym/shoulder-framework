@@ -169,6 +169,8 @@ public interface DataBaseConsts {
      */
     String FIELD_ID = "id";
 
+    String FIELD_BIZ_ID = "bizId";
+
     /**
      * 创建时间
      */

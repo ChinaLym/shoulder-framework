@@ -107,12 +107,12 @@ public interface FakerMapper<ENTITY extends BaseEntity<? extends Serializable>> 
     }
 
     @Override
-    default int deleteInLogicByBizId(ENTITY entity) {
+    default int deleteInLogicByBizId(String bizId) {
         throw createNotSupportException();
     }
 
     @Override
-    default int deleteInLogicByBizIdList(Collection<? extends ENTITY> entityList) {
+    default int deleteInLogicByBizIdList(Collection<? extends CharSequence> bizIdList) {
         throw createNotSupportException();
     }
 

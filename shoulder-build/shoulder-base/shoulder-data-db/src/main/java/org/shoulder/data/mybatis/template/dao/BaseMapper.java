@@ -117,7 +117,7 @@ public interface BaseMapper<ENTITY extends BaseEntity<? extends Serializable>>
      * @param entity 实体
      * @return 影响行数
      */
-    int deleteInLogicByBizId(ENTITY entity);
+    int deleteInLogicByBizId(String bizId);
 
     /**
      * 逻辑删除，根据 id 进行
@@ -125,6 +125,6 @@ public interface BaseMapper<ENTITY extends BaseEntity<? extends Serializable>>
      * @param entityList 实体列表
      * @return 影响行数
      */
-    int deleteInLogicByBizIdList(Collection<? extends ENTITY> entityList);
+    int deleteInLogicByBizIdList(Collection<? extends CharSequence> bizIdList);
 
 }
