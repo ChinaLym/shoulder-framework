@@ -2,12 +2,20 @@ package org.shoulder.data.mybatis.injector.methods;
 
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
+import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
 import com.baomidou.mybatisplus.extension.injector.methods.LogicDeleteByIdWithFill;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.LogicDeleteEntity;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 /**
  * 逻辑删除
@@ -40,12 +48,24 @@ public abstract class AbstractDeleteInLogicMethod extends AbstractMethod {
                     ") for not extends " + LogicDeleteEntity.class.getName());
         }
 
-        String sql = String.format(baseSql(), tableInfo.getTableName(),
-                genSetSql(mapperClass, modelClass, tableInfo),
-                // where 不需要判断 version
-                genWhereSql(mapperClass, modelClass, tableInfo)
-        );
-        SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
+        // 更新时间、更信人等字段需要update
+        List<TableFieldInfo> autoFillOnUpdateFieldsExceptDeleteFlag = tableInfo.getFieldList().stream()
+                .filter(TableFieldInfo::isWithUpdateFill)
+                .filter(f -> !f.isLogicDelete())
+                .collect(toList());
+        // 删除操作往往不 care 数据可修改的内容，故删除操作不care版本号，而更新又会判断是否删除，故删除不需要关住 version
+        String sqlSet = CollectionUtils.isEmpty(autoFillOnUpdateFieldsExceptDeleteFlag) ?
+                sqlLogicSet(tableInfo) :
+                "SET " + SqlScriptUtils.convertIf(autoFillOnUpdateFieldsExceptDeleteFlag.stream()
+                        .map(i -> i.getSqlSet(EMPTY)).collect(joining(EMPTY)), "!@org.apache.ibatis.type.SimpleTypeRegistry@isSimpleType(_parameter.getClass())", true)
+                        // deleteVersion=id
+                        + tableInfo.getLogicDeleteSql(false, false);
+
+
+        String sql = String.format(baseSql(), tableInfo.getTableName(), sqlSet,
+                genWhereSql(mapperClass, modelClass, tableInfo) + tableInfo.getLogicDeleteSql(true, true));
+
+        SqlSource sqlSource = super.createSqlSource(configuration, sql, Object.class);
         return addUpdateMappedStatement(mapperClass, modelClass, methodName, sqlSource);
     }
 
@@ -70,8 +90,8 @@ public abstract class AbstractDeleteInLogicMethod extends AbstractMethod {
      */
     // set todo 需要 version 增加
     protected String genSetSql(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
-        //return "SET " + tableInfo.getLogicDeleteFieldInfo().getColumn() + "=NOW()";
-        return "SET delete_version=NOW()";
+        // SET delete_version = id
+        return "SET " + tableInfo.getLogicDeleteFieldInfo().getColumn() + "=" + tableInfo.getKeyColumn();
     }
 
     /**
@@ -79,10 +99,7 @@ public abstract class AbstractDeleteInLogicMethod extends AbstractMethod {
      * id = #{id} and delete_version=0
      */
     protected String genWhereSql(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
-        return "id=#{id} AND delete_version=0";
-        /*TableFieldInfo logicDeleteField = tableInfo.getLogicDeleteFieldInfo();
-        return tableInfo.getKeyColumn() + "=#{" + tableInfo.getKeyProperty() + "} AND " +
-                logicDeleteField.getColumn() + "=" + logicDeleteField.getLogicNotDeleteValue();*/
+        return "id=#{id} ";
     }
 
 }

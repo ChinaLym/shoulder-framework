@@ -9,6 +9,7 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.model.Operable;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
+import org.shoulder.data.mybatis.template.entity.BizEntity;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
@@ -46,26 +47,26 @@ public interface UpdateController<
     @PutMapping
     @OperationLog(operation = OperationLog.Operations.UPDATE)
     @Validated(Update.class)
-    default BaseResult<UPDATE_RESULT_DTO> update(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
+    default BaseResult<UPDATE_RESULT_DTO> updateByBizId(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
         ENTITY entity = handleBeforeUpdateAndConvertToEntity(dto);
         boolean success = update(dto, getService()::updateByBizId);
         AssertUtils.isTrue(success, CommonErrorCodeEnum.DATA_STORAGE_FAIL);
-        ENTITY updated = getService().getById(entity.getId());
+        ENTITY updated = getService().getByBizId(((BizEntity) entity).getBizId());
         return BaseResult.success(handleAfterUpdateAndConvertToDTO(updated));
     }
 
     /**
-     * 修改所有字段
+     * 修改所有字段【适用场景主要为安全环境下的后台应用，默认不启用】
      * service.updateAllById —— mapper.updateAllById
      *
      * @param dto 修改DTO
      * @return 修改后的实体数据
      */
 //    @ApiOperation(value = "修改所有字段", notes = "修改所有字段，没有传递的字段会被置空")
-//    @PutMapping("/all")
+//    @PutMapping("/allFields")
 //    @OperationLog(operation = OperationLog.Operations.UPDATE)
 //    @Validated(Update.class)
-    default BaseResult<Void> updateAll(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
+    default BaseResult<Void> updateAllFieldsByBizId(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
 //        boolean updateAll = update(dto, getService()::updateBatchByBizId);
         // 暂不支持
         return BaseResult.error(CommonErrorCodeEnum.CODING);

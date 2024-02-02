@@ -43,7 +43,7 @@ public interface DeleteController<
     @ApiOperation(value = "删除")
     @DeleteMapping("{bizId}")
     @OperationLog(operation = OperationLog.Operations.DELETE)
-    default BaseResult<Boolean> delete(@OperationLogParam @PathVariable("bizId") String bizId) {
+    default BaseResult<Boolean> deleteByBizId(@OperationLogParam @PathVariable("bizId") String bizId) {
         String realWantDeleteBizId = handlerBeforeDelete(bizId);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             OpLogContextHolder.getLog().setObjectId(String.valueOf(realWantDeleteBizId));
@@ -63,7 +63,7 @@ public interface DeleteController<
     @ApiOperation(value = "删除")
     @DeleteMapping
     @OperationLog(operation = OperationLog.Operations.DELETE)
-    default BaseResult<Boolean> deleteBatch(@OperationLogParam @RequestBody List<String> bizIdList) {
+    default BaseResult<Boolean> deleteBatchByBizId(@OperationLogParam @RequestBody List<String> bizIdList) {
         List<String> realWantDeleteIds = handlerBeforeDelete(bizIdList);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             OpLogContextHolder.setOperableObjects(OperableObject.ofIds(realWantDeleteIds));

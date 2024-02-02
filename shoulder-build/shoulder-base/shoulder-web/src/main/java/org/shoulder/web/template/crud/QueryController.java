@@ -61,7 +61,7 @@ public interface QueryController<
     @ApiOperation(value = "单个查询", notes = "单个查询")
     @GetMapping("/{bizId}")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<QueryResultDTO> get(@OperationLogParam @PathVariable(name = "bizId") String bizId) {
+    default BaseResult<QueryResultDTO> queryByBizId(@OperationLogParam @PathVariable(name = "bizId") String bizId) {
         OpLogContextHolder.getLog().setObjectId(bizId);
         OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         ENTITY entity = getService().getByBizId(bizId);
