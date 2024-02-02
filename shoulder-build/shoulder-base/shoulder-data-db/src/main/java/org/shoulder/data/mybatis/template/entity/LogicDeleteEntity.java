@@ -20,7 +20,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class LogicDeleteEntity<ID extends Serializable> extends Entity<ID> implements ILogicDeleteEntity {
+public class LogicDeleteEntity<ID extends Serializable>
+        extends Entity<ID>
+        implements ILogicDeleteEntity {
 
     /**
      * 删除标记

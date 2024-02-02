@@ -60,7 +60,7 @@ public interface DataBaseConsts {
     /**
      * 排序序号
      */
-    String COLUMN_SORT_NO = "sort_no";
+    String COLUMN_DISPLAY_ORDER = "display_order";
 
 
     // ------------------ 常用的数据源名称 ------------------

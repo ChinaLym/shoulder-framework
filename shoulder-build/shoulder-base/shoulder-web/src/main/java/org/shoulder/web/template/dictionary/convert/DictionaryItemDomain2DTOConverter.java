@@ -43,6 +43,6 @@ public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<Diction
         targetModel.setName(sourceModel.getName());
         targetModel.setDisplayName(displayI18nName);
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
-        targetModel.setNote(sourceModel.getNote());
+        targetModel.setDescription(sourceModel.getNote());
     }
 }

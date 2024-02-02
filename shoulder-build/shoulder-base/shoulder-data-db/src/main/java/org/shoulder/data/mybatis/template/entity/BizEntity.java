@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  * 可变记录型实体: 带有 id、创建时间、最后修改时间、创建者、最后修改者
  * <p>
  * 索引：biz_id - delete_version - version （加 version 主要是为了 lock for update 时候避免锁表）
- *
+ * <p>
  * 实现类必须有字段标注{@link BizIdSource}供框架自行生成 {@link BizEntity#bizId}，或创建时自行填写，否则创建时失败
  *
  * @author lym
@@ -25,7 +25,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class BizEntity<ID extends Serializable> extends LogicDeleteEntity<ID> {
+public class BizEntity<ID extends Serializable>
+        extends LogicDeleteEntity<ID> {
 
     /**
      * 业务唯一索引键
@@ -46,7 +47,11 @@ public class BizEntity<ID extends Serializable> extends LogicDeleteEntity<ID> {
     private Integer version;
 
     /**
-     * 描述
+     * 备注：这条记录的说明，通常用于辅助解释这条数据的用处或注意点
+     * note: 备注、临时辅助性注释
+     * remark: 主观性评价或或提醒
+     * description: 详细的说明（detail）
+     * info: 泛指信息
      */
     @TableField("description")
     private String description;

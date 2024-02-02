@@ -54,8 +54,8 @@ public class TreeEntity<ID extends Serializable> extends Entity<ID> {
     /**
      * 排序
      */
-    @TableField(value = DataBaseConsts.COLUMN_SORT_NO)
-    protected Integer sortNo;
+    @TableField(value = DataBaseConsts.COLUMN_DISPLAY_ORDER)
+    protected Integer displayOrder;
 
     /**
      * 子节点

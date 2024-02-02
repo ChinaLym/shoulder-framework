@@ -48,7 +48,7 @@ public class DictionaryItemDTO implements Serializable, Comparable<DictionaryIte
     /**
      * 备注
      */
-    private String note;
+    private String description;
 
     @Override
     public int compareTo(DictionaryItemDTO o) {

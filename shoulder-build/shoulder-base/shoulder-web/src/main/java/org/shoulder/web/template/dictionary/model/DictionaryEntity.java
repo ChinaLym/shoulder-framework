@@ -65,7 +65,7 @@ public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID>
         entity.setBizId(source.getItemId().toString());
         entity.setName(source.getName());
         entity.setDisplayName(source.getDisplayName());
-        entity.setSortNo(source.getDisplayOrder());
+        entity.setDisplayOrder(source.getDisplayOrder());
         entity.setNote(source.getNote());
         return entity;
     }

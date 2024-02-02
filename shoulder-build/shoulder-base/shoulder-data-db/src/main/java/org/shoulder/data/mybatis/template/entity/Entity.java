@@ -20,7 +20,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Entity<ID extends Serializable> extends BaseEntity<ID> {
+public class Entity<ID extends Serializable>
+        extends BaseEntity<ID> {
 
     @TableField(value = DataBaseConsts.COLUMN_CREATOR, fill = FieldFill.INSERT)
     protected Long creator;

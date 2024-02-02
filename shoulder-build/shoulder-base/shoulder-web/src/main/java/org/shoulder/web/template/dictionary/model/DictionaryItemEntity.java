@@ -26,7 +26,9 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID> implements DictionaryItem<String> {
+public class DictionaryItemEntity<ID extends Serializable>
+        extends BizEntity<ID>
+        implements DictionaryItem<String> {
 
     /**
      * 字典类型 / 业务类型，关联到 {@link DictionaryEntity}
@@ -47,8 +49,8 @@ public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID>
     /**
      * 排序
      */
-    @TableField(value = DataBaseConsts.COLUMN_SORT_NO)
-    protected Integer sortNo;
+    @TableField(value = DataBaseConsts.COLUMN_DISPLAY_ORDER)
+    protected Integer displayOrder;
 
     /**
      * 展示名称
@@ -69,7 +71,7 @@ public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID>
 
     @Override
     public Integer getDisplayOrder() {
-        return sortNo;
+        return displayOrder;
     }
 
     @Override
