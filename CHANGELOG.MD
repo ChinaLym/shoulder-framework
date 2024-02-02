@@ -2,12 +2,25 @@
 
 ## 0.8（升级 spring boot3, JDK 17）
 
-升级并支持 spring-boot3（jdk、spring-cloud 等）
-升级并支持 spring security6
-提供增强的 ConversionService，支持集合、更多的类转换，比如日期解析时支持多种格式，Jdk8的各类时间互转
-提供低代码，可扩展的字典服务，并添加配套支持（HTTP-API、相关工具类、ConversionService、JPA、Mybatis-plus、MongoDb...）
-支持内嵌 redis 启动，方便测试
-多线程优化，能力增强
+升级并支持 spring-boot3（jdk、spring-cloud、spring security6等）
+
+- core
+  - 提供增强的 ConversionService，支持集合、更多的类转换，比如日期解析时支持多种格式，Jdk8的各类时间互转
+  - 多线程工具优化，能力增强
+  - 新增字典定义
+- db
+  - 扩展的 bizId、version、逻辑删除等 模板Entity进入可用状态，现在可以继承这些模板类减少bizId 相关DB操作代码的编写了（0.6
+    引入）
+- web
+  - 模板类进入可用状态（0.6 引入）
+  - 提供开箱即用可扩展的字典、标签能力（0.6 引入），并添加配套支持（HTTP-API、相关工具类、ConversionService、JPA、Mybatis-plus、MongoDb...）
+- autoconfiguration（forTest）
+  - 支持内嵌 redis 启动，方便测试
+  - traceId、userId、tenantId mock
+- crypto
+  - fix spring6 RestTemplate 底层方法不兼容变更bug
+
+----------
 - Threads 区分IO、cpu
 - IO部分使用 VirtualThread
 - 完善 VirtualThread
@@ -165,12 +178,12 @@ archetype-packaging  3.2.0 -> 3.2.1
     - 包路径变更 org.shoulder.data.mybatis.base -> org.shoulder.data.mybatis.template
     - 泛型要求调整
   - 确定依赖 mybatis-plus（其新分页插件存在5个月无法使用的bug修复）
-  - 增加 mybatis-plus 扩展方法，如针对 bizId 的
+  - 增加 mybatis-plus 扩展方法，如针对 bizId 的（实验性功能）
 
 - web
   - 默认的 `RestController` 全局异常处理仅对 `json` 格式响应支持
-  - 引入 字典、标签 通用功能暂时放置于 web
-  - 引入依赖于 db 的通用 controller 实现快速开接口
+  - 引入 字典、标签 通用功能暂时放置于 web（实验性功能）
+  - 引入依赖于 db 的通用 controller 实现快速开接口（实验性功能）
 
 - validate
   - 通用错误码提供枚举类
@@ -185,8 +198,8 @@ archetype-packaging  3.2.0 -> 3.2.1
 
 - 扩展模块
   - 引入扩展模块
-  - 后台配置：ext-config 开箱即用的轻量级配置管理模块
-    - 后续引入动态表单：动态字段展示样式
+  - 后台配置：ext-config 开箱即用的轻量级配置管理模块（实验性功能）
+    - 后续引入动态表单：动态字段展示样式（实验性功能）
 
 - starters
   - 完善一些自动配置的提示

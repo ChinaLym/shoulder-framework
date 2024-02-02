@@ -76,4 +76,15 @@ public class DictionaryItemEntity<ID extends Serializable> extends BizEntity<ID>
     public String getDisplayName() {
         return displayName;
     }
+
+    @Override
+    public String getObjectName() {
+        return name;
+    }
+
+    @Override
+    public String getObjectType() {
+        // 这里如果过长，数据库保存时可能报错，强烈建议实现该接口
+        return "objectType.shoulder.dictionaryItem";
+    }
 }

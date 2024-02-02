@@ -35,7 +35,8 @@ public interface Operable {
      */
     @JsonIgnore
     default String getObjectType() {
-        return "objectType." + getClass().getSimpleName();
+        // 这里如果过长，数据库保存时可能报错，强烈建议实现该接口
+        return "objectType." + getClass().getName();
     }
 
 }
