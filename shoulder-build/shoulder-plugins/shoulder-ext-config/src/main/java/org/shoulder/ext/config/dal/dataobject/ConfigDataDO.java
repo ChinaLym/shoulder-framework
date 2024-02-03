@@ -24,7 +24,7 @@ public class ConfigDataDO {
 
     private String type;
 
-    private String note;
+    private String description;
 
     private String creator;
 

@@ -61,8 +61,8 @@ public class DictionaryItemEntity<ID extends Serializable>
     /**
      * 备注
      */
-    @TableField("note")
-    private String note;
+    @TableField("description")
+    private String description;
 
     @Override
     public String getItemId() {

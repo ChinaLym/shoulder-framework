@@ -7,7 +7,7 @@ create table shoulder_ext_config_data
     `version`        INT      DEFAULT 0 NOT NULL COMMENT '数据版本号：用于幂等防并发',
     `tenant`         VARCHAR(32)        NOT NULL COMMENT '租户',
     `type`           VARCHAR(64)        NOT NULL COMMENT '配置类型，通常可据此分库表',
-    `note`           VARCHAR(255) NULL COMMENT '备注:介绍为啥添加这一条',
+    `description` VARCHAR(255) NULL COMMENT '备注:介绍为啥添加这一条',
     `creator`        VARCHAR(64)        NOT NULL COMMENT '创建人编号',
     `create_time`    DATETIME DEFAULT NOW() COMMENT '创建时间',
     `modifier`       VARCHAR(64)        NOT NULL COMMENT '最近修改人编码',
@@ -21,5 +21,5 @@ create table shoulder_ext_config_data
   COLLATE = utf8mb4_general_ci COMMENT '配置数据表';
 
 create
-unique index config_data_uni_biz_index
+    unique index config_data_uni_biz_index
     on shoulder_ext_config_data (biz_id, delete_version, version);

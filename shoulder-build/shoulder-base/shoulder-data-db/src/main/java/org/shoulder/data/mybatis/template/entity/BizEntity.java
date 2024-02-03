@@ -40,7 +40,7 @@ public class BizEntity<ID extends Serializable>
     private String bizId;
 
     /**
-     * 版本号 todo 没效果？
+     * 版本号
      */
     @Version
     @TableField(value = "version", fill = FieldFill.INSERT)
@@ -48,9 +48,9 @@ public class BizEntity<ID extends Serializable>
 
     /**
      * 备注：这条记录的说明，通常用于辅助解释这条数据的用处或注意点
-     * note: 备注、临时辅助性注释
-     * remark: 主观性评价或或提醒
-     * description: 详细的说明（detail）
+     * note: 注意某个物
+     * remark: 评价某物
+     * description: 更通用，详细的说明（detail），解释某物
      * info: 泛指信息
      */
     @TableField("description")

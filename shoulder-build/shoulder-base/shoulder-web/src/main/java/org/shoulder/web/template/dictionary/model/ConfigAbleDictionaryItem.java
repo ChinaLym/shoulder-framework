@@ -66,7 +66,7 @@ public class ConfigAbleDictionaryItem implements DictionaryItem<String>, Seriali
 
     @Size(max = 1024)
     //@ConfigField(chineseName = "说明", description = "注释信息"
-    private String note;
+    private String description;
 
     @Override
     public String getItemId() {
@@ -119,7 +119,7 @@ public class ConfigAbleDictionaryItem implements DictionaryItem<String>, Seriali
         targetModel.setName(targetModel.getName());
         targetModel.setDisplayName(source.getDisplayName());
         targetModel.setDisplayOrder(source.getDisplayOrder());
-        targetModel.setNote(source.getNote());
+        targetModel.setDescription(source.getDescription());
         return targetModel;
     }
 

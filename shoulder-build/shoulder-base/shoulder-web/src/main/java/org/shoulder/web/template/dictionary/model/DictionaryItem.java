@@ -37,7 +37,7 @@ public interface DictionaryItem<IDENTIFY> {
     /**
      * 备注、说明，便于前端使用，小项目中减少前端工作量
      */
-    default String getNote() {
+    default String getDescription() {
         return null;
     }
 

@@ -46,7 +46,7 @@ public class DictionaryDTO2DictionaryItemGenericConverter implements GenericConv
             targetModel.setName(targetModel.getName());
             targetModel.setDisplayName(dto.getDisplayName());
             targetModel.setDisplayOrder(dto.getDisplayOrder());
-            targetModel.setNote(dto.getDescription());
+            targetModel.setDescription(dto.getDescription());
             return targetModel;
         } else if (targetClass == DictionaryItemEntity.class) {
             // dto -> 基于存储的 model
@@ -57,7 +57,7 @@ public class DictionaryDTO2DictionaryItemGenericConverter implements GenericConv
             entity.setName(dto.getName());
             entity.setDisplayName(dto.getDisplayName());
             entity.setDisplayOrder(dto.getDisplayOrder());
-            entity.setNote(dto.getDescription());
+            entity.setDescription(dto.getDescription());
             return entity;
         }
         throw new IllegalStateException("cannot reachable");
