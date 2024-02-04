@@ -21,9 +21,16 @@ public class DictionaryDTO implements Serializable {
     private String dictionaryType;
 
     /**
+     * 字典默认名
+     */
+    private String name;
+
+    /**
      * 字典展示名称
      */
     private String displayName;
+
+    private boolean fixItems;
 
     /**
      * 可选项

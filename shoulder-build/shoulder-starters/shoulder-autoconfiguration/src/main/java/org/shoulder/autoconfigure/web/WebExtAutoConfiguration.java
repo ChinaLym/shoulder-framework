@@ -9,9 +9,9 @@ import org.shoulder.autoconfigure.web.WebExtAutoConfiguration.BaseOnEnumDictiona
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.data.mybatis.template.service.BaseServiceImpl;
-import org.shoulder.web.template.dictionary.controller.DictionaryEnumQueryController;
 import org.shoulder.web.template.dictionary.controller.DictionaryCrudController;
 import org.shoulder.web.template.dictionary.controller.DictionaryEnumController;
+import org.shoulder.web.template.dictionary.controller.DictionaryEnumQueryController;
 import org.shoulder.web.template.dictionary.controller.DictionaryItemController;
 import org.shoulder.web.template.dictionary.controller.DictionaryItemCrudController;
 import org.shoulder.web.template.dictionary.controller.DictionaryItemEnumController;
@@ -80,6 +80,10 @@ public class WebExtAutoConfiguration {
             return new TagServiceImpl();
         }
 
+        /**
+         * 想要 autoconfiguration 注入的 Controller 生效（能处理请求）
+         * 必须要返回值是具体的 Controller，而非接口；另外注意 ConditionalOnMissingBean 要用接口，方便使用者替换
+         */
         @Bean
         @DependsOn({"tagCoreService", "conversionService"})
         @ConditionalOnMissingBean(value = TagController.class)
@@ -153,9 +157,9 @@ public class WebExtAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean
+        @ConditionalOnMissingBean(DictionaryMngController.class)
         @DependsOn({"dictionaryService", "conversionService"})
-        public DictionaryMngController dictionaryMngController() {
+        public DictionaryCrudController dictionaryCrudController() {
             return new DictionaryCrudController();
         }
 
@@ -167,9 +171,9 @@ public class WebExtAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean
+        @ConditionalOnMissingBean(DictionaryItemController.class)
         @DependsOn({"dictionaryItemService", "conversionService"})
-        public DictionaryItemController dictionaryItemEnumController() {
+        public DictionaryItemCrudController dictionaryItemCrudController() {
             return new DictionaryItemCrudController();
         }
 
