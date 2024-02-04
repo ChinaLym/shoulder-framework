@@ -21,8 +21,8 @@
 Mybatis 与 JPA 相比最大的缺点就是简单 SQL 还需要自己写，其实可以使用业界已有的方案
 
 * `MyBatis Generator`
-    ** 只是根据数据库生产 Java、Mybatis 代码以及常用方法，不做任何封装。  
-* `MyBatis Plus`  
+    ** 只是根据数据库生产 Java、Mybatis 代码以及常用方法，不做任何封装。
+* `MyBatis Plus`
     ** 自己封装了大量的实现，定义了一些扩展点。
 * `tkMyBatis`
     ** 优先采用业界已有的，命名与 JPA 贴近，使用方式与 JPA 相近。
@@ -31,10 +31,25 @@ Mybatis 与 JPA 相比最大的缺点就是简单 SQL 还需要自己写，其�
 * ideal 的 easycode 插件
 * mybatiscodehelper pro 插件
 
+
+CREATE TABLE `labels` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`label_id` int(11) NOT NULL,
+`gmt_create` datetime NOT NULL,
+`gmt_modified` datetime NOT NULL,
+`parent_label_id` int(11),
+`sub_label_ids` varchar(255) COMMENT '子节点标签，逗号分割',
+`label_order` int(11),
+`tenant_id` varchar(255),
+`label_entry` varchar(255) COMMENT '操作入口，如运营、类目等等',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uk_label_id` (`label_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 #### 比较
 
 * `MBG`(`MyBatis Generator`) 是简单的生成代码，没有封装，生成后使用的仍然是原生 Mybatis，且无任何依赖。
-* `MyBatis Plus` 与 `tkMyBatis` 都在原生 Mybatis 基础上做了自己的封装，不同的是`MyBatis 
+* `MyBatis Plus` 与 `tkMyBatis` 都在原生 Mybatis 基础上做了自己的封装，不同的是`MyBatis
 Plus`自己定义了一套规范，功能比较齐全，近几年社区越来越活跃，依赖较重，使用时需要了解他的设计。`tkMyBatis`更成熟，且优先采用已有成熟开源并集成，依赖较轻。
 
 #### 结论
@@ -57,10 +72,10 @@ Plus`自己定义了一套规范，功能比较齐全，近几年社区越来越
 
 1. 简述
         在声明式的事务处理中，要配置一个切面，其中就用到了propagation，表示打算对这些方法怎么使用事务，是用还是不用，其中propagation有七种配置，REQUIRED、SUPPORTS、MANDATORY、REQUIRES_NEW、NOT_SUPPORTED、NEVER、NESTED。默认是REQUIRED。
- 
+
 2. Spring中七种Propagation类的事务属性详解：
- 
- REQUIRED：支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。 
+
+ REQUIRED：支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。
 
  SUPPORTS：支持当前事务，如果当前没有事务，就以非事务方式执行。
 
@@ -86,6 +101,6 @@ ACID
 
 自己设计表，保证隔离性 无法保证一致性，因为操作多个资源不是一个原子操作
 
-####  
+####
 
 todo
