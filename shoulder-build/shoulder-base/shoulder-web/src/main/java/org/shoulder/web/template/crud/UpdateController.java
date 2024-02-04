@@ -34,7 +34,8 @@ import java.util.function.Function;
 public interface UpdateController<
         ENTITY extends BaseEntity<? extends Serializable>,
         UPDATE_DTO extends Serializable,
-        UPDATE_RESULT_DTO extends Serializable> extends BaseController<ENTITY> {
+        UPDATE_RESULT_DTO extends Serializable>
+    extends BaseController<ENTITY> {
 
     /**
      * 修改

@@ -16,14 +16,15 @@ import java.io.Serializable;
  */
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}")
-public class DictionaryCrudController<ID extends Serializable> extends CrudCacheableController<
-    DictionaryService<ID>,
-    DictionaryEntity<ID>,
-    ID,
-    DictionaryDTO,
-    DictionaryDTO,
-    DictionaryDTO,
-    DictionaryDTO
-    > implements DictionaryController {
+public class DictionaryCrudController<ID extends Serializable>
+    extends CrudCacheableController<
+        DictionaryService<ID>,
+        DictionaryEntity<ID>,
+        ID,
+        DictionaryDTO,
+        DictionaryDTO,
+        DictionaryDTO,
+        DictionaryDTO>
+    implements DictionaryMngController {
 
 }

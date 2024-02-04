@@ -20,7 +20,11 @@ import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -41,11 +45,10 @@ import java.util.List;
  */
 @Validated
 public interface QueryController<
-    ENTITY extends BaseEntity<ID>,
-    ID extends Serializable,
-    PAGE_QUERY_PARAM extends Serializable,
-    QueryResultDTO extends Serializable
-    >
+        ENTITY extends BaseEntity<ID>,
+        ID extends Serializable,
+        PAGE_QUERY_PARAM extends Serializable,
+        QueryResultDTO extends Serializable>
     extends BaseController<ENTITY> {
 
     /**
@@ -98,7 +101,8 @@ public interface QueryController<
     @PostMapping("/listAll")
     @OperationLog(operation = OperationLog.Operations.QUERY)
     default BaseResult<ListResult<QueryResultDTO>> listAll(@OperationLogParam @RequestBody ENTITY data,
-                                                           @OperationLogParam @NotNull @RequestParam @Range(min = 1, max = 1000) Integer limit) {
+                                                           @OperationLogParam @NotNull @RequestParam @Range(min = 1,
+                                                               max = 1000) Integer limit) {
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             if (data != null) {
                 OpLogContextHolder.setOperableObject((Operable) data);

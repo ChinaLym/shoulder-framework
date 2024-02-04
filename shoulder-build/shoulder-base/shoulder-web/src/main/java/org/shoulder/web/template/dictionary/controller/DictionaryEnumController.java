@@ -13,6 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ import java.util.Collection;
 /**
  * 枚举型字典接口-默认实现
  * http://localhost:8080/api/v1/dictionary/allTypes
- * http://localhost:8080/api/v1/dictionary/page
+ * http://localhost:8080/ui/dictionary/page.html
  *
  * 页面使用了 bootstrap，下面是一些 bootstraps 技术参考和说明
  * https://bootstrapshuffle.com/cn/classes
@@ -31,8 +32,7 @@ import java.util.Collection;
  * @author lym
  */
 @RestController
-@RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}")
-public class DictionaryEnumController implements DictionaryController {
+public class DictionaryEnumController implements DictionaryEnumQueryController {
 
     /**
      * 字典枚举存储
@@ -57,14 +57,14 @@ public class DictionaryEnumController implements DictionaryController {
             @ApiImplicitParam(name = "dictionaryType", value = "字典类型", dataType = "String", paramType = "path"),
     })
     @ApiOperation(value = "查询所有支持的字典项名称", notes = "查询所有支持的字典项名称")
-    @GetMapping("/allTypes")
+    @RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}/allTypes", method = { RequestMethod.POST, RequestMethod.GET})
     public BaseResult<ListResult<String>> allTypes() {
         Collection<String> allTypeNames = dictionaryEnumStore.listAllTypeNames();
         return BaseResult.success(allTypeNames);
     }
 
     @SkipResponseWrap
-    @GetMapping("/page")
+    @GetMapping("${shoulder.web.ext.dictionary.pageUrl:/ui/dictionary/page.html}")
     public String hello() {
         if (StringUtils.isNoneBlank(pageHost)) {
             return loadPage();

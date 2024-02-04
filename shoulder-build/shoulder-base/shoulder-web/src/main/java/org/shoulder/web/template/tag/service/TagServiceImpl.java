@@ -12,12 +12,15 @@ import org.shoulder.data.mybatis.template.service.BaseCacheableServiceImpl;
 import org.shoulder.web.template.tag.mapper.TagMapper;
 import org.shoulder.web.template.tag.model.TagEntity;
 import org.shoulder.web.template.tag.model.TagMappingEntity;
-import org.shoulder.web.template.tag.repository.TagMappingService;
-import org.shoulder.web.template.tag.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +29,6 @@ import java.util.stream.Collectors;
  * @author lym
  */
 public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntity> implements TagCoreService {
-
-    @Autowired
-    private TagRepository tagRepository;
 
     @Autowired(required = false)
     private TagMappingService tagMappingService;
@@ -64,7 +64,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         AssertUtils.isTrue(tagIds.size() < 20, CommonErrorCodeEnum.ILLEGAL_PARAM);
 
         // 确认数据库中标签存在
-        List<TagEntity> tagListInDb = tagRepository.listByIds(tagIds);
+        List<TagEntity> tagListInDb = super.listByIds(tagIds);
         Set<Long> tagIdsInDb = tagListInDb.stream()
                 .map(TagEntity::getId)
                 .collect(Collectors.toSet());
@@ -83,7 +83,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     // max 100 batch｜ insert
     public boolean attachTag(String bizType, String oid, Long tagId) {
         // select for update tagId 对应的标签关系
-        TagEntity tagInDb = tagRepository.getBaseMapper().selectForUpdateById(tagId);
+        TagEntity tagInDb = super.getBaseMapper().selectForUpdateById(tagId);
         AssertUtils.notNull(tagInDb, DataErrorCodeEnum.DATA_NOT_EXISTS);
 
         TagMappingEntity tagMappingInDb = tagMappingService.getBaseMapper().selectForUpdate(tagId, bizType, oid);
@@ -107,7 +107,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         Long tagId = pageQueryCondition.getCondition().getTagId();
         AssertUtils.notNull(tagId, CommonErrorCodeEnum.ILLEGAL_PARAM);
         AssertUtils.notNull(pageQueryCondition.getCondition().getRefType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-        TagEntity tagEntity = tagRepository.getById(tagId);
+        TagEntity tagEntity = super.getById(tagId);
         AssertUtils.notNull(tagEntity, DataErrorCodeEnum.DATA_NOT_EXISTS);
         // TODO 根据标签 order排序？
         return tagMappingService.page(pageQueryCondition);
@@ -119,7 +119,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
     @Override
     public List<TagEntity> searchTagByBizTypeAndName(String type, String searchContent) {
-        return tagRepository.lambdaQuery()
+        return super.lambdaQuery()
                 .eq(TagEntity::getType, type)
                 .likeRight(TagEntity::getName, searchContent)
                 .last("limit 50")
@@ -129,19 +129,19 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     @Nullable
     @Override
     public TagEntity queryTagById(Long id) {
-        return tagRepository.getById(id);
+        return super.getById(id);
     }
 
     @Nullable
     @Override
     public List<TagEntity> queryTagByIdList(List<Long> idList) {
-        return tagRepository.listByIds(idList);
+        return super.listByIds(idList);
     }
 
     @Nullable
     @Override
     public TagEntity queryTagByBizTypeAndName(String bizType, String name) {
-        List<TagEntity> tagEntityList = tagRepository.lambdaQuery()
+        List<TagEntity> tagEntityList = super.lambdaQuery()
                 .eq(TagEntity::getType, bizType)
                 .eq(TagEntity::getName, name)
                 //.last("limit 50")
@@ -151,7 +151,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
     @Override
     public List<TagEntity> queryTagByBizTypeAndNameList(String bizType, List<String> nameList) {
-        return tagRepository.lambdaQuery()
+        return super.lambdaQuery()
                 .eq(TagEntity::getType, bizType)
                 .in(TagEntity::getName, nameList)
                 //.last("limit 50")
@@ -239,7 +239,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     }
 
     private void tryDeleteTag(Long tagId) {
-        TagEntity tag = tagRepository.lockById(tagId);
+        TagEntity tag = super.lockById(tagId);
         AssertUtils.notNull(tag, DataErrorCodeEnum.DATA_NOT_EXISTS);
         TagMappingEntity tagMapping = new TagMappingEntity();
         tagMapping.setTagId(tagId);
@@ -247,7 +247,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         long existCount = tagMappingService.count(tagMappingService.query(tagMapping, null));
         if (existCount == 0) {
             // 当且仅当没有引用才删除
-            tagRepository.removeById(tagId);
+            super.removeById(tagId);
         }
     }
 
@@ -262,7 +262,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
                 .map(TagEntity::getId)
                 .collect(Collectors.toList());
         // lock
-        List<TagEntity> existsTags = tagRepository.lockByIds(tagIdList);
+        List<TagEntity> existsTags = super.lockByIds(tagIdList);
         Set<Long> existsTagIds = existsTags.stream()
                 .map(TagEntity::getId)
                 .collect(Collectors.toSet());
@@ -272,12 +272,12 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
                 .filter(t -> !existsTagIds.contains(t.getId()))
                 .collect(Collectors.toList());
 
-        tagRepository.saveBatch(toSaveTagList);
+        super.saveBatch(toSaveTagList);
     }
 
     public List<TagEntity> ensureExistOrCreateTag(String type, List<String> tagNameList) {
         AssertUtils.isTrue(tagNameList.size() < 10, DataErrorCodeEnum.DATA_TOO_MUCH);
-        List<TagEntity> existsTags = tagRepository.getBaseMapper().lockByTypeAndNameList(type, tagNameList);
+        List<TagEntity> existsTags = super.getBaseMapper().lockByTypeAndNameList(type, tagNameList);
         Set<String> existTagNameSet = null == existsTags ? new HashSet<>()
                 : new HashSet<>(existsTags.stream().map(TagEntity::getName).collect(Collectors.toSet()));
 
@@ -291,7 +291,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
                     return t;
                 }).collect(Collectors.toList());
 
-        tagRepository.saveBatch(toSaveTagList);
+        super.saveBatch(toSaveTagList);
 
         if (CollectionUtils.isNotEmpty(existsTags)) {
             toSaveTagList.addAll(existsTags);

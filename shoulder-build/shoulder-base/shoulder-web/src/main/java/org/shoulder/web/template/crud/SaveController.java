@@ -34,7 +34,8 @@ import java.io.Serializable;
 public interface SaveController<
         ENTITY extends BaseEntity<? extends Serializable>,
         SAVE_DTO extends Serializable,
-        SAVE_RESULT_DTO extends Serializable> extends BaseController<ENTITY> {
+        SAVE_RESULT_DTO extends Serializable>
+    extends BaseController<ENTITY> {
 
     /**
      * 新增

@@ -8,21 +8,26 @@ import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.autoconfigure.web.WebExtAutoConfiguration.BaseOnEnumDictionaryConfiguration;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.i18.Translator;
-import org.shoulder.web.template.dictionary.controller.DictionaryController;
+import org.shoulder.data.mybatis.template.service.BaseServiceImpl;
+import org.shoulder.web.template.dictionary.controller.DictionaryEnumQueryController;
+import org.shoulder.web.template.dictionary.controller.DictionaryCrudController;
 import org.shoulder.web.template.dictionary.controller.DictionaryEnumController;
 import org.shoulder.web.template.dictionary.controller.DictionaryItemController;
+import org.shoulder.web.template.dictionary.controller.DictionaryItemCrudController;
 import org.shoulder.web.template.dictionary.controller.DictionaryItemEnumController;
+import org.shoulder.web.template.dictionary.controller.DictionaryMngController;
 import org.shoulder.web.template.dictionary.convert.DictionaryItemDTO2DomainConverterRegister;
 import org.shoulder.web.template.dictionary.convert.DictionaryItemDomain2DTOConverter;
+import org.shoulder.web.template.dictionary.service.DictionaryItemService;
+import org.shoulder.web.template.dictionary.service.DictionaryService;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.shoulder.web.template.tag.controller.TagController;
 import org.shoulder.web.template.tag.controller.TagCrudController;
 import org.shoulder.web.template.tag.converter.TagDTO2DomainConverter;
 import org.shoulder.web.template.tag.converter.TagDomain2DTOConverter;
-import org.shoulder.web.template.tag.repository.TagMappingService;
-import org.shoulder.web.template.tag.repository.TagRepository;
 import org.shoulder.web.template.tag.service.TagCoreService;
+import org.shoulder.web.template.tag.service.TagMappingService;
 import org.shoulder.web.template.tag.service.TagServiceImpl;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -40,14 +45,14 @@ import java.util.List;
  *
  * @author lym
  */
-@ConditionalOnClass(DictionaryController.class)
+@ConditionalOnClass(DictionaryEnumQueryController.class)
 @AutoConfiguration(before = { EnableWebMvcConfiguration.class }, after = { BaseOnEnumDictionaryConfiguration.class })
 public class WebExtAutoConfiguration {
 
     @MapperScan("org.shoulder.web.template.tag.mapper")
     @AutoConfiguration(after = {I18nAutoConfiguration.class, CacheAutoConfiguration.class})
-    @ConditionalOnClass(value = { TagController .class })
-    @EnableConfigurationProperties(WebExProperties.class)
+    @ConditionalOnClass(value = { BaseServiceImpl.class, TagController .class })
+    @EnableConfigurationProperties(WebExtProperties.class)
     @ConditionalOnProperty(value = "shoulder.web.ext.tag.enable", havingValue = "true", matchIfMissing = false)
     public static class ExtTagAutoConfiguration {
 
@@ -70,11 +75,6 @@ public class WebExtAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean(value = TagRepository.class)
-        public TagRepository tagRepository() {
-            return new TagRepository();
-        }
-        @Bean
         @ConditionalOnMissingBean(value = TagCoreService.class)
         public TagServiceImpl tagCoreService() {
             return new TagServiceImpl();
@@ -91,8 +91,8 @@ public class WebExtAutoConfiguration {
 
     @AutoConfiguration(after = { I18nAutoConfiguration.class })
     @ConditionalOnClass(value = { DictionaryEnumStore.class })
-    @EnableConfigurationProperties(WebExProperties.class)
-    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.storageType", havingValue = "enum", matchIfMissing = true)
+    @EnableConfigurationProperties(WebExtProperties.class)
+    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.enum.enable", havingValue = "enum", matchIfMissing = true)
     public static class BaseOnEnumDictionaryConfiguration {
 
         /**
@@ -103,9 +103,9 @@ public class WebExtAutoConfiguration {
         @Bean
         @ConditionalOnMissingBean
         public DictionaryEnumStore dictionaryEnumRepository(@Nullable List<DictionaryEnumRepositoryCustomizer> customizers,
-                                                            WebExProperties webExProperties) {
+                                                            WebExtProperties webExtProperties) {
             DictionaryEnumStore repository =
-                new DefaultDictionaryEnumStore(webExProperties.getDictionary().getIgnoreDictionaryTypeCase());
+                new DefaultDictionaryEnumStore(webExtProperties.getDictionary().getIgnoreDictionaryTypeCase());
             if (CollectionUtils.isNotEmpty(customizers)) {
                 customizers.forEach(c -> c.customize(repository));
             }
@@ -126,7 +126,7 @@ public class WebExtAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean(value = DictionaryController.class)
+        @ConditionalOnMissingBean(value = DictionaryEnumQueryController.class)
         public DictionaryEnumController dictionaryController(DictionaryEnumStore dictionaryEnumStore) {
             return new DictionaryEnumController(dictionaryEnumStore);
         }
@@ -139,39 +139,39 @@ public class WebExtAutoConfiguration {
         }
     }
 
-    /*@Configuration
-    @ConditionalOnClass(value = {BaseServiceImpl.class})
-    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.storageType", havingValue = "db")
+    @MapperScan("org.shoulder.web.template.dictionary.mapper")
+    @AutoConfiguration(after = {I18nAutoConfiguration.class, CacheAutoConfiguration.class})
+    @EnableConfigurationProperties(WebExtProperties.class)
+    @ConditionalOnClass(value = { BaseServiceImpl.class, DictionaryCrudController.class})
+    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.db.enable", havingValue = "true", matchIfMissing = false)
     public static class BaseOnDbDictionaryConfiguration {
 
         @Bean
         @ConditionalOnMissingBean
-        @ConditionalOnBean(DictionaryItemRepository.class)
-        public DictionaryItemService dictionaryItemService() {
-            return new DictionaryItemService();
-        }
-
-        @Bean
-        @ConditionalOnMissingBean
-        @ConditionalOnBean(DictionaryRepository.class)
         public DictionaryService dictionaryService() {
             return new DictionaryService();
         }
 
         @Bean
         @ConditionalOnMissingBean
-        @ConditionalOnBean(DictionaryService.class)
-        public DictionaryController dictionaryController() {
+        @DependsOn({"dictionaryService", "conversionService"})
+        public DictionaryMngController dictionaryMngController() {
             return new DictionaryCrudController();
+        }
+
+
+        @Bean
+        @ConditionalOnMissingBean
+        public DictionaryItemService dictionaryItemService() {
+            return new DictionaryItemService();
         }
 
         @Bean
         @ConditionalOnMissingBean
-        @ConditionalOnBean(DictionaryItemService.class)
+        @DependsOn({"dictionaryItemService", "conversionService"})
         public DictionaryItemController dictionaryItemEnumController() {
             return new DictionaryItemCrudController();
         }
 
-
-    }*/
+    }
 }

@@ -24,15 +24,15 @@ import java.io.Serializable;
 @SuppressWarnings("rawtypes")
 @RestController
 public abstract class CrudController<
-    SERVICE extends BaseService<ENTITY>,
-    ENTITY extends BaseEntity<ID>,
-    ID extends Serializable,
-    QueryResultDTO extends Serializable,
-    PageQuery extends Serializable,
-    SaveDTO extends Serializable,
-    UpdateDTO extends Serializable>
-        extends BaseControllerImpl<SERVICE, ENTITY>
-        implements
+        SERVICE extends BaseService<ENTITY>,
+        ENTITY extends BaseEntity<ID>,
+        ID extends Serializable,
+        QueryResultDTO extends Serializable,
+        PageQuery extends Serializable,
+        SaveDTO extends Serializable,
+        UpdateDTO extends Serializable>
+    extends BaseControllerImpl<SERVICE, ENTITY>
+    implements
         SaveController<ENTITY, SaveDTO, QueryResultDTO>,
         UpdateController<ENTITY, UpdateDTO, QueryResultDTO>,
         DeleteController<ENTITY, ID, QueryResultDTO>,

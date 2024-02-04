@@ -10,9 +10,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author lym
  */
 @Data
-@ConfigurationProperties(prefix = WebExProperties.PREFIX)
-public class WebExProperties {
+@ConfigurationProperties(prefix = WebExtProperties.PREFIX)
+public class WebExtProperties {
 
+    /**
+     * EXT 配置 key 前缀：shoulder.{moduleName}.ext.{functionName}.xxx
+     */
     public static final String PREFIX = BaseAppProperties.KEY_PREFIX + "web.ext";
 
     /**

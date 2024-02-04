@@ -31,7 +31,8 @@ import java.util.stream.Collectors;
 public interface DeleteController<
         ENTITY extends BaseEntity<ID>,
         ID extends Serializable,
-        UPDATE_RESULT_DTO extends Serializable> extends BaseController<ENTITY> {
+        UPDATE_RESULT_DTO extends Serializable>
+    extends BaseController<ENTITY> {
 
     /**
      * 删除单个

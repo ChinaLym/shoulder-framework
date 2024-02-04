@@ -6,6 +6,6 @@ package org.shoulder.web.template.dictionary.controller;
  *
  * @author lym
  */
-public interface DictionaryController {
+public interface DictionaryEnumQueryController {
 
 }

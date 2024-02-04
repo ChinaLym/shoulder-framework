@@ -1,4 +1,4 @@
-package org.shoulder.web.template.tag.repository;
+package org.shoulder.web.template.tag.service;
 
 import org.shoulder.data.mybatis.template.service.BaseCacheableServiceImpl;
 import org.shoulder.web.template.tag.mapper.TagMappingMapper;

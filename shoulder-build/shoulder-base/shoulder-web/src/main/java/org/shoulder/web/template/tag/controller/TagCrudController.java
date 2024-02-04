@@ -16,13 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.tag.path:/api/v1/tags}")
 public class TagCrudController extends CrudCacheableController<
-    TagServiceImpl,
-    TagEntity,
-    Long,
-    TagDTO,
-    TagDTO,
-    TagDTO,
-    TagDTO> implements TagController {
+        TagServiceImpl,
+        TagEntity,
+        Long,
+        TagDTO,
+        TagDTO,
+        TagDTO,
+        TagDTO>
+    implements TagController {
 
     //save检查标签操作权限
     /**
