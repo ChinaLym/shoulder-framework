@@ -56,7 +56,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
         StopWatch stopWatch = new StopWatch();
         RestRequestRecord record = RestRequestRecord.builder()
             // request
-            .method(request.getMethodValue())
+            .method(request.getMethod().name())
             .url(request.getURI().toString())
             .requestHeaders(request.getHeaders())
             .requestBody(new String(body, AppInfo.charset()))

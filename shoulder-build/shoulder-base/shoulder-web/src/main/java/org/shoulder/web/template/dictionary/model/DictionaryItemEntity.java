@@ -28,14 +28,14 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class DictionaryItemEntity<ID extends Serializable>
         extends BizEntity<ID>
-        implements DictionaryItem<String> {
+    implements org.shoulder.web.template.dictionary.model.DictionaryItem<String> {
 
     /**
-     * 字典类型 / 业务类型，关联到 {@link DictionaryEntity}
+     * 字典类型 / 业务类型，关联到 {@link org.shoulder.web.template.dictionary.model.DictionaryEntity}
      */
     @TableField("dictionary_id")
     @BizIdSource
-    ID dictionaryId;
+    String dictionaryId;
 
     /**
      * 名称
@@ -82,6 +82,11 @@ public class DictionaryItemEntity<ID extends Serializable>
     @Override
     public String getObjectName() {
         return name;
+    }
+
+    @Override
+    public String getDictionaryType() {
+        return dictionaryId;
     }
 
     @Override

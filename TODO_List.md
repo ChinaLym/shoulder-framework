@@ -1,13 +1,13 @@
 # BUG
 
-demo2:batchService没注入？引入 csv 依赖
-DEMO3\DEMO4: 编译问题？本地缓存？
+~~demo2:batchService没注入？~~ 引入 csv 依赖
+~~DEMO3\DEMO4: 编译问题？本地缓存？~~ 提供内嵌 redis
 DEMO4: org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.springSecurityFilterChain
-demo5: 加解密
+~~demo5: 加解密~~ 修改框架，兼容 spring6
 
 ## 依赖优化
 
-demo 改为 h2 方便本地启动
+~~demo 改为 h2 、内嵌方便本地启动，完成~~
 op-log, local-crypto 在db引入后,表未创建,采用打印log的兜底逻辑
 
 # 实现
@@ -21,11 +21,11 @@ op-log, local-crypto 在db引入后,表未创建,采用打印log的兜底逻辑
 
 - mybatis-plus 日志输出美化（Optional）
 - JPA 类型转换（AttributeConverter，Optional）
-- 通用简单业务模板代码
+- ~~通用简单业务模板代码~~ 0.6新增 0.8ok
     - 应用内部广播变更通知
 
 #### ~~租户支持~~
-租户这个概念，不同的业务场景有不同的决策逻辑，直接用租户承载未必是最合适的，而是贴近业务场景，将业务最真实的隔离条件依据作为隔离标更好，如地区，国家，公司主体等
+租户这个概念，不同的业务场景有不同的决策逻辑，直接用租户承载未必是最合适的，而是贴近业务场景，将业务最真实的隔离条件依据作为隔离标更好，如地区，国家，公司主体等，否则随着业务的深入，技术会因为"租户"概念而被拖累。
 
 #### api 文档
 - open-api v2/v3 ?
@@ -37,7 +37,7 @@ op-log, local-crypto 在db引入后,表未创建,采用打印log的兜底逻辑
 - @API 注解区分哪些是对外（第三方）暴露的接口，哪些是系统内部的接口
 
 #### 枚举与字典集成【Preview】
-扫描特定枚举类，生成字典信息到统一目录，字典服务
+~~扫描特定枚举类，生成字典信息到统一目录，字典服务~~ 0.8 ok
 
 ## spring-cache
 - RedisSerializer：使用 ConversionService 代替 StringRedisSerializer 支持枚举等，获得更好的编码体验【Optional】
@@ -47,12 +47,12 @@ op-log, local-crypto 在db引入后,表未创建,采用打印log的兜底逻辑
 
 当前用户信息 AppContext | Spring Security 提供的上下文
 第三方登录等，暂未封装
-【OK】 **支持 token 认证**
+【OK】 ~~**支持 token 认证**~~
 获取浏览器信息 UserAgentUtils
 
 # 提供技术选型推荐
 
-【OK】 csv(xstream)、excel pdf(itextpdf) 导入导出 JsonPath
+【OK】 ~~csv(xstream)、excel pdf(itextpdf) 导入导出 JsonPath~~
 
 定时任务。
 
@@ -134,7 +134,7 @@ sla（sli/slo）
 
 常见敏感信息工具，如 idCard phoneNum userName homeAddress url
 
-事件机制
+~~事件机制~~，依赖 spring
 
 # 监控
 健康检查 actuator 是否启动完毕、版本号
@@ -145,6 +145,6 @@ sla（sli/slo）
 
 # 本工程维护
 - ~~shoulder-maven-plugin 未开源 / 发布maven仓库，导致 shoulder-framework 其他人不能打包 / 发布~~
-  - 已经将 shoulder-maven-plugin 开源发布 1.0 版本，且去除 shoulder-lombok 这类深度集成，现在任何人都可以编译本项目
+  - ~~已经将 shoulder-maven-plugin 开源发布 1.0 版本，且去除 shoulder-lombok 这类深度集成，现在任何人都可以编译本项目~~
 - key 修改 支持 从pom读application.properties数据【低优先】
   - maven-resource-plugin 打包时候修改application.properties代码，填充值；因pom.xml内容相对固定，且application.properties可更换, 故有很多种方式来更好的维护，该项自行选择，不做框架的默认
