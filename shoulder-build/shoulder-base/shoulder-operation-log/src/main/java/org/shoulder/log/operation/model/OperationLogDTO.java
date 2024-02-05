@@ -132,12 +132,12 @@ public class OperationLogDTO implements Cloneable, Serializable {
      * - 若不支持多语言则不填。
      * 占位符使用 %1,%2,%n形式，n表示第n个参数；
      */
-    protected String detailKey;
+    protected String detailI18nKey;
 
     /**
      * 操作详情占位填充项，用于填充 detailKey 中的 %1,%2,%n
      */
-    protected List<String> detailItems;
+    protected List<String> detailI18nItems;
 
     /**
      * 本次操作结果（必填）
@@ -250,10 +250,10 @@ public class OperationLogDTO implements Cloneable, Serializable {
             if (operable instanceof OperationDetailAble) {
                 OperationDetailAble operationDetailAble = (OperationDetailAble) operable;
                 if (CollectionUtils.isNotEmpty(operationDetailAble.getDetailItems())) {
-                    this.detailItems = operationDetailAble.getDetailItems();
+                    this.detailI18nItems = operationDetailAble.getDetailItems();
                 }
                 if (StringUtils.isNotEmpty(operationDetailAble.getDetailKey())) {
-                    this.detailKey = operationDetailAble.getDetailKey();
+                    this.detailI18nKey = operationDetailAble.getDetailKey();
                 }
                 if (StringUtils.isNotEmpty(operationDetailAble.getDetail())) {
                     this.detail = operationDetailAble.getDetail();
@@ -269,10 +269,10 @@ public class OperationLogDTO implements Cloneable, Serializable {
 
     public OperationLogDTO addDetailItem(String detailItem) {
         if (detailItem != null) {
-            if (this.detailItems == null) {
-                this.detailItems = new LinkedList<>();
+            if (this.detailI18nItems == null) {
+                this.detailI18nItems = new LinkedList<>();
             }
-            this.detailItems.add(detailItem);
+            this.detailI18nItems.add(detailItem);
         }
         return this;
     }
@@ -346,9 +346,9 @@ public class OperationLogDTO implements Cloneable, Serializable {
         clone.setOperationTime(operationTime);
         clone.setEndTime(endTime);
         clone.setResult(result);
-        clone.setDetailKey(detailKey);
-        if (detailItems != null) {
-            clone.setDetailItems(new LinkedList<>(detailItems));
+        clone.setDetailI18nKey(detailI18nKey);
+        if (detailI18nItems != null) {
+            clone.setDetailI18nItems(new LinkedList<>(detailI18nItems));
         }
         clone.setDetail(detail);
         clone.setErrorCode(errorCode);

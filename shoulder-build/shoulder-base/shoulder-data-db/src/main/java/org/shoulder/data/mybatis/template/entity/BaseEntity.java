@@ -35,7 +35,7 @@ public class BaseEntity<ID extends Serializable> implements Operable, Serializab
 //    @NotNull(message = "id can't be null", groups = Update.class)
     protected ID id;
 
-    @TableField(value = DataBaseConsts.COLUMN_CREATE_TIME, fill = FieldFill.INSERT)
+    @TableField(value = DataBaseConsts.COLUMN_CREATE_TIME, fill = FieldFill.INSERT, updateStrategy = FieldStrategy.NEVER)
     protected LocalDateTime createTime;
 
     @TableField(value = DataBaseConsts.COLUMN_UPDATE_TIME, fill = FieldFill.INSERT_UPDATE)

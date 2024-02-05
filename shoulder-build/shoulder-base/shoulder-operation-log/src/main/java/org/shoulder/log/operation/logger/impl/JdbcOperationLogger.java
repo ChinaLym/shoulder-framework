@@ -35,7 +35,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
 
     private static final String ALL_INSERT_COLUMNS = "app_id, instance_id, " +
             "user_id, user_name, user_real_name, user_org_id, user_org_name, terminal_type, terminal_address, terminal_id, terminal_info, " +
-            "operation, object_type, object_id, object_name, detail, detail_key, detail_item, operation_param," +
+            "operation, object_type, object_id, object_name, detail, detail_i18n_key, detail_i18n_item, operation_param," +
             "result, error_code, operation_time, end_time, duration, trace_id, relation_id, tenant_code, extended_field0";
 
     private static final String VALUES = "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -86,8 +86,8 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[13] = opLog.getObjectId();
         fields[14] = opLog.getObjectName();
         fields[15] = opLog.getDetail();
-        fields[16] = opLog.getDetailKey();
-        fields[17] = CollectionUtils.isEmpty(opLog.getDetailItems()) ? null : JsonUtils.toJson(opLog.getDetailItems());
+        fields[16] = opLog.getDetailI18nKey();
+        fields[17] = CollectionUtils.isEmpty(opLog.getDetailI18nItems()) ? null : JsonUtils.toJson(opLog.getDetailI18nItems());
         fields[18] = CollectionUtils.isEmpty(opLog.getParams()) ? null : JsonUtils.toJson(opLog.getParams());
 
         fields[19] = opLog.getResult().getCode();

@@ -33,7 +33,7 @@ public class DictionaryTypeDTO implements Serializable {
 
     private String source;
 
-    private Boolean addItemAble;
+    private Boolean modifyAble;
 
     private Integer displayOrder;
 

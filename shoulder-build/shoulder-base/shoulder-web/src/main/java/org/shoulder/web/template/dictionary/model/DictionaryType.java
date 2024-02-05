@@ -35,9 +35,7 @@ public interface DictionaryType {
      *
      * @return 枚举不能修改，db 存储一般可修改
      */
-    default boolean addItemAble() {
-        return true;
-    }
+    boolean modifyAble();
 
     /*
      * 将 id 转为 Enum
@@ -46,8 +44,8 @@ public interface DictionaryType {
      * @param id        id
      * @return Enum
      */
-    //  <ID> Dictionary<ID> fromId(String dictionaryTypeName, ID id)
-    //  <ID> Dictionary<ID> fromName(String dictionaryTypeName, String name)
+    //   Dictionary fromId(String dictionaryTypeName, ID id)
+    //   Dictionary fromName(String dictionaryTypeName, String name)
     // List<Dictionary> values(String dictionaryTypeName)
 
 

@@ -1,5 +1,6 @@
 package org.shoulder.web.template.tag.model;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
@@ -70,7 +71,7 @@ public class TagEntity extends BizEntity<Long> {
     /**
      * 来源
      */
-    @TableField("source")
+    @TableField(value = "source", updateStrategy = FieldStrategy.NEVER)
     private String source;
 
     /**

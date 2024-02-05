@@ -73,9 +73,9 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
         assertLengthLimit(log.getObjectId(), 128, "objectId");
         assertLengthLimit(log.getObjectName(), 255, "objectName");
         assertLengthLimit(log.getOperation(), 255, "operation");
-        assertLengthLimit(log.getDetailKey(), 128, "detailKey");
-        if (log.getDetailItems() != null && log.getDetailItems().isEmpty()) {
-            assertSmallerLimit(log.getDetailItems().stream().map(String::length).reduce(Integer::sum).orElse(0), 4096, "detail");
+        assertLengthLimit(log.getDetailI18nKey(), 128, "detailI18nKey");
+        if (log.getDetailI18nItems() != null && !log.getDetailI18nItems().isEmpty()) {
+            assertSmallerLimit(log.getDetailI18nItems().stream().map(String::length).reduce(Integer::sum).orElse(0), 4096, "detail");
         }
     }
 

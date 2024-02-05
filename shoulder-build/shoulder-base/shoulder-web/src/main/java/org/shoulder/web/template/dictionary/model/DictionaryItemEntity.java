@@ -2,6 +2,7 @@ package org.shoulder.web.template.dictionary.model;
 
 import com.baomidou.mybatisplus.annotation.SqlCondition;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +14,12 @@ import org.shoulder.data.annotation.BizIdSource;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.template.entity.BizTreeEntity;
 
-import java.io.Serializable;
+import java.io.Serial;
 
 /**
  * 字典项
  * itemId 用 bizId 实现
  *
- * @param <ID> 字典表 、 字典项表主键类型
  * @author lym
  */
 @Getter
@@ -27,9 +27,13 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DictionaryItemEntity<ID extends Serializable>
-    extends BizTreeEntity<ID>
+@TableName("tb_dictionary_item")
+public class DictionaryItemEntity
+        extends BizTreeEntity<Long>
     implements DictionaryItem<String> {
+
+    @Serial
+    private static final long serialVersionUID = -6634573176500294047L;
 
     /**
      * 字典类型 / 业务类型，关联到 {@link DictionaryTypeEntity#getCode()}

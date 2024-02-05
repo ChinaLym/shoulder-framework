@@ -29,7 +29,7 @@ public class EnumToStringPropertyValueConverter
     public String write(@NonNull DictionaryItem<String> value, ValueConversionContext<? extends PersistentProperty> context) {
         Class<?> actuallyType = context.getProperty().getActualType();
         GenericConverter converter = actuallyType.isEnum()
-                ? DictionaryEnumSerialGenericConverter.INSTANCE
+                ? DictionaryItemEnumSerialGenericConverter.INSTANCE
                 : DictionaryItemToStrGenericConverter.INSTANCE;
         return (String) converter.convert(value, TypeDescriptor.valueOf(actuallyType), TypeDescriptor.valueOf(String.class));
     }

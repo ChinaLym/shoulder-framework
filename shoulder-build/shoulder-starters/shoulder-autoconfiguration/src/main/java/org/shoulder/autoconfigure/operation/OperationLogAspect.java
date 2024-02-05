@@ -231,7 +231,7 @@ public class OperationLogAspect {
 
         if (StringUtils.isNotBlank(detailI18nKey)) {
             // 填写则表示支持多语言
-            entity.setDetailKey(detailI18nKey);
+            entity.setDetailI18nKey(detailI18nKey);
         }
         if (StringUtils.isNotEmpty(detail)) {
             // 填写 detail 不填写 detailI18nKey 认为不支持多语言

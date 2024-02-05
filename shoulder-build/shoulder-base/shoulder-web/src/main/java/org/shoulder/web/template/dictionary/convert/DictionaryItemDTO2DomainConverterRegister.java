@@ -53,7 +53,7 @@ public class DictionaryItemDTO2DomainConverterRegister {
         // integer/string -> Enum
         conversionService.addConverter(ToDictionaryEnumGenericConverter.INSTANCE);
         // Core.Enum -> integer/string
-        conversionService.addConverter(DictionaryEnumSerialGenericConverter.INSTANCE);
+        conversionService.addConverter(DictionaryItemEnumSerialGenericConverter.INSTANCE);
         // Core.DictionaryItem(!Enum) -> String
         conversionService.addConverter(DictionaryItemToStrGenericConverter.INSTANCE);
         // core.DictionaryItem -> dto

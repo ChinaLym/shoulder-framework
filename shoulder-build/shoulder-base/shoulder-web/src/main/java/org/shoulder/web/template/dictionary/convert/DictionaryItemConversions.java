@@ -16,7 +16,7 @@ public class DictionaryItemConversions {
         }
         Class<?> actuallyType = value.getClass();
         GenericConverter converter = actuallyType.isEnum()
-                ? DictionaryEnumSerialGenericConverter.INSTANCE
+                ? DictionaryItemEnumSerialGenericConverter.INSTANCE
                 : DictionaryItemToStrGenericConverter.INSTANCE;
         return (String) converter.convert(value, TypeDescriptor.valueOf(actuallyType), TypeDescriptor.valueOf(String.class));
     }

@@ -9,17 +9,8 @@ import org.shoulder.autoconfigure.web.WebExtAutoConfiguration.BaseOnEnumDictiona
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.data.mybatis.template.service.BaseServiceImpl;
-import org.shoulder.web.template.dictionary.controller.DictionaryCrudController;
-import org.shoulder.web.template.dictionary.controller.DictionaryEnumController;
-import org.shoulder.web.template.dictionary.controller.DictionaryEnumQueryController;
-import org.shoulder.web.template.dictionary.controller.DictionaryItemController;
-import org.shoulder.web.template.dictionary.controller.DictionaryItemCrudController;
-import org.shoulder.web.template.dictionary.controller.DictionaryItemEnumController;
-import org.shoulder.web.template.dictionary.controller.DictionaryMngController;
-import org.shoulder.web.template.dictionary.convert.DictionaryItemDTO2DomainConverterRegister;
-import org.shoulder.web.template.dictionary.convert.DictionaryItemDomain2DTOConverter;
-import org.shoulder.web.template.dictionary.convert.DictionaryTypeDTO2EntityConverter;
-import org.shoulder.web.template.dictionary.convert.DictionaryTypeDomain2DTOConverter;
+import org.shoulder.web.template.dictionary.controller.*;
+import org.shoulder.web.template.dictionary.convert.*;
 import org.shoulder.web.template.dictionary.service.DictionaryItemService;
 import org.shoulder.web.template.dictionary.service.DictionaryService;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
@@ -148,7 +139,7 @@ public class WebExtAutoConfiguration {
     @MapperScan("org.shoulder.web.template.dictionary.mapper")
     @AutoConfiguration(after = { I18nAutoConfiguration.class, CacheAutoConfiguration.class })
     @EnableConfigurationProperties(WebExtProperties.class)
-    @ConditionalOnClass(value = { BaseServiceImpl.class, DictionaryCrudController.class })
+    @ConditionalOnClass(value = {BaseServiceImpl.class, DictionaryTypeCrudController.class})
     @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.db.enable", havingValue = "true", matchIfMissing = false)
     public static class BaseOnDbDictionaryConfiguration {
 
@@ -159,10 +150,10 @@ public class WebExtAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean(DictionaryMngController.class)
+        @ConditionalOnMissingBean(DictionaryTypeController.class)
         @DependsOn({ "dictionaryService", "conversionService" })
-        public DictionaryCrudController dictionaryCrudController() {
-            return new DictionaryCrudController();
+        public DictionaryTypeCrudController dictionaryCrudController() {
+            return new DictionaryTypeCrudController();
         }
 
         @Bean
@@ -178,11 +169,16 @@ public class WebExtAutoConfiguration {
             return new DictionaryItemCrudController();
         }
 
-
         @Bean
         @ConditionalOnMissingBean(value = DictionaryTypeDTO2EntityConverter.class)
         public DictionaryTypeDTO2EntityConverter  dictionaryTypeDTO2EntityConverter() {
             return new DictionaryTypeDTO2EntityConverter();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(value = DictionaryTypeEntity2DTOConverter.class)
+        public DictionaryTypeEntity2DTOConverter dictionaryTypeEntity2DTOConverter() {
+            return new DictionaryTypeEntity2DTOConverter();
         }
 
         @Bean

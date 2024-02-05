@@ -22,7 +22,7 @@ public class DictionaryTypeDomain2DTOConverter extends AbstractVODataConverter<D
 
     @Override
     public void doConvert(@Nonnull DictionaryType sourceModel, @Nonnull DictionaryTypeDTO targetModel) {
-        targetModel.setAddItemAble(sourceModel.addItemAble());
+        targetModel.setModifyAble(sourceModel.modifyAble());
         targetModel.setDisplayName(sourceModel.getDisplayName());
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
         targetModel.setCode(sourceModel.getCode());

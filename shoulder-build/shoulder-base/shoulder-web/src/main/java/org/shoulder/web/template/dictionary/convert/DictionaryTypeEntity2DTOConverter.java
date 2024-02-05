@@ -15,14 +15,14 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-public class DictionaryTypeDTO2EntityConverter extends AbstractVODataConverter<DictionaryTypeDTO, DictionaryTypeEntity> {
+public class DictionaryTypeEntity2DTOConverter extends AbstractVODataConverter<DictionaryTypeEntity, DictionaryTypeDTO> {
 
-    public static final DictionaryTypeDTO2EntityConverter INSTANCE = new DictionaryTypeDTO2EntityConverter();
+    public static final DictionaryTypeEntity2DTOConverter INSTANCE = new DictionaryTypeEntity2DTOConverter();
 
     @Override
-    public void doConvert(@Nonnull DictionaryTypeDTO sourceModel, @Nonnull DictionaryTypeEntity targetModel) {
+    public void doConvert(@Nonnull DictionaryTypeEntity sourceModel, @Nonnull DictionaryTypeDTO targetModel) {
         //date version creator 不转换
-        targetModel.setId(conversionService.convert(sourceModel.getId(), Long.class));
+        targetModel.setId(conversionService.convert(sourceModel.getId(), String.class));
         targetModel.setVersion(sourceModel.getVersion());
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
         targetModel.setCode(sourceModel.getCode());

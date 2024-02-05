@@ -94,9 +94,9 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
         }
 
         // 拼接 List 类型（json格式）
-        if (CollectionUtils.isNotEmpty(opLog.getDetailItems())) {
+        if (CollectionUtils.isNotEmpty(opLog.getDetailI18nItems())) {
             StringJoiner detailsStr = new StringJoiner(",", "[", "]");
-            opLog.getDetailItems()
+            opLog.getDetailI18nItems()
                 .stream().
                 filter(Objects::nonNull)
                 .forEach(detailsStr::add);

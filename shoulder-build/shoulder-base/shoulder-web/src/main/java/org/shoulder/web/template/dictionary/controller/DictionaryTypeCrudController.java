@@ -7,24 +7,22 @@ import org.shoulder.web.template.dictionary.service.DictionaryService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.Serializable;
-
 /**
  * 枚举型字典接口-默认实现
  *
  * @author lym
  */
 @RestController
-@RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}")
-public class DictionaryCrudController<ID extends Serializable>
+@RequestMapping(value = "${shoulder.web.ext.dictionary.path + '/type':/api/v1/dictionary/type}")
+public class DictionaryTypeCrudController
     extends CrudCacheableController<
-        DictionaryService<ID>,
-        DictionaryTypeEntity<ID>,
-        ID,
+        DictionaryService,
+        DictionaryTypeEntity,
+        Long,
     DictionaryTypeDTO,
     DictionaryTypeDTO,
     DictionaryTypeDTO,
     DictionaryTypeDTO>
-    implements DictionaryMngController {
+        implements DictionaryTypeController {
 
 }

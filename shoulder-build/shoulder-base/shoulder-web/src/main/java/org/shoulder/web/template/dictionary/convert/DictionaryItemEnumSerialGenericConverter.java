@@ -14,9 +14,9 @@ import java.util.Set;
  * @author lym
  */
 @SuppressWarnings("unchecked")
-public class DictionaryEnumSerialGenericConverter implements ConditionalGenericConverter {
+public class DictionaryItemEnumSerialGenericConverter implements ConditionalGenericConverter {
 
-    public static final DictionaryEnumSerialGenericConverter INSTANCE = new DictionaryEnumSerialGenericConverter();
+    public static final DictionaryItemEnumSerialGenericConverter INSTANCE = new DictionaryItemEnumSerialGenericConverter();
 
     @Override
     public Set<ConvertiblePair> getConvertibleTypes() {

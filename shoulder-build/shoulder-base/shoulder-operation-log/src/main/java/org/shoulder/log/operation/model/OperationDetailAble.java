@@ -25,7 +25,7 @@ public interface OperationDetailAble {
     /**
      * 获取操作详情填充参数
      *
-     * @return 对应 {@link OperationLogDTO#detailItems} 字段
+     * @return 对应 {@link OperationLogDTO#detailI18nItems} 字段
      */
     @JsonIgnore
     default List<String> getDetailItems() {

@@ -1,6 +1,7 @@
 package org.shoulder.data.mybatis.template.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Getter;
@@ -36,7 +37,7 @@ public class BizEntity<ID extends Serializable>
      * 预定义规则：可按照特定格式或规则生成，比如按时间序列、地区信息、特定算法等组合而成
      * 无序增长和不可预测性：id 的往往连续递增的，易暴露业务量大小或记录创建顺序等敏感信息。而 bizId 可设计为不连续或不可预测的，有助于保护一定的业务隐私。
      */
-    @TableField("biz_id")
+    @TableField(value = "biz_id", updateStrategy = FieldStrategy.NEVER)
     private String bizId;
 
     /**

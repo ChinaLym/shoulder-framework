@@ -1,6 +1,7 @@
 package org.shoulder.data.mybatis.template.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,7 @@ import java.time.LocalDateTime;
 public class Entity<ID extends Serializable>
         extends BaseEntity<ID> {
 
-    @TableField(value = DataBaseConsts.COLUMN_CREATOR, fill = FieldFill.INSERT)
+    @TableField(value = DataBaseConsts.COLUMN_CREATOR, fill = FieldFill.INSERT, updateStrategy = FieldStrategy.NEVER)
     protected Long creator;
 
     @TableField(value = DataBaseConsts.COLUMN_MODIFIER, fill = FieldFill.INSERT_UPDATE)

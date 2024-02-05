@@ -6,14 +6,14 @@ import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEntity;
 import org.shoulder.web.template.dictionary.spi.String2ConfigAbleDictionaryItemConverter;
 
-import java.io.Serializable;
-
 /**
  * itemService
  *
  * @author lym
  */
-public class DictionaryItemService<ID extends Serializable> extends BaseCacheableServiceImpl<DictionaryItemMapper<ID>, DictionaryItemEntity<ID>> implements String2ConfigAbleDictionaryItemConverter {
+public class DictionaryItemService
+        extends BaseCacheableServiceImpl<DictionaryItemMapper, DictionaryItemEntity>
+        implements String2ConfigAbleDictionaryItemConverter {
 
     @Override
     public ConfigAbleDictionaryItem convertToConfigAbleDictionaryItem(String dictionaryType, String code) {

@@ -11,6 +11,9 @@
 - db
   - 扩展的 bizId、version、逻辑删除等 模板Entity进入可用状态，现在可以继承这些模板类减少bizId 相关DB操作代码的编写了（0.6
     引入）
+- operation-log
+  - detailKey 改为 detailI18nKey，db 中 detail_key 改为 detail_i18n_key
+  - detailItems 改为 detailI18nItems，db 中 detail_item 改为 detail_i18n_values
 - web
   - 模板类进入可用状态（0.6 引入）
   - 提供开箱即用可扩展的字典、标签能力（0.6 引入），并添加配套支持（HTTP-API、相关工具类、ConversionService、JPA、Mybatis-plus、MongoDb...）
