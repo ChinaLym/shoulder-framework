@@ -18,6 +18,8 @@ import org.shoulder.web.template.dictionary.controller.DictionaryItemEnumControl
 import org.shoulder.web.template.dictionary.controller.DictionaryMngController;
 import org.shoulder.web.template.dictionary.convert.DictionaryItemDTO2DomainConverterRegister;
 import org.shoulder.web.template.dictionary.convert.DictionaryItemDomain2DTOConverter;
+import org.shoulder.web.template.dictionary.convert.DictionaryTypeDTO2EntityConverter;
+import org.shoulder.web.template.dictionary.convert.DictionaryTypeDomain2DTOConverter;
 import org.shoulder.web.template.dictionary.service.DictionaryItemService;
 import org.shoulder.web.template.dictionary.service.DictionaryService;
 import org.shoulder.web.template.dictionary.spi.DefaultDictionaryEnumStore;
@@ -50,8 +52,8 @@ import java.util.List;
 public class WebExtAutoConfiguration {
 
     @MapperScan("org.shoulder.web.template.tag.mapper")
-    @AutoConfiguration(after = {I18nAutoConfiguration.class, CacheAutoConfiguration.class})
-    @ConditionalOnClass(value = { BaseServiceImpl.class, TagController .class })
+    @AutoConfiguration(after = { I18nAutoConfiguration.class, CacheAutoConfiguration.class })
+    @ConditionalOnClass(value = { BaseServiceImpl.class, TagController.class })
     @EnableConfigurationProperties(WebExtProperties.class)
     @ConditionalOnProperty(value = "shoulder.web.ext.tag.enable", havingValue = "true", matchIfMissing = false)
     public static class ExtTagAutoConfiguration {
@@ -63,9 +65,9 @@ public class WebExtAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean(value = TagDTO2DomainConverter .class)
-        public TagDTO2DomainConverter  tagDTO2DomainConverter() {
-            return new TagDTO2DomainConverter ();
+        @ConditionalOnMissingBean(value = TagDTO2DomainConverter.class)
+        public TagDTO2DomainConverter tagDTO2DomainConverter() {
+            return new TagDTO2DomainConverter();
         }
 
         @Bean
@@ -85,7 +87,7 @@ public class WebExtAutoConfiguration {
          * 必须要返回值是具体的 Controller，而非接口；另外注意 ConditionalOnMissingBean 要用接口，方便使用者替换
          */
         @Bean
-        @DependsOn({"tagCoreService", "conversionService"})
+        @DependsOn({ "tagCoreService", "conversionService" })
         @ConditionalOnMissingBean(value = TagController.class)
         public TagCrudController tagCrudController() {
             return new TagCrudController();
@@ -144,9 +146,9 @@ public class WebExtAutoConfiguration {
     }
 
     @MapperScan("org.shoulder.web.template.dictionary.mapper")
-    @AutoConfiguration(after = {I18nAutoConfiguration.class, CacheAutoConfiguration.class})
+    @AutoConfiguration(after = { I18nAutoConfiguration.class, CacheAutoConfiguration.class })
     @EnableConfigurationProperties(WebExtProperties.class)
-    @ConditionalOnClass(value = { BaseServiceImpl.class, DictionaryCrudController.class})
+    @ConditionalOnClass(value = { BaseServiceImpl.class, DictionaryCrudController.class })
     @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.db.enable", havingValue = "true", matchIfMissing = false)
     public static class BaseOnDbDictionaryConfiguration {
 
@@ -158,11 +160,10 @@ public class WebExtAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(DictionaryMngController.class)
-        @DependsOn({"dictionaryService", "conversionService"})
+        @DependsOn({ "dictionaryService", "conversionService" })
         public DictionaryCrudController dictionaryCrudController() {
             return new DictionaryCrudController();
         }
-
 
         @Bean
         @ConditionalOnMissingBean
@@ -172,9 +173,22 @@ public class WebExtAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(DictionaryItemController.class)
-        @DependsOn({"dictionaryItemService", "conversionService"})
+        @DependsOn({ "dictionaryItemService", "conversionService" })
         public DictionaryItemCrudController dictionaryItemCrudController() {
             return new DictionaryItemCrudController();
+        }
+
+
+        @Bean
+        @ConditionalOnMissingBean(value = DictionaryTypeDTO2EntityConverter.class)
+        public DictionaryTypeDTO2EntityConverter  dictionaryTypeDTO2EntityConverter() {
+            return new DictionaryTypeDTO2EntityConverter();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(value = DictionaryTypeDomain2DTOConverter.class)
+        public DictionaryTypeDomain2DTOConverter  dictionaryTypeDomain2DTOConverter() {
+            return new DictionaryTypeDomain2DTOConverter();
         }
 
     }

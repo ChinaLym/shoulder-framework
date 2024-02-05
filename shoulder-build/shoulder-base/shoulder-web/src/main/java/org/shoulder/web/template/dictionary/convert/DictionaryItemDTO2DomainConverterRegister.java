@@ -41,9 +41,6 @@ public class DictionaryItemDTO2DomainConverterRegister {
         ShoulderConversionService conversionService = event.getApplicationContext().getBean(ShoulderConversionService.class);
 
         // ======= 字典类型 ======
-        conversionService.addConverter(DictionaryTypeDomain2DTOConverter.INSTANCE);
-        conversionService.addConverter(DictionaryTypeDTO2EntityConverter.INSTANCE);
-        // toString
         conversionService.addConverter(DictionaryType.class, String.class, DictionaryType::getCode);
 
         // ======= 字典项 ====== 枚举字典
