@@ -9,7 +9,9 @@ import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItem;
+import org.shoulder.web.template.dictionary.model.DictionaryItemEntity;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
+import org.shoulder.web.template.dictionary.service.DictionaryItemService;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
 
@@ -67,26 +69,33 @@ public class DictionaryEnumItemValidatorForCharSequence implements ConstraintVal
         }
         String code = String.valueOf(charSequence);
         DictionaryItem dictionaryItem = null;
-
-        if (enumClass == ConfigAbleDictionaryItem.class) {
-            // 动态枚举 type 肯定不是 INVALID_TYPE，不然就是开发没完成
-            AssertUtils.notEquals(dictionaryType, ConfigAbleDictionaryItem.INVALID_TYPE, CommonErrorCodeEnum.CODING);
-            // 判断配置表中是否存在该字典项
-//            dictionaryItem = configBizService.queryByDictionaryTypeAndCode( example);
-        } else {
+        boolean isEnum = DictionaryItemEnum.class.isAssignableFrom(enumClass);
+        if (isEnum) {
             // 判断该字典是否存在
             AssertUtils.isTrue(dictionaryEnumStore.contains(enumClass), CommonErrorCodeEnum.ILLEGAL_PARAM);
             // 判断该字典项是否存在
             dictionaryItem = (DictionaryItem) DictionaryItemEnum.fromId((Class) enumClass, code);
+        } else {
+            // 动态枚举 type 肯定不是 INVALID_TYPE
+            AssertUtils.notEquals(dictionaryType, DictionaryEnumItem.INVALID_TYPE, CommonErrorCodeEnum.CODING);
+            if (enumClass == DictionaryItemEntity.class) {
+                // 查 DB
+                DictionaryItemService dictionaryItemService = ContextUtils.getBeanOrNull(DictionaryItemService.class);
+                // DB 字典 type 肯定有 DictionaryItemService
+                AssertUtils.notNull(dictionaryItemService, CommonErrorCodeEnum.CODING);
+                DictionaryItemEntity entity = dictionaryItemService.getByTypeAndCodeFromCache(dictionaryType, code);
+                AssertUtils.notNull(entity, CommonErrorCodeEnum.ILLEGAL_PARAM);
+            } else if (enumClass == ConfigAbleDictionaryItem.class) {
+                // 判断配置表中是否存在该字典项
+//            dictionaryItem = configBizService.queryByDictionaryTypeAndCode( example);
+            }
         }
         AssertUtils.notNull(dictionaryItem, CommonErrorCodeEnum.ILLEGAL_PARAM);
 
         // 黑名单
-        if (forbiddenCodes.length > 0) {
-            for (String forbiddenCode : forbiddenCodes) {
-                if (dictionaryItem.getItemId().equals(forbiddenCode)) {
-                    return false;
-                }
+        for (String forbiddenCode : forbiddenCodes) {
+            if (dictionaryItem.getItemId().equals(forbiddenCode)) {
+                return false;
             }
         }
 

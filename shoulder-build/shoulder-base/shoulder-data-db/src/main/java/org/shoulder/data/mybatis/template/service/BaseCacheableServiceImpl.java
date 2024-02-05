@@ -5,11 +5,7 @@ import cn.hutool.core.convert.Convert;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.Assert;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -26,12 +22,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -76,10 +67,19 @@ public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>
      * @param keywords 通常为 id
      * @return 缓存key构造器
      */
-    protected Serializable generateCacheKey(Object keywords) {
+    protected Serializable generateCacheKey(Serializable keywords) {
         return getEntityClass().getSimpleName() + ":" + keywords;
     }
 
+    protected String generateCacheKey(Object... keywords) {
+
+        StringBuilder cacheKey = new StringBuilder(getEntityClass().getSimpleName());
+        for (Object keyword : keywords) {
+            cacheKey.append(":");
+            cacheKey.append(keyword.toString());
+        }
+        return cacheKey.toString();
+    }
     public Cache getCache() {
         return cache;
     }

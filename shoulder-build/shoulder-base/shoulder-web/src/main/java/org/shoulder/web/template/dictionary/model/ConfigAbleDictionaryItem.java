@@ -23,7 +23,6 @@ public class ConfigAbleDictionaryItem implements DictionaryItem<String>, Seriali
 
     private static final SpelExpressionParser EXPRESS_PARSER = new SpelExpressionParser();
     private static final long serialVersionUID = -1;
-    public static final String INVALID_TYPE = "JUST_INVALID";
 
     @NotNull
     @NotBlank

@@ -3,8 +3,8 @@ package org.shoulder.web.template.dictionary.validation;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import jakarta.validation.ReportAsSingleViolation;
-import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItem;
+import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
 import org.shoulder.web.template.dictionary.validation.validator.DictionaryEnumItemValidatorForCharSequence;
 import org.shoulder.web.template.dictionary.validation.validator.DictionaryEnumItemValidatorForVO;
 import org.shoulder.web.template.dictionary.validation.validator.DictionaryEnumItemValidatorForVOCollection;
@@ -35,9 +35,9 @@ public @interface DictionaryEnumItem {
 
     /**
      * 指定字典类型(配置类字典)
-     * 当且仅当 value 为 {@link ConfigAbleDictionaryItem} 才使用该字段
+     * 当且仅当 value 不为枚举类时 {@link DictionaryItemEnum} 才使用该字段
      */
-    String dictionaryType() default ConfigAbleDictionaryItem.INVALID_TYPE;
+    String dictionaryType() default INVALID_TYPE;
 
     /**
      * 允许的值，默认为空，表示都允许，
@@ -65,4 +65,6 @@ public @interface DictionaryEnumItem {
     public @interface List {
         DictionaryEnumItem[] value();
     }
+
+    String INVALID_TYPE = "JUST_INVALID";
 }

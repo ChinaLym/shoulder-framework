@@ -3,6 +3,7 @@ package org.shoulder.web.template.dictionary.service;
 import org.shoulder.data.mybatis.template.service.BaseCacheableServiceImpl;
 import org.shoulder.web.template.dictionary.mapper.DictionaryItemMapper;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
+import org.shoulder.web.template.dictionary.model.DictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEntity;
 import org.shoulder.web.template.dictionary.spi.String2ConfigAbleDictionaryItemConverter;
 
@@ -28,5 +29,13 @@ public class DictionaryItemService
         result.setDisplayOrder(0);
         return result;
 
+    }
+
+    public DictionaryItemEntity getByTypeAndCodeFromCache(String dictionaryType, String itemCode) {
+        Object cacheKey = generateCacheKey("dicType_" + dictionaryType, "itemCode_" + itemCode);
+        return cache.get(cacheKey, () -> super.getBaseMapper().selectOne(super.lambdaQuery()
+                .eq(DictionaryItem::getDictionaryType, dictionaryType)
+                .eq(DictionaryItem::getItemId, itemCode))
+        );
     }
 }
