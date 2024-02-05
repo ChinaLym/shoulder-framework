@@ -3,12 +3,11 @@ package org.shoulder.web.template.dictionary.controller;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import jakarta.servlet.http.HttpServletRequest;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
-import org.shoulder.core.util.StringUtils;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,9 +38,6 @@ public class DictionaryEnumController implements DictionaryEnumQueryController {
      */
     private final DictionaryEnumStore dictionaryEnumStore;
 
-    @Value("${shoulder.web.ext.dictionary.enum.page.host:http://localhost:8080}")
-    private String pageHost;
-
     private String page;
 
     public DictionaryEnumController(DictionaryEnumStore dictionaryEnumStore) {
@@ -65,15 +61,13 @@ public class DictionaryEnumController implements DictionaryEnumQueryController {
 
     @SkipResponseWrap
     @GetMapping("${shoulder.web.ext.dictionary.pageUrl:/ui/dictionary/page.html}")
-    public String hello() {
-        if (StringUtils.isNoneBlank(pageHost)) {
-            return loadPage();
-        } else {
-            return "";
-        }
+    public String uiPage(HttpServletRequest request) {
+        String pageAjaxHost = request.getRequestURL().toString()
+                .replace(request.getRequestURI(), "");
+        return loadPage(pageAjaxHost);
     }
 
-    private synchronized String loadPage() {
+    private synchronized String loadPage(String pageAjaxHost) {
         if (page != null) {
             return page;
         }
@@ -83,8 +77,8 @@ public class DictionaryEnumController implements DictionaryEnumQueryController {
             Resource[] resources = resolver.getResources(classPath);
             if (resources.length > 0) {
                 Resource resource = resources[0];
-                pageHost = pageHost.endsWith("/") ? pageHost.subSequence(0, pageHost.length() - 1).toString() : pageHost;
-                page = resource.getContentAsString(StandardCharsets.UTF_8).replaceFirst("CONFIG_PAGE_HOST", pageHost);
+                pageAjaxHost = pageAjaxHost.endsWith("/") ? pageAjaxHost.subSequence(0, pageAjaxHost.length() - 1).toString() : pageAjaxHost;
+                page = resource.getContentAsString(StandardCharsets.UTF_8).replaceFirst("CONFIG_PAGE_HOST", pageAjaxHost);
             }
         } catch (IOException e) {
             page = "";

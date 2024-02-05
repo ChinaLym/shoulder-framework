@@ -8,8 +8,8 @@ import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.web.template.dictionary.dto.DictionaryBatchQueryParam;
-import org.shoulder.web.template.dictionary.dto.DictionaryTypeDTO;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
+import org.shoulder.web.template.dictionary.dto.DictionaryTypeDTO;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.springframework.validation.annotation.Validated;
@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 /**
  * 枚举型字典接口-默认实现
  * todo暂时不支持search，过滤由前端缓存后过滤，也避免每次咨询后端api
- * http://localhost:8080/api/v1/dictionary/item/listByType/xxx
+ * http://localhost:8080/api/v1/dictionary/listByType/xxx
  * http://localhost:8080/api/v1/dictionary/item/listByTypes?xxx
  *
  * @author lym
  */
 @RestController
-@RequestMapping(value = "${shoulder.web.ext.dictionary.path + '/item':/api/v1/dictionary/item}")
+@RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}")
 public class DictionaryItemEnumController implements DictionaryItemController {
 
     /**
