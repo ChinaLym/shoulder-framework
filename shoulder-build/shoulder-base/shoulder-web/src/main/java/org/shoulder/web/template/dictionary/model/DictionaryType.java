@@ -1,39 +1,35 @@
 package org.shoulder.web.template.dictionary.model;
 
 /**
- * 字典型枚举，枚举类选择实现该类
+ * 字典类型
  * todo 【功能】基于数据库的、基于 RPC 调用的、带缓存的、混合的；放到 ext 模块
  * 泛型是为了让持久化存储时对象实现该接口时可选择 int/string、枚举无需该泛型
  *
  * @author lym
  */
-public interface Dictionary {
+public interface DictionaryType {
 
     /**
      * 字典唯一标记
      *
      * @return id
      */
-    String getDictionaryCode();
-
-    String getName();
+    String getCode();
 
     /**
      * 获取该字典项的展示名称（仅用于字典管理后台，若无该需求则忽略该字段）
      *
      * @return 展示名称
      */
-    default String getDisplayName() {
-        return getName();
-    }
+    String getDisplayName();
 
     /**
-     * 是否字典项个数固定
+     * 能否修改
      *
-     * @return 是否字典项个数固定；默认不固定，一般枚举固定，个性化存储不固定
+     * @return 枚举不能修改，db 存储一般可修改
      */
-    default boolean hasFixItems() {
-        return false;
+    default boolean addItemAble() {
+        return true;
     }
 
     /*

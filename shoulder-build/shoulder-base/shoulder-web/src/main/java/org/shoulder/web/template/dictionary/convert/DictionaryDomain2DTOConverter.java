@@ -5,8 +5,8 @@
 package org.shoulder.web.template.dictionary.convert;
 
 import org.shoulder.web.template.crud.AbstractVODataConverter;
-import org.shoulder.web.template.dictionary.dto.DictionaryDTO;
-import org.shoulder.web.template.dictionary.model.Dictionary;
+import org.shoulder.web.template.dictionary.dto.DictionaryTypeDTO;
+import org.shoulder.web.template.dictionary.model.DictionaryType;
 
 import javax.annotation.Nonnull;
 
@@ -15,15 +15,14 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-public class DictionaryDomain2DTOConverter extends AbstractVODataConverter<Dictionary, DictionaryDTO> {
+public class DictionaryDomain2DTOConverter extends AbstractVODataConverter<DictionaryType, DictionaryTypeDTO> {
 
 
     @Override
-    public void doConvert(@Nonnull Dictionary sourceModel, @Nonnull DictionaryDTO targetModel) {
-        targetModel.setFixItems(sourceModel.hasFixItems());
+    public void doConvert(@Nonnull DictionaryType sourceModel, @Nonnull DictionaryTypeDTO targetModel) {
+        targetModel.setAddItemAble(sourceModel.addItemAble());
         targetModel.setDisplayName(sourceModel.getDisplayName());
-        targetModel.setName(sourceModel.getName());
-        targetModel.setDictionaryType(sourceModel.getDictionaryCode());
+        targetModel.setCode(sourceModel.getCode());
         //
         //targetModel.setId(conversionService.convert(sourceModel.getId(), String.class));
         //targetModel.setVersion(sourceModel.getVersion());

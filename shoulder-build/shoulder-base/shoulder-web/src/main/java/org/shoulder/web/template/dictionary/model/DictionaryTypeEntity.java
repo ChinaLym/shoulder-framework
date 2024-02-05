@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.shoulder.data.mybatis.template.entity.BizTreeEntity;
+import org.shoulder.data.constant.DataBaseConsts;
+import org.shoulder.data.mybatis.template.entity.BizEntity;
 
 import java.io.Serializable;
 
@@ -21,14 +22,14 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID> implements Dictionary {
+public class DictionaryTypeEntity<ID extends Serializable>
+    extends BizEntity<ID>
+    implements DictionaryType {
 
     /**
-     * 字典编码
+     * 字典项类型（int / String ...）
      */
-//    @TableField("code")
-//    @BizIdSource
-//    private String code;
+    //private String valueType;
 
     /**
      * 展示名称
@@ -37,12 +38,19 @@ public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID>
     private String displayName;
 
     /**
-     * 字典项类型（int / String ...）
+     * 排序
      */
-    private String valueType;
+    @TableField(value = DataBaseConsts.COLUMN_DISPLAY_ORDER)
+    protected Integer displayOrder;
+
+    /**
+     * source
+     */
+    @TableField("source")
+    private String source;
 
     @Override
-    public String getDictionaryCode() {
+    public String getCode() {
         return getBizId();
     }
 
@@ -60,7 +68,7 @@ public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID>
         // core.model -> 基于存储的 model
         DictionaryItemEntity entity = new DictionaryItemEntity<>();
         // to confirm dictionaryType.code
-        entity.setDictionaryId(source.getDictionaryType());
+        entity.setDictionaryType(source.getDictionaryType());
         entity.setBizId(source.getItemId().toString());
         entity.setName(source.getName());
         entity.setDisplayName(source.getDisplayName());
@@ -74,4 +82,10 @@ public class DictionaryEntity<ID extends Serializable> extends BizTreeEntity<ID>
         // 这里如果过长，数据库保存时可能报错，强烈建议实现该接口
         return "objectType.shoulder.dictionary";
     }
+
+    @Override
+    public String getObjectName() {
+        return displayName;
+    }
+
 }

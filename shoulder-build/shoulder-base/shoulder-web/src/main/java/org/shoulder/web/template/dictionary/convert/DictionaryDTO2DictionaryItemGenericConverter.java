@@ -52,7 +52,7 @@ public class DictionaryDTO2DictionaryItemGenericConverter implements GenericConv
             // dto -> 基于存储的 model
             DictionaryItemEntity entity = new DictionaryItemEntity<>();
             // to confirm dictionaryType.code
-            entity.setDictionaryId(dto.getDictionaryType());
+            entity.setDictionaryType(dto.getDictionaryType());
             entity.setBizId(dto.getCode());
             entity.setName(dto.getName());
             entity.setDisplayName(dto.getDisplayName());

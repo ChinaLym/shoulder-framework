@@ -1,14 +1,14 @@
 package org.shoulder.data.mybatis.template.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.shoulder.data.annotation.BizIdSource;
+import org.shoulder.data.constant.DataBaseConsts;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 树形 biz 实体： id createTime updateTime creator modifier bizId version deleteVersion name parentId sortNo
@@ -22,36 +22,24 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class BizTreeEntity<ID extends Serializable> extends TreeEntity<ID> implements ILogicDeleteEntity {
+public class BizTreeEntity<ID extends Serializable> extends BizEntity<ID> implements ILogicDeleteEntity {
 
     /**
-     * 业务唯一索引键
+     * 父节点ID，允许为 null
      */
-    @TableField("biz_id")
-    private String bizId;
+    @TableField(value = DataBaseConsts.COLUMN_PARENT_ID)
+    protected ID parentId;
 
     /**
-     * 版本号
+     * 树形深度
      */
-    @Version
-    private int version;
+    //@TableField(value = DataBaseConsts.COLUMN_DEPTH)
+    //protected Integer depth;
 
     /**
-     * 删除标记
-     * 0 未删除
-     * n 删除时设置为当前时间戳
+     * 子节点
      */
-    @TableField("delete_version")
-    @TableLogic(value = "0")
-    private Long deleteVersion;
+    @TableField(exist = false)
+    protected List<TreeEntity<ID>> children;
 
-    /**
-     * 描述
-     */
-    @TableField("description")
-    private String description;
-
-    public String generateBizId() {
-        return null;
-    }
 }

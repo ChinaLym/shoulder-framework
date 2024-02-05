@@ -1,8 +1,8 @@
 package org.shoulder.web.template.dictionary.controller;
 
 import org.shoulder.web.template.crud.CrudCacheableController;
-import org.shoulder.web.template.dictionary.dto.DictionaryDTO;
-import org.shoulder.web.template.dictionary.model.DictionaryEntity;
+import org.shoulder.web.template.dictionary.dto.DictionaryTypeDTO;
+import org.shoulder.web.template.dictionary.model.DictionaryTypeEntity;
 import org.shoulder.web.template.dictionary.service.DictionaryService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,12 +19,12 @@ import java.io.Serializable;
 public class DictionaryCrudController<ID extends Serializable>
     extends CrudCacheableController<
         DictionaryService<ID>,
-        DictionaryEntity<ID>,
+        DictionaryTypeEntity<ID>,
         ID,
-        DictionaryDTO,
-        DictionaryDTO,
-        DictionaryDTO,
-        DictionaryDTO>
+    DictionaryTypeDTO,
+    DictionaryTypeDTO,
+    DictionaryTypeDTO,
+    DictionaryTypeDTO>
     implements DictionaryMngController {
 
 }

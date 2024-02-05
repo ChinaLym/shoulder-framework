@@ -8,7 +8,7 @@ import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.web.template.dictionary.dto.DictionaryBatchQueryParam;
-import org.shoulder.web.template.dictionary.dto.DictionaryDTO;
+import org.shoulder.web.template.dictionary.dto.DictionaryTypeDTO;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
@@ -70,9 +70,9 @@ public class DictionaryItemEnumController implements DictionaryItemController {
     })
     @ApiOperation(value = "查询多个字典项", notes = "查询多个字典项")
     @RequestMapping(value = "/listByTypes", method = { RequestMethod.GET, RequestMethod.POST })
-    public BaseResult<ListResult<DictionaryDTO>> listAllByTypes(@Validated DictionaryBatchQueryParam batchQueryParam) {
-        List<DictionaryDTO> dictionaryList = batchQueryParam.getDictionaryTypeList().stream()
-            .map(type -> new DictionaryDTO(type, query(type)))
+    public BaseResult<ListResult<DictionaryTypeDTO>> listAllByTypes(@Validated DictionaryBatchQueryParam batchQueryParam) {
+        List<DictionaryTypeDTO> dictionaryList = batchQueryParam.getDictionaryTypeList().stream()
+            .map(type -> new DictionaryTypeDTO(type, query(type)))
             .collect(Collectors.toList());
         return BaseResult.success(dictionaryList);
     }

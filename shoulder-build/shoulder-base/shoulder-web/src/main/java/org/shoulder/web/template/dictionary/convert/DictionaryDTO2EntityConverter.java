@@ -5,8 +5,8 @@
 package org.shoulder.web.template.dictionary.convert;
 
 import org.shoulder.web.template.crud.AbstractVODataConverter;
-import org.shoulder.web.template.dictionary.dto.DictionaryDTO;
-import org.shoulder.web.template.dictionary.model.DictionaryEntity;
+import org.shoulder.web.template.dictionary.dto.DictionaryTypeDTO;
+import org.shoulder.web.template.dictionary.model.DictionaryTypeEntity;
 
 import javax.annotation.Nonnull;
 
@@ -15,10 +15,10 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-public class DictionaryDTO2EntityConverter extends AbstractVODataConverter<DictionaryDTO, DictionaryEntity> {
+public class DictionaryDTO2EntityConverter extends AbstractVODataConverter<DictionaryTypeDTO, DictionaryTypeEntity> {
 
     @Override
-    public void doConvert(@Nonnull DictionaryDTO sourceModel, @Nonnull DictionaryEntity targetModel) {
+    public void doConvert(@Nonnull DictionaryTypeDTO sourceModel, @Nonnull DictionaryTypeEntity targetModel) {
         //date version creator 不转换
         //targetModel.setId(conversionService.convert(sourceModel.getId(), Long.class));
         /*targetModel.setVersion(sourceModel.getVersion());

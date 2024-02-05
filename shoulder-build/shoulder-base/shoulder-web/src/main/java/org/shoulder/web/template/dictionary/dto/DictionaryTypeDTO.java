@@ -11,38 +11,33 @@ import java.util.List;
  * @author lym
  */
 @Data
-public class DictionaryDTO implements Serializable {
+public class DictionaryTypeDTO implements Serializable {
 
     private static final long serialVersionUID = -8214768522392888509L;
 
     /**
      * 字典类型
      */
-    private String dictionaryType;
-
-    /**
-     * 字典默认名
-     */
-    private String name;
+    private String code;
 
     /**
      * 字典展示名称
      */
     private String displayName;
 
-    private boolean fixItems;
+    private Boolean addItemAble;
 
     /**
      * 可选项
      */
     private List<DictionaryItemDTO> items;
 
-    public DictionaryDTO() {
+    public DictionaryTypeDTO() {
 
     }
 
-    public DictionaryDTO(String dictionaryType, List<DictionaryItemDTO> items) {
-        this.dictionaryType = dictionaryType;
+    public DictionaryTypeDTO(String code, List<DictionaryItemDTO> items) {
+        this.code = code;
         this.items = items;
     }
 }
