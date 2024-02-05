@@ -15,13 +15,16 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-public class DictionaryDomain2DTOConverter extends AbstractVODataConverter<DictionaryType, DictionaryTypeDTO> {
+public class DictionaryTypeDomain2DTOConverter extends AbstractVODataConverter<DictionaryType, DictionaryTypeDTO> {
+
+    public static final DictionaryTypeDomain2DTOConverter INSTANCE = new DictionaryTypeDomain2DTOConverter();
 
 
     @Override
     public void doConvert(@Nonnull DictionaryType sourceModel, @Nonnull DictionaryTypeDTO targetModel) {
         targetModel.setAddItemAble(sourceModel.addItemAble());
         targetModel.setDisplayName(sourceModel.getDisplayName());
+        targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
         targetModel.setCode(sourceModel.getCode());
         //
         //targetModel.setId(conversionService.convert(sourceModel.getId(), String.class));
@@ -33,7 +36,7 @@ public class DictionaryDomain2DTOConverter extends AbstractVODataConverter<Dicti
         //targetModel.setModifier(conversionService.convert(sourceModel.getModifier(), String.class));
         //targetModel.setTenant(sourceModel.getTenant());
         //targetModel.setTenant(sourceModel.getTenant());
-        //targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
+        //
         //targetModel.setBizId(sourceModel.getBizId());
         //
         //targetModel.setName(sourceModel.getName());

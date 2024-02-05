@@ -90,7 +90,7 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
      * @return 目标模
      */
     @Override
-    public T convert(@Nullable S sourceModel) {
+    public T convert(S sourceModel) {
         if (sourceModel == null) {
             return null;
         }

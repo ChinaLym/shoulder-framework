@@ -2,6 +2,7 @@ package org.shoulder.web.template.dictionary.convert;
 
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
+import org.shoulder.web.template.dictionary.model.DictionaryType;
 import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -38,7 +39,14 @@ public class DictionaryItemDTO2DomainConverterRegister {
     @EventListener(ContextRefreshedEvent.class)
     public void onContextRefreshedEvent(ContextRefreshedEvent event) {
         ShoulderConversionService conversionService = event.getApplicationContext().getBean(ShoulderConversionService.class);
-        // 枚举字典
+
+        // ======= 字典类型 ======
+        conversionService.addConverter(DictionaryTypeDomain2DTOConverter.INSTANCE);
+        conversionService.addConverter(DictionaryTypeDTO2EntityConverter.INSTANCE);
+        // toString
+        conversionService.addConverter(DictionaryType.class, String.class, DictionaryType::getCode);
+
+        // ======= 字典项 ====== 枚举字典
         Collection<Class<? extends Enum<? extends DictionaryItemEnum>>> enumClassList = event.getApplicationContext().getBean(
                         DictionaryEnumStore.class)
                 .listAllTypes();

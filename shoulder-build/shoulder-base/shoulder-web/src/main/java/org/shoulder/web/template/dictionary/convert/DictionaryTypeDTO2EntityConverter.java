@@ -15,22 +15,22 @@ import javax.annotation.Nonnull;
  *
  * @author lym
  */
-public class DictionaryDTO2EntityConverter extends AbstractVODataConverter<DictionaryTypeDTO, DictionaryTypeEntity> {
+public class DictionaryTypeDTO2EntityConverter extends AbstractVODataConverter<DictionaryTypeDTO, DictionaryTypeEntity> {
+
+    public static final DictionaryTypeDTO2EntityConverter INSTANCE = new DictionaryTypeDTO2EntityConverter();
 
     @Override
     public void doConvert(@Nonnull DictionaryTypeDTO sourceModel, @Nonnull DictionaryTypeEntity targetModel) {
         //date version creator 不转换
-        //targetModel.setId(conversionService.convert(sourceModel.getId(), Long.class));
-        /*targetModel.setVersion(sourceModel.getVersion());
-        targetModel.setTenant(sourceModel.getTenant());
+        targetModel.setId(conversionService.convert(sourceModel.getId(), Long.class));
+        targetModel.setVersion(sourceModel.getVersion());
+        //targetModel.setTenant(sourceModel.getTenant());
+        //targetModel.setIcon(sourceModel.getIcon());
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
-        targetModel.setBizId(sourceModel.getBizId());
-        targetModel.setName(sourceModel.getName());
-        targetModel.setType(sourceModel.getType());
+        targetModel.setCode(sourceModel.getCode());
         targetModel.setDisplayName(sourceModel.getDisplayName());
-        targetModel.setIcon(sourceModel.getIcon());
         targetModel.setSource(sourceModel.getSource());
-        targetModel.setDescription(sourceModel.getDescription());*/
+        targetModel.setDescription(sourceModel.getDescription());
     }
 
 }

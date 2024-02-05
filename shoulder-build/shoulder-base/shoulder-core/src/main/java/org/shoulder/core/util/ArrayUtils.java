@@ -1,5 +1,6 @@
 package org.shoulder.core.util;
 
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Array;
@@ -120,7 +121,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      */
     public static Object[] toObject(Object obj) {
         Class<?> c = obj.getClass();
-        Assert.isTrue(c.isArray());
+        AssertUtils.isTrue(c.isArray(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         Class<?> priType = c.getComponentType();
         if (!priType.isPrimitive()) {
             return (Object[]) obj;
@@ -150,7 +151,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      */
     public static Object toPrimitive(Object[] obj) {
         Class<?> c = obj.getClass();
-        Assert.isTrue(c.isArray());
+        AssertUtils.isTrue(c.isArray(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         Class<?> objType = c.getComponentType();
         if (objType == Boolean.class) {
             return toPrimitive((Boolean[]) obj);

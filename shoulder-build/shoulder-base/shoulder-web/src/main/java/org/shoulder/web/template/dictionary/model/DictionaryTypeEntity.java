@@ -53,6 +53,10 @@ public class DictionaryTypeEntity<ID extends Serializable>
     public String getCode() {
         return getBizId();
     }
+    public void setCode(String typeCode) {
+        // 这里如果过长，数据库保存时可能报错，强烈建议实现该接口
+        setBizId(typeCode);
+    }
 
     /*@Override
     public String getDictionaryType() {

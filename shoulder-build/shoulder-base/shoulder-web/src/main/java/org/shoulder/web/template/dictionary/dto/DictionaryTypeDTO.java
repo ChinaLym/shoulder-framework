@@ -15,6 +15,10 @@ public class DictionaryTypeDTO implements Serializable {
 
     private static final long serialVersionUID = -8214768522392888509L;
 
+    private String id;
+
+    private Integer version;
+
     /**
      * 字典类型
      */
@@ -25,7 +29,13 @@ public class DictionaryTypeDTO implements Serializable {
      */
     private String displayName;
 
+    private String description;
+
+    private String source;
+
     private Boolean addItemAble;
+
+    private Integer displayOrder;
 
     /**
      * 可选项

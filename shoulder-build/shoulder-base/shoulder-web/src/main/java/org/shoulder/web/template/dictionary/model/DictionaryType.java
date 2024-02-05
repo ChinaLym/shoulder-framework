@@ -24,6 +24,13 @@ public interface DictionaryType {
     String getDisplayName();
 
     /**
+     * 获取该字典项的展示名称（仅用于字典管理后台，若无该需求则忽略该字段）
+     *
+     * @return 展示名称
+     */
+    Integer getDisplayOrder();
+
+    /**
      * 能否修改
      *
      * @return 枚举不能修改，db 存储一般可修改
