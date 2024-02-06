@@ -16,7 +16,7 @@ public class MockUserFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         // 执行前确保有 traceId、spanId
         AppContext.setUserId("1");
-        AppContext.set("shoulder.filter.mockUser", "1");
+        AppContext.setUserName("MockUserFilter_Generated");
         filterChain.doFilter(servletRequest, servletResponse);
     }
 

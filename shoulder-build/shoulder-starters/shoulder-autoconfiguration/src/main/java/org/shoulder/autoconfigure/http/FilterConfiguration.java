@@ -1,8 +1,10 @@
 package org.shoulder.autoconfigure.http;
 
 import org.shoulder.web.filter.CleanContextFilter;
+import org.shoulder.web.filter.DefaultTenantFilter;
 import org.shoulder.web.filter.MockUserFilter;
 import org.shoulder.web.filter.TraceFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -26,15 +28,17 @@ public class FilterConfiguration {
     private static final int FILTER_THRESHOLD_DIFFERENCE = 10;
 
     public static enum DefaultWebFilterType {
-        CLEAN_CONTEXT("cleanContextFilter", Integer.MIN_VALUE),
-        TRACE("traceFilter", Integer.MIN_VALUE + FILTER_THRESHOLD_DIFFERENCE),
-        MOCK_USER("mockUserFilter", Integer.MIN_VALUE + FILTER_THRESHOLD_DIFFERENCE * 2);
+        CLEAN_CONTEXT("cleanContextFilter"),
+        TRACE("traceFilter"),
+        DEFAULT_TENANT("defaultTenantFilter"),
+        MOCK_USER("mockUserFilter");
         private final String name;
-        private final int order;
 
-        DefaultWebFilterType(String name, int order) {
+        DefaultWebFilterType(String name) {
             this.name = name;
-            this.order = order;
+        }
+        public int calculateFilterOrder() {
+            return Integer.MIN_VALUE + FILTER_THRESHOLD_DIFFERENCE * this.ordinal();
         }
     }
 
@@ -46,7 +50,7 @@ public class FilterConfiguration {
         // 给过滤器取名
         registration.setName(DefaultWebFilterType.CLEAN_CONTEXT.name);
         // 设置过滤器优先级，该值越小越优先被执行
-        registration.setOrder(DefaultWebFilterType.CLEAN_CONTEXT.order);
+        registration.setOrder(DefaultWebFilterType.CLEAN_CONTEXT.calculateFilterOrder());
         List<String> urlPatterns = new ArrayList<>();
         urlPatterns.add("/*");
         // 设置urlPatterns参数
@@ -55,7 +59,7 @@ public class FilterConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "shoulder.web.filter.trace.useDefault", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "shoulder.web.filter.trace.uuidIfMissing", havingValue = "true", matchIfMissing = true)
     public FilterRegistrationBean<TraceFilter> traceFilterRegistration() {
         FilterRegistrationBean<TraceFilter> registration = new FilterRegistrationBean<>();
         // 将过滤器配置到FilterRegistrationBean对象中
@@ -63,7 +67,23 @@ public class FilterConfiguration {
         // 给过滤器取名
         registration.setName(DefaultWebFilterType.TRACE.name);
         // 设置过滤器优先级，该值越小越优先被执行
-        registration.setOrder(DefaultWebFilterType.TRACE.order);
+        registration.setOrder(DefaultWebFilterType.TRACE.calculateFilterOrder());
+        List<String> urlPatterns = new ArrayList<>();
+        urlPatterns.add("/*");
+        // 设置urlPatterns参数
+        registration.setUrlPatterns(urlPatterns);
+        return registration;
+    }
+    @Bean
+    @ConditionalOnProperty(value = "shoulder.web.filter.tenant.default", havingValue = "true", matchIfMissing = true)
+    public FilterRegistrationBean<DefaultTenantFilter> defaultTenantFilterRegistration(@Value("${shoulder.web.filter.tenant.default:'DEFAULT'}") String tenantCode) {
+        FilterRegistrationBean<DefaultTenantFilter> registration = new FilterRegistrationBean<>();
+        // 将过滤器配置到FilterRegistrationBean对象中
+        registration.setFilter(new DefaultTenantFilter(tenantCode));
+        // 给过滤器取名
+        registration.setName(DefaultWebFilterType.DEFAULT_TENANT.name);
+        // 设置过滤器优先级，该值越小越优先被执行
+        registration.setOrder(DefaultWebFilterType.DEFAULT_TENANT.calculateFilterOrder());
         List<String> urlPatterns = new ArrayList<>();
         urlPatterns.add("/*");
         // 设置urlPatterns参数
@@ -72,7 +92,7 @@ public class FilterConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "shoulder.web.filter.mock.userId.enable", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(value = "shoulder.web.filter.userId.mockIfMissing", havingValue = "true", matchIfMissing = false)
     public FilterRegistrationBean<MockUserFilter> mockUserFilterRegistration() {
         FilterRegistrationBean<MockUserFilter> registration = new FilterRegistrationBean<>();
         // 将过滤器配置到FilterRegistrationBean对象中
@@ -80,7 +100,7 @@ public class FilterConfiguration {
         // 给过滤器取名
         registration.setName(DefaultWebFilterType.MOCK_USER.name);
         // 设置过滤器优先级，该值越小越优先被执行
-        registration.setOrder(DefaultWebFilterType.MOCK_USER.order);
+        registration.setOrder(DefaultWebFilterType.MOCK_USER.calculateFilterOrder());
         List<String> urlPatterns = new ArrayList<>();
         urlPatterns.add("/*");
         // 设置urlPatterns参数

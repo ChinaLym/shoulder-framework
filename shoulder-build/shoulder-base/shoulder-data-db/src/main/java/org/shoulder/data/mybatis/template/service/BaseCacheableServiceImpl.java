@@ -67,7 +67,7 @@ public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>
      * @param keywords 通常为 id
      * @return 缓存key构造器
      */
-    protected Serializable generateCacheKey(Serializable keywords) {
+    protected String generateCacheKey(Serializable keywords) {
         return getEntityClass().getSimpleName() + ":" + keywords;
     }
 

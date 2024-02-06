@@ -129,17 +129,17 @@ public class AppContext {
      *
      * @return traceId
      */
-    public static String getTranceId() {
+    public static String getTraceId() {
         return (String) get(ShoulderContextKey.TRACE_ID);
     }
 
     /**
      * 设置链路追踪标识
      *
-     * @param tranceId 链路追踪标识
+     * @param traceId 链路追踪标识
      */
-    public static void setTranceId(String tranceId) {
-        set(ShoulderContextKey.TRACE_ID, tranceId);
+    public static void setTraceId(String traceId) {
+        set(ShoulderContextKey.TRACE_ID, traceId);
     }
 
     /**

@@ -8,6 +8,7 @@
   - 提供增强的 ConversionService，支持集合、更多的类转换，比如日期解析时支持多种格式，Jdk8的各类时间互转
   - 多线程工具优化，能力增强
   - 新增字典定义
+  - fix 修正错误的拼写
 - db
   - 扩展的 bizId、version、逻辑删除等 模板Entity进入可用状态，现在可以继承这些模板类减少bizId 相关DB操作代码的编写了（0.6
     引入）
@@ -17,6 +18,7 @@
 - web
   - 模板类进入可用状态（0.6 引入）
   - 提供开箱即用可扩展的字典、标签能力（0.6 引入），并添加配套支持（HTTP-API、相关工具类、ConversionService、JPA、Mybatis-plus、MongoDb...）
+  - filter 提供可配置的 traceId、user、tenantId 默认填充过滤器，方便后续使用 AppContext 上下文。
 - autoconfiguration（forTest）
   - 支持内嵌 redis 启动，方便测试
   - traceId、userId、tenantId mock
