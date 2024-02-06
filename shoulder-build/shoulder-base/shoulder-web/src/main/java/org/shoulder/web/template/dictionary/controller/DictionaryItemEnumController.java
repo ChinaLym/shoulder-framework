@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @author lym
  */
 @RestController
-@RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}")
+@RequestMapping(value = "${shoulder.web.ext.dictionary.apiPath:/api/v1/dictionary}")
 public class DictionaryItemEnumController implements DictionaryItemController {
 
     /**

@@ -23,13 +23,33 @@ public class WebExtProperties {
      */
     private DictionaryProperties dictionary = new DictionaryProperties();
 
+    /**
+     * tag 配置
+     */
+    private TagProperties        tag        = new TagProperties();
+
     @Data
     static class DictionaryProperties {
 
         /**
          * 是否启用
          */
-        private Boolean enable = Boolean.TRUE;
+        private Boolean enableEnum = Boolean.TRUE;
+
+        /**
+         * 是否启用
+         */
+        private Boolean enable = Boolean.FALSE;
+
+        /**
+         * api 路径
+         */
+        private String apiPath = "/api/v1/dictionary";
+
+        /**
+         * api 路径
+         */
+        private String pageUrl = "/ui/dictionary/page.html";
 
         /**
          * 是否忽略 字典类型名 dictionaryType 的大小写，默认否
@@ -37,14 +57,24 @@ public class WebExtProperties {
         private Boolean ignoreDictionaryTypeCase = Boolean.FALSE;
 
         /**
-         * 字典 api 路径
-         */
-        private String dictionaryPath = "/api/v1/dictionary";
-
-        /**
          * 字典 / 字典项 数据存在哪
          */
         private DictionaryStorageType storageType;
+
+    }
+
+    @Data
+    static class TagProperties {
+
+        /**
+         * 是否启用
+         */
+        private Boolean enable = Boolean.FALSE;
+
+        /**
+         * api 路径
+         */
+        private String apiPath = "/api/v1/tag";
 
     }
 

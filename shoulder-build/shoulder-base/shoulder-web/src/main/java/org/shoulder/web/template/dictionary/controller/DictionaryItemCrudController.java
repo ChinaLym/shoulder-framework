@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lym
  */
 @RestController
-@RequestMapping(value = "${shoulder.web.ext.dictionary.path + '/item':/api/v1/dictionary/item}")
+@RequestMapping(value = "${shoulder.web.ext.dictionary.apiPath + '/item':/api/v1/dictionary/item}")
 public class DictionaryItemCrudController extends CrudCacheableController<
         DictionaryItemService,
         DictionaryItemEntity,

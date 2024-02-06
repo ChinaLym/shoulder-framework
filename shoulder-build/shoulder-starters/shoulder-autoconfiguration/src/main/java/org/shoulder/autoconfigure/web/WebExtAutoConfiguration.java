@@ -89,7 +89,7 @@ public class WebExtAutoConfiguration {
     @AutoConfiguration(after = { I18nAutoConfiguration.class })
     @ConditionalOnClass(value = { DictionaryEnumStore.class })
     @EnableConfigurationProperties(WebExtProperties.class)
-    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.enum.enable", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.enableEnum", havingValue = "true", matchIfMissing = true)
     public static class BaseOnEnumDictionaryConfiguration {
 
         /**
@@ -140,7 +140,7 @@ public class WebExtAutoConfiguration {
     @AutoConfiguration(after = { I18nAutoConfiguration.class, CacheAutoConfiguration.class })
     @EnableConfigurationProperties(WebExtProperties.class)
     @ConditionalOnClass(value = {BaseServiceImpl.class, DictionaryTypeCrudController.class})
-    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.db.enable", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.enable", havingValue = "true", matchIfMissing = false)
     public static class BaseOnDbDictionaryConfiguration {
 
         @Bean
