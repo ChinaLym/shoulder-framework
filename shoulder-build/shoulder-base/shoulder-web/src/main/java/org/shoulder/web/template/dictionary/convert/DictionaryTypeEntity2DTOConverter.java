@@ -29,6 +29,7 @@ public class DictionaryTypeEntity2DTOConverter extends AbstractVODataConverter<D
         targetModel.setDisplayName(sourceModel.getDisplayName());
         targetModel.setSource(sourceModel.getSource());
         targetModel.setDescription(sourceModel.getDescription());
+        targetModel.setModifyAble(sourceModel.modifyAble());
         //targetModel.setTenant(sourceModel.getTenant());
         //targetModel.setIcon(sourceModel.getIcon());
     }
