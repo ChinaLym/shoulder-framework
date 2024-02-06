@@ -1,11 +1,11 @@
 package org.shoulder.autoconfigure.http;
 
+import org.shoulder.autoconfigure.web.WebFilterProperties;
 import org.shoulder.web.filter.CleanContextFilter;
 import org.shoulder.web.filter.DefaultTenantFilter;
 import org.shoulder.web.filter.MockUserFilter;
 import org.shoulder.web.filter.TraceFilter;
 import org.shoulder.web.filter.xss.XssFilter;
-import org.shoulder.web.filter.xss.XssProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 @AutoConfiguration
 @ConditionalOnClass(CleanContextFilter.class)
-@EnableConfigurationProperties(XssProperties.class)
+@EnableConfigurationProperties(WebFilterProperties.class)
 public class FilterConfiguration {
 
     public FilterConfiguration() {
@@ -66,7 +66,7 @@ public class FilterConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "shoulder.web.filter.trace.uuidIfMissing", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "shoulder.web.filter.headerTracer.enable", havingValue = "true", matchIfMissing = true)
     public FilterRegistrationBean<TraceFilter> traceFilterRegistration() {
         FilterRegistrationBean<TraceFilter> registration = new FilterRegistrationBean<>();
         // 将过滤器配置到FilterRegistrationBean对象中
@@ -82,7 +82,7 @@ public class FilterConfiguration {
         return registration;
     }
     @Bean
-    @ConditionalOnProperty(value = "shoulder.web.filter.tenant.default", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "shoulder.web.filter.defaultTenant.enable", havingValue = "true", matchIfMissing = true)
     public FilterRegistrationBean<DefaultTenantFilter> defaultTenantFilterRegistration(@Value("${shoulder.web.filter.tenant.default:'DEFAULT'}") String tenantCode) {
         FilterRegistrationBean<DefaultTenantFilter> registration = new FilterRegistrationBean<>();
         // 将过滤器配置到FilterRegistrationBean对象中
@@ -99,7 +99,7 @@ public class FilterConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "shoulder.web.filter.user.mockIfMissing", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(value = "shoulder.web.filter.mockUser.enable", havingValue = "true", matchIfMissing = false)
     public FilterRegistrationBean<MockUserFilter> mockUserFilterRegistration() {
         FilterRegistrationBean<MockUserFilter> registration = new FilterRegistrationBean<>();
         // 将过滤器配置到FilterRegistrationBean对象中
@@ -116,11 +116,11 @@ public class FilterConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "shoulder.web.waf.xss", havingValue = "true", matchIfMissing = true)
-    public FilterRegistrationBean<XssFilter> xssFilterRegistration(XssProperties xssProperties) {
+    @ConditionalOnProperty(value = "shoulder.web.filter.xss.enable", havingValue = "true", matchIfMissing = true)
+    public FilterRegistrationBean<XssFilter> xssFilterRegistration(WebFilterProperties webFilterProperties) {
         FilterRegistrationBean<XssFilter> registration = new FilterRegistrationBean<>();
         // 将过滤器配置到FilterRegistrationBean对象中
-        registration.setFilter(new XssFilter(xssProperties));
+        registration.setFilter(new XssFilter(webFilterProperties.getXss()));
         // 给过滤器取名
         registration.setName(DefaultWebFilterType.SECURITY_XSS.name);
         // 设置过滤器优先级，该值越小越优先被执行

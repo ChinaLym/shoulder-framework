@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.web.filter.BasePathFilter;
 import org.shoulder.web.filter.PathFilterHelper;
+import org.shoulder.web.filter.PathFilterProperties;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ import java.io.IOException;
  */
 public class XssFilter extends BasePathFilter {
 
-    public XssFilter(XssProperties xssProperties) {
+    public XssFilter(PathFilterProperties xssProperties) {
         super(new PathFilterHelper(xssProperties));
     }
 
