@@ -25,4 +25,8 @@ public class PathFilterProperties {
      */
     private Boolean enable = true;
 
+    /**
+     * 顺序
+     */
+    private Integer order;
 }
