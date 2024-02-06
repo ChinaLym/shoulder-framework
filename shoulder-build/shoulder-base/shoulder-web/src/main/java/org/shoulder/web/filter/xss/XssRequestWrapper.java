@@ -144,7 +144,7 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
      * 过滤脚本攻击，将html字符转义
      */
     private String securityContext(String context) {
-        return filterHtmlEscape(stripXss(context));
+        return stripXss(context);
     }
 
     /**
@@ -177,6 +177,9 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
      * 对 html 进行转换
      */
     private String filterHtmlEscape(String context) {
+        if(StringUtils.isEmpty(context)) {
+            return context;
+        }
         for (Map.Entry<String, String> entry : HTML_ESCAPE_CHARACTER_MAP.entrySet()) {
             String escapeChar = entry.getKey();
             String convertChar = entry.getValue();
