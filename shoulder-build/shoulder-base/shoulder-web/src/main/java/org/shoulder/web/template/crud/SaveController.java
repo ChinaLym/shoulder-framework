@@ -65,7 +65,7 @@ public interface SaveController<
             }
             ENTITY dataInDb = getService().lockByBizId(bizEntity.getBizId());
             // 数据不存在
-            AssertUtils.isNull(dataInDb, DataErrorCodeEnum.DATA_ALREADY_EXISTS);
+            AssertUtils.isNull(dataInDb, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
         }
         getService().save(entity);
         return BaseResult.success(convertEntityToSaveResultDTO(entity));

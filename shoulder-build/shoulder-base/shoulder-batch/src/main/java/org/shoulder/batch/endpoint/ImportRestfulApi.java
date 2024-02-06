@@ -40,7 +40,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * @deprecated 不作为框架默认实现的一部分，将移动至 platform 中
  */
 @Api(tags = {"数据批量操作"})
-@RequestMapping("/rest/{dataType}/batch/v1/")
+@RequestMapping("/api/v1/batch/{dataType}")
 public interface ImportRestfulApi {
 
 
@@ -56,13 +56,13 @@ public interface ImportRestfulApi {
             throws Exception;
 
     /**
-     * 查询数据导入数据校验进度
+     * 查询数据导入数据校验进度 进度都用一个接口
      */
     /*@ApiOperation(value = "查询数据导入数据校验进度", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "GET")
     @ApiImplicitParam(value = "批次ID", name = "taskId", example = "452f5wq6", defaultValue = "452f5wq6",
             required = true, paramType = "path")
     @RequestMapping(value = "progress/{taskId}", method = GET)
-    RestResult<BatchProcessResult> queryValidateProcess(String taskId);*/
+    BaseResult<BatchProcessResult> queryValidateProcess(String taskId);*/
 
     /**
      * 批量操作

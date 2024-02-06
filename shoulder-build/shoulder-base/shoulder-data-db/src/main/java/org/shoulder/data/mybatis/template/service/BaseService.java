@@ -18,8 +18,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.converter.DateConverter;
 import org.shoulder.core.dto.request.BasePageQuery;
 import org.shoulder.core.dto.response.PageResult;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
-import org.shoulder.data.enums.DataErrorCodeEnum;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
@@ -34,14 +34,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 /**
  * shoulder 定义的基本服务，提供了增删改查等通用代码
  *
  * @author lym
  */
 public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
-        extends IService<ENTITY> {
+    extends IService<ENTITY> {
 
     @Override
     BaseMapper<ENTITY> getBaseMapper();
@@ -91,7 +90,6 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
         return getBaseMapper().selectForUpdateByBizId(bizId);
     }
 
-
     /**
      * 分页查询
      *
@@ -107,7 +105,6 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
         return handlePageQueryResult(pageResult);
     }
 
-
     /**
      * 处理参数
      *
@@ -116,7 +113,6 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
     default void handleBeforePageQuery(BasePageQuery<ENTITY> pageQueryCondition) {
         // 驼峰 转 下划线 、过滤 SQL 关键字、防止注入等
     }
-
 
     /**
      * 处理时间区间，可以覆盖后处理组装查询条件
@@ -151,7 +147,6 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
         return list(example, null, limitNum);
     }
 
-
     /**
      * 列出符合条件的数据
      *
@@ -161,7 +156,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
      */
     default List<ENTITY> list(ENTITY example, Map<String, Object> ext, Integer limitNum) {
         QueryWrapper<ENTITY> queryWrapper = query(example, ext)
-                .last("limit " + limitNum);
+            .last("limit " + limitNum);
         return getBaseMapper().selectList(queryWrapper);
     }
 
@@ -207,23 +202,26 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
             if (key.endsWith("_st")) {
                 String beanField = StrUtil.subBefore(key, "_st", true);
                 if (wrapper instanceof AbstractWrapper) {
-                    ((AbstractWrapper) wrapper).ge(calculateDbField(beanField, entityClass), DateConverter.INSTANCE.convert(value.toString()));
+                    ((AbstractWrapper) wrapper).ge(calculateDbField(beanField, entityClass),
+                        DateConverter.INSTANCE.convert(value.toString()));
                 } else if (wrapper instanceof AbstractChainWrapper) {
-                    ((AbstractChainWrapper) wrapper).ge(calculateDbField(beanField, entityClass), DateConverter.INSTANCE.convert(value.toString()));
+                    ((AbstractChainWrapper) wrapper).ge(calculateDbField(beanField, entityClass),
+                        DateConverter.INSTANCE.convert(value.toString()));
                 }
             }
             if (key.endsWith("_ed")) {
                 String beanField = StrUtil.subBefore(key, "_ed", true);
                 if (wrapper instanceof AbstractWrapper) {
-                    ((AbstractWrapper) wrapper).le(calculateDbField(beanField, entityClass), DateConverter.INSTANCE.convert(value.toString()));
+                    ((AbstractWrapper) wrapper).le(calculateDbField(beanField, entityClass),
+                        DateConverter.INSTANCE.convert(value.toString()));
                 } else if (wrapper instanceof AbstractChainWrapper) {
-                    ((AbstractChainWrapper) wrapper).le(calculateDbField(beanField, entityClass), DateConverter.INSTANCE.convert(value.toString()));
+                    ((AbstractChainWrapper) wrapper).le(calculateDbField(beanField, entityClass),
+                        DateConverter.INSTANCE.convert(value.toString()));
                 }
             }
         }
         return wrapper;
     }
-
 
     /**
      * 转为 pageDTO
@@ -241,11 +239,11 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
         }
 
         List<OrderItem> orders = pageQuery.getOrderRules().stream()
-                .map(r -> r.getOrder() == BasePageQuery.Order.ASC ?
-                        OrderItem.asc(calculateDbField(r.getFieldName(), entityClass)) :
-                        OrderItem.desc(calculateDbField(r.getFieldName(), entityClass))
-                )
-                .collect(Collectors.toList());
+            .map(r -> r.getOrder() == BasePageQuery.Order.ASC ?
+                OrderItem.asc(calculateDbField(r.getFieldName(), entityClass)) :
+                OrderItem.desc(calculateDbField(r.getFieldName(), entityClass))
+            )
+            .collect(Collectors.toList());
 
         page.setOrders(orders);
         return page;
@@ -313,8 +311,8 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
         ENTITY dbData = lockByBizId(param.getBizId());
 
         // check version
-        AssertUtils.notNull(dbData, DataErrorCodeEnum.DATA_NOT_EXISTS);
-        AssertUtils.equals(param.getVersion(), ((BizEntity) dbData).getVersion(), DataErrorCodeEnum.DATA_VERSION_EXPIRED);
+        AssertUtils.notNull(dbData, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
+        AssertUtils.equals(param.getVersion(), ((BizEntity) dbData).getVersion(), CommonErrorCodeEnum.DATA_VERSION_EXPIRED);
         // remove common fields change
         param.setId(null);
         param.setCreator(null);
@@ -392,7 +390,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
     default void checkEntityAs(Class<?> exceptedClass) {
         if (!exceptedClass.isAssignableFrom(getEntityClass())) {
             throw new IllegalStateException("not support such entity(" + getEntityClass().getName() +
-                    ") for not extends " + exceptedClass.getName());
+                                            ") for not extends " + exceptedClass.getName());
         }
     }
 

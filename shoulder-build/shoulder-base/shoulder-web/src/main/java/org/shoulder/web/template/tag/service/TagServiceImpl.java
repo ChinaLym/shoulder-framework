@@ -84,7 +84,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     public boolean attachTag(String bizType, String oid, Long tagId) {
         // select for update tagId 对应的标签关系
         TagEntity tagInDb = super.getBaseMapper().selectForUpdateById(tagId);
-        AssertUtils.notNull(tagInDb, DataErrorCodeEnum.DATA_NOT_EXISTS);
+        AssertUtils.notNull(tagInDb, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
 
         TagMappingEntity tagMappingInDb = tagMappingService.getBaseMapper().selectForUpdate(tagId, bizType, oid);
         if (tagMappingInDb != null) {
@@ -108,7 +108,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         AssertUtils.notNull(tagId, CommonErrorCodeEnum.ILLEGAL_PARAM);
         AssertUtils.notNull(pageQueryCondition.getCondition().getRefType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         TagEntity tagEntity = super.getById(tagId);
-        AssertUtils.notNull(tagEntity, DataErrorCodeEnum.DATA_NOT_EXISTS);
+        AssertUtils.notNull(tagEntity, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
         // TODO 根据标签 order排序？
         return tagMappingService.page(pageQueryCondition);
     }
@@ -205,7 +205,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
         // 确认数据都在
         List<Long> mappingIdList = tagMappingListInDb.stream().map(BaseEntity::getId).collect(Collectors.toList());
-        AssertUtils.equals(tagIdList.size(), mappingIdList.size(), DataErrorCodeEnum.DATA_NOT_EXISTS);
+        AssertUtils.equals(tagIdList.size(), mappingIdList.size(), CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
 
         // 删掉
         tagMappingService.getBaseMapper().deleteInLogicByIdList(mappingIdList);
@@ -225,7 +225,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
             List<Long> tags = new ArrayList<>();
             for (String oldName : oldNames) {
                 TagEntity tag = queryTagByBizTypeAndName(bizType, oldName);
-                AssertUtils.notNull(tag, DataErrorCodeEnum.DATA_NOT_EXISTS);
+                AssertUtils.notNull(tag, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
                 tags.add(tag.getId());
             }
             removeTagMappings(refType, oid, tags);
@@ -242,7 +242,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
     private void tryDeleteTag(Long tagId) {
         TagEntity tag = super.lockById(tagId);
-        AssertUtils.notNull(tag, DataErrorCodeEnum.DATA_NOT_EXISTS);
+        AssertUtils.notNull(tag, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
         TagMappingEntity tagMapping = new TagMappingEntity();
         tagMapping.setTagId(tagId);
         // todo count

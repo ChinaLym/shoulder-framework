@@ -150,6 +150,21 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     ILLEGAL_STATUS(340, "illegal status.", Level.ERROR),
 
+    /**
+     * 数据版本过旧
+     */
+    DATA_VERSION_EXPIRED(350, "数据版本过旧，可能已经被其他人修改"),
+
+    /**
+     * 数据不存在
+     */
+    DATA_NOT_EXISTS(351, "数据不存在"),
+
+    /**
+     * 数据已存在
+     */
+    DATA_ALREADY_EXISTS(352, "数据已存在"),
+
     // ----------------------- 并发、达到瓶颈 error 级别 返回 500 ----------------------
 
     /**
