@@ -120,7 +120,7 @@ public class MybatisPlusAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "optimisticLocker", havingValue = "true")
+    @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "optimisticLocker", havingValue = "true", matchIfMissing = true)
     public OptimisticLockerInnerInterceptor optimizationInnerInterceptor() {
         return new OptimisticLockerInnerInterceptor();
     }
