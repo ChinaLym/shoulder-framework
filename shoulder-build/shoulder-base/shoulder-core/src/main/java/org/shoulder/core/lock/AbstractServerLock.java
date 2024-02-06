@@ -1,13 +1,11 @@
 package org.shoulder.core.lock;
 
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.PreDestroy;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.lock.impl.JdkLock;
 import org.shoulder.core.util.AssertUtils;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -58,7 +56,7 @@ public abstract class AbstractServerLock implements ServerLock {
 
     @Override
     public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
-        return tryLock(getThisLockNonNull(), Duration.of(time, toTemporalUnit(unit)));
+        return tryLock(getThisLockNonNull(), Duration.of(time, JdkLock.toTemporalUnit(unit)));
     }
 
     @Override
@@ -79,27 +77,6 @@ public abstract class AbstractServerLock implements ServerLock {
         LockInfo lockInfo = lockInfoLocal.get();
         AssertUtils.notNull(lockInfo, CommonErrorCodeEnum.CODING, "You are using not reccognized method, and internal lockInfo is null!");
         return lockInfo;
-    }
-
-    private TemporalUnit toTemporalUnit(@Nonnull TimeUnit unit) {
-        switch (unit) {
-            case NANOSECONDS:
-                return ChronoUnit.NANOS;
-            case MICROSECONDS:
-                return ChronoUnit.MICROS;
-            case MILLISECONDS:
-                return ChronoUnit.MILLIS;
-            case SECONDS:
-                return ChronoUnit.SECONDS;
-            case MINUTES:
-                return ChronoUnit.MINUTES;
-            case HOURS:
-                return ChronoUnit.HOURS;
-            case DAYS:
-                return ChronoUnit.DAYS;
-            default:
-                throw new IllegalStateException();
-        }
     }
 
     @PreDestroy

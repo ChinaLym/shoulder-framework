@@ -3,6 +3,7 @@ package org.shoulder.core.lock.impl;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.lock.LockInfo;
 import org.shoulder.core.util.JsonUtils;
+import org.springframework.lang.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class FileSystemLock {
         List<LockInfo> lockInfoList = getAll();
         lockInfoList.add(lockInfo);
         String jsonStr = JsonUtils.toJson(lockInfoList);
-        Files.write(LOCK_FILE, jsonStr.getBytes(AppInfo.charset()));
+        Files.writeString(LOCK_FILE, jsonStr, AppInfo.charset());
     }
 
     @SuppressWarnings("unchecked")
@@ -36,6 +37,7 @@ public class FileSystemLock {
         return JsonUtils.parseObject(jsonStr, List.class, LockInfo.class);
     }
 
+    @Nullable
     public synchronized LockInfo get(String resource) throws Exception {
         List<LockInfo> lockInfoList = getAll();
         for (LockInfo lockInfo : lockInfoList) {

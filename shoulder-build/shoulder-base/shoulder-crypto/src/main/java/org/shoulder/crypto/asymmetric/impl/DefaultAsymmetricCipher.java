@@ -12,14 +12,22 @@ import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.time.Duration;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.security.*;
-import java.time.Duration;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 非对称加解密工具实现
@@ -127,7 +135,7 @@ public class DefaultAsymmetricCipher implements AsymmetricCipher, ByteSpecificat
     }
 
     private KeyPair getKeyPairFromDto(KeyPairDto dto) throws KeyPairException {
-        KeyPair keyPair = null;
+        KeyPair keyPair;
         if ((keyPair = dto.getOriginKeyPair()) != null) {
             // 内存存储，无需反序列化
             return keyPair;

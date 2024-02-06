@@ -17,6 +17,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.Objects;
+
 /**
  * 实例标识分配
  *
@@ -49,7 +51,7 @@ public class InstanceIdProviderAutoConfiguration {
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = InstanceIdProperties.PREFIX + ".type", havingValue = "fixed", matchIfMissing = true)
     public InstanceIdProvider fixedInstanceIdProvider() {
-        if(AppInfo.cluster() && instanceIdProperties.getId().equals(0)) {
+        if(AppInfo.cluster() && Objects.equals(instanceIdProperties.getId(), 0L)) {
             log.warn("Active cluster mode, but instanceId is DEFAULT VALUE: 0! Please change shoulder.instance.id in application.properties!");
         }
         return new FixedInstanceIdProvider(instanceIdProperties.getId());

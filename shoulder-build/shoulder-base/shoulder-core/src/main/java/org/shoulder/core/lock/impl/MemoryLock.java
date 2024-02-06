@@ -33,13 +33,13 @@ public class MemoryLock extends AbstractServerLock {
             }
             Duration ttl = Duration.between(LocalDateTime.now(),
                 // 取更小的
-                maxBlockTime.compareTo(oldLock.getReleaseTime()) > 0 ? oldLock.getReleaseTime() : maxBlockTime);
+                maxBlockTime.isAfter(oldLock.getReleaseTime()) ? oldLock.getReleaseTime() : maxBlockTime);
 
             synchronized (oldLock) {
                 oldLock.wait(ttl.toMillis());
             }
             // 有人释放，重新尝试获取锁
-            if (LocalDateTime.now().compareTo(maxBlockTime) > 0) {
+            if (LocalDateTime.now().isAfter(maxBlockTime)) {
                 // 达到最大阻塞时间加锁失败
                 return false;
             }

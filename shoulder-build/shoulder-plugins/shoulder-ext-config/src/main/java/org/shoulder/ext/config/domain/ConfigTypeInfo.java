@@ -68,9 +68,8 @@ public class ConfigTypeInfo implements ConfigType {
         Field[] fields = configClazz.getDeclaredFields();
         List<ConfigFieldInfo> fieldInfoList = new ArrayList<>(fields.length);
         int order = 0;
-        for (int i = 0; i < fields.length; i++) {
+        for (Field field : fields) {
 
-            Field field = fields[i];
             int modifiers = field.getModifiers();
             if (Modifier.isFinal(modifiers) || Modifier.isStatic(modifiers)) {
                 continue;

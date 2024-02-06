@@ -68,7 +68,7 @@ public class ShoulderLocalDateTimeDeserializer extends JSR310DateTimeDeserialize
         // 字符串 格式
         if (parser.hasTokenId(JsonTokenId.ID_STRING)) {
             String string = parser.getText().trim();
-            if (string.length() == 0) {
+            if (string.isEmpty()) {
                 return null;
             }
 

@@ -230,7 +230,7 @@ public enum MIMEEnum {
      */
     private final String mimeType;
 
-    private MIMEEnum(String mimeType) {
+    MIMEEnum(String mimeType) {
         // 为了解决与 java 语法冲突，全部以  开头
         this.suffix = this.name().replace("", "");
         this.mimeType = mimeType;

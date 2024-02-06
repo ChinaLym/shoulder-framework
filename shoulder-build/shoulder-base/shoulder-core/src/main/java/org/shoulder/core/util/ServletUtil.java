@@ -159,7 +159,7 @@ public class ServletUtil {
             if (StringUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("Proxy-Client-IP");
             }
-            if (StringUtils.isEmpty(ip) || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
+            if (StringUtils.isEmpty(ip) || ip.isEmpty() || UNKNOWN.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("WL-Proxy-Client-IP");
             }
             if (StringUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
@@ -173,12 +173,12 @@ public class ServletUtil {
                 ip = request.getRemoteAddr();
                 if (LOCALHOST_IP1.equalsIgnoreCase(ip) || LOCALHOST_IP.equalsIgnoreCase(ip)) {
                     //根据网卡取本机配置的IP
-                    InetAddress iNet = null;
+                    InetAddress iNet;
                     try {
                         iNet = InetAddress.getLocalHost();
                         ip = iNet.getHostAddress();
                     } catch (UnknownHostException e) {
-                        logger.error("getClientIp error: {}", e);
+                        logger.error("getClientIp error! ", e);
                     }
                 }
             }

@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Xss 配置项
- * todo
+ * todo 自动装配
  *
  * @author lym
  */

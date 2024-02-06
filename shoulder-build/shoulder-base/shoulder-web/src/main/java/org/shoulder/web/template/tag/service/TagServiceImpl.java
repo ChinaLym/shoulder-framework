@@ -175,6 +175,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public List<TagEntity> attachTags(String refType, String oid, String type,
                                       List<String> tagNameList) {
         if (CollectionUtils.isEmpty(tagNameList)) {
@@ -216,6 +217,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void batchUpdateTagMappings(String refType, String bizType, String oid, List<String> oldNames,
                                        List<String> newNames) {
         if (CollectionUtils.isNotEmpty(oldNames)) {

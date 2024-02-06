@@ -99,7 +99,7 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
         List<String> availableFileNames = Arrays.stream(new String[]{".xml", ".properties"})
                 .map(suffix -> extracted(basename, suffix))
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
         filenames.addAll(availableFileNames);
 
         if (localeMap == null) {
@@ -148,20 +148,20 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
         String variant = locale.getVariant();
         StringBuilder temp = new StringBuilder(basename);
         temp.append('/');
-        boolean hasLanguage = language.length() > 0;
+        boolean hasLanguage = !language.isEmpty();
         if (hasLanguage) {
             temp.append(language);
             result.addAll(0, listLanguageSourceDir(temp.toString()));
         }
 
         temp.append('_');
-        boolean hasCountry = country.length() > 0;
+        boolean hasCountry = !country.isEmpty();
         if (hasCountry) {
             temp.append(country);
             result.addAll(0, listLanguageSourceDir(temp.toString()));
         }
 
-        if (variant.length() > 0 && (hasLanguage || hasCountry)) {
+        if (!variant.isEmpty() && (hasLanguage || hasCountry)) {
             temp.append('_').append(variant);
             result.addAll(0, listLanguageSourceDir(temp.toString()));
         }

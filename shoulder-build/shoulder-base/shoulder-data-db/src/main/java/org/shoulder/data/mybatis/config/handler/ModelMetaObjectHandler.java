@@ -25,7 +25,7 @@ import java.util.Optional;
  * todo 【优化-兼容性】createTime update 时区问题：数据库采取的是 0 时区，则 NOW() 返回值和 java 的 LocalDateTime.now() 是不一样的，换成Instant
  * <p>
  * 值来源：
- * id： {@link EntityIdGenerator#next(String, String)}
+ * id： {@link EntityIdGenerator#genId}
  * createTime updateTime：{@link LocalDateTime#now}
  * createdBy updatedBy：{@link AppContext#getUserId}
  *
@@ -103,7 +103,7 @@ public class ModelMetaObjectHandler implements MetaObjectHandler {
         }
         // 否则生成并 set
         Class<?> actuallyClass = metaObject.getOriginalObject().getClass();
-        Class<?> idType = null;
+        Class<?> idType;
         if(BaseEntity.class.isAssignableFrom(actuallyClass)) {
             idType = Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(actuallyClass, BaseEntity.class)).orElseThrow()[0];
         } else {

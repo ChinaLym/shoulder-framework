@@ -74,10 +74,8 @@ public enum ProcessStatusEnum {
     public static ProcessStatusEnum of(Integer code) {
         return Arrays.stream(ProcessStatusEnum.values())
                 .filter(e -> e.code.equals(code))
-                .findFirst().orElseThrow(() -> {
-                    // 非法状态码，除恶意调用，否则不会发生
-                    throw new BaseRuntimeException("invalid resultCode");
-                });
+                // 非法状态码，除恶意调用，否则不会发生
+                .findFirst().orElseThrow(() -> new BaseRuntimeException("invalid resultCode"));
     }
 
 }

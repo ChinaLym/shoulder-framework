@@ -93,11 +93,11 @@ public class BrowserSecurityConfiguration {
         //apply 方法：<C extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>> C apply(C configurer)
 
         if (validateCodeSecurityConfig != null) {
-            http.apply(validateCodeSecurityConfig);
+            http.with(validateCodeSecurityConfig, c -> {});
         }
 
         if (phoneNumAuthenticationSecurityConfig != null) {
-            http.apply(phoneNumAuthenticationSecurityConfig);
+            http.with(phoneNumAuthenticationSecurityConfig, c -> {});
         }
 
         // 记住我配置，采用 spring security 的默认实现
@@ -125,11 +125,10 @@ public class BrowserSecurityConfiguration {
                                 .expiredSessionStrategy(sessionInformationExpiredStrategy))
 
                 // 退出登录相关配置
-                .logout(logoutConfigurer -> {
+                .logout(logoutConfigurer ->
                     logoutConfigurer.logoutUrl(SecurityConst.URL_AUTHENTICATION_CANCEL)
-                            .logoutSuccessUrl(browserSessionAuthProperties.getSignOutSuccessUrl())
-                            .deleteCookies("JSESSIONID");
-                })
+                        .logoutSuccessUrl(browserSessionAuthProperties.getSignOutSuccessUrl())
+                        .deleteCookies("JSESSIONID"))
 
 
                 // 配置过滤规则

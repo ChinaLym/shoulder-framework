@@ -119,6 +119,13 @@ public class MybatisPlusAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "optimisticLocker", havingValue = "true")
+    public OptimisticLockerInnerInterceptor optimizationInnerInterceptor() {
+        return new OptimisticLockerInnerInterceptor();
+    }
+
+    @Bean
     @Order(80)
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "blockWriteFullTable", havingValue = "true")

@@ -81,7 +81,8 @@ public class ImageCodeGenerator implements ValidateCodeGenerator, ImageValidateC
         for (int i = 0; i < codeLength; i++) {
             final int offset = 5;
             int fontSize = height - 20 + random.nextInt(10);
-            graphics.setFont(new Font(FONT_NAMES[random.nextInt(FONT_NAMES.length)], random.nextInt(3), fontSize));
+            int rgbRandom = 3;
+            graphics.setFont(new Font(FONT_NAMES[random.nextInt(FONT_NAMES.length)], random.nextInt(rgbRandom), fontSize));
             graphics.drawString(String.valueOf(validateCodeStr.charAt(i)), i * fontSize + offset, fontSize + random.nextInt(fontSize >> 1));
         }
 

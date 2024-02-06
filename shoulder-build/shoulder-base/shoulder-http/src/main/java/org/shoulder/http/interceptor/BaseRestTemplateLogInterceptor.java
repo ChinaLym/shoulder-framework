@@ -76,7 +76,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
             "default support 'json/xml/plain' only";
 
         record.setCostTime(stopWatch.getLastTaskTimeMillis())
-            .setStatusCode(response.getRawStatusCode())
+            .setStatusCode(response.getStatusCode().value())
             .setStatusText(response.getStatusText())
             .setResponseHeaders(response.getHeaders())
             .setResponseBody(bodyStr);

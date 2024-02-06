@@ -209,9 +209,8 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
 
         responseInfo.newLine();
 
-        if (returnObject instanceof ModelAndView) {
+        if (returnObject instanceof ModelAndView modelAndView) {
             // 打印 model
-            ModelAndView modelAndView = (ModelAndView) returnObject;
             Map<String, Object> model = modelAndView.getModel();
             responseInfo
                     .magenta("Model      : ", ColorString.Style.BOLD);

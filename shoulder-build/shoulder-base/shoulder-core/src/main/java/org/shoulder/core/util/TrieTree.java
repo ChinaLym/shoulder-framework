@@ -107,9 +107,8 @@ public class TrieTree<V> {
 
         protected final Consumer<TrieNode> DELETE_OPERATION = (node) -> node.present = false;
 
-        protected final BiConsumer<String, VALUE> ADD_DUPLICATE_VALUE = (k, newValue) -> {
+        protected final BiConsumer<String, VALUE> ADD_DUPLICATE_VALUE = (k, newValue) ->
             this.value = newValue;
-        };
 
         public TrieNode() {
 

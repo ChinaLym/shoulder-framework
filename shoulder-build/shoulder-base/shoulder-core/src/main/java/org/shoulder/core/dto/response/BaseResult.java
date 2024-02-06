@@ -75,7 +75,7 @@ public class BaseResult<T> extends ToStringObj {
 
 
     public static <T> BaseResult<T> success() {
-        return new BaseResult<T>(ErrorCode.SUCCESS);
+        return new BaseResult<>(ErrorCode.SUCCESS);
     }
 
     public static <T> BaseResult<T> success(T data) {

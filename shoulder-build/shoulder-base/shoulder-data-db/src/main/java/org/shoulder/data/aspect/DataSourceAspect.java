@@ -66,10 +66,8 @@ public class DataSourceAspect {
         }
         if (StringUtils.isEmpty(dataSourceBeanName)) {
             Class<?> targetClass = point.getTarget().getClass();
-            if (targetClass != null) {
-                DataSource classDataSource = targetClass.getAnnotation(DataSource.class);
-                dataSourceBeanName = getValueFromAnnotation(classDataSource);
-            }
+            DataSource classDataSource = targetClass.getAnnotation(DataSource.class);
+            dataSourceBeanName = getValueFromAnnotation(classDataSource);
         }
         return dataSourceBeanName;
     }

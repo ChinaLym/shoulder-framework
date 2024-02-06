@@ -33,7 +33,7 @@ public class Threads {
      * 通用线程池
      * todo 使用带调度的线程池！！！ 0.8
      */
-    private static ExecutorService SHOULDER_THREAD_POOL;
+    private static volatile ExecutorService SHOULDER_THREAD_POOL;
 
     /**
      * 延迟任务存放者
@@ -121,7 +121,7 @@ public class Threads {
                 if (SHOULDER_THREAD_POOL == null) {
                     log.warn("not set threadPool fall back: use bean named '{}' in context.", SHOULDER_THREAD_POOL_NAME);
                     Object threadPoolBean = ContextUtils.getBean(SHOULDER_THREAD_POOL_NAME);
-                    if (!(threadPoolBean instanceof ExecutorService)) {
+                    if (threadPoolBean instanceof ExecutorService) {
                         setExecutorService((ExecutorService) threadPoolBean);
                     } else {
                         throw new IllegalStateException("Need invoke setExecutorService first!");
@@ -223,7 +223,7 @@ public class Threads {
                 }
             }
             log.warn("Discard for the executor's queue is full. Task({}), Executor({})", r.toString(),
-                    executor.toString());
+                    executor);
         }
     }
 

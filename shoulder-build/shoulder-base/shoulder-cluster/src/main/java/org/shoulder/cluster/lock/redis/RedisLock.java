@@ -83,13 +83,14 @@ public class RedisLock extends AbstractDistributeLock implements ServerLock {
     }
 
     private RedisScript<Long> releaseLockScript() {
-        final String script = "local value = ARGV[1];\n" +
-            "if redis.call('GET', KEYS[1]) ~= value then \n" +
-            "\treturn -1; \n" +
-            "else \n" +
-            "\tredis.call('DEL', KEYS[1]);\n" +
-            "\treturn 1;\n" +
-            "\tend";
+        final String script = """
+                local value = ARGV[1];
+                if redis.call('GET', KEYS[1]) ~= value then
+                \treturn -1;
+                else
+                \tredis.call('DEL', KEYS[1]);
+                \treturn 1;
+                \tend""";
         return new DefaultRedisScript<>(script, Long.class);
     }
 }

@@ -50,22 +50,26 @@ public abstract class BaseLocalDateTimeConverter<T> extends BaseDateConverter<T>
             String split = yyyyMMdd.contains("-") ? "-" : "/";
             String[] timePart = yyyyMMdd.split(split);
             assert timePart.length == 3;
-            String year = timePart[0];
-            String month = timePart[1];
-            String day = timePart[2];
-            StringBuilder stdDateFormat = new StringBuilder(year);
-            stdDateFormat.append(split);
-            if (month.length() == 1) {
-                stdDateFormat.append("0");
-            }
-            stdDateFormat.append(month);
-            stdDateFormat.append(split);
-            if (day.length() == 1) {
-                stdDateFormat.append("0");
-            }
-            stdDateFormat.append(day);
-            return stdDateFormat.toString();
+            return toStdDateFormat(timePart, split);
         }
+    }
+
+    private static String toStdDateFormat(String[] timePart, String split) {
+        String year = timePart[0];
+        String month = timePart[1];
+        String day = timePart[2];
+        StringBuilder stdDateFormat = new StringBuilder(year);
+        stdDateFormat.append(split);
+        if (month.length() == 1) {
+            stdDateFormat.append("0");
+        }
+        stdDateFormat.append(month);
+        stdDateFormat.append(split);
+        if (day.length() == 1) {
+            stdDateFormat.append("0");
+        }
+        stdDateFormat.append(day);
+        return stdDateFormat.toString();
     }
 
     /**

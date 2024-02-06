@@ -105,12 +105,11 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
             // 执行转换
             doConvert(sourceModel, targetModel);
         } catch (Exception e) {
-            StringBuilder bf = new StringBuilder("param convert error, source type:");
-            bf.append(sourceEntityClass.getSimpleName()).append(",target type:")
-                    .append(targetEntityClass.getSimpleName());
+            String bf = "param convert error, source type:" + sourceEntityClass.getSimpleName()
+                        + ",target type:" + targetEntityClass.getSimpleName();
             //LogUtil.error(LOGGER, e, bf.toString());
             // convertFail
-            throw new BaseRuntimeException(CommonErrorCodeEnum.CODING, e, bf.toString());
+            throw new BaseRuntimeException(CommonErrorCodeEnum.CODING, e, bf);
         }
         return targetModel;
     }

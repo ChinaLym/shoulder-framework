@@ -30,7 +30,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     @SuppressWarnings("unchecked")
     public static <T> T[] toArray(Enumeration<T> e, Class<T> type) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (; e.hasMoreElements(); ) {
             result.add(e.nextElement());
         }
@@ -83,8 +83,8 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
         if(isEmpty(arr)) {
             return true;
         }
-        for (int i = 0; i < arr.length; i++) {
-            if(arr[i] != null) {
+        for (T t : arr) {
+            if (t != null) {
                 return false;
             }
         }
@@ -100,7 +100,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] removeNull(T[] arr1) {
-        List<T> list = new ArrayList<T>(arr1.length);
+        List<T> list = new ArrayList<>(arr1.length);
         for (T e : arr1) {
             if (e != null) {
                 list.add(e);
@@ -213,7 +213,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] removeDumps(T[] array) {
-        List<T> list = new ArrayList<T>();
+        List<T> list = new ArrayList<>();
         for (T obj : array) {
             if (!list.contains(obj)) {
                 list.add(obj);
@@ -361,7 +361,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      * 取得数组当中的某几号元素，重新组成数组
      */
     public static <T> List<T> subByIndex(List<T> list, int[] indexes) {
-        List<T> newList = new ArrayList<T>();
+        List<T> newList = new ArrayList<>();
         for (int i : indexes) {
             newList.add(list.get(i));
         }
@@ -443,7 +443,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      */
     @SafeVarargs
     public static <T> List<T> asList(T... args) {
-        List<T> list = new ArrayList<T>(args.length + 16);
+        List<T> list = new ArrayList<>(args.length + 16);
         list.addAll(Arrays.asList(args));
         return list;
     }
@@ -505,7 +505,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      * @return 筛选结果
      */
     public static <T> List<T> doSelect(Iterable<T> list, Filter<T> filter) {
-        ArrayList<T> result = new ArrayList<T>();
+        ArrayList<T> result = new ArrayList<>();
         for (T o : list) {
             if (filter.accept(o)) {
                 result.add(o);
@@ -749,7 +749,7 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      * 取并集
      */
     public static Object[] union(Object[] ls, Object[] ls2) {
-        HashSet<Object> set = new HashSet<Object>(Arrays.asList(ls));
+        HashSet<Object> set = new HashSet<>(Arrays.asList(ls));
         set.addAll(Arrays.asList(ls2));
         return set.toArray();
     }
@@ -758,8 +758,9 @@ public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
      * 取差集(即包含在ls，但不包含在ls2中的元素) 可以理解为集合ls减去集合ls2
      */
     public static Object[] minus(Object[] ls, Object[] ls2) {
-        HashSet<Object> set = new HashSet<Object>(Arrays.asList(ls));
-        set.removeAll(Arrays.asList(ls2));
+        HashSet<Object> set = new HashSet<>(Arrays.asList(ls));
+        // 循环删除，避免一次大锁
+        Arrays.asList(ls2).forEach(set::remove);
         return set.toArray();
     }
 

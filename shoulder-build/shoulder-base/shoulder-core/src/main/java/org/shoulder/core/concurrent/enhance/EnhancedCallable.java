@@ -28,8 +28,7 @@ public class EnhancedCallable<V> implements Callable<V> {
 
     public EnhancedCallable(Callable<V> delegate) {
         this.delegate = delegate;
-        if (delegate instanceof EnhancedCallable) {
-            EnhancedCallable<V> enhancedRunnable = (EnhancedCallable<V>) delegate;
+        if (delegate instanceof EnhancedCallable<V> enhancedRunnable) {
             this.decorators.addAll(enhancedRunnable.getDecorators());
             this.decorators.add(enhancedRunnable);
         } else {

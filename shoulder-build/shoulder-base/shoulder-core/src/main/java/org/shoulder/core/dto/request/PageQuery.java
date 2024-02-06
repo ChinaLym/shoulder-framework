@@ -98,7 +98,7 @@ public class PageQuery<DTO> extends ToStringObj {
      * @return 分页相关信息
      */
     public static <T> PageQuery<T> fromRequest() {
-        HttpServletRequest servletRequest = null;
+        HttpServletRequest servletRequest;
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes instanceof ServletRequestAttributes) {
             servletRequest = ((ServletRequestAttributes) requestAttributes).getRequest();
@@ -114,7 +114,7 @@ public class PageQuery<DTO> extends ToStringObj {
      * @return 分页相关信息
      */
     public static <T> PageQuery<T> fromRequest(HttpServletRequest request) {
-        PageQuery<T> result = new PageQuery<T>();
+        PageQuery<T> result = new PageQuery<>();
         String pageNo = request.getParameter(PARAM_PAGE_NO);
         String pageSize = request.getParameter(PARAM_PAGE_SIZE);
         String orderRules = request.getParameter(PARAM_RULES);

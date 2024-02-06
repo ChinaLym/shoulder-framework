@@ -11,9 +11,9 @@ import org.shoulder.validate.annotation.FileType;
 @Data
 public class FileValidatorProperties {
 
-    private String[] allowSuffixNameArray = {};
+    private String[] allowSuffixNameArray;
 
-    private String maxSizeStr = "";
+    private String maxSizeStr;
 
     private boolean allowEmpty;
 

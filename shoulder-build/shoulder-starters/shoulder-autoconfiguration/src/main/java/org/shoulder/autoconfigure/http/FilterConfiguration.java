@@ -4,10 +4,13 @@ import org.shoulder.web.filter.CleanContextFilter;
 import org.shoulder.web.filter.DefaultTenantFilter;
 import org.shoulder.web.filter.MockUserFilter;
 import org.shoulder.web.filter.TraceFilter;
+import org.shoulder.web.filter.xss.XssFilter;
+import org.shoulder.web.filter.xss.XssProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
@@ -19,6 +22,7 @@ import java.util.List;
  */
 @AutoConfiguration
 @ConditionalOnClass(CleanContextFilter.class)
+@EnableConfigurationProperties(XssProperties.class)
 public class FilterConfiguration {
 
     public FilterConfiguration() {
@@ -27,11 +31,14 @@ public class FilterConfiguration {
 
     private static final int FILTER_THRESHOLD_DIFFERENCE = 10;
 
-    public static enum DefaultWebFilterType {
+    public enum DefaultWebFilterType {
         CLEAN_CONTEXT("cleanContextFilter"),
         TRACE("traceFilter"),
         DEFAULT_TENANT("defaultTenantFilter"),
-        MOCK_USER("mockUserFilter");
+        MOCK_USER("mockUserFilter"),
+        SECURITY_XSS("xssFilter"),
+
+        ;
         private final String name;
 
         DefaultWebFilterType(String name) {
@@ -92,7 +99,7 @@ public class FilterConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "shoulder.web.filter.userId.mockIfMissing", havingValue = "true", matchIfMissing = false)
+    @ConditionalOnProperty(value = "shoulder.web.filter.user.mockIfMissing", havingValue = "true", matchIfMissing = false)
     public FilterRegistrationBean<MockUserFilter> mockUserFilterRegistration() {
         FilterRegistrationBean<MockUserFilter> registration = new FilterRegistrationBean<>();
         // 将过滤器配置到FilterRegistrationBean对象中
@@ -101,6 +108,23 @@ public class FilterConfiguration {
         registration.setName(DefaultWebFilterType.MOCK_USER.name);
         // 设置过滤器优先级，该值越小越优先被执行
         registration.setOrder(DefaultWebFilterType.MOCK_USER.calculateFilterOrder());
+        List<String> urlPatterns = new ArrayList<>();
+        urlPatterns.add("/*");
+        // 设置urlPatterns参数
+        registration.setUrlPatterns(urlPatterns);
+        return registration;
+    }
+
+    @Bean
+    @ConditionalOnProperty(value = "shoulder.web.waf.xss", havingValue = "true", matchIfMissing = true)
+    public FilterRegistrationBean<XssFilter> xssFilterRegistration(XssProperties xssProperties) {
+        FilterRegistrationBean<XssFilter> registration = new FilterRegistrationBean<>();
+        // 将过滤器配置到FilterRegistrationBean对象中
+        registration.setFilter(new XssFilter(xssProperties));
+        // 给过滤器取名
+        registration.setName(DefaultWebFilterType.SECURITY_XSS.name);
+        // 设置过滤器优先级，该值越小越优先被执行
+        registration.setOrder(DefaultWebFilterType.SECURITY_XSS.calculateFilterOrder());
         List<String> urlPatterns = new ArrayList<>();
         urlPatterns.add("/*");
         // 设置urlPatterns参数

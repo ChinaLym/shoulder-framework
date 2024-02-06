@@ -145,7 +145,7 @@ public class ConfigRepositoryImpl implements ConfigRepository {
         ConfigType configType = config.getConfigType();
         List<ConfigFieldInfo> needFilterFieldList = configType.getFieldInfoList().stream()
                 // 筛选出需要过滤的字段: 存在 key，且 value != null
-                .filter(f -> filterCondition.get(f.getName()) != null).collect(Collectors.toList());
+                .filter(f -> filterCondition.get(f.getName()) != null).toList();
         try {
             for (ConfigFieldInfo fieldInfo : needFilterFieldList) {
                 if (!StringUtils.equals(filterCondition.get(fieldInfo.getName()),

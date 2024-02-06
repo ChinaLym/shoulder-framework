@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * @author lym
- * @deprecated 租户专门提供
+ * @deprecated 后续租户ext专门提供
  */
 @Controller
 @RequestMapping(ShoulderExtConstants.TENANT_URL_PREFIX)

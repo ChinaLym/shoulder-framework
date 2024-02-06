@@ -223,9 +223,9 @@ public class FastPriorityBlockingQueue<E> implements BlockingQueue<E> {
         Object[] result = new Object[count];
 
         int added = 0;
-        for (int i = 0; i < arr.length; i++) {
-            int toCopy = ((Object[]) arr[i]).length;
-            System.arraycopy(((Object[]) arr[i]), 0, result, added, toCopy);
+        for (Object o : arr) {
+            int toCopy = ((Object[]) o).length;
+            System.arraycopy(((Object[]) o), 0, result, added, toCopy);
             added += toCopy;
         }
         return result;

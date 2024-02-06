@@ -51,8 +51,7 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
      */
     public BaseRuntimeException(Throwable cause) {
         super(cause.getMessage(), cause);
-        if (cause instanceof ErrorCode) {
-            ErrorCode errorCode = (ErrorCode) cause;
+        if (cause instanceof ErrorCode errorCode) {
             this.setHttpStatus(errorCode.getHttpStatusCode());
             this.setLogLevel(errorCode.getLogLevel());
             this.setCode(errorCode.getCode());

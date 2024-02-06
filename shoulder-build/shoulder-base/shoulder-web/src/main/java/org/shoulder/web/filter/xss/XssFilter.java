@@ -11,6 +11,7 @@ import java.io.IOException;
 
 /**
  * xss 过滤器
+ * 保护用户防止XSS攻击：用户A填写内容中包含 script 等 html 标签，用户 B 在查看这些内容时被浏览器意外执行而受到攻击
  *
  * @author lym
  */

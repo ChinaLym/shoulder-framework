@@ -85,8 +85,6 @@ public class SensitiveFieldCache {
     public static void handleSensitiveData(@Nonnull Object object, @Nonnull List<SensitiveFieldWrapper> sensitiveFields,
                                            @Nonnull TransportTextCipher cipher) {
         try {
-            // 不应该为空
-            assert cipher != null;
             for (SensitiveFieldWrapper filedWrapper : sensitiveFields) {
                 Field field = filedWrapper.getField();
                 field.setAccessible(true);

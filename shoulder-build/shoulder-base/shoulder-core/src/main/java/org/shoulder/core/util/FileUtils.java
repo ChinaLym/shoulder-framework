@@ -223,7 +223,7 @@ public class FileUtils extends FileUtil {
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             byte[] buffer = new byte[readBytesPerOp];
-            int length = 0;
+            int length;
             while ((length = fileInputStream.read(buffer)) != -1 && alreadyRead < maxReadByteNum) {
                 md5.update(buffer, 0, length);
                 alreadyRead += readBytesPerOp;

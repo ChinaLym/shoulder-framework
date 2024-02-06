@@ -72,7 +72,7 @@ public class CompressedUUIDGenerator implements StringGuidGenerator {
         for (int i = 0; i < 10; i++, most >>>= 6) {
             chs[k--] = BASE64[(int) (most & 0x3f)];
         }
-        chs[k--] = BASE64[(int) (high | most)];
+        chs[k] = BASE64[(int) (high | most)];
         return new String(chs);
     }
 

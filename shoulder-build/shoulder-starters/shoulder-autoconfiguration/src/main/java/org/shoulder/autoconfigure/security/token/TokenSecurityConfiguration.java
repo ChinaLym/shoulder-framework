@@ -82,11 +82,11 @@ public class TokenSecurityConfiguration {
         //apply 方法：<C extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>> C apply(C configurer)
 
         if (validateCodeSecurityConfig != null) {
-            http.apply(validateCodeSecurityConfig);
+            http.with(validateCodeSecurityConfig, c -> {});
         }
 
         if (phoneNumAuthenticationSecurityConfig != null) {
-            http.apply(phoneNumAuthenticationSecurityConfig);
+            http.with(phoneNumAuthenticationSecurityConfig, c -> {});
         }
 
         if (accessDeniedHandler != null) {

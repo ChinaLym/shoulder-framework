@@ -28,14 +28,13 @@ public class JdkUuidPressed22Generator extends JdkUuidEnhancer implements String
         long msb = uuid.getMostSignificantBits();
         long lsb = uuid.getLeastSignificantBits();
         char[] out = new char[24];
-        int tmp = 0, idx = 0;
+        int tmp, idx = 0;
         // 循环写法
         int bit = 0, bt1 = 8, bt2 = 8;
-        int mask = 0x00, offsetm = 0, offsetl = 0;
+        int mask, offsetm, offsetl;
 
         for (; bit < 16; bit += 3, idx += 4) {
             offsetm = 64 - ((bit + 3) << 3);
-            offsetl = 0;
             tmp = 0;
 
             if (bt1 > 3) {
@@ -44,7 +43,7 @@ public class JdkUuidPressed22Generator extends JdkUuidEnhancer implements String
                 mask = (1 << 8 * bt1) - 1;
                 bt2 -= 3 - bt1;
             } else {
-                mask = (1 << 8 * ((bt2 > 3) ? 3 : bt2)) - 1;
+                mask = (1 << 8 * (Math.min(bt2, 3))) - 1;
                 bt2 -= 3;
             }
             if (bt1 > 0) {
@@ -57,7 +56,7 @@ public class JdkUuidPressed22Generator extends JdkUuidEnhancer implements String
             }
             if (offsetm < 0) {
                 offsetl = 64 + offsetm;
-                tmp |= ((offsetl < 0) ? lsb : (lsb >>> offsetl)) & mask;
+                tmp |= (int) (((offsetl < 0) ? lsb : (lsb >>> offsetl)) & mask);
             }
 
             if (bit == 15) {

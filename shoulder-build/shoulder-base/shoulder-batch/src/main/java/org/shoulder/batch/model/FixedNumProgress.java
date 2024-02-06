@@ -49,6 +49,10 @@ public class FixedNumProgress implements Serializable, ProgressAble {
      */
     private LocalDateTime stopTime;
 
+    /**
+     * 实际是 final
+     * 空构造器只用于序列化/反序列化
+     */
     private BitSet set;
 
     private int total;

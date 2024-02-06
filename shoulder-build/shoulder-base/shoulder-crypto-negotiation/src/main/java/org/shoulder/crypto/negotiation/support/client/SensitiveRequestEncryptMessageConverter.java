@@ -45,8 +45,7 @@ public class SensitiveRequestEncryptMessageConverter extends MappingJackson2Http
     protected void writeInternal(Object object, @Nullable Type type, HttpOutputMessage outputMessage)
         throws IOException, HttpMessageNotWritableException {
         // 获取参数类型，
-        if (object instanceof MappingJacksonValue) {
-            MappingJacksonValue container = (MappingJacksonValue) object;
+        if (object instanceof MappingJacksonValue container) {
             object = container.getValue();
         }
         // 提前取出并清理，避免遗漏

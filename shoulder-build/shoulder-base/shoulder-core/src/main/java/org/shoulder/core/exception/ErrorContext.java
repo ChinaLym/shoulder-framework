@@ -57,7 +57,7 @@ public class ErrorContext implements Serializable {
      */
     @Nullable
     public ErrorCode fetchCurrentError() {
-        if (errorStack != null && errorStack.size() > 0) {
+        if (errorStack != null && !errorStack.isEmpty()) {
             return errorStack.get(errorStack.size() - 1);
         }
         return null;
@@ -84,7 +84,7 @@ public class ErrorContext implements Serializable {
      * @return 原始错误码对象
      */
     public ErrorCode fetchRootError() {
-        if (errorStack != null && errorStack.size() > 0) {
+        if (errorStack != null && !errorStack.isEmpty()) {
             return errorStack.get(0);
         }
         return null;

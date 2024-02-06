@@ -46,9 +46,8 @@ public class DefaultOperationLogParamValueConverter implements OperationLogParam
         }
 
         Class<?> clazz = obj.getClass();
-        if (obj instanceof Iterable) {
+        if (obj instanceof Iterable<?> iterableToLogParam) {
             // 可遍历的
-            Iterable<?> iterableToLogParam = (Iterable<?>) obj;
             iterableToLogParam.forEach(
                 item -> {
                     if (item != null) {

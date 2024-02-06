@@ -26,24 +26,23 @@ public class PackageScanDictionaryItem2StrConverterMongoConfiguration {
     }
 
     public void registerAllDocumentDictionaryEnumFieldConverters(PropertyValueConverterRegistrar<? extends PersistentProperty> propertyValueConverterRegistrar) {
-        packageNameList.forEach(packageName -> {
+        packageNameList.forEach(packageName ->
             ContextUtils.loadClassInPackage(packageName,
-                    // mongodb 类
-                    clazz -> !clazz.isEnum() && Serializable.class.isAssignableFrom(clazz) && AnnotationUtils.isAnnotationDeclaredLocally(
-                            org.springframework.data.mongodb.core.mapping.Document.class, clazz),
-                    clazz -> {
-                        // 获取
-                        for (Field field : ReflectUtil.getFields(clazz)) {
-                            if (field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class) != null
-                                    && DictionaryItem.class.isAssignableFrom(field.getType())) {
-                                // 所有字典类字段
+                // mongodb 类
+                clazz -> !clazz.isEnum() && Serializable.class.isAssignableFrom(clazz) && AnnotationUtils.isAnnotationDeclaredLocally(
+                        org.springframework.data.mongodb.core.mapping.Document.class, clazz),
+                clazz -> {
+                    // 获取
+                    for (Field field : ReflectUtil.getFields(clazz)) {
+                        if (field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class) != null
+                                && DictionaryItem.class.isAssignableFrom(field.getType())) {
+                            // 所有字典类字段
 
-                                propertyValueConverterRegistrar.registerConverter(clazz, field.getName(), new EnumToStringPropertyValueConverter());
-                            }
+                            propertyValueConverterRegistrar.registerConverter(clazz, field.getName(), new EnumToStringPropertyValueConverter());
                         }
-                        //logger.info("register " + clazz.getName() + " fieldName.");
-                    });
-        });
+                    }
+                    //logger.info("register " + clazz.getName() + " fieldName.");
+                }));
 
     }
 }

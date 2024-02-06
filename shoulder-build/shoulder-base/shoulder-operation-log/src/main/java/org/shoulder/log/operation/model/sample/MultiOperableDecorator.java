@@ -24,10 +24,10 @@ public class MultiOperableDecorator extends OperableObject {
             return;
         }
         Operable logObject = logObjects.stream().findFirst().get();
+        super.objectType = logObject.getObjectType();
         if (logObjects.size() == 1) {
             super.objectId = logObject.getObjectId();
             super.objectName = logObject.getObjectName();
-            super.objectType = logObject.getObjectType();
         } else {
 
             StringBuilder objectsName = new StringBuilder();
@@ -58,7 +58,6 @@ public class MultiOperableDecorator extends OperableObject {
             }
             super.objectId = objectsId.toString();
             super.objectName = objectsName.toString();
-            super.objectType = logObject.getObjectType();
         }
     }
 

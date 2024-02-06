@@ -342,6 +342,7 @@ public abstract class BaseServiceImpl<MAPPER extends BaseMapper<ENTITY>,
 
     @SuppressWarnings("rawtypes")
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdate(ENTITY entity) {
         if (entity instanceof BizEntity) {
             String bizId = ((BizEntity) entity).getBizId();

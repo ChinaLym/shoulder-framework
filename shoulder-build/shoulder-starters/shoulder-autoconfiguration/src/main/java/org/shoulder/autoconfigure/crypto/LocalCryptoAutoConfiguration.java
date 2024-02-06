@@ -16,7 +16,6 @@ import org.shoulder.crypto.local.repository.impl.FileLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.JdbcLocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.RedisLocalCryptoInfoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -30,9 +29,10 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
 import java.security.Security;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 /**
  * 本地加解密默认配置
@@ -102,16 +102,13 @@ public class LocalCryptoAutoConfiguration {
     @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "file", matchIfMissing = true)
     public static class TempFileLocalCryptoInfoRepositoryAutoConfiguration {
 
-        @Autowired
-        private CryptoProperties cryptoProperties;
-
         /**
          * 默认使用启动路径下的文件作为密钥部件存储
          *
          * @see LocalCryptoInfoRepository
          */
         @Bean
-        public LocalCryptoInfoRepository fileLocalCryptoInfoRepository() {
+        public LocalCryptoInfoRepository fileLocalCryptoInfoRepository(CryptoProperties cryptoProperties) {
             CryptoProperties.LocalCryptoProperties localProperties = cryptoProperties.getLocal();
             String fileDir = null;
             if (localProperties != null) {

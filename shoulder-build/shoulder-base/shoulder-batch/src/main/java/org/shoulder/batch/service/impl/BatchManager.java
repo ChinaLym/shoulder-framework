@@ -135,7 +135,7 @@ public class BatchManager implements Runnable {
         int needToBeProcessed = progress.getTotal() - progress.getSuccessNum() - progress.getFailNum();
         int workerNum = decideWorkerNum(needToBeProcessed, jobSize);
         resultQueue = new LinkedBlockingQueue<>(needToBeProcessed);
-        log.info("taskQueue.size={}, resultQueue.size={}, workers={}", jobQueue.size(), resultQueue.size(), workerNum);
+        log.info("taskQueue.size={}, resultQueue.needToBeProcessed={}, workers={}", jobQueue.size(), needToBeProcessed, workerNum);
 
         // 开始分配任务
         for (int i = 0; i < workerNum - 1; i++) {

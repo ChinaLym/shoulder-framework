@@ -6,6 +6,7 @@ import org.shoulder.core.context.AppInfo;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * 采用log4j的文本格式化工具
@@ -58,8 +59,7 @@ final class Log4jParameterFormatter {
         String message = stringBuilder.toString();
         if (arguments != null) {
             final int argCount = arguments.length;
-            if (placeholders < argCount && arguments[argCount - 1] instanceof Throwable) {
-                Throwable throwable = (Throwable) arguments[argCount - 1];
+            if (placeholders < argCount && arguments[argCount - 1] instanceof Throwable throwable) {
                 message += System.lineSeparator() + ExceptionUtils.getStackTrace(throwable);
             }
         }
@@ -192,10 +192,9 @@ final class Log4jParameterFormatter {
     }
 
     private static boolean appendDate(final Object o, final StringBuilder str) {
-        if (!(o instanceof Date)) {
+        if (!(o instanceof Date date)) {
             return false;
         }
-        final Date date = (Date) o;
         str.append(DATE_TIME_FORMATTER.format(date.toInstant().atZone(ZoneId.systemDefault())));
         return true;
     }
@@ -277,15 +276,14 @@ final class Log4jParameterFormatter {
             final Map<?, ?> oMap = (Map<?, ?>) o;
             str.append('{');
             boolean isFirst = true;
-            for (final Object o1 : oMap.entrySet()) {
-                final Map.Entry<?, ?> current = (Map.Entry<?, ?>) o1;
+            for (final Entry<?, ?> o1 : oMap.entrySet()) {
                 if (isFirst) {
                     isFirst = false;
                 } else {
                     str.append(", ");
                 }
-                final Object key = current.getKey();
-                final Object value = current.getValue();
+                final Object key = o1.getKey();
+                final Object value = o1.getValue();
                 recursiveDeepToString(key, str, new HashSet<>(dejaVu));
                 str.append('=');
                 recursiveDeepToString(value, str, new HashSet<>(dejaVu));

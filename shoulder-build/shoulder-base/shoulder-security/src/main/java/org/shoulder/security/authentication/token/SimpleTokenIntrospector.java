@@ -31,6 +31,9 @@ public class SimpleTokenIntrospector implements OpaqueTokenIntrospector {
 
     private final ClientDetailsService clientDetailsService;
 
+    /**
+     * 用于示例，写死
+     */
     private String resourceId = "oauth2-resource";
 
     public SimpleTokenIntrospector(ResourceServerTokenServices tokenServices, ClientDetailsService clientDetailsService) {

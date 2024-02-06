@@ -34,15 +34,13 @@ public class SpringSecurityOperatorInfoInterceptor extends OperationLogOperatorI
         operator.setUserRealName(authentication.getName());
 
         Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) principal;
+        if (principal instanceof UserDetails userDetails) {
             operator.setUserId(userDetails.getUsername());
         }
 
         Object details = authentication.getDetails();
-        if (details instanceof WebAuthenticationDetails) {
+        if (details instanceof WebAuthenticationDetails webAuthenticationDetails) {
             operator.setTerminalType(TerminalType.BROWSER);
-            WebAuthenticationDetails webAuthenticationDetails = ((WebAuthenticationDetails) details);
             operator.setTerminalId(webAuthenticationDetails.getSessionId());
             operator.setRemoteAddress(webAuthenticationDetails.getRemoteAddress());
             operator.setTerminalInfo("User-Agent");

@@ -27,7 +27,6 @@ public class ShoulderDispatcherServletAutoConfiguration {
         DispatcherServlet dispatcherServlet = new ShoulderDispatcherServlet();
         dispatcherServlet.setDispatchOptionsRequest(webMvcProperties.isDispatchOptionsRequest());
         dispatcherServlet.setDispatchTraceRequest(webMvcProperties.isDispatchTraceRequest());
-        dispatcherServlet.setThrowExceptionIfNoHandlerFound(webMvcProperties.isThrowExceptionIfNoHandlerFound());
         dispatcherServlet.setPublishEvents(webMvcProperties.isPublishRequestHandledEvents());
         dispatcherServlet.setEnableLoggingRequestDetails(webMvcProperties.isLogRequestDetails());
         return dispatcherServlet;

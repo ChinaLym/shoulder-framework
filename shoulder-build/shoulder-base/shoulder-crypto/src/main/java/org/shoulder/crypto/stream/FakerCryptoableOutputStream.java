@@ -1,7 +1,13 @@
 package org.shoulder.crypto.stream;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import javax.crypto.Cipher;
-import java.io.*;
 
 /**
  * TODO
@@ -10,9 +16,9 @@ import java.io.*;
  */
 public class FakerCryptoableOutputStream extends BufferedOutputStream {
 
-    protected byte buf[];
-    protected int count;
-    private int mode;
+    protected byte[] buf;
+    protected int    count;
+    private   int    mode;
 
     /**
      * Cipher.ENCRYPT_MODE
@@ -72,7 +78,7 @@ public class FakerCryptoableOutputStream extends BufferedOutputStream {
     }
 
     @Override
-    public synchronized void write(byte b[], int off, int len) throws IOException {
+    public synchronized void write(byte[] b, int off, int len) throws IOException {
         if (len >= buf.length) {
             flushBuffer();
             out.write(b, off, len);

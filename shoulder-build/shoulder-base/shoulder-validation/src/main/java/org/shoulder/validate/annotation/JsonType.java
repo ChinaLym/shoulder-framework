@@ -30,7 +30,7 @@ public @interface JsonType {
 
     FormType formType() default FormType.DEFAULT;
 
-    public static enum FormType {
+    static enum FormType {
 
         /**
          * 只要能被JSON PARSE就是合法的

@@ -234,7 +234,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
      * @return mybatis plus 的 Page
      */
     static <Entity> Page<Entity> convertToPage(BasePageQuery<Entity> pageQuery, Class<Entity> entityClass) {
-        Page<Entity> page = new Page<Entity>(pageQuery.getPageNo(), pageQuery.getPageSize());
+        Page<Entity> page = new Page<>(pageQuery.getPageNo(), pageQuery.getPageSize());
         if (CollectionUtils.isEmpty(pageQuery.getOrderRules())) {
             // 无排序参数
             return page;

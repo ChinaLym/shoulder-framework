@@ -47,10 +47,9 @@ public class SensitiveRequestDecryptHandlerInterceptor implements AsyncHandlerIn
         //    return true;
         //} else {
         //}
-        if (!(handler instanceof HandlerMethod)) {
+        if (!(handler instanceof HandlerMethod hMethod)) {
             return true;
         }
-        HandlerMethod hMethod = (HandlerMethod) handler;
         Sensitive sensitiveAnnotation = hMethod.getMethod().getAnnotation(Sensitive.class);
         if (sensitiveAnnotation == null) {
             // 只拦截带 @Sensitive 的接口

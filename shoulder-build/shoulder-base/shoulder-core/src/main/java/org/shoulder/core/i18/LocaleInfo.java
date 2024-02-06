@@ -1,9 +1,8 @@
 package org.shoulder.core.i18;
 
-import jakarta.annotation.Nonnull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
+import org.springframework.lang.NonNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.shoulder.core.context.AppInfo;
 
@@ -35,17 +34,17 @@ public final class LocaleInfo implements BaseLocaleContext, Cloneable {
 
     // -------------- Field --------------------------
 
-    @Nonnull
+    @NonNull
     private final Locale locale;
 
-    @Nonnull
+    @NonNull
     private final TimeZone timeZone;
 
-    @Nonnull
+    @NonNull
     private final Charset charset;
 
     // todo 【国际化】可考虑为每种语言独立设置
-    @Nonnull
+    @NonNull
     private final String dateTimeFormat = AppInfo.dateTimeFormat();
 
     public LocaleInfo(@NonNull Locale locale, @NonNull TimeZone timeZone, @NonNull Charset charset) {
@@ -56,12 +55,12 @@ public final class LocaleInfo implements BaseLocaleContext, Cloneable {
 
     // -----------------------------------------------
 
-    @Nonnull
+    @NonNull
     public static LocaleInfo getSystemDefault() {
         return SYSTEM_DEFAULT;
     }
 
-    @Nonnull
+    @NonNull
     public static LocaleInfo getDefault() {
         return DEFAULT;
     }

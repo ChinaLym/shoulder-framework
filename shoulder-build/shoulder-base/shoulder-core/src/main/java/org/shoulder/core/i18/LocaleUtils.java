@@ -175,7 +175,7 @@ public class LocaleUtils extends org.apache.commons.lang3.LocaleUtils {
             return result;
         }
 
-        if (buffer.length() > 0) {
+        if (!buffer.isEmpty()) {
             buffer.append('_');
         }
 

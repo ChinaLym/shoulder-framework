@@ -117,25 +117,16 @@ public class JdkLock implements ServerLock {
         return thisLock;
     }
 
-    private TemporalUnit toTemporalUnit(@Nonnull TimeUnit unit) {
-        switch (unit) {
-            case NANOSECONDS:
-                return ChronoUnit.NANOS;
-            case MICROSECONDS:
-                return ChronoUnit.MICROS;
-            case MILLISECONDS:
-                return ChronoUnit.MILLIS;
-            case SECONDS:
-                return ChronoUnit.SECONDS;
-            case MINUTES:
-                return ChronoUnit.MINUTES;
-            case HOURS:
-                return ChronoUnit.HOURS;
-            case DAYS:
-                return ChronoUnit.DAYS;
-            default:
-                throw new IllegalStateException();
-        }
+    public static TemporalUnit toTemporalUnit(@Nonnull TimeUnit unit) {
+        return switch (unit) {
+            case NANOSECONDS -> ChronoUnit.NANOS;
+            case MICROSECONDS -> ChronoUnit.MICROS;
+            case MILLISECONDS -> ChronoUnit.MILLIS;
+            case SECONDS -> ChronoUnit.SECONDS;
+            case MINUTES -> ChronoUnit.MINUTES;
+            case HOURS -> ChronoUnit.HOURS;
+            case DAYS -> ChronoUnit.DAYS;
+        };
     }
 
     @PreDestroy

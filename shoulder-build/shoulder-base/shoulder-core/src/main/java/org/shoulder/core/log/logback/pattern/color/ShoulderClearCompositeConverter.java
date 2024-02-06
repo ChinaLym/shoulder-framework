@@ -16,18 +16,14 @@ public class ShoulderClearCompositeConverter extends ForegroundCompositeConverte
     @Override
     protected String getForegroundColorCode(ILoggingEvent event) {
         Level level = event.getLevel();
-        switch (level.toInt()) {
-            case Level.ERROR_INT:
-                return BOLD + RED_FG;
-            case Level.WARN_INT:
-                return BLUE_FG;
+        return switch (level.toInt()) {
+            case Level.ERROR_INT -> BOLD + RED_FG;
+            case Level.WARN_INT -> BLUE_FG;
 /*            case Level.INFO_INT:
                 return DEFAULT_FG;*/
-            case Level.DEBUG_INT:
-                return WHITE_FG;
-            default:
-                return DEFAULT_FG;
-        }
+            case Level.DEBUG_INT -> WHITE_FG;
+            default -> DEFAULT_FG;
+        };
 
     }
 }

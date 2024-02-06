@@ -148,10 +148,9 @@ public class ColorString {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ColorString)) {
+        if (!(o instanceof ColorString that)) {
             return o instanceof CharSequence && this.content.equals(o);
         }
-        ColorString that = (ColorString) o;
         return style == that.style &&
             color == that.color &&
             content.equals(that.content);

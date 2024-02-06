@@ -247,8 +247,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
             this.objectName = operable.getObjectName();
             this.objectType = operable.getObjectType();
 
-            if (operable instanceof OperationDetailAble) {
-                OperationDetailAble operationDetailAble = (OperationDetailAble) operable;
+            if (operable instanceof OperationDetailAble operationDetailAble) {
                 if (CollectionUtils.isNotEmpty(operationDetailAble.getDetailItems())) {
                     this.detailI18nItems = operationDetailAble.getDetailItems();
                 }

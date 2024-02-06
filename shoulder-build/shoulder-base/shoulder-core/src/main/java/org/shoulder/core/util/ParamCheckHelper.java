@@ -217,7 +217,7 @@ public class ParamCheckHelper {
             return;
         }
 
-        AssertUtils.isTrue(param.size() == new HashSet<String>(param).size(), resultCode,
+        AssertUtils.isTrue(param.size() == new HashSet<>(param).size(), resultCode,
             String.format(CONTAINS_DUPLICATE_STRING, paramName));
     }
 

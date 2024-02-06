@@ -109,9 +109,11 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
 
     protected void heartbeat() {
         final String luaScript =
-                "local currentTime=redis.call('time')[1];\n" +
-                        "redis.call('hset', KEYS[1], ARGV[1], currentTime);\n" +
-                        "return 1;\n";
+                """
+                        local currentTime=redis.call('time')[1];
+                        redis.call('hset', KEYS[1], ARGV[1], currentTime);
+                        return 1;
+                        """;
         RedisScript<Long> heartbeatScript = new DefaultRedisScript<>(luaScript, Long.class);
 
         try {
@@ -132,8 +134,10 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
 
     private void releaseInstanceId() {
         final String luaScript =
-                "redis.call('hdel', KEYS[1], ARGV[1]);\n" +
-                        "return 1;\n";
+                """
+                        redis.call('hdel', KEYS[1], ARGV[1]);
+                        return 1;
+                        """;
         RedisScript<Long> releaseInstanceIdScript = new DefaultRedisScript<>(luaScript, Long.class);
 
         long result = (long) redis.execute(releaseInstanceIdScript, List.of(idAssignCacheKey), super.getCurrentInstanceId());

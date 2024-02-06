@@ -246,9 +246,8 @@ public class RestControllerExceptionAdvice {
     public BaseResult otherExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws Exception {
         // 暂不考虑不是 json 响应
         BaseRuntimeException ex;
-        if (e instanceof ErrorCode) {
+        if (e instanceof ErrorCode errorCode) {
             // 符合规范定义的错误码，按照错误码日志级别记录
-            ErrorCode errorCode = (ErrorCode) e;
             log.log(errorCode);
             ex = new BaseRuntimeException(e);
         } else {

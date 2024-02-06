@@ -40,7 +40,7 @@ public class AddressUtils {
     }
 
     public static boolean isPort(String port) {
-        boolean validStr = port != null && port.length() > 0 && port.length() <= 5 && PORT_PATTERN.matcher(port).matches();
+        boolean validStr = port != null && !port.isEmpty() && port.length() <= 5 && PORT_PATTERN.matcher(port).matches();
         if (!validStr) {
             return false;
         }

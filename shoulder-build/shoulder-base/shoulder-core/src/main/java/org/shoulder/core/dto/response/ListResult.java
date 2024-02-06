@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.shoulder.core.dto.ToStringObj;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 列表数据对象
@@ -49,7 +49,7 @@ public class ListResult<T> extends ToStringObj {
     }
 
     public ListResult(Collection<? extends T> list) {
-        this.list = list.stream().collect(Collectors.toList());
+        this.list = new ArrayList<>(list);
         this.total = (long) this.list.size();
     }
 

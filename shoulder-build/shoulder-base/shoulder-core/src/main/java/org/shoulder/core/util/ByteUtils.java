@@ -7,7 +7,6 @@ import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 /**
@@ -94,7 +93,7 @@ public class ByteUtils {
         if (bytes == null || bytes.isEmpty()) {
             return null;
         }
-        List<byte[]> nonNullList = bytes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        List<byte[]> nonNullList = bytes.stream().filter(Objects::nonNull).toList();
         int count = nonNullList.stream().map(item -> item.length).reduce(0, Integer::sum);
 
         byte[] result = new byte[count];

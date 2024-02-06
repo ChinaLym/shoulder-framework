@@ -105,7 +105,7 @@ public interface QueryController<
                                                                max = 1000) Integer limit) {
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             if (data != null) {
-                OpLogContextHolder.setOperableObject((Operable) data);
+                OpLogContextHolder.setOperableObject(data);
             }
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }

@@ -1,6 +1,8 @@
 
 package org.shoulder.core.concurrent;
 
+import org.springframework.lang.NonNull;
+
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -110,7 +112,7 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
 
     @Override
     public boolean addAll(Collection c) {
-        Optional.ofNullable(c).stream().forEach(o -> beforeInQueue((E) o));
+        Optional.ofNullable(c).ifPresent(o -> beforeInQueue((E) o));
         return delegateBlockingQueue.addAll(c);
     }
 
@@ -175,7 +177,7 @@ public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<
     }
 
     @Override
-    public boolean containsAll(Collection c) {
+    public boolean containsAll(@NonNull Collection<?> c) {
         return delegateBlockingQueue.containsAll(c);
     }
 

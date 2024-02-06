@@ -81,51 +81,42 @@ public enum OperationContextStrategyEnum implements OperationContextStrategy {
     @Nonnull
     @Override
     public OpLogContext onMissingContext() {
-        switch (onMissingContext) {
-            case CREATE_NEW:
-                return OpLogContext.builder()
+        return switch (onMissingContext) {
+            case CREATE_NEW -> OpLogContext.builder()
                     .currentOperator(OpLogContext.getCurrentOperator())
                     .build();
-            case IGNORE:
-                return OpLogContext.builder()
+            case IGNORE -> OpLogContext.builder()
                     .currentOperator(OpLogContext.getCurrentOperator())
                     .autoLog(false)
                     .logWhenThrow(false)
                     .build();
-            case THROW_EX:
-                // 必须要有上下文，编码者期望调用该方法时线程中有上下文对象，结果却没有
-                throw new IllegalStateException("can't invoke without an opLogContext in thread with such onMissingContext strategy!");
-            default:
-                // 禁止使用非法值，其他值对于添加无意义
-                throw new IllegalStateException("illegal strategy(value=" + onMissingContext + ")!");
-        }
+            // 必须要有上下文，编码者期望调用该方法时线程中有上下文对象，结果却没有
+            case THROW_EX -> throw new IllegalStateException(
+                    "can't invoke without an opLogContext in thread with such onMissingContext strategy!");
+            // 禁止使用非法值，其他值对于添加无意义
+            default -> throw new IllegalStateException("illegal strategy(value=" + onMissingContext + ")!");
+        };
     }
 
 
     @Nonnull
     @Override
     public OpLogContext onExistContext(OpLogContext existed) {
-        switch (onExistContext) {
-            case CREATE_NEW:
-                return OpLogContext.builder()
+        return switch (onExistContext) {
+            case CREATE_NEW -> OpLogContext.builder()
                     .currentOperator(OpLogContext.getCurrentOperator())
                     .build();
-            case IGNORE:
-                return OpLogContext.builder()
+            case IGNORE -> OpLogContext.builder()
                     .currentOperator(OpLogContext.getCurrentOperator())
                     .autoLog(false)
                     .logWhenThrow(false)
                     .build();
-            case THROW_EX:
-                // 必须没有上下文（不能被外部调用），编码者期望调用该方法时线程中没有上下文对象，结果却已经存在
-                throw new IllegalStateException("can't invoke with already had an opLogContext in thread!");
-            case COPY:
-                return OpLogContext.copy(existed)
+            // 必须没有上下文（不能被外部调用），编码者期望调用该方法时线程中没有上下文对象，结果却已经存在
+            case THROW_EX -> throw new IllegalStateException("can't invoke with already had an opLogContext in thread!");
+            case COPY -> OpLogContext.copy(existed)
                     .setParent(existed);
-            case REUSE:
-                return existed;
-            default:
-                throw new IllegalStateException("illegal strategy(value=" + onExistContext + ")!");
-        }
+            case REUSE -> existed;
+            default -> throw new IllegalStateException("illegal strategy(value=" + onExistContext + ")!");
+        };
     }
 }

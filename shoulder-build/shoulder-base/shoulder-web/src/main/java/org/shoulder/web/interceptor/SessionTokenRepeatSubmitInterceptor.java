@@ -32,9 +32,8 @@ public class SessionTokenRepeatSubmitInterceptor extends BaseRejectRepeatSubmitI
 
     @Override
     protected boolean needIntercept(HttpServletRequest request, Object handler) {
-        if (handler instanceof HandlerMethod) {
+        if (handler instanceof HandlerMethod handlerMethod) {
             // 当前仅当开启校验的 HandlerMethod 才拦截
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
             Method method = handlerMethod.getMethod();
             // 且目标方法上必须有 RejectRepeatSubmit 注解才拦截
             return method.getAnnotation(RejectRepeatSubmit.class) != null;

@@ -64,7 +64,7 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
             .map(v -> name + v)
             .forEach(valueJoiner::add);
 
-        return "{\"name\"=\"" + name + '\"' + ", \"value\"=\"" + valueJoiner.toString() + "\"}";
+        return "{\"name\"=\"" + name + '\"' + ", \"value\"=\"" + valueJoiner + "\"}";
     }
 
     @Override

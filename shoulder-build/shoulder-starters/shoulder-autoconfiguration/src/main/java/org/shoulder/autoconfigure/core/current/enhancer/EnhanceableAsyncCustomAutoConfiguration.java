@@ -29,9 +29,8 @@ public class EnhanceableAsyncCustomAutoConfiguration implements BeanPostProcesso
     @Override
     public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName)
         throws BeansException {
-        if (bean instanceof AsyncConfigurer
+        if (bean instanceof AsyncConfigurer configurer
             && !(bean instanceof EnhanceableAsyncCustomizer)) {
-            AsyncConfigurer configurer = (AsyncConfigurer) bean;
             return new EnhanceableAsyncCustomizer(configurer);
         }
         return bean;

@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 @ConditionalOnBean(value = {ValidateCodeProcessor.class})
 public class ValidateCodeSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private ValidateCodeFilter validateCodeFilter;
+    private final ValidateCodeFilter validateCodeFilter;
 
     public ValidateCodeSecurityConfig(ValidateCodeFilter validateCodeFilter) {
         this.validateCodeFilter = validateCodeFilter;

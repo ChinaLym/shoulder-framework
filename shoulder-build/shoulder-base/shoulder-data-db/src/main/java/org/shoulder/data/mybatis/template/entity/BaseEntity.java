@@ -10,6 +10,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.shoulder.core.model.Operable;
 import org.shoulder.data.constant.DataBaseConsts;
+import org.shoulder.data.mybatis.config.handler.ModelMetaObjectHandler;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
  *
  * @author lym
  * @see SqlCondition 注解加条件
+ * @see ModelMetaObjectHandler 自动填充创建、修改时间、创建人、更新人、版本号、是否删除等
  */
 @Getter
 @Setter

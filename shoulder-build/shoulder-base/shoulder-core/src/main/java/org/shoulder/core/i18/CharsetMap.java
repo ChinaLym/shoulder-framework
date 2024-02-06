@@ -161,7 +161,7 @@ public class CharsetMap {
         // Check the cache first.
         String key = locale.toString();
 
-        if (key.length() == 0) {
+        if (key.isEmpty()) {
             return DEFAULT_CHARSET;
         }
 

@@ -157,7 +157,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
     /**
      * Returns a power of two table size for the given desired capacity.
      */
-    private static final int bufferSizeFor(int s) {
+    private static int bufferSizeFor(int s) {
         int maximumCapacity = 1 << 30;
         int n = -1 >>> Integer.numberOfLeadingZeros(s - 1);
         return (n < 0) ? 1 : (n >= maximumCapacity) ? maximumCapacity : n + 1;
@@ -219,7 +219,7 @@ public class ShoulderGuidGenerator implements LongGuidGenerator {
         map.put("sequence", String.valueOf(sequence));
 
         // 实例标识
-        long instanceId = snowflakeId >> instanceIdShift & ~(-1 << (timestampLeftShift - instanceIdShift));
+        long instanceId = snowflakeId >> instanceIdShift & ~(-1L << (timestampLeftShift - instanceIdShift));
         map.put("instanceId", String.valueOf(instanceId));
         return map;
     }

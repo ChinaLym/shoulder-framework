@@ -94,7 +94,7 @@ public class BatchProcessor implements Runnable {
      * 数据类型 dataType, 操作类型 operationType 全部确定，且所有数据相同
      */
     public List<BatchRecordDetail> doWork(@Nonnull BatchDataSlice task) {
-        log.info("task start. {}", task.toString());
+        log.info("task start. {}", task);
         if (CollectionUtils.isEmpty(task.getBatchList())) {
             return Collections.emptyList();
         }

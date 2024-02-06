@@ -84,7 +84,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
         }
         // 整体保存
         String jsonStr = JsonUtils.toJson(allExists);
-        Files.write(getFilePath(), jsonStr.getBytes(charset));
+        Files.writeString(getFilePath(), jsonStr, charset);
     }
 
     @Override

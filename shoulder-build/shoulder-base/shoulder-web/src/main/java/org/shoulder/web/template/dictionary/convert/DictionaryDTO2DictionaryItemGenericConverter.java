@@ -37,30 +37,38 @@ public class DictionaryDTO2DictionaryItemGenericConverter implements GenericConv
 
         } else if (targetClass == ConfigAbleDictionaryItem.class) {
             // dto -> 基于动态配置的 model
-            ConfigAbleDictionaryItem targetModel = new ConfigAbleDictionaryItem();
-            targetModel.setCode(dto.getCode());
-            // 为空或者为0，都代表一级节点
-            //        targetModel.setParentCode(StringUtils.isBlank(dto.getParentCode()) ? Constants.ZERO : dto
-            //        .getParentCode());
-            targetModel.setDictionaryType(dto.getDictionaryType());
-            targetModel.setName(targetModel.getName());
-            targetModel.setDisplayName(dto.getDisplayName());
-            targetModel.setDisplayOrder(dto.getDisplayOrder());
-            targetModel.setDescription(dto.getDescription());
-            return targetModel;
+            return toConfigAbleDictionaryItem(dto);
         } else if (targetClass == DictionaryItemEntity.class) {
             // dto -> 基于存储的 model
-            DictionaryItemEntity entity = new DictionaryItemEntity();
-            // to confirm dictionaryType.code
-            entity.setDictionaryType(dto.getDictionaryType());
-            entity.setBizId(dto.getCode());
-            entity.setName(dto.getName());
-            entity.setDisplayName(dto.getDisplayName());
-            entity.setDisplayOrder(dto.getDisplayOrder());
-            entity.setDescription(dto.getDescription());
-            return entity;
+            return toDictionaryItemEntity(dto);
         }
         throw new IllegalStateException("cannot reachable");
+    }
+
+    private static DictionaryItemEntity toDictionaryItemEntity(DictionaryItemDTO dto) {
+        DictionaryItemEntity entity = new DictionaryItemEntity();
+        // to confirm dictionaryType.code
+        entity.setDictionaryType(dto.getDictionaryType());
+        entity.setBizId(dto.getCode());
+        entity.setName(dto.getName());
+        entity.setDisplayName(dto.getDisplayName());
+        entity.setDisplayOrder(dto.getDisplayOrder());
+        entity.setDescription(dto.getDescription());
+        return entity;
+    }
+
+    private static ConfigAbleDictionaryItem toConfigAbleDictionaryItem(DictionaryItemDTO dto) {
+        ConfigAbleDictionaryItem targetModel = new ConfigAbleDictionaryItem();
+        targetModel.setCode(dto.getCode());
+        // 为空或者为0，都代表一级节点
+        //        targetModel.setParentCode(StringUtils.isBlank(dto.getParentCode()) ? Constants.ZERO : dto
+        //        .getParentCode());
+        targetModel.setDictionaryType(dto.getDictionaryType());
+        targetModel.setName(targetModel.getName());
+        targetModel.setDisplayName(dto.getDisplayName());
+        targetModel.setDisplayOrder(dto.getDisplayOrder());
+        targetModel.setDescription(dto.getDescription());
+        return targetModel;
     }
 
 }
