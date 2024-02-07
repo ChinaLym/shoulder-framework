@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -62,8 +63,10 @@ public class ExportConfigInitializer implements ResourceLoaderAware, Initializin
     }
 
     private <C> void initializeExportConfigManagerField(List<String> resourceLocations, Function<Resource, List<C>> resourceReader, Consumer<C> fieldSetter) {
-        List<String> exportFileConfigLocations = resourceLocations;
-        exportFileConfigLocations.stream()
+        if(CollectionUtils.isEmpty(resourceLocations)) {
+            return;
+        }
+        resourceLocations.stream()
             .map(this::doGetResources)
             .flatMap(List::stream)
             .map(resourceReader)

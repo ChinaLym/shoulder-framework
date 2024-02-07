@@ -127,9 +127,9 @@ public interface ImportRestfulApi {
     @ApiOperation(value = "数据导入模板下载", consumes = "text/csv", httpMethod = "GET")
     @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",
         defaultValue = "gbk", required = true, paramType = "query")
-    //@RequestMapping(value = "template/{businessType}/download", method = RequestMethod.GET)
+    @RequestMapping(value = "template/download", method = RequestMethod.GET)
     void exportImportTemplate(HttpServletResponse response,
-                              @PathVariable(value = "businessType") String businessType) throws IOException;
+                              @PathVariable(value = "dataType") String businessType) throws IOException;
 
 
     /**
