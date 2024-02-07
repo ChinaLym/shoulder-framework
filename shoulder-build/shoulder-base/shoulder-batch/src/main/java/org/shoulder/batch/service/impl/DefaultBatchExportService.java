@@ -2,15 +2,22 @@ package org.shoulder.batch.service.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.batch.cache.BatchProgressCache;
+import org.shoulder.batch.config.ExportConfigManager;
+import org.shoulder.batch.config.model.ExportColumnConfig;
+import org.shoulder.batch.config.model.ExportFileConfig;
 import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.BatchI18nEnum;
 import org.shoulder.batch.enums.ProcessStatusEnum;
-import org.shoulder.batch.model.*;
+import org.shoulder.batch.model.BatchData;
+import org.shoulder.batch.model.BatchProgressRecord;
+import org.shoulder.batch.model.BatchRecord;
+import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
 import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.ext.BatchTaskSliceHandler;
+import org.shoulder.core.context.AppContext;
 import org.shoulder.core.dto.response.PageResult;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.i18.Translator;
@@ -76,6 +83,8 @@ public class DefaultBatchExportService implements BatchAndExportService {
     @Autowired
     protected BatchProgressCache batchProgressCache;
 
+    protected ExportConfigManager exportConfigManager;
+
     /**
      * 当前的导出器
      */
@@ -84,7 +93,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
     /**
      * 当前的导出配置
      */
-    private ThreadLocal<ExportConfig> exportConfigLocal = new ThreadLocal<>();
+    private ThreadLocal<ExportFileConfig> exportConfigLocal = new ThreadLocal<>();
 
     /**
      * 是否额外生成详情列（当且仅当导出批量处理结果时）
@@ -114,16 +123,16 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
         log.debug("find exporter {}", dataExporter);
 
-        ExportConfig exportConfig = DefaultExportConfigManager.getConfigWithLocale(templateId);
-        if (exportConfig == null) {
+        ExportFileConfig exportFileConfig = exportConfigManager.getFileConfigWithLocale(templateId, AppContext.getLocaleOrDefault());
+        if (exportFileConfig == null) {
             // 编码问题，未提供配置，需先调用 ExportConfigManager.putConfig 方法设置输出配置
             throw new BaseRuntimeException("templateId:" + templateId + " not existed! " +
                     "Must invoke ExportConfigManager.putConfig before export");
         }
-        exportConfigLocal.set(exportConfig);
+        exportConfigLocal.set(exportFileConfig);
         try {
             // 准备输出
-            dataExporter.prepare(outputStream, exportConfig);
+            dataExporter.prepare(outputStream, exportFileConfig);
             // 输出头部信息
             outputHeader();
             log.trace("output headers finished.");
@@ -150,17 +159,17 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
     private void outputHeader() throws IOException {
         // 生成表头
-        ExportConfig exportConfig = exportConfigLocal.get();
-        if (CollectionUtils.isEmpty(exportConfig.getHeaders()) || CollectionUtils.isEmpty(exportConfig.getColumns())) {
+        ExportFileConfig exportFileConfig = exportConfigLocal.get();
+        if (CollectionUtils.isEmpty(exportFileConfig.getHeaders()) || CollectionUtils.isEmpty(exportFileConfig.getColumns())) {
             throw new BaseRuntimeException("descriptionList and columns can't be empty! ");
         }
-        List<String[]> heads = exportConfig.getHeaders().stream()
+        List<String[]> heads = exportFileConfig.getHeaders().stream()
             .map(ArrayUtils::toArray)
             .collect(Collectors.toList());
-        List<ExportConfig.Column> columns = exportConfig.getColumns();
+        List<ExportColumnConfig> columns = exportFileConfig.getColumns();
         String[] columnsName = new String[columns.size() + 3];
         List<String> nameList = columns.stream()
-            .map(ExportConfig.Column::getColumnName)
+            .map(ExportColumnConfig::getColumnName)
             .collect(Collectors.toList());
         if (exportRecordLocal.get()) {
             nameList.add(BatchI18nEnum.ROW_NUM.i18nValue());
@@ -194,11 +203,11 @@ public class DefaultBatchExportService implements BatchAndExportService {
      * @return 数据行
      */
     private String[] toDataArray(Map<String, String> dataMap) {
-        ExportConfig exportConfig = exportConfigLocal.get();
-        List<ExportConfig.Column> columnList = exportConfig.getColumns();
+        ExportFileConfig exportFileConfig = exportConfigLocal.get();
+        List<ExportColumnConfig> columnList = exportFileConfig.getColumns();
         String[] dataArray = new String[dataMap.size()];
         for (int i = 0; i < columnList.size(); i++) {
-            ExportConfig.Column column = columnList.get(i);
+            ExportColumnConfig column = columnList.get(i);
             dataArray[i] = dataMap.get(column.getModelFieldName());
         }
         return dataArray;

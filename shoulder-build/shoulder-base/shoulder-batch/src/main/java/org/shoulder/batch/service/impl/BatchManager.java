@@ -101,7 +101,7 @@ public class BatchManager implements Runnable {
     public BatchManager(BatchData batchData) {
         String currentUserId = AppContext.getUserId();
         this.userId = currentUserId == null ? 0 : Long.parseLong(currentUserId);
-        this.languageId = AppContext.getLocale().toString();
+        this.languageId = AppContext.getLocaleOrDefault().toString();
         this.batchData = batchData;
         this.batchData.setSuccessList(ListUtils.emptyIfNull(batchData.getSuccessList()));
         this.batchData.setFailList(ListUtils.emptyIfNull(batchData.getFailList()));

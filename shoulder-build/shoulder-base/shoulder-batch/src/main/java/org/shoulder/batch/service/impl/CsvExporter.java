@@ -4,7 +4,7 @@ import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 import org.shoulder.batch.constant.BatchConstants;
-import org.shoulder.batch.model.ExportConfig;
+import org.shoulder.batch.config.model.ExportFileConfig;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -38,17 +38,17 @@ public class CsvExporter implements DataExporter {
      * 输出数据前准备操作
      *
      * @param outputStream 输出流
-     * @param exportConfig 输出配置
+     * @param exportFileConfig 输出配置
      * @throws IOException IO 异常
      */
     @Override
-    public void prepare(OutputStream outputStream, ExportConfig exportConfig) throws IOException {
+    public void prepare(OutputStream outputStream, ExportFileConfig exportFileConfig) throws IOException {
         CsvFormat csvFormat = new CsvFormat();
-        csvFormat.setDelimiter(exportConfig.getSeparator());
-        csvFormat.setLineSeparator(exportConfig.getLineSeparator());
-        csvFormat.setComment(exportConfig.getComment());
-        csvFormat.setQuote(exportConfig.getQuote());
-        csvFormat.setQuoteEscape(exportConfig.getQuoteEscape());
+        csvFormat.setDelimiter(exportFileConfig.getSeparator());
+        csvFormat.setLineSeparator(exportFileConfig.getLineSeparator());
+        csvFormat.setComment(exportFileConfig.getComment());
+        csvFormat.setQuote(exportFileConfig.getQuote());
+        csvFormat.setQuoteEscape(exportFileConfig.getQuoteEscape());
         CsvWriterSettings csvWriterSettings = new CsvWriterSettings();
         csvWriterSettings.setFormat(csvFormat);
         CsvWriter writer = new CsvWriter(

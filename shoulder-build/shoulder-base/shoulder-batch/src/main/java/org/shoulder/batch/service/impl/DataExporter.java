@@ -1,6 +1,6 @@
 package org.shoulder.batch.service.impl;
 
-import org.shoulder.batch.model.ExportConfig;
+import org.shoulder.batch.config.model.ExportFileConfig;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,10 +29,10 @@ public interface DataExporter {
      * 输出数据前准备操作
      *
      * @param outputStream 输出流
-     * @param exportConfig 输出配置
+     * @param exportFileConfig 输出配置
      * @throws IOException IO 异常
      */
-    void prepare(OutputStream outputStream, ExportConfig exportConfig) throws IOException;
+    void prepare(OutputStream outputStream, ExportFileConfig exportFileConfig) throws IOException;
 
 
     /**

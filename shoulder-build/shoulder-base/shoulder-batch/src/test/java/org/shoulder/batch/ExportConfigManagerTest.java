@@ -1,9 +1,13 @@
 package org.shoulder.batch;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.shoulder.batch.model.ExportConfig;
-import org.shoulder.batch.service.impl.DefaultExportConfigManager;
+import org.shoulder.batch.config.DefaultExportConfigManager;
+import org.shoulder.batch.config.ExportConfigManager;
+import org.shoulder.batch.config.model.ExportColumnConfig;
+import org.shoulder.batch.config.model.ExportFileConfig;
 import org.shoulder.batch.test.TestStarter;
+import org.shoulder.core.context.AppContext;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -15,20 +19,23 @@ public class ExportConfigManagerTest {
 
     private static String templateId = "testId";
 
+    static ExportConfigManager exportConfigManager = new DefaultExportConfigManager();
+
     static {
-        ExportConfig exportConfig = new ExportConfig();
-        exportConfig.setHeaders(List.of("First", "Second"));
-        exportConfig.setColumns(
+        ExportFileConfig exportFileConfig = new ExportFileConfig();
+        exportFileConfig.setHeaders(List.of("First", "Second"));
+        exportFileConfig.setColumns(
                 Stream.of("First", "Second")
-                        .map(s -> new ExportConfig.Column(s, s))
+                        .map(s -> new ExportColumnConfig(s, s))
                         .collect(Collectors.toList())
         );
-        DefaultExportConfigManager.putConfig(templateId, exportConfig);
+        exportConfigManager.addFileConfig(templateId, exportFileConfig);
     }
 
     @Test
     public void templateTest() {
-        DefaultExportConfigManager.getConfigWithLocale(templateId);
+        ExportFileConfig exportFileConfig = exportConfigManager.getFileConfigWithLocale(templateId, AppContext.getLocaleOrDefault()); exportConfigManager.getFileConfigWithLocale(templateId, AppContext.getLocaleOrDefault());
+        Assertions.assertNotNull(exportFileConfig);
     }
 
 }

@@ -39,7 +39,7 @@
 
 ## 使用
 
-org.shoulder.batch.service.impl.DefaultExportConfigManager.putConfig 配置模板
+ExportConfigManager.putConfig 配置模板
 下载导入模板
 校验
 查看失败原因
@@ -56,7 +56,7 @@ org.shoulder.batch.service.impl.DefaultExportConfigManager.putConfig 配置模�
 
 ## 技术选型
 
-### CSV 
+### CSV
 
  [2018 csv 开源工具比较](https://github.com/uniVocity/csv-parsers-comparison)
 
@@ -70,7 +70,7 @@ org.shoulder.batch.service.impl.DefaultExportConfigManager.putConfig 配置模�
             <version>4.1</version>
             <optional>true</optional>
         </dependency>
-        
+
         <!-- https://github.com/uniVocity/univocity-parsers/releases -->
         <dependency>
             <groupId>com.univocity</groupId>
@@ -78,7 +78,7 @@ org.shoulder.batch.service.impl.DefaultExportConfigManager.putConfig 配置模�
             <version>2.9.0</version>
             <optional>true</optional>
         </dependency>
-            
+
         <!-- https://github.com/apache/commons-csv/releases -->
         <!--http://commons.apache.org/proper/commons-csv/user-guide.html-->
         <dependency>
@@ -86,22 +86,22 @@ org.shoulder.batch.service.impl.DefaultExportConfigManager.putConfig 配置模�
             <artifactId>commons-csv</artifactId>
             <version>1.8</version>
         </dependency>
-        
+
 ```
 ### EXCEL
 
 
 ```xml
-        
+
         <!-- =============================================================== -->
-        
+
         <!-- https://github.com/alibaba/easyexcel/releases -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
             <version>2.2.6</version>
         </dependency>
-        
+
 ```
 
 

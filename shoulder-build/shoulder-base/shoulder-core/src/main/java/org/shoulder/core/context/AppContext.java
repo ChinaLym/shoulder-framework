@@ -95,6 +95,25 @@ public class AppContext {
     }
 
     /**
+     * 获取语言标识
+     *
+     * @return 语言标识
+     */
+    public static Locale getLocaleOrDefault() {
+        return getLocaleOrDefault(AppInfo.defaultLocale());
+    }
+
+    /**
+     * 获取语言标识
+     *
+     * @return 语言标识
+     */
+    public static Locale getLocaleOrDefault(Locale defaultLocale) {
+        Locale locale = get(ShoulderContextKey.LOCALE);
+        return locale != null ? locale : defaultLocale;
+    }
+
+    /**
      * 设置语言标识
      *
      * @param locale 语言标识

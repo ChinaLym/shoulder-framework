@@ -1,7 +1,6 @@
 package org.shoulder.autoconfigure.operation;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.shoulder.core.context.AppContext;
 import org.shoulder.log.operation.enums.TerminalType;
 import org.shoulder.log.operation.model.Operator;
 import org.shoulder.log.operation.model.ShoulderCurrentUserOperator;
@@ -43,9 +42,10 @@ public class SpringSecurityOperatorInfoInterceptor extends OperationLogOperatorI
             operator.setTerminalType(TerminalType.BROWSER);
             operator.setTerminalId(webAuthenticationDetails.getSessionId());
             operator.setRemoteAddress(webAuthenticationDetails.getRemoteAddress());
-            operator.setTerminalInfo("User-Agent");
+            operator.setTerminalInfo(request.getHeader("User-Agent"));
         }
-        operator.setTerminalInfo(String.valueOf(AppContext.getLocale()));
+        // todo terminalInfo 解析
+        //operator.setTerminalInfo(request.getHeader("User-Agent"));
         return operator;
     }
 }

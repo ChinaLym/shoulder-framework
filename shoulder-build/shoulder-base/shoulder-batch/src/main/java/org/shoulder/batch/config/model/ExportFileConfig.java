@@ -1,4 +1,4 @@
-package org.shoulder.batch.model;
+package org.shoulder.batch.config.model;
 
 import lombok.*;
 import org.shoulder.core.context.AppInfo;
@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 导出配置（头部信息）
+ * 导出模板: 头部信息、字段信息
+ * 该配置信息为全局默认配置，不包含多语言，国际化/本地化配置
  *
  * @author lym
  */
 @Data
 @ToString
 @NoArgsConstructor
-public class ExportConfig {
+public class ExportFileConfig {
 
     // ---------------- 导出模板配置 ----------------------
 
@@ -41,7 +42,7 @@ public class ExportConfig {
     /**
      * 列信息
      */
-    private List<Column> columns;
+    private List<ExportColumnConfig> columns;
 
     // ---------------- 导出配置 （框架会根据当前语言环境自动填充）----------------------
 
@@ -72,14 +73,14 @@ public class ExportConfig {
     private char quoteEscape = '"';
 
 
-    public ExportConfig(String exportMapping) {
+    public ExportFileConfig(String exportMapping) {
         this.encode = AppInfo.charset().name();
         this.headers = new ArrayList<>();
         this.columns = new ArrayList<>();
         this.exportMapping = exportMapping;
     }
 
-    public ExportConfig(Character separator, String encode, String exportMapping) {
+    public ExportFileConfig(Character separator, String encode, String exportMapping) {
         this(exportMapping);
         this.separator = separator;
         this.encode = encode;
@@ -90,8 +91,9 @@ public class ExportConfig {
      *
      * @param index : 第n列，起始为1
      * @return 对应的列，如果不存在返回null
+     * @deprecated 容易写bug，弃用
      */
-    public Column getColumnByIndex(int index) {
+    public ExportColumnConfig getColumnByIndex(int index) {
         try {
             return columns.get(index - 1);
         } catch (IndexOutOfBoundsException e) {
@@ -99,51 +101,4 @@ public class ExportConfig {
         }
     }
 
-    @Getter
-    @Setter
-    public static class Column {
-
-        /**
-         * 业务/领域模型字段名称，如 Person 类的 name 字段需要对应该列，则会有一个 Column 的 modelName=name
-         */
-        private String modelFieldName;
-
-        /**
-         * 列名 - 多语言key，使用者定义
-         */
-        private String columnNameI18n;
-
-        /**
-         * 国际化处理后的的列名，用于导出时展示
-         */
-        private transient String columnName;
-
-        /**
-         * 列信息描述 - 多语言key
-         */
-        private String descriptionI18n;
-
-        /**
-         * 列信息描述，用于导出时展示
-         */
-        private String description;
-
-
-        public Column() {
-        }
-
-        public Column(String modelFieldName, String columnName) {
-            this.modelFieldName = modelFieldName;
-            this.columnName = columnName;
-        }
-
-        @Override
-        public String toString() {
-            return "Column{" +
-                    "modelName='" + modelFieldName + '\'' +
-                ", columnNameI18n='" + columnNameI18n + '\'' +
-                ", descriptionI18n='" + descriptionI18n + '\'' +
-                '}';
-        }
-    }
 }

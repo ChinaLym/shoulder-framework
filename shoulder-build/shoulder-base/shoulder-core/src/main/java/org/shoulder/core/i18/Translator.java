@@ -1,7 +1,6 @@
 package org.shoulder.core.i18;
 
 import org.shoulder.core.context.AppContext;
-import org.shoulder.core.context.AppInfo;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
@@ -54,8 +53,7 @@ public interface Translator extends MessageSource {
      */
     default Locale currentLocale() {
         // 尝试从上下（当前用户）中获取，然后取 AppInfo 中的，然后取配置的
-        Locale currentLocale;
-        return (currentLocale = AppContext.getLocale()) != null ? currentLocale : AppInfo.defaultLocale();
+        return AppContext.getLocaleOrDefault();
     }
 
 }
