@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 /**
  * 导出辅助
- * todo 使用 core 包的配置
  *
  * @author lym
  */
@@ -43,7 +42,7 @@ public class DefaultExportConfigManager implements ExportConfigManager {
 
     /**
      * 数据类型 - 导出配置
-     * 使用者来调用 {@link #addFileConfig} 方法填充
+     * 使用者来调用 {@link ExportConfigManager#addFileConfig} 方法填充
      */
     private final Map<String, ExportFileConfig> CONFIG_CACHE = new ConcurrentHashMap<>();
 
@@ -72,8 +71,13 @@ public class DefaultExportConfigManager implements ExportConfigManager {
     }
 
     @Override
-    public void addFileConfig(String templateId, ExportFileConfig exportFileConfig) {
-        CONFIG_CACHE.put(templateId, exportFileConfig);
+    public void addFileConfig(ExportFileConfig exportFileConfig) {
+        AssertUtils.notNull(exportFileConfig, CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.notNull(exportFileConfig.getId(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.notEmpty(exportFileConfig.getHeaders(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.notEmpty(exportFileConfig.getColumns(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.isTrue(exportFileConfig.getColumns().size() >= exportFileConfig.getHeaders().size(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        CONFIG_CACHE.put(exportFileConfig.getId(), exportFileConfig);
     }
 
     @Override

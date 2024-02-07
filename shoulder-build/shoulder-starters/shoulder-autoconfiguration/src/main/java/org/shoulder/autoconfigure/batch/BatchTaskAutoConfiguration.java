@@ -4,6 +4,9 @@ import com.univocity.parsers.csv.CsvWriter;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.batch.cache.BatchProgressCache;
 import org.shoulder.batch.cache.DefaultBatchProgressCache;
+import org.shoulder.batch.config.DefaultExportConfigManager;
+import org.shoulder.batch.config.ExportConfigInitializer;
+import org.shoulder.batch.config.ExportConfigManager;
 import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
@@ -19,6 +22,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +42,7 @@ import javax.sql.DataSource;
  */
 @ConditionalOnClass(BatchData.class)
 @AutoConfiguration
+@EnableConfigurationProperties(BatchProperties.class)
 public class BatchTaskAutoConfiguration {
 
     public BatchTaskAutoConfiguration() {
@@ -54,6 +59,25 @@ public class BatchTaskAutoConfiguration {
         return new CsvExporter();
     }
 
+    /**
+     * csvImpl
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(ExportConfigManager.class)
+    public DefaultExportConfigManager exportConfigManager() {
+        return new DefaultExportConfigManager();
+    }
+
+    /**
+     * csvImpl
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(ExportConfigInitializer.class)
+    public ExportConfigInitializer exportConfigInitializer(BatchProperties batchProperties, ExportConfigManager exportConfigManager) {
+        return new ExportConfigInitializer(batchProperties, exportConfigManager);
+    }
 
     /**
      * service
@@ -73,8 +97,8 @@ public class BatchTaskAutoConfiguration {
     public ThreadPoolExecutor shoulderBatchThreadPool() {
         // 默认使用 5 个线程
         return new ThreadPoolExecutor(5, 5,
-                60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
-                new CustomizableThreadFactory("shoulder-batch"));
+            60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
+            new CustomizableThreadFactory("shoulder-batch"));
     }
 
     /**
@@ -101,7 +125,6 @@ public class BatchTaskAutoConfiguration {
     public BatchProgressCache redisBatchProgressCache(CacheManager cacheManager) {
         return new DefaultBatchProgressCache(cacheManager.getCache(DefaultBatchProgressCache.CACHE_NAME));
     }
-
 
     @AutoConfiguration
     @ConditionalOnClass(DataSource.class)

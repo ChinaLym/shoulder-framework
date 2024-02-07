@@ -20,7 +20,7 @@ public interface ExportConfigManager {
 
     // ----------------------- ExportFileConfig --------------
 
-    void addFileConfig(String templateId, ExportFileConfig exportFileConfig);
+    void addFileConfig(ExportFileConfig exportFileConfig);
 
     ExportFileConfig findFileConfig(String csvId);
 

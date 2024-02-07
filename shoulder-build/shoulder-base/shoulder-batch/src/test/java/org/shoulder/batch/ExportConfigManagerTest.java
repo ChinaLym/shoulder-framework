@@ -29,7 +29,7 @@ public class ExportConfigManagerTest {
                         .map(s -> new ExportColumnConfig(s, s))
                         .collect(Collectors.toList())
         );
-        exportConfigManager.addFileConfig(templateId, exportFileConfig);
+        exportConfigManager.addFileConfig(exportFileConfig);
     }
 
     @Test
