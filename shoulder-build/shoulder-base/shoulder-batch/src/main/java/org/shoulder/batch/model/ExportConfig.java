@@ -1,8 +1,6 @@
 package org.shoulder.batch.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.shoulder.core.context.AppInfo;
 
 import java.util.ArrayList;
@@ -101,12 +99,14 @@ public class ExportConfig {
         }
     }
 
+    @Getter
+    @Setter
     public static class Column {
 
         /**
          * 业务/领域模型字段名称，如 Person 类的 name 字段需要对应该列，则会有一个 Column 的 modelName=name
          */
-        private String modelName;
+        private String modelFieldName;
 
         /**
          * 列名 - 多语言key，使用者定义
@@ -132,55 +132,15 @@ public class ExportConfig {
         public Column() {
         }
 
-        public Column(String columnName, String description) {
+        public Column(String modelFieldName, String columnName) {
+            this.modelFieldName = modelFieldName;
             this.columnName = columnName;
-            this.description = description;
-        }
-
-        public String getModelName() {
-            return modelName;
-        }
-
-        public void setModelName(String modelName) {
-            this.modelName = modelName;
-        }
-
-        public String getColumnName() {
-            return columnName;
-        }
-
-        public void setColumnName(String columnName) {
-            this.columnName = columnName;
-        }
-
-        public String getColumnNameI18n() {
-            return columnNameI18n;
-        }
-
-        public void setColumnNameI18n(String columnNameI18n) {
-            this.columnNameI18n = columnNameI18n;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public String getDescriptionI18n() {
-            return descriptionI18n;
-        }
-
-        public void setDescriptionI18n(String descriptionI18n) {
-            this.descriptionI18n = descriptionI18n;
         }
 
         @Override
         public String toString() {
             return "Column{" +
-                "modelName='" + modelName + '\'' +
+                    "modelName='" + modelFieldName + '\'' +
                 ", columnNameI18n='" + columnNameI18n + '\'' +
                 ", descriptionI18n='" + descriptionI18n + '\'' +
                 '}';

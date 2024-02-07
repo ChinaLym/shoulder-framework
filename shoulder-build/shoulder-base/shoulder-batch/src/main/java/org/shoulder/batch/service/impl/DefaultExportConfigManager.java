@@ -3,18 +3,20 @@ package org.shoulder.batch.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.shoulder.batch.model.ExportConfig;
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.JsonUtils;
+import org.shoulder.core.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 导出辅助
@@ -22,9 +24,9 @@ import java.util.Map;
  *
  * @author lym
  */
-public class ExportSupport {
+public class DefaultExportConfigManager {
 
-    private static final Logger log = LoggerFactory.getLogger(ExportSupport.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultExportConfigManager.class);
 
     private static final String LOCALIZE_FILE_PATH = "META-INF/export-localize.json";
 
@@ -40,7 +42,7 @@ public class ExportSupport {
     private static final Map<String, ExportConfig> CONFIG_CACHE = new HashMap<>();
 
     static {
-        try (InputStream inputStream = ExportSupport.class.getClassLoader().getResourceAsStream(LOCALIZE_FILE_PATH)) {
+        try (InputStream inputStream = DefaultExportConfigManager.class.getClassLoader().getResourceAsStream(LOCALIZE_FILE_PATH)) {
             List<ExportLocalize> exportLocalizeList = JsonUtils.parseObject(inputStream, new TypeReference<>() {
             });
             for (ExportLocalize exportLocalize : exportLocalizeList) {
@@ -81,7 +83,9 @@ public class ExportSupport {
      */
     private static void localizeExportConfig(ExportConfig exportConfig) {
         // 编码 / 分隔符 本地化
-        String languageId = AppContext.getLocale().getLanguage();
+        String languageId = Optional.ofNullable(AppContext.getLocale())
+                .orElse(AppInfo.defaultLocale())
+                .getLanguage();
         ExportLocalize exportLocalize = getLocalizeByLanguageId(languageId);
         if (exportLocalize != null) {
             exportConfig.setEncode(exportLocalize.getEncoding());
@@ -90,14 +94,25 @@ public class ExportSupport {
             log.info("can't find languageId {} in export-localize.json, fall back to default", languageId);
         }
         // 详情
-        List<String> headers = new ArrayList<>();
-        for (String header : exportConfig.getHeadersI18n()) {
-            headers.add(ContextUtils.getBean(Translator.class).getMessage(header));
+        if (CollectionUtils.isEmpty(exportConfig.getHeaders())) {
+            AssertUtils.notEmpty(exportConfig.getHeadersI18n(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+            List<String> headers = new ArrayList<>();
+            for (String headerI18n : exportConfig.getHeadersI18n()) {
+                headers.add(ContextUtils.getBean(Translator.class).getMessage(headerI18n));
+            }
+            exportConfig.setHeaders(headers);
         }
+
         for (ExportConfig.Column column : exportConfig.getColumns()) {
-            column.setColumnName(ContextUtils.getBean(Translator.class).getMessage(column.getColumnNameI18n()));
+            AssertUtils.notEmpty(column.getModelFieldName(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+            if (StringUtils.isEmpty(column.getColumnName())) {
+                AssertUtils.notEmpty(column.getColumnNameI18n(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+                column.setColumnName(ContextUtils.getBean(Translator.class).getMessage(column.getColumnNameI18n()));
+            }
+            if (StringUtils.isEmpty(column.getDescription()) && StringUtils.isNotEmpty(column.getDescriptionI18n())) {
+                column.setDescription(ContextUtils.getBean(Translator.class).getMessage(column.getDescriptionI18n()));
+            }
         }
-        exportConfig.setHeaders(headers);
     }
 
     public static class ExportLocalize {

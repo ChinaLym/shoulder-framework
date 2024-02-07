@@ -35,7 +35,20 @@
 * 前端收到后使用 taskId 轮询后端导入进度（如每两秒）
 * 直到导入完毕/异常失败后，查询导入结果，展示给用户
 
+-----------
 
+## 使用
+
+org.shoulder.batch.service.impl.DefaultExportConfigManager.putConfig 配置模板
+下载导入模板
+校验
+查看失败原因
+重新校验
+导入
+查看导入历史
+查看导入详情
+导出预览
+导出
 
 
 

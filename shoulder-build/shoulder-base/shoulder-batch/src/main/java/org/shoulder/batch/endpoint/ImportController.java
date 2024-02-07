@@ -20,8 +20,6 @@ import org.shoulder.batch.service.RecordService;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
-import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.util.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,6 +65,7 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public BaseResult<String> doValidate(MultipartFile file, String charsetLanguage) throws Exception {
         // 示例：解析文件，然后校验，返回校验任务标识
+//        batchService.doProcess()
         String taskId = "doValidate";
         return BaseResult.success(taskId);
     }
@@ -78,7 +77,8 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public BaseResult<String> doExecute(@RequestBody ExecuteOperationParam executeOperationParam) {
         // 示例：从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
-
+        String taskId = executeOperationParam.getTaskId();
+        BatchProgressRecord process = batchService.queryBatchProgress(taskId);
         BatchData batchData = new BatchData();
         return BaseResult.success(
                 batchService.doProcess(batchData)
@@ -114,6 +114,7 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public BaseResult<BatchRecordResult> queryImportRecordDetail(
             @RequestBody QueryImportResultDetailParam condition) {
+
         BatchRecord record = recordService.findRecordById("xxx");
         List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getTaskId());
         record.setDetailList(details);

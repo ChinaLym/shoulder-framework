@@ -114,11 +114,11 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
         log.debug("find exporter {}", dataExporter);
 
-        ExportConfig exportConfig = ExportSupport.getConfigWithLocale(templateId);
+        ExportConfig exportConfig = DefaultExportConfigManager.getConfigWithLocale(templateId);
         if (exportConfig == null) {
-            // 编码问题，未提供配置，需先调用 ExportSupport.putConfig 方法设置输出配置
+            // 编码问题，未提供配置，需先调用 ExportConfigManager.putConfig 方法设置输出配置
             throw new BaseRuntimeException("templateId:" + templateId + " not existed! " +
-                "Must invoke ExportSupport.putConfig before export");
+                    "Must invoke ExportConfigManager.putConfig before export");
         }
         exportConfigLocal.set(exportConfig);
         try {
@@ -199,7 +199,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         String[] dataArray = new String[dataMap.size()];
         for (int i = 0; i < columnList.size(); i++) {
             ExportConfig.Column column = columnList.get(i);
-            dataArray[i] = dataMap.get(column.getModelName());
+            dataArray[i] = dataMap.get(column.getModelFieldName());
         }
         return dataArray;
     }

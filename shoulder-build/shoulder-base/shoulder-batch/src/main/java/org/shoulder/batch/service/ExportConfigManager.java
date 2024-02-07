@@ -5,7 +5,7 @@ package org.shoulder.batch.service;
  *
  * @author lym
  */
-public interface ExportSupport {
+public interface ExportConfigManager {
 
 
 }
