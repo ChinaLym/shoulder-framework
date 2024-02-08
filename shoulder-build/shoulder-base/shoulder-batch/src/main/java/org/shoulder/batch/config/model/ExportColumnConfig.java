@@ -17,7 +17,7 @@ public class ExportColumnConfig {
     /**
      * 列名 - 多语言key，使用者定义
      */
-    private String columnNameI18n;
+    private String columnNameI18nKey;
 
     /**
      * 国际化处理后的的列名，用于导出时展示
@@ -27,7 +27,7 @@ public class ExportColumnConfig {
     /**
      * 列信息描述 - 多语言key
      */
-    private String descriptionI18n;
+    private String descriptionI18nKey;
 
     /**
      * 列信息描述，用于导出时展示
@@ -43,8 +43,8 @@ public class ExportColumnConfig {
     public String toString() {
         return "Column{" +
                "modelName='" + modelFieldName + '\'' +
-               ", columnNameI18n='" + columnNameI18n + '\'' +
-               ", descriptionI18n='" + descriptionI18n + '\'' +
+               ", columnNameI18nKey='" + columnNameI18nKey + '\'' +
+               ", descriptionI18nKey='" + descriptionI18nKey + '\'' +
                '}';
     }
 }

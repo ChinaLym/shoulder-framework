@@ -18,4 +18,11 @@ public class BatchProperties extends BatchInitializationSettings {
 
     public static final String PREFIX = BaseAppProperties.KEY_PREFIX + "batch";
 
+    private StorageConfig storage = new StorageConfig();
+
+    @Data
+    public static class StorageConfig {
+        private String type;
+    }
+
 }

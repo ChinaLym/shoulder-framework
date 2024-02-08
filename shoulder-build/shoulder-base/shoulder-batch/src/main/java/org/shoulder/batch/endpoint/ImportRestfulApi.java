@@ -40,7 +40,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * @deprecated 不作为框架默认实现的一部分，将移动至 platform 中
  */
 @Api(tags = {"数据批量操作"})
-@RequestMapping("/api/v1/batch/{dataType}")
+@RequestMapping(value = "${shoulder.web.ext.batch.apiPath:/api/v1/batch/{dataType}}")
 public interface ImportRestfulApi {
 
 

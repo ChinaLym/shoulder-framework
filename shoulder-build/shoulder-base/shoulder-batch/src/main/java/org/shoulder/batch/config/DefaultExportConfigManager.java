@@ -130,13 +130,13 @@ public class DefaultExportConfigManager implements ExportConfigManager {
         for (ExportColumnConfig column : exportFileConfig.getColumns()) {
             AssertUtils.notEmpty(column.getModelFieldName(), CommonErrorCodeEnum.ILLEGAL_PARAM);
             if (StringUtils.isEmpty(column.getColumnName())) {
-                AssertUtils.notEmpty(column.getColumnNameI18n(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+                AssertUtils.notEmpty(column.getColumnNameI18nKey(), CommonErrorCodeEnum.ILLEGAL_PARAM);
                 column.setColumnName(
-                    ContextUtils.getBean(Translator.class).getMessage(column.getColumnNameI18n(), new Object[] {}, locale));
+                    ContextUtils.getBean(Translator.class).getMessage(column.getColumnNameI18nKey(), new Object[] {}, locale));
             }
-            if (StringUtils.isEmpty(column.getDescription()) && StringUtils.isNotEmpty(column.getDescriptionI18n())) {
+            if (StringUtils.isEmpty(column.getDescription()) && StringUtils.isNotEmpty(column.getDescriptionI18nKey())) {
                 column.setDescription(
-                    ContextUtils.getBean(Translator.class).getMessage(column.getDescriptionI18n(), new Object[] {}, locale));
+                    ContextUtils.getBean(Translator.class).getMessage(column.getDescriptionI18nKey(), new Object[] {}, locale));
             }
         }
     }

@@ -4,6 +4,8 @@ package org.shoulder.batch.enums;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.ContextUtils;
 
+import java.util.Optional;
+
 /**
  * 批处理国际化
  *
@@ -48,7 +50,7 @@ public enum BatchI18nEnum {
     /**
      * 当前执行任务较多，请稍后再试
      */
-    OTHER_IMPORTPROCESS("shoulder.batch.import.busy"),
+    BATCH_SERVICE_BUSY("shoulder.batch.import.busy"),
 
     // ============================== 上传导入文件提示 ==================================
     /**
@@ -133,9 +135,11 @@ public enum BatchI18nEnum {
     ;
 
 
-    private String code;
+    private final String defaultName;
+    private final String code;
 
     BatchI18nEnum(String code) {
+        this.defaultName = code.substring(code.lastIndexOf('.') + 1);
         this.code = code;
     }
 
@@ -144,7 +148,9 @@ public enum BatchI18nEnum {
     }
 
     public String i18nValue(Object... args) {
-        return ContextUtils.getBean(Translator.class).getMessage(this.code, args);
+        return Optional.ofNullable(ContextUtils.getBean(Translator.class).getMessage(this.code, args))
+            .filter(String::isBlank)
+            .orElse(this.defaultName);
     }
 
 

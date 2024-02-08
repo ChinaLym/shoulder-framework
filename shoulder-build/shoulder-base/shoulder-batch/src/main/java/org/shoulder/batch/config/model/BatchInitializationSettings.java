@@ -14,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class BatchInitializationSettings {
 
-    public List<String> ExportLocalizeConfigLocations;
+    public List<String> exportLocalizeConfigLocations;
 
-    public List<String> ExportFileConfigLocations;
+    public List<String> exportFileConfigLocations;
 
 }

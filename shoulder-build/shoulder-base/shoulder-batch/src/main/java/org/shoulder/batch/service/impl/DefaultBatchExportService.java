@@ -25,8 +25,6 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.JsonUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -55,35 +53,34 @@ public class DefaultBatchExportService implements BatchAndExportService {
     /**
      * 批处理线程池
      */
-    @Autowired
-    @Qualifier(BatchConstants.BATCH_THREAD_POOL_NAME)
-    private ThreadPoolExecutor batchThreadPool;
 
-    @Autowired
-    protected Translator translator;
+    protected final ThreadPoolExecutor batchThreadPool;
+
+    protected final Translator translator;
 
     /**
      * 所有导出器实现
      */
-    @Autowired
-    private List<DataExporter> dataExporterList;
+
+    protected final List<DataExporter> dataExporterList;
 
     /**
      * 批量处理记录
      */
-    @Autowired
-    private BatchRecordPersistentService batchRecordPersistentService;
+
+    protected final BatchRecordPersistentService batchRecordPersistentService;
 
     /**
      * 处理详情
      */
-    @Autowired
-    protected BatchRecordDetailPersistentService batchRecordDetailPersistentService;
 
-    @Autowired
-    protected BatchProgressCache batchProgressCache;
+    protected final BatchRecordDetailPersistentService batchRecordDetailPersistentService;
 
-    protected ExportConfigManager exportConfigManager;
+    protected final BatchProgressCache batchProgressCache;
+
+    protected final ExportConfigManager exportConfigManager;
+
+    // ---------------------------------------
 
     /**
      * 当前的导出器
@@ -99,6 +96,19 @@ public class DefaultBatchExportService implements BatchAndExportService {
      * 是否额外生成详情列（当且仅当导出批量处理结果时）
      */
     private ThreadLocal<Boolean> exportRecordLocal = ThreadLocal.withInitial(() -> Boolean.FALSE);
+
+    public DefaultBatchExportService(ThreadPoolExecutor batchThreadPool, Translator translator, List<DataExporter> dataExporterList,
+                                     BatchRecordPersistentService batchRecordPersistentService,
+                                     BatchRecordDetailPersistentService batchRecordDetailPersistentService,
+                                     BatchProgressCache batchProgressCache, ExportConfigManager exportConfigManager) {
+        this.batchThreadPool = batchThreadPool;
+        this.translator = translator;
+        this.dataExporterList = dataExporterList;
+        this.batchRecordPersistentService = batchRecordPersistentService;
+        this.batchRecordDetailPersistentService = batchRecordDetailPersistentService;
+        this.batchProgressCache = batchProgressCache;
+        this.exportConfigManager = exportConfigManager;
+    }
 
     // ****************************  导出  *******************************
 
@@ -127,7 +137,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         if (exportFileConfig == null) {
             // 编码问题，未提供配置，需先调用 ExportConfigManager.putConfig 方法设置输出配置
             throw new BaseRuntimeException("templateId:" + templateId + " not existed! " +
-                    "Must invoke ExportConfigManager.putConfig before export");
+                                           "Must invoke ExportConfigManager.putConfig before export");
         }
         exportConfigLocal.set(exportFileConfig);
         try {
@@ -156,7 +166,6 @@ public class DefaultBatchExportService implements BatchAndExportService {
         }
     }
 
-
     private void outputHeader() throws IOException {
         // 生成表头
         ExportFileConfig exportFileConfig = exportConfigLocal.get();
@@ -169,7 +178,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         List<ExportColumnConfig> columns = exportFileConfig.getColumns();
         String[] columnsName = new String[columns.size() + 3];
         List<String> nameList = columns.stream()
-            .map(ExportColumnConfig::getColumnName)
+            .map(columnConfig -> "[" + columnConfig.getColumnName() + "]: " + columnConfig.getDescription())
             .collect(Collectors.toList());
         if (exportRecordLocal.get()) {
             nameList.add(BatchI18nEnum.ROW_NUM.i18nValue());
@@ -185,7 +194,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
     /**
      * 导出数据，不关闭流
      *
-     * @param data         要导出的数据
+     * @param data 要导出的数据
      * @throws IOException IO异常
      */
     private void outputData(List<Map<String, String>> data) throws IOException {
@@ -213,14 +222,12 @@ public class DefaultBatchExportService implements BatchAndExportService {
         return dataArray;
     }
 
-
     private void cleanContext() {
         currentDataExporter.get().cleanContext();
         currentDataExporter.remove();
         exportConfigLocal.remove();
         exportRecordLocal.remove();
     }
-
 
     @Override
     public void exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
@@ -230,21 +237,20 @@ public class DefaultBatchExportService implements BatchAndExportService {
         export(outputStream, exportType, List.of(() -> {
             List<BatchRecordDetail> recordDetailList = findRecordDetailsByResults(taskId, resultTypes);
             return recordDetailList.stream()
-                    .map(batchRecordDetail -> {
-                        @SuppressWarnings("unchecked")
-                        Map<String, String> dataMap = JsonUtils.parseObject(
-                                batchRecordDetail.getSource(), Map.class, String.class, String.class);
+                .map(batchRecordDetail -> {
+                    @SuppressWarnings("unchecked")
+                    Map<String, String> dataMap = JsonUtils.parseObject(
+                        batchRecordDetail.getSource(), Map.class, String.class, String.class);
 
-                        dataMap.put(BatchConstants.INDEX, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getIndex()));
-                        dataMap.put(BatchConstants.RESULT, translator.getMessage(batchRecordDetail.getFailReason(),
-                                ProcessStatusEnum.of(batchRecordDetail.getStatus()).getTip()));
-                        dataMap.put(BatchConstants.DETAIL, translator.getMessage(batchRecordDetail.getFailReason()));
+                    dataMap.put(BatchConstants.INDEX, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getIndex()));
+                    dataMap.put(BatchConstants.RESULT, translator.getMessage(batchRecordDetail.getFailReason(),
+                        ProcessStatusEnum.of(batchRecordDetail.getStatus()).getTip()));
+                    dataMap.put(BatchConstants.DETAIL, translator.getMessage(batchRecordDetail.getFailReason()));
                     return dataMap;
                 })
                 .collect(Collectors.toList());
         }), templateId);
     }
-
 
     // *********************************  执行处理  **************************************
 
@@ -336,7 +342,6 @@ public class DefaultBatchExportService implements BatchAndExportService {
     public BatchRecord findRecordById(String importCode) {
         return batchRecordPersistentService.findById(importCode);
     }
-
 
     // ------------------- 记录详情 ------------------------------
 

@@ -20,7 +20,6 @@ import org.shoulder.batch.service.RecordService;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,29 +42,64 @@ public class ImportController implements ImportRestfulApi {
     /**
      * 批量操作
      */
-    @Autowired
-    private BatchService batchService;
+    private final BatchService batchService;
 
     /**
      * 导出
      */
-    @Autowired
-    private ExportService exportService;
+    private final ExportService exportService;
 
     /**
      * 批量记录查询
      */
-    @Autowired
-    private RecordService recordService;
+    private final RecordService recordService;
 
+    public ImportController(BatchService batchService, ExportService exportService, RecordService recordService) {
+        this.batchService = batchService;
+        this.exportService = exportService;
+        this.recordService = recordService;
+    }
 
     /**
      * 实现举例：上传数据导入文件
      */
     @Override
     public BaseResult<String> doValidate(MultipartFile file, String charsetLanguage) throws Exception {
-        // 示例：解析文件，然后校验，返回校验任务标识
+        // 示例：保存文件，解析文件，然后校验，返回校验任务标识
 //        batchService.doProcess()
+//        try {
+//            InputStreamReader in = new InputStreamReader(file.getInputStream(), AppInfo.charset());
+//            CsvReader reader = new CsvReader(in);
+//            List<String[]> allLines = reader.readAll();
+//            int ignore = getIgnoreRows(allLines);
+//            //校验文件
+//            String checkCSVResult = checkCSV(allLines, ignore);
+//            if(StringUtils.isNotEmpty(checkCSVResult))
+//            {
+//                return new ActionResult(com.hikvision.modules.common.constant.ConstParamErrorCode.SYSTEM_CODE_FAIL +
+//                                        "", checkCSVResult);
+//            }
+//            //初始化进度
+//            BatchRecordCollection.put(uuid,new ImportOperateRecordDTO().setStartTime(System.currentTimeMillis()));
+//            final String saveUuid = uuid;
+//            threadExecutor.execute(()-> {
+//                try{
+//                    saveImportResult(allLines,ignore,saveUuid);
+//                }catch (Exception e){
+//                    LOGGER.errorWithErrorCode(ConstParamErrorCode.BS_SYSTEM_ERROR.code(), "startVerifyImport error", e);
+//                }
+//            });
+//        }catch (Exception e) {
+//            result = new ActionResult(com.hikvision.modules.common.constant.ConstParamErrorCode.SYSTEM_CODE_FAIL + "", "文件内容错误");
+//        }finally {
+//            ImportOperateRecordDTO importOperateRecordDTO = BatchRecordCollection.get(uuid);
+//            if(importOperateRecordDTO != null)
+//            {
+//                importOperateRecordDTO.end();
+//            }
+//        }
+//        result.setData(uuid);
+
         String taskId = "doValidate";
         return BaseResult.success(taskId);
     }
