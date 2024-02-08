@@ -20,7 +20,7 @@ public enum BatchI18nEnum {
      *
      * @zh_CN 行号
      */
-    ROW_NUM("shoulder.batch.common.label.linNum"),
+    ROW_NUM("shoulder.batch.common.label.lineNum"),
     /**
      * 结果
      */
@@ -139,8 +139,8 @@ public enum BatchI18nEnum {
     private final String code;
 
     BatchI18nEnum(String code) {
-        this.defaultName = code.substring(code.lastIndexOf('.') + 1);
         this.code = code;
+        this.defaultName = code.substring(code.lastIndexOf('.') + 1);
     }
 
     public String getCode() {
@@ -152,6 +152,5 @@ public enum BatchI18nEnum {
             .filter(String::isBlank)
             .orElse(this.defaultName);
     }
-
 
 }

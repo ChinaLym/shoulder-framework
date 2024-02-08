@@ -166,9 +166,12 @@ public class DefaultBatchExportService implements BatchAndExportService {
         }
     }
 
+    /**
+     * 生成完整表头（介绍 + 字段 + demo）
+     */
     private void outputHeader() throws IOException {
-        // 生成表头
         ExportFileConfig exportFileConfig = exportConfigLocal.get();
+        boolean exportRecordInfo = exportRecordLocal.get();
         if (CollectionUtils.isEmpty(exportFileConfig.getHeaders()) || CollectionUtils.isEmpty(exportFileConfig.getColumns())) {
             throw new BaseRuntimeException("descriptionList and columns can't be empty! ");
         }
@@ -176,11 +179,11 @@ public class DefaultBatchExportService implements BatchAndExportService {
             .map(ArrayUtils::toArray)
             .collect(Collectors.toList());
         List<ExportColumnConfig> columns = exportFileConfig.getColumns();
-        String[] columnsName = new String[columns.size() + 3];
+        String[] columnsName = new String[columns.size() + (exportRecordInfo ? 3 : 0)];
         List<String> nameList = columns.stream()
-            .map(columnConfig -> "[" + columnConfig.getColumnName() + "]: " + columnConfig.getDescription())
+            .map(ExportColumnConfig::getColumnName)
             .collect(Collectors.toList());
-        if (exportRecordLocal.get()) {
+        if (exportRecordInfo) {
             nameList.add(BatchI18nEnum.ROW_NUM.i18nValue());
             nameList.add(BatchI18nEnum.RESULT.i18nValue());
             nameList.add(BatchI18nEnum.DETAIL.i18nValue());

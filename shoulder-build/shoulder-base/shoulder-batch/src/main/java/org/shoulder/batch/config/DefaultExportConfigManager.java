@@ -117,16 +117,25 @@ public class DefaultExportConfigManager implements ExportConfigManager {
         } else {
             log.info("locale {} is not found, fall back to default", locale);
         }
-        // 详情
+        // header 注释信息-介绍
         if (CollectionUtils.isEmpty(exportFileConfig.getHeaders())) {
             AssertUtils.notEmpty(exportFileConfig.getHeadersI18n(), CommonErrorCodeEnum.ILLEGAL_PARAM);
             List<String> headers = new ArrayList<>();
+            headers.add("# #### note######################");
             for (String headerI18n : exportFileConfig.getHeadersI18n()) {
                 headers.add(ContextUtils.getBean(Translator.class).getMessage(headerI18n, new Object[] {}, locale));
             }
+            headers.add("# ##################################");
+            exportFileConfig.setHeaders(headers);
+        } else {
+            List<String> headers = exportFileConfig.getHeaders()
+                .stream()
+                .map(h -> h.startsWith("#") ? h : "# " + h)
+                .collect(Collectors.toList());
             exportFileConfig.setHeaders(headers);
         }
 
+        // 模型字段
         for (ExportColumnConfig column : exportFileConfig.getColumns()) {
             AssertUtils.notEmpty(column.getModelFieldName(), CommonErrorCodeEnum.ILLEGAL_PARAM);
             if (StringUtils.isEmpty(column.getColumnName())) {
@@ -139,6 +148,7 @@ public class DefaultExportConfigManager implements ExportConfigManager {
                     ContextUtils.getBean(Translator.class).getMessage(column.getDescriptionI18nKey(), new Object[] {}, locale));
             }
         }
+
     }
 
 }
