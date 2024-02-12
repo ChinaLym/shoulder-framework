@@ -10,6 +10,8 @@ import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -123,13 +125,15 @@ public interface ImportRestfulApi {
      * 数据导入模板下载
      * <p>
      * todo 【开发】数据类型、业务操作类型
+     *
+     * @return
      */
     @ApiOperation(value = "数据导入模板下载", consumes = "text/csv", httpMethod = "GET")
     @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",
         defaultValue = "gbk", required = true, paramType = "query")
     @RequestMapping(value = "template/download", method = RequestMethod.GET)
-    void exportImportTemplate(HttpServletResponse response,
-                              @PathVariable(value = "dataType") String businessType) throws IOException;
+    ResponseEntity<Resource> exportImportTemplate(HttpServletResponse response,
+                                                  @PathVariable(value = "dataType") String businessType) throws IOException;
 
 
     /**

@@ -1,12 +1,9 @@
 package org.shoulder.batch.service;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.batch.enums.ProcessStatusEnum;
-import org.shoulder.core.context.AppInfo;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -43,19 +40,5 @@ public interface ExportService {
      */
     void exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
                            String taskId, List<ProcessStatusEnum> resultTypes) throws IOException;
-
-
-    /**
-     * 给导出的文件命名
-     *
-     * @param response http 响应
-     * @param fileName 导出文件名
-     * @deprecated 不要在这里做
-     */
-    default void setExportFileName(HttpServletResponse response, String fileName) {
-        response.setHeader("Content-Disposition", "attachment; filename=" +
-            URLEncoder.encode(fileName, AppInfo.charset()));
-        response.setHeader("Content-Type", "application/octet-stream");
-    }
 
 }

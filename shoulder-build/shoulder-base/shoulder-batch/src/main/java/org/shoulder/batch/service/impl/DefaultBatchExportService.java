@@ -23,11 +23,11 @@ import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.JsonUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -124,7 +124,6 @@ public class DefaultBatchExportService implements BatchAndExportService {
     public void export(OutputStream outputStream, String exportType,
                        List<Supplier<List<Map<String, String>>>> dataSupplierList,
                        String templateId) throws IOException {
-
         // 初始化线程变量
         DataExporter dataExporter = dataExporterList.stream()
             .filter(exporter -> exporter.support(exportType))
@@ -136,8 +135,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         ExportFileConfig exportFileConfig = exportConfigManager.getFileConfigWithLocale(templateId, AppContext.getLocaleOrDefault());
         if (exportFileConfig == null) {
             // 编码问题，未提供配置，需先调用 ExportConfigManager.putConfig 方法设置输出配置
-            throw new BaseRuntimeException("templateId:" + templateId + " not existed! " +
-                                           "Must invoke ExportConfigManager.putConfig before export");
+            throw new BaseRuntimeException("templateId:" + templateId + " not existed! ");
         }
         exportConfigLocal.set(exportFileConfig);
         try {
@@ -175,11 +173,8 @@ public class DefaultBatchExportService implements BatchAndExportService {
         if (CollectionUtils.isEmpty(exportFileConfig.getHeaders()) || CollectionUtils.isEmpty(exportFileConfig.getColumns())) {
             throw new BaseRuntimeException("descriptionList and columns can't be empty! ");
         }
-        List<String[]> heads = exportFileConfig.getHeaders().stream()
-            .map(ArrayUtils::toArray)
-            .collect(Collectors.toList());
+
         List<ExportColumnConfig> columns = exportFileConfig.getColumns();
-        String[] columnsName = new String[columns.size() + (exportRecordInfo ? 3 : 0)];
         List<String> nameList = columns.stream()
             .map(ExportColumnConfig::getColumnName)
             .collect(Collectors.toList());
@@ -188,10 +183,12 @@ public class DefaultBatchExportService implements BatchAndExportService {
             nameList.add(BatchI18nEnum.RESULT.i18nValue());
             nameList.add(BatchI18nEnum.DETAIL.i18nValue());
         }
-        heads.add(nameList.toArray(columnsName));
+        String[] columnsName = new String[columns.size() + (exportRecordInfo ? 3 : 0)];
 
         currentDataExporter.get()
-            .outputHeader(heads);
+            .outputHeader(exportFileConfig.getHeaders());
+        currentDataExporter.get()
+            .outputData(Collections.singletonList(nameList.toArray(columnsName)));
     }
 
     /**

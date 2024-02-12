@@ -1,12 +1,12 @@
-package org.shoulder.batch.test;
+package org.shoulder.autoconfiguration.test.batch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TestStarter {
+public class BatchTestStarter {
     public static void main(String[] args) {
-        SpringApplication.run(TestStarter.class, args);
+        SpringApplication.run(BatchTestStarter.class, args);
     }
 
 }

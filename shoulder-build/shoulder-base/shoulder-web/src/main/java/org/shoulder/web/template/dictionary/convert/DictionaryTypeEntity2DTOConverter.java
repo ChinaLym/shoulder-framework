@@ -1,7 +1,3 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2021 All Rights Reserved.
- */
 package org.shoulder.web.template.dictionary.convert;
 
 import org.shoulder.web.template.crud.AbstractVODataConverter;

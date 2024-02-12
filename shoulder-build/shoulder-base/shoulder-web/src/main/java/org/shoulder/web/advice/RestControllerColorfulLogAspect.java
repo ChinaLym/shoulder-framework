@@ -1,7 +1,5 @@
 package org.shoulder.web.advice;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.JoinPoint;
@@ -17,14 +15,13 @@ import org.shoulder.core.util.FileUtils;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
 import org.shoulder.http.util.HttpLogHelper;
-import org.springframework.core.io.InputStreamSource;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
-import java.io.Closeable;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
@@ -162,15 +159,16 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         if (value instanceof MultipartFile) {
             return new MultiFileInfo((MultipartFile) value).toString();
         }
-        if (value instanceof ServletResponse || value instanceof ServletRequest || value instanceof Closeable || value instanceof InputStreamSource) {
+        if (!(value instanceof Serializable)) {
             // 流类型，或者带有流属性的DTO跳过
-            return "shoulder_SKIP:IOStream";
+            // ServletResponse || value instanceof ServletRequest || value instanceof Closeable || value instanceof InputStreamSource
+            return "SKIP_LOG:NOT_Serializable";
         }
         try {
             return JsonUtils.toJson(value);
         } catch (Exception e) {
             logger.warnWithErrorCode(CommonErrorCodeEnum.UNKNOWN.getCode(), "This param type={} not support json, skip", value.getClass().getName());
-            return "shoulder_SKIP:JSON_FAIL";
+            return "SKIP_LOG:NOT_SUPPORT_JSON";
         }
     }
 
@@ -220,10 +218,10 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
                     .lMagenta(k)
                     .tab()
                     .green(": ")
-                    .cyan(v instanceof CharSequence ? String.valueOf(v) : JsonUtils.toJson(v)));
+                    .cyan(v instanceof CharSequence ? String.valueOf(v) : toLogValue(v)));
         } else {
             // 打印返回值
-            String responseStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
+            String responseStr = returnObject != null ? toLogValue(returnObject) : "null";
             responseInfo
                     .magenta("Result     : ", ColorString.Style.BOLD)
                     .append(responseStr);

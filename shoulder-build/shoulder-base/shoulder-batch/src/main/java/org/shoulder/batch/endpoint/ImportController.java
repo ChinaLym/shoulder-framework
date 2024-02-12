@@ -18,13 +18,22 @@ import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -76,7 +85,7 @@ public class ImportController implements ImportRestfulApi {
 //            String checkCSVResult = checkCSV(allLines, ignore);
 //            if(StringUtils.isNotEmpty(checkCSVResult))
 //            {
-//                return new ActionResult(com.hikvision.modules.common.constant.ConstParamErrorCode.SYSTEM_CODE_FAIL +
+//                return new ActionResult(ConstParamErrorCode.SYSTEM_CODE_FAIL +
 //                                        "", checkCSVResult);
 //            }
 //            //初始化进度
@@ -90,7 +99,7 @@ public class ImportController implements ImportRestfulApi {
 //                }
 //            });
 //        }catch (Exception e) {
-//            result = new ActionResult(com.hikvision.modules.common.constant.ConstParamErrorCode.SYSTEM_CODE_FAIL + "", "文件内容错误");
+//            result = new ActionResult( + "", "文件内容错误");
 //        }finally {
 //            ImportOperateRecordDTO importOperateRecordDTO = BatchRecordCollection.get(uuid);
 //            if(importOperateRecordDTO != null)
@@ -160,11 +169,36 @@ public class ImportController implements ImportRestfulApi {
     /**
      * 数据导入模板下载
      * 示例： 导出 导入数据模板
+     *
+     * @return
      */
     @Override
-    public void exportImportTemplate(HttpServletResponse response, String businessType) throws IOException {
-        exportService.export(response.getOutputStream(), BatchConstants.CSV, Collections.emptyList(), businessType);
+    public ResponseEntity<Resource> exportImportTemplate(HttpServletResponse response, String businessType) throws IOException {
 
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        exportService.export(byteArrayOutputStream, BatchConstants.CSV, Collections.emptyList(), businessType);
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + businessType + "-import-template.csv\"");
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        if (byteArrayOutputStream.size() == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] templateBytes = byteArrayOutputStream.toByteArray();
+        // 创建输入流以读取文件
+        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(templateBytes));
+
+        // 设置响应头信息
+        HttpHeaders headers = new HttpHeaders();
+        //URLEncoder.encode(fileName, AppInfo.charset())
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + businessType + "-import-template.csv\"");
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        response.setCharacterEncoding("utf-8");
+
+        // 构建响应实体
+        return ResponseEntity.ok()
+            .headers(headers)
+            .contentLength(templateBytes.length)
+            .body(resource);
     }
 
     /**
@@ -183,6 +217,20 @@ public class ImportController implements ImportRestfulApi {
     //@Override
     public void export(HttpServletResponse response, String businessType) throws IOException {
         //exportService.export();
+    }
+
+
+    /**
+     * 给导出的文件命名
+     *
+     * @param response http 响应
+     * @param fileName 导出文件名
+     * @deprecated 不要在这里做
+     */
+    public void setExportFileName(HttpServletResponse response, String fileName, String encoding, long length) {
+        response.setHeader("Content-Disposition", "attachment; filename=" +
+                                                  URLEncoder.encode(fileName, AppInfo.charset()));
+        response.setHeader("Content-Type", "application/octet-stream");
     }
 
 

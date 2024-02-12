@@ -1,7 +1,3 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2021 All Rights Reserved.
- */
 package org.shoulder.ext.config.converter;
 
 import org.apache.commons.collections4.MapUtils;

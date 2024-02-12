@@ -2,6 +2,7 @@ package org.shoulder.autoconfigure.batch;
 
 import com.univocity.parsers.csv.CsvWriter;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
+import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.batch.cache.BatchProgressCache;
 import org.shoulder.batch.cache.DefaultBatchProgressCache;
 import org.shoulder.batch.config.DefaultExportConfigManager;
@@ -51,7 +52,7 @@ import javax.sql.DataSource;
  * @author lym
  */
 @ConditionalOnClass(BatchData.class)
-@AutoConfiguration
+@AutoConfiguration(after = I18nAutoConfiguration.class)
 @EnableConfigurationProperties(BatchProperties.class)
 public class BatchTaskAutoConfiguration {
 
@@ -94,7 +95,7 @@ public class BatchTaskAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(ImportRestfulApi.class)
-    public ImportController ImportRestfulApi (
+    public ImportController ImportRestfulApi(
         BatchService batchService, ExportService exportService, RecordService recordService
     ) {
         return new ImportController(batchService, exportService, recordService);
@@ -151,29 +152,47 @@ public class BatchTaskAutoConfiguration {
         return new DefaultBatchProgressCache(cacheManager.getCache(DefaultBatchProgressCache.CACHE_NAME));
     }
 
-    @AutoConfiguration(after = JdbcLockAutoConfiguration.class)
+    @AutoConfiguration(
+        after = { JdbcBatchRecordAutoConfiguration.class, org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration.class })
     @ConditionalOnClass(CacheManager.class)
+    @ConditionalOnBean({ CacheManager.class })
     @ConditionalOnProperty(name = "shoulder.batch.storage.type", havingValue = "memory", matchIfMissing = true)
-    public static class MemoryLockAutoConfiguration {
+    public static class SpringCacheBatchRecordAutoConfiguration {
         @Bean
         @ConditionalOnMissingBean
-        @ConditionalOnBean(CacheManager.class)
-        public BatchRecordPersistentService batchRecordPersistentService(CacheManager cacheManager) {
+        public CacheBatchRecordPersistentService batchRecordPersistentService(CacheManager cacheManager) {
             return new CacheBatchRecordPersistentService(cacheManager.getCache(DefaultBatchProgressCache.CACHE_NAME));
         }
 
         @Bean
         @ConditionalOnMissingBean
-        @ConditionalOnBean(CacheManager.class)
-        public BatchRecordDetailPersistentService batchRecordDetailPersistentService(CacheManager cacheManager) {
+        public CacheBatchRecordDetailPersistentService batchRecordDetailPersistentService(CacheManager cacheManager) {
             return new CacheBatchRecordDetailPersistentService(cacheManager.getCache(DefaultBatchProgressCache.CACHE_NAME));
+        }
+    }
+
+    @AutoConfiguration(
+        after = { JdbcBatchRecordAutoConfiguration.class, SpringCacheBatchRecordAutoConfiguration.class })
+    @ConditionalOnMissingBean({ CacheManager.class })
+    public static class DefaultMemoryBatchRecordAutoConfiguration {
+
+        @Bean
+        @ConditionalOnMissingBean
+        public CacheBatchRecordPersistentService memoryBatchRecordPersistentService() {
+            return new CacheBatchRecordPersistentService(new ConcurrentMapCache(DefaultBatchProgressCache.CACHE_NAME));
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        public CacheBatchRecordDetailPersistentService batchRecordDetailPersistentService() {
+            return new CacheBatchRecordDetailPersistentService(new ConcurrentMapCache(DefaultBatchProgressCache.CACHE_NAME));
         }
     }
 
     @AutoConfiguration
     @ConditionalOnClass(DataSource.class)
     @ConditionalOnProperty(name = "shoulder.batch.storage.type", havingValue = "jdbc", matchIfMissing = false)
-    public static class JdbcLockAutoConfiguration {
+    public static class JdbcBatchRecordAutoConfiguration {
 
         /**
          * jdbc

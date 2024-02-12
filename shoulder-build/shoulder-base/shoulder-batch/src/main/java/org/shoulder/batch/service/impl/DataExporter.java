@@ -41,7 +41,7 @@ public interface DataExporter {
      * @param headers      头信息
      * @throws IOException IO 异常
      */
-    void outputHeader(List<String[]> headers) throws IOException;
+    void outputHeader(List<String> headers) throws IOException;
 
 
     /**

@@ -1,43 +1,50 @@
-package org.shoulder.batch;
+package org.shoulder.autoconfiguration.test.batch;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.shoulder.batch.config.DefaultExportConfigManager;
+import org.shoulder.autoconfigure.batch.BatchTaskAutoConfiguration;
+import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.batch.config.ExportConfigManager;
 import org.shoulder.batch.config.model.ExportColumnConfig;
 import org.shoulder.batch.config.model.ExportFileConfig;
 import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.service.ExportService;
-import org.shoulder.batch.test.TestStarter;
 import org.shoulder.core.context.AppContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@SpringBootTest(classes = TestStarter.class)
+@SpringBootTest(
+    properties = "shoulder.batch.export-file-config-locations=classpath:exportFileConfig.json",
+    classes = { I18nAutoConfiguration.class, BatchTaskAutoConfiguration.class })
 public class ExportConfigManagerTest {
 
     private static String templateId = "testId";
 
-    static ExportConfigManager exportConfigManager = new DefaultExportConfigManager();
+    @Autowired
+    ExportConfigManager exportConfigManager;
 
-    static {
+
+    //@BeforeEach
+    public void initConfig() {
+        if(exportConfigManager.findFileConfig(templateId) != null) {
+            return;
+        }
         ExportFileConfig exportFileConfig = new ExportFileConfig();
         exportFileConfig.setId(templateId);
         exportFileConfig.setHeaders(List.of("First", "Second"));
         exportFileConfig.setColumns(
-                Stream.of("First", "Second")
-                        .map(s -> new ExportColumnConfig(s, s))
-                        .collect(Collectors.toList())
+            Stream.of("First", "Second")
+                .map(s -> new ExportColumnConfig(s, s))
+                .collect(Collectors.toList())
         );
-        exportConfigManager.addFileConfig(exportFileConfig);
+        //exportConfigManager.addFileConfig(exportFileConfig);
     }
 
     @Test
@@ -51,11 +58,12 @@ public class ExportConfigManagerTest {
      */
     @Autowired
     private ExportService exportService;
+
     @Test
     public void templateOutputTest() throws IOException {
-        OutputStream out = new ByteArrayOutputStream (2048000);
+        ByteArrayOutputStream out = new ByteArrayOutputStream(2048000);
         exportService.export(out, BatchConstants.CSV, Collections.emptyList(), templateId);
-
+        System.out.println(out.toString("gb2312"));
     }
 
 }
