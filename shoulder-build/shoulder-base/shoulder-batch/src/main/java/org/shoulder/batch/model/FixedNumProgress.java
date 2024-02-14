@@ -2,7 +2,6 @@ package org.shoulder.batch.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.shoulder.batch.service.impl.ProgressAble;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 

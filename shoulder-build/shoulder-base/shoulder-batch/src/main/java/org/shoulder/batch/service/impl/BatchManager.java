@@ -35,7 +35,7 @@ public class BatchManager implements Runnable {
     protected final static Logger log = LoggerFactory.getLogger(BatchManager.class);
 
     /**
-     * 添加数据默认单次处理最大数目
+     * 添加数据默认单次处理最大数目 todo 【增强】可配置，可按照操作配置
      */
     private static final int DEFAULT_MAX_TASK_SLICE_NUM = 200;
 

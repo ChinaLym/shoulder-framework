@@ -30,6 +30,7 @@ public class BatchRecordDetail implements Serializable {
 
     /**
      * 本次批处理所在位置行号 / 索引 / 下标
+     * <br><strong>需要 Handler 补充</strong>
      */
     private int index;
 
@@ -40,11 +41,13 @@ public class BatchRecordDetail implements Serializable {
 
     /**
      * 处理结果状态 0 处理成功 1 校验失败、2 重复跳过、3 重复更新、4 处理失败
+     * <br><strong>需要 Handler 补充</strong>
      */
     private int status;
 
     /**
      * 失败原因，推荐支持多语言
+     * <br><strong>需要 Handler 补充</strong>
      */
     private String failReason;
 

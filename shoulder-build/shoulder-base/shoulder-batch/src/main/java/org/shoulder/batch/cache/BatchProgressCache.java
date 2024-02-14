@@ -1,6 +1,6 @@
 package org.shoulder.batch.cache;
 
-import org.shoulder.batch.service.impl.ProgressAble;
+import org.shoulder.batch.model.ProgressAble;
 
 import java.util.Map;
 

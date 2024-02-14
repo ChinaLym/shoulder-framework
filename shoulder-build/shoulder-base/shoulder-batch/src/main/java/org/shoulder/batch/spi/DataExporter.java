@@ -1,4 +1,4 @@
-package org.shoulder.batch.service.impl;
+package org.shoulder.batch.spi;
 
 import org.shoulder.batch.config.model.ExportFileConfig;
 

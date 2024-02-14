@@ -2,7 +2,7 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2024 All Rights Reserved.
  */
-package org.shoulder.batch.service.csv;
+package org.shoulder.batch.spi.csv;
 
 import cn.hutool.core.text.csv.CsvRow;
 import cn.hutool.core.text.csv.CsvRowHandler;
@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * csv导入时，限制导入总条数，并跳过注释行，作为导入接口的同步校验器
+ * @deprecated 暂未使用
  *
  * @author lym
  */

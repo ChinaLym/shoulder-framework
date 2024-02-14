@@ -3,7 +3,7 @@ package org.shoulder.batch.service;
 
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchProgressRecord;
-import org.shoulder.batch.service.ext.BatchTaskSliceHandler;
+import org.shoulder.batch.spi.BatchTaskSliceHandler;
 import org.shoulder.core.context.AppContext;
 
 import java.util.Locale;

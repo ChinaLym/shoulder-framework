@@ -13,7 +13,6 @@ import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
-import org.shoulder.batch.enums.BatchOperationEnum;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchProgressRecord;
@@ -24,10 +23,12 @@ import org.shoulder.batch.model.convert.BatchModelConvert;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
+import org.shoulder.batch.spi.csv.DataItemConvertFactory;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLog.Operations;
@@ -49,7 +50,6 @@ import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -77,10 +77,17 @@ public class ImportController implements ImportRestfulApi {
      */
     private final RecordService recordService;
 
-    public ImportController(BatchService batchService, ExportService exportService, RecordService recordService) {
+    /**
+     * csv 导入转换工厂
+     */
+    private final DataItemConvertFactory dataItemConvertFactory;
+
+    public ImportController(BatchService batchService, ExportService exportService, RecordService recordService,
+                            DataItemConvertFactory dataItemConvertFactory) {
         this.batchService = batchService;
         this.exportService = exportService;
         this.recordService = recordService;
+        this.dataItemConvertFactory = dataItemConvertFactory;
     }
 
     /**
@@ -113,9 +120,9 @@ public class ImportController implements ImportRestfulApi {
 
         BatchData batchData = new BatchData();
         batchData.setDataType(businessType);
-        batchData.setOperation(BatchOperationEnum.IMPORT_VALIDATE.getI18n());
-        Map<String, List<? extends DataItem>> batchListMap = convertToDataItemMap(businessType, recordList);
-        batchData.setBatchListMap(batchListMap);
+        batchData.setOperation(Operations.UPLOAD_AND_VALIDATE);
+        batchData.setBatchListMap(new HashMap<>());
+        batchData.getBatchListMap().put(Operations.UPLOAD_AND_VALIDATE, convertToDataItemList(businessType, recordList));
 
         // 保存文件，解析文件，然后校验，返回校验任务标识
         String taskId = batchService.doProcess(batchData);
@@ -123,8 +130,9 @@ public class ImportController implements ImportRestfulApi {
         return BaseResult.success(taskId);
     }
 
-    private Map<String, List<? extends DataItem>> convertToDataItemMap(String businessType, List<Record> recordList) {
-        return new HashMap<>();
+    private List<? extends DataItem> convertToDataItemList(String businessType, List<Record> recordList) {
+        AssertUtils.notNull(dataItemConvertFactory, CommonErrorCodeEnum.CODING, "no bean: dataItemConvertFactory");
+        return dataItemConvertFactory.convertRecordToDataItem(businessType, recordList);
     }
 
     private void checkImportCsvHeader(String businessType, List<Record> recordList) {

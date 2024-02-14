@@ -8,7 +8,7 @@ import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.model.DataItem;
-import org.shoulder.batch.service.ext.BatchTaskSliceHandler;
+import org.shoulder.batch.spi.BatchTaskSliceHandler;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
@@ -18,7 +18,10 @@ import org.shoulder.core.util.ContextUtils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
+import java.util.stream.Collectors;
 
 /**
  * 批处理工人
@@ -33,7 +36,7 @@ public class BatchProcessor implements Runnable {
     /**
      * 任务队列
      */
-    private final BlockingQueue<BatchDataSlice> taskQueue;
+    private final BlockingQueue<BatchDataSlice>    taskQueue;
     /**
      * 产生结果队列
      */
@@ -114,14 +117,14 @@ public class BatchProcessor implements Runnable {
             log.error("worker " + getName() + " processed failed", e);
         }
         log.info("task {}-{} finished", task.getTaskId(), task.getSequence());
-        return recheckResultList(task, ListUtils.emptyIfNull(taskResult));
+        return polluteUnknownIfMissingResult(task, ListUtils.emptyIfNull(taskResult));
     }
 
     /**
      * 检查结果数，是否和数据数目一致，否则自动补充失败
      */
-    private List<BatchRecordDetail> recheckResultList(@Nonnull BatchDataSlice task,
-                                                      @Nonnull List<BatchRecordDetail> resultDetailList) {
+    private List<BatchRecordDetail> polluteUnknownIfMissingResult(@Nonnull BatchDataSlice task,
+                                                                  @Nonnull List<BatchRecordDetail> resultDetailList) {
         int exceptNum = task.getBatchList().size();
         int actuallyNum = resultDetailList.size();
         if (exceptNum == actuallyNum) {
@@ -129,20 +132,19 @@ public class BatchProcessor implements Runnable {
         }
         log.warnWithErrorCode(BatchErrorCodeEnum.TASK_SLICE_RESULT_INVALID.getCode(),
             BatchErrorCodeEnum.TASK_SLICE_RESULT_INVALID.getMessage(), exceptNum, actuallyNum);
+
         // 为没有返回结果的任务进行补偿填充，认为失败了
-        for (DataItem dataItem : task.getBatchList()) {
-            int index = dataItem.getIndex();
-            BatchRecordDetail except =
-                resultDetailList.stream()
-                    .filter(result -> index == result.getIndex())
-                    .findFirst().orElse(null);
-            if (except != null) {
-                continue;
-            }
-            except = new BatchRecordDetail(index, ProcessStatusEnum.IMPORT_FAILED.getCode(),
-                    CommonErrorCodeEnum.UNKNOWN.getCode());
-            resultDetailList.add(except);
-        }
+        Map<Integer, BatchRecordDetail> indexedBatchRecordDetailMap = resultDetailList.stream().collect(
+            Collectors.toMap(BatchRecordDetail::getIndex, o -> o, (o1, o2) -> o2));
+
+        task.getBatchList().stream()
+            .map(DataItem::getIndex)
+            .map(index ->
+                Optional.ofNullable(indexedBatchRecordDetailMap.get(index))
+                    .orElse(new BatchRecordDetail(index, ProcessStatusEnum.IMPORT_FAILED.getCode(),
+                        CommonErrorCodeEnum.UNKNOWN.getCode()))
+            ).forEach(resultDetailList::add);
+
         return resultDetailList;
     }
 

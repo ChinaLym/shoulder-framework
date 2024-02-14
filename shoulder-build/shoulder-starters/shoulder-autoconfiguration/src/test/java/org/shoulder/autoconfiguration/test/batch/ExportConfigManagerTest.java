@@ -25,7 +25,7 @@ import java.util.stream.Stream;
     classes = { I18nAutoConfiguration.class, BatchTaskAutoConfiguration.class })
 public class ExportConfigManagerTest {
 
-    private static String templateId = "testId";
+    private static String templateId = "testBatchDataType";
 
     @Autowired
     ExportConfigManager exportConfigManager;

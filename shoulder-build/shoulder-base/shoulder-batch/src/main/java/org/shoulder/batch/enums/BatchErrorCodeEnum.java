@@ -35,7 +35,7 @@ public enum BatchErrorCodeEnum implements ErrorCode {
     /**
      * 不支持该导出方式
      */
-    DATA_TYPE_OR_OPERATION_NOT_SUPPORT(0, "Not support such dataType(%s) or operation(%s)"),
+    DATA_TYPE_OR_OPERATION_NOT_SUPPORT(0, "Not support such dataType(%s) or operation(%s), please check param."),
 
     /**
      * 分片任务结果数不正确，可能未全部执行完便异常终止了

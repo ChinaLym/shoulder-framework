@@ -1,6 +1,4 @@
-package org.shoulder.batch.service.impl;
-
-import org.shoulder.batch.model.BatchProgressRecord;
+package org.shoulder.batch.model;
 
 import java.util.function.BiConsumer;
 

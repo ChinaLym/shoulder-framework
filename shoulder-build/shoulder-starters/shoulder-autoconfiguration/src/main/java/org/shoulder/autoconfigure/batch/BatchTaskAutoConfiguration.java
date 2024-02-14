@@ -22,9 +22,11 @@ import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
-import org.shoulder.batch.service.csv.CsvExporter;
-import org.shoulder.batch.service.impl.DataExporter;
+import org.shoulder.batch.spi.csv.CsvExporter;
+import org.shoulder.batch.spi.DataExporter;
 import org.shoulder.batch.service.impl.DefaultBatchExportService;
+import org.shoulder.batch.spi.csv.DataItemConvertFactory;
+import org.shoulder.batch.spi.csv.DefaultDataItemConvertFactory;
 import org.shoulder.core.i18.Translator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -36,6 +38,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.annotation.Bean;
+import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.util.List;
@@ -95,10 +98,20 @@ public class BatchTaskAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(ImportRestfulApi.class)
-    public ImportController ImportRestfulApi(
-        BatchService batchService, ExportService exportService, RecordService recordService
+    public ImportController importRestfulApi(
+        BatchService batchService, ExportService exportService, RecordService recordService,
+        @Nullable DataItemConvertFactory dataItemConvertFactory
     ) {
-        return new ImportController(batchService, exportService, recordService);
+        return new ImportController(batchService, exportService, recordService, dataItemConvertFactory);
+    }
+
+    /**
+     * service
+     */
+    @Bean
+    @ConditionalOnMissingBean(DataItemConvertFactory.class)
+    public DefaultDataItemConvertFactory defaultDataItemConvertFactory() {
+        return new DefaultDataItemConvertFactory();
     }
 
     @Bean

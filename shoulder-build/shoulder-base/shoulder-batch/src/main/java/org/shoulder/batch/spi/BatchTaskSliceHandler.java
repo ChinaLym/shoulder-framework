@@ -1,4 +1,4 @@
-package org.shoulder.batch.service.ext;
+package org.shoulder.batch.spi;
 
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
@@ -8,6 +8,10 @@ import java.util.List;
 /**
  * 任务分片处理器
  * 使用者自行实现该接口，可在这里处理
+ * <hr>
+ * 举例：
+ * <li> 处理导入前的校验</li>
+ * <li>处理导入-保存</li>
  *
  * @author lym
  */
@@ -20,9 +24,7 @@ public interface BatchTaskSliceHandler {
      * @param operationType 操作方式
      * @return 是否支持
      */
-    default boolean support(String dataType, String operationType) {
-        return false;
-    }
+    boolean support(String dataType, String operationType);
 
     /**
      * 处理数据

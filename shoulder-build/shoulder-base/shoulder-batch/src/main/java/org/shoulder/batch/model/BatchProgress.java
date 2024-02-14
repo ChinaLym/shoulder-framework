@@ -2,7 +2,6 @@ package org.shoulder.batch.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.shoulder.batch.service.impl.ProgressAble;
 
 import java.io.Serializable;
 import java.time.Duration;
