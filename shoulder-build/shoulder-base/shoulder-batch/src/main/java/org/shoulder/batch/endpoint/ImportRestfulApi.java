@@ -10,6 +10,9 @@ import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
+import org.shoulder.log.operation.annotation.OperationLog;
+import org.shoulder.log.operation.annotation.OperationLog.Operations;
+import org.shoulder.validate.annotation.FileType;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
@@ -48,12 +51,14 @@ public interface ImportRestfulApi {
 
     /**
      * 上传数据导入文件 / 提交校验
+     * 校验不写操作日志，已经有批处理记录
      */
     @ApiOperation(value = "上传数据导入文件", consumes = "text/html", httpMethod = "POST")
     @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",
             defaultValue = "gbk", required = true, paramType = "body")
     @RequestMapping(value = "template/upload", method = {RequestMethod.POST})
-    BaseResult<String> doValidate(MultipartFile file,
+    BaseResult<String> doValidate(@PathVariable(value = "dataType") String businessType,
+                                  @FileType(allowSuffix = "csv", maxSize = "10M", allowEmpty = false) MultipartFile file,
                                   @RequestParam(name = "charsetLanguage", required = false) String charsetLanguage)
             throws Exception;
 
@@ -74,6 +79,7 @@ public interface ImportRestfulApi {
      */
     @ApiOperation(value = "批量操作", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "POST")
     @RequestMapping(value = "execute", method = RequestMethod.POST)
+    @OperationLog(operation = Operations.IMPORT)
     BaseResult<String> doExecute(ExecuteOperationParam executeOperationParam);
 
     /**
@@ -156,10 +162,13 @@ public interface ImportRestfulApi {
      *
      * @throws IOException 数据流错误
      */
-    /*@ApiOperation(value = "导出", notes = "搜索结果全部导出" +
-            "注意：文件名对于中文已进行UTF-8编码，前端需进行URL.decode解码操作", produces = "text/csv", consumes =
-            MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "GET")
-    @RequestMapping(value = "export", method = GET)
-    void export(HttpServletResponse response, @PathVariable(value = "businessType") String businessType) throws IOException;*/
+    //@ApiOperation(value = "导出", notes = "搜索结果全部导出" +
+    //        "注意：文件名对于中文已进行UTF-8编码，前端需进行URL.decode解码操作", produces = "text/csv", consumes =
+    //        MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "GET")
+    //@RequestMapping(value = "export", method = GET)
+    //void export(HttpServletResponse response,
+    //            @PathVariable(value = "dataType") String businessType,
+    //            @RequestBody ExportCondition exportCondition
+    //) throws IOException;
 
 }

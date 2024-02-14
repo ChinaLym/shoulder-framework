@@ -5,8 +5,8 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
-import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
-import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
+import org.shoulder.core.dictionary.model.DictionaryItemEnum;
+import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
 
 import java.util.Collection;
 import java.util.Set;

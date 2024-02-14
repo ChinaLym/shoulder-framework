@@ -1,8 +1,8 @@
 package org.shoulder.web.template.dictionary.convert;
 
+import org.shoulder.core.dictionary.model.DictionaryType;
 import org.shoulder.web.template.crud.AbstractVODataConverter;
 import org.shoulder.web.template.dictionary.dto.DictionaryTypeDTO;
-import org.shoulder.web.template.dictionary.model.DictionaryType;
 
 import javax.annotation.Nonnull;
 

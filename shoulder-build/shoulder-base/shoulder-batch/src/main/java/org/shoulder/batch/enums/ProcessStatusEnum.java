@@ -1,6 +1,8 @@
 package org.shoulder.batch.enums;
 
+import lombok.Getter;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.dictionary.model.IntDictionaryItemEnum;
 
 import java.util.Arrays;
 
@@ -9,7 +11,7 @@ import java.util.Arrays;
  *
  * @author lym
  */
-public enum ProcessStatusEnum {
+@Getter public enum ProcessStatusEnum implements IntDictionaryItemEnum<ProcessStatusEnum> {
 
 
     // ==================== 准备批处理 =================
@@ -54,21 +56,13 @@ public enum ProcessStatusEnum {
 
 
 
-    Integer code;
+    final Integer code;
 
-    String tip;
+    final String tip;
 
     ProcessStatusEnum(int code, String tip) {
         this.code = code;
         this.tip = tip;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getTip() {
-        return tip;
     }
 
     public static ProcessStatusEnum of(Integer code) {
@@ -76,6 +70,17 @@ public enum ProcessStatusEnum {
                 .filter(e -> e.code.equals(code))
                 // 非法状态码，除恶意调用，否则不会发生
                 .findFirst().orElseThrow(() -> new BaseRuntimeException("invalid resultCode"));
+    }
+
+    @Override public Integer getItemId() {
+        return code;
+    }
+    @Override public String getDisplayName() {
+        return tip;
+    }
+
+    @Override public String getDescription() {
+        return tip;
     }
 
 }

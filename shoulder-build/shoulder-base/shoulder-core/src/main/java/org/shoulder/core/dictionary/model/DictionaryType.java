@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary.model;
+package org.shoulder.core.dictionary.model;
 
 /**
  * 字典类型

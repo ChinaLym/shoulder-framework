@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary.model;
+package org.shoulder.core.dictionary.model;
 
 /**
  * 简化字典型枚举-不使用 id，使用 name() 作为标识

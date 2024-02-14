@@ -1,6 +1,6 @@
 package org.shoulder.autoconfigure.web;
 
-import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
+import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
 
 /**
  * 供使用者注册枚举类

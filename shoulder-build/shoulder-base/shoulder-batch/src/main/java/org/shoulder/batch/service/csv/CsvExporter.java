@@ -1,10 +1,11 @@
-package org.shoulder.batch.service.impl;
+package org.shoulder.batch.service.csv;
 
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 import org.shoulder.batch.config.model.ExportFileConfig;
 import org.shoulder.batch.constant.BatchConstants;
+import org.shoulder.batch.service.impl.DataExporter;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 

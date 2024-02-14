@@ -11,6 +11,7 @@ import java.util.Set;
  * 使用密文存储IV（初始向量）需要为IV增加密文大小16个字节。
  *
  * @author lym
+ * TODO DICT
  */
 public enum SymmetricAlgorithmEnum {
 

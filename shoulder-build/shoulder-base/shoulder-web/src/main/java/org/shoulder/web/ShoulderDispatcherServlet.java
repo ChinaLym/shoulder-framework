@@ -1,5 +1,7 @@
 package org.shoulder.web;
 
+import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
 import org.shoulder.core.i18.BaseLocaleContext;
 import org.shoulder.core.i18.LocaleInfo;
 import org.shoulder.core.i18.LocaleUtils;
@@ -8,8 +10,6 @@ import org.springframework.context.i18n.TimeZoneAwareLocaleContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import jakarta.annotation.Nonnull;
-import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.TimeZone;

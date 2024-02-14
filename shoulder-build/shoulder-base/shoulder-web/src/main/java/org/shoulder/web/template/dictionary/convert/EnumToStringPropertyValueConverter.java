@@ -1,6 +1,9 @@
 package org.shoulder.web.template.dictionary.convert;
 
-import org.shoulder.web.template.dictionary.model.DictionaryItem;
+import org.shoulder.core.dictionary.convert.DictionaryItemEnumSerialGenericConverter;
+import org.shoulder.core.dictionary.convert.DictionaryItemToStrGenericConverter;
+import org.shoulder.core.dictionary.convert.ToDictionaryEnumGenericConverter;
+import org.shoulder.core.dictionary.model.DictionaryItem;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.data.convert.PropertyValueConverter;

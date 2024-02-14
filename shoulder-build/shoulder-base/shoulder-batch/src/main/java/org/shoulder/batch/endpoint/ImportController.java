@@ -1,5 +1,9 @@
 package org.shoulder.batch.endpoint;
 
+import com.univocity.parsers.common.record.Record;
+import com.univocity.parsers.csv.CsvFormat;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -33,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
@@ -73,46 +78,39 @@ public class ImportController implements ImportRestfulApi {
      * 实现举例：上传数据导入文件
      */
     @Override
-    public BaseResult<String> doValidate(MultipartFile file, String charsetLanguage) throws Exception {
-        // 示例：保存文件，解析文件，然后校验，返回校验任务标识
-//        batchService.doProcess()
-//        try {
-//            InputStreamReader in = new InputStreamReader(file.getInputStream(), AppInfo.charset());
-//            CsvReader reader = new CsvReader(in);
-//            List<String[]> allLines = reader.readAll();
-//            int ignore = getIgnoreRows(allLines);
-//            //校验文件
-//            String checkCSVResult = checkCSV(allLines, ignore);
-//            if(StringUtils.isNotEmpty(checkCSVResult))
-//            {
-//                return new ActionResult(ConstParamErrorCode.SYSTEM_CODE_FAIL +
-//                                        "", checkCSVResult);
-//            }
-//            //初始化进度
-//            BatchRecordCollection.put(uuid,new ImportOperateRecordDTO().setStartTime(System.currentTimeMillis()));
-//            final String saveUuid = uuid;
-//            threadExecutor.execute(()-> {
-//                try{
-//                    saveImportResult(allLines,ignore,saveUuid);
-//                }catch (Exception e){
-//                    LOGGER.errorWithErrorCode(ConstParamErrorCode.BS_SYSTEM_ERROR.code(), "startVerifyImport error", e);
-//                }
-//            });
-//        }catch (Exception e) {
-//            result = new ActionResult( + "", "文件内容错误");
-//        }finally {
-//            ImportOperateRecordDTO importOperateRecordDTO = BatchRecordCollection.get(uuid);
-//            if(importOperateRecordDTO != null)
-//            {
-//                importOperateRecordDTO.end();
-//            }
-//        }
-//        result.setData(uuid);
+    public BaseResult<String> doValidate(String businessType, MultipartFile file,
+                                         String charsetLanguage) throws Exception {
+        // todo 文件 > 10M Error; > 1M persistent and validate; > 100kb;
+
+
+        CsvParserSettings settings = new CsvParserSettings();
+        // 【支持定制】todo 通过 spring 配置设置
+        settings.setFormat(new CsvFormat());
+        settings.setNumberOfRecordsToRead(10000);
+        // 忽略的注释行
+        settings.setNumberOfRowsToSkip(2);
+        CsvParser csvParser = new CsvParser(settings);
+
+        List<Record> recordList = null;
+        try (InputStreamReader in = new InputStreamReader(file.getInputStream(), AppInfo.charset())) {
+            recordList = csvParser.parseAllRecords(in);
+        }
+
+        //校验文件：校验文件头未改变
+        //boolean headerValid = checkImportCsvHeader(businessType, recordList);
+        //AssertUtils.isTrue(headerValid, BatchErrorCodeEnum.CSV_HEADER_ERROR);
+        //
+        //BatchData batchData = new BatchData();
+        //batchData.setDataType(businessType);
+        //batchData.setOperation(Operation.IMPORT_VALIDATE);
+        //batchData.setBatchListMap(Collections.singletonMap(Operation.IMPORT_VALIDATE, recordList));)
+        //
+        //// 保存文件，解析文件，然后校验，返回校验任务标识
+        //batchService.doProcess();
 
         String taskId = "doValidate";
         return BaseResult.success(taskId);
     }
-
 
     /**
      * 实现举例：批量导入
@@ -124,7 +122,7 @@ public class ImportController implements ImportRestfulApi {
         BatchProgressRecord process = batchService.queryBatchProgress(taskId);
         BatchData batchData = new BatchData();
         return BaseResult.success(
-                batchService.doProcess(batchData)
+            batchService.doProcess(batchData)
         );
     }
 
@@ -137,17 +135,16 @@ public class ImportController implements ImportRestfulApi {
         return BaseResult.success(BatchModelConvert.CONVERT.toDTO(process));
     }
 
-
     /**
      * 查询数据导入记录
      */
     @Override
     public BaseResult<ListResult<BatchRecordResult>> queryImportRecord() {
         return BaseResult.success(
-                Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
-                        .map(BatchModelConvert.CONVERT::toDTO)
-                        .collect(Collectors.toList()
-                        )
+            Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
+                .map(BatchModelConvert.CONVERT::toDTO)
+                .collect(Collectors.toList()
+                )
         );
     }
 
@@ -156,7 +153,7 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     public BaseResult<BatchRecordResult> queryImportRecordDetail(
-            @RequestBody QueryImportResultDetailParam condition) {
+        @RequestBody QueryImportResultDetailParam condition) {
 
         BatchRecord record = recordService.findRecordById("xxx");
         List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getTaskId());
@@ -164,7 +161,6 @@ public class ImportController implements ImportRestfulApi {
         BatchRecordResult result = BatchModelConvert.CONVERT.toDTO(record);
         return BaseResult.success(result);
     }
-
 
     /**
      * 数据导入模板下载
@@ -207,18 +203,18 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public void exportRecordDetail(HttpServletResponse response, QueryImportResultDetailParam condition) throws IOException {
         exportService.exportBatchDetail(response.getOutputStream(), BatchConstants.CSV, condition.getBusinessType(),
-                condition.getTaskId(), CollectionUtils.emptyIfNull(condition.getStatusList())
-                        .stream().map(ProcessStatusEnum::of).collect(Collectors.toList()));
+            condition.getTaskId(), CollectionUtils.emptyIfNull(condition.getStatusList())
+                .stream().map(ProcessStatusEnum::of).collect(Collectors.toList()));
     }
 
     /**
      * 导出数据
      */
     //@Override
-    public void export(HttpServletResponse response, String businessType) throws IOException {
+    //public void export(HttpServletResponse response, String businessType) throws IOException {
+        //
         //exportService.export();
-    }
-
+    //}
 
     /**
      * 给导出的文件命名
@@ -232,6 +228,5 @@ public class ImportController implements ImportRestfulApi {
                                                   URLEncoder.encode(fileName, AppInfo.charset()));
         response.setHeader("Content-Type", "application/octet-stream");
     }
-
 
 }

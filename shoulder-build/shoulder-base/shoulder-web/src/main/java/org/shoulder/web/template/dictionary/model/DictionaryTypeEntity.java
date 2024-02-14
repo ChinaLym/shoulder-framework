@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.shoulder.core.dictionary.model.DictionaryItem;
+import org.shoulder.core.dictionary.model.DictionaryType;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 
@@ -26,7 +28,7 @@ import java.util.Optional;
 @TableName("tb_dictionary_type")
 public class DictionaryTypeEntity
         extends BizEntity<Long>
-    implements DictionaryType {
+        implements DictionaryType {
 
     /**
      * 字典项类型（int / String ...）

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.shoulder.core.dictionary.model.DictionaryItem;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;

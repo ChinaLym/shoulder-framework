@@ -1,7 +1,7 @@
-package org.shoulder.web.template.dictionary.convert;
+package org.shoulder.core.dictionary.convert;
 
-import org.shoulder.web.template.dictionary.model.DictionaryItem;
-import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
+import org.shoulder.core.dictionary.model.DictionaryItem;
+import org.shoulder.core.dictionary.model.DictionaryItemEnum;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
 import org.springframework.lang.NonNull;

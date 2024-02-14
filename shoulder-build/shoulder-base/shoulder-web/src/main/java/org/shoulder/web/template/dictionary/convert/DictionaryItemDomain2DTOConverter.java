@@ -3,10 +3,10 @@ package org.shoulder.web.template.dictionary.convert;
 
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.converter.BaseDataConverter;
+import org.shoulder.core.dictionary.model.DictionaryItem;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
-import org.shoulder.web.template.dictionary.model.DictionaryItem;
 
 import java.util.Optional;
 

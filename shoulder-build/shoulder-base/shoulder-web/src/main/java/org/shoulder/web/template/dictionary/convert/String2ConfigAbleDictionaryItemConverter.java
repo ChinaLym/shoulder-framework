@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary.spi;
+package org.shoulder.web.template.dictionary.convert;
 
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 

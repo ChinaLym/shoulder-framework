@@ -77,7 +77,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[4] = opLog.getUserRealName();
         fields[5] = opLog.getUserOrgId();
         fields[6] = opLog.getUserOrgName();
-        fields[7] = opLog.getTerminalType().getCode();
+        fields[7] = opLog.getTerminalType().getItemId();
         fields[8] = opLog.getRemoteAddress();
         fields[9] = opLog.getTerminalId();
         fields[10] = opLog.getTerminalInfo();
@@ -91,7 +91,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[17] = CollectionUtils.isEmpty(opLog.getDetailI18nItems()) ? null : JsonUtils.toJson(opLog.getDetailI18nItems());
         fields[18] = CollectionUtils.isEmpty(opLog.getParams()) ? null : JsonUtils.toJson(opLog.getParams());
 
-        fields[19] = opLog.getResult().getCode();
+        fields[19] = opLog.getResult().getItemId();
         fields[20] = opLog.getErrorCode();
         fields[21] = Timestamp.from(opLog.getOperationTime());
         fields[22] = Timestamp.from(opLog.getEndTime());

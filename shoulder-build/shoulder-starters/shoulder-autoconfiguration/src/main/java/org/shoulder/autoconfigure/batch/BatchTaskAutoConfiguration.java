@@ -22,7 +22,7 @@ import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
-import org.shoulder.batch.service.impl.CsvExporter;
+import org.shoulder.batch.service.csv.CsvExporter;
 import org.shoulder.batch.service.impl.DataExporter;
 import org.shoulder.batch.service.impl.DefaultBatchExportService;
 import org.shoulder.core.i18.Translator;

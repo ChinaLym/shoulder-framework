@@ -1,8 +1,8 @@
 package org.shoulder.web.template.dictionary.convert;
 
 import cn.hutool.core.util.ReflectUtil;
+import org.shoulder.core.dictionary.model.DictionaryItem;
 import org.shoulder.core.util.ContextUtils;
-import org.shoulder.web.template.dictionary.model.DictionaryItem;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.convert.PropertyValueConverterRegistrar;
 import org.springframework.data.mapping.PersistentProperty;

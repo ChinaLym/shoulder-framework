@@ -1,6 +1,8 @@
 package org.shoulder.log.operation.enums;
 
+import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.core.dictionary.model.IntDictionaryItemEnum;
 import org.shoulder.log.operation.model.OperateResult;
 
 import java.util.Collection;
@@ -14,7 +16,7 @@ import java.util.Collection;
  *
  * @author lym
  */
-public enum OperationResult {
+@Getter public enum OperationResult implements IntDictionaryItemEnum<OperationResult> {
 
     /**
      * 成功 | 正确
@@ -31,10 +33,10 @@ public enum OperationResult {
      */
     PARTIAL(2);
 
-    public final int code;
+    public final Integer itemId;
 
-    OperationResult(int code) {
-        this.code = code;
+    OperationResult(int itemId) {
+        this.itemId = itemId;
     }
 
     public static OperationResult of(boolean success) {
@@ -73,10 +75,5 @@ public enum OperationResult {
         }
         return of(hasSuccess, hasFail);
     }
-
-    public int getCode() {
-        return code;
-    }
-
 
 }

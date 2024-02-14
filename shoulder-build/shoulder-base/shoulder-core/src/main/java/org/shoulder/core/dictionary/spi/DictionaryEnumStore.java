@@ -1,7 +1,7 @@
-package org.shoulder.web.template.dictionary.spi;
+package org.shoulder.core.dictionary.spi;
 
 import jakarta.annotation.Nonnull;
-import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
+import org.shoulder.core.dictionary.model.DictionaryItemEnum;
 
 import java.util.Collection;
 import java.util.List;

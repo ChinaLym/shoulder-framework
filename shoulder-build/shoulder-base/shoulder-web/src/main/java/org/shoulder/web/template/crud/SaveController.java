@@ -8,7 +8,6 @@ import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.model.Operable;
 import org.shoulder.core.util.AssertUtils;
-import org.shoulder.data.enums.DataErrorCodeEnum;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 import org.shoulder.log.operation.annotation.OperationLog;

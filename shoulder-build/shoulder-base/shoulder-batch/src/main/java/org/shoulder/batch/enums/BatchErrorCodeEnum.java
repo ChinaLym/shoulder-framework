@@ -23,6 +23,11 @@ public enum BatchErrorCodeEnum implements ErrorCode {
     IMPORT_BUSY(0, "Import handler is busy, please retry later!"),
 
     /**
+     * 导入的 csv Header 不正确
+     */
+    CSV_HEADER_ERROR(0, "Csv header format error, check header please. Keep format like importTemplate please!"),
+
+    /**
      * 不支持该导出方式
      */
     EXPORT_TYPE_NOT_SUPPORT(0, "Not support export with such type: %s"),

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
+import org.shoulder.core.dictionary.model.DictionaryItem;
 import org.shoulder.data.annotation.BizIdSource;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.template.entity.BizTreeEntity;
@@ -30,7 +31,7 @@ import java.io.Serial;
 @TableName("tb_dictionary_item")
 public class DictionaryItemEntity
         extends BizTreeEntity<Long>
-    implements DictionaryItem<String> {
+        implements DictionaryItem<String> {
 
     @Serial
     private static final long serialVersionUID = -6634573176500294047L;

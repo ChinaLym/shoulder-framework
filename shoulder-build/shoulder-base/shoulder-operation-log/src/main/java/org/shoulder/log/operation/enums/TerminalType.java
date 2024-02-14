@@ -1,11 +1,14 @@
 package org.shoulder.log.operation.enums;
 
+import lombok.Getter;
+import org.shoulder.core.dictionary.model.IntDictionaryItemEnum;
+
 /**
  * 操作者使用的终端类型
  *
  * @author lym
  */
-public enum TerminalType {
+@Getter public enum TerminalType implements IntDictionaryItemEnum<TerminalType> {
 
     /**
      * 系统内部触发
@@ -44,13 +47,10 @@ public enum TerminalType {
 
     ;
 
-    private final int code;
+    private final Integer itemId;
 
-    TerminalType(int code) {
-        this.code = code;
+    TerminalType(int itemId) {
+        this.itemId = itemId;
     }
 
-    public int getCode() {
-        return code;
-    }
 }

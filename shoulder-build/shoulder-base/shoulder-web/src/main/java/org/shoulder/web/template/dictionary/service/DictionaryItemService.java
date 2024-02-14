@@ -1,11 +1,11 @@
 package org.shoulder.web.template.dictionary.service;
 
+import org.shoulder.core.dictionary.model.DictionaryItem;
 import org.shoulder.data.mybatis.template.service.BaseCacheableServiceImpl;
+import org.shoulder.web.template.dictionary.convert.String2ConfigAbleDictionaryItemConverter;
 import org.shoulder.web.template.dictionary.mapper.DictionaryItemMapper;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
-import org.shoulder.web.template.dictionary.model.DictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEntity;
-import org.shoulder.web.template.dictionary.spi.String2ConfigAbleDictionaryItemConverter;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;

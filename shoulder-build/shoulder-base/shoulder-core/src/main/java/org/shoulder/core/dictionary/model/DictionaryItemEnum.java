@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary.model;
+package org.shoulder.core.dictionary.model;
 
 import org.springframework.core.GenericTypeResolver;
 
@@ -17,12 +17,12 @@ import java.util.function.BiFunction;
  * 是为了其他工具类用 Class<?> 调静态方法可以编译通过，做到代码复用，故采用了松泛型编译校验写法，
  * 是复用和简化的权衡。
  *
- * 不建议用户枚举直接继承该类，采用 {@link org.shoulder.web.template.dictionary.model.NameAsIdDictionaryItemEnum}{@link org.shoulder.web.template.dictionary.model.IntDictionaryItemEnum}
+ * 不建议用户枚举直接继承该类，采用 {@link NameAsIdDictionaryItemEnum}{@link IntDictionaryItemEnum}
  *
  * @author lym
  */
 public interface DictionaryItemEnum<E extends Enum<? extends DictionaryItemEnum<?, IDENTIFY>>, IDENTIFY> extends
-                                                                                                         org.shoulder.web.template.dictionary.model.DictionaryItem<IDENTIFY> {
+                                                                                                         DictionaryItem<IDENTIFY> {
 
     /**
      * 将 id 转为 Enum

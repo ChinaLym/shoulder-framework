@@ -1,4 +1,4 @@
-package org.shoulder.web.template.dictionary.model;
+package org.shoulder.core.dictionary.model;
 
 /**
  * 简化字典型枚举-int 类型 id

@@ -1,18 +1,17 @@
 package org.shoulder.web.template.dictionary.validation.validator;
 
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.shoulder.core.dictionary.model.DictionaryItem;
+import org.shoulder.core.dictionary.model.DictionaryItemEnum;
+import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
-import org.shoulder.web.template.dictionary.model.DictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEntity;
-import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
 import org.shoulder.web.template.dictionary.service.DictionaryItemService;
-import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
 
 /**
@@ -87,7 +86,7 @@ public class DictionaryEnumItemValidatorForCharSequence implements ConstraintVal
                 AssertUtils.notNull(entity, CommonErrorCodeEnum.ILLEGAL_PARAM);
             } else if (enumClass == ConfigAbleDictionaryItem.class) {
                 // 判断配置表中是否存在该字典项
-//            dictionaryItem = configBizService.queryByDictionaryTypeAndCode( example);
+                //            dictionaryItem = configBizService.queryByDictionaryTypeAndCode( example);
             }
         }
         AssertUtils.notNull(dictionaryItem, CommonErrorCodeEnum.ILLEGAL_PARAM);

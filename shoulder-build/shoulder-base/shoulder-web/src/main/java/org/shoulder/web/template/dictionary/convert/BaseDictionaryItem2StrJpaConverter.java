@@ -1,10 +1,11 @@
 package org.shoulder.web.template.dictionary.convert;
 
 import jakarta.persistence.AttributeConverter;
-import org.shoulder.web.template.dictionary.model.DictionaryItem;
+import org.shoulder.core.dictionary.convert.DictionaryItemConversions;
+import org.shoulder.core.dictionary.model.DictionaryItem;
 
 /**
- * 字典项转换
+ * JPA ex-字典类 field 转换
  * 注意该类不要直接时候
  *
  * @author lym

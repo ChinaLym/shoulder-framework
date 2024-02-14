@@ -1,20 +1,21 @@
 package org.shoulder.web.template.dictionary.convert;
 
+import org.shoulder.core.dictionary.convert.ToDictionaryEnumGenericConverter;
+import org.shoulder.core.dictionary.model.DictionaryItem;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
-import org.shoulder.web.template.dictionary.model.DictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEntity;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.GenericConverter;
+import org.springframework.lang.NonNull;
 
 import java.util.Set;
 
 /**
- * DictionaryItemDTO -> Enum、DictionaryItemEntity、ConfigAbleDictionaryItem
+ * Dictionary DTO -> DictionaryItem
  *
  * @author lym
  */
-@SuppressWarnings("unchecked, rawtypes")
 public class DictionaryDTO2DictionaryItemGenericConverter implements GenericConverter {
 
     public static final DictionaryDTO2DictionaryItemGenericConverter INSTANCE = new DictionaryDTO2DictionaryItemGenericConverter();
@@ -25,7 +26,7 @@ public class DictionaryDTO2DictionaryItemGenericConverter implements GenericConv
     }
 
     @Override
-    public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
+    public Object convert(Object source, @NonNull TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
         if (source == null) {
             return null;
         }

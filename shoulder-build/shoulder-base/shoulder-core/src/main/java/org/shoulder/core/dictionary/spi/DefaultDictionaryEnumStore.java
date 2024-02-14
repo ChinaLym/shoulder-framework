@@ -1,11 +1,10 @@
-package org.shoulder.web.template.dictionary.spi;
+package org.shoulder.core.dictionary.spi;
 
 import jakarta.annotation.Nonnull;
+import org.shoulder.core.dictionary.model.DictionaryItemEnum;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
-import org.shoulder.validate.exception.ParamErrorCodeEnum;
-import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,8 +34,9 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
     }
 
     @Override
-    public <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>> dictionaryEnum, @Nonnull String dictionaryType) {
-        AssertUtils.notNull(dictionaryEnum, ParamErrorCodeEnum.PARAM_ILLEGAL);
+    public <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> void register(
+        @Nonnull Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>> dictionaryEnum, @Nonnull String dictionaryType) {
+        AssertUtils.notNull(dictionaryEnum, CommonErrorCodeEnum.ILLEGAL_PARAM);
         Class<? extends Enum<? extends DictionaryItemEnum>> oldValue =
             repo.put(processDictionaryTypeName(dictionaryType), dictionaryEnum);
         AssertUtils.isTrue(oldValue == null || oldValue == dictionaryEnum, CommonErrorCodeEnum.CODING, "not support repeat name of enum.");
@@ -44,8 +44,10 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
 
     @Nonnull
     @Override
-    public <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> List<DictionaryItemEnum<ENUM, ID>> list(@Nonnull String enumClassType) {
-        Class<? extends DictionaryItemEnum<ENUM, ID>> dictionaryEnumClass = (Class<? extends DictionaryItemEnum<ENUM, ID>>) repo.get(processDictionaryTypeName(enumClassType));
+    public <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> List<DictionaryItemEnum<ENUM, ID>> list(
+        @Nonnull String enumClassType) {
+        Class<? extends DictionaryItemEnum<ENUM, ID>> dictionaryEnumClass = (Class<? extends DictionaryItemEnum<ENUM, ID>>) repo.get(
+            processDictionaryTypeName(enumClassType));
         if (dictionaryEnumClass == null) {
             throw createDictionaryTypeNotFoundException(enumClassType);
         }
@@ -85,7 +87,7 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
     }
 
     protected BaseRuntimeException createDictionaryTypeNotFoundException(String dictionaryType) {
-        return new BaseRuntimeException(ParamErrorCodeEnum.PARAM_ILLEGAL, "The dictionary type('" + dictionaryType + "') not exist!");
+        return new BaseRuntimeException(CommonErrorCodeEnum.ILLEGAL_PARAM, "The dictionary type('" + dictionaryType + "') not exist!");
     }
 
     protected String processDictionaryTypeName(String dictionaryTypeName) {

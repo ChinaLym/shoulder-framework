@@ -1,9 +1,12 @@
 package org.shoulder.web.template.dictionary.convert;
 
 import org.shoulder.core.converter.ShoulderConversionService;
-import org.shoulder.web.template.dictionary.model.DictionaryItemEnum;
-import org.shoulder.web.template.dictionary.model.DictionaryType;
-import org.shoulder.web.template.dictionary.spi.DictionaryEnumStore;
+import org.shoulder.core.dictionary.convert.DictionaryItemEnumSerialGenericConverter;
+import org.shoulder.core.dictionary.convert.DictionaryItemToStrGenericConverter;
+import org.shoulder.core.dictionary.convert.ToDictionaryEnumGenericConverter;
+import org.shoulder.core.dictionary.model.DictionaryItemEnum;
+import org.shoulder.core.dictionary.model.DictionaryType;
+import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;

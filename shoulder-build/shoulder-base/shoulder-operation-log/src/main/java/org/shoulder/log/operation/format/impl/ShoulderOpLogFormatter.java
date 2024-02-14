@@ -86,8 +86,8 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
 
         // 拼接特殊类型
         builder
-                .add("terminalType", String.valueOf(opLog.getTerminalType().getCode()))
-                .add("result", String.valueOf(opLog.getResult().getCode()))
+                .add("terminalType", String.valueOf(opLog.getTerminalType().getItemId()))
+                .add("result", String.valueOf(opLog.getResult().getItemId()))
                 .add("operationTime", DATE_TIME_FORMATTER.format(ZonedDateTime.ofInstant(opLog.getOperationTime(), AppInfo.timeZone().toZoneId())));
         if (opLog.getEndTime() != null) {
             builder.add("endTime", DATE_TIME_FORMATTER.format(ZonedDateTime.ofInstant(opLog.getEndTime(), AppInfo.timeZone().toZoneId())));
