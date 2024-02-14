@@ -15,6 +15,8 @@ import java.lang.annotation.*;
  * 该注解中的值后续可以修改
  * 无法使用注解时，可以使用 {@link OperationLogFactory#create}
  * <p>
+ *     建议加在实现类上，而非接口上，确保方法 public，并被代理调用（走AOP），避免失效出现 No OpLogContext in concurrentThread {@link OpLogContextHolder#getContextOrException}
+ * <hr>
  * 【操作日志框架原理： Spring AOP（spring boot 1.4之后 Spring AOP 的默认实现为 cglib）】
  * <p>
  * 日志框架局限性（即 spring AOP - cglib 的局限性）：
@@ -128,6 +130,10 @@ public @interface OperationLog {
          */
         String DOWNLOAD = "download";
 
+        /**
+         * 导入
+         */
+        String UPLOAD_AND_VALIDATE = "upload_validate";
         /**
          * 导入
          */

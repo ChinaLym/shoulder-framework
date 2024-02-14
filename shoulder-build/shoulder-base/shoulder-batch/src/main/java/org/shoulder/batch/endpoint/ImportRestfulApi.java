@@ -4,14 +4,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
-import org.shoulder.log.operation.annotation.OperationLog;
-import org.shoulder.log.operation.annotation.OperationLog.Operations;
 import org.shoulder.validate.annotation.FileType;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -56,10 +55,10 @@ public interface ImportRestfulApi {
     @ApiOperation(value = "上传数据导入文件", consumes = "text/html", httpMethod = "POST")
     @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",
             defaultValue = "gbk", required = true, paramType = "body")
-    @RequestMapping(value = "template/upload", method = {RequestMethod.POST})
-    BaseResult<String> doValidate(@PathVariable(value = "dataType") String businessType,
-                                  @FileType(allowSuffix = "csv", maxSize = "10M", allowEmpty = false) MultipartFile file,
-                                  @RequestParam(name = "charsetLanguage", required = false) String charsetLanguage)
+    @RequestMapping(value = "validate", method = {RequestMethod.POST})
+    BaseResult<String> validate(@PathVariable(value = "dataType") String businessType,
+                                @NotNull @FileType(allowSuffix = "csv", maxSize = "10M", allowEmpty = false) MultipartFile file,
+                                @RequestParam(name = "charsetLanguage", required = false) String charsetLanguage)
             throws Exception;
 
     /**
@@ -79,8 +78,7 @@ public interface ImportRestfulApi {
      */
     @ApiOperation(value = "批量操作", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "POST")
     @RequestMapping(value = "execute", method = RequestMethod.POST)
-    @OperationLog(operation = Operations.IMPORT)
-    BaseResult<String> doExecute(ExecuteOperationParam executeOperationParam);
+    BaseResult<String> execute(ExecuteOperationParam executeOperationParam);
 
     /**
      * 查询数据操作进度，todo 【开发】考虑 查进度和结果是否为同一个接口？进度不需要每行信息
@@ -92,7 +90,7 @@ public interface ImportRestfulApi {
     @ApiImplicitParam(value = "批次ID", name = "taskId", example = "312312312312", defaultValue = "3123412312321",
             required = true, paramType = "path")
     @RequestMapping(value = "progress/{taskId}", method = GET)
-    BaseResult<BatchProcessResult> queryOperationProcess(@PathVariable("taskId") String taskId);
+    BaseResult<BatchProcessResult> queryProcess(@PathVariable("taskId") String taskId);
 
 
     // ===================================  导入记录查询  =====================================
@@ -108,7 +106,7 @@ public interface ImportRestfulApi {
     @ApiOperation(value = "查询处理记录", notes = "暂不支持分页", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE,
             produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "GET")
     @RequestMapping(value = "record/list", method = RequestMethod.GET)
-    BaseResult<ListResult<BatchRecordResult>> queryImportRecord();
+    BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord();
 
 
     /**
@@ -121,8 +119,8 @@ public interface ImportRestfulApi {
      */
     @ApiOperation(value = "查询某次处理记录详情", notes = "支持分页", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE
             , produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "POST")
-    @RequestMapping(value = "record/detail", method = RequestMethod.POST)
-    BaseResult<BatchRecordResult> queryImportRecordDetail(QueryImportResultDetailParam condition);
+    @RequestMapping(value = "record/detail/list", method = RequestMethod.POST)
+    BaseResult<BatchRecordResult> pageQueryImportRecordDetail(QueryImportResultDetailParam condition);
 
     // ===================================  导出相关  =====================================
 

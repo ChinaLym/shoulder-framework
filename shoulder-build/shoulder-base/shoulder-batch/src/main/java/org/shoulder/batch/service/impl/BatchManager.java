@@ -12,6 +12,7 @@ import org.shoulder.core.context.AppContext;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.log.operation.context.OpLogContextHolder;
@@ -99,6 +100,14 @@ public class BatchManager implements Runnable {
 
 
     public BatchManager(BatchData batchData) {
+        AssertUtils.notNull(batchData, CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.notNull(batchData.getDataType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.notNull(batchData.getOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.notEmpty(batchData.getBatchListMap(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        int total = batchData.getBatchListMap().values().stream()
+            .map(List::size).reduce(Integer::sum).orElse(0);
+        AssertUtils.isTrue(total > 0, CommonErrorCodeEnum.ILLEGAL_PARAM, "batchList.total must > 0");
+
         String currentUserId = AppContext.getUserId();
         this.userId = currentUserId == null ? 0 : Long.parseLong(currentUserId);
         this.languageId = AppContext.getLocaleOrDefault().toString();
@@ -109,8 +118,6 @@ public class BatchManager implements Runnable {
         // 初始化进度对象（保证在构造器中完成）
         this.progress = new BatchProgressRecord();
         this.progress.setTaskId(UUID.randomUUID().toString());
-        int total = batchData.getBatchListMap().values().stream()
-            .map(List::size).reduce(Integer::sum).orElse(0);
         this.progress.setTotal(total);
         this.progress.addSuccess(batchData.getSuccessList().size());
         this.progress.addFail(batchData.getFailList().size());
@@ -128,6 +135,7 @@ public class BatchManager implements Runnable {
         // 任务分片，初始化任务队列、结果队列
         List<BatchDataSlice> taskSlice = splitTask(batchData);
         int jobSize = taskSlice.size();
+        AssertUtils.isTrue(jobSize > 0, CommonErrorCodeEnum.ILLEGAL_PARAM, "after splitTask, jobSize can't be 0");
         jobQueue = new LinkedBlockingQueue<>(jobSize);
         jobQueue.addAll(taskSlice);
 

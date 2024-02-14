@@ -159,13 +159,13 @@ public class BatchTaskAutoConfiguration {
     @ConditionalOnProperty(name = "shoulder.batch.storage.type", havingValue = "memory", matchIfMissing = true)
     public static class SpringCacheBatchRecordAutoConfiguration {
         @Bean
-        @ConditionalOnMissingBean
+        @ConditionalOnMissingBean(BatchRecordPersistentService.class)
         public CacheBatchRecordPersistentService batchRecordPersistentService(CacheManager cacheManager) {
             return new CacheBatchRecordPersistentService(cacheManager.getCache(DefaultBatchProgressCache.CACHE_NAME));
         }
 
         @Bean
-        @ConditionalOnMissingBean
+        @ConditionalOnMissingBean(BatchRecordDetailPersistentService.class)
         public CacheBatchRecordDetailPersistentService batchRecordDetailPersistentService(CacheManager cacheManager) {
             return new CacheBatchRecordDetailPersistentService(cacheManager.getCache(DefaultBatchProgressCache.CACHE_NAME));
         }
@@ -177,13 +177,13 @@ public class BatchTaskAutoConfiguration {
     public static class DefaultMemoryBatchRecordAutoConfiguration {
 
         @Bean
-        @ConditionalOnMissingBean
+        @ConditionalOnMissingBean(BatchRecordPersistentService.class)
         public CacheBatchRecordPersistentService memoryBatchRecordPersistentService() {
             return new CacheBatchRecordPersistentService(new ConcurrentMapCache(DefaultBatchProgressCache.CACHE_NAME));
         }
 
         @Bean
-        @ConditionalOnMissingBean
+        @ConditionalOnMissingBean(BatchRecordDetailPersistentService.class)
         public CacheBatchRecordDetailPersistentService batchRecordDetailPersistentService() {
             return new CacheBatchRecordDetailPersistentService(new ConcurrentMapCache(DefaultBatchProgressCache.CACHE_NAME));
         }
@@ -199,7 +199,7 @@ public class BatchTaskAutoConfiguration {
          */
         @Bean
         @ConditionalOnBean(DataSource.class)
-        @ConditionalOnMissingBean
+        @ConditionalOnMissingBean(BatchRecordPersistentService.class)
         public BatchRecordPersistentService batchRecordPersistentService(DataSource dataSource) {
             return new JdbcBatchRecordPersistentService(dataSource);
         }
@@ -209,7 +209,7 @@ public class BatchTaskAutoConfiguration {
          */
         @Bean
         @ConditionalOnBean(DataSource.class)
-        @ConditionalOnMissingBean
+        @ConditionalOnMissingBean(BatchRecordDetailPersistentService.class)
         public BatchRecordDetailPersistentService batchRecordDetailPersistentService(DataSource dataSource) {
             return new JdbcBatchRecordDetailPersistentService(dataSource);
         }

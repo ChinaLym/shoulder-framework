@@ -143,7 +143,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 文件上传出错
      */
-    MULTIPART_INVALID(334, "Request is not a validate multipart request, please check request or file size.", Level.WARN, HttpStatus.BAD_REQUEST),
+    MULTIPART_INVALID(334, "Request is not a validate multipart request, please check file.type or file.size.", Level.WARN, HttpStatus.BAD_REQUEST),
 
     /**
      * 状态检查未通过

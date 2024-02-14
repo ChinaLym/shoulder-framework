@@ -12,11 +12,14 @@ import org.shoulder.batch.dto.param.ExecuteOperationParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
+import org.shoulder.batch.enums.BatchErrorCodeEnum;
+import org.shoulder.batch.enums.BatchOperationEnum;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchProgressRecord;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
+import org.shoulder.batch.model.DataItem;
 import org.shoulder.batch.model.convert.BatchModelConvert;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
@@ -25,6 +28,10 @@ import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
+import org.shoulder.core.util.AssertUtils;
+import org.shoulder.log.operation.annotation.OperationLog;
+import org.shoulder.log.operation.annotation.OperationLog.Operations;
+import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -40,7 +47,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,10 +87,12 @@ public class ImportController implements ImportRestfulApi {
      * 实现举例：上传数据导入文件
      */
     @Override
-    public BaseResult<String> doValidate(String businessType, MultipartFile file,
-                                         String charsetLanguage) throws Exception {
+    @OperationLog(operation = Operations.UPLOAD_AND_VALIDATE)
+    public BaseResult<String> validate(String businessType, MultipartFile file,
+                                       String charsetLanguage) throws Exception {
         // todo 文件 > 10M Error; > 1M persistent and validate; > 100kb;
-
+        // 暂时只支持 csv
+        AssertUtils.isTrue(file.getOriginalFilename().endsWith(".csv"), BatchErrorCodeEnum.CSV_HEADER_ERROR);
 
         CsvParserSettings settings = new CsvParserSettings();
         // 【支持定制】todo 通过 spring 配置设置
@@ -96,27 +107,37 @@ public class ImportController implements ImportRestfulApi {
             recordList = csvParser.parseAllRecords(in);
         }
 
+        OpLogContextHolder.getLog().setExtField("size", recordList.size());
         //校验文件：校验文件头未改变
-        //boolean headerValid = checkImportCsvHeader(businessType, recordList);
-        //AssertUtils.isTrue(headerValid, BatchErrorCodeEnum.CSV_HEADER_ERROR);
-        //
-        //BatchData batchData = new BatchData();
-        //batchData.setDataType(businessType);
-        //batchData.setOperation(Operation.IMPORT_VALIDATE);
-        //batchData.setBatchListMap(Collections.singletonMap(Operation.IMPORT_VALIDATE, recordList));)
-        //
-        //// 保存文件，解析文件，然后校验，返回校验任务标识
-        //batchService.doProcess();
+        checkImportCsvHeader(businessType, recordList);
 
-        String taskId = "doValidate";
+        BatchData batchData = new BatchData();
+        batchData.setDataType(businessType);
+        batchData.setOperation(BatchOperationEnum.IMPORT_VALIDATE.getI18n());
+        Map<String, List<? extends DataItem>> batchListMap = convertToDataItemMap(businessType, recordList);
+        batchData.setBatchListMap(batchListMap);
+
+        // 保存文件，解析文件，然后校验，返回校验任务标识
+        String taskId = batchService.doProcess(batchData);
+
         return BaseResult.success(taskId);
+    }
+
+    private Map<String, List<? extends DataItem>> convertToDataItemMap(String businessType, List<Record> recordList) {
+        return new HashMap<>();
+    }
+
+    private void checkImportCsvHeader(String businessType, List<Record> recordList) {
+        // todo 获取文件头，然后对比文件头未被篡改
+        //AssertUtils.isTrue(headerValid, BatchErrorCodeEnum.CSV_HEADER_ERROR);
     }
 
     /**
      * 实现举例：批量导入
      */
     @Override
-    public BaseResult<String> doExecute(@RequestBody ExecuteOperationParam executeOperationParam) {
+    @OperationLog(operation = Operations.IMPORT)
+    public BaseResult<String> execute(@RequestBody ExecuteOperationParam executeOperationParam) {
         // 示例：从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
         String taskId = executeOperationParam.getTaskId();
         BatchProgressRecord process = batchService.queryBatchProgress(taskId);
@@ -130,7 +151,7 @@ public class ImportController implements ImportRestfulApi {
      * 查询数据导入进度
      */
     @Override
-    public BaseResult<BatchProcessResult> queryOperationProcess(String taskId) {
+    public BaseResult<BatchProcessResult> queryProcess(String taskId) {
         BatchProgressRecord process = batchService.queryBatchProgress(taskId);
         return BaseResult.success(BatchModelConvert.CONVERT.toDTO(process));
     }
@@ -139,7 +160,7 @@ public class ImportController implements ImportRestfulApi {
      * 查询数据导入记录
      */
     @Override
-    public BaseResult<ListResult<BatchRecordResult>> queryImportRecord() {
+    public BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord() {
         return BaseResult.success(
             Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
                 .map(BatchModelConvert.CONVERT::toDTO)
@@ -152,7 +173,7 @@ public class ImportController implements ImportRestfulApi {
      * 查询某次处理记录详情
      */
     @Override
-    public BaseResult<BatchRecordResult> queryImportRecordDetail(
+    public BaseResult<BatchRecordResult> pageQueryImportRecordDetail(
         @RequestBody QueryImportResultDetailParam condition) {
 
         BatchRecord record = recordService.findRecordById("xxx");
@@ -212,8 +233,8 @@ public class ImportController implements ImportRestfulApi {
      */
     //@Override
     //public void export(HttpServletResponse response, String businessType) throws IOException {
-        //
-        //exportService.export();
+    //
+    //exportService.export();
     //}
 
     /**

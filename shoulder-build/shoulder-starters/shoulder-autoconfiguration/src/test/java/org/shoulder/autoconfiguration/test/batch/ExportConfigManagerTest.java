@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SpringBootTest(
-    properties = "shoulder.batch.export-file-config-locations=classpath:exportFileConfig.json",
+    properties = "shoulder.batch.export-file-config-locations=classpath:batch/exportFileConfig.json",
     classes = { I18nAutoConfiguration.class, BatchTaskAutoConfiguration.class })
 public class ExportConfigManagerTest {
 
