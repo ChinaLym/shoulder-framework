@@ -2,7 +2,7 @@ package org.shoulder.autoconfiguration.test.batch;
 
 import org.junit.jupiter.api.Test;
 import org.shoulder.autoconfiguration.test.BaseWebTest;
-import org.shoulder.autoconfigure.batch.BatchTaskAutoConfiguration;
+import org.shoulder.autoconfigure.batch.ShoulderBatchAutoConfiguration;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest(
     properties = "shoulder.batch.export-file-config-locations=classpath:batch/exportFileConfig.json",
-    classes = { I18nAutoConfiguration.class, BatchTaskAutoConfiguration.class })
+    classes = { I18nAutoConfiguration.class, ShoulderBatchAutoConfiguration.class })
 public class ImportControllerTest extends BaseWebTest {
 
     @Autowired

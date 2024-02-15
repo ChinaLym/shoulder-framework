@@ -49,7 +49,6 @@ public class BatchProcessResult {
     @ApiModelProperty(required = true, value = "预估剩余时间", dataType = "Integer", example = "1000", position = 6)
     private Long timeLeft;
 
-    @Deprecated
     @ApiModelProperty(required = true, value = "是否完成标识", dataType = "boolean", example = "true", position = 7)
     private Boolean finish;
 

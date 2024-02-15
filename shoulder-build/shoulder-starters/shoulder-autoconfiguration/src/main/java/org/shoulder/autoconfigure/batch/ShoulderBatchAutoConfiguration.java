@@ -3,8 +3,6 @@ package org.shoulder.autoconfigure.batch;
 import com.univocity.parsers.csv.CsvWriter;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
-import org.shoulder.batch.progress.BatchProgressCache;
-import org.shoulder.batch.progress.DefaultBatchProgressCache;
 import org.shoulder.batch.config.DefaultExportConfigManager;
 import org.shoulder.batch.config.ExportConfigInitializer;
 import org.shoulder.batch.config.ExportConfigManager;
@@ -12,6 +10,11 @@ import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.endpoint.ImportController;
 import org.shoulder.batch.endpoint.ImportRestfulApi;
 import org.shoulder.batch.model.BatchData;
+import org.shoulder.batch.model.convert.BatchProgressRecordDomain2DTOConverter;
+import org.shoulder.batch.model.convert.BatchRecordDetailDomain2DTOConverter;
+import org.shoulder.batch.model.convert.BatchRecordDomain2DTOConverter;
+import org.shoulder.batch.progress.BatchProgressCache;
+import org.shoulder.batch.progress.DefaultBatchProgressCache;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
 import org.shoulder.batch.repository.CacheBatchRecordDetailPersistentService;
@@ -22,9 +25,9 @@ import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
-import org.shoulder.batch.spi.csv.CsvExporter;
-import org.shoulder.batch.spi.DataExporter;
 import org.shoulder.batch.service.impl.DefaultBatchExportService;
+import org.shoulder.batch.spi.DataExporter;
+import org.shoulder.batch.spi.csv.CsvExporter;
 import org.shoulder.batch.spi.csv.DataItemConvertFactory;
 import org.shoulder.batch.spi.csv.DefaultDataItemConvertFactory;
 import org.shoulder.core.converter.ShoulderConversionService;
@@ -58,10 +61,29 @@ import javax.sql.DataSource;
 @ConditionalOnClass(BatchData.class)
 @AutoConfiguration(after = I18nAutoConfiguration.class)
 @EnableConfigurationProperties(BatchProperties.class)
-public class BatchTaskAutoConfiguration {
+public class ShoulderBatchAutoConfiguration {
 
-    public BatchTaskAutoConfiguration() {
+    public ShoulderBatchAutoConfiguration() {
         // just for debug
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public BatchProgressRecordDomain2DTOConverter batchProgressRecordDomain2DTOConverter() {
+        return BatchProgressRecordDomain2DTOConverter.INSTANCE;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public BatchRecordDetailDomain2DTOConverter batchRecordDetailDomain2DTOConverter(@Nullable Translator translator) {
+        BatchRecordDetailDomain2DTOConverter.INSTANCE = new BatchRecordDetailDomain2DTOConverter(translator);
+        return BatchRecordDetailDomain2DTOConverter.INSTANCE;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public BatchRecordDomain2DTOConverter batchRecordDomain2DTOConverter() {
+        return BatchRecordDomain2DTOConverter.INSTANCE;
     }
 
     /**

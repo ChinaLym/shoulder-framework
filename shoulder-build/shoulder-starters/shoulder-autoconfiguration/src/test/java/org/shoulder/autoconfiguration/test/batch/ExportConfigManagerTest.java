@@ -2,7 +2,7 @@ package org.shoulder.autoconfiguration.test.batch;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.shoulder.autoconfigure.batch.BatchTaskAutoConfiguration;
+import org.shoulder.autoconfigure.batch.ShoulderBatchAutoConfiguration;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.batch.config.ExportConfigManager;
 import org.shoulder.batch.config.model.ExportColumnConfig;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 @SpringBootTest(
     properties = "shoulder.batch.export-file-config-locations=classpath:batch/exportFileConfig.json",
-    classes = { I18nAutoConfiguration.class, BatchTaskAutoConfiguration.class })
+    classes = { I18nAutoConfiguration.class, ShoulderBatchAutoConfiguration.class })
 public class ExportConfigManagerTest {
 
     private static String templateId = "testBatchDataType";

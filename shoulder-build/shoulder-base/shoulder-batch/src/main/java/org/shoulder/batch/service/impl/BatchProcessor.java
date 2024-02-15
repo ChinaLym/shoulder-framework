@@ -141,7 +141,7 @@ public class BatchProcessor implements Runnable {
             .map(DataItem::getIndex)
             .map(index ->
                 Optional.ofNullable(indexedBatchRecordDetailMap.get(index))
-                    .orElse(new BatchRecordDetail(index, ProcessStatusEnum.IMPORT_FAILED.getCode(),
+                    .orElse(new BatchRecordDetail(index, ProcessStatusEnum.FAILED.getCode(),
                         CommonErrorCodeEnum.UNKNOWN.getCode()))
             ).forEach(resultDetailList::add);
 

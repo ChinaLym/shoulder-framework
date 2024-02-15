@@ -17,8 +17,6 @@ import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
-import org.shoulder.batch.model.convert.BatchProgressRecordDomain2DTOConverter;
-import org.shoulder.batch.model.convert.BatchRecordDomain2DTOConverter;
 import org.shoulder.batch.progress.BatchProgressRecord;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
@@ -166,7 +164,7 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public BaseResult<BatchProcessResult> queryProcess(String taskId) {
         BatchProgressRecord process = batchService.queryBatchProgress(taskId);
-        return BaseResult.success(BatchProgressRecordDomain2DTOConverter.INSTANCE.convert(process));
+        return BaseResult.success(conversionService.convert(process, BatchProcessResult.class));
     }
 
     /**
@@ -176,7 +174,7 @@ public class ImportController implements ImportRestfulApi {
     public BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord() {
         return BaseResult.success(
             Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
-                .map(BatchRecordDomain2DTOConverter.INSTANCE::convert)
+                .map(r -> conversionService.convert(r, BatchRecordResult.class))
                 .collect(Collectors.toList()
                 )
         );
@@ -192,7 +190,7 @@ public class ImportController implements ImportRestfulApi {
         BatchRecord record = recordService.findRecordById("xxx");
         List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getTaskId());
         record.setDetailList(details);
-        BatchRecordResult result = BatchRecordDomain2DTOConverter.INSTANCE.convert(record);
+        BatchRecordResult result = conversionService.convert(record, BatchRecordResult.class);
         return BaseResult.success(result);
     }
 

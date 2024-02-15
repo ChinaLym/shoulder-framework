@@ -22,6 +22,7 @@ public class BatchProgressRecordDomain2DTOConverter extends BaseDataConverter<Ba
         targetModel.setFailNum(sourceModel.getFailNum());
         targetModel.setSuccessNum(sourceModel.getSuccessNum());
         targetModel.setProcessed(sourceModel.getProcessed());
+        targetModel.setFinish(sourceModel.hasFinish());
         targetModel.setTimeConsumed(sourceModel.calculateProcessedTime());
         targetModel.setTimeLeft(sourceModel.calculateTimeLeft());
         targetModel.setStatus(sourceModel.getStatus());

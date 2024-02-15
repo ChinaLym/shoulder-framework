@@ -6,7 +6,6 @@ import org.shoulder.batch.dto.result.BatchRecordDetailResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.core.converter.BaseDataConverter;
-import org.shoulder.core.i18.Translator;
 
 /**
  * 批处理记录 core -> DTO
@@ -15,13 +14,7 @@ import org.shoulder.core.i18.Translator;
  */
 public class BatchRecordDomain2DTOConverter extends BaseDataConverter<BatchRecord, BatchRecordResult> {
 
-    public static BatchRecordDomain2DTOConverter INSTANCE = new BatchRecordDomain2DTOConverter(null);
-
-    private final Translator translator;
-
-    public BatchRecordDomain2DTOConverter(Translator translator) {
-        this.translator = translator;
-    }
+    public static BatchRecordDomain2DTOConverter INSTANCE = new BatchRecordDomain2DTOConverter();
 
     @Override
     public void doConvert(@Nonnull BatchRecord sourceModel, @Nonnull BatchRecordResult targetModel) {

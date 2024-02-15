@@ -209,7 +209,7 @@ public class BatchManager implements Runnable {
                         .setIndex(dataItem.getIndex())
                         .setRecordId(getTaskId())
                         .setOperation(operationType)
-                        .setStatus(ProcessStatusEnum.VALIDATE_SUCCESS.getCode())
+                        .setStatus(ProcessStatusEnum.SUCCESS.getCode())
                     .setSource(serializeSource(dataItem));
             }
         });
@@ -220,7 +220,7 @@ public class BatchManager implements Runnable {
                     .setIndex(dataItem.getIndex())
                     .setOperation(batchData.getOperation())
                     .setSource(serializeSource(dataItem))
-                    .setStatus(ProcessStatusEnum.SKIP_REPEAT.getCode());
+                    .setStatus(ProcessStatusEnum.SKIP_FOR_REPEAT.getCode());
         }
         for (DataItem dataItem : batchData.getFailList()) {
             // getFailReason 不可能为 null，否则就是使用者错误，未塞入错误原因
@@ -229,7 +229,7 @@ public class BatchManager implements Runnable {
                     .setIndex(dataItem.getIndex())
                     .setOperation(batchData.getOperation())
                     .setSource(serializeSource(dataItem))
-                    .setStatus(ProcessStatusEnum.VALIDATE_FAILED.getCode())
+                    .setStatus(ProcessStatusEnum.SKIP_FOR_INVALID.getCode())
                 .setFailReason(batchData.getFailReason().get(dataItem.getIndex()));
         }
         log.info("Directly: success:{}, fail:{}", batchData.getSuccessList().size(), batchData.getFailList().size());
@@ -340,7 +340,7 @@ public class BatchManager implements Runnable {
             // worker 未捕获的异常会交给 UncaughtExceptionHandler，这里设计时让worker保证一定返回结果
             BatchRecordDetail taskResultDetail = takeUnExceptInterrupted(resultQueue);
             if (taskResultDetail.isCalculateProgress()) {
-                boolean success = ProcessStatusEnum.IMPORT_SUCCESS.getCode() == taskResultDetail.getStatus();
+                boolean success = ProcessStatusEnum.SUCCESS.getCode() == taskResultDetail.getStatus();
                 if (success) {
                     progress.addSuccess(1);
                 } else {
