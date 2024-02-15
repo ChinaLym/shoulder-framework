@@ -3,8 +3,8 @@ package org.shoulder.autoconfigure.batch;
 import com.univocity.parsers.csv.CsvWriter;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
-import org.shoulder.batch.cache.BatchProgressCache;
-import org.shoulder.batch.cache.DefaultBatchProgressCache;
+import org.shoulder.batch.progress.BatchProgressCache;
+import org.shoulder.batch.progress.DefaultBatchProgressCache;
 import org.shoulder.batch.config.DefaultExportConfigManager;
 import org.shoulder.batch.config.ExportConfigInitializer;
 import org.shoulder.batch.config.ExportConfigManager;
@@ -27,6 +27,7 @@ import org.shoulder.batch.spi.DataExporter;
 import org.shoulder.batch.service.impl.DefaultBatchExportService;
 import org.shoulder.batch.spi.csv.DataItemConvertFactory;
 import org.shoulder.batch.spi.csv.DefaultDataItemConvertFactory;
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.i18.Translator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -100,9 +101,9 @@ public class BatchTaskAutoConfiguration {
     @ConditionalOnMissingBean(ImportRestfulApi.class)
     public ImportController importRestfulApi(
         BatchService batchService, ExportService exportService, RecordService recordService,
-        @Nullable DataItemConvertFactory dataItemConvertFactory
+        @Nullable DataItemConvertFactory dataItemConvertFactory, ShoulderConversionService conversionService
     ) {
-        return new ImportController(batchService, exportService, recordService, dataItemConvertFactory);
+        return new ImportController(batchService, exportService, recordService, dataItemConvertFactory, conversionService);
     }
 
     /**

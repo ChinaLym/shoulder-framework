@@ -15,17 +15,19 @@ import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchData;
-import org.shoulder.batch.model.BatchProgressRecord;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
-import org.shoulder.batch.model.DataItem;
-import org.shoulder.batch.model.convert.BatchModelConvert;
+import org.shoulder.batch.model.convert.BatchProgressRecordDomain2DTOConverter;
+import org.shoulder.batch.model.convert.BatchRecordDomain2DTOConverter;
+import org.shoulder.batch.progress.BatchProgressRecord;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
+import org.shoulder.batch.spi.DataItem;
 import org.shoulder.batch.spi.csv.DataItemConvertFactory;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
@@ -82,12 +84,15 @@ public class ImportController implements ImportRestfulApi {
      */
     private final DataItemConvertFactory dataItemConvertFactory;
 
+    private final ShoulderConversionService conversionService;
+
     public ImportController(BatchService batchService, ExportService exportService, RecordService recordService,
-                            DataItemConvertFactory dataItemConvertFactory) {
+                            DataItemConvertFactory dataItemConvertFactory, ShoulderConversionService shoulderConversionService) {
         this.batchService = batchService;
         this.exportService = exportService;
         this.recordService = recordService;
         this.dataItemConvertFactory = dataItemConvertFactory;
+        this.conversionService = shoulderConversionService;
     }
 
     /**
@@ -161,7 +166,7 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public BaseResult<BatchProcessResult> queryProcess(String taskId) {
         BatchProgressRecord process = batchService.queryBatchProgress(taskId);
-        return BaseResult.success(BatchModelConvert.CONVERT.toDTO(process));
+        return BaseResult.success(BatchProgressRecordDomain2DTOConverter.INSTANCE.convert(process));
     }
 
     /**
@@ -171,7 +176,7 @@ public class ImportController implements ImportRestfulApi {
     public BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord() {
         return BaseResult.success(
             Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
-                .map(BatchModelConvert.CONVERT::toDTO)
+                .map(BatchRecordDomain2DTOConverter.INSTANCE::convert)
                 .collect(Collectors.toList()
                 )
         );
@@ -187,7 +192,7 @@ public class ImportController implements ImportRestfulApi {
         BatchRecord record = recordService.findRecordById("xxx");
         List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getTaskId());
         record.setDetailList(details);
-        BatchRecordResult result = BatchModelConvert.CONVERT.toDTO(record);
+        BatchRecordResult result = BatchRecordDomain2DTOConverter.INSTANCE.convert(record);
         return BaseResult.success(result);
     }
 

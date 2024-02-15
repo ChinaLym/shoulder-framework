@@ -6,8 +6,10 @@ import org.apache.commons.collections4.MapUtils;
 import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.*;
+import org.shoulder.batch.progress.BatchProgressRecord;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
+import org.shoulder.batch.spi.DataItem;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
@@ -162,6 +164,7 @@ public class BatchManager implements Runnable {
         // 阻塞式处理结果
         handleResult(needToBeProcessed);
         progress.finish();
+        //result.setTotalNum();
         result.setSuccessNum(progress.getSuccessNum());
         result.setFailNum(progress.getFailNum());
         persistentImportRecord();

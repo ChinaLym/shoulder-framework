@@ -1,7 +1,8 @@
-package org.shoulder.batch.model;
+package org.shoulder.batch.progress;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.shoulder.batch.model.ProcessStatusEnum;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 

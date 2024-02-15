@@ -1,4 +1,4 @@
-package org.shoulder.batch.model;
+package org.shoulder.batch.progress;
 
 import java.util.function.BiConsumer;
 

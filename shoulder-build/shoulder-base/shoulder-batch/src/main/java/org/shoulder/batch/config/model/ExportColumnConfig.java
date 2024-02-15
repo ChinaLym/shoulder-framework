@@ -4,6 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * csv 导入/导出 文件格式定义
+ *
+ * @author lym
+ */
 @Getter
 @Setter
 @NoArgsConstructor

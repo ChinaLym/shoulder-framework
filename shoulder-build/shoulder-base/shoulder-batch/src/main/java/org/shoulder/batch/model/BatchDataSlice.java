@@ -2,6 +2,7 @@ package org.shoulder.batch.model;
 
 import lombok.Builder;
 import lombok.Data;
+import org.shoulder.batch.spi.DataItem;
 
 import java.util.List;
 

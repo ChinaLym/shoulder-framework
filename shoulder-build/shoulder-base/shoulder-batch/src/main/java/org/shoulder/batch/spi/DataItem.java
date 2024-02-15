@@ -1,4 +1,4 @@
-package org.shoulder.batch.model;
+package org.shoulder.batch.spi;
 
 /**
  * 批量记录某一项（多行中某一行）

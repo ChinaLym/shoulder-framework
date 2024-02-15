@@ -2,7 +2,7 @@ package org.shoulder.batch.service;
 
 
 import org.shoulder.batch.model.BatchData;
-import org.shoulder.batch.model.BatchProgressRecord;
+import org.shoulder.batch.progress.BatchProgressRecord;
 import org.shoulder.batch.spi.BatchTaskSliceHandler;
 import org.shoulder.core.context.AppContext;
 

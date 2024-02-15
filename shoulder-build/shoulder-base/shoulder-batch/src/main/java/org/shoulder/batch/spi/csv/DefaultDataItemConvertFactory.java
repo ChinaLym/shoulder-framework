@@ -6,7 +6,7 @@ package org.shoulder.batch.spi.csv;
 
 import com.univocity.parsers.common.record.IndexedRecordImpl;
 import com.univocity.parsers.common.record.Record;
-import org.shoulder.batch.model.DataItem;
+import org.shoulder.batch.spi.DataItem;
 
 import java.util.ArrayList;
 import java.util.List;

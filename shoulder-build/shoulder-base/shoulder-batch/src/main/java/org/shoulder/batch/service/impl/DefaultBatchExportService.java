@@ -1,7 +1,7 @@
 package org.shoulder.batch.service.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.batch.cache.BatchProgressCache;
+import org.shoulder.batch.progress.BatchProgressCache;
 import org.shoulder.batch.config.ExportConfigManager;
 import org.shoulder.batch.config.model.ExportColumnConfig;
 import org.shoulder.batch.config.model.ExportFileConfig;
@@ -10,10 +10,10 @@ import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.BatchI18nEnum;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchData;
-import org.shoulder.batch.model.BatchProgressRecord;
+import org.shoulder.batch.progress.BatchProgressRecord;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
-import org.shoulder.batch.model.ProgressAble;
+import org.shoulder.batch.progress.ProgressAble;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
 import org.shoulder.batch.service.BatchAndExportService;

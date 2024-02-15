@@ -3,7 +3,12 @@ package org.shoulder.batch.dto.result;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import jakarta.validation.Valid;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
@@ -39,10 +44,10 @@ public class BatchProcessResult {
     private Integer failNum;
 
     @ApiModelProperty(required = true, value = "已执行时间，毫秒", dataType = "Integer", example = "1234", position = 5)
-    private Integer timeConsumed;
+    private Long timeConsumed;
 
     @ApiModelProperty(required = true, value = "预估剩余时间", dataType = "Integer", example = "1000", position = 6)
-    private Integer timeLeft;
+    private Long timeLeft;
 
     @Deprecated
     @ApiModelProperty(required = true, value = "是否完成标识", dataType = "boolean", example = "true", position = 7)
@@ -55,10 +60,10 @@ public class BatchProcessResult {
     /**
      * 查进度时暂不返回
      */
-    @ApiModelProperty(required = false, value = "失败原因集合", dataType = "list", example = "[{\"reason\":\"reason\"," +
-        "\"row\":1,\"reasonParam\":[\"xxx\"]}]", position = 9)
+    @ApiModelProperty(required = false, value = "处理详情列表", dataType = "list", example = "[{\"reason\":\"reason\"," +
+                                                                                             "\"row\":1,\"reasonParam\":[\"xxx\"]}]",
+        position = 9)
     @Valid
     private List<BatchProcessDetail> progressList;
-
 
 }

@@ -15,7 +15,7 @@ package com.univocity.parsers.common.record;
 
 import com.univocity.parsers.common.*;
 import com.univocity.parsers.conversions.*;
-import org.shoulder.batch.model.DataItem;
+import org.shoulder.batch.spi.DataItem;
 
 import java.math.*;
 import java.util.*;

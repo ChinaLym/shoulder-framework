@@ -2,6 +2,7 @@ package org.shoulder.batch.model;
 
 import lombok.Data;
 import org.shoulder.batch.service.impl.BatchManager;
+import org.shoulder.batch.spi.DataItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
