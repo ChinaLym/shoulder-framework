@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.shoulder.core.dto.ToStringObj;
 
 import java.util.Date;
 import java.util.List;
@@ -16,10 +17,9 @@ import java.util.List;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @ToString
 @ApiModel(description = "批量处理结果——查询批量处理结果接口-返回DTO")
-public class BatchRecordResult {
+public class BatchRecordResult extends ToStringObj {
 
     @ApiModelProperty(required = true, value = "总数", dataType = "Integer", example = "1", position = 1)
     private Integer totalNum;

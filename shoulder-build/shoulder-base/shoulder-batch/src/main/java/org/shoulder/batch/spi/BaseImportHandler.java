@@ -52,7 +52,7 @@ public abstract class BaseImportHandler implements BatchTaskSliceHandler {
 
         // 查询本批次所有数据
         List<BatchRecordDetail> batchRecordDetails = batchRecordDetailPersistentService.findAllByRecordIdAndStatusAndIndex(
-            task.getBatchId(), null, start, end);
+            batchImportDataItem.getSourceBatchId(), null, start, end);
 
         // 确认执行参数
         boolean updateRepeat = batchImportDataItem.getExtAttribute(BatchImportDataItem.EXT_KEY_UPDATE_REPEAT);

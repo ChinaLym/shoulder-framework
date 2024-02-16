@@ -2,8 +2,17 @@ package org.shoulder.batch.dto.param;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.shoulder.batch.dto.result.BatchRecordResult;
+import org.shoulder.core.dto.request.PageQuery;
 
 import java.util.List;
 
@@ -18,18 +27,22 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @ApiModel(description = "导入记录详情查询条件")
-public class QueryImportResultDetailParam {
+public class QueryImportResultDetailParam extends PageQuery<BatchRecordResult> {
 
     /**
      * 批量导入id
      */
     @ApiModelProperty(value = "导入批次id", example = "dqw4244vgr20", dataType = "string", required = true)
+    @NotEmpty
+    @Size(max = 128)
     private String batchId;
 
     /**
      * 业务类型
      */
     @ApiModelProperty(value = "业务标识", example = "user_add_record", dataType = "string", required = true)
+    @NotEmpty
+    @Size(max = 128)
     private String businessType;
 
     /**

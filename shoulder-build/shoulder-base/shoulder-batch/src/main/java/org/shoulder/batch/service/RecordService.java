@@ -5,9 +5,7 @@ import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.core.dto.response.PageResult;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 批量处理记录
@@ -45,32 +43,17 @@ public interface RecordService {
      */
     BatchRecord findLastRecord(String dataType, String currentUserName);
 
-    /**
-     * 分页获取批处理详情列表，用于批处理完毕查看结果以及将结果导出
-     *
-     * @param batchId 批处理任务id
-     * @return List<ImportRecordDetail>
-     */
-    List<BatchRecordDetail> findAllRecordDetail(String batchId);
 
     /**
-     * 分页获取需要的结果数据
+     * 查询所有的批量处理记录
      *
-     * @param batchId 批处理任务id
-     * @param results 记录类型
-     * @return List<ImportRecordDetail>
+     * @param recordId   记录标识
+     * @param resultList 结果状态
+     * @param indexStart 希望查询的第一个分片
+     * @param indexEnd 希望查询的最后一个分片
+     * @return 所有的批量处理记录
      */
-    default List<BatchRecordDetail> findRecordDetailsByResults(String batchId, ProcessStatusEnum... results) {
-        return findRecordDetailsByResults(batchId, Arrays.stream(results).collect(Collectors.toList()));
-    }
-
-    /**
-     * 分页获取需要的结果数据
-     *
-     * @param batchId 批处理任务id
-     * @param results 需过滤的处理结果类型、若为空 / null 则查询全部
-     * @return 批处理详情
-     */
-    List<BatchRecordDetail> findRecordDetailsByResults(String batchId, List<ProcessStatusEnum> results);
+    List<BatchRecordDetail> findAllDetailByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList,
+                                                                     Integer indexStart, Integer indexEnd);
 
 }

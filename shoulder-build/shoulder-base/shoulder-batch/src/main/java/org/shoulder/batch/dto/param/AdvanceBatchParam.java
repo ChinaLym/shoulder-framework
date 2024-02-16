@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode
 @ToString
 @ApiModel(description = "触发操作参数")
-public class PromoteBatchParam {
+public class AdvanceBatchParam {
 
     @ApiModelProperty(name = "批量操作id", example = "142014201420", dataType = "string", required = true)
     @NotEmpty

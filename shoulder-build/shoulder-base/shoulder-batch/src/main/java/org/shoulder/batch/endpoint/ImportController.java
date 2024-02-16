@@ -1,5 +1,6 @@
 package org.shoulder.batch.endpoint;
 
+import cn.hutool.core.io.IoUtil;
 import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
@@ -8,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.batch.constant.BatchConstants;
-import org.shoulder.batch.dto.param.PromoteBatchParam;
+import org.shoulder.batch.dto.param.AdvanceBatchParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
@@ -27,6 +28,7 @@ import org.shoulder.batch.spi.csv.DataItemConvertFactory;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.converter.ShoulderConversionService;
+import org.shoulder.core.dto.request.PageQuery;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
@@ -34,11 +36,8 @@ import org.shoulder.core.util.AssertUtils;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLog.Operations;
 import org.shoulder.log.operation.context.OpLogContextHolder;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +52,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -152,29 +152,29 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     @OperationLog(operation = Operations.IMPORT)
-    public BaseResult<String> execute(PromoteBatchParam promoteBatchParam) {
+    public BaseResult<String> advance(AdvanceBatchParam advanceBatchParam) {
         // 从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
-        String batchId = promoteBatchParam.getBatchId();
+        String batchId = advanceBatchParam.getBatchId();
         BatchProgressRecord process = batchService.queryBatchProgress(batchId);
         AssertUtils.isTrue(process.hasFinish(), BatchErrorCodeEnum.TASK_STATUS_ERROR);
-        // 从数据库查寻
-        BatchRecord record = recordService.findRecordById(promoteBatchParam.getBatchId());
+        // 从数据库查寻 todo lock 避免重复导入
+        BatchRecord record = recordService.findRecordById(advanceBatchParam.getBatchId());
         AssertUtils.notNull(record, CommonErrorCodeEnum.DATA_NOT_EXISTS);
         AssertUtils.equals(String.valueOf(record.getCreator()), AppContext.getUserId(), CommonErrorCodeEnum.PERMISSION_DENY);
-        AssertUtils.equals(record.getDataType(), promoteBatchParam.getDataType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-        AssertUtils.equals(record.getOperation(), promoteBatchParam.getCurrentOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.equals(record.getDataType(), advanceBatchParam.getDataType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.equals(record.getOperation(), advanceBatchParam.getCurrentOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         // todo 读配置，校验参数与配置一致
-        AssertUtils.equals(Operations.IMPORT, promoteBatchParam.getNextOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.equals(Operations.IMPORT, advanceBatchParam.getNextOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         final int total = record.getTotalNum();
 
         BatchData batchData = new BatchData();
-        batchData.setOperation(promoteBatchParam.getNextOperation());
-        batchData.setDataType(promoteBatchParam.getDataType());
+        batchData.setOperation(advanceBatchParam.getNextOperation());
+        batchData.setDataType(advanceBatchParam.getDataType());
         batchData.setBatchListMap(new HashMap<>());
         List<BatchImportDataItem> importDataItemList = new ArrayList<>();
         importDataItemList.add(new BatchImportDataItem(
-            total, 200, batchId, Map.of(BatchImportDataItem.EXT_KEY_UPDATE_REPEAT, promoteBatchParam.getUpdateRepeat())));
-        batchData.getBatchListMap().put(promoteBatchParam.getNextOperation(), importDataItemList);
+            total, 200, batchId, Map.of(BatchImportDataItem.EXT_KEY_UPDATE_REPEAT, advanceBatchParam.getUpdateRepeat())));
+        batchData.getBatchListMap().put(advanceBatchParam.getNextOperation(), importDataItemList);
 
         String nextStageId = batchService.doProcess(batchData);
         return BaseResult.success(nextStageId);
@@ -193,9 +193,10 @@ public class ImportController implements ImportRestfulApi {
      * 查询数据导入记录
      */
     @Override
-    public BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord() {
+    public BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord(String dataType) {
         return BaseResult.success(
-            Stream.of(recordService.findLastRecord("dataType", AppContext.getUserId()))
+            // todo admin 可以不带 userId
+            Stream.of(recordService.findLastRecord(dataType, AppContext.getUserId()))
                 .map(r -> conversionService.convert(r, BatchRecordResult.class))
                 .collect(Collectors.toList()
                 )
@@ -207,10 +208,11 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     public BaseResult<BatchRecordResult> pageQueryImportRecordDetail(
-        @RequestBody QueryImportResultDetailParam condition) {
-
-        BatchRecord record = recordService.findRecordById("xxx");
-        List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getBatchId());
+        QueryImportResultDetailParam condition) {
+        BatchRecord record = recordService.findRecordById(condition.getBatchId());
+        AssertUtils.notNull(record, CommonErrorCodeEnum.DATA_NOT_EXISTS);
+        List<BatchRecordDetail> details = recordService.findAllDetailByRecordIdAndStatusAndIndex(record.getId(),
+            null, condition.getPageNo(), condition.getPageSize());
         record.setDetailList(details);
         BatchRecordResult result = conversionService.convert(record, BatchRecordResult.class);
         return BaseResult.success(result);
@@ -223,32 +225,37 @@ public class ImportController implements ImportRestfulApi {
      * @return
      */
     @Override
-    public ResponseEntity<Resource> exportImportTemplate(HttpServletResponse response, String businessType) throws IOException {
+    public void exportImportTemplate(HttpServletResponse response, String businessType) throws IOException {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         exportService.export(byteArrayOutputStream, BatchConstants.CSV, Collections.emptyList(), businessType);
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + businessType + "-import-template.csv\"");
-        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
         if (byteArrayOutputStream.size() == 0) {
-            return ResponseEntity.notFound().build();
+            response.setStatus(404);
+            AssertUtils.notEquals(byteArrayOutputStream.size(), 0, CommonErrorCodeEnum.FILE_READ_FAIL);
+            //return ResponseEntity.notFound().build();
         }
 
         byte[] templateBytes = byteArrayOutputStream.toByteArray();
+        // 先设置 header 再写 responseStream，否则header会失效
+        String fileName = URLEncoder.encode(businessType + "-import-template.csv", AppInfo.charset());
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        response.setCharacterEncoding(AppInfo.charset().name());
+        response.setContentLength(templateBytes.length);
         // 创建输入流以读取文件
-        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(templateBytes));
-
+        IoUtil.copy(new ByteArrayInputStream(templateBytes), response.getOutputStream());
         // 设置响应头信息
-        HttpHeaders headers = new HttpHeaders();
-        //URLEncoder.encode(fileName, AppInfo.charset())
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + businessType + "-import-template.csv\"");
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        response.setCharacterEncoding("utf-8");
+        //InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(templateBytes));
+        //HttpHeaders headers = new HttpHeaders();
+        //headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + businessType + "-import-template.csv\"");
+        //headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
 
         // 构建响应实体
-        return ResponseEntity.ok()
-            .headers(headers)
-            .contentLength(templateBytes.length)
-            .body(resource);
+        //return ResponseEntity.ok()
+        //    .headers(headers)
+        //    .contentLength(templateBytes.length)
+        //    .body(resource);
     }
 
     /**
@@ -256,19 +263,29 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     public void exportRecordDetail(HttpServletResponse response, QueryImportResultDetailParam condition) throws IOException {
-        exportService.exportBatchDetail(response.getOutputStream(), BatchConstants.CSV, condition.getBusinessType(),
-            condition.getBatchId(), CollectionUtils.emptyIfNull(condition.getStatusList())
-                .stream().map(ProcessStatusEnum::of).collect(Collectors.toList()));
+        BatchRecord recordInDb = recordService.findRecordById(condition.getBatchId());
+        AssertUtils.notNull(recordInDb, CommonErrorCodeEnum.DATA_NOT_EXISTS);
+        AssertUtils.equals(recordInDb.getDataType(), condition.getBusinessType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        int total = recordInDb.getTotalNum();
+        // 根据 是否 admin，决定 totalNumber 是否可以导入，否则最多xx条，如果太多可以考虑导出压缩文件
+
+        exportService.exportBatchDetail(response.getOutputStream(), BatchConstants.CSV,
+            recordInDb.getDataType(),
+            recordInDb.getId(),
+            CollectionUtils.emptyIfNull(condition.getStatusList())
+                .stream().map(ProcessStatusEnum::of).collect(Collectors.toList())
+        );
     }
 
     /**
      * 导出数据
      */
-    //@Override
-    //public void export(HttpServletResponse response, String businessType) throws IOException {
-    //
-    //exportService.export();
-    //}
+    @Override
+    public void export(HttpServletResponse response, String businessType,
+                       @RequestBody PageQuery<Map> exportCondition) throws IOException {
+        List<Supplier<List<Map<String, String>>>> exportData = new ArrayList<>();
+        exportService.export(response.getOutputStream(), businessType, exportData, "exportTemplateId");
+    }
 
     /**
      * 给导出的文件命名

@@ -2,11 +2,13 @@ package org.shoulder.batch.repository;
 
 import jakarta.annotation.Nonnull;
 import org.shoulder.batch.model.BatchRecord;
+import org.shoulder.core.util.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -18,27 +20,23 @@ import javax.sql.DataSource;
  */
 public class JdbcBatchRecordPersistentServiceImpl implements BatchRecordPersistentService {
 
-
     private static String ALL_COLUMNS = "id, data_type, operation, total_num ,success_num ,fail_num, creator, " +
-        "create_time";
-
+                                        "create_time";
 
     private static String INSERT = "INSERT INTO batch_record (" + ALL_COLUMNS + ") " +
-        "VALUES (?,?,?,?,?,?,?,?)";
-
+                                   "VALUES (?,?,?,?,?,?,?,?)";
 
     private static String QUERY_BY_ID = "SELECT " + ALL_COLUMNS + " FROM batch_record where id=?";
 
-    private static String QUERY_BY_USER =
-        "SELECT " + ALL_COLUMNS + " FROM batch_record where data_type=? and creator=?";
+    private static String QUERY_BY_DATA_TYPE =
+        "SELECT " + ALL_COLUMNS + " FROM batch_record WHERE data_type=?";
 
     private static String QUERY_FIND_ALL = "SELECT " + ALL_COLUMNS +
-        " FROM batch_record_detail WHERE recordId=?, AND status in (?)";
-
+                                           " FROM batch_record_detail WHERE recordId=?, AND status in (?)";
 
     private final JdbcTemplate jdbc;
 
-    private RowMapper<BatchRecord> mapper = new BatchRecordRowMapper();
+    private final RowMapper<BatchRecord> recordRowMapper = new BatchRecordRowMapper();
 
     public JdbcBatchRecordPersistentServiceImpl(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
@@ -47,7 +45,6 @@ public class JdbcBatchRecordPersistentServiceImpl implements BatchRecordPersiste
     public JdbcBatchRecordPersistentServiceImpl(DataSource dataSource) {
         this.jdbc = new JdbcTemplate(dataSource);
     }
-
 
     /**
      * 单条插入
@@ -72,7 +69,6 @@ public class JdbcBatchRecordPersistentServiceImpl implements BatchRecordPersiste
         return fields;
     }
 
-
     /**
      * 根据 批处理任务id 获取批处理记录
      *
@@ -81,7 +77,7 @@ public class JdbcBatchRecordPersistentServiceImpl implements BatchRecordPersiste
      */
     @Override
     public BatchRecord findById(@Nonnull String recordId) {
-        return jdbc.queryForObject(QUERY_BY_ID, mapper, recordId);
+        return jdbc.queryForObject(QUERY_BY_ID, recordRowMapper, recordId);
     }
 
     /**
@@ -96,8 +92,17 @@ public class JdbcBatchRecordPersistentServiceImpl implements BatchRecordPersiste
     @Nonnull @Override
     public List<BatchRecord> findByPage(@Nonnull String dataType, Integer pageNum, Integer pageSize,
                                         String currentUserCode) {
-        return jdbc.queryForList(QUERY_BY_USER + " limit ?,?", BatchRecord.class, dataType, currentUserCode, pageNum - 1,
-            pageSize);
+        List<Object> argList = new ArrayList<>(4);
+        argList.add(dataType);
+        String sql = QUERY_BY_DATA_TYPE;
+        if (StringUtils.isNotBlank(currentUserCode)) {
+            sql += " AND creator=?";
+            argList.add(currentUserCode);
+        }
+        argList.add(pageNum - 1);
+        argList.add(pageSize);
+
+        return jdbc.query(sql + " limit ?,?", recordRowMapper, argList.toArray());
     }
 
     /**
@@ -107,9 +112,15 @@ public class JdbcBatchRecordPersistentServiceImpl implements BatchRecordPersiste
      */
     @Override
     public BatchRecord findLast(@Nonnull String dataType, String currentUserCode) {
-        return jdbc.queryForObject(QUERY_BY_USER + " limit 1", mapper, dataType, currentUserCode);
+        List<Object> argList = new ArrayList<>(2);
+        argList.add(dataType);
+        String sql = QUERY_BY_DATA_TYPE;
+        if (StringUtils.isNotBlank(currentUserCode)) {
+            sql += " AND creator=?";
+            argList.add(currentUserCode);
+        }
+        return jdbc.queryForObject(sql + " limit 1", recordRowMapper, dataType, currentUserCode);
     }
-
 
     /**
      * Row mapper for BatchRecord.

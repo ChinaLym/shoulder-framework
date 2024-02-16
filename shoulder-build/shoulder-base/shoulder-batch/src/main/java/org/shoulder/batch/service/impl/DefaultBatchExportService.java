@@ -235,9 +235,9 @@ public class DefaultBatchExportService implements BatchAndExportService {
     public void exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
                                   String batchId, List<ProcessStatusEnum> resultTypes) throws IOException {
         exportRecordLocal.set(Boolean.TRUE);
-        //认为单次批量操作一般有上限，如1000，这里直接单次全捞出来了
+        // 认为单次批量操作一般有上限，如1000，这里直接单次全捞出来了
         export(outputStream, exportType, List.of(() -> {
-            List<BatchRecordDetail> recordDetailList = findRecordDetailsByResults(batchId, resultTypes);
+            List<BatchRecordDetail> recordDetailList = findAllDetailByRecordIdAndStatusAndIndex(batchId, resultTypes, null, null);
             return recordDetailList.stream()
                 .map(batchRecordDetail -> {
                     @SuppressWarnings("unchecked")
@@ -281,6 +281,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         if (!canExecute()) {
             throw BatchErrorCodeEnum.IMPORT_BUSY.toException();
         } else {
+            // todo lock
             BatchManager batchManager = new BatchManager(batchData);
             //执行持久化
             batchProgressCache.triggerFlushProgress(batchManager.getBatchProgress());
@@ -348,16 +349,8 @@ public class DefaultBatchExportService implements BatchAndExportService {
     // ------------------- 记录详情 ------------------------------
 
     @Override
-    public List<BatchRecordDetail> findAllRecordDetail(String batchId) {
-        return batchRecordDetailPersistentService.findAllByRecordId(batchId);
-    }
-
-    @Override
-    public List<BatchRecordDetail> findRecordDetailsByResults(String batchId, List<ProcessStatusEnum> results) {
-        if (CollectionUtils.isEmpty(results)) {
-            return findAllRecordDetail(batchId);
-        }
-        return batchRecordDetailPersistentService.findAllByRecordIdAndStatus(batchId, results);
+    public List<BatchRecordDetail> findAllDetailByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList, Integer indexStart, Integer indexEnd) {
+        return batchRecordDetailPersistentService.findAllByRecordIdAndStatusAndIndex(recordId, resultList, indexStart, indexEnd);
     }
 
 }

@@ -1,7 +1,16 @@
 # shoulder-batch
 
-批量处理模块，包含导入导出以及简单任务的异步处理与进度追踪，支持集群部署
+批量处理模块，提供务的异步处理与进度追踪能力，支持集群部署；
 
+并提供开箱即用的常用功能：下载导入模板、导入、校验、异步保存、进度查询、查询导入记录、导出数据 等。
+
+异步导入：
+
+![importUserCase.png](importUserCase.png)
+
+同步导入：
+
+![exportUserCase.png](exportUserCase.png)
 ## 导入：
 
 * 用户下载CSV导入模板，服务端提供接口

@@ -6,6 +6,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.ServletUtil;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.web.annotation.SkipResponseWrap;
@@ -71,9 +72,15 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
             // 返回值不是 json对象 且不是字符串类型
             return false;
         }
-        boolean springStdResponseType = ResponseEntity.class.isAssignableFrom(returnType.getParameterType());
-        if (springStdResponseType) {
-            // Spring 框架的返回值
+        Class<?> returnClass = returnType.getParameterType();
+        if (
+            // 已经是 shoulder 标准返回
+            BaseResult.class.isAssignableFrom(returnClass)
+            // Spring 框架的返回值，这类往往有特殊诉求
+            || ResponseEntity.class.isAssignableFrom(returnClass)
+            // void 类型，无需返回
+            || Void.class.isAssignableFrom(returnClass) || void.class.isAssignableFrom(returnClass)) {
+
             return false;
         }
 
@@ -90,13 +97,16 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
         // 方法、或类上不能有 SkipResponseWrap 注解
         boolean withoutMethodAnnotation = returnType.getMethodAnnotation(SkipResponseWrap.class) == null;
         boolean withoutClassAnnotation = AnnotatedElementUtils.findMergedAnnotation(returnType.getContainingClass(),
-                SkipResponseWrap.class) == null;
+            SkipResponseWrap.class) == null;
         boolean restController = AnnotatedElementUtils.findMergedAnnotation(returnType.getContainingClass(),
-                RestController.class) != null;
+            RestController.class) != null;
         boolean responseBody = AnnotatedElementUtils.findMergedAnnotation(returnType.getContainingClass(),
-                ResponseBody.class) != null;
+            ResponseBody.class) != null;
         boolean hasSpecialProduces = Optional.ofNullable(returnType.getMethodAnnotation(RequestMapping.class))
-                .map(RequestMapping::produces).map(StringUtils::isNoneBlank).orElse(false);
+            .map(RequestMapping::produces)
+            .filter(ArrayUtils::isNotEmpty)
+            .map(StringUtils::isNoneBlank)
+            .orElse(false);
         return !hasSpecialProduces && withoutMethodAnnotation && withoutClassAnnotation && (restController || responseBody);
     }
 
@@ -111,10 +121,6 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
             if (body == null) {
                 log.debug("body is null");
                 return BaseResult.success();
-            }
-            // json
-            if (BaseResult.class.isAssignableFrom(body.getClass())) {
-                return body;
             }
             return BaseResult.success().setData(body);
         } else {

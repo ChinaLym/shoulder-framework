@@ -4,7 +4,6 @@ import jakarta.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchRecordDetail;
-import org.shoulder.batch.repository.po.BatchRecordDetailPO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -33,7 +32,7 @@ public class JdbcBatchRecordDetailPersistentServiceImpl implements BatchRecordDe
 
     private final JdbcTemplate jdbc;
 
-    private RowMapper<BatchRecordDetail> mapper = new BatchRecordDetailRowMapper();
+    private final RowMapper<BatchRecordDetail> detailRowMapper = new BatchRecordDetailRowMapper();
 
     public JdbcBatchRecordDetailPersistentServiceImpl(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
@@ -99,17 +98,12 @@ public class JdbcBatchRecordDetailPersistentServiceImpl implements BatchRecordDe
             argsList.add(indexEnd);
         }
         Object[] sqlArgs = argsList.toArray();
-        return jdbc.queryForList(sql.toString(), BatchRecordDetailPO.class, sqlArgs)
-            .stream()
-            .map(BatchRecordDetailPO::toModel)
-            .collect(Collectors.toList());
+        return jdbc.query(sql.toString(), detailRowMapper, sqlArgs);
     }
 
     @Override
     public List<BatchRecordDetail> findAllByRecordId(String recordId) {
-        return jdbc.queryForList(QUERY_ALL_BY_RECORD_ID, BatchRecordDetailPO.class, recordId).stream()
-            .map(BatchRecordDetailPO::toModel)
-            .collect(Collectors.toList());
+        return jdbc.query(QUERY_ALL_BY_RECORD_ID, detailRowMapper, recordId);
     }
 
     /**
