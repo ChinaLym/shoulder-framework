@@ -50,11 +50,11 @@ public class BatchProcessor implements Runnable {
 
     protected Translator translator;
 
-    protected String name;
+    protected String batchId;
 
-    public BatchProcessor(String name, BlockingQueue<BatchDataSlice> taskQueue,
+    public BatchProcessor(String batchId, BlockingQueue<BatchDataSlice> taskQueue,
                           BlockingQueue<BatchRecordDetail> resultQueue) {
-        this.name = name;
+        this.batchId = batchId;
         this.taskQueue = taskQueue;
         this.resultQueue = resultQueue;
         this.translator = ContextUtils.getBean(Translator.class);
@@ -69,7 +69,7 @@ public class BatchProcessor implements Runnable {
             List<BatchRecordDetail> results = doWork(task);
             putResult(results);
         }
-        log.info("{} stop, processed {}", getName(), taskProcessed);
+        log.info("{} stop, processed {}", getBatchId(), taskProcessed);
     }
 
     /**
@@ -88,8 +88,8 @@ public class BatchProcessor implements Runnable {
         }
     }
 
-    public String getName() {
-        return name;
+    public String getBatchId() {
+        return batchId;
     }
 
     /**
@@ -112,9 +112,14 @@ public class BatchProcessor implements Runnable {
                 .toException(dataType, operation));
         List<BatchRecordDetail> taskResult = null;
         try {
+            log.debug("begin_handle dataType=" + dataType + "operation=" + operation
+                      + ",batchId=" + getBatchId() + ", slice=" + task.getSequence()
+                      + ", handler=" + taskHandler.getClass().getName());
             taskResult = taskHandler.handle(task);
         } catch (Exception e) {
-            log.error("worker " + getName() + " processed failed", e);
+            log.error("Batch Process FAIL! dataType=" + dataType + "operation=" + operation
+                      + ",batchId=" + getBatchId() + ", slice=" + task.getSequence()
+                      + ", handler=" + taskHandler.getClass().getName(), e);
         }
         log.info("task {}-{} finished", task.getBatchId(), task.getSequence());
         return polluteUnknownIfMissingResult(task, ListUtils.emptyIfNull(taskResult));
