@@ -5,7 +5,6 @@ package org.shoulder.batch.spi;
  *
  * @author lym
  */
-@FunctionalInterface
 public interface DataItem {
 
     /**
@@ -14,5 +13,7 @@ public interface DataItem {
      * @return 行号
      */
     int getIndex();
+
+    String serialize();
 
 }

@@ -13,19 +13,27 @@
 
 package com.univocity.parsers.common.record;
 
-import com.univocity.parsers.common.*;
-import com.univocity.parsers.conversions.*;
+import com.univocity.parsers.common.Context;
+import com.univocity.parsers.conversions.Conversion;
 import org.shoulder.batch.spi.DataItem;
+import org.shoulder.core.util.JsonUtils;
 
-import java.math.*;
-import java.util.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
 
-    private final String[] data;
+    private final String[]              data;
     private final RecordMetaDataImpl<C> metaData;
 
-    private final int index;
+    private final    int    index;
+    private volatile String serialStr;
 
     public IndexedRecordImpl(Record record, int index) {
         this.data = record.getValues();
@@ -350,7 +358,6 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
         return metaData.getObjectValue(data, columnIndex, Calendar.class, null, format, formatOptions);
     }
 
-
     private String[] buildSelection(String[] selectedFields) {
         if (selectedFields.length == 0) {
             selectedFields = metaData.headers();
@@ -379,7 +386,6 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
     public Map<Integer, String> toIndexMap(int... selectedIndexes) {
         return fillIndexMap(new HashMap<Integer, String>(selectedIndexes.length), selectedIndexes);
     }
-
 
     @Override
     public Map<String, String> toFieldMap(String... selectedFields) {
@@ -640,7 +646,7 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
     @Override
     public String[] getValues(String... fieldNames) {
         String[] out = new String[fieldNames.length];
-        for(int i = 0; i < out.length;i++){
+        for (int i = 0; i < out.length; i++) {
             out[i] = getString(fieldNames[i]);
         }
         return out;
@@ -649,16 +655,16 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
     @Override
     public String[] getValues(int... fieldIndexes) {
         String[] out = new String[fieldIndexes.length];
-        for(int i = 0; i < out.length;i++){
+        for (int i = 0; i < out.length; i++) {
             out[i] = getString(fieldIndexes[i]);
         }
         return out;
     }
 
     @Override
-    public String[] getValues(Enum<?> ... fields) {
+    public String[] getValues(Enum<?>... fields) {
         String[] out = new String[fields.length];
-        for(int i = 0; i < out.length;i++){
+        for (int i = 0; i < out.length; i++) {
             out[i] = getString(fields[i]);
         }
         return out;
@@ -666,5 +672,18 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
 
     @Override public int getIndex() {
         return index;
+    }
+
+    @Override public String serialize() {
+        if (serialStr != null) {
+            return serialStr;
+        }
+        String[] headers = getMetaData().selectedHeaders();
+        String[] values = getValues();
+        Map<String, Object> attributeMap = new HashMap<>(headers.length);
+        for (int i = 0; i < headers.length; i++) {
+            attributeMap.put(headers[i], values[i]);
+        }
+        return serialStr = JsonUtils.toJson(attributeMap);
     }
 }

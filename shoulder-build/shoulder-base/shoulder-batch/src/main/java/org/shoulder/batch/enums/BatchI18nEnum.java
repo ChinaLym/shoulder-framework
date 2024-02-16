@@ -8,6 +8,7 @@ import java.util.Optional;
 
 /**
  * 批处理国际化
+ * todo rowNumber 数据行、lineNum 文本行
  *
  * @author lym
  */
@@ -40,31 +41,30 @@ public enum BatchI18nEnum {
     /**
      * csv导入模板下载-csv文件名
      */
-    EXPORT_MODE_CSVNAME("shoulder.batch.import.template.download.csvName"),
+    EXPORT_TEMPLATE_FILE_CSV_NAME("shoulder.batch.import.template.download.csvName"),
     /**
      * csv导入模板下载开始提示
      */
     EXPORT_MODE_MSG("shoulder.batch.import.template.download.msg"),
 
 
+    // ============================== 上传导入文件提示 ==================================
     /**
      * 当前执行任务较多，请稍后再试
      */
     BATCH_SERVICE_BUSY("shoulder.batch.import.busy"),
-
-    // ============================== 上传导入文件提示 ==================================
     /**
      * 上传文件模板不正确
      */
-    UPLOADFILE_MODE_ERROR("shoulder.batch.upload.template.error"),
+    UPLOAD_TEMPLATE_INVALID("shoulder.batch.upload.template.invalid"),
     /**
      * 上传文件行数超出限制
      */
-    UPLOADFILE_ROW_LIMIT("shoulder.batch.upload.row.limit"),
+    UPLOAD_ROW_LIMIT("shoulder.batch.upload.limit.row"),
     /**
      * 上传文件太大
      */
-    UPLOADFILE_SIZE_LIMIT("shoulder.batch.upload.size.limit"),
+    UPLOAD_SIZE_LIMIT("shoulder.batch.upload.limit.size"),
 
 
     // ============================== 处理结果 ==================================
@@ -75,11 +75,19 @@ public enum BatchI18nEnum {
     /**
      * @zh_CN 校验成功
      */
-    RESULT_VAIDATE_SUCCESS("shoulder.batch.result.validate.success"),
+    RESULT_VALIDATE_SUCCESS("shoulder.batch.result.validate.success"),
+    /**
+     * 存在相同行
+     */
+    RESULT_VALIDATE_REPEAT_LINE("shoulder.batch.result.validate.repeat.row"),
+    /**
+     * 重复校验-和DB重复提示
+     */
+    VALIDATE_REPEAT_DB("shoulder.batch.result.validate.repeat.db"),
     /**
      * @zh_CN 校验失败
      */
-    RESULT_VAIDATE_FAILED("shoulder.batch.result.validate.failed"),
+    RESULT_VALIDATE_FAILED("shoulder.batch.result.validate.failed"),
     /**
      * @zh_CN 处理成功
      */
@@ -91,26 +99,19 @@ public enum BatchI18nEnum {
     /**
      * @zh_CN 更新
      */
-    RESULT_IMPORT_UPDATE("shoulder.batch.result.import.update"),
+    RESULT_IMPORT_UPDATE_REPEAT("shoulder.batch.result.import.repeat.update"),
     /**
      * @zh_CN 重复跳过
      */
-    RESULT_IMPORT_SKIP("shoulder.batch.result.import.skip"),
+    RESULT_IMPORT_SKIP_REPEAT("shoulder.batch.result.import.repeat.skip"),
+    /**
+     * @zh_CN 不满足导入条件，跳过
+     */
+    RESULT_IMPORT_SKIP_INVALID("shoulder.batch.result.import.invalid.skip"),
 
 
     // ==================== 校验提示 =====================
-    /**
-     * 重复校验-和DB重复提示
-     */
-    VALIDATE_REPEAT_DB("shoulder.batch.validate.repeat.db"),
-    /**
-     * 校验未知错误提示
-     */
-    VALIDATE_UNKOWERROR("shoulder.batch.validate.unknownError"),
-    /**
-     * 存在相同行
-     */
-    VALIDATE_REGIONPATH_REPEAT_LINE("shoulder.batch.validate.repeat"),
+
 
 
     /**

@@ -19,7 +19,6 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
-import org.shoulder.core.util.JsonUtils;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.enums.OperationResult;
 
@@ -269,7 +268,7 @@ public class BatchManager implements Runnable {
      */
     private String serializeSource(DataItem importData) {
         // 这里直接 json
-        return JsonUtils.toJson(importData);
+        return importData.serialize();
     }
 
     // ================================= 任务分片与执行 ==================================

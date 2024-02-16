@@ -45,6 +45,10 @@ import java.util.Map;
         return 0;
     }
 
+    @Override public String serialize() {
+        return "WILL FILL WHEN PROCESS.";
+    }
+
     public <T> T getExtAttribute(String attributeKey) {
         return (T) extAttributeMap.get(attributeKey);
     }

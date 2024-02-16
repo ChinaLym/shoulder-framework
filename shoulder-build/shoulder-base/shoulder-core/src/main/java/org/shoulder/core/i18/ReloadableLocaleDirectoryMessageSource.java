@@ -37,8 +37,8 @@ public class ReloadableLocaleDirectoryMessageSource extends ReloadableResourceBu
     private final ConcurrentMap<String, Map<Locale, List<String>>> cachedFilenames = new ConcurrentHashMap();
 
     public ReloadableLocaleDirectoryMessageSource() {
-        // 默认会加载 classpath*:language 中的多语言（便于自定义jar包中扩充，优先级较低，优先使用用户的）
-        super.addBasenames("classpath*:language");
+        // 默认会加载 classpath*:language/message 中的多语言（便于自定义jar包中扩充，优先级较低，优先使用用户的）
+        super.addBasenames("classpath*:language", "classpath*:message");
     }
 
     /**

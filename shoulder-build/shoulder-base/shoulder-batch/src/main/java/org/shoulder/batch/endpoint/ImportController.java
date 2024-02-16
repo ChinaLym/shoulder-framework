@@ -39,7 +39,6 @@ import org.shoulder.log.operation.annotation.OperationLog.Operations;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -263,7 +262,7 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     public void export(HttpServletResponse response, String businessType,
-                       @RequestBody PageQuery<Map> exportCondition) throws IOException {
+                       PageQuery<Map> exportCondition) throws IOException {
         // 找到数据查询构造器
         ExportDataQueryFactory exportDataQueryFactory = exportDataQueryFactoryList.stream()
             .filter(p -> p.support(businessType, exportCondition))

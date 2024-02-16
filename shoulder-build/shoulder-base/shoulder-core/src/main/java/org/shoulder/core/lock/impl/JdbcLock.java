@@ -15,9 +15,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import javax.sql.DataSource;
 
 /**
  * 基于 数据库 的分布式锁
@@ -178,7 +179,7 @@ public class JdbcLock extends AbstractDistributeLock implements ServerLock {
             // 2. resource 传错，当前未持锁；
             // 3. 被其他线程误释放
             // 4. （非代码bug）本节点执行时间过长，锁已经过期被清理释放了
-            // 这些都不是预期内的报错--抛异常
+            // 这些都不是预期内的报错--抛异常 (例外：H2数据库如果加了bean销毁钩子，在JVM停止前释放锁，会超时并导致该问题，这是正常的，但H2数据库往往意味着测试，不做特殊处理)
             throw new BaseRuntimeException(CommonErrorCodeEnum.UNKNOWN.getCode(), "unlock FAIL! resource=" + resource + " token=" + token);
         }
     }

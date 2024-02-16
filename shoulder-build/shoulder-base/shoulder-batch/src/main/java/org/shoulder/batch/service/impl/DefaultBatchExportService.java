@@ -244,7 +244,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
                 .map(batchRecordDetail -> {
                     @SuppressWarnings("unchecked")
                     Map<String, String> dataMap = JsonUtils.parseObject(
-                        batchRecordDetail.getSource(), Map.class, String.class, String.class);
+                        batchRecordDetail.getSource(), Map.class, String.class, Object.class);
 
                     dataMap.put(BatchConstants.INDEX, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getIndex()));
                     dataMap.put(BatchConstants.RESULT, translator.getMessage(

@@ -77,7 +77,8 @@ public class JdbcBatchRecordPersistentServiceImpl implements BatchRecordPersiste
      */
     @Override
     public BatchRecord findById(@Nonnull String recordId) {
-        return jdbc.queryForObject(QUERY_BY_ID, recordRowMapper, recordId);
+        return jdbc.query(QUERY_BY_ID, recordRowMapper, recordId)
+            .stream().findFirst().orElse(null);
     }
 
     /**
@@ -119,7 +120,8 @@ public class JdbcBatchRecordPersistentServiceImpl implements BatchRecordPersiste
             sql += " AND creator=?";
             argList.add(currentUserCode);
         }
-        return jdbc.queryForObject(sql + " limit 1", recordRowMapper, dataType, currentUserCode);
+        return jdbc.query(sql + " limit 1", recordRowMapper, dataType, currentUserCode)
+            .stream().findFirst().orElse(null);
     }
 
     /**
