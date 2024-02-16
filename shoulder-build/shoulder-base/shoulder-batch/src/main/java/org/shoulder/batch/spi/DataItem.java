@@ -1,5 +1,7 @@
 package org.shoulder.batch.spi;
 
+import org.shoulder.core.util.JsonUtils;
+
 /**
  * 批量记录某一项（多行中某一行）
  *
@@ -14,6 +16,8 @@ public interface DataItem {
      */
     int getIndex();
 
-    String serialize();
+    default String serialize() {
+        return JsonUtils.toJson(this);
+    }
 
 }

@@ -9,12 +9,15 @@ import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.AssertUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 通用数据导入处理器
@@ -86,6 +89,11 @@ public abstract class BaseImportHandler implements BatchTaskSliceHandler {
         allResultList.addAll(importResultList);
         allResultList.addAll(existResultList);
         allResultList.addAll(ignoreResultList);
+        boolean notAllSetSourceStr = allResultList.stream()
+            .map(BatchRecordDetail::getSource)
+            .anyMatch(Objects::isNull);
+        AssertUtils.isFalse(notAllSetSourceStr, CommonErrorCodeEnum.CODING, "impl need invoke setSource().");
+
         allResultList.sort(Comparator.comparingInt(BatchRecordDetail::getIndex));
 
         return allResultList;
@@ -97,7 +105,11 @@ public abstract class BaseImportHandler implements BatchTaskSliceHandler {
             case FAILED_FOR_REPEAT, SKIP_FOR_REPEAT -> ProcessStatusEnum.SKIP_FOR_REPEAT;
             default -> throw new BaseRuntimeException("unexpected status: " + ignore.getStatus());
         };
-        return new BatchRecordDetail(ignore.getIndex(), translatedStatus.getCode());
+        return BatchRecordDetail.builder()
+            .index(ignore.getIndex())
+            .status(translatedStatus.getCode())
+            .source(ignore.getSource())
+            .build();
     }
 
     protected abstract List<BatchRecordDetail> updateData(List<BatchRecordDetail> toUpdateList);

@@ -675,6 +675,7 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
     }
 
     @Override public String serialize() {
+        // fixme header 不对, 调整跳过行数，特殊处理第一行数据
         if (serialStr != null) {
             return serialStr;
         }
