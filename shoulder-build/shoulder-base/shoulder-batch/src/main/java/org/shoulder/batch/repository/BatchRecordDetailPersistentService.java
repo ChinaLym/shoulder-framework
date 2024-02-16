@@ -26,7 +26,20 @@ public interface BatchRecordDetailPersistentService {
      * @param resultList 结果状态
      * @return 所有的批量处理记录
      */
-    List<BatchRecordDetail> findAllByResult(String recordId, List<ProcessStatusEnum> resultList);
+    default List<BatchRecordDetail> findAllByRecordIdAndStatus(String recordId, List<ProcessStatusEnum> resultList) {
+        return findAllByRecordIdAndStatusAndIndex(recordId, resultList, null, null);
+    }
+
+    /**
+     * 查询所有的批量处理记录
+     *
+     * @param recordId   记录标识
+     * @param resultList 结果状态
+     * @param indexStart 希望查询的第一个分片
+     * @param indexEnd 希望查询的最后一个分片
+     * @return 所有的批量处理记录
+     */
+    List<BatchRecordDetail> findAllByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList, Integer indexStart, Integer indexEnd);
 
     /**
      * 查询所有的批量处理记录
@@ -34,7 +47,6 @@ public interface BatchRecordDetailPersistentService {
      * @param recordId   记录标识
      * @return 所有的批量处理记录
      */
-    List<BatchRecordDetail> findAllByResult(String recordId);
-
+    List<BatchRecordDetail> findAllByRecordId(String recordId);
 
 }

@@ -15,7 +15,7 @@ public interface BatchProgressCache {
      * @param progressId progressId
      * @return 任务
      */
-    ProgressAble getTaskProgress(String progressId);
+    ProgressAble getProgress(String progressId);
 
     /**
      * 获取所有任务id

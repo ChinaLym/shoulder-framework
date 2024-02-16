@@ -29,10 +29,10 @@ public interface BatchTaskSliceHandler {
     /**
      * 处理数据
      *
-     * @param task 任务，注意不要对该对象改动
+     * @param batchSlice 任务，注意不要对该对象改动
      * @return 处理结果，注意长度必须等于 batchList.size 否则认为部分处理失败
      */
-    List<BatchRecordDetail> handle(BatchDataSlice task);
+    List<BatchRecordDetail> handle(BatchDataSlice batchSlice);
 
 
     /*List<? extends DataItem> dataList = task.getBatchList();

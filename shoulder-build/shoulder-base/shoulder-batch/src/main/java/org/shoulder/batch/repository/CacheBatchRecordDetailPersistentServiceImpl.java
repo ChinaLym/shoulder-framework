@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
-public class CacheBatchRecordDetailPersistentService implements BatchRecordDetailPersistentService {
+public class CacheBatchRecordDetailPersistentServiceImpl implements BatchRecordDetailPersistentService {
 
     /**
      * 缓存
      */
     private final Cache cache;
 
-    public CacheBatchRecordDetailPersistentService(Cache cache) {
+    public CacheBatchRecordDetailPersistentServiceImpl(Cache cache) {
         this.cache = cache;
     }
 
@@ -34,27 +34,20 @@ public class CacheBatchRecordDetailPersistentService implements BatchRecordDetai
         cache.put(recordId, batchRecordDetailList);
     }
 
-    /**
-     * 查询所有的批量处理记录
-     *
-     * @param recordId   记录标识
-     * @param resultList 结果状态
-     * @return 所有的批量处理记录
-     */
-    @Override
-    public List<BatchRecordDetail> findAllByResult(String recordId, List<ProcessStatusEnum> resultList) {
-
-        return CollectionUtils.emptyIfNull(findAllByResult(recordId)).stream()
-                .filter(detail -> resultList.contains(ProcessStatusEnum.of(detail.getStatus())))
-                .collect(Collectors.toList());
+    @Override public List<BatchRecordDetail> findAllByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList, Integer indexStart,
+                                                                                Integer indexEnd) {
+        return CollectionUtils.emptyIfNull(findAllByRecordId(recordId)).stream()
+            .filter(detail -> resultList.contains(ProcessStatusEnum.of(detail.getStatus())))
+            .filter(detail -> indexStart == null || detail.getIndex() >= indexStart)
+            .filter(detail -> indexEnd == null || detail.getIndex() <= indexEnd)
+            .collect(Collectors.toList());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<BatchRecordDetail> findAllByResult(String recordId) {
+    public List<BatchRecordDetail> findAllByRecordId(String recordId) {
         Cache.ValueWrapper wrapper = cache.get(recordId);
         return wrapper == null ? null : (List<BatchRecordDetail>) wrapper.get();
     }
-
 
 }

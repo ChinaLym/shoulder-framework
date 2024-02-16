@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -142,7 +143,8 @@ public class ImportController implements ImportRestfulApi {
 
     private void checkImportCsvHeader(String businessType, List<Record> recordList) {
         // todo 获取文件头，然后对比文件头未被篡改
-        //AssertUtils.isTrue(headerValid, BatchErrorCodeEnum.CSV_HEADER_ERROR);
+
+        AssertUtils.notNull(businessType, BatchErrorCodeEnum.CSV_HEADER_ERROR);
     }
 
     /**
@@ -170,7 +172,8 @@ public class ImportController implements ImportRestfulApi {
         batchData.setDataType(promoteBatchParam.getDataType());
         batchData.setBatchListMap(new HashMap<>());
         List<BatchImportDataItem> importDataItemList = new ArrayList<>();
-        importDataItemList.add(new BatchImportDataItem(total));
+        importDataItemList.add(new BatchImportDataItem(
+            total, 200, batchId, Map.of(BatchImportDataItem.EXT_KEY_UPDATE_REPEAT, promoteBatchParam.getUpdateRepeat())));
         batchData.getBatchListMap().put(promoteBatchParam.getNextOperation(), importDataItemList);
 
         String nextStageId = batchService.doProcess(batchData);

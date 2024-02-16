@@ -146,11 +146,11 @@ public class BatchManager implements Runnable {
         preHandle();
 
         // 任务分片，初始化任务队列、结果队列
-        List<BatchDataSlice> taskSlice = splitTask(batchData);
-        int jobSize = taskSlice.size();
+        List<BatchDataSlice> batchSlice = splitTask(batchData);
+        int jobSize = batchSlice.size();
         AssertUtils.isTrue(jobSize > 0, CommonErrorCodeEnum.ILLEGAL_PARAM, "after splitTask, jobSize can't be 0");
         jobQueue = new LinkedBlockingQueue<>(jobSize);
-        jobQueue.addAll(taskSlice);
+        jobQueue.addAll(batchSlice);
 
         // 安排工人
         int needToBeProcessed = progress.getTotal() - progress.getSuccessNum() - progress.getFailNum();

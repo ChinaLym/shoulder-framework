@@ -109,7 +109,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      * @return 任务
      */
     @Override
-    public ProgressAble getTaskProgress(String progressId) {
+    public ProgressAble getProgress(String progressId) {
         Cache.ValueWrapper valueWrapper = progressCache.get(progressId);
         return valueWrapper == null ? null : (ProgressAble) valueWrapper.get();
     }

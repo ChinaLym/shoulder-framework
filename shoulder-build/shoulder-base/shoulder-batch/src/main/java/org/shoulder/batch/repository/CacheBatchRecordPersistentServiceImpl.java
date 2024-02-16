@@ -1,5 +1,6 @@
 package org.shoulder.batch.repository;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.batch.model.BatchRecord;
 import org.springframework.cache.Cache;
 
@@ -10,14 +11,14 @@ import java.util.List;
  *
  * @author lym
  */
-public class CacheBatchRecordPersistentService implements BatchRecordPersistentService {
+public class CacheBatchRecordPersistentServiceImpl implements BatchRecordPersistentService {
 
     /**
      * 缓存
      */
     private final Cache cache;
 
-    public CacheBatchRecordPersistentService(Cache cache) {
+    public CacheBatchRecordPersistentServiceImpl(Cache cache) {
         this.cache = cache;
     }
 
@@ -27,7 +28,7 @@ public class CacheBatchRecordPersistentService implements BatchRecordPersistentS
      * @param record 批量处理记录
      */
     @Override
-    public void insert(BatchRecord record) {
+    public void insert(@Nonnull BatchRecord record) {
         cache.put(record.getId(), record);
     }
 
@@ -38,7 +39,7 @@ public class CacheBatchRecordPersistentService implements BatchRecordPersistentS
      * @return 记录
      */
     @Override
-    public BatchRecord findById(String recordId) {
+    public BatchRecord findById(@Nonnull String recordId) {
         Cache.ValueWrapper wrapper = cache.get(recordId);
         return wrapper == null ? null : (BatchRecord) wrapper.get();
     }
@@ -52,8 +53,8 @@ public class CacheBatchRecordPersistentService implements BatchRecordPersistentS
      * @param currentUserCode 查询条件
      * @return 查询结果
      */
-    @Override
-    public List<BatchRecord> findByPage(String dataType, Integer pageNum, Integer pageSize,
+    @Nonnull @Override
+    public List<BatchRecord> findByPage(@Nonnull String dataType, Integer pageNum, Integer pageSize,
                                         String currentUserCode) {
         throw new UnsupportedOperationException(getClass().getSimpleName() + " not support find by condition!");
     }
@@ -64,7 +65,7 @@ public class CacheBatchRecordPersistentService implements BatchRecordPersistentS
      * @return 上次批量处理记录
      */
     @Override
-    public BatchRecord findLast(String dataType, String currentUserCode) {
+    public BatchRecord findLast(@Nonnull String dataType, String currentUserCode) {
         throw new UnsupportedOperationException(getClass().getSimpleName() + " not support find by condition!");
     }
 

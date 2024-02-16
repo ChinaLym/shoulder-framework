@@ -5,17 +5,18 @@ import org.shoulder.batch.model.BatchRecord;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 /**
  * 批量处理记录mapper
  *
  * @author lym
  */
-public class JdbcBatchRecordPersistentService implements BatchRecordPersistentService {
+public class JdbcBatchRecordPersistentServiceImpl implements BatchRecordPersistentService {
 
 
     private static String ALL_COLUMNS = "id, data_type, operation, total_num ,success_num ,fail_num, creator, " +
@@ -39,11 +40,11 @@ public class JdbcBatchRecordPersistentService implements BatchRecordPersistentSe
 
     private RowMapper<BatchRecord> mapper = new BatchRecordRowMapper();
 
-    public JdbcBatchRecordPersistentService(JdbcTemplate jdbc) {
+    public JdbcBatchRecordPersistentServiceImpl(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
 
-    public JdbcBatchRecordPersistentService(DataSource dataSource) {
+    public JdbcBatchRecordPersistentServiceImpl(DataSource dataSource) {
         this.jdbc = new JdbcTemplate(dataSource);
     }
 
@@ -54,7 +55,7 @@ public class JdbcBatchRecordPersistentService implements BatchRecordPersistentSe
      * @param record 批量处理记录
      */
     @Override
-    public void insert(BatchRecord record) {
+    public void insert(@Nonnull BatchRecord record) {
         jdbc.update(INSERT, flatFieldsToArray(record));
     }
 
@@ -79,7 +80,7 @@ public class JdbcBatchRecordPersistentService implements BatchRecordPersistentSe
      * @return 记录
      */
     @Override
-    public BatchRecord findById(String recordId) {
+    public BatchRecord findById(@Nonnull String recordId) {
         return jdbc.queryForObject(QUERY_BY_ID, mapper, recordId);
     }
 
@@ -92,8 +93,8 @@ public class JdbcBatchRecordPersistentService implements BatchRecordPersistentSe
      * @param currentUserCode 查询条件
      * @return 查询结果
      */
-    @Override
-    public List<BatchRecord> findByPage(String dataType, Integer pageNum, Integer pageSize,
+    @Nonnull @Override
+    public List<BatchRecord> findByPage(@Nonnull String dataType, Integer pageNum, Integer pageSize,
                                         String currentUserCode) {
         return jdbc.queryForList(QUERY_BY_USER + " limit ?,?", BatchRecord.class, dataType, currentUserCode, pageNum - 1,
             pageSize);
@@ -105,7 +106,7 @@ public class JdbcBatchRecordPersistentService implements BatchRecordPersistentSe
      * @return 上次批量处理记录
      */
     @Override
-    public BatchRecord findLast(String dataType, String currentUserCode) {
+    public BatchRecord findLast(@Nonnull String dataType, String currentUserCode) {
         return jdbc.queryForObject(QUERY_BY_USER + " limit 1", mapper, dataType, currentUserCode);
     }
 

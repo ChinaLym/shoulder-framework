@@ -24,36 +24,39 @@ import java.util.stream.IntStream;
  */
 public class ImportTaskSplitHandler implements TaskSplitHandler {
 
-    /**
-     * 单线程处理的数据量
-     */
-    private final int sequenceSize;
-
-    public ImportTaskSplitHandler(int sequenceSize) {this.sequenceSize = sequenceSize;}
-
-    public ImportTaskSplitHandler() {this(200);}
-
     @Override public boolean support(BatchData batchData) {
         return batchData.getOperation().equals(Operations.IMPORT);
     }
 
     @Override public List<BatchDataSlice> splitTask(BatchData batchData) {
         List<? extends DataItem> importItems = batchData.getBatchListMap().get(batchData.getOperation());
-        AssertUtils.notEmpty(importItems, CommonErrorCodeEnum.CODING);
+        BatchImportDataItem batchImportDataItem = fetchBatchImportDataItem(importItems);
 
-        // 获取总条数
-        int total = importItems.stream()
-            .findFirst()
-            .map(item -> (BatchImportDataItem) item)
-            .orElseThrow(() -> new BaseRuntimeException(CommonErrorCodeEnum.CODING.getMessage()))
-            .getTotal();
+        int total = batchImportDataItem.getTotal();
+        int batchSliceSize = batchImportDataItem.getBatchSliceSize();
 
-        int sliceNum = total / sequenceSize + 1;
+        int sliceNum = total / batchSliceSize + 1;
         List<BatchDataSlice> splitResult = IntStream.range(0, sliceNum)
             .mapToObj(sequence -> new BatchDataSlice(batchData.getBatchId(), sequence, batchData.getDataType(),
                 batchData.getOperation(), importItems))
             .collect(Collectors.toList());
 
         return splitResult;
+    }
+
+    /**
+     * 获取第一个元素，且必须为 BatchImportDataItem.class
+     * @param importItems list
+     * @return 第一个元素
+     */
+    public static BatchImportDataItem fetchBatchImportDataItem(List<? extends DataItem> importItems) {
+        AssertUtils.notEmpty(importItems, CommonErrorCodeEnum.CODING);
+
+        // 获取总条数
+        BatchImportDataItem batchImportDataItem = importItems.stream()
+            .findFirst()
+            .map(item -> (BatchImportDataItem) item)
+            .orElseThrow(() -> new BaseRuntimeException(CommonErrorCodeEnum.CODING));
+        return batchImportDataItem;
     }
 }

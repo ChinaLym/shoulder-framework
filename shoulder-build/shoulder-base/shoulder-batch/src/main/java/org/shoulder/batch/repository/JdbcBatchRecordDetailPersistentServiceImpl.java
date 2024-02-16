@@ -8,42 +8,38 @@ import org.shoulder.batch.repository.po.BatchRecordDetailPO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.sql.DataSource;
 
 /**
  * 批处理记录持久化接口
  *
  * @author lym
  */
-public class JdbcBatchRecordDetailPersistentService implements BatchRecordDetailPersistentService {
+public class JdbcBatchRecordDetailPersistentServiceImpl implements BatchRecordDetailPersistentService {
 
+    private static final String ALL_COLUMNS = "id, record_id, index, operation, status, fail_reason, source";
 
-    private static String ALL_COLUMNS = "id, record_id, index, operation, status, fail_reason, source";
+    private static final String BATCH_INSERT = "INSERT INTO batch_record_detail (" + ALL_COLUMNS + ") " +
+                                               "VALUES (?,?,?,?,?,?,?)";
 
-    private static String BATCH_INSERT = "INSERT INTO batch_record_detail (" + ALL_COLUMNS + ") " +
-        "VALUES (?,?,?,?,?,?,?)";
-
-    private static String QUERY_ALL_WITH_CONDITION = "SELECT " + ALL_COLUMNS +
-        " FROM batch_record_detail WHERE record_id=?, AND status in (?)";
-
-    private static String QUERY_ALL = "SELECT " + ALL_COLUMNS +
-        " FROM batch_record_detail WHERE record_id=?";
-
+    private static final String QUERY_ALL_BY_RECORD_ID = "SELECT " + ALL_COLUMNS +
+                                                         " FROM batch_record_detail WHERE record_id=?";
 
     private final JdbcTemplate jdbc;
 
     private RowMapper<BatchRecordDetail> mapper = new BatchRecordDetailRowMapper();
 
-
-    public JdbcBatchRecordDetailPersistentService(JdbcTemplate jdbc) {
+    public JdbcBatchRecordDetailPersistentServiceImpl(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
 
-    public JdbcBatchRecordDetailPersistentService(DataSource dataSource) {
+    public JdbcBatchRecordDetailPersistentServiceImpl(DataSource dataSource) {
         this.jdbc = new JdbcTemplate(dataSource);
     }
 
@@ -81,23 +77,40 @@ public class JdbcBatchRecordDetailPersistentService implements BatchRecordDetail
      * @return 所有的批量处理记录
      */
     @Override
-    public List<BatchRecordDetail> findAllByResult(String recordId, List<ProcessStatusEnum> resultList) {
-        return jdbc.queryForList(QUERY_ALL_WITH_CONDITION, BatchRecordDetailPO.class, recordId,
-                CollectionUtils.emptyIfNull(resultList).stream()
-                        .map(ProcessStatusEnum::getCode)
-                        .collect(Collectors.toList())
-        ).stream()
-                .map(BatchRecordDetailPO::toModel)
-                .collect(Collectors.toList());
-    }
+    public List<BatchRecordDetail> findAllByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList,
+                                                                      Integer indexStart,
+                                                                      Integer indexEnd) {
+        StringBuilder sql = new StringBuilder(QUERY_ALL_BY_RECORD_ID);
+        List<Object> argsList = new ArrayList<>(4);
+        argsList.add(recordId);
+        if (CollectionUtils.isNotEmpty(resultList)) {
+            sql.append(" AND status in (?) ");
+            argsList.add(CollectionUtils.emptyIfNull(resultList).stream()
+                .map(ProcessStatusEnum::getCode)
+                .collect(Collectors.toList()));
+        }
 
-    @Override
-    public List<BatchRecordDetail> findAllByResult(String recordId) {
-        return jdbc.queryForList(QUERY_ALL, BatchRecordDetailPO.class, recordId).stream()
+        if (indexStart != null) {
+            sql.append(" AND index >= ?");
+            argsList.add(indexStart);
+        }
+        if (indexEnd != null) {
+            sql.append(" AND index <= ?");
+            argsList.add(indexEnd);
+        }
+        Object[] sqlArgs = argsList.toArray();
+        return jdbc.queryForList(sql.toString(), BatchRecordDetailPO.class, sqlArgs)
+            .stream()
             .map(BatchRecordDetailPO::toModel)
             .collect(Collectors.toList());
     }
 
+    @Override
+    public List<BatchRecordDetail> findAllByRecordId(String recordId) {
+        return jdbc.queryForList(QUERY_ALL_BY_RECORD_ID, BatchRecordDetailPO.class, recordId).stream()
+            .map(BatchRecordDetailPO::toModel)
+            .collect(Collectors.toList());
+    }
 
     /**
      * Row mapper for BatchRecordDetail.

@@ -299,7 +299,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
      */
     @Override
     public BatchProgressRecord queryBatchProgress(String batchId) {
-        ProgressAble result = batchProgressCache.getTaskProgress(batchId);
+        ProgressAble result = batchProgressCache.getProgress(batchId);
         if (result == null) {
             // 缓存过期无需从数据库中查，直接异常
             throw BatchErrorCodeEnum.BATCH_ID_NOT_EXIST.toException(batchId);
@@ -349,7 +349,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
     @Override
     public List<BatchRecordDetail> findAllRecordDetail(String batchId) {
-        return batchRecordDetailPersistentService.findAllByResult(batchId);
+        return batchRecordDetailPersistentService.findAllByRecordId(batchId);
     }
 
     @Override
@@ -357,7 +357,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         if (CollectionUtils.isEmpty(results)) {
             return findAllRecordDetail(batchId);
         }
-        return batchRecordDetailPersistentService.findAllByResult(batchId, results);
+        return batchRecordDetailPersistentService.findAllByRecordIdAndStatus(batchId, results);
     }
 
 }

@@ -7,8 +7,8 @@ import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
-import org.shoulder.batch.spi.DataItem;
 import org.shoulder.batch.spi.BatchTaskSliceHandler;
+import org.shoulder.batch.spi.DataItem;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
@@ -45,7 +45,7 @@ public class BatchProcessor implements Runnable {
     /**
      * 数据处理器
      */
-    private Collection<BatchTaskSliceHandler> batchTaskSliceHandlers =
+    private final Collection<BatchTaskSliceHandler> batchTaskSliceHandlers =
         ContextUtils.getBeansOfType(BatchTaskSliceHandler.class).values();
 
     protected Translator translator;
