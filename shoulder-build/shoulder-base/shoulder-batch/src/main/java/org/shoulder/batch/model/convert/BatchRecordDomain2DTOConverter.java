@@ -18,6 +18,7 @@ public class BatchRecordDomain2DTOConverter extends BaseDataConverter<BatchRecor
 
     @Override
     public void doConvert(@Nonnull BatchRecord sourceModel, @Nonnull BatchRecordResult targetModel) {
+        targetModel.setBatchId(sourceModel.getId());
         targetModel.setTotalNum(sourceModel.getTotalNum());
         targetModel.setSuccessNum(sourceModel.getSuccessNum());
         targetModel.setFailNum(sourceModel.getFailNum());

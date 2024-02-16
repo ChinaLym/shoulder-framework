@@ -59,7 +59,7 @@ public class BatchProcessResult {
     /**
      * 查进度时暂不返回
      */
-    @ApiModelProperty(required = false, value = "处理详情列表", dataType = "list", example = "[{\"reason\":\"reason\"," +
+    @ApiModelProperty(required = false, value = "处理详情列表(查询进度暂不包含)", dataType = "list", example = "[{\"reason\":\"reason\"," +
                                                                                              "\"row\":1,\"reasonParam\":[\"xxx\"]}]",
         position = 9)
     @Valid

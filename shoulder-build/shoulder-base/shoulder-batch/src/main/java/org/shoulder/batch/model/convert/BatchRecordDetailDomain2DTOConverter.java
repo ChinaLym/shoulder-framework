@@ -8,6 +8,7 @@ import org.shoulder.core.converter.BaseDataConverter;
 import org.shoulder.core.i18.Translator;
 
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  * 处理详情 core -> DTO
@@ -28,7 +29,8 @@ public class BatchRecordDetailDomain2DTOConverter extends BaseDataConverter<Batc
     public void doConvert(@Nonnull BatchRecordDetail sourceModel, @Nonnull BatchRecordDetailResult targetModel) {
         targetModel.setIndex(sourceModel.getIndex());
         targetModel.setStatus(sourceModel.getStatus());
-        targetModel.setReason(translator.getMessage(sourceModel.getFailReason()));
+        targetModel.setReason(Optional.ofNullable(sourceModel.getFailReason())
+            .map(translator::getMessage).orElse(null));
         targetModel.setSource(sourceModel.getSource());
 
         // todo 用于填充翻译项

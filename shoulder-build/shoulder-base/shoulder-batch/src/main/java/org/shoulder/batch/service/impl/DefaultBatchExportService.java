@@ -26,6 +26,7 @@ import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.JsonUtils;
+import org.shoulder.core.util.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -246,9 +247,10 @@ public class DefaultBatchExportService implements BatchAndExportService {
                         batchRecordDetail.getSource(), Map.class, String.class, String.class);
 
                     dataMap.put(BatchConstants.INDEX, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getIndex()));
-                    dataMap.put(BatchConstants.RESULT, translator.getMessage(batchRecordDetail.getFailReason(),
+                    dataMap.put(BatchConstants.RESULT, translator.getMessage(
                         ProcessStatusEnum.of(batchRecordDetail.getStatus()).getTip()));
-                    dataMap.put(BatchConstants.DETAIL, translator.getMessage(batchRecordDetail.getFailReason()));
+                    dataMap.put(BatchConstants.DETAIL, StringUtils.isBlank(batchRecordDetail.getFailReason()) ? null :
+                        translator.getMessage(batchRecordDetail.getFailReason()));
                     return dataMap;
                 })
                 .collect(Collectors.toList());

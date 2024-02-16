@@ -35,7 +35,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * - 查询导入校验进度
  * - 批量操作
  * - 查询数据操作进度
- * - 数据导入记录，分页查询、导出 todo 【开发】数据类型、业务操作类型
+ * - 数据导入记录，分页查询、导出
  * /batch-operation/{dataType}/{operationType}
  * 如 /batch-operation/user/add-validate
  * 如 /batch-operation/user/add
@@ -76,7 +76,7 @@ public interface ImportRestfulApi {
     BaseResult<String> advance(@Validated @RequestBody AdvanceBatchParam advanceBatchParam);
 
     /**
-     * 查询数据操作进度，todo 【开发】考虑 查进度和结果是否为同一个接口？进度不需要每行信息
+     * 查询数据操作进度
      *
      * @param batchId 批处理任务id
      * @return 操作进度 / 结果
@@ -92,7 +92,7 @@ public interface ImportRestfulApi {
     /**
      * 查询处理记录
      * 可用于界面展示，（当前用户）最近一次导入记录
-     * todo 【开发】查询条件 暂不支持分页
+     * todo 【开发】支持分页查询
      *
      * @return 分页-批量处理进度 / 结果
      */

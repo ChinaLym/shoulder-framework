@@ -199,7 +199,7 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord(String dataType) {
         return BaseResult.success(
-            // todo admin 可以不带 userId
+            // admin 可以不带 userId 查所有
             Stream.of(recordService.findLastRecord(dataType, AppContext.getUserId()))
                 .map(r -> conversionService.convert(r, BatchRecordResult.class))
                 .collect(Collectors.toList()
