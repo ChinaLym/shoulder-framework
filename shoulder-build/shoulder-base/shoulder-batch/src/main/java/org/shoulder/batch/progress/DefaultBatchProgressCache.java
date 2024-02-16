@@ -42,7 +42,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     @Override
     public void triggerFlushProgress(ProgressAble task) {
         BatchProgressRecord batchProgressRecord = task.getBatchProgress();
-        progressCache.put(batchProgressRecord.getTaskId(), batchProgressRecord);
+        progressCache.put(batchProgressRecord.getId(), batchProgressRecord);
         Threads.execute(genFlushProgressTask(task));
     }
 
@@ -57,14 +57,14 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     }
 
     /**
-     * 刷缓存线程不安全，需要加锁，最少是 taskId 级别，这里默认实现直接用 sync 了
+     * 刷缓存线程不安全，需要加锁，最少是 batchId 级别，这里默认实现直接用 sync 了
      *
      * @param batchProgress 进度
      */
     @Override
     public synchronized void flushProgress(ProgressAble batchProgress) {
         BatchProgressRecord record = batchProgress.getBatchProgress();
-        progressCache.put(record.getTaskId(), record);
+        progressCache.put(record.getId(), record);
     }
 
     @Override
@@ -105,12 +105,12 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     /**
      * 获取任务进度
      *
-     * @param id taskId
+     * @param progressId progressId
      * @return 任务
      */
     @Override
-    public ProgressAble getTaskProgress(String id) {
-        Cache.ValueWrapper valueWrapper = progressCache.get(id);
+    public ProgressAble getTaskProgress(String progressId) {
+        Cache.ValueWrapper valueWrapper = progressCache.get(progressId);
         return valueWrapper == null ? null : (ProgressAble) valueWrapper.get();
     }
 
@@ -123,7 +123,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     private Runnable genFlushProgressTask(ProgressAble progressHolder) {
         return () -> {
             BatchProgressRecord batchProgressRecord = progressHolder.getBatchProgress();
-            String id = batchProgressRecord.getTaskId();
+            String id = batchProgressRecord.getId();
             if (!batchProgressRecord.hasFinish()) {
                 // 未处理完毕，仍需要执行这个任务
                 Threads.delay(genFlushProgressTask(progressHolder), 1, TimeUnit.SECONDS);
@@ -142,7 +142,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      */
     private Runnable genFlushProgressTask(BatchProgressRecord batchProgress) {
         return () -> {
-            String id = batchProgress.getTaskId();
+            String id = batchProgress.getId();
             if (!batchProgress.hasFinish()) {
                 // 未处理完毕，仍需要执行这个任务
                 Threads.delay(genFlushProgressTask(batchProgress), 1, TimeUnit.SECONDS);

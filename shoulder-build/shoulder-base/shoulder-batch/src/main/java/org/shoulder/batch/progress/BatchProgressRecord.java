@@ -28,9 +28,9 @@ public class BatchProgressRecord implements Serializable, ProgressAble {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 任务标识
+     * 批处理任务id
      */
-    private String taskId;
+    private String id;
 
     /**
      * 任务开始执行的时间
@@ -150,12 +150,12 @@ public class BatchProgressRecord implements Serializable, ProgressAble {
     @Override
     public String toString() {
         return "BatchProgress{" +
-                "taskId='" + taskId + '\'' +
-                ", total=" + total +
-                ", processed=" + processed +
-                ", startTime=" + startTime +
-                ", status=" + status +
-                '}';
+               "batchId='" + id + '\'' +
+               ", total=" + total +
+               ", processed=" + processed +
+               ", startTime=" + startTime +
+               ", status=" + status +
+               '}';
     }
 
     public void addSuccess(int successNum) {

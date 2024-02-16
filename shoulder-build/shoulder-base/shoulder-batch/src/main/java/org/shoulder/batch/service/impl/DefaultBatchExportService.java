@@ -233,11 +233,11 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
     @Override
     public void exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
-                                  String taskId, List<ProcessStatusEnum> resultTypes) throws IOException {
+                                  String batchId, List<ProcessStatusEnum> resultTypes) throws IOException {
         exportRecordLocal.set(Boolean.TRUE);
         //认为单次批量操作一般有上限，如1000，这里直接单次全捞出来了
         export(outputStream, exportType, List.of(() -> {
-            List<BatchRecordDetail> recordDetailList = findRecordDetailsByResults(taskId, resultTypes);
+            List<BatchRecordDetail> recordDetailList = findRecordDetailsByResults(batchId, resultTypes);
             return recordDetailList.stream()
                 .map(batchRecordDetail -> {
                     @SuppressWarnings("unchecked")
@@ -273,7 +273,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
      * @param userId                用户信息
      * @param locale                语言标识
      * @param batchTaskSliceHandler 特殊业务处理器
-     * @return 任务标识
+     * @return 批处理任务id
      */
     @Override
     public String doProcess(BatchData batchData, String userId, Locale locale,
@@ -285,7 +285,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
             //执行持久化
             batchProgressCache.triggerFlushProgress(batchManager.getBatchProgress());
             batchThreadPool.execute(batchManager);
-            return batchManager.getBatchProgress().getTaskId();
+            return batchManager.getBatchProgress().getId();
         }
     }
 
@@ -294,15 +294,15 @@ public class DefaultBatchExportService implements BatchAndExportService {
     /**
      * 获取处理进度与结果
      *
-     * @param taskId 用户信息
+     * @param batchId 用户信息
      * @return 处理进度或者结果
      */
     @Override
-    public BatchProgressRecord queryBatchProgress(String taskId) {
-        ProgressAble result = batchProgressCache.getTaskProgress(taskId);
+    public BatchProgressRecord queryBatchProgress(String batchId) {
+        ProgressAble result = batchProgressCache.getTaskProgress(batchId);
         if (result == null) {
             // 缓存过期无需从数据库中查，直接异常
-            throw BatchErrorCodeEnum.TASK_ID_NOT_EXIST.toException(taskId);
+            throw BatchErrorCodeEnum.BATCH_ID_NOT_EXIST.toException(batchId);
         }
         return result.getBatchProgress();
     }
@@ -335,9 +335,9 @@ public class DefaultBatchExportService implements BatchAndExportService {
     }
 
     /**
-     * 根据任务标识获取批量处理记录详情，用于处理完毕查看结果以及将结果导出
+     * 根据批处理任务id获取批量处理记录详情，用于处理完毕查看结果以及将结果导出
      *
-     * @param importCode 任务标识
+     * @param importCode 批处理任务id
      * @return ImportRecord
      */
     @Override
@@ -348,16 +348,16 @@ public class DefaultBatchExportService implements BatchAndExportService {
     // ------------------- 记录详情 ------------------------------
 
     @Override
-    public List<BatchRecordDetail> findAllRecordDetail(String taskId) {
-        return batchRecordDetailPersistentService.findAllByResult(taskId);
+    public List<BatchRecordDetail> findAllRecordDetail(String batchId) {
+        return batchRecordDetailPersistentService.findAllByResult(batchId);
     }
 
     @Override
-    public List<BatchRecordDetail> findRecordDetailsByResults(String taskId, List<ProcessStatusEnum> results) {
+    public List<BatchRecordDetail> findRecordDetailsByResults(String batchId, List<ProcessStatusEnum> results) {
         if (CollectionUtils.isEmpty(results)) {
-            return findAllRecordDetail(taskId);
+            return findAllRecordDetail(batchId);
         }
-        return batchRecordDetailPersistentService.findAllByResult(taskId, results);
+        return batchRecordDetailPersistentService.findAllByResult(batchId, results);
     }
 
 }

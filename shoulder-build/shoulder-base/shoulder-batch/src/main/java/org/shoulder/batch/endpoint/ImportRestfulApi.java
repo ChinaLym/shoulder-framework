@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
-import org.shoulder.batch.dto.param.ExecuteOperationParam;
+import org.shoulder.batch.dto.param.PromoteBatchParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
@@ -15,7 +15,9 @@ import org.shoulder.validate.annotation.FileType;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,7 +43,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  *  带默认 api 请求路径，实际中可以通过继承复写来替换
  *
  * @author lym
- * @deprecated 不作为框架默认实现的一部分，将移动至 platform 中
  */
 @Api(tags = {"数据批量操作"})
 @RequestMapping(value = "${shoulder.web.ext.batch.apiPath:/api/v1/batch/{dataType}}")
@@ -65,32 +66,32 @@ public interface ImportRestfulApi {
      * 查询数据导入数据校验进度 进度都用一个接口
      */
     /*@ApiOperation(value = "查询数据导入数据校验进度", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "GET")
-    @ApiImplicitParam(value = "批次ID", name = "taskId", example = "452f5wq6", defaultValue = "452f5wq6",
+    @ApiImplicitParam(value = "批次ID", name = "batchId", example = "452f5wq6", defaultValue = "452f5wq6",
             required = true, paramType = "path")
-    @RequestMapping(value = "progress/{taskId}", method = GET)
-    BaseResult<BatchProcessResult> queryValidateProcess(String taskId);*/
+    @RequestMapping(value = "progress/{batchId}", method = GET)
+    BaseResult<BatchProcessResult> queryValidateProcess(String batchId);*/
 
     /**
-     * 批量操作
+     * 推进批处理阶段
      *
-     * @param executeOperationParam 操作参数
+     * @param promoteBatchParam 操作参数
      * @return result
      */
     @ApiOperation(value = "批量操作", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "POST")
     @RequestMapping(value = "execute", method = RequestMethod.POST)
-    BaseResult<String> execute(ExecuteOperationParam executeOperationParam);
+    BaseResult<String> execute(@Validated @RequestBody PromoteBatchParam promoteBatchParam);
 
     /**
      * 查询数据操作进度，todo 【开发】考虑 查进度和结果是否为同一个接口？进度不需要每行信息
      *
-     * @param taskId 任务标识
+     * @param batchId 批处理任务id
      * @return 操作进度 / 结果
      */
     @ApiOperation(value = "查询数据操作进度", produces = MimeTypeUtils.APPLICATION_JSON_VALUE, httpMethod = "GET")
-    @ApiImplicitParam(value = "批次ID", name = "taskId", example = "312312312312", defaultValue = "3123412312321",
+    @ApiImplicitParam(value = "批次ID", name = "batchId", example = "312312312312", defaultValue = "3123412312321",
             required = true, paramType = "path")
-    @RequestMapping(value = "progress/{taskId}", method = GET)
-    BaseResult<BatchProcessResult> queryProcess(@PathVariable("taskId") String taskId);
+    @RequestMapping(value = "progress/{batchId}", method = GET)
+    BaseResult<BatchProcessResult> queryProcess(@PathVariable("batchId") String batchId);
 
 
     // ===================================  导入记录查询  =====================================

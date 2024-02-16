@@ -13,9 +13,14 @@ import org.springframework.http.HttpStatus;
 public enum BatchErrorCodeEnum implements ErrorCode {
 
     /**
-     * taskId 不存在，接口调用错误
+     * 该id批处理任务不存在，接口调用错误
      */
-    TASK_ID_NOT_EXIST(0, "The task id not exist!"),
+    BATCH_ID_NOT_EXIST(0, "BatchId not exist!"),
+
+    /**
+     * 任务状态不合适，通常是任务上一个节点还没完成，数据还没准备好，校验未完成，已经完成了，但不允许导入，需要查询任务进度来确认为什么不能执行
+     */
+    TASK_STATUS_ERROR(0, "Illegal task status!"),
 
     /**
      * 当前任务过多，拒绝处理

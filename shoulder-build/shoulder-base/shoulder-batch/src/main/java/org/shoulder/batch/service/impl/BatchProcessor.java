@@ -116,7 +116,7 @@ public class BatchProcessor implements Runnable {
         } catch (Exception e) {
             log.error("worker " + getName() + " processed failed", e);
         }
-        log.info("task {}-{} finished", task.getTaskId(), task.getSequence());
+        log.info("task {}-{} finished", task.getBatchId(), task.getSequence());
         return polluteUnknownIfMissingResult(task, ListUtils.emptyIfNull(taskResult));
     }
 

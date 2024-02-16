@@ -19,6 +19,11 @@ import java.util.Map;
 public class BatchData {
 
     /**
+     * 批处理 id
+     */
+    protected String batchId;
+
+    /**
      * 业务标识 / 数据类型
      */
     protected String dataType;

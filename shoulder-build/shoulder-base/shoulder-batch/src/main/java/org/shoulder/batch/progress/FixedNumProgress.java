@@ -35,9 +35,9 @@ public class FixedNumProgress implements Serializable, ProgressAble {
     private BiConsumer<String, ProgressAble> onFinishCallback = ProgressAble.super::onFinished;
 
     /**
-     * 任务标识
+     * 批处理任务id
      */
-    private String taskId;
+    private String id;
 
     /**
      * 任务开始执行的时间（若出现挂起，指最后一次开始运行的时间）任务创建时间不在进度中体现
@@ -75,7 +75,7 @@ public class FixedNumProgress implements Serializable, ProgressAble {
     @Override
     public void start() {
         // 只能从未开始到开始
-        AssertUtils.notBlank(taskId, CommonErrorCodeEnum.ILLEGAL_STATUS);
+        AssertUtils.notBlank(id, CommonErrorCodeEnum.ILLEGAL_STATUS);
         AssertUtils.isTrue(status.compareAndSet(ProcessStatusEnum.WAITING.getCode(), ProcessStatusEnum.RUNNING.getCode()), CommonErrorCodeEnum.ILLEGAL_STATUS);
         startTime = LocalDateTime.now();
     }
@@ -162,18 +162,18 @@ public class FixedNumProgress implements Serializable, ProgressAble {
     @Override
     public String toString() {
         return "BatchProgress{" +
-                "taskId='" + taskId + '\'' +
-                ", total=" + total +
-                ", processed=" + this.set.cardinality() +
-                ", startTime=" + startTime +
-                ", status=" + status +
-                '}';
+               "batchId='" + id + '\'' +
+               ", total=" + total +
+               ", processed=" + this.set.cardinality() +
+               ", startTime=" + startTime +
+               ", status=" + status +
+               '}';
     }
 
     public BatchProgressRecord toRecord() {
         // set 顺序按照不易变化 -> 易变化顺序设置，为了逻辑严谨部分字段内容、顺序单独处理
         BatchProgressRecord record = new BatchProgressRecord();
-        record.setTaskId(taskId);
+        record.setId(id);
         record.setStartTime(startTime);
         record.setAlreadyFinishedAtStart(0);
         record.setStatus(status.get());

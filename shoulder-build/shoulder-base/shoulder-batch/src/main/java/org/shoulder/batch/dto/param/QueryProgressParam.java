@@ -11,8 +11,8 @@ import lombok.Data;
 @ApiModel(description = "查询批处理进度参数")
 public class QueryProgressParam {
 
-    @ApiModelProperty(required = true, value = "任务标识", example = "t65b8-e2c9-4x70-8d6c-c4572d88",
+    @ApiModelProperty(required = true, value = "批处理任务id", example = "t65b8-e2c9-4x70-8d6c-c4572d88",
         position = 1)
-    private String taskId;
+    private String batchId;
 
 }

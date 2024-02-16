@@ -12,10 +12,10 @@ public interface BatchProgressCache {
     /**
      * 获取任务进度
      *
-     * @param id taskId
+     * @param progressId progressId
      * @return 任务
      */
-    ProgressAble getTaskProgress(String id);
+    ProgressAble getTaskProgress(String progressId);
 
     /**
      * 获取所有任务id

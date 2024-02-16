@@ -18,13 +18,13 @@ import java.util.List;
 public class BatchDataSlice {
 
     /**
-     * 批处理任务标识
+     * 批处理批处理任务id
      * 其实可通过 BatchDataWorker 来填充。未来可能调整，预留该字段
      */
-    private String taskId;
+    private String batchId;
 
     /**
-     * taskId 中的第几个子任务
+     * 本次批量任务中的第几个子任务
      */
     private int sequence;
 
@@ -46,8 +46,8 @@ public class BatchDataSlice {
     public BatchDataSlice() {
     }
 
-    public BatchDataSlice(String taskId, int sequence, String dataType, String operationType, List<? extends DataItem> batchList) {
-        this.taskId = taskId;
+    public BatchDataSlice(String batchId, int sequence, String dataType, String operationType, List<? extends DataItem> batchList) {
+        this.batchId = batchId;
         this.sequence = sequence;
         this.dataType = dataType;
         this.operationType = operationType;
@@ -57,11 +57,11 @@ public class BatchDataSlice {
     @Override
     public String toString() {
         return "BatchDataSlice{" +
-            "taskId='" + taskId + '\'' +
-            ", sequence=" + sequence +
-            ", dataType='" + dataType + '\'' +
-            ", operationType='" + operationType + '\'' +
-            ", batchList.size=" + batchList.size() +
-            '}';
+               "batchId='" + batchId + '\'' +
+               ", sequence=" + sequence +
+               ", dataType='" + dataType + '\'' +
+               ", operationType='" + operationType + '\'' +
+               ", batchList.size=" + batchList.size() +
+               '}';
     }
 }

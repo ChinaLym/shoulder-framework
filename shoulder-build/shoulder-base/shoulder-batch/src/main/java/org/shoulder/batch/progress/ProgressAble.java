@@ -30,7 +30,7 @@ public interface ProgressAble {
      */
     BatchProgressRecord getBatchProgress();
 
-    String getTaskId();
+    String getId();
 
     /**
      * 完成第 partIndex 个分片

@@ -24,7 +24,7 @@ public class QueryImportResultDetailParam {
      * 批量导入id
      */
     @ApiModelProperty(value = "导入批次id", example = "dqw4244vgr20", dataType = "string", required = true)
-    private String taskId;
+    private String batchId;
 
     /**
      * 业务类型

@@ -5,7 +5,10 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.enums.ProcessStatusEnum;
-import org.shoulder.batch.model.*;
+import org.shoulder.batch.model.BatchData;
+import org.shoulder.batch.model.BatchDataSlice;
+import org.shoulder.batch.model.BatchRecord;
+import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.progress.BatchProgressRecord;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
@@ -20,7 +23,12 @@ import org.shoulder.core.util.JsonUtils;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.enums.OperationResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -68,7 +76,7 @@ public class BatchManager implements Runnable {
     /**
      * 操作用户
      */
-    protected Long userId;
+    protected Long   userId;
     /**
      * 语言标识
      */
@@ -100,8 +108,8 @@ public class BatchManager implements Runnable {
      */
     protected BlockingQueue<BatchRecordDetail> resultQueue;
 
-
     public BatchManager(BatchData batchData) {
+        batchData.setBatchId(generateBatchId());
         AssertUtils.notNull(batchData, CommonErrorCodeEnum.ILLEGAL_PARAM);
         AssertUtils.notNull(batchData.getDataType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         AssertUtils.notNull(batchData.getOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
@@ -119,12 +127,15 @@ public class BatchManager implements Runnable {
 
         // 初始化进度对象（保证在构造器中完成）
         this.progress = new BatchProgressRecord();
-        this.progress.setTaskId(UUID.randomUUID().toString());
+        this.progress.setId(batchData.getBatchId());
         this.progress.setTotal(total);
         this.progress.addSuccess(batchData.getSuccessList().size());
         this.progress.addFail(batchData.getFailList().size());
     }
 
+    private static String generateBatchId() {
+        return UUID.randomUUID().toString();
+    }
 
     /**
      * 使命 | 职责
@@ -149,7 +160,7 @@ public class BatchManager implements Runnable {
 
         // 开始分配任务
         for (int i = 0; i < workerNum - 1; i++) {
-            BatchProcessor worker = new BatchProcessor(getTaskId(), jobQueue, resultQueue);
+            BatchProcessor worker = new BatchProcessor(batchData.getBatchId(), jobQueue, resultQueue);
             if (!canEmployWorker(worker)) {
                 // 提交失败，说明当且服务器较忙，无法雇佣工人，因此中断委派，转由当前线程执行全部任务
                 log.warnWithErrorCode(CommonErrorCodeEnum.SERVER_BUSY.getCode(),
@@ -158,7 +169,7 @@ public class BatchManager implements Runnable {
             }
         }
         // 当且线程也参与做任务
-        BatchProcessor worker = new BatchProcessor(getTaskId(), jobQueue, resultQueue);
+        BatchProcessor worker = new BatchProcessor(batchData.getBatchId(), jobQueue, resultQueue);
         worker.run();
 
         // 阻塞式处理结果
@@ -181,7 +192,7 @@ public class BatchManager implements Runnable {
         // 初始化数据处理结果对象 Record
         int total = progress.getTotal();
         this.result = BatchRecord.builder()
-            .id(getTaskId())
+            .id(batchData.getBatchId())
             .dataType(batchData.getDataType())
             .operation(batchData.getOperation())
             .totalNum(total)
@@ -193,7 +204,7 @@ public class BatchManager implements Runnable {
         List<BatchRecordDetail> detailList = new ArrayList<>(total);
         for (int i = 0; i < total; i++) {
             BatchRecordDetail detailItem = BatchRecordDetail.builder()
-                .recordId(getTaskId())
+                .recordId(batchData.getBatchId())
                 .index(i)
                 .build();
             // 这里认为 index 唯一的，所以是 set，而非 add
@@ -206,30 +217,30 @@ public class BatchManager implements Runnable {
             for (DataItem dataItem : dataList) {
                 // 这里认为 total 是所有校验的数据，若 total = 100，则不可能有 index > 100 的数据
                 detailList.get(dataItem.getIndex())
-                        .setIndex(dataItem.getIndex())
-                        .setRecordId(getTaskId())
-                        .setOperation(operationType)
-                        .setStatus(ProcessStatusEnum.SUCCESS.getCode())
+                    .setIndex(dataItem.getIndex())
+                    .setRecordId(batchData.getBatchId())
+                    .setOperation(operationType)
+                    .setStatus(ProcessStatusEnum.SUCCESS.getCode())
                     .setSource(serializeSource(dataItem));
             }
         });
         // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不处理的，校验失败无法处理的） todo 跳过状态定义
         for (DataItem dataItem : batchData.getSuccessList()) {
             result.getDetailList().get(dataItem.getIndex())
-                    .setRecordId(getTaskId())
-                    .setIndex(dataItem.getIndex())
-                    .setOperation(batchData.getOperation())
-                    .setSource(serializeSource(dataItem))
-                    .setStatus(ProcessStatusEnum.SKIP_FOR_REPEAT.getCode());
+                .setRecordId(batchData.getBatchId())
+                .setIndex(dataItem.getIndex())
+                .setOperation(batchData.getOperation())
+                .setSource(serializeSource(dataItem))
+                .setStatus(ProcessStatusEnum.SKIP_FOR_REPEAT.getCode());
         }
         for (DataItem dataItem : batchData.getFailList()) {
             // getFailReason 不可能为 null，否则就是使用者错误，未塞入错误原因
             result.getDetailList().get(dataItem.getIndex())
-                    .setRecordId(getTaskId())
-                    .setIndex(dataItem.getIndex())
-                    .setOperation(batchData.getOperation())
-                    .setSource(serializeSource(dataItem))
-                    .setStatus(ProcessStatusEnum.SKIP_FOR_INVALID.getCode())
+                .setRecordId(batchData.getBatchId())
+                .setIndex(dataItem.getIndex())
+                .setOperation(batchData.getOperation())
+                .setSource(serializeSource(dataItem))
+                .setStatus(ProcessStatusEnum.SKIP_FOR_INVALID.getCode())
                 .setFailReason(batchData.getFailReason().get(dataItem.getIndex()));
         }
         log.info("Directly: success:{}, fail:{}", batchData.getSuccessList().size(), batchData.getFailList().size());
@@ -252,7 +263,6 @@ public class BatchManager implements Runnable {
         log.info(beginLog.toString());
     }
 
-
     /**
      * 把原始数据转为 {@link BatchRecordDetail#setSource(String)} 字段
      * 筛选出部分字段，并脱敏等处理
@@ -262,9 +272,7 @@ public class BatchManager implements Runnable {
         return JsonUtils.toJson(importData);
     }
 
-
     // ================================= 任务分片与执行 ==================================
-
 
     /**
      * 确定需要多少worker线程
@@ -298,7 +306,7 @@ public class BatchManager implements Runnable {
             List<? extends List<? extends DataItem>> pages = ListUtils.partition(toProcessedData, getTaskSliceNum(batchData));
             for (List<? extends DataItem> page : pages) {
                 if (CollectionUtils.isNotEmpty(page)) {
-                    tasks.add(new BatchDataSlice(getTaskId(), sequence.getAndIncrement(),
+                    tasks.add(new BatchDataSlice(batchData.getBatchId(), sequence.getAndIncrement(),
                         batchData.getDataType(), operationType, page)
                     );
                 }
@@ -326,7 +334,6 @@ public class BatchManager implements Runnable {
             return false;
         }
     }
-
 
     // ================================= 处理结果 ==================================
 
@@ -403,13 +410,13 @@ public class BatchManager implements Runnable {
         OpLogContextHolder.getLog().setResult(opResult)
             .addDetailItem(String.valueOf(progress.getSuccessNum()))
             .addDetailItem(String.valueOf(progress.getFailNum()))
-            .setObjectId(progress.getTaskId())
+            .setObjectId(batchData.getBatchId())
             .setObjectType(batchData.getDataType());
         OpLogContextHolder.enableAutoLog();
     }
 
-    public String getTaskId() {
-        return progress.getTaskId();
+    public String getBatchId() {
+        return batchData.getBatchId();
     }
 
     public BatchProgressRecord getBatchProgress() {

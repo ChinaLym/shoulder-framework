@@ -73,7 +73,7 @@ public class JdbcBatchRecordPersistentService implements BatchRecordPersistentSe
 
 
     /**
-     * 根据 任务标识 获取批处理记录
+     * 根据 批处理任务id 获取批处理记录
      *
      * @param recordId 主键
      * @return 记录

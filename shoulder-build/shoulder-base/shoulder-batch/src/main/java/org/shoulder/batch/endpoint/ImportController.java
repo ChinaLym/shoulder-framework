@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.batch.constant.BatchConstants;
-import org.shoulder.batch.dto.param.ExecuteOperationParam;
+import org.shoulder.batch.dto.param.PromoteBatchParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
@@ -21,6 +21,7 @@ import org.shoulder.batch.progress.BatchProgressRecord;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
+import org.shoulder.batch.spi.BatchImportDataItem;
 import org.shoulder.batch.spi.DataItem;
 import org.shoulder.batch.spi.csv.DataItemConvertFactory;
 import org.shoulder.core.context.AppContext;
@@ -47,6 +48,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -127,10 +129,10 @@ public class ImportController implements ImportRestfulApi {
         batchData.setBatchListMap(new HashMap<>());
         batchData.getBatchListMap().put(Operations.UPLOAD_AND_VALIDATE, convertToDataItemList(businessType, recordList));
 
-        // 保存文件，解析文件，然后校验，返回校验任务标识
-        String taskId = batchService.doProcess(batchData);
+        // 保存文件，解析文件，然后校验，返回校验批处理任务id
+        String batchId = batchService.doProcess(batchData);
 
-        return BaseResult.success(taskId);
+        return BaseResult.success(batchId);
     }
 
     private List<? extends DataItem> convertToDataItemList(String businessType, List<Record> recordList) {
@@ -148,22 +150,39 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     @OperationLog(operation = Operations.IMPORT)
-    public BaseResult<String> execute(@RequestBody ExecuteOperationParam executeOperationParam) {
-        // 示例：从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
-        String taskId = executeOperationParam.getTaskId();
-        BatchProgressRecord process = batchService.queryBatchProgress(taskId);
+    public BaseResult<String> execute(PromoteBatchParam promoteBatchParam) {
+        // 从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
+        String batchId = promoteBatchParam.getBatchId();
+        BatchProgressRecord process = batchService.queryBatchProgress(batchId);
+        AssertUtils.isTrue(process.hasFinish(), BatchErrorCodeEnum.TASK_STATUS_ERROR);
+        // 从数据库查寻
+        BatchRecord record = recordService.findRecordById(promoteBatchParam.getBatchId());
+        AssertUtils.notNull(record, CommonErrorCodeEnum.DATA_NOT_EXISTS);
+        AssertUtils.equals(String.valueOf(record.getCreator()), AppContext.getUserId(), CommonErrorCodeEnum.PERMISSION_DENY);
+        AssertUtils.equals(record.getDataType(), promoteBatchParam.getDataType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.equals(record.getOperation(), promoteBatchParam.getCurrentOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        // todo 读配置，校验参数与配置一致
+        AssertUtils.equals(Operations.IMPORT, promoteBatchParam.getNextOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        final int total = record.getTotalNum();
+
         BatchData batchData = new BatchData();
-        return BaseResult.success(
-            batchService.doProcess(batchData)
-        );
+        batchData.setOperation(promoteBatchParam.getNextOperation());
+        batchData.setDataType(promoteBatchParam.getDataType());
+        batchData.setBatchListMap(new HashMap<>());
+        List<BatchImportDataItem> importDataItemList = new ArrayList<>();
+        importDataItemList.add(new BatchImportDataItem(total));
+        batchData.getBatchListMap().put(promoteBatchParam.getNextOperation(), importDataItemList);
+
+        String nextStageId = batchService.doProcess(batchData);
+        return BaseResult.success(nextStageId);
     }
 
     /**
      * 查询数据导入进度
      */
     @Override
-    public BaseResult<BatchProcessResult> queryProcess(String taskId) {
-        BatchProgressRecord process = batchService.queryBatchProgress(taskId);
+    public BaseResult<BatchProcessResult> queryProcess(String batchId) {
+        BatchProgressRecord process = batchService.queryBatchProgress(batchId);
         return BaseResult.success(conversionService.convert(process, BatchProcessResult.class));
     }
 
@@ -188,7 +207,7 @@ public class ImportController implements ImportRestfulApi {
         @RequestBody QueryImportResultDetailParam condition) {
 
         BatchRecord record = recordService.findRecordById("xxx");
-        List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getTaskId());
+        List<BatchRecordDetail> details = recordService.findAllRecordDetail(condition.getBatchId());
         record.setDetailList(details);
         BatchRecordResult result = conversionService.convert(record, BatchRecordResult.class);
         return BaseResult.success(result);
@@ -235,7 +254,7 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public void exportRecordDetail(HttpServletResponse response, QueryImportResultDetailParam condition) throws IOException {
         exportService.exportBatchDetail(response.getOutputStream(), BatchConstants.CSV, condition.getBusinessType(),
-            condition.getTaskId(), CollectionUtils.emptyIfNull(condition.getStatusList())
+            condition.getBatchId(), CollectionUtils.emptyIfNull(condition.getStatusList())
                 .stream().map(ProcessStatusEnum::of).collect(Collectors.toList()));
     }
 

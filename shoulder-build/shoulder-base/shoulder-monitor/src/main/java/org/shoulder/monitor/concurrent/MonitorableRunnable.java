@@ -20,7 +20,7 @@ public interface MonitorableRunnable {
     /**
      * 跟踪任务id
      */
-    String getTaskIdentifier();
+    String getRunnableId();
 
     /**
      * 跟踪进、出队列时间

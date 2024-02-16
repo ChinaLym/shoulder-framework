@@ -5,6 +5,7 @@ package org.shoulder.batch.spi;
  *
  * @author lym
  */
+@FunctionalInterface
 public interface DataItem {
 
     /**
