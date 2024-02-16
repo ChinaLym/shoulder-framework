@@ -30,17 +30,17 @@ import java.util.Arrays;
     /**
      * 成功 - 重复（数据已存在）并更新旧值
      */
-    UPDATE_REPEAT(11, BatchI18nEnum.RESULT_IMPORT_UPDATE.getCode()),
+    UPDATE_REPEAT(11, BatchI18nEnum.RESULT_IMPORT_UPDATE_REPEAT.getCode()),
 
     /**
      * 跳过 - 数据重复
      */
-    SKIP_FOR_REPEAT(20, BatchI18nEnum.RESULT_IMPORT_SKIP.getCode()),
+    SKIP_FOR_REPEAT(20, BatchI18nEnum.RESULT_IMPORT_SKIP_INVALID.getCode()),
 
     /**
      * 跳过 - 校验不通过（未处理）
      */
-    SKIP_FOR_INVALID(21, BatchI18nEnum.RESULT_VAIDATE_FAILED.getCode()),
+    SKIP_FOR_INVALID(21, BatchI18nEnum.RESULT_VALIDATE_FAILED.getCode()),
 
     /**
      * 失败
@@ -50,12 +50,12 @@ import java.util.Arrays;
     /**
      * 失败 - 校验不通过（未处理）
      */
-    FAILED_FOR_INVALID(31, BatchI18nEnum.RESULT_VAIDATE_FAILED.getCode()),
+    FAILED_FOR_INVALID(31, BatchI18nEnum.RESULT_VALIDATE_FAILED.getCode()),
 
     /**
      * 失败 - 数据重复
      */
-    FAILED_FOR_REPEAT(32, BatchI18nEnum.RESULT_IMPORT_SKIP.getCode()),
+    FAILED_FOR_REPEAT(32, BatchI18nEnum.RESULT_IMPORT_SKIP_INVALID.getCode()),
     ;
 
 
