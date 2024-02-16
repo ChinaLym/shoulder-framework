@@ -1,7 +1,6 @@
 package org.shoulder.batch.service.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.batch.progress.BatchProgressCache;
 import org.shoulder.batch.config.ExportConfigManager;
 import org.shoulder.batch.config.model.ExportColumnConfig;
 import org.shoulder.batch.config.model.ExportFileConfig;
@@ -10,9 +9,10 @@ import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.BatchI18nEnum;
 import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchData;
-import org.shoulder.batch.progress.BatchProgressRecord;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
+import org.shoulder.batch.progress.BatchProgressCache;
+import org.shoulder.batch.progress.BatchProgressRecord;
 import org.shoulder.batch.progress.ProgressAble;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
@@ -123,9 +123,9 @@ public class DefaultBatchExportService implements BatchAndExportService {
      * @throws IOException IO
      */
     @Override
-    public void export(OutputStream outputStream, String exportType,
-                       List<Supplier<List<Map<String, String>>>> dataSupplierList,
-                       String templateId) throws IOException {
+    public String export(OutputStream outputStream, String exportType,
+                         List<Supplier<List<Map<String, String>>>> dataSupplierList,
+                         String templateId) throws IOException {
         // 初始化线程变量
         DataExporter dataExporter = dataExporterList.stream()
             .filter(exporter -> exporter.support(exportType))
@@ -159,6 +159,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
             log.trace("output data finished.");
             // 刷入流
             dataExporter.flush();
+            return exportFileConfig.getEncode();
             // todo 【流程】记录业务日志
         } finally {
             // 清理上下文
@@ -232,11 +233,11 @@ public class DefaultBatchExportService implements BatchAndExportService {
     }
 
     @Override
-    public void exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
-                                  String batchId, List<ProcessStatusEnum> resultTypes) throws IOException {
+    public String exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
+                                    String batchId, List<ProcessStatusEnum> resultTypes) throws IOException {
         exportRecordLocal.set(Boolean.TRUE);
         // 认为单次批量操作一般有上限，如1000，这里直接单次全捞出来了
-        export(outputStream, exportType, List.of(() -> {
+        return export(outputStream, exportType, List.of(() -> {
             List<BatchRecordDetail> recordDetailList = findAllDetailByRecordIdAndStatusAndIndex(batchId, resultTypes, null, null);
             return recordDetailList.stream()
                 .map(batchRecordDetail -> {
@@ -349,7 +350,8 @@ public class DefaultBatchExportService implements BatchAndExportService {
     // ------------------- 记录详情 ------------------------------
 
     @Override
-    public List<BatchRecordDetail> findAllDetailByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList, Integer indexStart, Integer indexEnd) {
+    public List<BatchRecordDetail> findAllDetailByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList,
+                                                                            Integer indexStart, Integer indexEnd) {
         return batchRecordDetailPersistentService.findAllByRecordIdAndStatusAndIndex(recordId, resultList, indexStart, indexEnd);
     }
 

@@ -63,7 +63,7 @@ public class ExportConfigManagerTest {
     public void templateOutputTest() throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream(2048000);
         exportService.export(out, BatchConstants.CSV, Collections.emptyList(), templateId);
-        System.out.println(out.toString("gb2312"));
+        System.out.println(out.toString("GB18030"));
     }
 
 }

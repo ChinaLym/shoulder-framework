@@ -1,6 +1,5 @@
 package org.shoulder.batch.endpoint;
 
-import cn.hutool.core.io.IoUtil;
 import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
@@ -24,6 +23,7 @@ import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
 import org.shoulder.batch.spi.BatchImportDataItem;
 import org.shoulder.batch.spi.DataItem;
+import org.shoulder.batch.spi.ExportDataQueryFactory;
 import org.shoulder.batch.spi.csv.DataItemConvertFactory;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.context.AppInfo;
@@ -31,6 +31,7 @@ import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.dto.request.PageQuery;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
+import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.log.operation.annotation.OperationLog;
@@ -42,7 +43,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -87,13 +87,17 @@ public class ImportController implements ImportRestfulApi {
 
     private final ShoulderConversionService conversionService;
 
+    private final List<ExportDataQueryFactory> exportDataQueryFactoryList;
+
     public ImportController(BatchService batchService, ExportService exportService, RecordService recordService,
-                            DataItemConvertFactory dataItemConvertFactory, ShoulderConversionService shoulderConversionService) {
+                            DataItemConvertFactory dataItemConvertFactory, ShoulderConversionService shoulderConversionService,
+                            List<ExportDataQueryFactory> exportDataQueryFactoryList) {
         this.batchService = batchService;
         this.exportService = exportService;
         this.recordService = recordService;
         this.dataItemConvertFactory = dataItemConvertFactory;
         this.conversionService = shoulderConversionService;
+        this.exportDataQueryFactoryList = exportDataQueryFactoryList;
     }
 
     /**
@@ -228,34 +232,9 @@ public class ImportController implements ImportRestfulApi {
     public void exportImportTemplate(HttpServletResponse response, String businessType) throws IOException {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        exportService.export(byteArrayOutputStream, BatchConstants.CSV, Collections.emptyList(), businessType);
+        String encoding = exportService.export(byteArrayOutputStream, BatchConstants.CSV, Collections.emptyList(), businessType);
 
-        if (byteArrayOutputStream.size() == 0) {
-            response.setStatus(404);
-            AssertUtils.notEquals(byteArrayOutputStream.size(), 0, CommonErrorCodeEnum.FILE_READ_FAIL);
-            //return ResponseEntity.notFound().build();
-        }
-
-        byte[] templateBytes = byteArrayOutputStream.toByteArray();
-        // 先设置 header 再写 responseStream，否则header会失效
-        String fileName = URLEncoder.encode(businessType + "-import-template.csv", AppInfo.charset());
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
-        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        response.setCharacterEncoding(AppInfo.charset().name());
-        response.setContentLength(templateBytes.length);
-        // 创建输入流以读取文件
-        IoUtil.copy(new ByteArrayInputStream(templateBytes), response.getOutputStream());
-        // 设置响应头信息
-        //InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(templateBytes));
-        //HttpHeaders headers = new HttpHeaders();
-        //headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + businessType + "-import-template.csv\"");
-        //headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
-
-        // 构建响应实体
-        //return ResponseEntity.ok()
-        //    .headers(headers)
-        //    .contentLength(templateBytes.length)
-        //    .body(resource);
+        compositeResponse(response, businessType, byteArrayOutputStream, encoding);
     }
 
     /**
@@ -269,12 +248,14 @@ public class ImportController implements ImportRestfulApi {
         int total = recordInDb.getTotalNum();
         // 根据 是否 admin，决定 totalNumber 是否可以导入，否则最多xx条，如果太多可以考虑导出压缩文件
 
-        exportService.exportBatchDetail(response.getOutputStream(), BatchConstants.CSV,
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        String encoding = exportService.exportBatchDetail(byteArrayOutputStream, BatchConstants.CSV,
             recordInDb.getDataType(),
             recordInDb.getId(),
             CollectionUtils.emptyIfNull(condition.getStatusList())
                 .stream().map(ProcessStatusEnum::of).collect(Collectors.toList())
         );
+        compositeResponse(response, recordInDb.getDataType(), byteArrayOutputStream, encoding);
     }
 
     /**
@@ -283,21 +264,35 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public void export(HttpServletResponse response, String businessType,
                        @RequestBody PageQuery<Map> exportCondition) throws IOException {
-        List<Supplier<List<Map<String, String>>>> exportData = new ArrayList<>();
-        exportService.export(response.getOutputStream(), businessType, exportData, "exportTemplateId");
+        // 找到数据查询构造器
+        ExportDataQueryFactory exportDataQueryFactory = exportDataQueryFactoryList.stream()
+            .filter(p -> p.support(businessType, exportCondition))
+            .findFirst()
+            .orElseThrow(() -> new BaseRuntimeException(CommonErrorCodeEnum.ILLEGAL_PARAM));
+        List<Supplier<List<Map<String, String>>>> exportData = exportDataQueryFactory.createQuerySuppliers(businessType, exportCondition);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        String encoding = exportService.export(byteArrayOutputStream, BatchConstants.CSV, exportData, businessType);
+        compositeResponse(response, businessType, byteArrayOutputStream, encoding);
     }
 
-    /**
-     * 给导出的文件命名
-     *
-     * @param response http 响应
-     * @param fileName 导出文件名
-     * @deprecated 不要在这里做
-     */
-    public void setExportFileName(HttpServletResponse response, String fileName, String encoding, long length) {
-        response.setHeader("Content-Disposition", "attachment; filename=" +
-                                                  URLEncoder.encode(fileName, AppInfo.charset()));
-        response.setHeader("Content-Type", "application/octet-stream");
+    private static void compositeResponse(HttpServletResponse response, String businessType, ByteArrayOutputStream byteArrayOutputStream,
+                                          String encoding) throws IOException {
+        int length = byteArrayOutputStream.size();
+        if (length == 0) {
+            response.setStatus(404);
+            AssertUtils.notEquals(byteArrayOutputStream.size(), 0, CommonErrorCodeEnum.FILE_READ_FAIL);
+            //return ResponseEntity.notFound().build();
+        }
+
+        // 先设置 header 再写 responseStream，否则header会失效
+        String fileName = URLEncoder.encode(businessType + "-import-template.csv", AppInfo.charset());
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        response.setCharacterEncoding(encoding);
+        response.setContentLength(length);
+        // 写入响应
+        byteArrayOutputStream.writeTo(response.getOutputStream());
     }
 
 }

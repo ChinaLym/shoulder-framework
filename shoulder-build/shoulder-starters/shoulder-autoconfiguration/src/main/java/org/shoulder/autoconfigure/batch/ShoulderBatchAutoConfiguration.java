@@ -27,6 +27,7 @@ import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
 import org.shoulder.batch.service.impl.DefaultBatchExportService;
 import org.shoulder.batch.spi.DataExporter;
+import org.shoulder.batch.spi.ExportDataQueryFactory;
 import org.shoulder.batch.spi.csv.CsvExporter;
 import org.shoulder.batch.spi.csv.DataItemConvertFactory;
 import org.shoulder.batch.spi.csv.DefaultDataItemConvertFactory;
@@ -123,9 +124,11 @@ public class ShoulderBatchAutoConfiguration {
     @ConditionalOnMissingBean(ImportRestfulApi.class)
     public ImportController importRestfulApi(
         BatchService batchService, ExportService exportService, RecordService recordService,
-        @Nullable DataItemConvertFactory dataItemConvertFactory, ShoulderConversionService conversionService
+        @Nullable DataItemConvertFactory dataItemConvertFactory, ShoulderConversionService conversionService,
+        @Nullable List<ExportDataQueryFactory> exportDataQueryFactoryList
     ) {
-        return new ImportController(batchService, exportService, recordService, dataItemConvertFactory, conversionService);
+        return new ImportController(batchService, exportService, recordService,
+            dataItemConvertFactory, conversionService, exportDataQueryFactoryList);
     }
 
     /**

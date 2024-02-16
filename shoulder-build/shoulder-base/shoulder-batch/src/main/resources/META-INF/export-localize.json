@@ -76,12 +76,12 @@
     },
     {
         "languageId": "zh_cn",
-        "encoding": "gb2312",
+        "encoding": "GB18030",
         "delimiter": ","
     },
     {
         "languageId": "zh",
-        "encoding": "gb2312",
+        "encoding": "GB18030",
         "delimiter": ","
     },
     {
