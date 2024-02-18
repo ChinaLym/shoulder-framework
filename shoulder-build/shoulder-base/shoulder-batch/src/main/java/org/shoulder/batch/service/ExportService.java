@@ -1,6 +1,6 @@
 package org.shoulder.batch.service;
 
-import org.shoulder.batch.enums.ProcessStatusEnum;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
  */
 public interface ExportService {
 
-    // todo 功能
+    // todo 【进阶|性能】
     // 小文件：字符集、inputStream (长度)
     // 大文件：字符集、inputStream (长度) 文件位置，返回重定向
     // 超大文件：字符集、inputStream (长度) 文件 uri 地址、耗时（可能有内置文件合并）
@@ -45,6 +45,6 @@ public interface ExportService {
      * @throws IOException io异常
      */
     String exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
-                           String batchId, List<ProcessStatusEnum> resultTypes) throws IOException;
+                             String batchId, List<BatchDetailResultStatusEnum> resultTypes) throws IOException;
 
 }

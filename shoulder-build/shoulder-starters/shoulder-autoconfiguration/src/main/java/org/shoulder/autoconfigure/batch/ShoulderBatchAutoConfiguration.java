@@ -3,6 +3,7 @@ package org.shoulder.autoconfigure.batch;
 import com.univocity.parsers.csv.CsvWriter;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
+import org.shoulder.autoconfigure.lock.LockAutoConfiguration;
 import org.shoulder.batch.config.DefaultExportConfigManager;
 import org.shoulder.batch.config.ExportConfigInitializer;
 import org.shoulder.batch.config.ExportConfigManager;
@@ -15,12 +16,7 @@ import org.shoulder.batch.model.convert.BatchRecordDetailDomain2DTOConverter;
 import org.shoulder.batch.model.convert.BatchRecordDomain2DTOConverter;
 import org.shoulder.batch.progress.BatchProgressCache;
 import org.shoulder.batch.progress.DefaultBatchProgressCache;
-import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
-import org.shoulder.batch.repository.BatchRecordPersistentService;
-import org.shoulder.batch.repository.CacheBatchRecordDetailPersistentServiceImpl;
-import org.shoulder.batch.repository.CacheBatchRecordPersistentServiceImpl;
-import org.shoulder.batch.repository.JdbcBatchRecordDetailPersistentServiceImpl;
-import org.shoulder.batch.repository.JdbcBatchRecordPersistentServiceImpl;
+import org.shoulder.batch.repository.*;
 import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
@@ -33,6 +29,7 @@ import org.shoulder.batch.spi.csv.DataItemConvertFactory;
 import org.shoulder.batch.spi.csv.DefaultDataItemConvertFactory;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.i18.Translator;
+import org.shoulder.core.lock.ServerLock;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -46,12 +43,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import javax.sql.DataSource;
 
 /**
  * 批处理相关自动装配
@@ -60,7 +56,7 @@ import javax.sql.DataSource;
  * @author lym
  */
 @ConditionalOnClass(BatchData.class)
-@AutoConfiguration(after = I18nAutoConfiguration.class)
+@AutoConfiguration(after = {I18nAutoConfiguration.class, LockAutoConfiguration.class})
 @EnableConfigurationProperties(BatchProperties.class)
 public class ShoulderBatchAutoConfiguration {
 
@@ -123,12 +119,12 @@ public class ShoulderBatchAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(ImportRestfulApi.class)
     public ImportController importRestfulApi(
-        BatchService batchService, ExportService exportService, RecordService recordService,
-        @Nullable DataItemConvertFactory dataItemConvertFactory, ShoulderConversionService conversionService,
-        @Nullable List<ExportDataQueryFactory> exportDataQueryFactoryList
+            ServerLock serverLock, BatchService batchService, ExportService exportService, RecordService recordService,
+            @Nullable DataItemConvertFactory dataItemConvertFactory, ShoulderConversionService conversionService,
+            @Nullable List<ExportDataQueryFactory> exportDataQueryFactoryList
     ) {
-        return new ImportController(batchService, exportService, recordService,
-            dataItemConvertFactory, conversionService, exportDataQueryFactoryList);
+        return new ImportController(serverLock, batchService, exportService, recordService,
+                dataItemConvertFactory, conversionService, exportDataQueryFactoryList);
     }
 
     /**
@@ -144,14 +140,14 @@ public class ShoulderBatchAutoConfiguration {
     @ConditionalOnBean(DataExporter.class)
     @ConditionalOnMissingBean
     public BatchAndExportService batchAndExportService(
-        @Qualifier(BatchConstants.BATCH_THREAD_POOL_NAME)
-        ThreadPoolExecutor batchThreadPool, Translator translator, List<DataExporter> dataExporterList,
-        BatchRecordPersistentService batchRecordPersistentService, BatchRecordDetailPersistentService batchRecordDetailPersistentService,
-        BatchProgressCache batchProgressCache, ExportConfigManager exportConfigManager
+            @Qualifier(BatchConstants.BATCH_THREAD_POOL_NAME)
+            ThreadPoolExecutor batchThreadPool, Translator translator, List<DataExporter> dataExporterList,
+            BatchRecordPersistentService batchRecordPersistentService, BatchRecordDetailPersistentService batchRecordDetailPersistentService,
+            BatchProgressCache batchProgressCache, ExportConfigManager exportConfigManager
     ) {
         return new DefaultBatchExportService(batchThreadPool, translator, dataExporterList,
-            batchRecordPersistentService, batchRecordDetailPersistentService, batchProgressCache,
-            exportConfigManager);
+                batchRecordPersistentService, batchRecordDetailPersistentService, batchProgressCache,
+                exportConfigManager);
     }
 
     /**
@@ -162,8 +158,8 @@ public class ShoulderBatchAutoConfiguration {
     public ThreadPoolExecutor shoulderBatchThreadPool() {
         // 默认使用 5 个线程
         return new ThreadPoolExecutor(5, 5,
-            60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
-            new CustomizableThreadFactory("shoulder-batch"));
+                60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
+                new CustomizableThreadFactory("shoulder-batch"));
     }
 
     /**
@@ -192,9 +188,9 @@ public class ShoulderBatchAutoConfiguration {
     }
 
     @AutoConfiguration(
-        after = { JdbcBatchRecordAutoConfiguration.class, org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration.class })
+            after = {JdbcBatchRecordAutoConfiguration.class, org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration.class})
     @ConditionalOnClass(CacheManager.class)
-    @ConditionalOnBean({ CacheManager.class })
+    @ConditionalOnBean({CacheManager.class})
     @ConditionalOnProperty(name = "shoulder.batch.storage.type", havingValue = "memory", matchIfMissing = true)
     public static class SpringCacheBatchRecordAutoConfiguration {
         @Bean
@@ -211,8 +207,8 @@ public class ShoulderBatchAutoConfiguration {
     }
 
     @AutoConfiguration(
-        after = { JdbcBatchRecordAutoConfiguration.class, SpringCacheBatchRecordAutoConfiguration.class })
-    @ConditionalOnMissingBean({ CacheManager.class })
+            after = {JdbcBatchRecordAutoConfiguration.class, SpringCacheBatchRecordAutoConfiguration.class})
+    @ConditionalOnMissingBean({CacheManager.class})
     public static class DefaultMemoryBatchRecordAutoConfiguration {
 
         @Bean

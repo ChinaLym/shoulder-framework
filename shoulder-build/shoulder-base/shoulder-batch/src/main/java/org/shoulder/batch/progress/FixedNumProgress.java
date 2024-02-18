@@ -2,7 +2,6 @@ package org.shoulder.batch.progress;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.shoulder.batch.model.ProcessStatusEnum;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 
@@ -76,7 +75,7 @@ public class FixedNumProgress implements Serializable, ProgressAble {
     public void start() {
         // 只能从未开始到开始
         AssertUtils.notBlank(id, CommonErrorCodeEnum.ILLEGAL_STATUS);
-        AssertUtils.isTrue(status.compareAndSet(ProcessStatusEnum.WAITING.getCode(), ProcessStatusEnum.RUNNING.getCode()), CommonErrorCodeEnum.ILLEGAL_STATUS);
+        AssertUtils.isTrue(status.compareAndSet(ProgressStatusEnum.WAITING.getCode(), ProgressStatusEnum.RUNNING.getCode()), CommonErrorCodeEnum.ILLEGAL_STATUS);
         startTime = LocalDateTime.now();
     }
 
@@ -86,23 +85,23 @@ public class FixedNumProgress implements Serializable, ProgressAble {
 
     @Override
     public void failStop() {
-        status.getAndSet(ProcessStatusEnum.EXCEPTION.getCode());
+        status.getAndSet(ProgressStatusEnum.EXCEPTION.getCode());
         stopTime = LocalDateTime.now();
     }
 
     @Override
     public void finish() {
-        status.getAndSet(ProcessStatusEnum.FINISHED.getCode());
+        status.getAndSet(ProgressStatusEnum.FINISHED.getCode());
         stopTime = LocalDateTime.now();
     }
 
     @Override
     public boolean hasFinish() {
-        if (status.get() > ProcessStatusEnum.RUNNING.getCode()) {
+        if (status.get() > ProgressStatusEnum.RUNNING.getCode()) {
             return true;
         }
         checkFinished();
-        return status.get() > ProcessStatusEnum.RUNNING.getCode();
+        return status.get() > ProgressStatusEnum.RUNNING.getCode();
     }
 
     /**
@@ -112,7 +111,7 @@ public class FixedNumProgress implements Serializable, ProgressAble {
      */
     @Override
     public long calculateProcessedTime() {
-        if (status.get() == ProcessStatusEnum.WAITING.getCode()) {
+        if (status.get() == ProgressStatusEnum.WAITING.getCode()) {
             return 0;
         }
         if (hasFinish()) {

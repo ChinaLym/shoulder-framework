@@ -42,12 +42,12 @@ public class BatchData {
 
     // ======================= 处理完毕后才能确定 =======================
     /**
-     * 直接成功的数据，如校验已存在，需要跳过
+     * 处理成功的数据，如校验已存在，需要跳过
      */
     protected List<? extends DataItem> successList = new ArrayList<>();
 
     /**
-     * 直接失败的数据，如校验未通过，不要处理
+     * 处理失败的数据，如校验未通过，不要处理
      */
     protected List<? extends DataItem> failList = new ArrayList<>();
 

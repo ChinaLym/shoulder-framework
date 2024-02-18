@@ -2,18 +2,17 @@ package org.shoulder.batch.repository;
 
 import jakarta.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.batch.enums.ProcessStatusEnum;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.sql.DataSource;
 
 /**
  * 批处理记录持久化接口
@@ -76,7 +75,7 @@ public class JdbcBatchRecordDetailPersistentServiceImpl implements BatchRecordDe
      * @return 所有的批量处理记录
      */
     @Override
-    public List<BatchRecordDetail> findAllByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList,
+    public List<BatchRecordDetail> findAllByRecordIdAndStatusAndIndex(String recordId, List<BatchDetailResultStatusEnum> resultList,
                                                                       Integer indexStart,
                                                                       Integer indexEnd) {
         StringBuilder sql = new StringBuilder(QUERY_ALL_BY_RECORD_ID);
@@ -85,7 +84,7 @@ public class JdbcBatchRecordDetailPersistentServiceImpl implements BatchRecordDe
         if (CollectionUtils.isNotEmpty(resultList)) {
             sql.append(" AND status in (?) ");
             argsList.add(CollectionUtils.emptyIfNull(resultList).stream()
-                .map(ProcessStatusEnum::getCode)
+                    .map(BatchDetailResultStatusEnum::getCode)
                 .collect(Collectors.toList()));
         }
 

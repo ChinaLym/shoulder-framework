@@ -2,14 +2,9 @@ package org.shoulder.batch.dto.result;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
-import org.shoulder.batch.enums.ProcessStatusEnum;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
 
 import java.util.List;
@@ -38,13 +33,13 @@ public class BatchRecordDetailResult {
      */
     @ApiModelProperty(required = true, value = "状态: 1校验成功、2校验失败、3导入成功、4导入失败、5重复更新、6重复跳过、7导入校验失败",
         example = "1", position = 2)
-    @DictionaryEnumItem(value = ProcessStatusEnum.class)
+    @DictionaryEnumItem(value = BatchDetailResultStatusEnum.class)
     private int status;
 
     /**
      * 失败原因
      *
-     * @see todo [code read]reference
+     * @see org.shoulder.batch.enums.BatchI18nEnum
      */
     @ApiModelProperty(value = "失败原因:错误码", example = "用户名已存在", position = 3)
     private String reason;

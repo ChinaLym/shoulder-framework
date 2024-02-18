@@ -3,8 +3,8 @@ package org.shoulder.batch.service.impl;
 import jakarta.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
-import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.spi.BatchTaskSliceHandler;
@@ -15,11 +15,7 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ContextUtils;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
 
@@ -146,7 +142,7 @@ public class BatchProcessor implements Runnable {
             .map(DataItem::getIndex)
             .map(index ->
                 Optional.ofNullable(indexedBatchRecordDetailMap.get(index))
-                    .orElse(new BatchRecordDetail(index, ProcessStatusEnum.FAILED.getCode(),
+                        .orElse(new BatchRecordDetail(index, BatchDetailResultStatusEnum.FAILED.getCode(),
                         CommonErrorCodeEnum.UNKNOWN.getCode()))
             ).forEach(resultDetailList::add);
 

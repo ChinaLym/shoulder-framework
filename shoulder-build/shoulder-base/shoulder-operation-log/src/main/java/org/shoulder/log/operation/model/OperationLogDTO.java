@@ -100,6 +100,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
      * 具体操作标识 【必填】
      * 多语言翻译文件由服务提供，导入到网关或日志服务前端，展示时翻译。
      * 例：注册、登录、退出、查询、新增、修改、删除、下载等
+     * 建议: "operation." 前缀
      */
     protected String operation;
 
@@ -154,6 +155,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
 
     /**
      * 被操作对象的类型标识 （选填）
+     * 建议: "operation." 前缀
      * Key格式为：objectType.<操作对象类型标识>
      */
     protected String objectType;

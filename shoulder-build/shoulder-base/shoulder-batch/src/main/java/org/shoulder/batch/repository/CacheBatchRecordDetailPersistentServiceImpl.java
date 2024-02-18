@@ -1,7 +1,7 @@
 package org.shoulder.batch.repository;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.shoulder.batch.enums.ProcessStatusEnum;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.springframework.cache.Cache;
 
@@ -34,10 +34,11 @@ public class CacheBatchRecordDetailPersistentServiceImpl implements BatchRecordD
         cache.put(recordId, batchRecordDetailList);
     }
 
-    @Override public List<BatchRecordDetail> findAllByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList, Integer indexStart,
+    @Override
+    public List<BatchRecordDetail> findAllByRecordIdAndStatusAndIndex(String recordId, List<BatchDetailResultStatusEnum> resultList, Integer indexStart,
                                                                                 Integer indexEnd) {
         return CollectionUtils.emptyIfNull(findAllByRecordId(recordId)).stream()
-            .filter(detail -> resultList.contains(ProcessStatusEnum.of(detail.getStatus())))
+                .filter(detail -> resultList.contains(BatchDetailResultStatusEnum.of(detail.getStatus())))
             .filter(detail -> indexStart == null || detail.getIndex() >= indexStart)
             .filter(detail -> indexEnd == null || detail.getIndex() <= indexEnd)
             .collect(Collectors.toList());

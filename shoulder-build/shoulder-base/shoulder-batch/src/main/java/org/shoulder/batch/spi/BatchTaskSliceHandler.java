@@ -34,17 +34,4 @@ public interface BatchTaskSliceHandler {
      */
     List<BatchRecordDetail> handle(BatchDataSlice batchSlice);
 
-
-    /*List<? extends DataItem> dataList = task.getBatchList();
-    List<ImportRecordDetail> resultList = new LinkedList<>();
-        for (DataItem dataItem : dataList) {
-        ImportRecordDetail result = new ImportRecordDetail();
-        result.setIndex(dataItem.getIndex());
-        // doing process 如保存 db 等
-        result.setResult(BatchResultEnum.IMPORT_SUCCESS.getCode());
-
-        resultList.add(result);
-    }
-        return resultList;*/
-
 }

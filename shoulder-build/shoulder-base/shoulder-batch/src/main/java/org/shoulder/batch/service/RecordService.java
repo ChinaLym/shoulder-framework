@@ -1,6 +1,6 @@
 package org.shoulder.batch.service;
 
-import org.shoulder.batch.enums.ProcessStatusEnum;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.core.dto.response.PageResult;
@@ -53,7 +53,7 @@ public interface RecordService {
      * @param indexEnd 希望查询的最后一个分片
      * @return 所有的批量处理记录
      */
-    List<BatchRecordDetail> findAllDetailByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList,
+    List<BatchRecordDetail> findAllDetailByRecordIdAndStatusAndIndex(String recordId, List<BatchDetailResultStatusEnum> resultList,
                                                                      Integer indexStart, Integer indexEnd);
 
 }

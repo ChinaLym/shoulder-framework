@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.shoulder.batch.enums.ProcessStatusEnum;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class BatchProcessDetail {
      * 结果状态
      */
     @ApiModelProperty(value = "状态: 校验成功、校验失败、导入成功、导入失败、重复更新、重复跳过、导入校验失败...", example = "2")
-    @DictionaryEnumItem(value = ProcessStatusEnum.class)
+    @DictionaryEnumItem(value = BatchDetailResultStatusEnum.class)
     private Integer status;
 
     /**

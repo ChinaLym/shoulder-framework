@@ -1,6 +1,6 @@
-package org.shoulder.batch.model;
+package org.shoulder.batch.progress;
 
-public enum ProcessStatusEnum {
+public enum ProgressStatusEnum {
 
     WAITING("未开始", 0),
     RUNNING("运行中", 1),
@@ -13,7 +13,7 @@ public enum ProcessStatusEnum {
 
     private final int code;
 
-    ProcessStatusEnum(String name, int code) {
+    ProgressStatusEnum(String name, int code) {
         this.name = name;
         this.code = code;
     }

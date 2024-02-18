@@ -3,14 +3,9 @@ package org.shoulder.batch.dto.result;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
-import org.shoulder.batch.enums.ProcessStatusEnum;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
 
 import java.util.List;
@@ -53,7 +48,7 @@ public class BatchProcessResult {
     private Boolean finish;
 
     @ApiModelProperty(required = true, value = "状态", dataType = "Integer", example = "1", position = 8)
-    @DictionaryEnumItem(value = ProcessStatusEnum.class)
+    @DictionaryEnumItem(value = BatchDetailResultStatusEnum.class)
     private Integer status;
 
     /**

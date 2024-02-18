@@ -4,7 +4,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.batch.constant.BatchConstants;
-import org.shoulder.batch.enums.ProcessStatusEnum;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecord;
@@ -22,12 +22,7 @@ import org.shoulder.core.util.ContextUtils;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.enums.OperationResult;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -177,6 +172,7 @@ public class BatchManager implements Runnable {
         //result.setTotalNum();
         result.setSuccessNum(progress.getSuccessNum());
         result.setFailNum(progress.getFailNum());
+        // todo 【进阶】持久化时机优化
         persistentImportRecord();
         fillOperationLog();
         log.info("batch task finished.");
@@ -219,18 +215,18 @@ public class BatchManager implements Runnable {
                     .setIndex(dataItem.getIndex())
                     .setRecordId(batchData.getBatchId())
                     .setOperation(operationType)
-                    .setStatus(ProcessStatusEnum.SUCCESS.getCode())
+                        .setStatus(BatchDetailResultStatusEnum.SUCCESS.getCode())
                     .setSource(serializeSource(dataItem));
             }
         });
-        // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不处理的，校验失败无法处理的） todo 跳过状态定义
+        // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不处理的，校验失败无法处理的） todo 【模型升级】 跳过状态定义
         for (DataItem dataItem : batchData.getSuccessList()) {
             result.getDetailList().get(dataItem.getIndex())
                 .setRecordId(batchData.getBatchId())
                 .setIndex(dataItem.getIndex())
                 .setOperation(batchData.getOperation())
                 .setSource(serializeSource(dataItem))
-                .setStatus(ProcessStatusEnum.SKIP_FOR_REPEAT.getCode());
+                    .setStatus(BatchDetailResultStatusEnum.SKIP_FOR_REPEAT.getCode());
         }
         for (DataItem dataItem : batchData.getFailList()) {
             // getFailReason 不可能为 null，否则就是使用者错误，未塞入错误原因
@@ -239,7 +235,7 @@ public class BatchManager implements Runnable {
                 .setIndex(dataItem.getIndex())
                 .setOperation(batchData.getOperation())
                 .setSource(serializeSource(dataItem))
-                .setStatus(ProcessStatusEnum.SKIP_FOR_INVALID.getCode())
+                    .setStatus(BatchDetailResultStatusEnum.SKIP_FOR_INVALID.getCode())
                 .setFailReason(batchData.getFailReason().get(dataItem.getIndex()));
         }
         log.info("Directly: success:{}, fail:{}", batchData.getSuccessList().size(), batchData.getFailList().size());
@@ -346,13 +342,13 @@ public class BatchManager implements Runnable {
             // worker 未捕获的异常会交给 UncaughtExceptionHandler，这里设计时让worker保证一定返回结果
             BatchRecordDetail taskResultDetail = takeUnExceptInterrupted(resultQueue);
             if (taskResultDetail.isCalculateProgress()) {
-                boolean success = ProcessStatusEnum.SUCCESS.getCode() == taskResultDetail.getStatus();
+                boolean success = BatchDetailResultStatusEnum.SUCCESS.getCode() == taskResultDetail.getStatus();
                 if (success) {
                     progress.addSuccess(1);
                 } else {
                     progress.addFail(1);
                 }
-                // 使用者只能修改处理结果和原因
+                // 调度者只能修改处理结果和原因
                 result.getDetailList().get(taskResultDetail.getIndex())
                     .setStatus(taskResultDetail.getStatus())
                     .setFailReason(taskResultDetail.getFailReason());
@@ -361,7 +357,7 @@ public class BatchManager implements Runnable {
         if (!jobQueue.isEmpty()) {
             // 已经结束，不应该还有
             //throw new IllegalStateException("jobQueue not empty")
-            log.errorWithErrorCode(CommonErrorCodeEnum.UNKNOWN.getCode(), "jobQueue not empty!");
+            log.errorWithErrorCode(CommonErrorCodeEnum.CODING.getCode(), "jobQueue not empty!");
             jobQueue.clear();
         }
     }

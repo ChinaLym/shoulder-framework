@@ -2,7 +2,6 @@ package org.shoulder.batch.progress;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.shoulder.batch.model.ProcessStatusEnum;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -97,21 +96,21 @@ public class BatchProgress implements Serializable, ProgressAble {
     }
 
     public void failStop() {
-        status.getAndSet(ProcessStatusEnum.EXCEPTION.getCode());
+        status.getAndSet(ProgressStatusEnum.EXCEPTION.getCode());
         stopTime = LocalDateTime.now();
     }
 
     public void finish() {
-        status.getAndSet(ProcessStatusEnum.FINISHED.getCode());
+        status.getAndSet(ProgressStatusEnum.FINISHED.getCode());
         stopTime = LocalDateTime.now();
     }
 
     public boolean hasFinish() {
-        if (status.get() > ProcessStatusEnum.RUNNING.getCode()) {
+        if (status.get() > ProgressStatusEnum.RUNNING.getCode()) {
             return true;
         }
         checkFinished();
-        return status.get() > ProcessStatusEnum.RUNNING.getCode();
+        return status.get() > ProgressStatusEnum.RUNNING.getCode();
     }
 
     /**
@@ -120,7 +119,7 @@ public class BatchProgress implements Serializable, ProgressAble {
      * @return 已经花费的时间
      */
     public long calculateProcessedTime() {
-        if (status.get() == ProcessStatusEnum.WAITING.getCode()) {
+        if (status.get() == ProgressStatusEnum.WAITING.getCode()) {
             return 0;
         }
         if (hasFinish()) {

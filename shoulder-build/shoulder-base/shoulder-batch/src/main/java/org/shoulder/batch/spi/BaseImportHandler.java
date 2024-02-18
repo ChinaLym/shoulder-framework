@@ -1,7 +1,7 @@
 
 package org.shoulder.batch.spi;
 
-import org.shoulder.batch.enums.ProcessStatusEnum;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
@@ -62,7 +62,7 @@ public abstract class BaseImportHandler implements BatchTaskSliceHandler {
         List<BatchRecordDetail> toUpdateList = new ArrayList<>();
         List<BatchRecordDetail> ignoreList = new ArrayList<>();
         for (BatchRecordDetail batchRecordDetail : batchRecordDetails) {
-            ProcessStatusEnum status = ProcessStatusEnum.of(batchRecordDetail.getStatus());
+            BatchDetailResultStatusEnum status = BatchDetailResultStatusEnum.of(batchRecordDetail.getStatus());
             List<BatchRecordDetail> list = switch (status) {
                 case SUCCESS -> toImportList;
                 case FAILED -> updateRepeat ? toUpdateList : ignoreList;
@@ -97,9 +97,9 @@ public abstract class BaseImportHandler implements BatchTaskSliceHandler {
     }
 
     protected BatchRecordDetail ignoreData(BatchRecordDetail ignore) {
-        ProcessStatusEnum translatedStatus = switch (ProcessStatusEnum.of(ignore.getStatus())) {
-            case FAILED, FAILED_FOR_INVALID, SKIP_FOR_INVALID -> ProcessStatusEnum.SKIP_FOR_INVALID;
-            case FAILED_FOR_REPEAT, SKIP_FOR_REPEAT -> ProcessStatusEnum.SKIP_FOR_REPEAT;
+        BatchDetailResultStatusEnum translatedStatus = switch (BatchDetailResultStatusEnum.of(ignore.getStatus())) {
+            case FAILED, FAILED_FOR_INVALID, SKIP_FOR_INVALID -> BatchDetailResultStatusEnum.SKIP_FOR_INVALID;
+            case FAILED_FOR_REPEAT, SKIP_FOR_REPEAT -> BatchDetailResultStatusEnum.SKIP_FOR_REPEAT;
             default -> throw new BaseRuntimeException("unexpected status: " + ignore.getStatus());
         };
         return BatchRecordDetail.builder()

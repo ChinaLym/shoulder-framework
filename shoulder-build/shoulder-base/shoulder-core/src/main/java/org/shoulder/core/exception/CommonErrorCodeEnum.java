@@ -100,19 +100,19 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 未知异常，谨慎使用该错误码，不利于排查；一般只用于断言正常一定怎样，如根据索引更新，更新影响数目一定小于等于1;或者编码时使用者未按照设计者的思路使用
      */
-    UNKNOWN(300, "UNKNOWN ERROR.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    UNKNOWN(300, "UNKNOWN ERROR.", Level.ERROR, HttpStatus.INTERNAL_SERVER_ERROR),
     /**
      * 未知异常，谨慎使用该错误码，不利于排查；一般只用于断言正常一定怎样，如根据索引更新，更新影响数目一定小于等于1;或者编码时使用者未按照设计者的思路使用
      */
-    PROCESS_FAIL(301, "PROCESS FAIL.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    PROCESS_FAIL(301, "PROCESS FAIL.", Level.ERROR, HttpStatus.INTERNAL_SERVER_ERROR),
     /**
      * 编码错误，仅在框架 / 工具内使用，提示使用者使用错误
      */
-    CODING(305, "Coding error.", Level.ERROR, HttpStatus.BAD_REQUEST),
+    CODING(305, "Coding error.", Level.ERROR, HttpStatus.INTERNAL_SERVER_ERROR),
     /**
-     * 重复提交：参数完全相同 / 检测到幂等且不支持幂等
+     * 重复提交：参数完全相同 / 检测到幂等且不支持幂等，拒绝处理
      */
-    REPEATED_SUBMIT(311, "Repeated submit"),
+    REPEATED_SUBMIT(311, "Repeated submit", HttpStatus.BAD_REQUEST),
     /**
      * 非当且分片数据：系统有逻辑数据分片，但路由等问题导致错误的服务器收到了不属于服务器处理的分片数据
      *

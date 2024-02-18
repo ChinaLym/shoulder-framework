@@ -76,4 +76,7 @@ public class BatchRecordDetail implements Serializable {
     }
 
 
+    public void setFailReason(String failReason) {
+        this.failReason = failReason;
+    }
 }

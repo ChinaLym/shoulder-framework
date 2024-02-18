@@ -12,8 +12,8 @@ import org.shoulder.batch.dto.param.AdvanceBatchParam;
 import org.shoulder.batch.dto.param.QueryImportResultDetailParam;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
-import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
@@ -33,6 +33,7 @@ import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.lock.ServerLock;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLog.Operations;
@@ -46,11 +47,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,6 +62,17 @@ import java.util.stream.Stream;
 @Slf4j
 @RestController
 public class ImportController implements ImportRestfulApi {
+
+
+    /**
+     * 校验结果有效期
+     * 校验完毕后，需要在30min内执行导入，否则需要重新校验
+     * 降低有人新增数据导致导入数据大量冲突而失败。
+     */
+    private static final Duration VALIDATE_RESULT_EXPIRATION = Duration.ofHours(1);
+
+
+    private final ServerLock serverLock;
 
     /**
      * 批量操作
@@ -88,9 +98,10 @@ public class ImportController implements ImportRestfulApi {
 
     private final List<ExportDataQueryFactory> exportDataQueryFactoryList;
 
-    public ImportController(BatchService batchService, ExportService exportService, RecordService recordService,
+    public ImportController(ServerLock serverLock, BatchService batchService, ExportService exportService, RecordService recordService,
                             DataItemConvertFactory dataItemConvertFactory, ShoulderConversionService shoulderConversionService,
                             List<ExportDataQueryFactory> exportDataQueryFactoryList) {
+        this.serverLock = serverLock;
         this.batchService = batchService;
         this.exportService = exportService;
         this.recordService = recordService;
@@ -106,12 +117,12 @@ public class ImportController implements ImportRestfulApi {
     @OperationLog(operation = Operations.UPLOAD_AND_VALIDATE)
     public BaseResult<String> validate(String businessType, MultipartFile file,
                                        String charsetLanguage) throws Exception {
-        // todo 文件 > 10M Error; > 1M persistent and validate; > 100kb;
+        // todo 【进阶】文件 > 10M Error; > 1M persistent and validate; > 100kb;
         // 暂时只支持 csv
         AssertUtils.isTrue(file.getOriginalFilename().endsWith(".csv"), BatchErrorCodeEnum.CSV_HEADER_ERROR);
 
         CsvParserSettings settings = new CsvParserSettings();
-        // 【支持定制】todo 通过 spring 配置设置
+        // todo 【进阶】通过 spring 配置设置
         settings.setFormat(new CsvFormat());
         settings.setNumberOfRecordsToRead(10000);
         // 忽略的注释行
@@ -160,13 +171,16 @@ public class ImportController implements ImportRestfulApi {
         String batchId = advanceBatchParam.getBatchId();
         BatchProgressRecord process = batchService.queryBatchProgress(batchId);
         AssertUtils.isTrue(process.hasFinish(), BatchErrorCodeEnum.TASK_STATUS_ERROR);
-        // 从数据库查寻 todo lock 避免重复导入
+        // 确保 record 存在
         BatchRecord record = recordService.findRecordById(advanceBatchParam.getBatchId());
         AssertUtils.notNull(record, CommonErrorCodeEnum.DATA_NOT_EXISTS);
         AssertUtils.equals(String.valueOf(record.getCreator()), AppContext.getUserId(), CommonErrorCodeEnum.PERMISSION_DENY);
         AssertUtils.equals(record.getDataType(), advanceBatchParam.getDataType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         AssertUtils.equals(record.getOperation(), advanceBatchParam.getCurrentOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-        // todo 读配置，校验参数与配置一致
+        Instant validateTime = conversionService.convert(record.getCreateTime(), Instant.class);
+        AssertUtils.isTrue(Instant.now().isBefore(validateTime.plus(VALIDATE_RESULT_EXPIRATION)), CommonErrorCodeEnum.ILLEGAL_STATUS);
+
+        // todo 【进阶】读配置，校验参数与配置一致
         AssertUtils.equals(Operations.IMPORT, advanceBatchParam.getNextOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         final int total = record.getTotalNum();
 
@@ -179,8 +193,19 @@ public class ImportController implements ImportRestfulApi {
             total, 200, batchId, Map.of(BatchImportDataItem.EXT_KEY_UPDATE_REPEAT, advanceBatchParam.getUpdateRepeat())));
         batchData.getBatchListMap().put(advanceBatchParam.getNextOperation(), importDataItemList);
 
+        // lock 避免重复导入，低频功能低内存，加长锁
+        boolean locked = lockDefendRepeatAdvance(advanceBatchParam);
+        AssertUtils.isTrue(locked, CommonErrorCodeEnum.REPEATED_SUBMIT);
+
         String nextStageId = batchService.doProcess(batchData);
         return BaseResult.success(nextStageId);
+    }
+
+    private boolean lockDefendRepeatAdvance(AdvanceBatchParam param) {
+        // 不用关心谁持有，主打一个短时间防重复，长期可重试
+        String resource = param.getDataType() + ":" + param.getBatchId() + ":"
+                + param.getCurrentOperation() + ":" + param.getNextOperation();
+        return serverLock.tryLock("", VALIDATE_RESULT_EXPIRATION);
     }
 
     /**
@@ -252,7 +277,7 @@ public class ImportController implements ImportRestfulApi {
             recordInDb.getDataType(),
             recordInDb.getId(),
             CollectionUtils.emptyIfNull(condition.getStatusList())
-                .stream().map(ProcessStatusEnum::of).collect(Collectors.toList())
+                    .stream().map(BatchDetailResultStatusEnum::of).collect(Collectors.toList())
         );
         compositeResponse(response, recordInDb.getDataType(), byteArrayOutputStream, encoding);
     }

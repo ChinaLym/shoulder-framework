@@ -5,9 +5,9 @@ import org.shoulder.batch.config.ExportConfigManager;
 import org.shoulder.batch.config.model.ExportColumnConfig;
 import org.shoulder.batch.config.model.ExportFileConfig;
 import org.shoulder.batch.constant.BatchConstants;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.BatchI18nEnum;
-import org.shoulder.batch.enums.ProcessStatusEnum;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
@@ -30,11 +30,7 @@ import org.shoulder.core.util.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -235,7 +231,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
     @Override
     public String exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
-                                    String batchId, List<ProcessStatusEnum> resultTypes) throws IOException {
+                                    String batchId, List<BatchDetailResultStatusEnum> resultTypes) throws IOException {
         exportRecordLocal.set(Boolean.TRUE);
         // 认为单次批量操作一般有上限，如1000，这里直接单次全捞出来了
         return export(outputStream, exportType, List.of(() -> {
@@ -248,7 +244,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
                     dataMap.put(BatchConstants.INDEX, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getIndex()));
                     dataMap.put(BatchConstants.RESULT, translator.getMessage(
-                        ProcessStatusEnum.of(batchRecordDetail.getStatus()).getTip()));
+                            BatchDetailResultStatusEnum.of(batchRecordDetail.getStatus()).getTip()));
                     dataMap.put(BatchConstants.DETAIL, StringUtils.isBlank(batchRecordDetail.getFailReason()) ? null :
                         translator.getMessage(batchRecordDetail.getFailReason()));
                     return dataMap;
@@ -284,7 +280,6 @@ public class DefaultBatchExportService implements BatchAndExportService {
         if (!canExecute()) {
             throw BatchErrorCodeEnum.IMPORT_BUSY.toException();
         } else {
-            // todo lock
             BatchManager batchManager = new BatchManager(batchData);
             //执行持久化
             batchProgressCache.triggerFlushProgress(batchManager.getBatchProgress());
@@ -352,7 +347,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
     // ------------------- 记录详情 ------------------------------
 
     @Override
-    public List<BatchRecordDetail> findAllDetailByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList,
+    public List<BatchRecordDetail> findAllDetailByRecordIdAndStatusAndIndex(String recordId, List<BatchDetailResultStatusEnum> resultList,
                                                                             Integer indexStart, Integer indexEnd) {
         return batchRecordDetailPersistentService.findAllByRecordIdAndStatusAndIndex(recordId, resultList, indexStart, indexEnd);
     }

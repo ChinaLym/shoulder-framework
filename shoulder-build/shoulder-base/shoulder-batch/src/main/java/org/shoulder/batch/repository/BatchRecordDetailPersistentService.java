@@ -1,6 +1,6 @@
 package org.shoulder.batch.repository;
 
-import org.shoulder.batch.enums.ProcessStatusEnum;
+import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.model.BatchRecordDetail;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public interface BatchRecordDetailPersistentService {
      * @param resultList 结果状态
      * @return 所有的批量处理记录
      */
-    default List<BatchRecordDetail> findAllByRecordIdAndStatus(String recordId, List<ProcessStatusEnum> resultList) {
+    default List<BatchRecordDetail> findAllByRecordIdAndStatus(String recordId, List<BatchDetailResultStatusEnum> resultList) {
         return findAllByRecordIdAndStatusAndIndex(recordId, resultList, null, null);
     }
 
@@ -39,7 +39,7 @@ public interface BatchRecordDetailPersistentService {
      * @param indexEnd 希望查询的最后一个分片
      * @return 所有的批量处理记录
      */
-    List<BatchRecordDetail> findAllByRecordIdAndStatusAndIndex(String recordId, List<ProcessStatusEnum> resultList, Integer indexStart, Integer indexEnd);
+    List<BatchRecordDetail> findAllByRecordIdAndStatusAndIndex(String recordId, List<BatchDetailResultStatusEnum> resultList, Integer indexStart, Integer indexEnd);
 
     /**
      * 查询所有的批量处理记录
