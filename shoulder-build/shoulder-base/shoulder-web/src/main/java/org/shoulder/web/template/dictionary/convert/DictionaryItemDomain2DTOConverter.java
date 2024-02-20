@@ -14,7 +14,6 @@ import java.util.Optional;
  * DictionaryItem domain -> VO
  *
  * @author lym
- * @author lym
  */
 @SuppressWarnings("rawtypes")
 public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<DictionaryItem, DictionaryItemDTO> {
@@ -37,7 +36,7 @@ public class DictionaryItemDomain2DTOConverter extends BaseDataConverter<Diction
         targetModel.setCode(sourceModel.getItemId().toString());
         targetModel.setDictionaryType(sourceModel.getDictionaryType());
         String displayI18nName = Optional.ofNullable(translator)
-                .map(t -> t.getMessage(sourceModel.getDisplayName(), new Object[0],
+                .map(t -> t.getMessageOrDefault(sourceModel.getDisplayName(),
                         sourceModel.getDisplayName()))
                 .orElse(sourceModel.getDisplayName());
         targetModel.setName(sourceModel.getName());

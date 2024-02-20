@@ -126,17 +126,19 @@ public class ImportController implements ImportRestfulApi {
         settings.setFormat(new CsvFormat());
         settings.setNumberOfRecordsToRead(10000);
         // 忽略的注释行
-        settings.setNumberOfRowsToSkip(2);
+        settings.setNumberOfRowsToSkip(0);
         CsvParser csvParser = new CsvParser(settings);
 
-        List<Record> recordList = null;
+        List<Record> recordList;
         try (InputStreamReader in = new InputStreamReader(file.getInputStream(), AppInfo.charset())) {
             recordList = csvParser.parseAllRecords(in);
         }
 
-        OpLogContextHolder.getLog().setExtField("size", recordList.size());
         //校验文件：校验文件头未改变
-        checkImportCsvHeader(businessType, recordList);
+        boolean valid = exportService.validateCsvHeader(businessType, recordList);
+        AssertUtils.isTrue(valid, BatchErrorCodeEnum.CSV_HEADER_ERROR);
+
+        OpLogContextHolder.getLog().setExtField("size", recordList.size());
 
         BatchData batchData = new BatchData();
         batchData.setDataType(businessType);
@@ -155,11 +157,6 @@ public class ImportController implements ImportRestfulApi {
         return dataItemConvertFactory.convertRecordToDataItem(businessType, recordList);
     }
 
-    private void checkImportCsvHeader(String businessType, List<Record> recordList) {
-        // todo 获取文件头，然后对比文件头未被篡改
-
-        AssertUtils.notNull(businessType, BatchErrorCodeEnum.CSV_HEADER_ERROR);
-    }
 
     /**
      * 实现举例：批量导入

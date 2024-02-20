@@ -2,25 +2,20 @@
   {
     "id": "testBatchDataType",
     "exportMapping": null,
-    "headersI18n": null,
-    "headers": [
-      "First: 这是第一个字段，以及第一个字段的说明。",
-      "Second: 这是第二个字段，以及第一个字段的说明。"
-    ],
     "columns": [
       {
-        "modelFieldName": "First",
-        "columnNameI18n": null,
+        "modelField": "First",
+        "displayNameI18n": null,
         "descriptionI18n": null,
-        "description": null,
-        "columnName": "First"
+        "description": "First Description",
+        "displayName": "First"
       },
       {
-        "modelFieldName": "Second",
-        "columnNameI18n": null,
+        "modelField": "Second",
+        "displayNameI18n": null,
         "descriptionI18n": null,
-        "description": null,
-        "columnName": "Second"
+        "description": "Second Description",
+        "displayName": "Second"
       }
     ],
     "encode": null,

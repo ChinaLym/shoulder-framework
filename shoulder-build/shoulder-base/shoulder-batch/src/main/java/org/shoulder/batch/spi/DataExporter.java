@@ -36,7 +36,15 @@ public interface DataExporter {
 
 
     /**
-     * 输出 头信息
+     * 输出 多行注释信息
+     *
+     * @param commentLines      头信息
+     * @throws IOException IO 异常
+     */
+    void outputComment(List<String> commentLines) throws IOException;
+
+    /**
+     * 输出 一行头信息
      *
      * @param headers      头信息
      * @throws IOException IO 异常
@@ -59,11 +67,5 @@ public interface DataExporter {
      * @throws IOException io
      */
     void flush() throws IOException;
-
-    /**
-     * 清理上下文，结束本次输出
-     */
-    default void cleanContext() {
-    }
 
 }

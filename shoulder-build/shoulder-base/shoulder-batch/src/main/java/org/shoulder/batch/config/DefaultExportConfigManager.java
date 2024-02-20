@@ -12,15 +12,10 @@ import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.StringUtils;
-import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -53,7 +48,7 @@ public class DefaultExportConfigManager implements ExportConfigManager {
             List<ExportLocalizeConfig> exportLocalizeList = JsonUtils.parseObject(inputStream, new TypeReference<>() {
             });
             return exportLocalizeList.stream()
-                .collect(Collectors.toMap(ExportLocalizeConfig::getLanguageId, c -> c, (c1, c2) -> c2));
+                    .collect(Collectors.toMap(ExportLocalizeConfig::getLanguageId, c -> c, (c1, c2) -> c2));
         } catch (IOException e) {
             log.warn("csv_localize.json read failed! csv localize disabled.", e);
             return Collections.emptyMap();
@@ -74,9 +69,9 @@ public class DefaultExportConfigManager implements ExportConfigManager {
     public void addFileConfig(ExportFileConfig exportFileConfig) {
         AssertUtils.notNull(exportFileConfig, CommonErrorCodeEnum.ILLEGAL_PARAM);
         AssertUtils.notNull(exportFileConfig.getId(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-        AssertUtils.notEmpty(exportFileConfig.getHeaders(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+//        AssertUtils.notEmpty(exportFileConfig.getHeaders(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         AssertUtils.notEmpty(exportFileConfig.getColumns(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-        AssertUtils.isTrue(exportFileConfig.getColumns().size() >= exportFileConfig.getHeaders().size(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+//        AssertUtils.isTrue(exportFileConfig.getColumns().size() >= exportFileConfig.getHeaders().size(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         CONFIG_CACHE.put(exportFileConfig.getId(), exportFileConfig);
     }
 
@@ -88,9 +83,9 @@ public class DefaultExportConfigManager implements ExportConfigManager {
     @Override
     public ExportFileConfig getFileConfigWithLocale(String templateId, Locale locale) {
         return LOCALIZE_CONFIG_CACHE.computeIfAbsent(templateId, id -> new ConcurrentHashMap<>())
-            .computeIfAbsent(locale.getLanguage(),
-                languageId -> renderFileConfigWithLocale(templateId, locale)
-            );
+                .computeIfAbsent(locale.getLanguage(),
+                        languageId -> renderFileConfigWithLocale(templateId, locale)
+                );
     }
 
     public ExportFileConfig renderFileConfigWithLocale(String id, Locale locale) {
@@ -98,8 +93,9 @@ public class DefaultExportConfigManager implements ExportConfigManager {
         if (exportFileConfig == null) {
             return null;
         }
-        localizeExportConfig(exportFileConfig, locale);
-        return exportFileConfig;
+        ExportFileConfig clone = exportFileConfig.clone();
+        localizeExportConfig(clone, locale);
+        return clone;
     }
 
     /**
@@ -117,37 +113,66 @@ public class DefaultExportConfigManager implements ExportConfigManager {
         } else {
             log.info("locale {} is not found, fall back to default", locale);
         }
-        // header 注释信息-介绍
-        if (CollectionUtils.isEmpty(exportFileConfig.getHeaders())) {
-            AssertUtils.notEmpty(exportFileConfig.getHeadersI18n(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-            List<String> headers = new ArrayList<>();
-            headers.add("# #### note######################");
-            for (String headerI18n : exportFileConfig.getHeadersI18n()) {
-                headers.add(ContextUtils.getBean(Translator.class).getMessage(headerI18n, new Object[] {}, locale));
-            }
-            headers.add("# ##################################");
-            exportFileConfig.setHeaders(headers);
-        } else {
-            List<String> headers = exportFileConfig.getHeaders()
-                .stream()
-                .map(h -> h.startsWith("#") ? h : "# " + h)
-                .collect(Collectors.toList());
-            exportFileConfig.setHeaders(headers);
-        }
-
         // 模型字段
         for (ExportColumnConfig column : exportFileConfig.getColumns()) {
-            AssertUtils.notEmpty(column.getModelFieldName(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-            if (StringUtils.isEmpty(column.getColumnName())) {
-                AssertUtils.notEmpty(column.getColumnNameI18nKey(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-                column.setColumnName(
-                    ContextUtils.getBean(Translator.class).getMessage(column.getColumnNameI18nKey(), new Object[] {}, locale));
+            AssertUtils.notEmpty(column.getModelField(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+            if (StringUtils.isEmpty(column.getDisplayName())) {
+                AssertUtils.notEmpty(column.getDisplayNameI18n(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+                column.setDisplayName(
+                        ContextUtils.getBean(Translator.class).getMessage(column.getDisplayNameI18n(), new Object[]{}, locale));
             }
-            if (StringUtils.isEmpty(column.getDescription()) && StringUtils.isNotEmpty(column.getDescriptionI18nKey())) {
+            if (StringUtils.isEmpty(column.getDescription()) && StringUtils.isNotEmpty(column.getDescriptionI18n())) {
                 column.setDescription(
-                    ContextUtils.getBean(Translator.class).getMessage(column.getDescriptionI18nKey(), new Object[] {}, locale));
+                        ContextUtils.getBean(Translator.class).getMessage(column.getDescriptionI18n(), new Object[]{}, locale));
             }
         }
+
+        // 注释/介绍（多行）
+//        if (!CollectionUtils.isEmpty(exportFileConfig.getCommentLines())) {
+//            List<String> commentLines = exportFileConfig.getCommentLines()
+//                    .stream()
+//                    .map(h -> h.startsWith("#") ? h : "# " + h)
+//                    .collect(Collectors.toList());
+//            exportFileConfig.setCommentLines(commentLines);
+//        } else {
+//            AssertUtils.notEmpty(exportFileConfig.getCommentLinesI18n(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+//            List<String> commentLines = new ArrayList<>();
+//            for (String commentI18n : exportFileConfig.getCommentLinesI18n()) {
+//                String afterTrans = ContextUtils.getBean(Translator.class)
+//                        .getMessage(commentI18n, new Object[]{}, locale);
+//                commentLines.add(afterTrans.startsWith("#") ? afterTrans : "# " + afterTrans);
+//            }
+//            exportFileConfig.setCommentLines(commentLines);
+//        }
+
+        // commentLines-auto
+        exportFileConfig.setCommentLines(new ArrayList<>(3 + exportFileConfig.getColumns().size()));
+        String commentChar = "" + exportFileConfig.getComment();
+        exportFileConfig.getCommentLines().add(0, commentChar + exportFileConfig.getId() + commentChar + locale + commentChar + (exportFileConfig.getColumns().size() + 3) + commentChar.repeat(10));
+        exportFileConfig.getColumns().forEach(c -> exportFileConfig.getCommentLines().add(
+                commentChar + " " + c.getDisplayName() + ": " + c.getDescription())
+        );
+        exportFileConfig.getCommentLines().add(commentChar + " " + commentChar.repeat(34) + exportFileConfig.getLineSeparator());
+
+        // headers-auto
+        List<String> nameList = exportFileConfig.getColumns().stream()
+                .map(ExportColumnConfig::getDisplayName)
+                .toList();
+        exportFileConfig.setHeaders(nameList);
+
+        // header 信息（一行）
+//        if (!CollectionUtils.isEmpty(exportFileConfig.getHeaders())) {
+//            exportFileConfig.setHeaders(exportFileConfig.getHeaders());
+//        } else {
+//            AssertUtils.notEmpty(exportFileConfig.getHeadersI18n(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+//            List<String> headers = new ArrayList<>();
+//            for (String headerI18n : exportFileConfig.getHeadersI18n()) {
+//                headers.add(ContextUtils.getBean(Translator.class)
+//                        .getMessage(headerI18n, new Object[]{}, locale));
+//            }
+//            exportFileConfig.setHeaders(headers);
+//        }
+
 
     }
 

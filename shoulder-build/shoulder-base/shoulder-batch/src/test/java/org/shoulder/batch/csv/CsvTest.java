@@ -4,13 +4,17 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.naming.NoNameCoder;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.security.AnyTypePermission;
+import com.univocity.parsers.common.record.Record;
+import com.univocity.parsers.csv.CsvFormat;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.shoulder.batch.spec.ShopBO;
+import org.shoulder.core.context.AppInfo;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -34,6 +38,26 @@ public class CsvTest {
         DEFAULT_X_STREAM.processAnnotations(new Class[]{ShopBO.class});
         DEFAULT_X_STREAM.allowTypes(new Class[]{ShopBO.class});
     }
+
+    @Test
+    public void readCsvHeaderTest() throws IOException {
+        File file = new File("D:\\code\\java\\self\\shoulder-framework\\shoulder-build\\shoulder-base\\shoulder-batch\\src\\test\\resources\\batchImportTest.csv");
+        CsvParserSettings settings = new CsvParserSettings();
+        settings.setFormat(new CsvFormat());
+        settings.setNumberOfRecordsToRead(10000);
+        // 忽略的注释行
+        settings.setCommentCollectionEnabled(false);
+        CsvParser csvParser = new CsvParser(settings);
+
+        List<Record> recordList;
+        try (InputStreamReader in = new InputStreamReader(new FileInputStream(file), AppInfo.charset())) {
+            recordList = csvParser.parseAllRecords(in);
+        }
+        Record firstRecord = recordList.get(0);
+
+        System.out.println(firstRecord);
+    }
+
 
     @Test
     public void writeAndReadTest() throws IOException {

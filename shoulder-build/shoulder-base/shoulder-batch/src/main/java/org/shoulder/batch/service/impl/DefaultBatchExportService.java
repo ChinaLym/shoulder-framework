@@ -1,5 +1,6 @@
 package org.shoulder.batch.service.impl;
 
+import com.univocity.parsers.common.record.Record;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.batch.config.ExportConfigManager;
 import org.shoulder.batch.config.model.ExportColumnConfig;
@@ -17,14 +18,18 @@ import org.shoulder.batch.progress.ProgressAble;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
 import org.shoulder.batch.service.BatchAndExportService;
+import org.shoulder.batch.service.BatchOutputContext;
 import org.shoulder.batch.spi.BatchTaskSliceHandler;
 import org.shoulder.batch.spi.DataExporter;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.dto.response.PageResult;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.ArrayUtils;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.StringUtils;
 
@@ -81,21 +86,6 @@ public class DefaultBatchExportService implements BatchAndExportService {
 
     // ---------------------------------------
 
-    /**
-     * 当前的导出器
-     */
-    private ThreadLocal<DataExporter> currentDataExporter = new ThreadLocal<>();
-
-    /**
-     * 当前的导出配置
-     */
-    private ThreadLocal<ExportFileConfig> exportConfigLocal = new ThreadLocal<>();
-
-    /**
-     * 是否额外生成详情列（当且仅当导出批量处理结果时）
-     */
-    private ThreadLocal<Boolean> exportRecordLocal = ThreadLocal.withInitial(() -> Boolean.FALSE);
-
     public DefaultBatchExportService(ThreadPoolExecutor batchThreadPool, Translator translator, List<DataExporter> dataExporterList,
                                      BatchRecordPersistentService batchRecordPersistentService,
                                      BatchRecordDetailPersistentService batchRecordDetailPersistentService,
@@ -127,7 +117,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         DataExporter dataExporter = dataExporterList.stream()
             .filter(exporter -> exporter.support(exportType))
             .findFirst().orElseThrow(() -> BatchErrorCodeEnum.EXPORT_TYPE_NOT_SUPPORT.toException(exportType));
-        currentDataExporter.set(dataExporter);
+        BatchOutputContext.get().setCurrentDataExporter(dataExporter);
 
         log.debug("find exporter {}", dataExporter);
 
@@ -136,12 +126,12 @@ public class DefaultBatchExportService implements BatchAndExportService {
             // 编码问题，未提供配置，需先调用 ExportConfigManager.putConfig 方法设置输出配置
             throw new BaseRuntimeException("templateId:" + templateId + " not existed! ");
         }
-        exportConfigLocal.set(exportFileConfig);
+        BatchOutputContext.get().setExportConfig(exportFileConfig);
         try {
             // 准备输出
             dataExporter.prepare(outputStream, exportFileConfig);
             // 输出头部信息
-            outputHeader();
+            outputCommentLinesAndHeaders();
             log.trace("output headers finished.");
             // 输出数据
             log.debug("output data total turn: {}", dataSupplierList.size());
@@ -167,28 +157,26 @@ public class DefaultBatchExportService implements BatchAndExportService {
     /**
      * 生成完整表头（介绍 + 字段 + demo）
      */
-    private void outputHeader() throws IOException {
-        ExportFileConfig exportFileConfig = exportConfigLocal.get();
-        boolean exportRecordInfo = exportRecordLocal.get();
+    private void outputCommentLinesAndHeaders() throws IOException {
+        ExportFileConfig exportFileConfig = BatchOutputContext.get().getExportConfig();
         if (CollectionUtils.isEmpty(exportFileConfig.getHeaders()) || CollectionUtils.isEmpty(exportFileConfig.getColumns())) {
             throw new BaseRuntimeException("descriptionList and columns can't be empty! ");
         }
 
-        List<ExportColumnConfig> columns = exportFileConfig.getColumns();
-        List<String> nameList = columns.stream()
-            .map(ExportColumnConfig::getColumnName)
-            .collect(Collectors.toList());
-        if (exportRecordInfo) {
-            nameList.add(BatchI18nEnum.ROW_NUM.i18nValue());
-            nameList.add(BatchI18nEnum.RESULT.i18nValue());
-            nameList.add(BatchI18nEnum.DETAIL.i18nValue());
-        }
-        String[] columnsName = new String[columns.size() + (exportRecordInfo ? 3 : 0)];
+        List<String> headers = new ArrayList<>(exportFileConfig.getHeaders().size() + 3);
+        headers.addAll(exportFileConfig.getHeaders());
 
-        currentDataExporter.get()
-            .outputHeader(exportFileConfig.getHeaders());
-        currentDataExporter.get()
-            .outputData(Collections.singletonList(nameList.toArray(columnsName)));
+        boolean exportRecordInfo = BatchOutputContext.get().isExtraDetail();
+        if (exportRecordInfo) {
+            headers.add(BatchI18nEnum.ROW_NUM.i18nValue());
+            headers.add(BatchI18nEnum.RESULT.i18nValue());
+            headers.add(BatchI18nEnum.DETAIL.i18nValue());
+        }
+
+        BatchOutputContext.get().getCurrentDataExporter()
+                .outputComment(exportFileConfig.getCommentLines());
+        BatchOutputContext.get().getCurrentDataExporter()
+                .outputHeader(headers);
     }
 
     /**
@@ -202,7 +190,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         List<String[]> dataLine = data.stream()
             .map(this::toDataArray)
             .collect(Collectors.toList());
-        currentDataExporter.get().outputData(dataLine);
+        BatchOutputContext.get().getCurrentDataExporter().outputData(dataLine);
     }
 
     /**
@@ -212,27 +200,24 @@ public class DefaultBatchExportService implements BatchAndExportService {
      * @return 数据行
      */
     private String[] toDataArray(Map<String, String> dataMap) {
-        ExportFileConfig exportFileConfig = exportConfigLocal.get();
+        ExportFileConfig exportFileConfig = BatchOutputContext.get().getExportConfig();
         List<ExportColumnConfig> columnList = exportFileConfig.getColumns();
         String[] dataArray = new String[dataMap.size()];
         for (int i = 0; i < columnList.size(); i++) {
             ExportColumnConfig column = columnList.get(i);
-            dataArray[i] = dataMap.get(column.getModelFieldName());
+            dataArray[i] = dataMap.get(column.getModelField());
         }
         return dataArray;
     }
 
     private void cleanContext() {
-        currentDataExporter.get().cleanContext();
-        currentDataExporter.remove();
-        exportConfigLocal.remove();
-        exportRecordLocal.remove();
+        BatchOutputContext.clean();
     }
 
     @Override
     public String exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
                                     String batchId, List<BatchDetailResultStatusEnum> resultTypes) throws IOException {
-        exportRecordLocal.set(Boolean.TRUE);
+        BatchOutputContext.get().setExtraDetail(true);
         // 认为单次批量操作一般有上限，如1000，这里直接单次全捞出来了
         return export(outputStream, exportType, List.of(() -> {
             List<BatchRecordDetail> recordDetailList = findAllDetailByRecordIdAndStatusAndIndex(batchId, resultTypes, null, null);
@@ -251,6 +236,17 @@ public class DefaultBatchExportService implements BatchAndExportService {
                 })
                 .collect(Collectors.toList());
         }), templateId);
+    }
+
+    @Override
+    public boolean validateCsvHeader(String businessType, List<Record> recordList) {
+        // 获取csv头，然后对比未被篡改
+        AssertUtils.notEmpty(recordList, CommonErrorCodeEnum.ILLEGAL_PARAM);
+        String[] values = recordList.get(0).getValues();
+
+        ExportFileConfig exportFileConfig = exportConfigManager.getFileConfigWithLocale(businessType, AppContext.getLocale());
+        List<String> headers = exportFileConfig.getHeaders();
+        return ArrayUtils.equals(values, headers.toArray());
     }
 
     // *********************************  执行处理  **************************************

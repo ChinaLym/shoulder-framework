@@ -143,7 +143,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
             entity.setDataKey(rs.getString(3));
             entity.setRootKeyPart(rs.getString(4));
             entity.setVector(rs.getString(5));
-            entity.setCreateTime(rs.getDate(6));
+            entity.setCreateTime(rs.getTimestamp(6));
             return entity;
         }
     }

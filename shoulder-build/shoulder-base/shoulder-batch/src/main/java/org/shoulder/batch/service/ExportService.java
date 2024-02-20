@@ -1,5 +1,6 @@
 package org.shoulder.batch.service;
 
+import com.univocity.parsers.common.record.Record;
 import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 
 import java.io.IOException;
@@ -47,4 +48,5 @@ public interface ExportService {
     String exportBatchDetail(OutputStream outputStream, String exportType, String templateId,
                              String batchId, List<BatchDetailResultStatusEnum> resultTypes) throws IOException;
 
+    boolean validateCsvHeader(String businessType, List<Record> recordList);
 }

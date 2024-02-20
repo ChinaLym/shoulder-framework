@@ -1,6 +1,8 @@
 package org.shoulder.batch.config.model;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.shoulder.core.context.AppInfo;
 
 import java.util.ArrayList;
@@ -25,14 +27,20 @@ public class ExportFileConfig {
     private String id;
 
     /**
-     * 导出转换扩展点 【暂未使用】
+     * 导出转换扩展点
+     * @deprecated【暂未使用】
      */
     private String exportMapping;
 
     /**
-     * 头部信息 - 多语言key
+     * 注释行
      */
-    private List<String> headersI18n;
+//    private List<String> commentLinesI18n;
+
+    /**
+     * 注释行
+     */
+    private List<String> commentLines;
 
     /**
      * 国际化处理后的头部信息（框架会根据当前语言环境自动填充）
@@ -99,6 +107,25 @@ public class ExportFileConfig {
         } catch (IndexOutOfBoundsException e) {
             return null;
         }
+    }
+
+
+    @Override
+    public ExportFileConfig clone() {
+        ExportFileConfig clone = new ExportFileConfig();
+        clone.setId(this.getId());
+        clone.setExportMapping(this.getExportMapping());
+
+        // Clone collection fields
+        clone.setCommentLines(this.getCommentLines() == null ? null : new ArrayList<>(this.getCommentLines()));
+        clone.setHeaders(this.getHeaders() == null ? null : new ArrayList<>(this.getHeaders()));
+
+        // Deep clone the columns list
+        clone.setColumns(this.columns.stream()
+                .map(ExportColumnConfig::clone)
+                .toList());
+
+        return clone;
     }
 
 }

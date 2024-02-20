@@ -62,7 +62,7 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
     public BeanPostProcessor asyncLoggerBeanPostProcessor() {
         return new BeanPostProcessor() {
             @Override
-            public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName) throws BeansException {
+            public Object postProcessAfterInitialization(@Nonnull Object bean, @Nonnull String beanName) throws BeansException {
                 if (!(bean instanceof OperationLogger)) {
                     return bean;
                 }
@@ -92,7 +92,7 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
     public BeanPostProcessor bufferedLoggerBeanPostProcessor() {
         return new BeanPostProcessor() {
             @Override
-            public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName) throws BeansException {
+            public Object postProcessAfterInitialization(@Nonnull Object bean, @Nonnull String beanName) throws BeansException {
                 if (!(bean instanceof OperationLogger)) {
                     return bean;
                 }

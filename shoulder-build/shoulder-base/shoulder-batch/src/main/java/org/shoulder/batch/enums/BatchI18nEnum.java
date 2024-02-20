@@ -1,6 +1,7 @@
 package org.shoulder.batch.enums;
 
 
+import lombok.Getter;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.ContextUtils;
 
@@ -113,7 +114,6 @@ public enum BatchI18nEnum {
     // ==================== 校验提示 =====================
 
 
-
     /**
      * 处理数量：%1，成功：%2，失败：%3
      */
@@ -137,6 +137,7 @@ public enum BatchI18nEnum {
 
 
     private final String defaultName;
+    @Getter
     private final String code;
 
     BatchI18nEnum(String code) {
@@ -144,14 +145,11 @@ public enum BatchI18nEnum {
         this.defaultName = code.substring(code.lastIndexOf('.') + 1);
     }
 
-    public String getCode() {
-        return code;
-    }
-
     public String i18nValue(Object... args) {
-        return Optional.ofNullable(ContextUtils.getBean(Translator.class).getMessage(this.code, args))
-            .filter(String::isBlank)
-            .orElse(this.defaultName);
+        return Optional.ofNullable(ContextUtils.getBean(Translator.class)
+                        .getMessageOrDefault(this.code, this.defaultName, args))
+                .filter(String::isBlank)
+                .orElse(this.defaultName);
     }
 
 }

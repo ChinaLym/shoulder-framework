@@ -41,7 +41,7 @@ public class CommonEndpoint implements ApplicationListener<ApplicationStartedEve
 
     @RequestMapping({"/current/user"})
     public String currentUser() {
-        // todo
+        // todo getUserId
         return AppContext.getUserId();
     }
 

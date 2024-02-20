@@ -6,12 +6,11 @@ import org.shoulder.core.util.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.sql.DataSource;
 
 /**
  * 批量处理记录mapper
@@ -140,7 +139,7 @@ public class JdbcBatchRecordPersistentServiceImpl implements BatchRecordPersiste
                 .successNum(resultSet.getInt(5))
                 .failNum(resultSet.getInt(6))
                 .creator(resultSet.getLong(7))
-                .createTime(resultSet.getDate(8))
+                    .createTime(resultSet.getTimestamp(8))
                 .build();
         }
     }

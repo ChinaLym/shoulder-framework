@@ -1,0 +1,11 @@
+#batchTestId#zh_CN#1
+#batchTestId#zh_CN#2
+#batchTestId#zh_CN#3
+"#batchTestId#zh_CN#4”
+"#batchTestId#zh_CN#5“
+"#batchTestId#zh_CN#6“
+"#batchTestId#zh_CN#7“
+First,Second,Third
+foo1,bar1,Third
+foo2,bar2,Third
+foo3,bar3,Third

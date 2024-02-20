@@ -26,13 +26,13 @@ public class ThreadEnhancerConfiguration {
     }
 
     /**
-     * 自动注册
+     * BeanPostProcessor 必须为静态方法、不会在Spring容器初始化阶段过早地引用其他还未准备好的bean。
      */
     @Bean
-    public BeanPostProcessor threadEnhancePostProcessor() {
+    public static BeanPostProcessor threadEnhancePostProcessor() {
         return new BeanPostProcessor() {
             @Override
-            public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName) throws BeansException {
+            public Object postProcessAfterInitialization(@Nonnull Object bean, @Nonnull String beanName) throws BeansException {
                 if (bean instanceof ThreadEnhancer) {
                     ThreadEnhanceHelper.register((ThreadEnhancer) bean);
                 }

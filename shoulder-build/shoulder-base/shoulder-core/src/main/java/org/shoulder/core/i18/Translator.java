@@ -29,6 +29,28 @@ import java.util.Locale;
 public interface Translator extends MessageSource {
 
     /**
+     * 多语言自动翻译 带默认值
+     *
+     * @param i18nKey    待翻译的多语言 key
+     * @param defaultMsg 默认返回值
+     * @return 翻译后的
+     */
+    default String getMessageOrDefault(@NonNull String i18nKey, String defaultMsg) {
+        return getMessage(i18nKey, new Object[0], defaultMsg, currentLocale());
+    }
+
+    /**
+     * 多语言自动翻译 带默认值
+     *
+     * @param i18nKey    待翻译的多语言 key
+     * @param defaultMsg 默认返回值
+     * @return 翻译后的
+     */
+    default String getMessageOrDefault(@NonNull String i18nKey, String defaultMsg, Object... args) {
+        return getMessage(i18nKey, args, defaultMsg, currentLocale());
+    }
+
+    /**
      * 多语言自动翻译
      *
      * @param i18nKey 待翻译的多语言 key

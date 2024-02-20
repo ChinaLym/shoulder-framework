@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.batch;
 
+import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvWriter;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
@@ -117,6 +118,7 @@ public class ShoulderBatchAutoConfiguration {
      * service
      */
     @Bean
+    @ConditionalOnClass(CsvParser.class)
     @ConditionalOnMissingBean(ImportRestfulApi.class)
     public ImportController importRestfulApi(
             ServerLock serverLock, BatchService batchService, ExportService exportService, RecordService recordService,

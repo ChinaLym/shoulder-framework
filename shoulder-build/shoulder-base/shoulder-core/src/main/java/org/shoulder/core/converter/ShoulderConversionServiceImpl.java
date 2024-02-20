@@ -8,13 +8,9 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.unit.DataSize;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -40,6 +36,10 @@ public class ShoulderConversionServiceImpl extends WebConversionService implemen
     }
 
     private void registerJdk8DateConverters() {
+        addConverter(String.class, DataSize.class, DataSize::parse);
+        addConverter(Long.class, DataSize.class, DataSize::ofBytes);
+        addConverter(DataSize.class, Long.class, DataSize::toBytes);
+
         addConverter(Date.class, LocalDateTime.class, d -> d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
         addConverter(Date.class, LocalDate.class, d -> d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 
@@ -80,11 +80,15 @@ public class ShoulderConversionServiceImpl extends WebConversionService implemen
     public Object convert(@Nullable Object source, @Nullable TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
         // 特殊支持从 int / string 转换为 DictionaryEnum
         AssertUtils.notNull(targetType, CommonErrorCodeEnum.CODING, "Target type to convert to cannot be null");
+        if (canConvert(sourceType, targetType)) {
+            return super.convert(source, sourceType, targetType);
+        }
         for (ConversionService conversionService : conversionServiceList) {
             if (conversionService.canConvert(sourceType, targetType)) {
                 return conversionService.convert(source, sourceType, targetType);
             }
         }
+//        return super.handleConverterNotFound(source, sourceType, targetType);
         return super.convert(source, sourceType, targetType);
     }
 
