@@ -8,6 +8,7 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.log.operation.annotation.OperationLog.Operations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -39,13 +40,16 @@ public class ImportTaskSplitHandler implements TaskSplitHandler {
                 .mapToObj(sequence -> {
                     BatchDataSlice batchDataSlice = new BatchDataSlice(batchData.getBatchId(), sequence, batchData.getDataType(),
                             batchData.getOperation(), importItems);
-//                batchDataSlice.setDataSizeCalculator(s -> fetchBatchImportDataItem(s.getBatchList()).getBatchSliceSize());
-//                List<Integer> indexList = new ArrayList<>(Math.min(total, batchSliceSize));
-//                for (int i = index.get() * batchSliceSize; i < Math.min(total, batchSliceSize * (index.get() + 1)); i++) {
-//                    indexList.add(i);
-//                }
-//                batchDataSlice.setDataIndexStreamCalculator(s -> indexList.stream());
-//                index.incrementAndGet();
+                    int start = index.get() * batchSliceSize;
+                    int end = Math.min(total, batchSliceSize * (index.get() + 1));
+
+                    batchDataSlice.setDataSizeCalculator(s -> end - start);
+                    List<Integer> indexList = new ArrayList<>(Math.min(total, batchSliceSize));
+                    for (int i = start; i < end; i++) {
+                        indexList.add(i);
+                    }
+                    batchDataSlice.setDataIndexStreamCalculator(s -> indexList.stream());
+                    index.incrementAndGet();
                     return batchDataSlice;
                 })
             .collect(Collectors.toList());

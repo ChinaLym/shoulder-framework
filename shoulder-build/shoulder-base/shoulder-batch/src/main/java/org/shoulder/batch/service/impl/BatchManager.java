@@ -150,9 +150,13 @@ public class BatchManager implements Runnable, ProgressAble {
         // 最大不能超过 MAX_WORKER_SIZE
         int workerNum = Integer.min(MAX_WORKER_SIZE, jobSize);
         resultQueue = new LinkedBlockingQueue<>(dataItemTotalNum);
-
-        log.debug("batch task split, total={}, subJobNum={}, workNum={}", dataItemTotalNum, jobSize, workerNum);
-
+        if (dataItemTotalNum < 2) {
+            // 数据量极少还用批处理框架通常是不符合预期的，打印 warn
+            log.warn("batch task split and Total only={}! subJobNum={}, workNum={}", dataItemTotalNum, jobSize, workerNum);
+        } else {
+            log.debug("batch task split, total={}, subJobNum={}, workNum={}", dataItemTotalNum, jobSize, workerNum);
+        }
+        this.progress.setTotal(dataItemTotalNum);
         compositeBatchRecords(dataItemTotalNum);
         progress.start();
 
