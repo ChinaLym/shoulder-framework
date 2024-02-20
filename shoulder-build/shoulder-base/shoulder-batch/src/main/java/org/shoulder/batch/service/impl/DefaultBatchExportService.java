@@ -14,7 +14,7 @@ import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.progress.BatchProgressCache;
 import org.shoulder.batch.progress.BatchProgressRecord;
-import org.shoulder.batch.progress.ProgressAble;
+import org.shoulder.batch.progress.Progress;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
 import org.shoulder.batch.service.BatchAndExportService;
@@ -278,7 +278,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
         } else {
             BatchManager batchManager = new BatchManager(batchData);
             //执行持久化
-            batchProgressCache.triggerFlushProgress(batchManager.getBatchProgress());
+            batchProgressCache.triggerFlushProgress(batchManager);
             batchThreadPool.execute(batchManager);
             return batchManager.getBatchProgress().getId();
         }
@@ -294,7 +294,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
      */
     @Override
     public BatchProgressRecord queryBatchProgress(String batchId) {
-        ProgressAble result = batchProgressCache.getProgress(batchId);
+        Progress result = batchProgressCache.getProgress(batchId);
         if (result == null) {
             // 缓存过期无需从数据库中查，直接异常
             throw BatchErrorCodeEnum.BATCH_ID_NOT_EXIST.toException(batchId);

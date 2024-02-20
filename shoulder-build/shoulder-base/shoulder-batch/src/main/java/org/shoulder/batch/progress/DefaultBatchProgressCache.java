@@ -83,13 +83,13 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     }
 
     @Override
-    public Map<String, ProgressAble> getAllTaskProgress() {
+    public Map<String, Progress> getAllTaskProgress() {
         Object nativeCache = getNativeCache();
         if (nativeCache instanceof Map) {
             Map<Object, Object> nMap = ((Map<Object, Object>) nativeCache);
             return nMap.entrySet().stream()
                     .collect(Collectors.toMap(e -> String.valueOf(e.getKey()),
-                            e -> (ProgressAble) e.getValue())
+                            e -> (Progress) e.getValue())
                     );
         }
 //        if (ConcurrentMapCache.class.isAssignableFrom(progressCache.getClass())) {
@@ -109,9 +109,9 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      * @return 任务
      */
     @Override
-    public ProgressAble getProgress(String progressId) {
+    public Progress getProgress(String progressId) {
         Cache.ValueWrapper valueWrapper = progressCache.get(progressId);
-        return valueWrapper == null ? null : (ProgressAble) valueWrapper.get();
+        return valueWrapper == null ? null : (Progress) valueWrapper.get();
     }
 
     /**

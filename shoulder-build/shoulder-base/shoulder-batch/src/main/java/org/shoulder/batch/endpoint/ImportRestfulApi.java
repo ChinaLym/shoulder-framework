@@ -120,8 +120,6 @@ public interface ImportRestfulApi {
      * 数据导入模板下载
      * <p>
      * todo 【开发】数据类型、业务操作类型
-     *
-     * @return
      */
     @ApiOperation(value = "数据导入模板下载", consumes = "text/csv", httpMethod = "GET")
     @ApiImplicitParam(value = "文件编码", name = "charsetLanguage", example = "gbk",

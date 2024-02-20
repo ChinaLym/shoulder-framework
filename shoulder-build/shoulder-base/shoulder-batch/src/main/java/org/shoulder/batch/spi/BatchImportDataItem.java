@@ -42,7 +42,7 @@ import java.util.Map;
     }
 
     @Override public int getIndex() {
-        return 0;
+        return -1;
     }
 
     @Override public String serialize() {

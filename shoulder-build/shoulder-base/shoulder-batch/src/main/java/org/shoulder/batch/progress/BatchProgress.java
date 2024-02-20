@@ -22,13 +22,13 @@ import java.util.function.BiConsumer;
 @Data
 @NoArgsConstructor
 //@javax.annotation.concurrent.ThreadSafe
-public class BatchProgress implements Serializable, ProgressAble {
+public class BatchProgress implements Serializable, Progress {
 
     private static final long serialVersionUID = 1L;
 
     private boolean autoFished = true;
 
-    private BiConsumer<String, ProgressAble> onFinishCallback = ProgressAble.super::onFinished;
+    private BiConsumer<String, Progress> onFinishCallback = Progress.super::onFinished;
 
     /**
      * 批处理任务id
@@ -167,12 +167,12 @@ public class BatchProgress implements Serializable, ProgressAble {
     @Override
     public String toString() {
         return "BatchProgress{" +
-               "batchId='" + id + '\'' +
-               ", total=" + total +
-               ", processed=" + processed +
-               ", startTime=" + startTime +
-               ", status=" + status +
-               '}';
+                "batchId='" + id + '\'' +
+                ", total=" + total +
+                ", processed=" + processed +
+                ", startTime=" + startTime +
+                ", status=" + status +
+                '}';
     }
 
     public void addSuccess(int num) {
@@ -213,7 +213,7 @@ public class BatchProgress implements Serializable, ProgressAble {
 
     @Override
     public void onFinished(String id, ProgressAble task) {
-        onFinishCallback.accept(id, task);
+        onFinishCallback.accept(id, (Progress) task);
     }
 
     private void addProcessed(int processedNum) {

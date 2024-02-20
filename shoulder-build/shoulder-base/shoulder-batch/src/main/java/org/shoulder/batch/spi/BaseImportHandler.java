@@ -93,6 +93,8 @@ public abstract class BaseImportHandler implements BatchTaskSliceHandler {
 
         allResultList.sort(Comparator.comparingInt(BatchRecordDetail::getIndex));
 
+        task.setBatchList(batchRecordDetails);
+
         return allResultList;
     }
 

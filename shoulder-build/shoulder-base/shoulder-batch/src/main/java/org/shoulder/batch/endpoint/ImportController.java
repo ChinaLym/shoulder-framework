@@ -179,6 +179,7 @@ public class ImportController implements ImportRestfulApi {
 
         // todo 【进阶】读配置，校验参数与配置一致
         AssertUtils.equals(Operations.IMPORT, advanceBatchParam.getNextOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
+        OpLogContextHolder.getLog().setOperation(advanceBatchParam.getNextOperation());
         final int total = record.getTotalNum();
 
         BatchData batchData = new BatchData();
@@ -186,8 +187,10 @@ public class ImportController implements ImportRestfulApi {
         batchData.setDataType(advanceBatchParam.getDataType());
         batchData.setBatchListMap(new HashMap<>());
         List<BatchImportDataItem> importDataItemList = new ArrayList<>();
-        importDataItemList.add(new BatchImportDataItem(
-            total, 200, batchId, Map.of(BatchImportDataItem.EXT_KEY_UPDATE_REPEAT, advanceBatchParam.getUpdateRepeat())));
+        importDataItemList.add(
+                new BatchImportDataItem(total, 200, batchId,
+                        Map.of(BatchImportDataItem.EXT_KEY_UPDATE_REPEAT, advanceBatchParam.getUpdateRepeat()))
+        );
         batchData.getBatchListMap().put(advanceBatchParam.getNextOperation(), importDataItemList);
 
         // lock 避免重复导入，低频功能低内存，加长锁
@@ -202,7 +205,7 @@ public class ImportController implements ImportRestfulApi {
         // 不用关心谁持有，主打一个短时间防重复，长期可重试
         String resource = param.getDataType() + ":" + param.getBatchId() + ":"
                 + param.getCurrentOperation() + ":" + param.getNextOperation();
-        return serverLock.tryLock("", VALIDATE_RESULT_EXPIRATION);
+        return serverLock.tryLock(resource, VALIDATE_RESULT_EXPIRATION);
     }
 
     /**
@@ -220,11 +223,11 @@ public class ImportController implements ImportRestfulApi {
     @Override
     public BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord(String dataType) {
         return BaseResult.success(
-            // admin 可以不带 userId 查所有
-            Stream.of(recordService.findLastRecord(dataType, AppContext.getUserId()))
-                .map(r -> conversionService.convert(r, BatchRecordResult.class))
-                .collect(Collectors.toList()
-                )
+                // admin 可以不带 userId 查所有
+                Stream.of(recordService.findLastRecord(dataType, AppContext.getUserId()))
+                        .map(r -> conversionService.convert(r, BatchRecordResult.class))
+                        .collect(Collectors.toList()
+                        )
         );
     }
 
@@ -233,11 +236,11 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     public BaseResult<BatchRecordResult> pageQueryImportRecordDetail(
-        QueryImportResultDetailParam condition) {
+            QueryImportResultDetailParam condition) {
         BatchRecord record = recordService.findRecordById(condition.getBatchId());
         AssertUtils.notNull(record, CommonErrorCodeEnum.DATA_NOT_EXISTS);
         List<BatchRecordDetail> details = recordService.findAllDetailByRecordIdAndStatusAndIndex(record.getId(),
-            null, condition.getPageNo(), condition.getPageSize());
+                null, condition.getPageNo(), condition.getPageSize());
         record.setDetailList(details);
         BatchRecordResult result = conversionService.convert(record, BatchRecordResult.class);
         return BaseResult.success(result);
@@ -246,8 +249,6 @@ public class ImportController implements ImportRestfulApi {
     /**
      * 数据导入模板下载
      * 示例： 导出 导入数据模板
-     *
-     * @return
      */
     @Override
     public void exportImportTemplate(HttpServletResponse response, String businessType) throws IOException {
@@ -271,10 +272,10 @@ public class ImportController implements ImportRestfulApi {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         String encoding = exportService.exportBatchDetail(byteArrayOutputStream, BatchConstants.CSV,
-            recordInDb.getDataType(),
-            recordInDb.getId(),
-            CollectionUtils.emptyIfNull(condition.getStatusList())
-                    .stream().map(BatchDetailResultStatusEnum::of).collect(Collectors.toList())
+                recordInDb.getDataType(),
+                recordInDb.getId(),
+                CollectionUtils.emptyIfNull(condition.getStatusList())
+                        .stream().map(BatchDetailResultStatusEnum::of).collect(Collectors.toList())
         );
         compositeResponse(response, recordInDb.getDataType(), byteArrayOutputStream, encoding);
     }
@@ -287,9 +288,9 @@ public class ImportController implements ImportRestfulApi {
                        PageQuery<Map> exportCondition) throws IOException {
         // 找到数据查询构造器
         ExportDataQueryFactory exportDataQueryFactory = exportDataQueryFactoryList.stream()
-            .filter(p -> p.support(businessType, exportCondition))
-            .findFirst()
-            .orElseThrow(() -> new BaseRuntimeException(CommonErrorCodeEnum.ILLEGAL_PARAM));
+                .filter(p -> p.support(businessType, exportCondition))
+                .findFirst()
+                .orElseThrow(() -> new BaseRuntimeException(CommonErrorCodeEnum.ILLEGAL_PARAM));
         List<Supplier<List<Map<String, String>>>> exportData = exportDataQueryFactory.createQuerySuppliers(businessType, exportCondition);
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

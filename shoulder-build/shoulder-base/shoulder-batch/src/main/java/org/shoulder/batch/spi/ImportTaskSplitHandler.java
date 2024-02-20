@@ -9,6 +9,7 @@ import org.shoulder.core.util.AssertUtils;
 import org.shoulder.log.operation.annotation.OperationLog.Operations;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -31,11 +32,22 @@ public class ImportTaskSplitHandler implements TaskSplitHandler {
 
         int total = batchImportDataItem.getTotal();
         int batchSliceSize = batchImportDataItem.getBatchSliceSize();
+        AtomicInteger index = new AtomicInteger(0);
 
         int sliceNum = total / batchSliceSize + 1;
         List<BatchDataSlice> splitResult = IntStream.range(0, sliceNum)
-            .mapToObj(sequence -> new BatchDataSlice(batchData.getBatchId(), sequence, batchData.getDataType(),
-                batchData.getOperation(), importItems))
+                .mapToObj(sequence -> {
+                    BatchDataSlice batchDataSlice = new BatchDataSlice(batchData.getBatchId(), sequence, batchData.getDataType(),
+                            batchData.getOperation(), importItems);
+//                batchDataSlice.setDataSizeCalculator(s -> fetchBatchImportDataItem(s.getBatchList()).getBatchSliceSize());
+//                List<Integer> indexList = new ArrayList<>(Math.min(total, batchSliceSize));
+//                for (int i = index.get() * batchSliceSize; i < Math.min(total, batchSliceSize * (index.get() + 1)); i++) {
+//                    indexList.add(i);
+//                }
+//                batchDataSlice.setDataIndexStreamCalculator(s -> indexList.stream());
+//                index.incrementAndGet();
+                    return batchDataSlice;
+                })
             .collect(Collectors.toList());
 
         return splitResult;

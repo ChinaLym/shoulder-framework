@@ -8,7 +8,6 @@ import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.spi.BatchTaskSliceHandler;
-import org.shoulder.batch.spi.DataItem;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
@@ -32,7 +31,7 @@ public class BatchProcessor implements Runnable {
     /**
      * 任务队列
      */
-    private final BlockingQueue<BatchDataSlice>    taskQueue;
+    private final BlockingQueue<BatchDataSlice> taskQueue;
     /**
      * 产生结果队列
      */
@@ -42,7 +41,7 @@ public class BatchProcessor implements Runnable {
      * 数据处理器
      */
     private final Collection<BatchTaskSliceHandler> batchTaskSliceHandlers =
-        ContextUtils.getBeansOfType(BatchTaskSliceHandler.class).values();
+            ContextUtils.getBeansOfType(BatchTaskSliceHandler.class).values();
 
     protected Translator translator;
 
@@ -101,21 +100,21 @@ public class BatchProcessor implements Runnable {
         String dataType = task.getDataType();
         String operation = task.getOperationType();
         BatchTaskSliceHandler taskHandler = batchTaskSliceHandlers.stream()
-            .filter(handler -> handler.support(dataType, operation))
-            .findFirst()
-            // 若不存在则肯定是代码写错了，直接抛出异常
-            .orElseThrow(() -> BatchErrorCodeEnum.DATA_TYPE_OR_OPERATION_NOT_SUPPORT
-                .toException(dataType, operation));
+                .filter(handler -> handler.support(dataType, operation))
+                .findFirst()
+                // 若不存在则肯定是代码写错了，直接抛出异常
+                .orElseThrow(() -> BatchErrorCodeEnum.DATA_TYPE_OR_OPERATION_NOT_SUPPORT
+                        .toException(dataType, operation));
         List<BatchRecordDetail> taskResult = null;
         try {
             log.debug("begin_handle dataType=" + dataType + "operation=" + operation
-                      + ",batchId=" + getBatchId() + ", slice=" + task.getSequence()
-                      + ", handler=" + taskHandler.getClass().getName());
+                    + ",batchId=" + getBatchId() + ", slice=" + task.getSequence()
+                    + ", handler=" + taskHandler.getClass().getName());
             taskResult = taskHandler.handle(task);
         } catch (Exception e) {
             log.error("Batch Process FAIL! dataType=" + dataType + "operation=" + operation
-                      + ",batchId=" + getBatchId() + ", slice=" + task.getSequence()
-                      + ", handler=" + taskHandler.getClass().getName(), e);
+                    + ",batchId=" + getBatchId() + ", slice=" + task.getSequence()
+                    + ", handler=" + taskHandler.getClass().getName(), e);
         }
         log.info("task {}-{} finished", task.getBatchId(), task.getSequence());
         return polluteUnknownIfMissingResult(task, ListUtils.emptyIfNull(taskResult));
@@ -126,25 +125,24 @@ public class BatchProcessor implements Runnable {
      */
     private List<BatchRecordDetail> polluteUnknownIfMissingResult(@Nonnull BatchDataSlice task,
                                                                   @Nonnull List<BatchRecordDetail> resultDetailList) {
-        int exceptNum = task.getBatchList().size();
+        int exceptNum = task.calculateDataSize();
         int actuallyNum = resultDetailList.size();
         if (exceptNum == actuallyNum) {
             return resultDetailList;
         }
         log.warnWithErrorCode(BatchErrorCodeEnum.TASK_SLICE_RESULT_INVALID.getCode(),
-            BatchErrorCodeEnum.TASK_SLICE_RESULT_INVALID.getMessage(), exceptNum, actuallyNum);
+                BatchErrorCodeEnum.TASK_SLICE_RESULT_INVALID.getMessage(), exceptNum, actuallyNum);
 
         // 为没有返回结果的任务进行补偿填充，认为失败了
         Map<Integer, BatchRecordDetail> indexedBatchRecordDetailMap = resultDetailList.stream().collect(
-            Collectors.toMap(BatchRecordDetail::getIndex, o -> o, (o1, o2) -> o2));
+                Collectors.toMap(BatchRecordDetail::getIndex, o -> o, (o1, o2) -> o2));
 
-        task.getBatchList().stream()
-            .map(DataItem::getIndex)
-            .map(index ->
-                Optional.ofNullable(indexedBatchRecordDetailMap.get(index))
-                        .orElse(new BatchRecordDetail(index, BatchDetailResultStatusEnum.FAILED.getCode(),
-                        CommonErrorCodeEnum.UNKNOWN.getCode()))
-            ).forEach(resultDetailList::add);
+        task.dataIndexStream()
+                .map(index ->
+                        Optional.ofNullable(indexedBatchRecordDetailMap.get(index))
+                                .orElse(new BatchRecordDetail(index, "UNKNOWN", BatchDetailResultStatusEnum.FAILED.getCode(),
+                                        CommonErrorCodeEnum.UNKNOWN.getCode()))
+                ).forEach(resultDetailList::add);
 
         return resultDetailList;
     }

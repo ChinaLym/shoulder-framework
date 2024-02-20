@@ -24,7 +24,9 @@ import org.shoulder.batch.service.ExportService;
 import org.shoulder.batch.service.RecordService;
 import org.shoulder.batch.service.impl.DefaultBatchExportService;
 import org.shoulder.batch.spi.DataExporter;
+import org.shoulder.batch.spi.DefaultTaskSplitHandler;
 import org.shoulder.batch.spi.ExportDataQueryFactory;
+import org.shoulder.batch.spi.ImportTaskSplitHandler;
 import org.shoulder.batch.spi.csv.CsvExporter;
 import org.shoulder.batch.spi.csv.DataItemConvertFactory;
 import org.shoulder.batch.spi.csv.DefaultDataItemConvertFactory;
@@ -41,6 +43,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
@@ -82,6 +86,18 @@ public class ShoulderBatchAutoConfiguration {
     @ConditionalOnMissingBean
     public BatchRecordDomain2DTOConverter batchRecordDomain2DTOConverter() {
         return BatchRecordDomain2DTOConverter.INSTANCE;
+    }
+
+    @Order(Ordered.LOWEST_PRECEDENCE)
+    @Bean
+    public DefaultTaskSplitHandler defaultTaskSplitHandler() {
+        return new DefaultTaskSplitHandler(200);
+    }
+
+    @Order(Ordered.LOWEST_PRECEDENCE - 1)
+    @Bean
+    public ImportTaskSplitHandler importTaskSplitHandler() {
+        return new ImportTaskSplitHandler();
     }
 
     /**

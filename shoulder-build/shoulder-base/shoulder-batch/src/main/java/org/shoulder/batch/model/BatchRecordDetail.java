@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.shoulder.batch.spi.DataItem;
 
 import java.io.Serializable;
 
@@ -16,7 +17,7 @@ import java.io.Serializable;
 @Builder
 @Accessors(chain = true)
 @AllArgsConstructor
-public class BatchRecordDetail implements Serializable {
+public class BatchRecordDetail implements Serializable, DataItem {
 
     /**
      * 主键
@@ -59,18 +60,20 @@ public class BatchRecordDetail implements Serializable {
     /**
      * 是否计算进度
      */
-    private boolean calculateProgress = true;
+//    private boolean calculateProgress = true;
 
     public BatchRecordDetail() {
     }
 
-    public BatchRecordDetail(int index, int status) {
+    public BatchRecordDetail(int index, String source, int status) {
         this.index = index;
+        this.source = source;
         this.status = status;
     }
 
-    public BatchRecordDetail(int index, int status, String failReason) {
+    public BatchRecordDetail(int index, String source, int status, String failReason) {
         this.index = index;
+        this.source = source;
         this.status = status;
         this.failReason = failReason;
     }
@@ -78,5 +81,10 @@ public class BatchRecordDetail implements Serializable {
 
     public void setFailReason(String failReason) {
         this.failReason = failReason;
+    }
+
+    @Override
+    public String serialize() {
+        return source;
     }
 }

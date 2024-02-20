@@ -22,7 +22,7 @@ import java.util.function.BiConsumer;
 @Data
 @NoArgsConstructor
 //@javax.annotation.concurrent.NotThreadSafe
-public class BatchProgressRecord implements Serializable, ProgressAble {
+public class BatchProgressRecord implements Serializable, Progress {
 
     private static final long serialVersionUID = 1L;
 
@@ -185,7 +185,7 @@ public class BatchProgressRecord implements Serializable, ProgressAble {
     }
 
     @Override
-    public void setOnFinishCallback(BiConsumer<String, ProgressAble> onFinishedCallback) {
+    public void setOnFinishCallback(BiConsumer<String, Progress> onFinishedCallback) {
         throw new UnsupportedOperationException("static record object not supported!");
     }
 
