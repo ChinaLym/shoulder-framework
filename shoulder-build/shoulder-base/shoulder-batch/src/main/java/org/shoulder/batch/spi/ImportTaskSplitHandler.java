@@ -28,7 +28,7 @@ public class ImportTaskSplitHandler implements TaskSplitHandler {
     }
 
     @Override public List<BatchDataSlice> splitTask(BatchData batchData) {
-        List<? extends DataItem> importItems = batchData.getBatchListMap().get(batchData.getOperation());
+        List<? extends DataItem> importItems = batchData.getDataList();
         BatchImportDataItem batchImportDataItem = fetchBatchImportDataItem(importItems);
 
         int total = batchImportDataItem.getTotal();
@@ -37,21 +37,21 @@ public class ImportTaskSplitHandler implements TaskSplitHandler {
 
         int sliceNum = total / batchSliceSize + 1;
         List<BatchDataSlice> splitResult = IntStream.range(0, sliceNum)
-                .mapToObj(sequence -> {
-                    BatchDataSlice batchDataSlice = new BatchDataSlice(batchData.getBatchId(), sequence, batchData.getDataType(),
-                            batchData.getOperation(), importItems);
-                    int start = index.get() * batchSliceSize;
-                    int end = Math.min(total, batchSliceSize * (index.get() + 1));
+            .mapToObj(sequence -> {
+                BatchDataSlice batchDataSlice = new BatchDataSlice(batchData.getBatchId(), sequence, batchData.getDataType(),
+                    batchData.getOperation(), importItems);
+                int start = index.get() * batchSliceSize;
+                int end = Math.min(total, batchSliceSize * (index.get() + 1));
 
-                    batchDataSlice.setDataSizeCalculator(s -> end - start);
-                    List<Integer> indexList = new ArrayList<>(Math.min(total, batchSliceSize));
-                    for (int i = start; i < end; i++) {
-                        indexList.add(i);
-                    }
-                    batchDataSlice.setDataIndexStreamCalculator(s -> indexList.stream());
-                    index.incrementAndGet();
-                    return batchDataSlice;
-                })
+                batchDataSlice.setDataSizeCalculator(s -> end - start);
+                List<Integer> indexList = new ArrayList<>(Math.min(total, batchSliceSize));
+                for (int i = start; i < end; i++) {
+                    indexList.add(i);
+                }
+                batchDataSlice.setDataIndexStreamCalculator(s -> indexList.stream());
+                index.incrementAndGet();
+                return batchDataSlice;
+            })
             .collect(Collectors.toList());
 
         return splitResult;
@@ -59,6 +59,7 @@ public class ImportTaskSplitHandler implements TaskSplitHandler {
 
     /**
      * 获取第一个元素，且必须为 BatchImportDataItem.class
+     *
      * @param importItems list
      * @return 第一个元素
      */

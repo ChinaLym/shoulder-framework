@@ -3,11 +3,9 @@ package org.shoulder.batch.spi;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchDataSlice;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,23 +38,20 @@ public class DefaultTaskSplitHandler implements TaskSplitHandler {
     @Override
     public List<BatchDataSlice> splitTask(BatchData batchData) {
         // 默认将每类任务划分为一片、每片最多200个
-        if (MapUtils.isEmpty(batchData.getBatchListMap())) {
+        if (CollectionUtils.isEmpty(batchData.getDataList())) {
             return Collections.emptyList();
         }
         List<BatchDataSlice> tasks = new LinkedList<>();
         AtomicInteger sequence = new AtomicInteger(0);
-        batchData.getBatchListMap().forEach((operationType, dataList) -> {
-            List<? extends DataItem> toProcessedData = new ArrayList<>(dataList);
-            // 切片
-            List<? extends List<? extends DataItem>> pages = ListUtils.partition(toProcessedData, taskSliceMax);
-            for (List<? extends DataItem> page : pages) {
-                if (CollectionUtils.isNotEmpty(page)) {
-                    tasks.add(new BatchDataSlice(batchData.getBatchId(), sequence.getAndIncrement(),
-                            batchData.getDataType(), operationType, page)
-                    );
-                }
+        // 切片
+        List<? extends List<? extends DataItem>> pages = ListUtils.partition(batchData.getDataList(), taskSliceMax);
+        for (List<? extends DataItem> page : pages) {
+            if (CollectionUtils.isNotEmpty(page)) {
+                tasks.add(new BatchDataSlice(batchData.getBatchId(), sequence.getAndIncrement(),
+                    batchData.getDataType(), batchData.getOperation(), page)
+                );
             }
-        });
+        }
         return tasks;
     }
 

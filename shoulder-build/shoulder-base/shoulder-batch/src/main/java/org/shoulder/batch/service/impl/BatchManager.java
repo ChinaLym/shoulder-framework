@@ -1,6 +1,5 @@
 package org.shoulder.batch.service.impl;
 
-import org.apache.commons.collections4.ListUtils;
 import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.model.BatchData;
@@ -11,7 +10,6 @@ import org.shoulder.batch.progress.BatchProgressRecord;
 import org.shoulder.batch.progress.ProgressAble;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.batch.repository.BatchRecordPersistentService;
-import org.shoulder.batch.spi.DataItem;
 import org.shoulder.batch.spi.DefaultTaskSplitHandler;
 import org.shoulder.batch.spi.TaskSplitHandler;
 import org.shoulder.core.context.AppContext;
@@ -23,7 +21,13 @@ import org.shoulder.core.util.ContextUtils;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.enums.OperationResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -103,24 +107,18 @@ public class BatchManager implements Runnable, ProgressAble {
         AssertUtils.notNull(batchData, CommonErrorCodeEnum.ILLEGAL_PARAM);
         AssertUtils.notNull(batchData.getDataType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         AssertUtils.notNull(batchData.getOperation(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-        AssertUtils.notEmpty(batchData.getBatchListMap(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-        int total = batchData.getBatchListMap().values().stream()
-                .map(List::size).reduce(Integer::sum).orElse(0);
-        AssertUtils.isTrue(total > 0, CommonErrorCodeEnum.ILLEGAL_PARAM, "batchList.total must > 0");
+        AssertUtils.notEmpty(batchData.getDataList(), CommonErrorCodeEnum.ILLEGAL_PARAM);
 
         String currentUserId = AppContext.getUserId();
         this.userId = currentUserId == null ? 0 : Long.parseLong(currentUserId);
         this.languageId = AppContext.getLocaleOrDefault().toString();
         this.batchData = batchData;
-        this.batchData.setSuccessList(ListUtils.emptyIfNull(batchData.getSuccessList()));
-        this.batchData.setFailList(ListUtils.emptyIfNull(batchData.getFailList()));
 
         // 初始化进度对象（保证在构造器中完成）
         this.progress = new BatchProgressRecord();
         this.progress.setId(batchData.getBatchId());
-        this.progress.setTotal(total);
-        this.progress.addSuccess(batchData.getSuccessList().size());
-        this.progress.addFail(batchData.getFailList().size());
+        // 这里的 total 不一定是最终的，分片后才能完全确认 total
+        this.progress.setTotal(batchData.getDataList().size());
     }
 
     private static String generateBatchId() {
@@ -128,7 +126,7 @@ public class BatchManager implements Runnable, ProgressAble {
     }
 
     /**
-     * 使命 | 职责
+     * 职责：任务分片，安排工人，汇总结果，保存批处理记录
      */
     @Override
     public void run() {
@@ -202,62 +200,8 @@ public class BatchManager implements Runnable, ProgressAble {
 
         // 初始化数据处理详情对象 List<RecordDetail>
         this.result.setDetailList(new ArrayList<>(total));
-//        List<BatchRecordDetail> detailList = new ArrayList<>(total);
-//        for (int i = 0; i < total; i++) {
-//            BatchRecordDetail detailItem = BatchRecordDetail.builder()
-//                    .recordId(batchData.getBatchId())
-//                    .index(i)
-//                    .build();
-//            // 这里认为 index 唯一的，所以是 set，而非 add
-//            detailList.add(detailItem);
-//        }
-
-        // 预填充数据处理详情对象 List<RecordDetail> 的待处理部分
-//        batchData.getBatchListMap().forEach((operationType, dataList) -> {
-//            for (DataItem dataItem : dataList) {
-//                // 这里认为 total 是所有校验的数据，若 total = 100，则不可能有 index > 100 的数据
-//                detailList.get(dataItem.getIndex())
-//                        .setIndex(dataItem.getIndex())
-//                        .setRecordId(batchData.getBatchId())
-//                        .setOperation(operationType)
-//                        .setStatus(BatchDetailResultStatusEnum.SUCCESS.getCode())
-//                        .setSource(serializeSource(dataItem));
-//            }
-//        });
-        // 预填充数据处理详情对象 List<RecordDetail> 的直接成功/失败部分（重复且不处理的，校验失败无法处理的） todo 【模型升级】 跳过状态定义
-//        for (DataItem dataItem : batchData.getSuccessList()) {
-//            result.getDetailList().get(dataItem.getIndex())
-//                    .setRecordId(batchData.getBatchId())
-//                    .setIndex(dataItem.getIndex())
-//                    .setOperation(batchData.getOperation())
-//                    .setSource(serializeSource(dataItem))
-//                    .setStatus(BatchDetailResultStatusEnum.SKIP_FOR_REPEAT.getCode());
-//        }
-//        for (DataItem dataItem : batchData.getFailList()) {
-//            // getFailReason 不可能为 null，否则就是使用者错误，未塞入错误原因
-//            result.getDetailList().get(dataItem.getIndex())
-//                    .setRecordId(batchData.getBatchId())
-//                    .setIndex(dataItem.getIndex())
-//                    .setOperation(batchData.getOperation())
-//                    .setSource(serializeSource(dataItem))
-//                    .setStatus(BatchDetailResultStatusEnum.SKIP_FOR_INVALID.getCode())
-//                    .setFailReason(batchData.getFailReason().get(dataItem.getIndex()));
-//        }
-//        log.info("Directly: success:{}, fail:{}", batchData.getSuccessList().size(), batchData.getFailList().size());
-        // 可能直接完成了
-//        if (progress.hasFinish()) {
-//            this.progress.finish();
-//        }
     }
 
-    /**
-     * 把原始数据转为 {@link BatchRecordDetail#setSource(String)} 字段
-     * 筛选出部分字段，并脱敏等处理
-     */
-    private String serializeSource(DataItem importData) {
-        // 这里直接 json
-        return importData.serialize();
-    }
 
     // ================================= 任务分片与执行 ==================================
 

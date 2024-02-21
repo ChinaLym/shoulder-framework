@@ -143,8 +143,7 @@ public class ImportController implements ImportRestfulApi {
         BatchData batchData = new BatchData();
         batchData.setDataType(businessType);
         batchData.setOperation(Operations.UPLOAD_AND_VALIDATE);
-        batchData.setBatchListMap(new HashMap<>());
-        batchData.getBatchListMap().put(Operations.UPLOAD_AND_VALIDATE, convertToDataItemList(businessType, recordList));
+        batchData.setDataList(convertToDataItemList(businessType, recordList));
 
         // 保存文件，解析文件，然后校验，返回校验批处理任务id
         String batchId = batchService.doProcess(batchData);
@@ -185,13 +184,8 @@ public class ImportController implements ImportRestfulApi {
         BatchData batchData = new BatchData();
         batchData.setOperation(advanceBatchParam.getNextOperation());
         batchData.setDataType(advanceBatchParam.getDataType());
-        batchData.setBatchListMap(new HashMap<>());
-        List<BatchImportDataItem> importDataItemList = new ArrayList<>();
-        importDataItemList.add(
-                new BatchImportDataItem(total, 200, batchId,
-                        Map.of(BatchImportDataItem.EXT_KEY_UPDATE_REPEAT, advanceBatchParam.getUpdateRepeat()))
-        );
-        batchData.getBatchListMap().put(advanceBatchParam.getNextOperation(), importDataItemList);
+        batchData.setDataList(List.of(new BatchImportDataItem(total, 200, batchId,
+            Map.of(BatchImportDataItem.EXT_KEY_UPDATE_REPEAT, advanceBatchParam.getUpdateRepeat()))));
 
         // lock 避免重复导入，低频功能低内存，加长锁
         boolean locked = lockDefendRepeatAdvance(advanceBatchParam);

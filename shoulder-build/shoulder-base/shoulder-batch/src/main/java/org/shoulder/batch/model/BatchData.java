@@ -4,10 +4,7 @@ import lombok.Data;
 import org.shoulder.batch.service.impl.BatchManager;
 import org.shoulder.batch.spi.DataItem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 批量任务
@@ -34,28 +31,9 @@ public class BatchData {
     protected String operation;
 
     /**
-     * 需要批量处理分类，通常只有一个键值对（一项业务）
-     * 操作类型（如 ADD、UPDATE...） - 要处理的数据
+     * 需要批处理的数据
      */
-    protected Map<String, List<? extends DataItem>> batchListMap = new HashMap<>(4);
-
-
-    // ======================= 处理完毕后才能确定 =======================
-    /**
-     * 处理成功的数据，如校验已存在，需要跳过
-     */
-    protected List<? extends DataItem> successList = new ArrayList<>();
-
-    /**
-     * 处理失败的数据，如校验未通过，不要处理
-     */
-    protected List<? extends DataItem> failList = new ArrayList<>();
-
-    /**
-     * 校验失败原因（校验 / 处理）
-     * 行号 - 失败原因
-     */
-    protected Map<Integer, String> failReason = new HashMap<>();
+    protected List<? extends DataItem> dataList;
 
     /**
      * 保存这次操作记录

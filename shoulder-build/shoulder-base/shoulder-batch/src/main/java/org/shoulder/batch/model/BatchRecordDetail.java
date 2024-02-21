@@ -7,6 +7,8 @@ import lombok.experimental.Accessors;
 import org.shoulder.batch.spi.DataItem;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 批量处理记录详情-标准模型
@@ -53,6 +55,11 @@ public class BatchRecordDetail implements Serializable, DataItem {
     private String failReason;
 
     /**
+     * 失败原因-翻译参数
+     */
+    private List<String> failReasonParams;
+
+    /**
      * 处理的原始数据
      */
     private String source;
@@ -71,16 +78,14 @@ public class BatchRecordDetail implements Serializable, DataItem {
         this.status = status;
     }
 
-    public BatchRecordDetail(int index, String source, int status, String failReason) {
+    public BatchRecordDetail(int index, String source, int status, String failReason, String... failReasonParams) {
         this.index = index;
         this.source = source;
         this.status = status;
         this.failReason = failReason;
-    }
-
-
-    public void setFailReason(String failReason) {
-        this.failReason = failReason;
+        if(failReasonParams != null) {
+            this.failReasonParams = Arrays.stream(failReasonParams).toList();
+        }
     }
 
     @Override

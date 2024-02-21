@@ -15,7 +15,8 @@ public class DefaultDataItemConvertFactory implements DataItemConvertFactory {
 
     @Override public List<? extends DataItem> convertRecordToDataItem(String dataType, List<Record> recordList) {
         List<IndexedRecordImpl> resultList = new ArrayList<>(recordList.size());
-        for (int i = 0; i < recordList.size(); i++) {
+        // 跳过 header 行，只处理数据行
+        for (int i = 1; i < recordList.size(); i++) {
             resultList.add(new IndexedRecordImpl(recordList.get(i), i));
         }
         return resultList;
