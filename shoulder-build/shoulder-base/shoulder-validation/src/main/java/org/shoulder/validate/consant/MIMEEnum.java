@@ -1,5 +1,9 @@
 package org.shoulder.validate.consant;
 
+import java.util.Arrays;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
 /**
  * 文件 MIME 类型枚举
  * 参考：http://www.w3school.com.cn/media/media_mimeref.asp
@@ -81,6 +85,7 @@ public enum MIMEEnum {
     jpeg("image/jpeg"),
     jpg("image/jpeg"),
     png("image/png"),
+    webp("image/webp"),
     js("application/x-javascript"),
     latex("application/x-latex"),
     lha("application/octet-stream"),
@@ -244,4 +249,8 @@ public enum MIMEEnum {
         return mimeType;
     }
 
+    public static void main(String[] args) {
+        TreeSet<String> set = Arrays.stream(values()).map(MIMEEnum::getMimeType).distinct().collect(Collectors.toCollection(TreeSet::new));
+        set.forEach(System.out::println);
+    }
 }

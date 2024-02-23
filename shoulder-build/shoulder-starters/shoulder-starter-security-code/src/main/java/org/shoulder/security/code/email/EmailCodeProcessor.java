@@ -11,14 +11,14 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**
- * 短信验证码处理器
+ * email验证码处理器
  *
  * @author lym
  */
 public class EmailCodeProcessor extends AbstractValidateCodeProcessor<ValidateCodeDTO> implements EmailValidateCodeType {
 
     /**
-     * 短信验证码发送器
+     * email验证码发送器
      */
     private final EmailCodeSender emailCodeSender;
 
@@ -29,7 +29,7 @@ public class EmailCodeProcessor extends AbstractValidateCodeProcessor<ValidateCo
     }
 
     /**
-     * 短信验证码只有 POST 请求才能获取（避免直接在浏览器地址栏上直接访问调用）
+     * email验证码只有 POST 请求才能获取（避免直接在浏览器地址栏上直接访问调用）
      */
     @Override
     protected boolean isPostOnly() {
@@ -39,9 +39,9 @@ public class EmailCodeProcessor extends AbstractValidateCodeProcessor<ValidateCo
     @Override
     public void send(ServletWebRequest request, ValidateCodeDTO validateCode) throws ValidateCodeException {
         try {
-            String mobile = ServletRequestUtils.getRequiredStringParameter(request.getRequest(),
+            String email = ServletRequestUtils.getRequiredStringParameter(request.getRequest(),
                     SecurityConst.AUTHENTICATION_EMAIL_PARAMETER_NAME);
-            emailCodeSender.send(mobile, validateCode.getCode());
+            emailCodeSender.send(email, validateCode.getCode());
         } catch (Exception e) {
             throw new ValidateCodeException("send emailCode fail", e);
         }

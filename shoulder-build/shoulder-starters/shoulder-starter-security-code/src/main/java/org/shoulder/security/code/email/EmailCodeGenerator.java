@@ -7,7 +7,7 @@ import org.shoulder.security.code.email.config.EmailCodeProperties;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**
- * 短信验证码生成器
+ * email验证码生成器
  *
  * @author lym
  */

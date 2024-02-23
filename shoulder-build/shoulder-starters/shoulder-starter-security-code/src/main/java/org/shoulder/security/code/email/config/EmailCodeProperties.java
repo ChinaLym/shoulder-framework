@@ -19,7 +19,7 @@ public class EmailCodeProperties extends BaseValidateCodeProperties {
     public EmailCodeProperties() {
         setParameterName(ValidateCodeConsts.EMAIL);
         List<String> defaultValidateUrls = new LinkedList<>();
-        // 默认短信登录 url 需要校验短信验证码，可通过修改 "shoulder.security.validate-code.email.urls" 来修改/新增需要校验的路径
+        // 默认email登录 url 需要校验email验证码，可通过修改 "shoulder.security.validate-code.email.urls" 来修改/新增需要校验的路径
         defaultValidateUrls.add(SecurityConst.URL_AUTHENTICATION_EMAIL);
         setUrls(defaultValidateUrls);
     }

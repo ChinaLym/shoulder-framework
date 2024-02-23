@@ -1,15 +1,15 @@
-package org.shoulder.security.code.email;
+package org.shoulder.security.code.invitation;
 
 import org.shoulder.code.ValidateCodeType;
 import org.shoulder.code.consts.ValidateCodeConsts;
 
 /**
- * email验证码类型
- * 统一实现email验证码相关的 getType() 方法
+ * invitation验证码类型
+ * 统一实现invitation验证码相关的 getType() 方法
  *
  * @author lym
  */
-public interface EmailValidateCodeType extends ValidateCodeType {
+public interface InvitationCodeType extends ValidateCodeType {
 
     /**
      * 类型名称，处理器标识，请求参数名
@@ -18,7 +18,7 @@ public interface EmailValidateCodeType extends ValidateCodeType {
      */
     @Override
     default String getType() {
-        return ValidateCodeConsts.EMAIL;
+        return ValidateCodeConsts.INVITATION;
     }
 
 }

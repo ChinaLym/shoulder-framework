@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
 /**
- * 短信验证码自动配置
+ * email验证码自动配置
  *
  * @author lym
  */

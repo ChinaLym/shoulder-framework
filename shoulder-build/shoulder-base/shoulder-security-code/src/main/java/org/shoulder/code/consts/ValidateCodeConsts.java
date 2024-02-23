@@ -38,4 +38,9 @@ public interface ValidateCodeConsts {
      */
     String EMAIL = "emailCode";
 
+    /**
+     * 邀请码
+     */
+    String INVITATION = "invitationCode";
+
 }
