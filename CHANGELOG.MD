@@ -1,6 +1,8 @@
 # 更新记录
 
-## 0.8（升级 spring boot3, JDK 17）
+## 0.9（模块更细致的新特性 PLAN）
+
+## 0.8（升级 spring boot3.2, JDK 17）
 
 升级并支持 spring-boot3（jdk、spring-cloud、spring security6等）
 
@@ -28,7 +30,8 @@
   - traceId、userId、tenantId mock
 - crypto
   - fix spring6 RestTemplate 底层方法不兼容变更bug
-
+- batch
+  - 批处理模块进入可用状态（0.6 引入）
 ----------
 - Threads 区分IO、cpu
 - IO部分使用 VirtualThread

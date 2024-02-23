@@ -311,7 +311,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
         ENTITY dbData = lockByBizId(param.getBizId());
 
         // check version
-        AssertUtils.notNull(dbData, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
+        AssertUtils.notNull(dbData, CommonErrorCodeEnum.DATA_NOT_EXISTS);
         AssertUtils.equals(param.getVersion(), ((BizEntity) dbData).getVersion(), CommonErrorCodeEnum.DATA_VERSION_EXPIRED);
         // remove common fields change
         param.setId(null);
