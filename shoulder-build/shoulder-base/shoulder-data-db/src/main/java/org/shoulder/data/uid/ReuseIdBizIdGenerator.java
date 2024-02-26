@@ -9,6 +9,10 @@ import org.shoulder.data.mybatis.template.entity.BizEntity;
  */
 public class ReuseIdBizIdGenerator implements BizIdGenerator {
 
+    @Override public boolean support(BizEntity entity, Class<? extends BizEntity> entityClass) {
+        return entity.getId() != null;
+    }
+
     @Override
     public String generateBizId(BizEntity entity, Class<? extends BizEntity> entityClass) {
         return String.valueOf(entity.getId());

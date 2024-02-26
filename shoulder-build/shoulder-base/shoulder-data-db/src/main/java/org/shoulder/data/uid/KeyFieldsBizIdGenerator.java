@@ -4,6 +4,7 @@ import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.util.ReflectUtil;
 import jakarta.annotation.Nonnull;
 import org.apache.commons.codec.digest.Md5Crypt;
+import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
@@ -45,8 +46,9 @@ public class KeyFieldsBizIdGenerator implements BizIdGenerator {
         return genBizIdFromSource(values);
     }
 
-    private boolean support(BizEntity entity, Class<? extends BizEntity> entityClass) {
-        return true;
+    public boolean support(BizEntity entity, Class<? extends BizEntity> entityClass) {
+        // 类里有字段标注了 @BizIdSource
+        return CollectionUtils.isNotEmpty(getAllKeyFields(entityClass));
     }
 
     @Nonnull

@@ -34,7 +34,7 @@ public interface TagCoreService {
      * @param searchContent tagNameLike
      * @return tagList
      */
-    List<TagEntity> searchTagByBizTypeAndName(String type, String searchContent);
+    List<TagEntity> searchTagByBizTypeAndName(String type, String searchContent, Integer limit);
 
     @Nullable
     TagEntity queryTagById(Long id);
@@ -59,7 +59,7 @@ public interface TagCoreService {
      * @param nameList name
      * @return tagList
      */
-    List<TagEntity> queryTagByBizTypeAndNameList(String bizType, List<String> nameList);
+    List<TagEntity> queryAllTagByBizTypeAndNameList(String bizType, List<String> nameList);
 
     /**
      * 根据 refType, tagId 搜索所有 oid

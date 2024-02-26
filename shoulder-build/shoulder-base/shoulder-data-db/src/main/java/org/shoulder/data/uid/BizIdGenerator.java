@@ -10,6 +10,11 @@ import org.shoulder.data.mybatis.template.entity.BizEntity;
 public interface BizIdGenerator {
 
     /**
+     * 是否支持为该类生成
+     */
+    boolean support(BizEntity entity, Class<? extends BizEntity> entityClass);
+
+    /**
      * 生成 bizId
      */
     String generateBizId(BizEntity entity, Class<? extends BizEntity> entityClass);

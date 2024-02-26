@@ -9,6 +9,9 @@ import org.shoulder.data.mybatis.template.entity.BizEntity;
  */
 public class SequenceBizIdGenerator implements BizIdGenerator {
 
+    @Override public boolean support(BizEntity entity, Class<? extends BizEntity> entityClass) {
+        return false;
+    }
 
     @Override
     public String generateBizId(BizEntity entity, Class<? extends BizEntity> entityClass) {

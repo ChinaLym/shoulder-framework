@@ -1,7 +1,9 @@
 package org.shoulder.web.template.tag.service;
 
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.core.context.AppContext;
 import org.shoulder.core.dto.request.BasePageQuery;
 import org.shoulder.core.dto.response.PageResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
@@ -9,6 +11,7 @@ import org.shoulder.core.util.AssertUtils;
 import org.shoulder.data.enums.DataErrorCodeEnum;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseCacheableServiceImpl;
+import org.shoulder.data.uid.BizIdGenerator;
 import org.shoulder.web.template.tag.mapper.TagMapper;
 import org.shoulder.web.template.tag.model.TagEntity;
 import org.shoulder.web.template.tag.model.TagMappingEntity;
@@ -33,6 +36,9 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     @Autowired(required = false)
     private TagMappingService tagMappingService;
 
+
+    @Autowired(required = false)
+    protected BizIdGenerator bizIdGenerator;
 
     @Transactional(rollbackFor = Exception.class)
     public boolean createTags(List<TagEntity> tagEntityList) {
@@ -118,12 +124,12 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     //List<String> searchByAnyTagIds(List<Long> ids);
 
     @Override
-    public List<TagEntity> searchTagByBizTypeAndName(String type, String searchContent) {
-        return super.lambdaQuery()
+    public List<TagEntity> searchTagByBizTypeAndName(String type, String searchContent, Integer limit) {
+        LambdaQueryChainWrapper<TagEntity> query = super.lambdaQuery()
                 .eq(TagEntity::getType, type)
-                .likeRight(TagEntity::getName, searchContent)
-                .last("limit 50")
-                .list();
+                .likeRight(TagEntity::getName, searchContent);
+        query = limit != null ? query.last("limit " + limit) : query;
+        return query.list();
     }
 
     @Nullable
@@ -144,17 +150,17 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         List<TagEntity> tagEntityList = super.lambdaQuery()
                 .eq(TagEntity::getType, bizType)
                 .eq(TagEntity::getName, name)
-                //.last("limit 50")
+                .last("limit 1")
                 .list();
         return getFirstOrNull(tagEntityList);
     }
 
     @Override
-    public List<TagEntity> queryTagByBizTypeAndNameList(String bizType, List<String> nameList) {
+    public List<TagEntity> queryAllTagByBizTypeAndNameList(String bizType, List<String> nameList) {
         return super.lambdaQuery()
                 .eq(TagEntity::getType, bizType)
                 .in(TagEntity::getName, nameList)
-                //.last("limit 50")
+                .last("limit " + nameList.size())
                 .list();
     }
 
@@ -176,15 +182,15 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<TagEntity> attachTags(String refType, String oid, String type,
+    public List<TagEntity> attachTags(String refType, String objectId, String tagType,
                                       List<String> tagNameList) {
         if (CollectionUtils.isEmpty(tagNameList)) {
             return new LinkedList<>();
         }
         // 限制一下最多标签数量
         AssertUtils.isTrue(tagNameList.size() < 10, DataErrorCodeEnum.DATA_TOO_MUCH);
-        List<TagEntity> allTags = ensureExistOrCreateTag(type, tagNameList);
-        attachTags(refType, oid, allTags.stream().map(BaseEntity::getId).collect(Collectors.toList()));
+        List<TagEntity> allTags = ensureExistOrCreateTag(tagType, tagNameList);
+        attachTags(refType, objectId, allTags.stream().map(BaseEntity::getId).collect(Collectors.toList()));
 
         return allTags;
     }
@@ -290,6 +296,11 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
                     TagEntity t = new TagEntity();
                     t.setType(type);
                     t.setName(n);
+                    t.setDisplayName(n);
+                    t.setDisplayOrder(1000);
+                    t.setSource("CodingAutoGeneratePowerByShoulder");
+                    t.setTenant(AppContext.getTenantCode());
+                    t.setBizId(bizIdGenerator.generateBizId(t, TagEntity.class));
                     return t;
                 }).collect(Collectors.toList());
 
