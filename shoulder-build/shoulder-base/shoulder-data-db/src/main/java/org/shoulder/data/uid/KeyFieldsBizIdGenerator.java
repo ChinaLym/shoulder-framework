@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
-public class KeyFieldsBizIdGenerator implements BizIdGenerator {
+public class KeyFieldsBizIdGenerator implements ConditionalBizIdGenerator {
 
     private final String fieldValueSplit;
 

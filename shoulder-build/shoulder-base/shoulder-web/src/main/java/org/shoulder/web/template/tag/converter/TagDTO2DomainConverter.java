@@ -16,7 +16,7 @@ public class TagDTO2DomainConverter extends AbstractVODataConverter<TagDTO, TagE
     @Override
     public void doConvert(@Nonnull TagDTO sourceModel, @Nonnull TagEntity targetModel) {
         //date version creator 不转换
-        //targetModel.setId(conversionService.convert(sourceModel.getId(), Long.class));
+        targetModel.setId(conversionService.convert(sourceModel.getId(), Long.class));
         targetModel.setVersion(sourceModel.getVersion());
         targetModel.setTenant(sourceModel.getTenant());
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());

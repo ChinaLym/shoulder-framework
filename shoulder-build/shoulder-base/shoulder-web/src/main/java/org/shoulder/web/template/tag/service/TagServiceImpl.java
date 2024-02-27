@@ -1,5 +1,6 @@
 package org.shoulder.web.template.tag.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
@@ -18,12 +19,7 @@ import org.shoulder.web.template.tag.model.TagMappingEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -141,6 +137,9 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     @Nullable
     @Override
     public List<TagEntity> queryTagByIdList(List<Long> idList) {
+        if (CollectionUtil.isEmpty(idList)) {
+            return Collections.emptyList();
+        }
         return super.listByIds(idList);
     }
 
@@ -166,7 +165,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<TagMappingEntity> queryAllRefIdByStorageSourceAndTagIdList(String refType, List<Long> tagIdList) {
+    public List<TagMappingEntity> queryAllRefIdByRefTypeAndTagIdList(String refType, List<Long> tagIdList) {
         if (CollectionUtils.isEmpty(tagIdList)) {
             return Collections.emptyList();
         }
@@ -312,5 +311,6 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         return toSaveTagList;
     }
 
+    // fixme 删除校验 mapping 为0
 
 }

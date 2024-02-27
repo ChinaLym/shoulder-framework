@@ -7,7 +7,7 @@ import org.shoulder.data.mybatis.template.entity.BizEntity;
  *
  * @author lym
  */
-public class ReuseIdBizIdGenerator implements BizIdGenerator {
+public class ReuseIdBizIdGenerator implements ConditionalBizIdGenerator {
 
     @Override public boolean support(BizEntity entity, Class<? extends BizEntity> entityClass) {
         return entity.getId() != null;

@@ -6,6 +6,7 @@ import org.shoulder.core.dto.ToStringObj;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -55,5 +56,9 @@ public class ListResult<T> extends ToStringObj {
 
     public static <T> ListResult<T> of(Collection<? extends T> list) {
         return new ListResult<>(list);
+    }
+
+    public static <T> ListResult<T> empty() {
+        return new ListResult<>(Collections.emptyList());
     }
 }

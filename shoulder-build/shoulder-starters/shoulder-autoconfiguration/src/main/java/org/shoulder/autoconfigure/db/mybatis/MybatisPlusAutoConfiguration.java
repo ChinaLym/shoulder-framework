@@ -18,16 +18,14 @@ import org.shoulder.data.mybatis.interceptor.WriteProhibitedInterceptor;
 import org.shoulder.data.mybatis.interceptor.typehandler.FullLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.LeftLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.RightLikeTypeHandler;
-import org.shoulder.data.uid.BizIdGenerator;
-import org.shoulder.data.uid.DefaultEntityIdGenerator;
-import org.shoulder.data.uid.EntityIdGenerator;
-import org.shoulder.data.uid.KeyFieldsBizIdGenerator;
+import org.shoulder.data.uid.*;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 
 import java.util.List;
@@ -193,8 +191,14 @@ public class MybatisPlusAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public BizIdGenerator bizIdGenerator() {
+    public ConditionalBizIdGenerator bizIdGenerator() {
         return new KeyFieldsBizIdGenerator();
+    }
+
+    @Bean
+    @Primary
+    public BizIdGenerator bizIdGenerator(List<ConditionalBizIdGenerator> bizIdGeneratorList) {
+        return new CompositeBizIdGenerator(bizIdGeneratorList);
     }
 
     /**
