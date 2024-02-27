@@ -25,7 +25,7 @@ public interface TagMapper extends BaseMapper<TagEntity> {
 
     @Select("<script>SELECT * FROM tb_tag WHERE biz_type = #{type} and name IN "
             + "<foreach item='item' index='index' collection='tagNameList' open='(' separator=',' close=')'>"
-            + "${item}"
+            + "'${item}'"
             + "</foreach>  FOR UPDATE</script>")
     List<TagEntity> lockByTypeAndNameList(String type, List<String> tagNameList);
 }

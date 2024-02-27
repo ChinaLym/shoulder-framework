@@ -9,7 +9,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,48 +26,58 @@ import java.util.regex.Pattern;
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
-    public static final String CLASS_NAME_STRING = "java.lang.String";
-    public static final String CLASS_NAME_LONG = "java.lang.Long";
-    public static final String CLASS_NAME_INTEGER = "java.lang.Integer";
-    public static final String CLASS_NAME_SHORT = "java.lang.Short";
-    public static final String CLASS_NAME_DOUBLE = "java.lang.Double";
-    public static final String CLASS_NAME_FLOAT = "java.lang.Float";
-    public static final String CLASS_NAME_BOOLEAN = "java.lang.Boolean";
-    public static final String CLASS_NAME_SET = "java.util.Set";
-    public static final String CLASS_NAME_LIST = "java.util.List";
-    public static final String CLASS_NAME_COLLECTION = "java.util.Collection";
-    public static final String CLASS_NAME_DATE = "java.util.Date";
+    public static final String CLASS_NAME_STRING          = "java.lang.String";
+    public static final String CLASS_NAME_LONG            = "java.lang.Long";
+    public static final String CLASS_NAME_INTEGER         = "java.lang.Integer";
+    public static final String CLASS_NAME_SHORT           = "java.lang.Short";
+    public static final String CLASS_NAME_DOUBLE          = "java.lang.Double";
+    public static final String CLASS_NAME_FLOAT           = "java.lang.Float";
+    public static final String CLASS_NAME_BOOLEAN         = "java.lang.Boolean";
+    public static final String CLASS_NAME_SET             = "java.util.Set";
+    public static final String CLASS_NAME_LIST            = "java.util.List";
+    public static final String CLASS_NAME_COLLECTION      = "java.util.Collection";
+    public static final String CLASS_NAME_DATE            = "java.util.Date";
     public static final String CLASS_NAME_LOCAL_DATE_TIME = "java.time.LocalDateTime";
-    public static final String CLASS_NAME_LOCAL_DATE = "java.time.LocalDate";
-    public static final String CLASS_NAME_LOCAL_TIME = "java.time.LocalTime";
+    public static final String CLASS_NAME_LOCAL_DATE      = "java.time.LocalDate";
+    public static final String CLASS_NAME_LOCAL_TIME      = "java.time.LocalTime";
 
     public static final char UNDERSCORE = '_';
 
-    public static final Charset CHARSET = AppInfo.charset();
+    public static final Charset             CHARSET                   = AppInfo.charset();
     /**
      * xss脚本正则
      */
-    public static final List<Pattern> XSS_SCRIPT_PATTERNS = Arrays.asList(
-            // Avoid anything between script tags
-            Pattern.compile("<(no)?script>(.*?)</(no)?script>", Pattern.CASE_INSENSITIVE),
-            // Avoid anything in a src='...' type of expression
-            Pattern.compile("src[\\s]*=[\\s]*'(.*?)'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-            Pattern.compile("src[\\s]*=[\\s]*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-            // Remove any lonesome </script> tag
-            Pattern.compile("</script>", Pattern.CASE_INSENSITIVE),
-            // Remove any lonesome <script ...> tag
-            Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-            // Avoid eval(...) expressions
+    public static final List<Pattern>       XSS_SCRIPT_PATTERNS       = Arrays.asList(
+        // Avoid anything between script tags
+        Pattern.compile("<(no)?script>(.*?)</(no)?script>", Pattern.CASE_INSENSITIVE),
+        // Avoid anything in a src='...' type of expression
+        Pattern.compile("src[\\s]*=[\\s]*'(.*?)'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("src[\\s]*=[\\s]*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        // Remove any lonesome </script> tag
+        Pattern.compile("</script>", Pattern.CASE_INSENSITIVE),
+        // Remove any lonesome <script ...> tag
+        Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        // Avoid eval(...) expressions
         Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
         // Avoid expression(...) expressions
         Pattern.compile("expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
         // Avoid javascript:vbscript:view-source:xxx expressions
-            Pattern.compile("(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE),
-            // Avoid onload= expressions
-            Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-            Pattern.compile("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-            Pattern.compile("(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-            Pattern.compile("<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
+        Pattern.compile("(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE),
+        // Avoid onload= expressions
+        Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile("(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*",
+            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+        Pattern.compile(
+            "<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate"
+            + "|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish"
+            + "|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown"
+            + "|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort"
+            + "|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate"
+            + "|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick"
+            + "|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit"
+            + "|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+",
+            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
     );
     /**
      * html 转义符
@@ -117,8 +133,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 是否包含字符串
      *
-     * @param aimString 验证字符串
-     * @param anyContains   字符串组
+     * @param aimString   验证字符串
+     * @param anyContains 字符串组
      * @return 包含返回true
      */
     public static boolean containsAny(CharSequence aimString, CharSequence... anyContains) {
@@ -157,7 +173,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static boolean isNotBase64(String str) {
         return !isBase64(str);
     }
-
 
     /**
      * 确保 text 以 endWith 结尾
@@ -542,7 +557,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         if (ip == null) {
             return false;
         }
-        String regex = "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$";
+        String regex = "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,"
+                       + "2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$";
         return Pattern.matches(regex, ip);
     }
 
@@ -556,7 +572,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         if (url == null) {
             return false;
         }
-        String regex = "^(?=^.{3,255}$)(http(s)?:\\/\\/)?(www\\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\\d+)*(\\/\\w+\\.\\w+)*([\\?&]\\w+=\\w*)*$";
+        String regex = "^(?=^.{3,255}$)(http(s)?:\\/\\/)?(www\\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\\d+)"
+                       + "*(\\/\\w+\\.\\w+)*([\\?&]\\w+=\\w*)*$";
         return Pattern.matches(regex, url);
     }
 
@@ -612,13 +629,23 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     private static List<Object[]> getXssPatternList() {
         List<Object[]> ret = new ArrayList<>();
-        ret.add(new Object[]{"<(no)?script[^>]*>.*?</(no)?script>", Pattern.CASE_INSENSITIVE});
-        ret.add(new Object[]{"eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
-        ret.add(new Object[]{"expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
-        ret.add(new Object[]{"(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE});
-        ret.add(new Object[]{ "<(\"[^\"]*\"|'[^']*'|[^'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
-        ret.add(new Object[]{"(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
-        ret.add(new Object[]{"<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
+        ret.add(new Object[] { "<(no)?script[^>]*>.*?</(no)?script>", Pattern.CASE_INSENSITIVE });
+        ret.add(new Object[] { "eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL });
+        ret.add(new Object[] { "expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL });
+        ret.add(new Object[] { "(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE });
+        ret.add(new Object[] { "<(\"[^\"]*\"|'[^']*'|[^'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL });
+        ret.add(new Object[] { "(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*",
+                               Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL });
+        ret.add(new Object[] {
+            "<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate"
+            + "|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish"
+            + "|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown"
+            + "|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort"
+            + "|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate"
+            + "|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick"
+            + "|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit"
+            + "|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+",
+            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL });
         return ret;
     }
 
@@ -629,7 +656,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     private static Map<String, String> getHtmlEscapeCharacterMap() {
         return HTML_ESCAPE_CHARACTER_MAP;
     }
-
 
     public static String stripXss(String value) {
         if (StringUtils.isNotBlank(value)) {
@@ -683,7 +709,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return passwordStr;
     }
 
-
     /**
      * 将 Exception 转化为 String
      */
@@ -694,6 +719,67 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         StringWriter stringWriter = new StringWriter();
         e.printStackTrace(new PrintWriter(stringWriter));
         return stringWriter.toString();
+    }
+
+    /**
+     * 让字符串右对其，并在左侧补充字符
+     * <code>
+     * alignRight(null, *, *)      = null
+     * alignRight("", 3, "z")      = "zzz"
+     * alignRight("str", 3, "xy")  = "str"
+     * alignRight("str", 5, "xy")  = "xystr"
+     * alignRight("str", 8, "xy")  = "xyxyystr"
+     * alignRight("str", 1, "xy")  = "str"
+     * alignRight("str", -1, "xy") = "str"
+     * alignRight("str", 5, null)  = "  str"
+     * alignRight("str", 5, "")    = "  str"
+     * </code>
+     *
+     * @param str  原始字符串
+     * @param size 目标长度
+     * @return 结果
+     */
+    public static String alignRight(String str, int size) {
+        return alignRight(str, size, ' ');
+    }
+
+    public static String alignRight(String str, int size, char padChar) {
+        if (str == null) {
+            return null;
+        } else {
+            int pads = size - str.length();
+            return pads <= 0 ? str : alignRight(str, size, String.valueOf(padChar));
+        }
+    }
+
+    public static String alignRight(String str, int size, String padStr) {
+        if (str == null) {
+            return null;
+        } else {
+            if (padStr == null || padStr.length() == 0) {
+                padStr = " ";
+            }
+
+            int padLen = padStr.length();
+            int strLen = str.length();
+            int pads = size - strLen;
+            if (pads <= 0) {
+                return str;
+            } else if (pads == padLen) {
+                return padStr.concat(str);
+            } else if (pads < padLen) {
+                return padStr.substring(0, pads).concat(str);
+            } else {
+                char[] padding = new char[pads];
+                char[] padChars = padStr.toCharArray();
+
+                for (int i = 0; i < pads; ++i) {
+                    padding[i] = padChars[i % padLen];
+                }
+
+                return (new String(padding)).concat(str);
+            }
+        }
     }
 }
 

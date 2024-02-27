@@ -8,8 +8,6 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.shoulder.data.mybatis.template.entity.LogicDeleteEntity;
 
-import java.util.Set;
-
 /**
  * 标签映射
  * 建立索引时使用 biz_type - ref_id - tag_biz_id - deleteVersion
@@ -47,8 +45,8 @@ public class TagMappingEntity extends LogicDeleteEntity<Long> {
     /**
      * 外部业务表 标识 JSONArray
      */
-    @TableField("ref_ids")
-    private Set<Long> refIds;
+    //@TableField("ref_ids")
+    //private Set<Long> refIds;
 
     /**
      * 关联 Object id

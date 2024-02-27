@@ -30,11 +30,11 @@ public interface TagCoreService {
     /**
      * 根据 type /（name like） 查询所有标签
      *
-     * @param type          bizType
+     * @param tagType          bizType
      * @param searchContent tagNameLike
      * @return tagList
      */
-    List<TagEntity> searchTagByBizTypeAndName(String type, String searchContent, Integer limit);
+    List<TagEntity> searchTagByBizTypeAndName(String tagType, String searchContent, Integer limit);
 
     @Nullable
     TagEntity queryTagById(Long id);
@@ -45,24 +45,24 @@ public interface TagCoreService {
     /**
      * 根据 bizType, name 查 tag
      *
-     * @param bizType bizType
+     * @param tagType bizType
      * @param name    name
      * @return tag
      */
     @Nullable
-    TagEntity queryTagByBizTypeAndName(String bizType, String name);
+    TagEntity queryTagByBizTypeAndName(String tagType, String name);
 
     /**
      * 根据 bizType, name 查 TagEntity
      *
-     * @param bizType  bizType
+     * @param tagType  bizType
      * @param nameList name
      * @return tagList
      */
-    List<TagEntity> queryAllTagByBizTypeAndNameList(String bizType, List<String> nameList);
+    List<TagEntity> queryAllTagByBizTypeAndNameList(String tagType, List<String> nameList);
 
     /**
-     * 根据 refType, tagId 搜索所有 oid
+     * 根据 refType, tagId 搜索所有 refObjectId
      *
      * @param refType 存储位置
      * @param tagId   tagId
@@ -73,7 +73,7 @@ public interface TagCoreService {
     }
 
     /**
-     * 根据 refType, tagId 搜索所有 oid
+     * 根据 refType, tagId 搜索所有 refObjectId
      *
      * @param refType   存储位置
      * @param tagIdList tagIdList
@@ -83,61 +83,62 @@ public interface TagCoreService {
 
     // ================
 
-    default boolean attachTag(String refType, String oid, Long tag) {
-        return attachTags(refType, oid, Collections.singletonList(tag));
+    default boolean attachTag(String refType, String refObjectId, Long tag) {
+        return attachTags(refType, refObjectId, Collections.singletonList(tag));
     }
 
-    boolean attachTags(String refType, String oid, List<Long> tagList);
+    boolean attachTags(String refType, String refObjectId, List<Long> tagList);
 
     /**
-     * 给 refType 的 oid 打标签；允许自动创建标签场景
+     * 给 refType 的 refObjectId 打标签；允许自动创建标签场景
      *
      * @param refType     需要添加标签的记录存储类型
-     * @param oid       需要添加标签的记录的标识 long / String 都支持；目前仅开放 long 的使用，存主键 id
-     * @param bizType     bizType
+     * @param refObjectId       需要添加标签的记录的标识 long / String 都支持；目前仅开放 long 的使用，存主键 id
+     * @param tagType     bizType
      * @param tagNameList 需要添加的标签(最好不要包含已有的)
      * @return tagList
      */
-    List<TagEntity> attachTags(String refType, String oid, String bizType, List<String> tagNameList);
+    List<TagEntity> attachTags(String refType, String refObjectId, String tagType, List<String> tagNameList);
 
     /**
-     * 给 refType 的 oid 打标签
+     * 给 refType 的 refObjectId 打标签
      *
      * @param refType 需要添加标签的记录存储类型
-     * @param oid   需要添加标签的记录的标识 long / String
+     * @param refObjectId   需要添加标签的记录的标识 long / String
      * @param type type
      * @param tagName 需要添加的标签(最好不要包含已有的)
      * @return tag
      */
     @Nonnull
-    default TagEntity attachTag(String refType, String oid, String type, String tagName) {
-        return attachTags(refType, oid, type, Collections.singletonList(tagName)).get(0);
+    default TagEntity attachTag(String refType, String refObjectId, String type, String tagName) {
+        return attachTags(refType, refObjectId, type, Collections.singletonList(tagName)).get(0);
     }
 
     /**
      * 删除标签关联关系
      *
      * @param refType   需要添加标签的记录存储类型
-     * @param oid     需要添加标签的记录的标识 long / String
+     * @param refObjectId     需要添加标签的记录的标识 long / String
      * @param tagIdList 需要删除的标签
      */
-    void removeTagMappings(String refType, String oid, List<Long> tagIdList);
+    void removeTagMappings(String refType, String refObjectId, List<Long> tagIdList);
 
     /**
      * 更新标签关系
      *
      * @param refType 需要添加标签的记录存储类型
-     * @param oid   需要添加标签的记录的标识 long / String
+     * @param refObjectId   需要添加标签的记录的标识 long / String
      */
-    void updateTagMappings(String refType, String bizType, String oid, String oldName, String newName);
+    void updateTagMappings(String refType, String refObjectId, String tagType, String oldTagName, String newTagName);
 
     /**
      * 批量更新标签关系
      *
      * @param refType 需要添加标签的记录存储类型
-     * @param oid   需要添加标签的记录的标识 long / String
+     * @param refObjectId   需要添加标签的记录的标识 long / String
      */
-    void batchUpdateTagMappings(String refType, String bizType, String oid, List<String> oldNames, List<String> newNames);
+    void batchUpdateTagMappings(String refType, String refObjectId, String tagType, List<String> oldTagNameList,
+                                List<String> newTagNameList);
 
     /**
      * tagList1 - tagList2
@@ -173,9 +174,9 @@ public interface TagCoreService {
 
     /**
      * 通过refId包含关系 剔除当前关联 并更新
-     * 删除所有 oid
+     * 删除所有 refObjectId
      */
-//    void updateTagMappingForRemoveRefId(String oid);
+//    void updateTagMappingForRemoveRefId(String refObjectId);
 
     /**
      * 删除标签、标签关联关系

@@ -64,7 +64,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public boolean attachTags(String bizType, String oid, List<Long> tagIds) {
+    public boolean attachTags(String refType, String refObjectId, List<Long> tagIds) {
         // max 20
         AssertUtils.notEmpty(tagIds, CommonErrorCodeEnum.ILLEGAL_PARAM);
         AssertUtils.isTrue(tagIds.size() < 20, CommonErrorCodeEnum.ILLEGAL_PARAM);
@@ -81,27 +81,27 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
         // for 循环创建标签关联关系（通过多次IO减少单次锁的范围）
         for (Long tagId : tagIds) {
-            attachTag(bizType, oid, tagId);
+            attachTag(refType, refObjectId, tagId);
         }
         return true;
     }
 
     // max 100 batch｜ insert
-    public boolean attachTag(String bizType, String oid, Long tagId) {
+    public boolean attachTag(String refType, String refObjectId, Long tagId) {
         // select for update tagId 对应的标签关系
         TagEntity tagInDb = super.getBaseMapper().selectForUpdateById(tagId);
         AssertUtils.notNull(tagInDb, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
 
-        TagMappingEntity tagMappingInDb = tagMappingService.getBaseMapper().selectForUpdate(tagId, bizType, oid);
+        TagMappingEntity tagMappingInDb = tagMappingService.getBaseMapper().selectForUpdate(tagId, refType, refObjectId);
         if (tagMappingInDb != null) {
             // 有则返回
             return true;
         }
         // 没有则创建标签
         TagMappingEntity tagMappingEntity = new TagMappingEntity();
-        tagMappingEntity.setRefType(bizType);
+        tagMappingEntity.setRefType(refType);
         tagMappingEntity.setTagId(tagId);
-        tagMappingEntity.setOid(oid);
+        tagMappingEntity.setOid(refObjectId);
         return tagMappingService.save(tagMappingEntity);
     }
 
@@ -124,9 +124,9 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     //List<String> searchByAnyTagIds(List<Long> ids);
 
     @Override
-    public List<TagEntity> searchTagByBizTypeAndName(String type, String searchContent, Integer limit) {
+    public List<TagEntity> searchTagByBizTypeAndName(String tagType, String searchContent, Integer limit) {
         LambdaQueryChainWrapper<TagEntity> query = super.lambdaQuery()
-                .eq(TagEntity::getType, type)
+                .eq(TagEntity::getType, tagType)
                 .likeRight(TagEntity::getName, searchContent);
         query = limit != null ? query.last("limit " + limit) : query;
         return query.list();
@@ -146,9 +146,9 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
     @Nullable
     @Override
-    public TagEntity queryTagByBizTypeAndName(String bizType, String name) {
+    public TagEntity queryTagByBizTypeAndName(String tagType, String name) {
         List<TagEntity> tagEntityList = super.lambdaQuery()
-                .eq(TagEntity::getType, bizType)
+                .eq(TagEntity::getType, tagType)
                 .eq(TagEntity::getName, name)
                 .last("limit 1")
                 .list();
@@ -156,9 +156,9 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     }
 
     @Override
-    public List<TagEntity> queryAllTagByBizTypeAndNameList(String bizType, List<String> nameList) {
+    public List<TagEntity> queryAllTagByBizTypeAndNameList(String tagType, List<String> nameList) {
         return super.lambdaQuery()
-                .eq(TagEntity::getType, bizType)
+                .eq(TagEntity::getType, tagType)
                 .in(TagEntity::getName, nameList)
                 .last("limit " + nameList.size())
                 .list();
@@ -182,7 +182,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<TagEntity> attachTags(String refType, String objectId, String tagType,
+    public List<TagEntity> attachTags(String refType, String refObjectId, String tagType,
                                       List<String> tagNameList) {
         if (CollectionUtils.isEmpty(tagNameList)) {
             return new LinkedList<>();
@@ -190,14 +190,14 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         // 限制一下最多标签数量
         AssertUtils.isTrue(tagNameList.size() < 10, DataErrorCodeEnum.DATA_TOO_MUCH);
         List<TagEntity> allTags = ensureExistOrCreateTag(tagType, tagNameList);
-        attachTags(refType, objectId, allTags.stream().map(BaseEntity::getId).collect(Collectors.toList()));
+        attachTags(refType, refObjectId, allTags.stream().map(BaseEntity::getId).collect(Collectors.toList()));
 
         return allTags;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void removeTagMappings(String refType, String oid, List<Long> tagIdList) {
+    public void removeTagMappings(String refType, String refObjectId, List<Long> tagIdList) {
         if (CollectionUtils.isEmpty(tagIdList)) {
             return;
         }
@@ -205,7 +205,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         List<TagMappingEntity> tagMappingListInDb = tagMappingService
                 .lambdaQuery()
                 .eq(TagMappingEntity::getRefType, refType)
-                .eq(TagMappingEntity::getOid, oid)
+                .eq(TagMappingEntity::getOid, refObjectId)
                 .in(TagMappingEntity::getTagId, tagIdList)
                 .last("for update").list();
 
@@ -218,30 +218,30 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     }
 
     @Override
-    public void updateTagMappings(String refType, String bizType, String oid, String oldName, String newName) {
+    public void updateTagMappings(String refType, String refObjectId, String tagType, String oldTagName, String newTagName) {
         // todo
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void batchUpdateTagMappings(String refType, String bizType, String oid, List<String> oldNames,
-                                       List<String> newNames) {
-        if (CollectionUtils.isNotEmpty(oldNames)) {
-            // oldNames 有值，先移除TagMapping表中的值
+    public void batchUpdateTagMappings(String refType, String refObjectId, String tagType, List<String> oldTagNameList,
+                                       List<String> newTagNameList) {
+        if (CollectionUtils.isNotEmpty(oldTagNameList)) {
+            // oldTagNameList 有值，先移除TagMapping表中的值
             List<Long> tags = new ArrayList<>();
-            for (String oldName : oldNames) {
-                TagEntity tag = queryTagByBizTypeAndName(bizType, oldName);
+            for (String oldName : oldTagNameList) {
+                TagEntity tag = queryTagByBizTypeAndName(tagType, oldName);
                 AssertUtils.notNull(tag, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
                 tags.add(tag.getId());
             }
-            removeTagMappings(refType, oid, tags);
+            removeTagMappings(refType, refObjectId, tags);
         }
-        if (CollectionUtils.isNotEmpty(newNames)) {
-            for (String newName : newNames) {
+        if (CollectionUtils.isNotEmpty(newTagNameList)) {
+            for (String newName : newTagNameList) {
                 //商服有数据的话，直接插入search表方便后续搜索
                 List<String> tagNameList = new ArrayList<>();
                 tagNameList.add(newName);
-                attachTags(refType, oid, bizType, tagNameList);
+                attachTags(refType, refObjectId, tagType, tagNameList);
             }
         }
     }
