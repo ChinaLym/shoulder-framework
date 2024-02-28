@@ -141,7 +141,7 @@ public class IdGenerationUtil {
      *
      * @param now   当前时间，必填
      * @param split 分表位【00~99】必填，不足两位前面补0
-     * @param seq   sequence，必填，标准长度是8位，超过8位截取后八位，不足八位前面补齐0
+     * @param seq   sequence，必填，此处长度是7位，超过7位截取后7位，不足7位前面补齐0
      * @return id  流水号ID
      */
     public static Long generateIdInNumber(Date now, String split, long seq) {
@@ -216,27 +216,12 @@ public class IdGenerationUtil {
                                     String bizCode, String extensionCode, String accountNo,
                                     String userRandomPartition, long seq) {
 
-        if (StringUtils.isNotBlank(bizCode) && bizCode.length() != 3) {
-            throw new RuntimeException("业务标识码不符合规范");
-        }
-
-        //业务标识码,若空默认000 todo 校验长度
-        bizCode = StringUtils.defaultIfBlank(bizCode, DEFAULT_BIZ_CODE);
-
-        //用户分库分表位
-        String userPartition = extractUserShardingFromUserIdOrDefault(accountNo);
-
-        //客户端若指定2位用户随机DB位，一般用于FO.若不指定，随机产生两位
-        if (StringUtils.isBlank(userRandomPartition) || userRandomPartition.length() != 2) {
-            Random random = new Random();
-            userRandomPartition = StringUtils.alignRight(String.valueOf(random.nextInt(99)), 2,
-                    COMPLETE_STR);
-        }
         return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
                 + standardizeSystemCode(systemCode)
-                + bizCode
+                + standardizeBizCode(bizCode)
                 + standardizeExtension(extensionCode, 32)
-                + userPartition + userRandomPartition
+                + extractUserShardingFromUserIdOrDefault(accountNo)
+                + standardizeUserRandomSharding(userRandomPartition)
                 + standardizeSequence(seq);
     }
 
@@ -284,35 +269,13 @@ public class IdGenerationUtil {
                                     String bizCode, String eventCode, String extensionCode, String tenantCode,
                                     String accountNo, String userRandomPartition, long seq) {
 
-        if (StringUtils.isNotBlank(bizCode) && bizCode.length() != 3) {
-            throw new RuntimeException("业务标识码不符合规范");
-        }
-
-        if (StringUtils.isNotBlank(eventCode) && eventCode.length() != 8) {
-            throw new RuntimeException("事件码不符合规范");
-        }
-
-        //业务标识码,若空默认空字符串
-        bizCode = StringUtils.defaultIfBlank(bizCode, EMPTY_STR);
-
-        //客户端若指定2位用户随机DB位，一般用于FO.若不指定，随机产生两位
-        if (StringUtils.isBlank(userRandomPartition) || userRandomPartition.length() != 2) {
-            Random random = new Random();
-            userRandomPartition = StringUtils.alignRight(String.valueOf(random.nextInt(99)), 2,
-                    COMPLETE_STR);
-        }
         return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
-                + standardizeSystemCode(systemCode) + bizCode
+                + standardizeSystemCode(systemCode) + standardizeBizCode(bizCode)
                 + standardizeEventCode(eventCode)
                 + standardizeExtension(extensionCode, 32) + standardizeTenantCode(tenantCode)
                 + extractUserShardingFromUserIdOrDefault(accountNo)
-                + userRandomPartition
+                + standardizeUserRandomSharding(userRandomPartition)
                 + standardizeSequence(seq);
-    }
-
-    private static String standardizeSystemCode(String systemCode) {
-        AssertUtils.isTrue(systemCode != null && systemCode.length() == 3, CommonErrorCodeEnum.CODING, "systemCode.length must = 3");
-        return systemCode;
     }
 
     /**
@@ -360,17 +323,12 @@ public class IdGenerationUtil {
         String dbPrimaryKey = generateId(now, dataVersion, systemCode, bizCode, extensionCode,
                 null, null, seq);
 
-        String userDBKey = extractUserShardingFromStandardId(standardId);
-
-        if (StringUtils.isBlank(userDBKey)) {
-            throw new RuntimeException("standardId is invalid");
-        }
-
-        String userRandomPartition = extractRandomShardingFromStandardId(standardId);
-
-        return StringUtils.substring(dbPrimaryKey, 0, USER_DB_KEY_START) + userDBKey
-                + userRandomPartition + StringUtils.substring(dbPrimaryKey, RANDOM_USER_DB_KEY_END);
+        return StringUtils.substring(dbPrimaryKey, 0, USER_DB_KEY_START)
+                + extractUserShardingFromStandardId(standardId)
+                + standardizeUserRandomSharding(extractRandomShardingFromStandardId(standardId))
+                + StringUtils.substring(dbPrimaryKey, RANDOM_USER_DB_KEY_END);
     }
+
 
     /**
      * 无用户id，并指定分库分表，生成新的流水ID
@@ -475,19 +433,12 @@ public class IdGenerationUtil {
                                             String extensionCode, String tenantCode, String userId,
                                             String userRandomPartition, long seq) {
 
-        //客户端指定2位 DBkey，若不指定，随机产生两位
-        if (StringUtils.isBlank(userRandomPartition) || userRandomPartition.length() != 2) {
-            Random random = new Random();
-            userRandomPartition = StringUtils.alignRight(String.valueOf(random.nextInt(99)), 2,
-                    COMPLETE_STR);
-        }
-
         return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
                 + standardizeEventCode(eventCode)
                 + standardizeExtension(extensionCode, 32)
                 + standardizeTenantCode(tenantCode)
                 + extractUserShardingFromUserIdOrDefault(userId)
-                + userRandomPartition
+                + standardizeUserRandomSharding(userRandomPartition)
                 + standardizeSequence(seq);
     }
 
@@ -535,29 +486,13 @@ public class IdGenerationUtil {
                                                          String eventCode, String extensionCode,
                                                          String standardId, long seq) {
 
-        standardizeEventCode(eventCode);
-
-        String regionCode = extractRegionCode(standardId);
-        validateRegionCode(regionCode);
-
-        if (standardId == null) {
-            throw new RuntimeException("  invalid standardId ");
-        }
-
-        String tenantCode = extractTenantCodeFromStandardId(standardId);
-        String userDBKey = extractUserShardingFromStandardId(standardId);
-        String userRandomPartition = extractRandomShardingFromStandardId(standardId);
-        // 校验传入的dbKey的长度
-        if (userRandomPartition == null || userRandomPartition.length() != 2) {
-            throw new RuntimeException("invalid dbKey.");
-        }
-
-
-        String realSeq = standardizeSequence(seq);
-
         return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
-                + standardizeExtension(extensionCode, 32) + extensionCode + tenantCode + userDBKey
-                + userRandomPartition + realSeq;
+                + standardizeEventCode(eventCode)
+                + standardizeExtension(extensionCode, 32)
+                + extractTenantCodeFromStandardId(standardId)
+                + extractUserShardingFromStandardId(standardId)
+                + standardizeUserRandomSharding(extractRandomShardingFromStandardId(standardId))
+                + standardizeSequence(seq);
     }
 
     /**
@@ -797,32 +732,13 @@ public class IdGenerationUtil {
             throw new RuntimeException("invalid legalInst");
         }
 
-        String userDBKey = extractUserShardingFromUserIdOrDefault(userId);
-
-        //客户端指定2位DBkey，若不指定，随机产生两位
-        if (StringUtils.isBlank(userRandomPartition) || userRandomPartition.length() != 2) {
-            Random random = new Random();
-            userRandomPartition = StringUtils.alignRight(String.valueOf(random.nextInt(99)), 2,
-                    COMPLETE_STR);
-        }
-
         return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
                 + standardizeEventCode(eventCode)
                 + standardizeExtension(extensionCode, 27)
-                + legalInst + standardizeTenantCode(tenantCode) + userDBKey + userRandomPartition
+                + legalInst + standardizeTenantCode(tenantCode)
+                + extractUserShardingFromUserIdOrDefault(userId)
+                + standardizeUserRandomSharding(userRandomPartition)
                 + standardizeSequence(seq);
-    }
-
-    private static String standardizeEventCode(String eventCode) {
-        AssertUtils.isTrue(eventCode != null && eventCode.length() == 8, CommonErrorCodeEnum.CODING, "eventCode.length must = 8");
-        return eventCode;
-    }
-
-    private static String standardizeTenantCode(String tenantCode) {
-
-        tenantCode = StringUtils.defaultIfBlank(tenantCode, DEFAULT_TENANT_CODE);
-        AssertUtils.isTrue(tenantCode.length() == 3, CommonErrorCodeEnum.CODING, "tenantCode.length must = 3");
-        return tenantCode;
     }
 
     /**
@@ -845,11 +761,35 @@ public class IdGenerationUtil {
         return dataVersion;
     }
 
+
+    private static String standardizeSystemCode(String systemCode) {
+        AssertUtils.isTrue(systemCode != null && systemCode.length() == 3, CommonErrorCodeEnum.CODING, "systemCode.length must = 3");
+        return systemCode;
+    }
+
+    private static String standardizeBizCode(String bizCode) {
+        AssertUtils.isTrue(bizCode != null && bizCode.length() == 3, CommonErrorCodeEnum.CODING, "bizCode.length must = 3");
+//        bizCode = StringUtils.defaultIfBlank(bizCode, DEFAULT_BIZ_CODE);
+        return bizCode;
+    }
+
+
+    private static String standardizeEventCode(String eventCode) {
+        AssertUtils.isTrue(eventCode != null && eventCode.length() == 8, CommonErrorCodeEnum.CODING, "eventCode.length must = 8");
+        return eventCode;
+    }
+
     private static String standardizeExtension(String extensionCode, int maxLength) {
         AssertUtils.isTrue(extensionCode == null || extensionCode.length() == maxLength, CommonErrorCodeEnum.CODING, "extensionCode.length must <= ", maxLength);
         return StringUtils.defaultIfBlank(extensionCode, DEFAULT_EXTENSION_CODE);
     }
 
+    private static String standardizeTenantCode(String tenantCode) {
+
+        tenantCode = StringUtils.defaultIfBlank(tenantCode, DEFAULT_TENANT_CODE);
+        AssertUtils.isTrue(tenantCode.length() == 3, CommonErrorCodeEnum.CODING, "tenantCode.length must = 3");
+        return tenantCode;
+    }
     /**
      * 获取2位标准的分表位，长度不足前面补0
      *
@@ -864,6 +804,16 @@ public class IdGenerationUtil {
 
         return StringUtils.alignRight(sharding, IdGenerationUtil.SPLIT_KEY_LENGTH, COMPLETE_STR);
     }
+
+    private static String standardizeUserRandomSharding(String userRandomPartition) {
+        if (StringUtils.isBlank(userRandomPartition) || userRandomPartition.length() != 2) {
+            Random random = new Random();
+            userRandomPartition = StringUtils.alignRight(String.valueOf(random.nextInt(99)), 2,
+                    COMPLETE_STR);
+        }
+        return userRandomPartition;
+    }
+
 
     /**
      * 获取8位的标准sequence,长度不足前面补0
@@ -894,6 +844,13 @@ public class IdGenerationUtil {
     }
 
 
+    private static void validateStandardId(String standardId) {
+        AssertUtils.isTrue(standardId != null && standardId.length() > MIN_STAND_ID_LENGTH, CommonErrorCodeEnum.CODING,
+                "standardId.length must > " + MIN_STAND_ID_LENGTH);
+        // todo
+        extractRegionCode(standardId);
+    }
+
     /**
      * 根据 userId 获取用户分库分表位，倒数二三位
      *
@@ -915,7 +872,9 @@ public class IdGenerationUtil {
      */
     public static String extractUserShardingFromStandardId(String standardId) {
         validateStandardId(standardId);
-        return StringUtils.substring(standardId, USER_DB_KEY_START, USER_DB_KEY_END);
+        String userSharding = StringUtils.substring(standardId, USER_DB_KEY_START, USER_DB_KEY_END);
+        AssertUtils.notEmpty(userSharding, CommonErrorCodeEnum.CODING, "standardId invalid.");
+        return userSharding;
     }
 
     /**
@@ -937,7 +896,8 @@ public class IdGenerationUtil {
      */
     public static String extractTenantCodeFromStandardId(String standardId) {
         validateStandardId(standardId);
-        return StringUtils.substring(standardId, SIT_ID_START, SIT_ID_END);
+        String tenantCode = StringUtils.substring(standardId, SIT_ID_START, SIT_ID_END);
+        return standardizeTenantCode(tenantCode);
     }
 
     /**
@@ -956,10 +916,6 @@ public class IdGenerationUtil {
         return userSharding + userRandomSharding;
     }
 
-    private static void validateStandardId(String standardId) {
-        AssertUtils.isTrue(standardId != null && standardId.length() > MIN_STAND_ID_LENGTH, CommonErrorCodeEnum.CODING,
-                "standardId.length must > " + MIN_STAND_ID_LENGTH);
-    }
 
     /**
      * 获取标准流水号中的数据版本位。
@@ -985,7 +941,9 @@ public class IdGenerationUtil {
     private static String extractRegionCode(String standardId) {
         AssertUtils.notBlank(standardId, CommonErrorCodeEnum.ILLEGAL_PARAM);
 
-        return StringUtils.substring(standardId, 9, 10);
+        String regionCode = StringUtils.substring(standardId, 9, 10);
+        validateRegionCode(regionCode);
+        return regionCode;
     }
 
     // ----------------------------------------------------------------
