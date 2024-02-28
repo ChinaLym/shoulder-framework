@@ -44,7 +44,7 @@ public class IdGenerationUtil {
     /**
      * 默认租户编号
      */
-    private static final String DEFAULT_SITE_ID = COMPLETE_STR.repeat(3);
+    private static final String DEFAULT_TENANT_CODE = COMPLETE_STR.repeat(3);
 
     /**
      * 默认用户非随机分表位
@@ -128,21 +128,16 @@ public class IdGenerationUtil {
      */
     public static String generateId(Date now, String dataVersion, long seq) {
 
-        validateSequence(seq);
-
-        String realSeq = standardizeSequence(seq);
-
-        dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        validateDataVersion(dataVersion);
-
-        String today = standardizeDate(now);
-        return today + dataVersion + getCurrentRegionCode() + realSeq;
+        return standardizeDate(now)
+                + standardizeDataVersion(dataVersion)
+                + getCurrentRegionCode()
+                + standardizeSequence(seq);
     }
 
     /**
      * 简单ID生成：适用于非关键流水ID，如一些后台系统，配置表的主键
      * <p>
-     * 格式：日期(8)+区域位(1)+分表位(2)+sequence(8)
+     * 格式：日期(8)+数据版本位(1)+区域位(1)+分表位(2)+sequence(7)
      *
      * @param now   当前时间，必填
      * @param split 分表位【00~99】必填，不足两位前面补0
@@ -151,49 +146,36 @@ public class IdGenerationUtil {
      */
     public static Long generateIdInNumber(Date now, String split, long seq) {
 
-        validateSequence(seq);
-        //格式化日期
-        String today = standardizeDate(now);
 
-        //分表位不足两位补0
-        String formatSplit = standardizeSharding(split);
+        AssertUtils.isTrue(seq > 0 && seq < 10_000_000, CommonErrorCodeEnum.CODING, "sequence must > 0");
+        String realSeq = adjustSequenceLength(seq, SEQUENCE_KEY_LENGTH, COMPLETE_STR);
 
-        String realSeq = standardizeSequence(seq);
-
-        return Long.parseLong(today + getCurrentRegionCode() + formatSplit + realSeq);
+        return Long.parseLong(standardizeDate(now) + getCurrentRegionCode() + standardizeSharding(split) + realSeq);
     }
 
     /**
-     * 普通主键补足,非关键流水ID可使用此生成方法,比如一些后台系统，配置表生成主键
+     * 简单ID生成：适用于非关键流水ID，如一些后台系统，配置表的主键
      * <p>
      * 格式：日期(8)+数据版本位(1)+区域位(1)+租户码(3)+sequence(8)
      *
      * @param now         当前时间，必填
      * @param dataVersion 非必填，默认是1
-     * @param tntInstId   必填
+     * @param tenantCode  必填
      * @param seq         sequence，必填，标准长度是8位，超过8位截取后八位，不足八位前面补齐0
      * @return id  流水号ID
      */
-    public static String generateId(Date now, String dataVersion, String tntInstId, long seq) {
+    public static String generateId(Date now, String dataVersion, String tenantCode, long seq) {
 
-        validateSequence(seq);
-
-        String realSeq = standardizeSequence(seq);
-
-        dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        validateDataVersion(dataVersion);
-
-        if (StringUtils.isBlank(tntInstId)) {
-            throw new RuntimeException(" tntInstId is null");
-        }
-
-        String today = standardizeDate(now);
-        return today + dataVersion + getCurrentRegionCode() + tntInstId + realSeq;
+        return standardizeDate(now)
+                + standardizeDataVersion(dataVersion)
+                + getCurrentRegionCode()
+                + standardizeTenantCode(tenantCode)
+                + standardizeSequence(seq);
     }
 
     /**
      * <li>所有流水生成必须使用该方法<br>
-     * <table border="1" style="border-color: #bdc3c7">
+     * <table border="1" style="border-color: #bbccdd">
      * <tr>
      * <td>位置</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>10</td>
      * <td>11</td> <td>12</td> <td>13</td> <td>14</td> <td>15</td> <td>16</td> <td>...</td> <td>12</td> <td>11</td> <td>10</td>
@@ -205,14 +187,14 @@ public class IdGenerationUtil {
      * <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td>
      * </tr>
      * <tr>
-     * <td></td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#bdc3c7">V</td> <td bgcolor="#bdc3c7">R</td> <td bgcolor="#8e44ad">S</td> <td bgcolor="#8e44ad">S</td> <td
-     * bgcolor="#8e44ad">S</td> <td bgcolor="#3498db">B</td> <td bgcolor="#3498db">B</td> <td bgcolor="#3498db">B</td> <td
-     * bgcolor="#0eef8e">E</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#e67e22">R</td> <td
-     * bgcolor="#e67e22">R</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td>
+     * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">S</td> <td bgcolor="#ddccbb">S</td> <td
+     * bgcolor="#ddccbb">S</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td
+     * bgcolor="#0eef8e">E</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td>
      * </tr>
      * <tr>
      * <td>说明</td> <td colspan="8">8位日期</td> <td>数据版本</td> <td>区域位</td> <td colspan="3">系统标识码</td> <td colspan="3">业务标识码</td> <td
@@ -234,36 +216,12 @@ public class IdGenerationUtil {
                                     String bizCode, String extensionCode, String accountNo,
                                     String userRandomPartition, long seq) {
 
-        //入参检查
-        validateSequence(seq);
-
-        if (StringUtils.isNotBlank(systemCode) && systemCode.length() != 3) {
-            throw new RuntimeException("系统码不合法");
-        }
-
         if (StringUtils.isNotBlank(bizCode) && bizCode.length() != 3) {
             throw new RuntimeException("业务标识码不符合规范");
         }
 
-        if (StringUtils.isNotBlank(extensionCode) && extensionCode.length() > 32) {
-            throw new RuntimeException("扩展位不符合规范");
-        }
-
-        //日期位
-        String today = standardizeDate(now);
-
-        //不足8位的补0
-        String realSeq = standardizeSequence(seq);
-
-        //数据版本
-        dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        validateDataVersion(dataVersion);
-
-        //业务标识码,若空默认000
+        //业务标识码,若空默认000 todo 校验长度
         bizCode = StringUtils.defaultIfBlank(bizCode, DEFAULT_BIZ_CODE);
-
-        //扩展标识码，若不填，则""
-        extensionCode = StringUtils.defaultIfBlank(extensionCode, DEFAULT_EXTENSION_CODE);
 
         //用户分库分表位
         String userPartition = extractUserShardingFromUserIdOrDefault(accountNo);
@@ -272,14 +230,18 @@ public class IdGenerationUtil {
         if (StringUtils.isBlank(userRandomPartition) || userRandomPartition.length() != 2) {
             Random random = new Random();
             userRandomPartition = StringUtils.alignRight(String.valueOf(random.nextInt(99)), 2,
-                COMPLETE_STR);
+                    COMPLETE_STR);
         }
-        return today + dataVersion + getCurrentRegionCode() + systemCode + bizCode
-               + extensionCode + userPartition + userRandomPartition + realSeq;
+        return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
+                + standardizeSystemCode(systemCode)
+                + bizCode
+                + standardizeExtension(extensionCode, 32)
+                + userPartition + userRandomPartition
+                + standardizeSequence(seq);
     }
 
     /**
-     * <table border="1" style="border-color: #bdc3c7">
+     * <table border="1" style="border-color: #bbccdd">
      * <tr>
      * <td>位置</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>10</td>
      * <td>11</td> <td>12</td> <td>13</td> <td>14</td> <td>15</td> <td>16</td> <td>...</td> <td>12</td> <td>11</td> <td>10</td>
@@ -291,14 +253,14 @@ public class IdGenerationUtil {
      * <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td>
      * </tr>
      * <tr>
-     * <td></td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#bdc3c7">V</td> <td bgcolor="#bdc3c7">R</td> <td bgcolor="#8e44ad">S</td> <td bgcolor="#8e44ad">S</td> <td
-     * bgcolor="#8e44ad">S</td> <td bgcolor="#3498db">B</td> <td bgcolor="#3498db">B</td> <td bgcolor="#3498db">B</td> <td
-     * bgcolor="#0eef8e">E</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#e67e22">R</td> <td
-     * bgcolor="#e67e22">R</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td>
+     * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">S</td> <td bgcolor="#ddccbb">S</td> <td
+     * bgcolor="#ddccbb">S</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td
+     * bgcolor="#0eef8e">E</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td>
      * </tr>
      * <tr>
      * <td>说明</td> <td colspan="8">8位日期</td> <td>数据版本</td> <td>区域位</td> <td colspan="3">系统标识码</td> <td colspan="3">业务标识码</td> <td
@@ -312,22 +274,15 @@ public class IdGenerationUtil {
      * @param bizCode             业务标志码，不填默认空
      * @param eventCode           业务事件码，不填默认空
      * @param extensionCode       扩展码，长度小于等于32位,可不填
-     * @param siteId              租户码
+     * @param tenantCode          租户码
      * @param accountNo           账号或用户ID
      * @param userRandomPartition 用户随机分表位,若不指定，随机产生两位，一般用于流水号FO
      * @param seq                 序列号
      * @return 流水号ID
      */
     public static String generateId(Date now, String dataVersion, String systemCode,
-                                    String bizCode, String eventCode, String extensionCode, String siteId,
+                                    String bizCode, String eventCode, String extensionCode, String tenantCode,
                                     String accountNo, String userRandomPartition, long seq) {
-
-        //入参检查
-        validateSequence(seq);
-
-        if (StringUtils.isNotBlank(systemCode) && systemCode.length() != 3) {
-            throw new RuntimeException("系统码不合法");
-        }
 
         if (StringUtils.isNotBlank(bizCode) && bizCode.length() != 3) {
             throw new RuntimeException("业务标识码不符合规范");
@@ -337,50 +292,32 @@ public class IdGenerationUtil {
             throw new RuntimeException("事件码不符合规范");
         }
 
-        if (StringUtils.isNotBlank(extensionCode) && extensionCode.length() > 32) {
-            throw new RuntimeException("扩展位不符合规范");
-        }
-
-        siteId = StringUtils.defaultIfBlank(siteId, DEFAULT_SITE_ID);
-        if (siteId.length() != 3) {
-            throw new RuntimeException("invalid siteId");
-        }
-
-        //日期位
-        String today = standardizeDate(now);
-
-        //不足8位的补0
-        String realSeq = standardizeSequence(seq);
-
-        //数据版本
-        dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        validateDataVersion(dataVersion);
-
         //业务标识码,若空默认空字符串
         bizCode = StringUtils.defaultIfBlank(bizCode, EMPTY_STR);
-
-        //事件码默认空为空字符串
-        eventCode = StringUtils.defaultIfBlank(eventCode, EMPTY_STR);
-
-        //扩展标识码，若不填，则""
-        extensionCode = StringUtils.defaultIfBlank(extensionCode, DEFAULT_EXTENSION_CODE);
-
-        //用户分库分表位
-        String userPartition = extractUserShardingFromUserIdOrDefault(accountNo);
 
         //客户端若指定2位用户随机DB位，一般用于FO.若不指定，随机产生两位
         if (StringUtils.isBlank(userRandomPartition) || userRandomPartition.length() != 2) {
             Random random = new Random();
             userRandomPartition = StringUtils.alignRight(String.valueOf(random.nextInt(99)), 2,
-                COMPLETE_STR);
+                    COMPLETE_STR);
         }
-        return today + dataVersion + getCurrentRegionCode() + systemCode + bizCode
-               + eventCode + extensionCode + siteId + userPartition + userRandomPartition + realSeq;
+        return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
+                + standardizeSystemCode(systemCode) + bizCode
+                + standardizeEventCode(eventCode)
+                + standardizeExtension(extensionCode, 32) + standardizeTenantCode(tenantCode)
+                + extractUserShardingFromUserIdOrDefault(accountNo)
+                + userRandomPartition
+                + standardizeSequence(seq);
+    }
+
+    private static String standardizeSystemCode(String systemCode) {
+        AssertUtils.isTrue(systemCode != null && systemCode.length() == 3, CommonErrorCodeEnum.CODING, "systemCode.length must = 3");
+        return systemCode;
     }
 
     /**
      * 根据已经生成的关联流水号，生成同样分库分表的新流水号
-     * <table border="1" style="border-color: #bdc3c7">
+     * <table border="1" style="border-color: #bbccdd">
      * <tr>
      * <td>位置</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>10</td>
      * <td>11</td> <td>12</td> <td>13</td> <td>14</td> <td>15</td> <td>16</td> <td>...</td> <td>12</td> <td>11</td> <td>10</td>
@@ -392,14 +329,14 @@ public class IdGenerationUtil {
      * <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td>
      * </tr>
      * <tr>
-     * <td></td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#bdc3c7">V</td> <td bgcolor="#bdc3c7">R</td> <td bgcolor="#8e44ad">S</td> <td bgcolor="#8e44ad">S</td> <td
-     * bgcolor="#8e44ad">S</td> <td bgcolor="#3498db">B</td> <td bgcolor="#3498db">B</td> <td bgcolor="#3498db">B</td> <td
-     * bgcolor="#0eef8e">E</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#e67e22">R</td> <td
-     * bgcolor="#e67e22">R</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td>
+     * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">S</td> <td bgcolor="#ddccbb">S</td> <td
+     * bgcolor="#ddccbb">S</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td
+     * bgcolor="#0eef8e">E</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td>
      * </tr>
      * <tr>
      * <td>说明</td> <td colspan="8">8位日期</td> <td>数据版本</td> <td>区域位</td> <td colspan="3">系统标识码</td> <td colspan="3">业务标识码</td> <td
@@ -421,7 +358,7 @@ public class IdGenerationUtil {
                                                 String standardId, long seq) {
 
         String dbPrimaryKey = generateId(now, dataVersion, systemCode, bizCode, extensionCode,
-            null, null, seq);
+                null, null, seq);
 
         String userDBKey = extractUserShardingFromStandardId(standardId);
 
@@ -432,12 +369,12 @@ public class IdGenerationUtil {
         String userRandomPartition = extractRandomShardingFromStandardId(standardId);
 
         return StringUtils.substring(dbPrimaryKey, 0, USER_DB_KEY_START) + userDBKey
-               + userRandomPartition + StringUtils.substring(dbPrimaryKey, RANDOM_USER_DB_KEY_END);
+                + userRandomPartition + StringUtils.substring(dbPrimaryKey, RANDOM_USER_DB_KEY_END);
     }
 
     /**
      * 无用户id，并指定分库分表，生成新的流水ID
-     * <table border="1" style="border-color: #bdc3c7">
+     * <table border="1" style="border-color: #bbccdd">
      * <tr>
      * <td>位置</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>10</td>
      * <td>11</td> <td>12</td> <td>13</td> <td>14</td> <td>15</td> <td>16</td> <td>...</td> <td>12</td> <td>11</td> <td>10</td>
@@ -449,14 +386,14 @@ public class IdGenerationUtil {
      * <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td>
      * </tr>
      * <tr>
-     * <td></td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#bdc3c7">V</td> <td bgcolor="#bdc3c7">R</td> <td bgcolor="#8e44ad">S</td> <td bgcolor="#8e44ad">S</td> <td
-     * bgcolor="#8e44ad">S</td> <td bgcolor="#3498db">B</td> <td bgcolor="#3498db">B</td> <td bgcolor="#3498db">B</td> <td
-     * bgcolor="#0eef8e">E</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#e67e22">R</td> <td
-     * bgcolor="#e67e22">R</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td>
+     * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">S</td> <td bgcolor="#ddccbb">S</td> <td
+     * bgcolor="#ddccbb">S</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td
+     * bgcolor="#0eef8e">E</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td>
      * </tr>
      * <tr>
      * <td>说明</td> <td colspan="8">8位日期</td> <td>数据版本</td> <td>区域位</td> <td colspan="3">系统标识码</td> <td colspan="3">业务标识码</td> <td
@@ -484,10 +421,10 @@ public class IdGenerationUtil {
         }
 
         String dbPrimaryKey = generateId(now, dataVersion, systemCode, bizCode, extensionCode,
-            null, userRandomPartition, seq);
+                null, userRandomPartition, seq);
 
         return StringUtils.substring(dbPrimaryKey, 0, USER_DB_KEY_START) + partitionKey
-               + StringUtils.substring(dbPrimaryKey, USER_DB_KEY_END);
+                + StringUtils.substring(dbPrimaryKey, USER_DB_KEY_END);
     }
 
     // todo 最常用
@@ -495,7 +432,7 @@ public class IdGenerationUtil {
     /**
      * 生成35位ID
      * <li> 新增租户、业务事件码
-     * <table border="1" style="border-color: #bdc3c7">
+     * <table border="1" style="border-color: #bbccdd">
      * <tr>
      * <td>位置</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>10</td>
      * <td>11</td> <td>12</td> <td>13</td> <td>14</td> <td>15</td> <td>16</td> <td>17</td> <td>18</td> <td>...</td> <td>15</td>
@@ -508,15 +445,15 @@ public class IdGenerationUtil {
      * <td>4</td> <td>4</td> <td>0</td> <td>0</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td>
      * </tr>
      * <tr>
-     * <td></td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#bdc3c7">V</td> <td bgcolor="#bdc3c7">V</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td></td> <td bgcolor="#3498db">S</td> <td bgcolor="#3498db">S</td> <td
-     * bgcolor="#3498db">S</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#e67e22">R</td> <td
-     * bgcolor="#e67e22">R</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td>
+     * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td></td> <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td> <td
+     * bgcolor="#11eeee">S</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td>
      * </tr>
      * <tr>
      * <td>说明</td> <td colspan="8">8位日期</td> <td>数据版本</td> <td>区域位</td> <td colspan="8">业务事件码</td> <td>扩展位</td> <td
@@ -528,57 +465,36 @@ public class IdGenerationUtil {
      * @param dataVersion         数据版本，不填，默认为1
      * @param eventCode           事件码，必
      * @param extensionCode       扩展字段: <=32位
-     * @param siteId              租户标识
+     * @param tenantCode          租户标识
      * @param userId              用户分表字段
      * @param userRandomPartition 用户随机位
      * @param seq                 流水号
      * @return 标准流水号生成规则
      */
     public static String generateStandardId(Date now, String dataVersion, String eventCode,
-                                            String extensionCode, String siteId, String userId,
+                                            String extensionCode, String tenantCode, String userId,
                                             String userRandomPartition, long seq) {
-
-        validateSequence(seq);
-
-        String today = standardizeDate(now);
-
-        dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        validateDataVersion(dataVersion);
-
-        if (eventCode == null || eventCode.length() != 8) {
-            throw new RuntimeException("invalid eventCode");
-        }
-
-        if (extensionCode != null && extensionCode.length() > 32) {
-            throw new RuntimeException("extensionCode is too long");
-        }
-        //扩展位默认不填就""
-        extensionCode = StringUtils.defaultIfBlank(extensionCode, DEFAULT_EXTENSION_CODE);
-
-        siteId = StringUtils.defaultIfBlank(siteId, DEFAULT_SITE_ID);
-        if (siteId.length() != 3) {
-            throw new RuntimeException("invalid siteId");
-        }
-        String userDBKey = extractUserShardingFromUserIdOrDefault(userId);
 
         //客户端指定2位 DBkey，若不指定，随机产生两位
         if (StringUtils.isBlank(userRandomPartition) || userRandomPartition.length() != 2) {
             Random random = new Random();
             userRandomPartition = StringUtils.alignRight(String.valueOf(random.nextInt(99)), 2,
-                COMPLETE_STR);
+                    COMPLETE_STR);
         }
 
-        //如果不满8位,左边补"0"
-        String realSeq = standardizeSequence(seq);
-
-        return today + dataVersion + getCurrentRegionCode() + eventCode
-               + extensionCode + siteId + userDBKey + userRandomPartition + realSeq;
+        return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
+                + standardizeEventCode(eventCode)
+                + standardizeExtension(extensionCode, 32)
+                + standardizeTenantCode(tenantCode)
+                + extractUserShardingFromUserIdOrDefault(userId)
+                + userRandomPartition
+                + standardizeSequence(seq);
     }
 
     /**
      * 生成ID,standardId需要符合35位标准
      *
-     * <table border="1" style="border-color: #bdc3c7">
+     * <table border="1" style="border-color: #bbccdd">
      * <tr>
      * <td>位置</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>10</td>
      * <td>11</td> <td>12</td> <td>13</td> <td>14</td> <td>15</td> <td>16</td> <td>17</td> <td>18</td> <td>...</td> <td>15</td>
@@ -591,15 +507,15 @@ public class IdGenerationUtil {
      * <td>4</td> <td>4</td> <td>0</td> <td>0</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td>
      * </tr>
      * <tr>
-     * <td></td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#bdc3c7">V</td> <td bgcolor="#bdc3c7">V</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td></td> <td bgcolor="#3498db">S</td> <td bgcolor="#3498db">S</td> <td
-     * bgcolor="#3498db">S</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#e67e22">R</td> <td
-     * bgcolor="#e67e22">R</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td>
+     * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td></td> <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td> <td
+     * bgcolor="#11eeee">S</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td>
      * </tr>
      * <tr>
      * <td>说明</td> <td colspan="8">8位日期</td> <td>数据版本</td> <td>区域位</td> <td colspan="8">业务事件码</td> <td>扩展位</td> <td
@@ -619,32 +535,16 @@ public class IdGenerationUtil {
                                                          String eventCode, String extensionCode,
                                                          String standardId, long seq) {
 
-        validateSequence(seq);
+        standardizeEventCode(eventCode);
 
-        String today = standardizeDate(now);
-
-        dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        validateDataVersion(dataVersion);
-
-        if (eventCode == null || eventCode.length() != 8) {
-            throw new RuntimeException("invalid eventCode");
-        }
-
-        String regionCode = parseRegionCode(standardId);
-        if (StringUtils.isBlank(regionCode) || !isValidRegionCode(regionCode)) {
-            throw new RuntimeException("invalid regionCode");
-        }
-
-        if (extensionCode != null && extensionCode.length() > 32) {
-            throw new RuntimeException("extensionCode is too long");
-        }
-        extensionCode = StringUtils.defaultIfBlank(extensionCode, DEFAULT_EXTENSION_CODE);
+        String regionCode = extractRegionCode(standardId);
+        validateRegionCode(regionCode);
 
         if (standardId == null) {
             throw new RuntimeException("  invalid standardId ");
         }
 
-        String siteId = extractTenantCodeFromStandardId(standardId);
+        String tenantCode = extractTenantCodeFromStandardId(standardId);
         String userDBKey = extractUserShardingFromStandardId(standardId);
         String userRandomPartition = extractRandomShardingFromStandardId(standardId);
         // 校验传入的dbKey的长度
@@ -652,17 +552,18 @@ public class IdGenerationUtil {
             throw new RuntimeException("invalid dbKey.");
         }
 
-        //如果不满8位,左边补"0"
+
         String realSeq = standardizeSequence(seq);
 
-        return today + dataVersion + regionCode + eventCode + extensionCode + siteId + userDBKey
-               + userRandomPartition + realSeq;
+        return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
+                + standardizeExtension(extensionCode, 32) + extensionCode + tenantCode + userDBKey
+                + userRandomPartition + realSeq;
     }
 
     /**
      * 生成35位ID
      * <li> 新增租户、业务事件码
-     * <table border="1" style="border-color: #bdc3c7">
+     * <table border="1" style="border-color: #bbccdd">
      * <tr>
      * <td>位置</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>10</td>
      * <td>11</td> <td>12</td> <td>13</td> <td>14</td> <td>15</td> <td>16</td> <td>17</td> <td>18</td> <td>...</td> <td>15</td>
@@ -675,15 +576,15 @@ public class IdGenerationUtil {
      * <td>4</td> <td>4</td> <td>0</td> <td>0</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td>
      * </tr>
      * <tr>
-     * <td></td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#bdc3c7">V</td> <td bgcolor="#bdc3c7">V</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td></td> <td bgcolor="#3498db">S</td> <td bgcolor="#3498db">S</td> <td
-     * bgcolor="#3498db">S</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#e67e22">R</td> <td
-     * bgcolor="#e67e22">R</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td>
+     * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td></td> <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td> <td
+     * bgcolor="#11eeee">S</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td>
      * </tr>
      * <tr>
      * <td>说明</td> <td colspan="8">8位日期</td> <td>数据版本</td> <td>区域位</td> <td colspan="8">业务事件码</td> <td>扩展位</td> <td
@@ -695,30 +596,30 @@ public class IdGenerationUtil {
      * @param dataVersion         数据版本，不填，默认为1
      * @param eventCode           事件码，必
      * @param extensionCode       扩展字段: <=32位
-     * @param siteId              租户标识
+     * @param tenantCode          租户标识
      * @param partitionKey        用户指定分库分表字段
      * @param userRandomPartition 用户随机位
      * @param seq                 流水号
      * @return 标准流水号生成规则
      */
     public static String generateStandardIdWithPartitionKey(Date now, String dataVersion, String eventCode,
-                                                            String extensionCode, String siteId, String partitionKey,
+                                                            String extensionCode, String tenantCode, String partitionKey,
                                                             String userRandomPartition, long seq) {
 
         if (StringUtils.isBlank(partitionKey) || partitionKey.length() != 2) {
             throw new RuntimeException("partitionKey is invalid");
         }
 
-        String dbPrimaryKey = generateStandardId(now, dataVersion, eventCode, extensionCode, siteId, null, userRandomPartition, seq);
+        String dbPrimaryKey = generateStandardId(now, dataVersion, eventCode, extensionCode, tenantCode, null, userRandomPartition, seq);
 
         return StringUtils.substring(dbPrimaryKey, 0, USER_DB_KEY_START) + partitionKey
-               + StringUtils.substring(dbPrimaryKey, USER_DB_KEY_END);
+                + StringUtils.substring(dbPrimaryKey, USER_DB_KEY_END);
     }
 
     /**
      * 生成ID，分库分表位是userID倒数2、3位，用户随机分表位是倒数4、5位
      *
-     * <table border="1" style="border-color: #bdc3c7">
+     * <table border="1" style="border-color: #bbccdd">
      * <tr>
      * <td>位置</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>10</td>
      * <td>11</td> <td>12</td> <td>13</td> <td>14</td> <td>15</td> <td>16</td> <td>17</td> <td>18</td> <td>...</td> <td>15</td>
@@ -731,15 +632,15 @@ public class IdGenerationUtil {
      * <td>4</td> <td>4</td> <td>0</td> <td>0</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td>
      * </tr>
      * <tr>
-     * <td></td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#bdc3c7">V</td> <td bgcolor="#bdc3c7">V</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td></td> <td bgcolor="#3498db">S</td> <td bgcolor="#3498db">S</td> <td
-     * bgcolor="#3498db">S</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td
-     * bgcolor="#2ecc71">U</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td>
+     * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td></td> <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td> <td
+     * bgcolor="#11eeee">S</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td
+     * bgcolor="#eecc88">U</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td>
      * </tr>
      * <tr>
      * <td>说明</td> <td colspan="8">8位日期</td> <td>数据版本</td> <td>区域位</td> <td colspan="8">业务事件码</td> <td>扩展位</td> <td
@@ -751,45 +652,27 @@ public class IdGenerationUtil {
      * @param dataVersion   数据版本: 1位
      * @param eventCode     事件码: 8位
      * @param extensionCode 扩展字段: <=32位
-     * @param siteId        租户标识
+     * @param tenantCode    租户标识
      * @param userId        用户分表字段
      * @param seq           流水号
      * @return id
      */
     public static String generateIdWithNoRandomUserRule(Date now, String dataVersion,
                                                         String eventCode, String extensionCode,
-                                                        String siteId, String userId, long seq) {
+                                                        String tenantCode, String userId, long seq) {
 
-        validateSequence(seq);
-
-        String today = standardizeDate(now);
-
-        dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        validateDataVersion(dataVersion);
-
-        if (eventCode == null || eventCode.length() != 8) {
-            throw new RuntimeException("invalid eventCode");
-        }
-
-        if (extensionCode != null && extensionCode.length() > 32) {
-            throw new RuntimeException("extensionCode is too long");
-        }
-        extensionCode = StringUtils.defaultIfBlank(extensionCode, DEFAULT_EXTENSION_CODE);
-
-        siteId = StringUtils.defaultIfBlank(siteId, DEFAULT_SITE_ID);
-        String userDBKey = extractUserRandomShardingFromUserIdOrDefault(userId);
-        //如果不满8位,左边补"0"
-        String realSeq = standardizeSequence(seq);
-
-        return today + dataVersion + getCurrentRegionCode() + eventCode
-               + extensionCode + siteId + userDBKey + realSeq;
+        return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
+                + standardizeEventCode(eventCode)
+                + standardizeExtension(extensionCode, 32)
+                + standardizeTenantCode(tenantCode)
+                + extractUserRandomShardingFromUserIdOrDefault(userId)
+                + standardizeSequence(seq);
     }
 
     /**
      * 生成，支持主体隔离的37位ID
-     * <li> 必须符合三代架构规范
-     * <li> 新增租户、业务事件码，但仍符合三代架构规范
-     * <table border="1" style="border-color: #bdc3c7">
+     *
+     * <table border="1" style="border-color: #bbccdd">
      * <tr>
      * <td>位置</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>10</td>
      * <td>11</td> <td>12</td> <td>13</td> <td>14</td> <td>15</td> <td>16</td> <td>17</td> <td>18</td> <td>...</td>
@@ -808,21 +691,21 @@ public class IdGenerationUtil {
      * <td>4</td> <td>0</td> <td>0</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td>
      * </tr>
      * <tr>
-     * <td></td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#bdc3c7">V</td> <td bgcolor="#bdc3c7">V</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8080C0">...</td>
+     * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#8080C0">...</td>
      *
      * <td bgcolor="#8080C0">L</td> <td bgcolor="#8080C0">L</td>
      * <td bgcolor="#8080C0">L</td> <td bgcolor="#8080C0">L</td>
      *
-     * <td bgcolor="#3498db">S</td> <td bgcolor="#3498db">S</td>
+     * <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td>
      * <td
-     * bgcolor="#3498db">S</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#e67e22">R</td> <td
-     * bgcolor="#e67e22">R</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td>
+     * bgcolor="#11eeee">S</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td>
      * </tr>
      * <tr>
      * <td>说明</td> <td colspan="8">8位日期</td> <td>数据版本</td> <td>区域位</td> <td colspan="8">业务事件码</td> <td>扩展位</td>
@@ -837,32 +720,31 @@ public class IdGenerationUtil {
      * @param eventCode           事件码，必
      * @param extensionCode       扩展字段: <=27位
      * @param legalInst           法律主体码
-     * @param siteId              租户标识
+     * @param tenantCode          租户标识
      * @param partitionKey        用户指定分库分表字段
      * @param userRandomPartition 用户随机位
      * @param seq                 流水号
      * @return 流水号ID
      */
     public static String generateStandardIdWithPartitionKey(Date now, String dataVersion, String eventCode,
-                                                            String extensionCode, String legalInst, String siteId, String partitionKey,
+                                                            String extensionCode, String legalInst, String tenantCode, String partitionKey,
                                                             String userRandomPartition, long seq) {
 
         if (StringUtils.isBlank(partitionKey) || partitionKey.length() != 2) {
             throw new RuntimeException("partitionKey is invalid");
         }
 
-        String dbPrimaryKey = generateStandardId(now, dataVersion, eventCode, extensionCode, legalInst, siteId, null, userRandomPartition,
-            seq);
+        String dbPrimaryKey = generateStandardId(now, dataVersion, eventCode, extensionCode, legalInst, tenantCode, null, userRandomPartition,
+                seq);
 
         return StringUtils.substring(dbPrimaryKey, 0, USER_DB_KEY_START) + partitionKey
-               + StringUtils.substring(dbPrimaryKey, USER_DB_KEY_END);
+                + StringUtils.substring(dbPrimaryKey, USER_DB_KEY_END);
     }
 
     /**
      * 生成，支持主体隔离的37位ID
-     * <li> 必须符合三代架构规范
-     * <li> 新增租户、业务事件码，但仍符合三代架构规范
-     * <table border="1" style="border-color: #bdc3c7">
+     *
+     * <table border="1" style="border-color: #bbccdd">
      * <tr>
      * <td>位置</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td> <td>9</td> <td>10</td>
      * <td>11</td> <td>12</td> <td>13</td> <td>14</td> <td>15</td> <td>16</td> <td>17</td> <td>18</td> <td>...</td>
@@ -876,18 +758,18 @@ public class IdGenerationUtil {
      * <td>4</td> <td>4</td> <td>0</td> <td>0</td> <td>1</td> <td>2</td> <td>3</td> <td>4</td> <td>5</td> <td>6</td> <td>7</td> <td>8</td>
      * </tr>
      * <tr>
-     * <td></td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td bgcolor="#f1c40f">D</td> <td
-     * bgcolor="#bdc3c7">V</td> <td bgcolor="#bdc3c7">V</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td
-     * bgcolor="#8e44ad">E</td> <td bgcolor="#8e44ad">E</td> <td></td>
+     * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td></td>
      *
-     * <td bgcolor="#3498db">L</td> <td bgcolor="#3498db">L</td> <td bgcolor="#3498db">L</td> <td bgcolor="#3498db">L</td>
-     * <td bgcolor="#3498db">S</td> <td bgcolor="#3498db">S</td> <td bgcolor="#3498db">S</td>
-     * <td bgcolor="#2ecc71">U</td> <td bgcolor="#2ecc71">U</td> <td bgcolor="#e67e22">R</td> <td
-     * bgcolor="#e67e22">R</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td bgcolor="#e74c3c">I</td> <td
-     * bgcolor="#e74c3c">I</td>
+     * <td bgcolor="#11eeee">L</td> <td bgcolor="#11eeee">L</td> <td bgcolor="#11eeee">L</td> <td bgcolor="#11eeee">L</td>
+     * <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td>
+     * <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
+     * bgcolor="#dd9988">I</td>
      * </tr>
      * <tr>
      * <td>说明</td> <td colspan="8">8位日期</td> <td>数据版本</td> <td>区域位</td> <td colspan="8">业务事件码</td> <td>扩展位</td>
@@ -901,64 +783,86 @@ public class IdGenerationUtil {
      * @param eventCode           事件码，必
      * @param extensionCode       扩展字段: <=27位
      * @param legalInst           法律主体码
-     * @param siteId              租户标识
+     * @param tenantCode          租户标识
      * @param userId              用户分表字段
      * @param userRandomPartition 用户随机位
      * @param seq                 流水号
      * @return 标准流水号生成规则
      */
     public static String generateStandardId(Date now, String dataVersion, String eventCode,
-                                            String extensionCode, String legalInst, String siteId, String userId,
+                                            String extensionCode, String legalInst, String tenantCode, String userId,
                                             String userRandomPartition, long seq) {
-
-        validateSequence(seq);
-
-        String today = standardizeDate(now);
-
-        dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        validateDataVersion(dataVersion);
-
-        if (eventCode == null || eventCode.length() != 8) {
-            throw new RuntimeException("invalid eventCode");
-        }
-
-        //id最大长度不超过64
-        if (extensionCode != null && extensionCode.length() > 27) {
-            throw new RuntimeException("extensionCode is too long");
-        }
-        //扩展位默认不填就""
-        extensionCode = StringUtils.defaultIfBlank(extensionCode, DEFAULT_EXTENSION_CODE);
 
         if (legalInst == null || legalInst.length() != 4) {
             throw new RuntimeException("invalid legalInst");
         }
 
-        siteId = StringUtils.defaultIfBlank(siteId, DEFAULT_SITE_ID);
-        if (siteId.length() != 3) {
-            throw new RuntimeException("invalid siteId");
-        }
         String userDBKey = extractUserShardingFromUserIdOrDefault(userId);
 
         //客户端指定2位DBkey，若不指定，随机产生两位
         if (StringUtils.isBlank(userRandomPartition) || userRandomPartition.length() != 2) {
             Random random = new Random();
             userRandomPartition = StringUtils.alignRight(String.valueOf(random.nextInt(99)), 2,
-                COMPLETE_STR);
+                    COMPLETE_STR);
         }
 
-        //如果不满8位,左边补"0"
-        String realSeq = standardizeSequence(seq);
-
-        return today + dataVersion + getCurrentRegionCode() + eventCode
-               + extensionCode + legalInst + siteId + userDBKey + userRandomPartition + realSeq;
+        return standardizeDate(now) + standardizeDataVersion(dataVersion) + getCurrentRegionCode()
+                + standardizeEventCode(eventCode)
+                + standardizeExtension(extensionCode, 27)
+                + legalInst + standardizeTenantCode(tenantCode) + userDBKey + userRandomPartition
+                + standardizeSequence(seq);
     }
 
-    private static void validateSequence(long seq) {
-        AssertUtils.isTrue(seq > 0, CommonErrorCodeEnum.CODING, "sequence must > 0");
+    private static String standardizeEventCode(String eventCode) {
+        AssertUtils.isTrue(eventCode != null && eventCode.length() == 8, CommonErrorCodeEnum.CODING, "eventCode.length must = 8");
+        return eventCode;
     }
 
-    private static void validateDataVersion(String dataVersion) {
+    private static String standardizeTenantCode(String tenantCode) {
+
+        tenantCode = StringUtils.defaultIfBlank(tenantCode, DEFAULT_TENANT_CODE);
+        AssertUtils.isTrue(tenantCode.length() == 3, CommonErrorCodeEnum.CODING, "tenantCode.length must = 3");
+        return tenantCode;
+    }
+
+    /**
+     * 转为标准日期格式 yyyyMMdd
+     *
+     * @param date 时间
+     * @return 日期
+     */
+    public static String standardizeDate(Date date) {
+        //前8位yyyyMMdd格式
+        //DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now())
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        return dateFormat.format(date);
+    }
+
+    private static String standardizeDataVersion(String dataVersion) {
+        dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
         AssertUtils.isTrue(dataVersion != null && dataVersion.length() == 1, CommonErrorCodeEnum.CODING, "sequence must > 0");
+        return dataVersion;
+    }
+
+    private static String standardizeExtension(String extensionCode, int maxLength) {
+        AssertUtils.isTrue(extensionCode == null || extensionCode.length() == maxLength, CommonErrorCodeEnum.CODING, "extensionCode.length must <= ", maxLength);
+        return StringUtils.defaultIfBlank(extensionCode, DEFAULT_EXTENSION_CODE);
+    }
+
+    /**
+     * 获取2位标准的分表位，长度不足前面补0
+     *
+     * @param sharding 分表位
+     * @return 标准长度分表位
+     */
+    private static String standardizeSharding(String sharding) {
+        //如果大于length位，则截取低length位
+        if (sharding.length() > IdGenerationUtil.SPLIT_KEY_LENGTH) {
+            sharding = StringUtils.substring(sharding, -IdGenerationUtil.SPLIT_KEY_LENGTH);
+        }
+
+        return StringUtils.alignRight(sharding, IdGenerationUtil.SPLIT_KEY_LENGTH, COMPLETE_STR);
     }
 
     /**
@@ -968,6 +872,7 @@ public class IdGenerationUtil {
      * @return 标准8位sequence
      */
     public static String standardizeSequence(long seq) {
+        AssertUtils.isTrue(seq > 0, CommonErrorCodeEnum.CODING, "sequence must > 0");
         return adjustSequenceLength(seq, SEQUENCE_KEY_LENGTH, COMPLETE_STR);
     }
 
@@ -988,34 +893,6 @@ public class IdGenerationUtil {
         return StringUtils.alignRight(seqStr, length, completeStr);
     }
 
-    /**
-     * 获取2位标准的分表位，长度不足前面补0
-     *
-     * @param sharding 分表位
-     * @return 标准长度分表位
-     */
-    private static String standardizeSharding(String sharding) {
-        //如果大于length位，则截取低length位
-        if (sharding.length() > IdGenerationUtil.SPLIT_KEY_LENGTH) {
-            sharding = StringUtils.substring(sharding, -IdGenerationUtil.SPLIT_KEY_LENGTH);
-        }
-
-        return StringUtils.alignRight(sharding, IdGenerationUtil.SPLIT_KEY_LENGTH, COMPLETE_STR);
-    }
-
-    /**
-     * 日期转换。
-     *
-     * @param date 时间
-     * @return 日期
-     */
-    public static String standardizeDate(Date date) {
-        //前8位yyyyMMdd格式
-        //DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now())
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        return dateFormat.format(date);
-    }
 
     /**
      * 根据 userId 获取用户分库分表位，倒数二三位
@@ -1081,7 +958,7 @@ public class IdGenerationUtil {
 
     private static void validateStandardId(String standardId) {
         AssertUtils.isTrue(standardId != null && standardId.length() > MIN_STAND_ID_LENGTH, CommonErrorCodeEnum.CODING,
-            "standardId.length must > " + MIN_STAND_ID_LENGTH);
+                "standardId.length must > " + MIN_STAND_ID_LENGTH);
     }
 
     /**
@@ -1102,14 +979,15 @@ public class IdGenerationUtil {
      * @return 业务标识码
      */
     public static String extractBizCode(String standardId) {
-
-        // todo
-        if (28 == standardId.length()) {
-            return StringUtils.substring(standardId, 13, 16);
-        }
-
         return StringUtils.substring(standardId, 13, 19);
     }
+
+    private static String extractRegionCode(String standardId) {
+        AssertUtils.notBlank(standardId, CommonErrorCodeEnum.ILLEGAL_PARAM);
+
+        return StringUtils.substring(standardId, 9, 10);
+    }
+
     // ----------------------------------------------------------------
 
     private static String getCurrentRegionCode() {
@@ -1118,13 +996,8 @@ public class IdGenerationUtil {
         return null;
     }
 
-    private static String parseRegionCode(String standardId) {
-        AssertUtils.notBlank(standardId, CommonErrorCodeEnum.ILLEGAL_PARAM);
-
-        return StringUtils.substring(standardId, 9, 10);
-    }
-
-    private static boolean isValidRegionCode(String regionCode) {
-        return true;
+    private static void validateRegionCode(String regionCode) {
+        AssertUtils.notNull(regionCode, CommonErrorCodeEnum.CODING, "sequence must > 0");
+        // todo enum check 
     }
 }
