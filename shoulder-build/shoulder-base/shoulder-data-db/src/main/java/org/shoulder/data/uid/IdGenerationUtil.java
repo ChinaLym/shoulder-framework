@@ -128,14 +128,13 @@ public class IdGenerationUtil {
      */
     public static String generateId(Date now, String dataVersion, long seq) {
 
-        AssertUtils.isTrue(seq > 0, CommonErrorCodeEnum.CODING, "sequence must > 0");
+        validateSequence(seq);
 
         String realSeq = standardizeSequence(seq);
 
         dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        if (dataVersion.length() != 1) {
-            throw new RuntimeException("invalid dataVersion");
-        }
+        validateDataVersion(dataVersion);
+
         String today = standardizeDate(now);
         return today + dataVersion + getCurrentRegionCode() + realSeq;
     }
@@ -150,11 +149,9 @@ public class IdGenerationUtil {
      * @param seq   sequence，必填，标准长度是8位，超过8位截取后八位，不足八位前面补齐0
      * @return id  流水号ID
      */
-    public static Long generateNumberId(Date now, String split, long seq) {
+    public static Long generateIdInNumber(Date now, String split, long seq) {
 
-        if (seq < 0) {
-            throw new RuntimeException("sequence不合法");
-        }
+        validateSequence(seq);
         //格式化日期
         String today = standardizeDate(now);
 
@@ -179,16 +176,12 @@ public class IdGenerationUtil {
      */
     public static String generateId(Date now, String dataVersion, String tntInstId, long seq) {
 
-        if (seq < 0) {
-            throw new RuntimeException("sequence不合法");
-        }
+        validateSequence(seq);
 
         String realSeq = standardizeSequence(seq);
 
         dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        if (dataVersion.length() != 1) {
-            throw new RuntimeException("invalid dataVersion");
-        }
+        validateDataVersion(dataVersion);
 
         if (StringUtils.isBlank(tntInstId)) {
             throw new RuntimeException(" tntInstId is null");
@@ -242,9 +235,7 @@ public class IdGenerationUtil {
                                     String userRandomPartition, long seq) {
 
         //入参检查
-        if (seq < 0) {
-            throw new RuntimeException("sequence不合法");
-        }
+        validateSequence(seq);
 
         if (StringUtils.isNotBlank(systemCode) && systemCode.length() != 3) {
             throw new RuntimeException("系统码不合法");
@@ -266,9 +257,7 @@ public class IdGenerationUtil {
 
         //数据版本
         dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        if (dataVersion.length() != 1) {
-            throw new RuntimeException("invalid dataVersion");
-        }
+        validateDataVersion(dataVersion);
 
         //业务标识码,若空默认000
         bizCode = StringUtils.defaultIfBlank(bizCode, DEFAULT_BIZ_CODE);
@@ -334,9 +323,7 @@ public class IdGenerationUtil {
                                     String accountNo, String userRandomPartition, long seq) {
 
         //入参检查
-        if (seq < 0) {
-            throw new RuntimeException("sequence不合法");
-        }
+        validateSequence(seq);
 
         if (StringUtils.isNotBlank(systemCode) && systemCode.length() != 3) {
             throw new RuntimeException("系统码不合法");
@@ -367,9 +354,7 @@ public class IdGenerationUtil {
 
         //数据版本
         dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        if (dataVersion.length() != 1) {
-            throw new RuntimeException("invalid dataVersion");
-        }
+        validateDataVersion(dataVersion);
 
         //业务标识码,若空默认空字符串
         bizCode = StringUtils.defaultIfBlank(bizCode, EMPTY_STR);
@@ -553,16 +538,12 @@ public class IdGenerationUtil {
                                             String extensionCode, String siteId, String userId,
                                             String userRandomPartition, long seq) {
 
-        if (seq < 0) {
-            throw new RuntimeException("sequence不合法");
-        }
+        validateSequence(seq);
 
         String today = standardizeDate(now);
 
         dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        if (dataVersion.length() != 1) {
-            throw new RuntimeException("invalid dataVersion");
-        }
+        validateDataVersion(dataVersion);
 
         if (eventCode == null || eventCode.length() != 8) {
             throw new RuntimeException("invalid eventCode");
@@ -638,16 +619,12 @@ public class IdGenerationUtil {
                                                          String eventCode, String extensionCode,
                                                          String standardId, long seq) {
 
-        if (seq < 0) {
-            throw new RuntimeException("sequence不合法");
-        }
+        validateSequence(seq);
 
         String today = standardizeDate(now);
 
         dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        if (dataVersion.length() != 1) {
-            throw new RuntimeException("invalid dataVersion");
-        }
+        validateDataVersion(dataVersion);
 
         if (eventCode == null || eventCode.length() != 8) {
             throw new RuntimeException("invalid eventCode");
@@ -783,16 +760,12 @@ public class IdGenerationUtil {
                                                         String eventCode, String extensionCode,
                                                         String siteId, String userId, long seq) {
 
-        if (seq < 0) {
-            throw new RuntimeException("sequence不合法");
-        }
+        validateSequence(seq);
 
         String today = standardizeDate(now);
 
         dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        if (dataVersion.length() != 1) {
-            throw new RuntimeException("invalid dataVersion");
-        }
+        validateDataVersion(dataVersion);
 
         if (eventCode == null || eventCode.length() != 8) {
             throw new RuntimeException("invalid eventCode");
@@ -938,16 +911,12 @@ public class IdGenerationUtil {
                                             String extensionCode, String legalInst, String siteId, String userId,
                                             String userRandomPartition, long seq) {
 
-        if (seq < 0) {
-            throw new RuntimeException("sequence不合法");
-        }
+        validateSequence(seq);
 
         String today = standardizeDate(now);
 
         dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        if (dataVersion.length() != 1) {
-            throw new RuntimeException("invalid dataVersion");
-        }
+        validateDataVersion(dataVersion);
 
         if (eventCode == null || eventCode.length() != 8) {
             throw new RuntimeException("invalid eventCode");
@@ -982,6 +951,14 @@ public class IdGenerationUtil {
 
         return today + dataVersion + getCurrentRegionCode() + eventCode
                + extensionCode + legalInst + siteId + userDBKey + userRandomPartition + realSeq;
+    }
+
+    private static void validateSequence(long seq) {
+        AssertUtils.isTrue(seq > 0, CommonErrorCodeEnum.CODING, "sequence must > 0");
+    }
+
+    private static void validateDataVersion(String dataVersion) {
+        AssertUtils.isTrue(dataVersion != null && dataVersion.length() == 1, CommonErrorCodeEnum.CODING, "sequence must > 0");
     }
 
     /**
