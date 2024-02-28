@@ -190,14 +190,14 @@ public class MybatisPlusAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(ConditionalBizIdGenerator.class)
     public ConditionalBizIdGenerator bizIdGenerator() {
         return new KeyFieldsBizIdGenerator();
     }
 
     @Bean
     @Primary
-    public BizIdGenerator bizIdGenerator(List<ConditionalBizIdGenerator> bizIdGeneratorList) {
+    public CompositeBizIdGenerator compositeBizIdGenerator(List<ConditionalBizIdGenerator> bizIdGeneratorList) {
         return new CompositeBizIdGenerator(bizIdGeneratorList);
     }
 
