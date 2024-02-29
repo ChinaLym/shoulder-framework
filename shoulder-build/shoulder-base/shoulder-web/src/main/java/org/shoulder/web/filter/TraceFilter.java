@@ -1,13 +1,11 @@
 package org.shoulder.web.filter;
 
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.util.AddressUtils;
+import org.shoulder.core.util.ServletUtil;
 import org.shoulder.core.util.StringUtils;
 
 import java.io.IOException;
@@ -22,37 +20,97 @@ import java.util.UUID;
 //可见字符总长度 = 2 + 2 + 4 + 13 + 4 + 1 + 32 = 58 字符
 public class TraceFilter implements Filter {
 
-    private final String TRACE_ID = "X-B3-TraceId";
+    private final String TRACE_ID_IN_HEADER = "X-TraceId";
+    private final String TRACE_ID_IN_PARAM = "traceId";
+
+    private static final String USE_LOCAL_IP = "useLocalIp";
+
+    private boolean useLocalIp = false;
+
+    private boolean traceEnabled = false;
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        if (!isEnable(request, response)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         // 执行前确保有 traceId、spanId
-        String traceIdFromRequest = resolveTraceId(servletRequest);
-        if (StringUtils.isBlank(traceIdFromRequest)) {
-            AppContext.setTraceId(UUID.randomUUID().toString());
-        } else {
-            AppContext.setTraceId(traceIdFromRequest);
-        }
+
         try {
-            filterChain.doFilter(servletRequest, servletResponse);
+            String traceId = generateTraceId(httpRequest);
+            startTrace(traceId, httpRequest, httpResponse);
+        } catch (Exception e) {
+            System.err.println("trace Start Fail");
+            e.printStackTrace();
+        }
+
+        try {
+            filterChain.doFilter(httpRequest, httpResponse);
         } finally {
-            setTraceIdToResponse(servletResponse);
-        }
-    }
-
-    private String resolveTraceId(ServletRequest servletRequest) {
-        if (servletRequest instanceof HttpServletRequest httpServletRequest) {
-            return httpServletRequest.getHeader(TRACE_ID);
-        }
-        return null;
-    }
-
-    private void setTraceIdToResponse(ServletResponse servletResponse) {
-        String traceId;
-        if (servletResponse instanceof HttpServletResponse httpServletResponse && (traceId = AppContext.getTraceId()) != null) {
-            if(StringUtils.isEmpty(httpServletResponse.getHeader(TRACE_ID))) {
-                httpServletResponse.setHeader(TRACE_ID, traceId);
+            try {
+                endTrace(httpRequest, httpResponse);
+            } catch (Exception e) {
+                System.err.println("trace End Fail");
+                e.printStackTrace();
             }
         }
+    }
+
+    private void startTrace(String traceId, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        AppContext.setTraceId(traceId);
+        httpResponse.setHeader(TRACE_ID_IN_HEADER, traceId);
+        // TODO SPAN ID 透传的数据、用户信息等
+    }
+
+    private void endTrace(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        // 计算trace耗时、发送trace等
+        // 解析状态码，成功失败等
+    }
+
+    private String generateTraceId(HttpServletRequest request) {
+        String localTraceId = AppContext.getTraceId();
+        if (StringUtils.isNotBlank(localTraceId)) {
+            return localTraceId;
+        }
+        try {
+            // todo validate replace notBlank
+            //1. parse From RequestQueryString
+            String paramTrace = StringUtils.trim(request.getParameter(TRACE_ID_IN_PARAM));
+            if (StringUtils.isNotBlank(paramTrace)) {
+                return paramTrace;
+            }
+
+            //2. parse From Request Header
+            String headerTrace = StringUtils.trim(request.getHeader(TRACE_ID_IN_HEADER));
+            if (StringUtils.isNotBlank(headerTrace)) {
+                return headerTrace;
+            }
+        } catch (Exception ignore) {
+        }
+
+        // generate
+        String ip = useLocalIp ? AddressUtils.getIp() : ServletUtil.getRemoteAddress(request);
+        return UUID.randomUUID().toString();
+
+    }
+
+    private boolean isEnable(final ServletRequest request, final ServletResponse response) {
+        return traceEnabled && request instanceof HttpServletRequest && response instanceof HttpServletResponse;
+    }
+
+    private String resolveTraceId(HttpServletRequest httpServletRequest) {
+        return httpServletRequest.getHeader(TRACE_ID_IN_HEADER);
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        String useLocalAsIp = filterConfig.getInitParameter(USE_LOCAL_IP);
+        if ("true".equalsIgnoreCase(useLocalAsIp)) {
+            useLocalIp = true;
+        }
+        // log ip
     }
 }
