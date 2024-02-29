@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.CRC32;
 
 /**
  * 字符串工具类
@@ -781,5 +782,19 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             }
         }
     }
+
+    /**
+     * crc32
+     *
+     * @param str str
+     * @return 8个字符摘要
+     */
+    public static String crc32(String str) {
+        CRC32 crc = new CRC32();
+        crc.update(str.getBytes());
+        // crc.getValue() 返回一个32位的长整型数值
+        return Long.toHexString(crc.getValue());
+    }
+
 }
 

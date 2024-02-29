@@ -22,10 +22,11 @@ public class AddressUtils {
      * (250~255 | 200~249 | 100~199 | 0~99 + .) * 3 + (250~255 | 200~249 | 100~199 | 0~99)
      * https://www.safaribooksonline.com/library/view/regular-expressions-cookbook/9781449327453/ch08s16.html
      */
-    private static final Pattern IPV4_PATTERN = Pattern.compile("^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$");
+    private static final Pattern IPV4_PATTERN = Pattern.compile(
+        "^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$");
     private static final Pattern PORT_PATTERN = Pattern.compile("^([0-9]{1,5})$");
-    private static String LOCAL_IP_CACHE;
-    private static String LOCAL_MAC_CACHE;
+    private static       String  LOCAL_IP_CACHE;
+    private static       String  LOCAL_MAC_CACHE;
 
     public static boolean isIpv4(String ip) {
         if (StringUtils.isEmpty(ip)) {
@@ -94,7 +95,9 @@ public class AddressUtils {
             while (addressEnumeration.hasMoreElements()) {
                 InetAddress address = addressEnumeration.nextElement();
                 // ignores all invalidated addresses
-                if (address.isLinkLocalAddress() || address.isLoopbackAddress() || address.isAnyLocalAddress()) {
+                if (address.isLinkLocalAddress() || address.isLoopbackAddress() || address.isAnyLocalAddress()
+                    // not ipv6
+                    || address.getHostAddress().contains(":")) {
                     continue;
                 }
                 return address;
@@ -129,7 +132,6 @@ public class AddressUtils {
         }
     }
 
-
     /**
      * 将 ipv4 转为 hexStr（压缩）
      * 以 . 分隔，每段转为两个 0-f 的 hex 字母
@@ -149,7 +151,6 @@ public class AddressUtils {
         }
         return hexIp.toString();
     }
-
 
     /**
      * 将 ipv4 转为 long（压缩）
@@ -183,12 +184,12 @@ public class AddressUtils {
         final long mask = 255;
 
         return ((ipv4 >>> 24) & mask) +
-                "." +
-                ((ipv4 >>> 16) & mask) +
-                "." +
-                ((ipv4 >>> 8) & mask) +
-                "." +
-                (ipv4 & mask);
+               "." +
+               ((ipv4 >>> 16) & mask) +
+               "." +
+               ((ipv4 >>> 8) & mask) +
+               "." +
+               (ipv4 & mask);
     }
 
     /**
@@ -201,14 +202,13 @@ public class AddressUtils {
         final int mask = 255;
 
         return ((ipv4 >>> 24) & mask) +
-                "." +
-                ((ipv4 >>> 16) & mask) +
-                "." +
-                ((ipv4 >>> 8) & mask) +
-                "." +
-                (ipv4 & mask);
+               "." +
+               ((ipv4 >>> 16) & mask) +
+               "." +
+               ((ipv4 >>> 8) & mask) +
+               "." +
+               (ipv4 & mask);
     }
-
 
     /**
      * 将 hexStrIp 转为 ipv4 字符串（解压）
@@ -230,7 +230,6 @@ public class AddressUtils {
         }
         return ipv4Str.toString();
     }
-
 
     /**
      * 将 ipv4 字符串形式转为 int[]
@@ -284,6 +283,5 @@ public class AddressUtils {
     public static boolean isBetweenIntervalHex(String hexIp, String start, String end) {
         return isBetweenInterval(parseIPv4FromHex(hexIp), start, end);
     }
-
 
 }

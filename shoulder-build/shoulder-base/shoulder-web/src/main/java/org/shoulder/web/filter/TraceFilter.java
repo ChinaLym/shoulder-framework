@@ -19,6 +19,7 @@ import java.util.UUID;
  *
  * @author lym
  */
+//可见字符总长度 = 2 + 2 + 4 + 13 + 4 + 1 + 32 = 58 字符
 public class TraceFilter implements Filter {
 
     private final String TRACE_ID = "X-B3-TraceId";

@@ -116,8 +116,14 @@ public interface IdSpecification {
      */
     int USER_ID_END = -1;
 
+    // ------------------------------------------------------------------------
+
+    // standardize 校验，并转为标准id中的格式
+
+    // extract 按照标准位置提取，并校验提取内容是标准格式
+
     /**
-     * 转为标准日期格式 yyyyMMdd
+     * 校验，并转为标准id中的格式
      *
      * @param date 时间
      * @return 日期
