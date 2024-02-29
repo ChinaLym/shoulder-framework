@@ -4,117 +4,17 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.StringUtils;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
+
+import static org.shoulder.data.uid.IdSpecification.*;
 
 /**
  * 流水号生成工具
  *
  * @author lym
  */
-public class IdGenerationUtil {
+public class IdGenerationUtil implements IdSpecification {
 
-    /**
-     * 序列号-sequence的长度
-     */
-    private static final int SEQUENCE_KEY_LENGTH = 8;
-
-    /**
-     * 分表位长度
-     */
-    private static final int SPLIT_KEY_LENGTH = 2;
-
-    /**
-     * 长度不足时的填充字符
-     */
-    private static final String COMPLETE_STR = "0";
-
-    /**
-     * 默认空字符串
-     */
-    private static final String EMPTY_STR = "";
-
-    /**
-     * 默认业务类型代码
-     */
-    private static final String DEFAULT_BIZ_CODE = COMPLETE_STR.repeat(3);
-
-    /**
-     * 默认租户编号
-     */
-    private static final String DEFAULT_TENANT_CODE = COMPLETE_STR.repeat(3);
-
-    /**
-     * 默认用户非随机分表位
-     */
-    private static final String NON_RANDOM_DEFAULT_USER_PARTITION = COMPLETE_STR.repeat(4);
-
-    /**
-     * 默认扩展位
-     */
-    private static final String DEFAULT_EXTENSION_CODE = "";
-
-    /**
-     * standId 最小 length
-     */
-    private static final int MIN_STAND_ID_LENGTH = 20;
-
-    /**
-     * 默认用户分表位
-     */
-    private static final String DEFAULT_USER_PARTITION = COMPLETE_STR.repeat(2);
-
-    /**
-     * 标准流水号的用户分库分表起始位
-     */
-    private static final int RANDOM_USER_DB_KEY_START = -10;
-
-    /**
-     * 标准流水号的用户分库分表结束位
-     */
-    private static final int RANDOM_USER_DB_KEY_END = -8;
-
-    /**
-     * 数据版本起始位
-     */
-    private static final int DATA_VERSION_START = 8;
-
-    /**
-     * 数据版本结束位
-     */
-    private static final int DATA_VERSION_END = DATA_VERSION_START + 1;
-
-    /**
-     * 流水号的租户结束位
-     */
-    private static final int SIT_ID_END = -12;
-
-    /**
-     * 流水号的租户起始位
-     */
-    private static final int SIT_ID_START = -15;
-
-    /**
-     * 标准流水号的用户分库分表结束位
-     */
-    private static final int USER_DB_KEY_END = -10;
-
-    /**
-     * 标准流水号的用户分库分表起始位
-     */
-    private static final int USER_DB_KEY_START = -12;
-
-    /**
-     * 16位用户ID分库分表结束位
-     */
-    private static final int USER_ID_START = -3;
-
-    /**
-     * 标准流水号的用户分库分表起始位
-     */
-    private static final int USER_ID_END = -1;
 
     /**
      * 简单ID生成：适用于非关键流水ID，如一些后台系统，配置表的主键
@@ -129,9 +29,9 @@ public class IdGenerationUtil {
     public static String generateId(Date now, String dataVersion, long seq) {
 
         return standardizeDate(now)
-                + standardizeDataVersion(dataVersion)
-                + getCurrentRegionCode()
-                + standardizeSequence(seq);
+               + standardizeDataVersion(dataVersion)
+               + getCurrentRegionCode()
+               + standardizeSequence(seq);
     }
 
     /**
@@ -191,7 +91,7 @@ public class IdGenerationUtil {
      * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
      * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">S</td> <td bgcolor="#ddccbb">S</td> <td
      * bgcolor="#ddccbb">S</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td
-     * bgcolor="#0eef8e">E</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * >X...</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
      * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td>
@@ -242,7 +142,7 @@ public class IdGenerationUtil {
      * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
      * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">S</td> <td bgcolor="#ddccbb">S</td> <td
      * bgcolor="#ddccbb">S</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td
-     * bgcolor="#0eef8e">E</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * >X...</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
      * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td>
@@ -296,7 +196,7 @@ public class IdGenerationUtil {
      * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
      * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">S</td> <td bgcolor="#ddccbb">S</td> <td
      * bgcolor="#ddccbb">S</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td
-     * bgcolor="#0eef8e">E</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * >X...</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
      * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td>
@@ -348,7 +248,7 @@ public class IdGenerationUtil {
      * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
      * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">S</td> <td bgcolor="#ddccbb">S</td> <td
      * bgcolor="#ddccbb">S</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td bgcolor="#11eeee">B</td> <td
-     * bgcolor="#0eef8e">E</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * >X...</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
      * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td>
@@ -405,10 +305,10 @@ public class IdGenerationUtil {
      * <tr>
      * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
      * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
-     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
      * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
-     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td></td> <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td> <td
-     * bgcolor="#11eeee">S</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td>X...</td> <td bgcolor="#11eeee">T</td> <td bgcolor="#11eeee">T</td> <td
+     * bgcolor="#11eeee">T</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
      * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td>
@@ -460,10 +360,10 @@ public class IdGenerationUtil {
      * <tr>
      * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
      * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
-     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
      * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
-     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td></td> <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td> <td
-     * bgcolor="#11eeee">S</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td>X...</td> <td bgcolor="#11eeee">T</td> <td bgcolor="#11eeee">T</td> <td
+     * bgcolor="#11eeee">T</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
      * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td>
@@ -513,10 +413,10 @@ public class IdGenerationUtil {
      * <tr>
      * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
      * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
-     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
      * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
-     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td></td> <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td> <td
-     * bgcolor="#11eeee">S</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td>X...</td> <td bgcolor="#11eeee">T</td> <td bgcolor="#11eeee">T</td> <td
+     * bgcolor="#11eeee">T</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#dddd99">R</td> <td
      * bgcolor="#dddd99">R</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td>
@@ -569,10 +469,10 @@ public class IdGenerationUtil {
      * <tr>
      * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
      * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
-     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
      * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
-     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td></td> <td bgcolor="#11eeee">S</td> <td bgcolor="#11eeee">S</td> <td
-     * bgcolor="#11eeee">S</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td>X...</td> <td bgcolor="#11eeee">T</td> <td bgcolor="#11eeee">T</td> <td
+     * bgcolor="#11eeee">T</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td bgcolor="#eecc88">U</td> <td
      * bgcolor="#eecc88">U</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td bgcolor="#dd9988">I</td> <td
      * bgcolor="#dd9988">I</td>
@@ -628,9 +528,9 @@ public class IdGenerationUtil {
      * <tr>
      * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
      * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
-     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
      * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
-     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#8080C0">...</td>
+     * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td>X...</td>
      *
      * <td bgcolor="#8080C0">L</td> <td bgcolor="#8080C0">L</td>
      * <td bgcolor="#8080C0">L</td> <td bgcolor="#8080C0">L</td>
@@ -695,7 +595,7 @@ public class IdGenerationUtil {
      * <tr>
      * <td></td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
      * bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td bgcolor="#000000">D</td> <td
-     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbcccc">V</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
+     * bgcolor="#bbcccc">V</td> <td bgcolor="#bbccdd">R</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
      * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td
      * bgcolor="#ddccbb">E</td> <td bgcolor="#ddccbb">E</td> <td></td>
      *
@@ -741,221 +641,4 @@ public class IdGenerationUtil {
                 + standardizeSequence(seq);
     }
 
-    /**
-     * 转为标准日期格式 yyyyMMdd
-     *
-     * @param date 时间
-     * @return 日期
-     */
-    public static String standardizeDate(Date date) {
-        //前8位yyyyMMdd格式
-        //DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now())
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        return dateFormat.format(date);
-    }
-
-    private static String standardizeDataVersion(String dataVersion) {
-        dataVersion = StringUtils.defaultIfBlank(dataVersion, DataVersion.DEFAULT);
-        AssertUtils.isTrue(dataVersion != null && dataVersion.length() == 1, CommonErrorCodeEnum.CODING, "sequence must > 0");
-        return dataVersion;
-    }
-
-
-    private static String standardizeSystemCode(String systemCode) {
-        AssertUtils.isTrue(systemCode != null && systemCode.length() == 3, CommonErrorCodeEnum.CODING, "systemCode.length must = 3");
-        return systemCode;
-    }
-
-    private static String standardizeBizCode(String bizCode) {
-        AssertUtils.isTrue(bizCode != null && bizCode.length() == 3, CommonErrorCodeEnum.CODING, "bizCode.length must = 3");
-//        bizCode = StringUtils.defaultIfBlank(bizCode, DEFAULT_BIZ_CODE);
-        return bizCode;
-    }
-
-
-    private static String standardizeEventCode(String eventCode) {
-        AssertUtils.isTrue(eventCode != null && eventCode.length() == 8, CommonErrorCodeEnum.CODING, "eventCode.length must = 8");
-        return eventCode;
-    }
-
-    private static String standardizeExtension(String extensionCode, int maxLength) {
-        AssertUtils.isTrue(extensionCode == null || extensionCode.length() == maxLength, CommonErrorCodeEnum.CODING, "extensionCode.length must <= ", maxLength);
-        return StringUtils.defaultIfBlank(extensionCode, DEFAULT_EXTENSION_CODE);
-    }
-
-    private static String standardizeTenantCode(String tenantCode) {
-
-        tenantCode = StringUtils.defaultIfBlank(tenantCode, DEFAULT_TENANT_CODE);
-        AssertUtils.isTrue(tenantCode.length() == 3, CommonErrorCodeEnum.CODING, "tenantCode.length must = 3");
-        return tenantCode;
-    }
-    /**
-     * 获取2位标准的分表位，长度不足前面补0
-     *
-     * @param sharding 分表位
-     * @return 标准长度分表位
-     */
-    private static String standardizeSharding(String sharding) {
-        //如果大于length位，则截取低length位
-        if (sharding.length() > IdGenerationUtil.SPLIT_KEY_LENGTH) {
-            sharding = StringUtils.substring(sharding, -IdGenerationUtil.SPLIT_KEY_LENGTH);
-        }
-
-        return StringUtils.alignRight(sharding, IdGenerationUtil.SPLIT_KEY_LENGTH, COMPLETE_STR);
-    }
-
-    private static String standardizeUserRandomSharding(String userRandomPartition) {
-        if (StringUtils.isBlank(userRandomPartition) || userRandomPartition.length() != 2) {
-            Random random = new Random();
-            userRandomPartition = StringUtils.alignRight(String.valueOf(random.nextInt(99)), 2,
-                    COMPLETE_STR);
-        }
-        return userRandomPartition;
-    }
-
-
-    /**
-     * 获取8位的标准sequence,长度不足前面补0
-     *
-     * @param seq sequence
-     * @return 标准8位sequence
-     */
-    public static String standardizeSequence(long seq) {
-        AssertUtils.isTrue(seq > 0, CommonErrorCodeEnum.CODING, "sequence must > 0");
-        return adjustSequenceLength(seq, SEQUENCE_KEY_LENGTH, COMPLETE_STR);
-    }
-
-    /**
-     * 获取 length 位的sequence,长度不足前面补0
-     *
-     * @param seq    sequence
-     * @param length 长度
-     * @return 标准8位sequence
-     */
-    public static String adjustSequenceLength(long seq, int length, String completeStr) {
-
-        String seqStr = String.valueOf(seq);
-        //如果大于length位，则截取低length位
-        if (seqStr.length() > length) {
-            seqStr = StringUtils.substring(seqStr, -length);
-        }
-        return StringUtils.alignRight(seqStr, length, completeStr);
-    }
-
-
-    private static void validateStandardId(String standardId) {
-        AssertUtils.isTrue(standardId != null && standardId.length() > MIN_STAND_ID_LENGTH, CommonErrorCodeEnum.CODING,
-                "standardId.length must > " + MIN_STAND_ID_LENGTH);
-        // todo
-        extractRegionCode(standardId);
-    }
-
-    /**
-     * 根据 userId 获取用户分库分表位，倒数二三位
-     *
-     * @param userId userId,一般16位
-     * @return 用户分库分表位 userId.subString(-3, -1)
-     */
-    public static String extractUserShardingFromUserIdOrDefault(String userId) {
-        if (StringUtils.isBlank(userId) || userId.length() < 3) {
-            return DEFAULT_USER_PARTITION;
-        }
-        return StringUtils.substring(userId, USER_ID_START, USER_ID_END);
-    }
-
-    /**
-     * 根据关联单号（标准流水号），获取用户分库分表位
-     *
-     * @param standardId 关联单号 必须符合标准流水号的倒数第11和12位
-     * @return 用户分库分表位
-     */
-    public static String extractUserShardingFromStandardId(String standardId) {
-        validateStandardId(standardId);
-        String userSharding = StringUtils.substring(standardId, USER_DB_KEY_START, USER_DB_KEY_END);
-        AssertUtils.notEmpty(userSharding, CommonErrorCodeEnum.CODING, "standardId invalid.");
-        return userSharding;
-    }
-
-    /**
-     * 根据关联单号，获取用户随机分表位，, standardId 必须符合标准流水标准，倒数第9和第10位
-     *
-     * @param standardId 关联单号
-     * @return 用户分库分表位
-     */
-    public static String extractRandomShardingFromStandardId(String standardId) {
-        validateStandardId(standardId);
-        return StringUtils.substring(standardId, RANDOM_USER_DB_KEY_START, RANDOM_USER_DB_KEY_END);
-    }
-
-    /**
-     * 获取标准流水号的租户码，在倒数第13和第16位
-     *
-     * @param standardId 标准流水号
-     * @return 租户码
-     */
-    public static String extractTenantCodeFromStandardId(String standardId) {
-        validateStandardId(standardId);
-        String tenantCode = StringUtils.substring(standardId, SIT_ID_START, SIT_ID_END);
-        return standardizeTenantCode(tenantCode);
-    }
-
-    /**
-     * 根据用户ID，获取用户分库分表位，即用户UID倒数三二位+倒数五四位
-     * 例如00054321获取到的分库分表段为3254
-     *
-     * @param userId 用户ID
-     * @return 用户分库分表位
-     */
-    public static String extractUserRandomShardingFromUserIdOrDefault(String userId) {
-        if (StringUtils.isBlank(userId) || userId.length() < 5) {
-            return NON_RANDOM_DEFAULT_USER_PARTITION;
-        }
-        String userSharding = extractUserShardingFromUserIdOrDefault(userId);
-        String userRandomSharding = StringUtils.substring(userId, -5, -3);
-        return userSharding + userRandomSharding;
-    }
-
-
-    /**
-     * 获取标准流水号中的数据版本位。
-     *
-     * @param standardId 标准流水号
-     * @return 单号版本位
-     */
-    public static String extractDataVersionFromStandardId(String standardId) {
-
-        return StringUtils.substring(standardId, DATA_VERSION_START, DATA_VERSION_END);
-    }
-
-    /**
-     * 获取业务标识码。
-     *
-     * @param standardId 标准流水号
-     * @return 业务标识码
-     */
-    public static String extractBizCode(String standardId) {
-        return StringUtils.substring(standardId, 13, 19);
-    }
-
-    private static String extractRegionCode(String standardId) {
-        AssertUtils.notBlank(standardId, CommonErrorCodeEnum.ILLEGAL_PARAM);
-
-        String regionCode = StringUtils.substring(standardId, 9, 10);
-        validateRegionCode(regionCode);
-        return regionCode;
-    }
-
-    // ----------------------------------------------------------------
-
-    private static String getCurrentRegionCode() {
-        // todo
-        //return AppInfo.xxx;
-        return null;
-    }
-
-    private static void validateRegionCode(String regionCode) {
-        AssertUtils.notNull(regionCode, CommonErrorCodeEnum.CODING, "sequence must > 0");
-        // todo enum check 
-    }
 }
