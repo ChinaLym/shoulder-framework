@@ -9,7 +9,6 @@ import org.shoulder.core.util.ServletUtil;
 import org.shoulder.core.util.StringUtils;
 
 import java.io.IOException;
-import java.util.UUID;
 
 /**
  * 链路追踪过滤器，确保上下文中有trace
@@ -40,7 +39,7 @@ public class TraceFilter implements Filter {
         // 执行前确保有 traceId、spanId
 
         try {
-            String traceId = generateTraceId(httpRequest);
+            String traceId = getTraceIdOrGenerate(httpRequest);
             startTrace(traceId, httpRequest, httpResponse);
         } catch (Exception e) {
             System.err.println("trace Start Fail");
@@ -70,7 +69,8 @@ public class TraceFilter implements Filter {
         // 解析状态码，成功失败等
     }
 
-    private String generateTraceId(HttpServletRequest request) {
+    private String getTraceIdOrGenerate(HttpServletRequest request) {
+        // 幂等
         String localTraceId = AppContext.getTraceId();
         if (StringUtils.isNotBlank(localTraceId)) {
             return localTraceId;
@@ -93,7 +93,7 @@ public class TraceFilter implements Filter {
 
         // generate
         String ip = useLocalIp ? AddressUtils.getIp() : ServletUtil.getRemoteAddress(request);
-        return UUID.randomUUID().toString();
+        return TraceIdGenerator.generateTraceIdWithIpV4(ip);
 
     }
 

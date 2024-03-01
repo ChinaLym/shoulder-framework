@@ -2,8 +2,6 @@ package org.shoulder.web.filter;
 
 import org.shoulder.core.util.AddressUtils;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
@@ -50,125 +48,45 @@ import java.util.regex.Pattern;
  *
  * @author lym
  */
-class TraceIdGenerator {
+public class TraceIdGenerator {
 
-    private static String IP_16 = "ffffffff";
-    private static String IP_int = "255255255255";
-    private static String PID = "0000";
-    private static char PID_FLAG = 'd';
+    private static final String VERSION_DEFAULT = "00";
+    private static final String LENGTH_IPV4 = "34";
+    private static final String LENGTH_IPV6 = "58";
+    private static final String FLAG_DEFAULT = "0";
+    private static final AtomicInteger count = new AtomicInteger(1000);
 
-    private static final String regex = "\\b((?!\\d\\d\\d)\\d+|1\\d\\d|2[0-4]\\d|25[0-5])\\.((?!\\d\\d\\d)\\d+|1\\d\\d|2[0-4]\\d|25[0-5])\\.((?!\\d\\d\\d)\\d+|1\\d\\d|2[0-4]\\d|25[0-5])\\.((?!\\d\\d\\d)\\d+|1\\d\\d|2[0-4]\\d|25[0-5])\\b";
-    private static final Pattern pattern = Pattern.compile(regex);
-    private static AtomicInteger count = new AtomicInteger(1000);
+    private static final Pattern TRACE_ID_IP4_PATTERN = Pattern.compile(
+            "^0034[0-9a-f]{4}[0-9]{13}[0-9]{4}\\w[0-9a-f]{8}$"
+    );
+    private static final Pattern TRACE_ID_IPV6_PATTERN = Pattern.compile(
+            "^0058[0-9a-f]{4}[0-9]{13}[0-9]{4}\\w([0-9a-f]{32}:){7}[0-9a-f]{32}$"
+    );
 
-    static {
-        try {
-            String ipAddress = AddressUtils.getIp();
-            if (ipAddress != null) {
-                IP_16 = getIP_16(ipAddress);
-                IP_int = getIP_int(ipAddress);
-            }
-
-            PID = getHexPid(getPid());
-        } catch (Throwable e) {
-        }
+    static String generateTraceWithLocalIpV4() {
+        return generateTraceIdWithIpV4(System.currentTimeMillis(), genSequence(), FLAG_DEFAULT, AddressUtils.getIpV4Hex());
     }
 
-    static String getHexPid(int pid) {
-        // unsign short 0 to 65535
-        if (pid < 0) {
-            pid = 0;
-        }
-        if (pid > 65535) {
-            String strPid = Integer.toString(pid);
-            strPid = strPid.substring(strPid.length() - 4, strPid.length());
-            pid = Integer.parseInt(strPid);
-        }
-        String str = Integer.toHexString(pid);
-        while (str.length() < 4) {
-            str = "0" + str;
-        }
-        return str;
-    }
-
-    /**
-     * get current pid,max pid 32 bit systems 32768, for 64 bit 4194304
-     * http://unix.stackexchange.com/questions/16883/what-is-the-maximum-value-of-the-pid-of-a-process
-     * <p>
-     * http://stackoverflow.com/questions/35842/how-can-a-java-program-get-its-own-process-id
-     *
-     * @return
-     */
-    static int getPid() {
-        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
-        String name = runtime.getName();
-        int pid;
-        try {
-            pid = Integer.parseInt(name.substring(0, name.indexOf('@')));
-        } catch (Exception e) {
-            pid = 0;
-        }
-        return pid;
-    }
-
-    private static String getTraceId(String ip, long timestamp, int nextId) {
-        StringBuilder appender = new StringBuilder(32);
-        appender.append(ip).append(timestamp).append(nextId).append(PID_FLAG).append(PID);
-        return appender.toString();
-    }
-
-    static String generate() {
-        return getTraceId(IP_16, System.currentTimeMillis(), getNextId());
-    }
-
-    static String generate(String ip) {
-        if (ip != null && !ip.isEmpty() && validate(ip)) {
-            return getTraceId(getIP_16(ip), System.currentTimeMillis(), getNextId());
+    static String generateTraceIdWithIpV4(String ipv4) {
+        if (ipv4 != null && !ipv4.isEmpty() && AddressUtils.isIpv4(ipv4)) {
+            return generateTraceIdWithIpV4(System.currentTimeMillis(), genSequence(), FLAG_DEFAULT, AddressUtils.toHexStr(ipv4));
         } else {
-            return generate();
+            return generateTraceWithLocalIpV4();
         }
     }
 
-    static String generateIpv4Id() {
-        return IP_int;
+    private static String generateTraceIdWithIpV4(long timestamp, int sequence, String flag, String ipV4Hex) {
+        return VERSION_DEFAULT + LENGTH_IPV4 + AddressUtils.getPidHex() + timestamp + sequence + flag + ipV4Hex;
     }
 
-    static String generateIpv4Id(String ip) {
-        if (ip != null && !ip.isEmpty() && validate(ip)) {
-            return getIP_int(ip);
-        } else {
-            return IP_int;
-        }
+    private static String generateTraceIdWithIpV6(long timestamp, int sequence, String flag, String ipV6Hex) {
+        return VERSION_DEFAULT + LENGTH_IPV6 + AddressUtils.getPidHex() + timestamp + sequence + flag + ipV6Hex;
     }
 
-    private static boolean validate(String ip) {
-        try {
-            return pattern.matcher(ip).matches();
-        } catch (Throwable e) {
-            return false;
-        }
-    }
 
-    private static String getIP_16(String ip) {
-        String[] ips = ip.split("\\.");
-        StringBuilder sb = new StringBuilder();
-        for (String column : ips) {
-            String hex = Integer.toHexString(Integer.parseInt(column));
-            if (hex.length() == 1) {
-                sb.append('0').append(hex);
-            } else {
-                sb.append(hex);
-            }
-
-        }
-        return sb.toString();
-    }
-
-    private static String getIP_int(String ip) {
-        return ip.replace(".", "");
-    }
-
-    private static int getNextId() {
+    private static int genSequence() {
+        // 1000 最小的4位数，省去补0操作
+        // 9000
         for (; ; ) {
             int current = count.get();
             int next = (current > 9000) ? 1000 : current + 1;
