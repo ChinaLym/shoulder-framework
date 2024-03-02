@@ -9,13 +9,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -27,58 +21,58 @@ import java.util.zip.CRC32;
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
-    public static final String CLASS_NAME_STRING          = "java.lang.String";
-    public static final String CLASS_NAME_LONG            = "java.lang.Long";
-    public static final String CLASS_NAME_INTEGER         = "java.lang.Integer";
-    public static final String CLASS_NAME_SHORT           = "java.lang.Short";
-    public static final String CLASS_NAME_DOUBLE          = "java.lang.Double";
-    public static final String CLASS_NAME_FLOAT           = "java.lang.Float";
-    public static final String CLASS_NAME_BOOLEAN         = "java.lang.Boolean";
-    public static final String CLASS_NAME_SET             = "java.util.Set";
-    public static final String CLASS_NAME_LIST            = "java.util.List";
-    public static final String CLASS_NAME_COLLECTION      = "java.util.Collection";
-    public static final String CLASS_NAME_DATE            = "java.util.Date";
+    public static final String CLASS_NAME_STRING = "java.lang.String";
+    public static final String CLASS_NAME_LONG = "java.lang.Long";
+    public static final String CLASS_NAME_INTEGER = "java.lang.Integer";
+    public static final String CLASS_NAME_SHORT = "java.lang.Short";
+    public static final String CLASS_NAME_DOUBLE = "java.lang.Double";
+    public static final String CLASS_NAME_FLOAT = "java.lang.Float";
+    public static final String CLASS_NAME_BOOLEAN = "java.lang.Boolean";
+    public static final String CLASS_NAME_SET = "java.util.Set";
+    public static final String CLASS_NAME_LIST = "java.util.List";
+    public static final String CLASS_NAME_COLLECTION = "java.util.Collection";
+    public static final String CLASS_NAME_DATE = "java.util.Date";
     public static final String CLASS_NAME_LOCAL_DATE_TIME = "java.time.LocalDateTime";
-    public static final String CLASS_NAME_LOCAL_DATE      = "java.time.LocalDate";
-    public static final String CLASS_NAME_LOCAL_TIME      = "java.time.LocalTime";
+    public static final String CLASS_NAME_LOCAL_DATE = "java.time.LocalDate";
+    public static final String CLASS_NAME_LOCAL_TIME = "java.time.LocalTime";
 
     public static final char UNDERSCORE = '_';
 
-    public static final Charset             CHARSET                   = AppInfo.charset();
+    public static final Charset CHARSET = AppInfo.charset();
     /**
      * xss脚本正则
      */
-    public static final List<Pattern>       XSS_SCRIPT_PATTERNS       = Arrays.asList(
-        // Avoid anything between script tags
-        Pattern.compile("<(no)?script>(.*?)</(no)?script>", Pattern.CASE_INSENSITIVE),
-        // Avoid anything in a src='...' type of expression
-        Pattern.compile("src[\\s]*=[\\s]*'(.*?)'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("src[\\s]*=[\\s]*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Remove any lonesome </script> tag
-        Pattern.compile("</script>", Pattern.CASE_INSENSITIVE),
-        // Remove any lonesome <script ...> tag
-        Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Avoid eval(...) expressions
-        Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Avoid expression(...) expressions
-        Pattern.compile("expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        // Avoid javascript:vbscript:view-source:xxx expressions
-        Pattern.compile("(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE),
-        // Avoid onload= expressions
-        Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile("(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*",
-            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
-        Pattern.compile(
-            "<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate"
-            + "|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish"
-            + "|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown"
-            + "|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort"
-            + "|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate"
-            + "|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick"
-            + "|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit"
-            + "|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+",
-            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
+    public static final List<Pattern> XSS_SCRIPT_PATTERNS = Arrays.asList(
+            // Avoid anything between script tags
+            Pattern.compile("<(no)?script>(.*?)</(no)?script>", Pattern.CASE_INSENSITIVE),
+            // Avoid anything in a src='...' type of expression
+            Pattern.compile("src[\\s]*=[\\s]*'(.*?)'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            Pattern.compile("src[\\s]*=[\\s]*\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            // Remove any lonesome </script> tag
+            Pattern.compile("</script>", Pattern.CASE_INSENSITIVE),
+            // Remove any lonesome <script ...> tag
+            Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            // Avoid eval(...) expressions
+            Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            // Avoid expression(...) expressions
+            Pattern.compile("expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            // Avoid javascript:vbscript:view-source:xxx expressions
+            Pattern.compile("(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE),
+            // Avoid onload= expressions
+            Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            Pattern.compile("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            Pattern.compile("(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*",
+                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+            Pattern.compile(
+                    "<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate"
+                            + "|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish"
+                            + "|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown"
+                            + "|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort"
+                            + "|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate"
+                            + "|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick"
+                            + "|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit"
+                            + "|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+",
+                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
     );
     /**
      * html 转义符
@@ -559,7 +553,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             return false;
         }
         String regex = "^(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,"
-                       + "2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$";
+                + "2}|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d{1,2}|1\\d\\d|2[0-4]\\d|25[0-5])$";
         return Pattern.matches(regex, ip);
     }
 
@@ -574,7 +568,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             return false;
         }
         String regex = "^(?=^.{3,255}$)(http(s)?:\\/\\/)?(www\\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\\d+)"
-                       + "*(\\/\\w+\\.\\w+)*([\\?&]\\w+=\\w*)*$";
+                + "*(\\/\\w+\\.\\w+)*([\\?&]\\w+=\\w*)*$";
         return Pattern.matches(regex, url);
     }
 
@@ -607,7 +601,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      */
     public static char getBankCardCheckCode(String nonCheckCodeBankCard) {
         if (nonCheckCodeBankCard == null || nonCheckCodeBankCard.trim().isEmpty()
-            || !nonCheckCodeBankCard.matches("\\d+")) {
+                || !nonCheckCodeBankCard.matches("\\d+")) {
             //如果传的不是数据返回N
             return 'N';
         }
@@ -630,23 +624,23 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     private static List<Object[]> getXssPatternList() {
         List<Object[]> ret = new ArrayList<>();
-        ret.add(new Object[] { "<(no)?script[^>]*>.*?</(no)?script>", Pattern.CASE_INSENSITIVE });
-        ret.add(new Object[] { "eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL });
-        ret.add(new Object[] { "expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL });
-        ret.add(new Object[] { "(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE });
-        ret.add(new Object[] { "<(\"[^\"]*\"|'[^']*'|[^'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL });
-        ret.add(new Object[] { "(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*",
-                               Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL });
-        ret.add(new Object[] {
-            "<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate"
-            + "|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish"
-            + "|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown"
-            + "|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort"
-            + "|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate"
-            + "|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick"
-            + "|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit"
-            + "|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+",
-            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL });
+        ret.add(new Object[]{"<(no)?script[^>]*>.*?</(no)?script>", Pattern.CASE_INSENSITIVE});
+        ret.add(new Object[]{"eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
+        ret.add(new Object[]{"expression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
+        ret.add(new Object[]{"(javascript:|vbscript:|view-source:)*", Pattern.CASE_INSENSITIVE});
+        ret.add(new Object[]{"<(\"[^\"]*\"|'[^']*'|[^'\">])*>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
+        ret.add(new Object[]{"(window\\.location|window\\.|\\.location|document\\.cookie|document\\.|alert\\(.*?\\)|window\\.open\\()*",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
+        ret.add(new Object[]{
+                "<+\\s*\\w*\\s*(oncontrolselect|oncopy|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate"
+                        + "|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragstart|ondrop|onerror=|onerroupdate|onfilterchange|onfinish"
+                        + "|onfocus|onfocusin|onfocusout|onhelp|onkeydown|onkeypress|onkeyup|onlayoutcomplete|onload|onlosecapture|onmousedown"
+                        + "|onmouseenter|onmouseleave|onmousemove|onmousout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onabort"
+                        + "|onactivate|onafterprint|onafterupdate|onbefore|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate"
+                        + "|onbeforeeditocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onblur|onbounce|oncellchange|onchange|onclick"
+                        + "|oncontextmenu|onpaste|onpropertychange|onreadystatuschange|onreset|onresize|onresizend|onresizestart|onrowenter|onrowexit"
+                        + "|onrowsdelete|onrowsinserted|onscroll|onselect|onselectionchange|onselectstart|onstart|onstop|onsubmit|onunload)+\\s*=+",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL});
         return ret;
     }
 
@@ -784,7 +778,9 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /**
-     * crc32
+     * crc32 计算8位校验码
+     * <p>
+     * 主要用于快速校验数据的错误，不要用于加密算法，加密需要摘要时请用hash算法
      *
      * @param str str
      * @return 8个字符摘要
@@ -796,5 +792,40 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return Long.toHexString(crc.getValue());
     }
 
+    /**
+     * 计算一位校验码，类似身份证最后一位
+     *
+     * <p>
+     * 校验码规则: 所有字符依次做异或，并用10取模。
+     *
+     * @param string str
+     * @return 一位校验码
+     */
+    public static int computeCheckSum(String string) {
+        // 计算校验码
+        int checksum = 0;
+
+        // 计算校验和
+        for (int i = 0; i < string.length(); i++) {
+            checksum ^= (string.charAt(i) - '0');
+        }
+
+        return checksum % 10;
+    }
+
+    /**
+     * 检查校验码
+     *
+     * @param str str
+     * @return 是否校验成功
+     */
+    public static boolean validateCheckSum(String str) {
+        if (str == null || str.length() < 2) {
+            return false;
+        }
+        int checksum = computeCheckSum(str);
+        int lastChar = str.charAt(str.length() - 1);
+        return checksum == lastChar;
+    }
 }
 

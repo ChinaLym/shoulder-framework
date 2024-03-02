@@ -202,7 +202,6 @@ public interface IdSpecification {
      * @return 标准8位sequence
      */
     static String standardizeSequence(long seq) {
-        AssertUtils.isTrue(seq > 0, CommonErrorCodeEnum.CODING, "sequence must > 0");
         return adjustSequenceLength(seq, SEQUENCE_KEY_LENGTH, COMPLETE_STR);
     }
 
@@ -214,6 +213,7 @@ public interface IdSpecification {
      * @return 标准8位sequence
      */
     static String adjustSequenceLength(long seq, int length, String completeStr) {
+        AssertUtils.isTrue(seq > 0, CommonErrorCodeEnum.CODING, "sequence must > 0");
 
         String seqStr = String.valueOf(seq);
         //如果大于length位，则截取低length位

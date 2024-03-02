@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  * xss 安全保护
+ * 建议 xss 去除还是放在入参检查，因为有些框架会有根据 header / 请求参数解析等，如果开启容易异常
  *
  * @author lym
  */
@@ -110,11 +111,11 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
     /**
      * 去除请求头中的脚本
      */
-    @Override
-    public String getHeader(String name) {
-        String value = super.getHeader(name);
-        return securityContext(value);
-    }
+//    @Override
+//    public String getHeader(String name) {
+//        String value = super.getHeader(name);
+//        return securityContext(value);
+//    }
 
     @Override
     public String getQueryString() {

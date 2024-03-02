@@ -1,7 +1,5 @@
 package org.shoulder.data.uid;
 
-import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.StringUtils;
 
 import java.util.Date;
@@ -9,12 +7,30 @@ import java.util.Date;
 import static org.shoulder.data.uid.IdSpecification.*;
 
 /**
- * 流水号生成工具
+ * 流水号生成工具（除标记位其他位都是数字）
  *
  * @author lym
  */
 public class IdGenerationUtil implements IdSpecification {
 
+    /**
+     * userId
+     * <p>
+     * 格式：版本号(1)+租户码(3)+用户类型(1)+sequence(10)+校验码（1）
+     *
+     * @param dataVersion 规则版本号       当前时间，必填
+     * @param tenantCode  非必填，默认是1
+     * @param userType    0压测、1个人、2单位、3内部、
+     * @param sequence    sequence，必填，标准长度是
+     * @return id  流水号ID
+     */
+    public static String generateUserId(String dataVersion, String tenantCode, String userType, long sequence) {
+        String uid = standardizeDataVersion(dataVersion)
+                + standardizeTenantCode(tenantCode)
+                + standardizeDataVersion(userType)
+                + adjustSequenceLength(sequence, 9, COMPLETE_STR);
+        return uid + StringUtils.computeCheckSum(uid);
+    }
 
     /**
      * 简单ID生成：适用于非关键流水ID，如一些后台系统，配置表的主键
@@ -29,9 +45,9 @@ public class IdGenerationUtil implements IdSpecification {
     public static String generateId(Date now, String dataVersion, long seq) {
 
         return standardizeDate(now)
-               + standardizeDataVersion(dataVersion)
-               + getCurrentRegionCode()
-               + standardizeSequence(seq);
+                + standardizeDataVersion(dataVersion)
+                + getCurrentRegionCode()
+                + standardizeSequence(seq);
     }
 
     /**
@@ -46,9 +62,7 @@ public class IdGenerationUtil implements IdSpecification {
      */
     public static Long generateIdInNumber(Date now, String split, long seq) {
 
-
-        AssertUtils.isTrue(seq > 0 && seq < 10_000_000, CommonErrorCodeEnum.CODING, "sequence must > 0");
-        String realSeq = adjustSequenceLength(seq, SEQUENCE_KEY_LENGTH, COMPLETE_STR);
+        String realSeq = adjustSequenceLength(seq, 7, COMPLETE_STR);
 
         return Long.parseLong(standardizeDate(now) + getCurrentRegionCode() + standardizeSharding(split) + realSeq);
     }

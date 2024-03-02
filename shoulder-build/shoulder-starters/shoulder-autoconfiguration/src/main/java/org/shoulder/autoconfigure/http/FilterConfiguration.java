@@ -115,8 +115,12 @@ public class FilterConfiguration {
         return registration;
     }
 
+    /**
+     * xss 内容安全过滤器，去掉参数中可能携带的 script
+     * 但可能干扰其他框架的判断和运行（通常是可选功能），默认不开启
+     */
     @Bean
-    @ConditionalOnProperty(value = "shoulder.web.filter.xss.enable", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "shoulder.web.filter.xss.enable", havingValue = "true", matchIfMissing = false)
     public FilterRegistrationBean<XssFilter> xssFilterRegistration(WebFilterProperties webFilterProperties) {
         FilterRegistrationBean<XssFilter> registration = new FilterRegistrationBean<>();
         // 将过滤器配置到FilterRegistrationBean对象中
