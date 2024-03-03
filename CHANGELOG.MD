@@ -23,7 +23,7 @@
   - 模板类进入可用状态（0.6 引入）
   - 提供开箱即用可扩展的字典、标签能力（0.6 引入），并添加配套支持（HTTP-API、相关工具类、ConversionService、JPA、Mybatis-plus、MongoDb...）
   - filter 提供可配置的 traceId、user、tenantId 默认填充过滤器，方便后续使用 AppContext 上下文。
-  - 默认提供 xss 过滤器，保障内容安全
+  - 提供 xss 过滤器，保障内容安全
   - 兼容 spring boot spring/security 6.x 新方法
 - autoconfiguration（forTest）
   - 支持内嵌 redis 启动，方便测试
