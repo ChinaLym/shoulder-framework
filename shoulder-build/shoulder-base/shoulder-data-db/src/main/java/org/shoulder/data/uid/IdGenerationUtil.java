@@ -8,6 +8,10 @@ import static org.shoulder.data.uid.IdSpecification.*;
 
 /**
  * 流水号生成工具（除标记位其他位都是数字）
+ * <p>
+ *     实际使用：通过userId/relatedTransactionId -> hashCode -> compositeVirtualSpecId, genSequence, compositeId
+ * </p>
+ * @see org.springframework.util.DigestUtils#md5DigestAsHex(byte[]) 随机分库分表：根据多个字段（如clientId+requestId）计算多个分库分表位，特符号链接，然后md5Hex,然后取两位并转为数字
  *
  * @author lym
  */

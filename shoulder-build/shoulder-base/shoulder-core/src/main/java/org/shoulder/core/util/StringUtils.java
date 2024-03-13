@@ -793,6 +793,24 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /**
+     * 计算字符串对应的hashcode的绝对值
+     *
+     * @param str 字符串
+     * @return hashcode-绝对值
+     */
+    public static int fetchAbsHashCode(String str) {
+
+        int hashCode = str.hashCode();
+
+        // int.minValue 绝对值的话会出异常，改为 int.max
+        if (hashCode == Integer.MIN_VALUE) {
+            hashCode = Integer.MAX_VALUE;
+        }
+
+        return Math.abs(hashCode);
+    }
+
+    /**
      * 计算一位校验码，类似身份证最后一位
      *
      * <p>
