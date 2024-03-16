@@ -144,6 +144,52 @@ public class AppContext {
 
 
     /**
+     * 当前是否为正常业务流量
+     *
+     * @return 是否正常业务流量
+     */
+    public static boolean isBizTraffic() {
+        return "P".equalsIgnoreCase(getTrafficType());
+    }
+
+    /**
+     * 当前是否为压测流量
+     *
+     * @return 压测流量判断
+     */
+    public static boolean isLoadTest() {
+        return "L".equalsIgnoreCase(getTrafficType());
+    }
+
+    /**
+     * 设置为压测
+     */
+    public static void setLoadTest() {
+        setTrafficType("L");
+    }
+
+
+    /**
+     * 获取流量类型
+     *
+     * @return 流量类型，默认生产
+     */
+    public static String getTrafficType() {
+        return getOrDefault(ShoulderContextKey.TRAFFIC_TYPE, "P");
+    }
+
+    /**
+     * 设置流量类型
+     *
+     * @param trafficType 流量类型
+     */
+    public static void setTrafficType(String trafficType) {
+        log.trace("setTrafficType ({})", trafficType);
+        set(ShoulderContextKey.TRAFFIC_TYPE, trafficType);
+    }
+
+
+    /**
      * 获取链路追踪标识
      *
      * @return traceId

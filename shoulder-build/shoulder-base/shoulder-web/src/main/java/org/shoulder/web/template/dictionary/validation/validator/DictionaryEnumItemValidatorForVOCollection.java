@@ -10,10 +10,12 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collection;
 
 /**
+ * 枚举接口校验器-校验DTO List<DictionaryItemDTO>
+ *
  * @author lym
  */
 public class DictionaryEnumItemValidatorForVOCollection
-        implements ConstraintValidator<DictionaryEnumItem, Collection<? extends DictionaryItemDTO>> {
+    implements ConstraintValidator<DictionaryEnumItem, Collection<? extends DictionaryItemDTO>> {
 
     private DictionaryEnumItemValidatorForVO validator;
 

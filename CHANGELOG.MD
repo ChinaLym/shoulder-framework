@@ -7,6 +7,7 @@
 升级并支持 spring-boot3（jdk、spring-cloud、spring security6等）
 
 - core
+  - concurrent 引入双buffer缓存通用工具类 DoubleBufferCache，便于更简单的实现该高性能算法。
   - 提供增强的 ConversionService，支持集合、更多的类转换，比如日期解析时支持多种格式，Jdk8的各类时间互转
   - Translator 增加支持默认message方法
   - 新增字典定义

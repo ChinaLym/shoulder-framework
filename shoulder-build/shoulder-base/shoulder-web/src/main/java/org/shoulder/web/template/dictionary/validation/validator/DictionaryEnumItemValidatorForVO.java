@@ -7,6 +7,8 @@ import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
 
 /**
+ * 枚举接口校验器-校验 DictionaryItemDTO
+ *
  * @author lym
  */
 public class DictionaryEnumItemValidatorForVO implements ConstraintValidator<DictionaryEnumItem, DictionaryItemDTO> {

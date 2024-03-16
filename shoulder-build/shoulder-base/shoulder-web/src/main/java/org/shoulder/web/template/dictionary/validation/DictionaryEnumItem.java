@@ -21,6 +21,8 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * JSR 305 校验器注解，标注为合法枚举，并校验枚举合法性
+ *
  * @author lym
  */
 @Documented

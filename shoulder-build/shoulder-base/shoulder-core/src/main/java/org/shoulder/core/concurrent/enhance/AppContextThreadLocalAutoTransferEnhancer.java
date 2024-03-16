@@ -20,10 +20,10 @@ public class AppContextThreadLocalAutoTransferEnhancer implements ThreadEnhancer
      */
     @Override
     public EnhancedRunnable doEnhance(EnhancedRunnable runnable) {
-        Map<String, Serializable> temp = AppContext.getAll();
+        Map<String, Serializable> allContext = AppContext.getAll();
         return new EnhancedRunnable(() -> {
             try {
-                AppContext.set(temp);
+                AppContext.set(allContext);
                 runnable.run();
             } finally {
                 AppContext.clean();
@@ -40,10 +40,10 @@ public class AppContextThreadLocalAutoTransferEnhancer implements ThreadEnhancer
      */
     @Override
     public <T> EnhancedCallable<T> doEnhance(EnhancedCallable<T> callable) {
-        Map<String, Serializable> temp = AppContext.getAll();
+        Map<String, Serializable> allContext = AppContext.getAll();
         return new EnhancedCallable<>(() -> {
             try {
-                AppContext.set(temp);
+                AppContext.set(allContext);
                 return callable.call();
             } finally {
                 AppContext.clean();

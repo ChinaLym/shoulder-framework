@@ -15,6 +15,8 @@ import org.shoulder.web.template.dictionary.service.DictionaryItemService;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
 
 /**
+ * 枚举接口校验器-校验字符串 CharSequence
+ *
  * @author lym
  */
 public class DictionaryEnumItemValidatorForCharSequence implements ConstraintValidator<DictionaryEnumItem, CharSequence> {
