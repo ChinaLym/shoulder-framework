@@ -1,8 +1,6 @@
 package org.shoulder.data.dal.sequence.old;
 
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.data.dal.sequence.SequenceDao;
-import org.shoulder.data.dal.sequence.SequenceRange;
 import org.shoulder.data.dal.sequence.exceptions.SequenceException;
 import org.slf4j.Logger;
 

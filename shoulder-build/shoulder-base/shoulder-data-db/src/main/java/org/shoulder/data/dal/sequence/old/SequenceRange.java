@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence;
+package org.shoulder.data.dal.sequence.old;
 
 import java.util.concurrent.atomic.AtomicLong;
 

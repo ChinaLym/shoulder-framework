@@ -1,8 +1,8 @@
 package org.shoulder.data.dal.sequence.dao;
 
-import org.shoulder.data.dal.sequence.dialect.DefaultDialects;
-import org.shoulder.data.dal.sequence.dialect.SequenceSqlDialect;
-import org.shoulder.data.dal.sequence.service.SequenceSQLStatementType;
+import org.shoulder.data.dal.sequence.dao.dialect.DefaultDialects;
+import org.shoulder.data.dal.sequence.dao.dialect.SequenceSqlDialect;
+import org.shoulder.data.dal.sequence.generator.SequenceSQLStatementType;
 import org.shoulder.data.dal.sequence.model.SequenceRange;
 import org.shoulder.data.dal.sequence.exceptions.CombinationSequenceException;
 import org.springframework.jdbc.datasource.DataSourceUtils;

@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.service;
+package org.shoulder.data.dal.sequence.generator;
 
 import java.util.List;
 

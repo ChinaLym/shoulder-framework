@@ -8,7 +8,7 @@ import org.shoulder.data.dal.sequence.XDataSource;
 import org.shoulder.core.log.LoggerFactory;
 
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.data.dal.sequence.dialect.SequenceSqlDialect;
+import org.shoulder.data.dal.sequence.dao.dialect.SequenceSqlDialect;
 import org.shoulder.data.dal.sequence.model.SequenceRange;
 import org.shoulder.data.dal.sequence.model.DoubleSequenceRange;
 import org.shoulder.data.dal.sequence.monitor.SequenceMonitorThreadBuilder;
@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author lym
  */
-public abstract class AbstractCacheAndRetryableSequenceDao implements IGenericSequenceDao, InitializingBean {
+public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDao, InitializingBean {
 
     public static final String JDBC_PARAMETER_BINDING_SYMBOL = "?";
 

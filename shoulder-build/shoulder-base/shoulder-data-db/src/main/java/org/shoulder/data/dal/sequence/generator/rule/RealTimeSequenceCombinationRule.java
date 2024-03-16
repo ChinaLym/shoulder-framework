@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.rule;
+package org.shoulder.data.dal.sequence.generator.rule;
 
 import lombok.Setter;
 import org.shoulder.core.util.StringUtils;

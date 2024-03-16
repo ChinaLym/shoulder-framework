@@ -1,18 +1,17 @@
-package org.shoulder.data.dal.sequence.service.impl;
+package org.shoulder.data.dal.sequence.generator;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.shoulder.data.dal.sequence.DBSelectorIDRouteCondition;
 import org.shoulder.data.dal.sequence.XDataSource;
-import org.shoulder.data.dal.sequence.ZdalSequenceService;
 import org.shoulder.core.log.LoggerFactory;
 
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.data.dal.sequence.model.SequenceRange;
-import org.shoulder.data.dal.sequence.service.DBMeshSequenceSQL;
-import org.shoulder.data.dal.sequence.service.ICombinationSequenceService;
-import org.shoulder.data.dal.sequence.dao.IGenericSequenceDao;
+import org.shoulder.data.dal.sequence.dao.SequenceDao;
 import org.shoulder.data.dal.sequence.exceptions.CombinationSequenceException;
 import org.shoulder.data.dal.sequence.model.SequenceResult;
-import org.shoulder.data.dal.sequence.rule.ISequenceCombinationRule;
+import org.shoulder.data.dal.sequence.generator.rule.ISequenceCombinationRule;
 import org.shoulder.data.dal.sequence.util.ZdalJdbcUtil;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
@@ -27,26 +26,27 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
+ * 序列生成器，生成 x 位序列
+ * 获取数据库当前时间
  *
  * @author lym
  */
-public class CombinationSequenceService<T extends IGenericSequenceDao> implements ICombinationSequenceService {
+public class CombinationSequenceGenerator implements SequenceGenerator {
 
     protected final Logger                                            logger                    = LoggerFactory.getLogger("MONITOR");
     // todo put DEFAULT
     private Map<String, ISequenceCombinationRule>                     sequenceRuleMap;
 
-    private T                                                         sequenceDao;
-
-    private String                                                    combinationSequenceResourceId;
+    @Getter@Setter
+    private SequenceDao                                                         sequenceDao;
 
     private List<Object>                                              defaultShardingParameters = new ArrayList<>(1);
 
-    protected List<String>                                            shardingColumns           = new ArrayList<String>();
+    protected List<String>                                            shardingColumns           = new ArrayList<>();
 
-    private ConcurrentHashMap<String, Map<DBMeshSequenceSQL, String>> realDBMeshSequenceSQL     = new ConcurrentHashMap<String, Map<DBMeshSequenceSQL, String>>();
+    private ConcurrentHashMap<String, Map<DBMeshSequenceSQL, String>> realDBMeshSequenceSQL     = new ConcurrentHashMap<>();
 
-    private ConcurrentHashMap<String, ReentrantLock>                  realDBMeshSequenceSQLLock = new ConcurrentHashMap<String, ReentrantLock>();
+    private ConcurrentHashMap<String, ReentrantLock>                  realDBMeshSequenceSQLLock = new ConcurrentHashMap<>();
 
     public String getRealDBMeshSequenceSQL(DBMeshSequenceSQL sequenceSQL, final String sequenceName) {
         Map<DBMeshSequenceSQL, String> realSQLMap = realDBMeshSequenceSQL.get(sequenceName);
@@ -78,7 +78,7 @@ public class CombinationSequenceService<T extends IGenericSequenceDao> implement
         return realSQLMap.get(sequenceSQL);
     }
 
-    public CombinationSequenceService() {
+    public CombinationSequenceGenerator() {
         defaultShardingParameters.add(new Object());
     }
 
@@ -256,24 +256,13 @@ public class CombinationSequenceService<T extends IGenericSequenceDao> implement
         this.sequenceRuleMap = sequenceRuleMap;
     }
 
-    public T getSequenceDao() {
-        return sequenceDao;
-    }
-
-    @Deprecated
-    public void setSequenceDao(T sequenceDao) {
-        this.sequenceDao = sequenceDao;
-    }
-
     @Override
-
     public SequenceResult prepareSequenceValue(String sequenceName, String ruleName)
                                                                                     throws DataAccessException {
         return prepareSequenceValue(sequenceName, ruleName, defaultShardingParameters);
     }
 
     @Override
-
     public SequenceResult prepareSequenceValue(final String sequenceName, final String ruleName,
                                                final List<Object> shardingParameters)
                                                                                      throws DataAccessException {
@@ -888,14 +877,6 @@ public class CombinationSequenceService<T extends IGenericSequenceDao> implement
 
     public void refreshSequenceStepValue(int drmPushedStepValue) {
         sequenceDao.refreshGlobalStepValue(drmPushedStepValue);
-    }
-
-    public String getCombinationSequenceResourceId() {
-        return combinationSequenceResourceId;
-    }
-
-    public void setCombinationSequenceResourceId(String combinationSequenceResourceId) {
-        this.combinationSequenceResourceId = combinationSequenceResourceId;
     }
 
     @Deprecated

@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.service;
+package org.shoulder.data.dal.sequence.generator;
 
 import org.shoulder.core.util.StringUtils;
 

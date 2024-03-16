@@ -3,10 +3,10 @@ package org.shoulder.data.dal.sequence;
 import lombok.Getter;
 import lombok.Setter;
 import org.shoulder.data.dal.sequence.dao.JdbcSequenceDAO;
-import org.shoulder.data.dal.sequence.service.impl.CombinationSequenceService;
+import org.shoulder.data.dal.sequence.generator.CombinationSequenceGenerator;
 import org.shoulder.data.dal.sequence.dao.DefaultCacheableSequenceDAO;
-import org.shoulder.data.dal.sequence.rule.ISequenceCombinationRule;
-import org.shoulder.data.dal.sequence.rule.RealTimeSequenceCombinationRule;
+import org.shoulder.data.dal.sequence.generator.rule.ISequenceCombinationRule;
+import org.shoulder.data.dal.sequence.generator.rule.RealTimeSequenceCombinationRule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @deprecated just use config
  * @author lym
  */
-public class ZdalSequenceService extends CombinationSequenceService<JdbcSequenceDAO> {
+public class ZdalSequenceGenerator extends CombinationSequenceGenerator<JdbcSequenceDAO> {
 
     private final static String DEFAULT_RULE_KEY = "DEFAULT";
     private final static String DEFAULT_RULE_VALUE = "{length(sequenceValue)=8}";

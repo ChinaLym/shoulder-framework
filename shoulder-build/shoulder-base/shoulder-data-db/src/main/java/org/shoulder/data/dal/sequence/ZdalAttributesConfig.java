@@ -1,7 +1,5 @@
 package org.shoulder.data.dal.sequence;
 
-import com.alipay.zdal.common.util.ZdalConfigUtil;
-import com.alipay.zdal.common.util.ZdalZoneUtil;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
 import org.slf4j.Logger;

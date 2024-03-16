@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author lym
  */
-public interface IGenericSequenceDao {
+public interface SequenceDao {
 
     void initialize() throws Exception;
 

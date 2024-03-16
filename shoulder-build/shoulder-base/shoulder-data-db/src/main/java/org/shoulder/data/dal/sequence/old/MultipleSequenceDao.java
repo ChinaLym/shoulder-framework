@@ -3,7 +3,6 @@ package org.shoulder.data.dal.sequence.old;
 import lombok.Getter;
 import lombok.Setter;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.data.dal.sequence.SequenceRange;
 import org.shoulder.data.dal.sequence.exceptions.SequenceException;
 import org.slf4j.Logger;
 

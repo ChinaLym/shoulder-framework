@@ -1,8 +1,5 @@
 package org.shoulder.data.dal.sequence.old;
 
-import org.shoulder.data.dal.sequence.Sequence;
-import org.shoulder.data.dal.sequence.SequenceDao;
-import org.shoulder.data.dal.sequence.SequenceRange;
 import org.shoulder.data.dal.sequence.exceptions.SequenceException;
 
 import java.util.concurrent.locks.Lock;

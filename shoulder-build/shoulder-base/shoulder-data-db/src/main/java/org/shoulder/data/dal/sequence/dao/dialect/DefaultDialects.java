@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.dialect;
+package org.shoulder.data.dal.sequence.dao.dialect;
 
 import java.util.Optional;
 

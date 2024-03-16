@@ -2,7 +2,7 @@ package org.shoulder.data.dal.sequence.monitor;
 
 import org.shoulder.data.dal.sequence.XDataSource;
 import org.shoulder.data.dal.sequence.ZdalAttributesConfig;
-import org.shoulder.data.dal.sequence.dao.IGenericSequenceDao;
+import org.shoulder.data.dal.sequence.dao.SequenceDao;
 import org.shoulder.data.dal.sequence.dao.SequenceRangeCache;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,8 +17,8 @@ public class SequenceMonitorThreadBuilder {
 
     SequenceRangeCache sequenceRangeCache;
     ConcurrentHashMap<String, Semaphore> sequenceSemaphoreMap;
-    IGenericSequenceDao sequenceDao;
-    ZdalAttributesConfig attributesConfig;
+    SequenceDao sequenceDao;
+    ZdalAttributesConfig attributesConfig = new ZdalAttributesConfig();
 
     String appDataSourceName;
 
@@ -28,7 +28,7 @@ public class SequenceMonitorThreadBuilder {
     public static SequenceMonitorThreadBuilder build(XDataSource zdalDataSource,
                                                      SequenceRangeCache sequenceRangeCache,
                                                      ConcurrentHashMap<String, Semaphore> sequenceSemaphoreMap,
-                                                     IGenericSequenceDao sequenceDao) {
+                                                     SequenceDao sequenceDao) {
         SequenceMonitorThreadBuilder builder = new SequenceMonitorThreadBuilder();
 
         builder.sequenceRangeCache = sequenceRangeCache;
@@ -36,7 +36,7 @@ public class SequenceMonitorThreadBuilder {
         builder.sequenceDao = sequenceDao;
 
         builder.appDataSourceName = "DEFAULT_DATASOURCE_NAME";//zdalDataSource.getAppDataSourceName();
-        builder.attributesConfig = new ZdalAttributesConfig();//zdalDataSource.getZdalDataSourceConfig().getAttributesConfig();
+        //builder.attributesConfig = //zdalDataSource.getZdalDataSourceConfig().getAttributesConfig();
         return builder;
     }
 

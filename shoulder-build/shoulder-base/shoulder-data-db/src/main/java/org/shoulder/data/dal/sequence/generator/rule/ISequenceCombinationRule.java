@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.rule;
+package org.shoulder.data.dal.sequence.generator.rule;
 
 import org.shoulder.data.dal.sequence.model.SequenceRange;
 import org.shoulder.data.dal.sequence.model.SequenceResult;

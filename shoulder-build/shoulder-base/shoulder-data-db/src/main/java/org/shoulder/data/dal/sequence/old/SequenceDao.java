@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence;
+package org.shoulder.data.dal.sequence.old;
 
 import org.shoulder.data.dal.sequence.exceptions.SequenceException;
 
