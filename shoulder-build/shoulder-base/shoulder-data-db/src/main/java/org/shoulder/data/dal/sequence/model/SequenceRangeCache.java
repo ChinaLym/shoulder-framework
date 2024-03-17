@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.dao;
+package org.shoulder.data.dal.sequence.model;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

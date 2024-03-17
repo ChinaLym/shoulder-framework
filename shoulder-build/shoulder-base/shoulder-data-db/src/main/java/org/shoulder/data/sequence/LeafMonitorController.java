@@ -40,6 +40,7 @@ public class LeafMonitorController {
             sv.setKey(buffer.getKey());
             sv.setPos(buffer.getCurrentPos());
             sv.setNextReady(buffer.isNextReady());
+
             sv.setMax0(buffer.getSegments()[0].getMax());
             sv.setValue0(buffer.getSegments()[0].getValue().get());
             sv.setStep0(buffer.getSegments()[0].getStep());

@@ -21,6 +21,23 @@ public class SequenceRefreshRunnable implements Runnable {
 
     private SequenceMonitorThreadBuilder builder;
 
+    /**
+     * Sequence 刷新间隔时间
+     * <p>
+     * 默认 10000 ms
+     */
+    private long sequenceRefreshInterval = 10 * 1000;
+    /**
+     * Sequence 刷新功能是否开启, 默认不开启
+     */
+    private boolean sequenceRefresh = false;
+
+
+    /**
+     * Sequence 刷新阈值，当前 SequenceRange 超过这个阈值会刷新下一个 SequenceRange, 默认 30% 时就刷新下一个 SequenceRange
+     */
+    private double sequenceRefreshThreshold = 0.3;
+
     public SequenceRefreshRunnable(SequenceMonitorThreadBuilder builder) {
         this.builder = builder;
     }
@@ -33,8 +50,8 @@ public class SequenceRefreshRunnable implements Runnable {
 
         for (; ; ) {
             try {
-                Thread.sleep(builder.attributesConfig.getSequenceRefreshInterval());
-                if (!builder.attributesConfig.isSequenceRefresh()) {
+                Thread.sleep(sequenceRefreshInterval);
+                if (!sequenceRefresh) {
                     continue;
                 }
 
@@ -73,7 +90,7 @@ public class SequenceRefreshRunnable implements Runnable {
                             } else {
                                 // 当前使用率 > 刷新next阈值，且 next 不可用，则进行预刷新，减少拿的时候不够了而触发刷新的情况，宁可浪费一定序列也不要在取的时候阻塞
                                 double useRate = (currentSequenceRange.currentValue() - currentSequenceRange.getValue()) * 1.0 / currentSequenceRange.getStep();
-                                boolean checkNext = useRate > builder.attributesConfig.getSequenceRefreshThreshold();
+                                boolean checkNext = useRate > sequenceRefreshThreshold;
                                 if (!checkNext) {
                                     return;
                                 }

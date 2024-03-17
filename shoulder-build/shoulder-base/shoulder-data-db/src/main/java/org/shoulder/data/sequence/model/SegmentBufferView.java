@@ -12,6 +12,7 @@ public class SegmentBufferView {
     private long value1;
     private int step1;
     private long max1;
+
     private int pos;
     private boolean nextReady;
     private boolean initOk;

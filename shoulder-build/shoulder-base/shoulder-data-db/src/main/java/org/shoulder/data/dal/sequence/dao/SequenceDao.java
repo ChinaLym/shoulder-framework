@@ -1,6 +1,5 @@
 package org.shoulder.data.dal.sequence.dao;
 
-import org.shoulder.data.dal.sequence.XDataSource;
 import org.shoulder.data.dal.sequence.model.SequenceRange;
 
 import java.util.List;
@@ -26,11 +25,4 @@ public interface SequenceDao {
      * Monitor：Retry times this DAO try to update sequence until success
      */
     int getMaxRetryTimes();
-
-    /**
-     * Return its depended data source.
-     *
-     * @return
-     */
-    XDataSource getDataSource();
 }

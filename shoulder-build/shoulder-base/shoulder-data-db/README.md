@@ -27,6 +27,39 @@ Mybatis 与 JPA 相比最大的缺点就是简单 SQL 还需要自己写，其�
 * `tkMyBatis`
     ** 优先采用业界已有的，命名与 JPA 贴近，使用方式与 JPA 相近。
 
+## Sequence
+
+基于 DB 的序列生成器，实现参考了美团的 leaf、[滴滴的 tinyId](https://github.com/didi/tinyid) 等同类技术实现。
+
+滴滴 tiny 特点：
+
+功能：有极度轻量的客户端（几乎纯java原生）、token 实现、无监控但有监控的扩展设计，客户端可获取当前运行状态
+
+评价：
+- 模型、逻辑清晰，但需要手动初始化 db （代码中无 insert），
+- 序列步幅长度、min、max、loadThreadhold 等都在数据库中初始化时配置。
+- 滴滴做了很聪明的抉择：但在绝大多数场景下，该设计对于运行时无弊端，反而减少了大量判断逻辑，代码理解更简单可维护性更好。
+- 在绝大多数场景，甚至可以不改代码仅需修改配置直接适用（有基本的鉴权）。
+- 企业大规模适用时，建议自行开发 id 分配器的申请逻辑（insert代码）。
+
+---
+
+
+美团 leaf 特点：
+
+功能：提供获取 sequence 的 HTTP 接口、提供轻量状态监控、双 buffer 缓冲
+
+评价：
+- demo 级别源码，极度轻量，
+
+---
+Shoulder 的 sequence
+
+功能：
+
+评价：
+- 与美团 leaf 类似 TODO
+
 #### 其他工具
 * ideal 的 easycode 插件
 * mybatiscodehelper pro 插件

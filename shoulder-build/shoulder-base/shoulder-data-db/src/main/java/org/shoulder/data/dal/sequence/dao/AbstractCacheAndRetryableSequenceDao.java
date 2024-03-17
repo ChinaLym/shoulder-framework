@@ -4,13 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
-import org.shoulder.data.dal.sequence.XDataSource;
 import org.shoulder.core.log.LoggerFactory;
 
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.data.dal.sequence.dao.dialect.SequenceSqlDialect;
 import org.shoulder.data.dal.sequence.model.SequenceRange;
 import org.shoulder.data.dal.sequence.model.DoubleSequenceRange;
+import org.shoulder.data.dal.sequence.model.SequenceRangeCache;
 import org.shoulder.data.dal.sequence.monitor.SequenceMonitorThreadBuilder;
 import org.shoulder.data.dal.sequence.exceptions.SequenceException;
 import org.slf4j.Logger;
@@ -21,6 +20,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.sql.DataSource;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
@@ -85,7 +85,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
     private ConcurrentHashMap<String, Semaphore> sequenceSemaphoreMap = new ConcurrentHashMap<>();
 
     @Getter
-    protected XDataSource dataSource;
+    protected DataSource dataSource;
 
     private TransactionTemplate transactionTemplate;
 
@@ -127,7 +127,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
     public void initialize() throws Exception {
         this.sequenceRangeCache = new SequenceRangeCache(cacheSize, cacheExpireSeconds);
         if (sequenceMonitorInited.compareAndSet(false, true)) {
-            SequenceMonitorThreadBuilder.build(dataSource, sequenceRangeCache, sequenceSemaphoreMap, this).start();
+            SequenceMonitorThreadBuilder.build(sequenceRangeCache, sequenceSemaphoreMap, this).start();
         }
     }
 
@@ -452,7 +452,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
     }
 
 
-    public synchronized void setDataSource(XDataSource dataSource) {
+    public synchronized void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
         transactionTemplate = new TransactionTemplate(new DataSourceTransactionManager(dataSource));
         // always use new transaction

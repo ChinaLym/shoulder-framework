@@ -21,6 +21,14 @@ public class SequenceLogPrintRunnable implements Runnable {
         this.builder = builder;
     }
 
+    /**
+     * Sequence 日志打印间隔时间
+     *
+     * 默认 30000 ms
+     */
+    private long                                          sequenceLogPrintInterval       = 30 * 1000;
+
+
     @Override
     public void run() {
         if (LOGGER.isInfoEnabled()) {
@@ -29,7 +37,7 @@ public class SequenceLogPrintRunnable implements Runnable {
 
         for (; ; ) {
             try {
-                Thread.sleep(builder.attributesConfig.getSequenceLogPrintInterval());
+                Thread.sleep(sequenceLogPrintInterval);
 
                 for (Map.Entry<String, DoubleSequenceRange> entry : builder.sequenceRangeCache
                     .asMap().entrySet()) {
@@ -51,7 +59,7 @@ public class SequenceLogPrintRunnable implements Runnable {
                     }
                 }
             } catch (Throwable e) {
-                LOGGER.error("ZDAL-Sequence Print value error.", e);
+                LOGGER.error("Fail to log sequence status.", e);
             }
         }
     }

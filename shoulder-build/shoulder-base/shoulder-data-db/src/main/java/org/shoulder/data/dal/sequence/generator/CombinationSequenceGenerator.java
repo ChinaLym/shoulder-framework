@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.shoulder.core.log.LoggerFactory;
 
-import org.shoulder.data.dal.sequence.XDataSource;
 import org.shoulder.data.dal.sequence.model.SequenceRange;
 import org.shoulder.data.dal.sequence.dao.SequenceDao;
 import org.shoulder.data.dal.sequence.exceptions.CombinationSequenceException;
@@ -79,15 +78,5 @@ public class CombinationSequenceGenerator implements SequenceGenerator {
             throw new CombinationSequenceException(msg, e);
         }
     }
-
-
-    // private final static String DEFAULT_RULE_KEY = "DEFAULT";
-    // private final static String DEFAULT_RULE_VALUE = "{length(sequenceValue)=8}";
-    // /**
-    //  * Simple rule configuration
-    //  */
-
-    // private Map<String, String> rules;
-
 
 }
