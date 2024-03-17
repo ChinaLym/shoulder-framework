@@ -1,8 +1,7 @@
 package org.shoulder.data.dal.sequence.dao;
 
-import org.shoulder.data.dal.sequence.dao.dialect.DefaultDialects;
+import org.shoulder.data.dal.sequence.dao.dialect.DefaultSequenceSqlDialectEnum;
 import org.shoulder.data.dal.sequence.dao.dialect.SequenceSqlDialect;
-import org.shoulder.data.dal.sequence.generator.SequenceSQLStatementType;
 import org.shoulder.data.dal.sequence.model.SequenceRange;
 import org.shoulder.data.dal.sequence.exceptions.CombinationSequenceException;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -11,7 +10,6 @@ import java.sql.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 默认的 DAO（JDBC）
@@ -19,15 +17,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author lym
  */
 public class JdbcSequenceDAO extends AbstractCacheAndRetryableSequenceDao {
-
-    /**
-     * DB -> sqlType -> sql
-     */
-    protected Map<String, Map<SequenceSQLStatementType, String>> sequenceSQLStatementMap = new HashMap<>();
     protected Map<String, SequenceSqlDialect> sequenceSqlDialectMap = new HashMap<>();
-    private SequenceSqlDialect sequenceSqlDialect = DefaultDialects.MYSQL;
 
-    private AtomicBoolean INITED = new AtomicBoolean(false);
+    private SequenceSqlDialect sequenceSqlDialect = DefaultSequenceSqlDialectEnum.MYSQL;
 
     /**
      * {@link this#initialize} will invoke this method once
@@ -37,8 +29,8 @@ public class JdbcSequenceDAO extends AbstractCacheAndRetryableSequenceDao {
     @Override
     public void initialize() throws Exception {
         super.initialize();
-        sequenceSqlDialect = DefaultDialects.MYSQL;
-        sequenceSqlDialectMap.put("MYSQL", DefaultDialects.MYSQL);
+        sequenceSqlDialect = DefaultSequenceSqlDialectEnum.MYSQL;
+        sequenceSqlDialectMap.put("MYSQL", DefaultSequenceSqlDialectEnum.MYSQL);
     }
 
     @Override

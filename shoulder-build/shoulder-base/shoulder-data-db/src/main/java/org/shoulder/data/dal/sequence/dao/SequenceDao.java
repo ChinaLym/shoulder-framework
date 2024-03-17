@@ -17,8 +17,7 @@ public interface SequenceDao {
     /**
      * 根据 sequenceName 拿一段 sequence
      */
-    SequenceRange getNextSequence(String sequenceName, List<Object> shardingParameters)
-        throws Exception;
+    SequenceRange getNextSequence(String sequenceName) throws Exception;
 
 
     SequenceRange loadNextSequenceFromDbViaNewTransaction(final String sequenceSourceId, final SequenceRange localSequenceRange);

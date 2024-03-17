@@ -35,7 +35,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDao, InitializingBean {
 
-    public static final String JDBC_PARAMETER_BINDING_SYMBOL = "?";
 
     protected static final Logger logger = LoggerFactory.getLogger("EXECUTION");
 
@@ -136,8 +135,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
      * 先尝试从缓存拿，再从 DB 拿
      */
     @Override
-    public SequenceRange getNextSequence(String sequenceName,
-                                         List<Object> shardingParameters)
+    public SequenceRange getNextSequence(String sequenceName)
         throws Exception {
 
         // sharding

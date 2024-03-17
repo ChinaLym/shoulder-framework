@@ -2,7 +2,12 @@ package org.shoulder.data.dal.sequence.dao.dialect;
 
 import java.util.Optional;
 
-public enum DefaultDialects implements SequenceSqlDialect {
+/**
+ * 默认的 sequence sql 方言
+ *
+ * @author lym
+ */
+public enum DefaultSequenceSqlDialectEnum implements SequenceSqlDialect {
 
 
     MYSQL("MYSQL",
@@ -28,7 +33,7 @@ public enum DefaultDialects implements SequenceSqlDialect {
     private final String seqShardingSql;
     private final String dbType;
 
-    DefaultDialects(String dbType, String insertSql, String selectSql, String updateSql, String systemDateSql, String seqShardingSql) {
+    DefaultSequenceSqlDialectEnum(String dbType, String insertSql, String selectSql, String updateSql, String systemDateSql, String seqShardingSql) {
         this.dbType = dbType;
         this.insertSql = insertSql;
         this.selectSql = selectSql;
