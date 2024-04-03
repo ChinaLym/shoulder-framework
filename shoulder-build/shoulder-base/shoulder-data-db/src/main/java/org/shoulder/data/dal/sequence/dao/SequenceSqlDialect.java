@@ -6,16 +6,17 @@ public interface SequenceSqlDialect {
 
     String PLACEHOLDER_TABLE_NAME = "#TABLE_NAME#";
 
-    String PLACEHOLDER_SHARDING_COLUMNS = "#SHARDING_COLUMNS#";
+    String PLACEHOLDER_DYNAMIC_COLUMNS = "#DYNAMIC_COLUMNS#";
 
-    String PLACEHOLDER_SHARDING_COLUMN_VALUES = "#SHARDING_COLUMN_VALUES#";
+    String PLACEHOLDER_DYNAMIC_COLUMN_VALUES = "#DYNAMIC_COLUMN_VALUES#";
 
     String SQL_PARAMETER_BINDING_CHAR = "?";
 
-    String TEMPLATE_INSERT = "insert into " + PLACEHOLDER_TABLE_NAME + "(name, min_value, max_value, step, value, gmt_create, gmt_modified) values (?, ?, ?, ?, ?, " + PLACEHOLDER_CURRENT_TIME + ", " + PLACEHOLDER_CURRENT_TIME + ")";
-    String TEMPLATE_SELECT = "select name, min_value, max_value, step, value, gmt_modified from " + PLACEHOLDER_TABLE_NAME + " where (name = ?)";
-    String TEMPLATE_UPDATE = "update " + PLACEHOLDER_TABLE_NAME + " set value=?, gmt_modified = #CURRENT_TIME# where name = ? and value = ?";
-    String INSERT_DYNAMIC = "insert into " + PLACEHOLDER_TABLE_NAME + "(" + PLACEHOLDER_SHARDING_COLUMNS + ") values (" + PLACEHOLDER_SHARDING_COLUMN_VALUES + ")";
+    String TEMPLATE_INSERT = "INSERT INTO " + PLACEHOLDER_TABLE_NAME + "(name, min_value, max_value, step, current_value, create_time, update_time) VALUES (?, ?, ?, ?, ?, " + PLACEHOLDER_CURRENT_TIME + ", " + PLACEHOLDER_CURRENT_TIME + ")";
+    String TEMPLATE_SELECT = "SELECT name, min_value, max_value, step, current_value, update_time FROM " + PLACEHOLDER_TABLE_NAME + " WHERE (name = ?)";
+    String TEMPLATE_UPDATE = "UPDATE " + PLACEHOLDER_TABLE_NAME + " SET current_value=?, update_time = #CURRENT_TIME# WHERE name = ? AND current_value = ?";
+    String INSERT_DYNAMIC = "INSERT INTO " + PLACEHOLDER_TABLE_NAME + "(" + PLACEHOLDER_DYNAMIC_COLUMNS + ") VALUES (" + PLACEHOLDER_DYNAMIC_COLUMN_VALUES
+                            + ")";
 
 
     String insert();
@@ -26,7 +27,7 @@ public interface SequenceSqlDialect {
 
     String systemDate();
 
-    default String seqSharding() {
+    default String insertDynamic() {
         return INSERT_DYNAMIC;
     }
 

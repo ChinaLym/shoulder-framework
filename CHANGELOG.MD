@@ -16,13 +16,13 @@
   - fix 修正错误的拼写
 - db
   - 扩展的 bizId、version、逻辑删除等 模板Entity进入可用状态，现在可以继承这些模板类减少bizId 相关DB操作代码的编写了（0.6
-    引入）
+    引入并开始孵化）
 - operation-log
   - detailKey 改为 detailI18nKey，db 中 detail_key 改为 detail_i18n_key
   - detailItems 改为 detailI18nItems，db 中 detail_item 改为 detail_i18n_values
 - web
-  - 模板类进入可用状态（0.6 引入）
-  - 提供开箱即用可扩展的字典、标签能力（0.6 引入），并添加配套支持（HTTP-API、相关工具类、ConversionService、JPA、Mybatis-plus、MongoDb...）
+  - 模板类进入可用状态（0.6 引入并开始孵化）
+  - 提供开箱即用可扩展的字典、标签能力（0.6 引入并开始孵化），并添加配套支持（HTTP-API、相关工具类、ConversionService、JPA、Mybatis-plus、MongoDb...）
   - filter 提供可配置的 traceId、user、tenantId 默认填充过滤器，方便后续使用 AppContext 上下文。
   - 提供 xss 过滤器，保障内容安全
   - 兼容 spring boot spring/security 6.x 新方法
@@ -32,7 +32,7 @@
 - crypto
   - fix spring6 RestTemplate 底层方法不兼容变更bug
 - batch
-  - 批处理模块进入可用状态（0.6 引入）
+  - 批处理模块进入可用状态（0.6 引入并开始孵化）
 ----------
 - Threads 区分IO、cpu
 - IO部分使用 VirtualThread

@@ -30,6 +30,7 @@ org.shoulder.autoconfigure.crypto.AsymmetricCryptoAutoConfiguration
 org.shoulder.autoconfigure.crypto.TransportCryptoAutoConfiguration
 org.shoulder.autoconfigure.crypto.SecurityHttpAutoConfiguration
 org.shoulder.autoconfigure.db.mybatis.MybatisPlusAutoConfiguration
+org.shoulder.autoconfigure.db.sequence.ShoulderSequenceAutoConfiguration
 org.shoulder.autoconfigure.batch.ShoulderBatchAutoConfiguration
 org.shoulder.autoconfigure.operation.OperationLogAspect
 org.shoulder.autoconfigure.operation.OperationLogThreadLocalAutoTransferEnhancerAutoConfiguration

@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.db.mybatis;
+package org.shoulder.autoconfigure.db;
 
 import com.p6spy.engine.spy.P6DataSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

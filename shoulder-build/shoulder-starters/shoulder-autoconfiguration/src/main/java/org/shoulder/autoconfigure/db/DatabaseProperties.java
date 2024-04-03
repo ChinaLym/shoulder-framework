@@ -1,4 +1,4 @@
-package org.shoulder.autoconfigure.db.mybatis;
+package org.shoulder.autoconfigure.db;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import lombok.Data;

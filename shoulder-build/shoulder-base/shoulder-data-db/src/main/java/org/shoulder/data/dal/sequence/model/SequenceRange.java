@@ -24,12 +24,12 @@ public class SequenceRange {//extends SequenceRouteInfo {
     private static final long serialVersionUID = -8033123630197877163L;
 
     public static final String NAME = "name";
-    public static final String VALUE = "value";
+    public static final String VALUE = "current_value";
     public static final String MIN_VALUE = "min_value";
     public static final String MAX_VALUE = "max_value";
     public static final String STEP = "step";
-    public static final String GMT_CREATE = "gmt_create";
-    public static final String GMT_MODIFIED = "gmt_modified";
+    public static final String GMT_CREATE = "create_time";
+    public static final String GMT_MODIFIED = "update_time";
     public static final String PARTION_ID = "partition_id";
 
     private Date systemDate;

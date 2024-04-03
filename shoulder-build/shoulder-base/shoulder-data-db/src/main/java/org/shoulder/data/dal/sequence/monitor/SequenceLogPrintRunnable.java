@@ -39,8 +39,7 @@ public class SequenceLogPrintRunnable implements Runnable {
             try {
                 Thread.sleep(sequenceLogPrintInterval);
 
-                for (Map.Entry<String, DoubleSequenceRange> entry : builder.sequenceRangeCache
-                    .asMap().entrySet()) {
+                for (Map.Entry<String, DoubleSequenceRange> entry : builder.sequenceRangeCache.asMap().entrySet()) {
                     String sequenceId = entry.getKey();
                     SequenceRange current = entry.getValue().getCurrent();
                     if (current == null) {

@@ -27,7 +27,7 @@ public class DoubleBufferCache<T> {
     @Setter
     private volatile int index = 0;
 
-    private T[] buffer = (T[]) ArrayUtils.newInstance(Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(getClass(), DoubleBufferCache.class)).orElseThrow()[1], 2);
+    private T[] buffer = (T[]) ArrayUtils.newInstance(Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(getClass(), DoubleBufferCache.class)).orElseThrow()[0], 2);
 
     /**
      * @return 当前 object

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.*;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
+import org.shoulder.autoconfigure.db.DatabaseProperties;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.guid.LongGuidGenerator;
 import org.shoulder.core.guid.StringGuidGenerator;

@@ -2,7 +2,7 @@ package org.shoulder.data.sequence;
 
 import org.shoulder.data.sequence.model.LeafAlloc;
 import org.shoulder.data.sequence.model.SegmentBuffer;
-import org.shoulder.data.sequence.model.SegmentBufferView;
+import org.shoulder.data.dal.sequence.monitor.SequenceBufferMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +27,18 @@ public class LeafMonitorController {
 
     @RequestMapping(value = "cache")
     public String getCache(Model model) {
-        Map<String, SegmentBufferView> data = new HashMap<>();
+        Map<String, SequenceBufferMetrics> data = new HashMap<>();
         SegmentIDGenImpl segmentIDGen = (SegmentIDGenImpl) idGen;
         if (segmentIDGen == null) {
             throw new IllegalArgumentException("You should config leaf.segment.enable=true first");
         }
         Map<String, SegmentBuffer> cache = segmentIDGen.getCache();
         for (Map.Entry<String, SegmentBuffer> entry : cache.entrySet()) {
-            SegmentBufferView sv = new SegmentBufferView();
+            SequenceBufferMetrics sv = new SequenceBufferMetrics();
             SegmentBuffer buffer = entry.getValue();
-            sv.setInitOk(buffer.isInitOk());
-            sv.setKey(buffer.getKey());
-            sv.setPos(buffer.getCurrentPos());
+            sv.setInitialized(buffer.isInitOk());
+            sv.setSequenceName(buffer.getKey());
+            sv.setPositionId(buffer.getCurrentPos());
             sv.setNextReady(buffer.isNextReady());
 
             sv.setMax0(buffer.getSegments()[0].getMax());

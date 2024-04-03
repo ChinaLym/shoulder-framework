@@ -37,7 +37,7 @@ public class JdbcSequenceDAO extends AbstractCacheAndRetryableSequenceDao {
         PreparedStatement ps = null;
         try {
             conn = DataSourceUtils.getConnection(dataSource);
-            ps = conn.prepareStatement(sequenceSqlDialectMap.get(findDBType(sequenceRange)).insert());
+            ps = conn.prepareStatement(replaceTableName(sequenceSqlDialectMap.get(findDBType(sequenceRange)).insert()));
             ps.setString(1, sequenceRange.getName());
             ps.setLong(2, sequenceRange.getMin());
             ps.setLong(3, sequenceRange.getMax());
@@ -61,7 +61,7 @@ public class JdbcSequenceDAO extends AbstractCacheAndRetryableSequenceDao {
         PreparedStatement ps = null;
         try {
             conn = DataSourceUtils.getConnection(dataSource);
-            ps = conn.prepareStatement(sequenceSqlDialectMap.get(findDBType(sequenceRange)).update());
+            ps = conn.prepareStatement(replaceTableName(sequenceSqlDialectMap.get(findDBType(sequenceRange)).update()));
             ps.setLong(1, sequenceRange.getLatestValue());
             ps.setString(2, sequenceRange.getName());
             ps.setLong(3, sequenceRange.getValue());
@@ -85,7 +85,7 @@ public class JdbcSequenceDAO extends AbstractCacheAndRetryableSequenceDao {
         ResultSet rs = null;
         try {
             conn = DataSourceUtils.getConnection(dataSource);
-            ps = conn.prepareStatement(sequenceSqlDialectMap.get(findDBType(sequenceRange)).select());
+            ps = conn.prepareStatement(replaceTableName(sequenceSqlDialectMap.get(findDBType(sequenceRange)).select()));
             ps.setString(1, localSequenceRange.getName());
             setPartitionIdIfNecessary(ps, 2, localSequenceRange);
             rs = ps.executeQuery();

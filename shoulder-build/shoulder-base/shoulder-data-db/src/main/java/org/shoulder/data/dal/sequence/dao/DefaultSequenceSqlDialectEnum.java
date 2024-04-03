@@ -63,7 +63,7 @@ public enum DefaultSequenceSqlDialectEnum implements SequenceSqlDialect {
     }
 
     @Override
-    public String seqSharding() {
+    public String insertDynamic() {
         return seqShardingSql;
     }
 

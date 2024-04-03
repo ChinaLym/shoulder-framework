@@ -3,30 +3,35 @@ package org.shoulder.data.dal.sequence.dao;
 import lombok.Getter;
 import lombok.Setter;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.log.LoggerFactory;
-
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.data.dal.sequence.model.SequenceRange;
+import org.shoulder.data.dal.sequence.exceptions.SequenceException;
 import org.shoulder.data.dal.sequence.model.DoubleSequenceRange;
+import org.shoulder.data.dal.sequence.model.SequenceRange;
 import org.shoulder.data.dal.sequence.model.SequenceRangeCache;
 import org.shoulder.data.dal.sequence.monitor.SequenceMonitorThreadBuilder;
-import org.shoulder.data.dal.sequence.exceptions.SequenceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.sql.DataSource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.sql.DataSource;
 
 /**
  * 额外增加了 重试、锁、指标记录、双buffer cache
@@ -455,8 +460,9 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
     public synchronized void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
         transactionTemplate = new TransactionTemplate(new DataSourceTransactionManager(dataSource));
-        // always use new transaction
-        transactionTemplate.setPropagationBehaviorName("PROPAGATION_REQUIRES_NEW");
+        // always use new transaction && read_committed to see other transaction's update while query in a loop.
+        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
     }
 
 
@@ -482,7 +488,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
             return templateSql;
         StringJoiner sj = new StringJoiner(",");
         getSequenceShardingColumnNames().forEach(sj::add);
-        return StringUtils.replace(templateSql, SequenceSqlDialect.PLACEHOLDER_SHARDING_COLUMNS, sj.toString());
+        return StringUtils.replace(templateSql, SequenceSqlDialect.PLACEHOLDER_DYNAMIC_COLUMNS, sj.toString());
     }
 
     /**
@@ -500,7 +506,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
             strBuilder.append(SequenceSqlDialect.SQL_PARAMETER_BINDING_CHAR).append(",");
         }
         strBuilder.append(SequenceSqlDialect.SQL_PARAMETER_BINDING_CHAR);
-        return StringUtils.replace(templateSql, SequenceSqlDialect.PLACEHOLDER_SHARDING_COLUMN_VALUES, strBuilder.toString());
+        return StringUtils.replace(templateSql, SequenceSqlDialect.PLACEHOLDER_DYNAMIC_COLUMN_VALUES, strBuilder.toString());
     }
 
     public void setSequenceShardingColumnNames(String sequenceShardingColumnNameStr) {
