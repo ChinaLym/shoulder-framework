@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.exceptions;
+package org.shoulder.data.sequence.exceptions;
 
 /**
  *

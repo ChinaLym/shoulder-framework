@@ -9,6 +9,4 @@
  *    或者 sequenceCache 过期刚好来一波请求【过期时间太长，业务量少，没用完过期了导致清空】
  *    应对方式：启动后加载（调用一次获取） && 设置更短的过期时间，更小的步长 或 定期调用刷新。
  */
-package org.shoulder.data.dal.sequence;
-
-bhn jmk, jn1h
+package org.shoulder.data.sequence;

@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.dao;
+package org.shoulder.data.sequence.dao;
 
 public interface SequenceSqlDialect {
 

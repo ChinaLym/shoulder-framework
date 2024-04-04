@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.dao;
+package org.shoulder.data.sequence.dao;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,11 +6,11 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.data.dal.sequence.exceptions.SequenceException;
-import org.shoulder.data.dal.sequence.model.DoubleSequenceRange;
-import org.shoulder.data.dal.sequence.model.SequenceRange;
-import org.shoulder.data.dal.sequence.model.SequenceRangeCache;
-import org.shoulder.data.dal.sequence.monitor.SequenceMonitorThreadBuilder;
+import org.shoulder.data.sequence.exceptions.SequenceException;
+import org.shoulder.data.sequence.model.DoubleSequenceRange;
+import org.shoulder.data.sequence.model.SequenceRange;
+import org.shoulder.data.sequence.model.SequenceRangeCache;
+import org.shoulder.data.sequence.monitor.SequenceMonitorThreadBuilder;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;

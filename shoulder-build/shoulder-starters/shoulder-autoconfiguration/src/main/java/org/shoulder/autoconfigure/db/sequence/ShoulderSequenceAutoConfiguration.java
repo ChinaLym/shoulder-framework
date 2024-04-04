@@ -5,8 +5,10 @@
 package org.shoulder.autoconfigure.db.sequence;
 
 import org.shoulder.autoconfigure.db.DatabaseProperties;
-import org.shoulder.data.dal.sequence.dao.JdbcSequenceDAO;
-import org.shoulder.data.dal.sequence.dao.SequenceDao;
+import org.shoulder.data.sequence.dao.JdbcSequenceDAO;
+import org.shoulder.data.sequence.dao.SequenceDao;
+import org.shoulder.data.sequence.generator.DefaultSequenceGenerator;
+import org.shoulder.data.sequence.generator.SequenceGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -37,5 +39,11 @@ public class ShoulderSequenceAutoConfiguration {
         sequenceDAO.setDataSource(dataSource);
         sequenceDAO.setSequenceTableName(tableName);
         return sequenceDAO;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(SequenceGenerator.class)
+    public DefaultSequenceGenerator defaultSequenceGenerator(SequenceDao sequenceDao) {
+        return new DefaultSequenceGenerator(sequenceDao);
     }
 }

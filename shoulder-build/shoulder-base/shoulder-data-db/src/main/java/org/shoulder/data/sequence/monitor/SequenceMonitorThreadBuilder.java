@@ -1,7 +1,7 @@
-package org.shoulder.data.dal.sequence.monitor;
+package org.shoulder.data.sequence.monitor;
 
-import org.shoulder.data.dal.sequence.dao.SequenceDao;
-import org.shoulder.data.dal.sequence.model.SequenceRangeCache;
+import org.shoulder.data.sequence.dao.SequenceDao;
+import org.shoulder.data.sequence.model.SequenceRangeCache;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;

@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.model;
+package org.shoulder.data.sequence.model;
 
 import org.shoulder.core.concurrent.DoubleBufferCache;
 

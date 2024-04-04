@@ -4,6 +4,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.dto.response.BaseResult;
+import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ArrayUtils;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,10 +78,10 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
         if (
             // 已经是 shoulder 标准返回
             BaseResult.class.isAssignableFrom(returnClass)
-            // Spring 框架的返回值，这类往往有特殊诉求
-            || ResponseEntity.class.isAssignableFrom(returnClass)
-            // void 类型，无需返回
-            || Void.class.isAssignableFrom(returnClass) || void.class.isAssignableFrom(returnClass)) {
+                // Spring 框架的返回值，这类往往有特殊诉求
+                || ResponseEntity.class.isAssignableFrom(returnClass)
+                // void 类型，无需返回
+                || Void.class.isAssignableFrom(returnClass) || void.class.isAssignableFrom(returnClass)) {
 
             return false;
         }
@@ -121,6 +123,8 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
             if (body == null) {
                 log.debug("body is null");
                 return BaseResult.success();
+            } else if (body instanceof Collection) {
+                return ListResult.of((Collection) body);
             }
             return BaseResult.success().setData(body);
         } else {

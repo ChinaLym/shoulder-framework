@@ -1,7 +1,7 @@
-package org.shoulder.data.dal.sequence.dao;
+package org.shoulder.data.sequence.dao;
 
-import org.shoulder.data.dal.sequence.model.SequenceRange;
-import org.shoulder.data.dal.sequence.exceptions.CombinationSequenceException;
+import org.shoulder.data.sequence.model.SequenceRange;
+import org.shoulder.data.sequence.exceptions.CombinationSequenceException;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import java.sql.*;

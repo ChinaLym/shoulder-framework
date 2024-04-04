@@ -1,8 +1,8 @@
-package org.shoulder.data.dal.sequence.monitor;
+package org.shoulder.data.sequence.monitor;
 
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.data.dal.sequence.model.DoubleSequenceRange;
-import org.shoulder.data.dal.sequence.model.SequenceRange;
+import org.shoulder.data.sequence.model.DoubleSequenceRange;
+import org.shoulder.data.sequence.model.SequenceRange;
 import org.slf4j.Logger;
 
 import java.util.Map;

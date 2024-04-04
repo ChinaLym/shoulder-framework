@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.monitor;
+package org.shoulder.data.sequence.monitor;
 
 import lombok.Data;
 

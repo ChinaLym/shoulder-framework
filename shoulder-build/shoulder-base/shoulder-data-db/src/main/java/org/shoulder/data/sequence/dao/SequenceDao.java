@@ -1,8 +1,6 @@
-package org.shoulder.data.dal.sequence.dao;
+package org.shoulder.data.sequence.dao;
 
-import org.shoulder.data.dal.sequence.model.SequenceRange;
-
-import java.util.List;
+import org.shoulder.data.sequence.model.SequenceRange;
 
 /**
  * sequence DAO 通用方法

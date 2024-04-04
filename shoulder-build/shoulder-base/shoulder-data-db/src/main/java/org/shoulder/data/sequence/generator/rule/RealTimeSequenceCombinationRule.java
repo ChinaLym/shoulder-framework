@@ -1,10 +1,10 @@
-package org.shoulder.data.dal.sequence.generator.rule;
+package org.shoulder.data.sequence.generator.rule;
 
 import lombok.Setter;
 import org.shoulder.core.util.StringUtils;
-import org.shoulder.data.dal.sequence.exceptions.SequenceRuleValidateException;
-import org.shoulder.data.dal.sequence.model.SequenceRange;
-import org.shoulder.data.dal.sequence.model.SequenceResult;
+import org.shoulder.data.sequence.exceptions.SequenceRuleValidateException;
+import org.shoulder.data.sequence.model.SequenceRange;
+import org.shoulder.data.sequence.model.SequenceResult;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.text.SimpleDateFormat;

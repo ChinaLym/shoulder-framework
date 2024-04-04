@@ -1,4 +1,4 @@
-package org.shoulder.data.dal.sequence.model;
+package org.shoulder.data.sequence.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,7 +8,10 @@ import org.shoulder.core.util.AssertUtils;
 
 import java.io.Serial;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 /**
  * 管理和生成组合序列号的范围
@@ -93,6 +96,21 @@ public class SequenceRange {//extends SequenceRouteInfo {
 
     public long genNextValue() {
         return localValue.getAndIncrement();
+    }
+
+    /**
+     * 批量获取：成功返回一批，失败返回null
+     * @param size 获取大小
+     */
+    public List<Long> genNextValues(int size) {
+        long current = localValue.get();
+        if(current + size < max) {
+            boolean success = localValue.compareAndSet(current, current + size);
+            if(success) {
+                return LongStream.range(current, current + size).boxed().collect(Collectors.toList());
+            }
+        }
+        return null;
     }
 
     public long currentValue() {
