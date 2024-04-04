@@ -6,7 +6,6 @@ import org.shoulder.data.dal.sequence.model.DoubleSequenceRange;
 import org.shoulder.data.dal.sequence.model.SequenceRange;
 import org.slf4j.Logger;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
@@ -65,7 +64,7 @@ public class SequenceRefreshRunnable implements Runnable {
                             DoubleSequenceRange sequenceRange = entry.getValue();
                             SequenceRange currentSequenceRange = sequenceRange.getCurrent();
                             if (currentSequenceRange == null) {
-                                // 基本不会发生，可直接等待下次触发刷新
+                                // 没初始化，基本不会发生，可直接等待下次触发刷新
                                 continue;
                             }
 

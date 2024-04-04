@@ -20,18 +20,13 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.StringJoiner;
+import javax.sql.DataSource;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.sql.DataSource;
 
 /**
  * 额外增加了 重试、锁、指标记录、双buffer cache
@@ -140,8 +135,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
      * 先尝试从缓存拿，再从 DB 拿
      */
     @Override
-    public SequenceRange getNextSequence(String sequenceName)
-        throws Exception {
+    public SequenceRange getNextSequence(String sequenceName) throws Exception {
 
         // sharding
         String sequenceSourceId = computeSequenceLockId(sequenceName);
@@ -174,14 +168,14 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
     private SequenceRange refreshNextSequenceRange(DoubleSequenceRange latestSequenceRange,
                                                    String sequenceSourceId,
                                                    Semaphore semaphore) throws Exception {
-        if (!semaphore.tryAcquire(500, TimeUnit.MILLISECONDS)) {
-            String errorMsg = "Sequence Error: Fail to refreshNextSequenceRange(try lock TimeOut): " + latestSequenceRange;
-            monitorLogger.error(errorMsg);
-
-            // 先返回当前的，可能已经刷新好了
-            return latestSequenceRange.getCurrent();
-        }
         try {
+            if (!semaphore.tryAcquire(500, TimeUnit.MILLISECONDS)) {
+                String errorMsg = "Sequence Error: Fail to refreshNextSequenceRange(try lock TimeOut): " + latestSequenceRange;
+                monitorLogger.error(errorMsg);
+
+                // 先返回当前的，可能已经刷新好了
+                return latestSequenceRange.getCurrent();
+            }
             latestSequenceRange = sequenceRangeCache.get(sequenceSourceId);
             if (latestSequenceRange != null && latestSequenceRange.getCurrent() != null && !latestSequenceRange.getCurrent().needRefresh()) {
                 // 当前缓存未耗尽（其他线程加载好了），仍然可用
@@ -221,12 +215,12 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
                                                               DoubleSequenceRange latestSequenceRange,
                                                               String sequenceSourceId,
                                                               Semaphore semaphore) throws Exception {
-        if (!semaphore.tryAcquire(500, TimeUnit.MILLISECONDS)) {
-            String errorMsg = "Sequence Error: Fail to initializeSequenceRange(try lock TimeOut): " + sequenceName;
-            monitorLogger.error(errorMsg);
-            throw new SequenceException(errorMsg);
-        }
         try {
+            if (!semaphore.tryAcquire(500, TimeUnit.MILLISECONDS)) {
+                String errorMsg = "Sequence Error: Fail to initializeSequenceRange(try lock TimeOut): " + sequenceName;
+                monitorLogger.error(errorMsg);
+                throw new SequenceException(errorMsg);
+            }
             latestSequenceRange = sequenceRangeCache.get(sequenceSourceId);
             boolean alreadyInit = latestSequenceRange != null && latestSequenceRange.getCurrent() != null;
             if (alreadyInit) {

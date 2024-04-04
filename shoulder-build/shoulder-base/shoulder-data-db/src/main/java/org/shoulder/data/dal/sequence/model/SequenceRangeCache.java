@@ -2,7 +2,6 @@ package org.shoulder.data.dal.sequence.model;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.shoulder.data.dal.sequence.model.DoubleSequenceRange;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -24,7 +23,7 @@ public class SequenceRangeCache {
     /**
      * 默认缓存过期时间-每次启动/每个进程过期时间随机
      */
-    public static final long DEFAULT_CACHE_EXPIRE_SECONDS = 24 * 60 * 60 + ThreadLocalRandom.current().nextInt(3600);
+    public static final long DEFAULT_CACHE_EXPIRE_SECONDS = 24 * 60 * 60 + 2 * ThreadLocalRandom.current().nextInt(3600);
 
     /**
      * 缓存
