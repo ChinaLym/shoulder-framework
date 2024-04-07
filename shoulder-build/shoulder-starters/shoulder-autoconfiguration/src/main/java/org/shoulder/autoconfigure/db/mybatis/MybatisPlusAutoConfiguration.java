@@ -9,8 +9,6 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
 import org.shoulder.autoconfigure.db.DatabaseProperties;
 import org.shoulder.core.context.AppContext;
-import org.shoulder.core.guid.LongGuidGenerator;
-import org.shoulder.core.guid.StringGuidGenerator;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.data.mybatis.config.handler.ModelMetaObjectHandler;
@@ -19,16 +17,12 @@ import org.shoulder.data.mybatis.interceptor.WriteProhibitedInterceptor;
 import org.shoulder.data.mybatis.interceptor.typehandler.FullLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.LeftLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.RightLikeTypeHandler;
-import org.shoulder.data.sequence.SequenceGenerator;
-import org.shoulder.data.uid.*;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 
 import java.util.List;
@@ -182,46 +176,6 @@ public class MybatisPlusAutoConfiguration {
         ModelMetaObjectHandler metaObjectHandler = new ModelMetaObjectHandler();
         log.info("ModelMetaObjectHandler [{}]", metaObjectHandler);
         return metaObjectHandler;
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public EntityIdGenerator uidGenerator(LongGuidGenerator longGuidGenerator,
-                                          StringGuidGenerator stringGuidGenerator) {
-        // 没 bean 可注入会提前报错，避免 NPE
-        return new DefaultEntityIdGenerator(longGuidGenerator, stringGuidGenerator);
-    }
-
-    /**
-     * 根据 @BizIdSource 注解拼装
-     */
-    @Bean
-    @Order(value = -1000)
-    public ConditionalBizIdGenerator bizIdGenerator() {
-        return new KeyFieldsBizIdGenerator("#$#");
-    }
-
-    /**
-     * 序列生成
-     */
-    @Bean
-    @Order(value = 0)
-    @ConditionalOnBean(SequenceGenerator.class)
-    @ConditionalOnProperty(name = "shoulder.db.generate-biz-id-by-sequence.", havingValue = "true", matchIfMissing = true)
-    public ConditionalBizIdGenerator sequenceBizIdGenerator(SequenceGenerator sequenceGenerator) {
-        return new SequenceBizIdGenerator(sequenceGenerator);
-    }
-
-    @Bean
-    @Order(value = Integer.MAX_VALUE)
-    public ConditionalBizIdGenerator reuseIdBizIdGenerator() {
-        return new ReuseIdBizIdGenerator();
-    }
-
-    @Bean
-    @Primary
-    public CompositeBizIdGenerator compositeBizIdGenerator(List<ConditionalBizIdGenerator> bizIdGeneratorList) {
-        return new CompositeBizIdGenerator(bizIdGeneratorList);
     }
 
     /**

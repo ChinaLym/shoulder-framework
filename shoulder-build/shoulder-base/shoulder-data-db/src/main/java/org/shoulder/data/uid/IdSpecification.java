@@ -329,7 +329,7 @@ public interface IdSpecification {
     static String getCurrentRegionCode() {
         // todo
         //return AppInfo.xxx;
-        return null;
+        return "000";
     }
 
     static void validateRegionCode(String regionCode) {
