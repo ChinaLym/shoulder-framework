@@ -197,7 +197,6 @@ public class MybatisPlusAutoConfiguration {
      */
     @Bean
     @Order(value = -1000)
-    @ConditionalOnMissingBean(ConditionalBizIdGenerator.class)
     public ConditionalBizIdGenerator bizIdGenerator() {
         return new KeyFieldsBizIdGenerator("#$#");
     }
@@ -208,7 +207,6 @@ public class MybatisPlusAutoConfiguration {
     @Bean
     @Order(value = 0)
     @ConditionalOnBean(SequenceGenerator.class)
-    @ConditionalOnMissingBean(ConditionalBizIdGenerator.class)
     @ConditionalOnProperty(name = "shoulder.db.generate-biz-id-by-sequence.", havingValue = "true", matchIfMissing = true)
     public ConditionalBizIdGenerator sequenceBizIdGenerator(SequenceGenerator sequenceGenerator) {
         return new SequenceBizIdGenerator(sequenceGenerator);
@@ -216,7 +214,6 @@ public class MybatisPlusAutoConfiguration {
 
     @Bean
     @Order(value = Integer.MAX_VALUE)
-    @ConditionalOnMissingBean(ConditionalBizIdGenerator.class)
     public ConditionalBizIdGenerator reuseIdBizIdGenerator() {
         return new ReuseIdBizIdGenerator();
     }
