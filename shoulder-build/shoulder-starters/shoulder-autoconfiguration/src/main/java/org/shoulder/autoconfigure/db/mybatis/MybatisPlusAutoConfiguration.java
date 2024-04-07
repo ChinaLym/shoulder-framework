@@ -19,8 +19,10 @@ import org.shoulder.data.mybatis.interceptor.WriteProhibitedInterceptor;
 import org.shoulder.data.mybatis.interceptor.typehandler.FullLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.LeftLikeTypeHandler;
 import org.shoulder.data.mybatis.interceptor.typehandler.RightLikeTypeHandler;
+import org.shoulder.data.sequence.SequenceGenerator;
 import org.shoulder.data.uid.*;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -190,10 +192,32 @@ public class MybatisPlusAutoConfiguration {
         return new DefaultEntityIdGenerator(longGuidGenerator, stringGuidGenerator);
     }
 
+    /**
+     * 根据 @BizIdSource 注解拼装
+     */
     @Bean
+    @Order(value = -1000)
     @ConditionalOnMissingBean(ConditionalBizIdGenerator.class)
     public ConditionalBizIdGenerator bizIdGenerator() {
-        return new KeyFieldsBizIdGenerator();
+        return new KeyFieldsBizIdGenerator("#$#");
+    }
+
+    /**
+     * 序列生成
+     */
+    @Bean
+    @Order(value = 0)
+    @ConditionalOnBean(SequenceGenerator.class)
+    @ConditionalOnMissingBean(ConditionalBizIdGenerator.class)
+    public ConditionalBizIdGenerator sequenceBizIdGenerator(SequenceGenerator sequenceGenerator) {
+        return new SequenceBizIdGenerator(sequenceGenerator);
+    }
+
+    @Bean
+    @Order(value = Integer.MAX_VALUE)
+    @ConditionalOnMissingBean(ConditionalBizIdGenerator.class)
+    public ConditionalBizIdGenerator reuseIdBizIdGenerator() {
+        return new ReuseIdBizIdGenerator();
     }
 
     @Bean

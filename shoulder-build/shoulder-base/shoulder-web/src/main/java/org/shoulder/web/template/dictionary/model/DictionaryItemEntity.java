@@ -40,7 +40,7 @@ public class DictionaryItemEntity
      * 字典类型 / 业务类型，关联到 {@link DictionaryTypeEntity#getCode()}
      */
     @TableField("dictionary_type")
-    @BizIdSource
+    // @BizIdSource
     protected String dictionaryType;
 
     /**
@@ -49,7 +49,7 @@ public class DictionaryItemEntity
     @NotEmpty(message = "name can't be null")
     @Length(max = 255, message = "name length must less than 255")
     @TableField(value = DataBaseConsts.COLUMN_LABEL, condition = SqlCondition.LIKE)
-    @BizIdSource
+    // @BizIdSource
     protected String name;
 
     /**

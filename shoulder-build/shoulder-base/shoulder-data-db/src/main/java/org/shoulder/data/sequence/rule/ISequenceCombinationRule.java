@@ -1,4 +1,4 @@
-package org.shoulder.data.sequence.generator.rule;
+package org.shoulder.data.sequence.rule;
 
 import org.shoulder.data.sequence.model.SequenceRange;
 import org.shoulder.data.sequence.model.SequenceResult;
@@ -7,6 +7,8 @@ import org.shoulder.data.sequence.exceptions.SequenceRuleValidateException;
 import java.util.Date;
 
 /**
+ *
+ * @deprecated 暂未适用，后续开放
  * @author lym
  */
 public interface ISequenceCombinationRule {

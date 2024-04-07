@@ -1,4 +1,4 @@
-package org.shoulder.data.sequence.generator;
+package org.shoulder.data.sequence;
 
 import lombok.Getter;
 import lombok.Setter;

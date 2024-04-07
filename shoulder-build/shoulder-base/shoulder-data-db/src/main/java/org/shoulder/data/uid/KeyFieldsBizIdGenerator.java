@@ -32,10 +32,6 @@ public class KeyFieldsBizIdGenerator implements ConditionalBizIdGenerator {
         this.fieldValueSplit = fieldValueSplit;
     }
 
-    public KeyFieldsBizIdGenerator() {
-        this.fieldValueSplit = "#$#";
-    }
-
     @Override
     public String generateBizId(BizEntity entity, Class<? extends BizEntity> entityClass) {
         if (!support(entity, entityClass)) {

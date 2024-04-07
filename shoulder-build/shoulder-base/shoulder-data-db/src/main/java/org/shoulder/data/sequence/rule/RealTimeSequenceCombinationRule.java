@@ -1,4 +1,4 @@
-package org.shoulder.data.sequence.generator.rule;
+package org.shoulder.data.sequence.rule;
 
 import lombok.Setter;
 import org.shoulder.core.util.StringUtils;
@@ -14,6 +14,7 @@ import java.util.Date;
  * Example:
  * combination rule: {length(systemDate)=8}{length(dbId)=3}{length(tableId)=3}{length(sequenceValue)=8}
  * @author lym
+ * @deprecated 暂未适用，后续开放
  *
  */
 public class RealTimeSequenceCombinationRule implements ISequenceCombinationRule, InitializingBean {
