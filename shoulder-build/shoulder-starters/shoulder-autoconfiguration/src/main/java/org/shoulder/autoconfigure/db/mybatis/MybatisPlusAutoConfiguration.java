@@ -209,6 +209,7 @@ public class MybatisPlusAutoConfiguration {
     @Order(value = 0)
     @ConditionalOnBean(SequenceGenerator.class)
     @ConditionalOnMissingBean(ConditionalBizIdGenerator.class)
+    @ConditionalOnProperty(name = "shoulder.db.generate-biz-id-by-sequence.", havingValue = "true", matchIfMissing = true)
     public ConditionalBizIdGenerator sequenceBizIdGenerator(SequenceGenerator sequenceGenerator) {
         return new SequenceBizIdGenerator(sequenceGenerator);
     }

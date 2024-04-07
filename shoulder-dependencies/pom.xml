@@ -606,12 +606,12 @@
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
             </dependency>
-<!--            <dependency>-->
-<!--                &lt;!&ndash; mock redis https://github.com/kstyrc/embedded-redis/network/members &ndash;&gt;-->
-<!--                <groupId>com.github.kstyrc</groupId>-->
-<!--                <artifactId>embedded-redis</artifactId>-->
-<!--                <version>0.6</version>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                &lt;!&ndash; mock redis https://github.com/kstyrc/embedded-redis/network/members &ndash;&gt;-->
+            <!--                <groupId>com.github.kstyrc</groupId>-->
+            <!--                <artifactId>embedded-redis</artifactId>-->
+            <!--                <version>0.6</version>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>com.github.codemonstur</groupId>
                 <artifactId>embedded-redis</artifactId>

@@ -19,7 +19,7 @@ public class SequenceBizIdGenerator implements ConditionalBizIdGenerator {
     }
 
     @Override public boolean support(BizEntity entity, Class<? extends BizEntity> entityClass) {
-        return false;
+        return true;
     }
 
     @Override
