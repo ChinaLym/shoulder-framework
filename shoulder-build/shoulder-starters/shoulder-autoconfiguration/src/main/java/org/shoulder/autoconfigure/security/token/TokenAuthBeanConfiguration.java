@@ -6,7 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import jakarta.annotation.Nullable;
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationHandlerConfig;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
@@ -27,12 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
+import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -42,12 +37,11 @@ import org.springframework.security.oauth2.server.resource.authentication.Opaque
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import javax.sql.DataSource;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.sql.DataSource;
 
 /**
  * token 认证模式时 bean 配置：几个默认处理器
@@ -113,7 +107,7 @@ public class TokenAuthBeanConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public SimpleTokenIntrospector simpleTokenIntrospector(ResourceServerTokenServices tokenServices, ClientDetailsService clientDetailsService) {
-        LoggerFactory.getLogger(getClass()).warn("use SimpleTokenIntrospector, recommend inject a customized OpaqueTokenIntrospector");
+        ShoulderLoggers.SHOULDER_CONFIG.warn("use SimpleTokenIntrospector, recommend inject a customized OpaqueTokenIntrospector");
         return new SimpleTokenIntrospector(tokenServices, clientDetailsService);
     }
 

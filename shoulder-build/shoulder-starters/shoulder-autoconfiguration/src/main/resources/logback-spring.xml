@@ -74,7 +74,7 @@
             </encoder>
         </appender>
 
-        <logger name="OPERATION_LOGGER" level="INFO" additivity="false">
+        <logger name="SHOULDER_OPERATION" level="INFO" additivity="false">
             <appender-ref ref="OP_APPENDER"/>
         </logger>
 

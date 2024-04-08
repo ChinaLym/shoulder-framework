@@ -12,7 +12,7 @@ import org.shoulder.code.store.ValidateCodeStore;
 import org.shoulder.code.store.impl.MemoryValidateCodeRepository;
 import org.shoulder.code.store.impl.RedisValidateCodeRepository;
 import org.shoulder.code.store.impl.SessionValidateCodeRepository;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.security.authentication.AuthenticationType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -105,7 +105,7 @@ public class ValidateCodeBeanConfig {
         @Bean
         @ConditionalOnMissingBean(value = ValidateCodeStore.class)
         public ValidateCodeStore memoryValidateCodeRepository() {
-            LoggerFactory.getLogger(getClass()).warn("MemoryValidateCodeRepository is a ValidateCodeStore just for test, not a production level implement.");
+            ShoulderLoggers.SHOULDER_CONFIG.warn("MemoryValidateCodeRepository is a ValidateCodeStore just for test, not a production level implement.");
             return new MemoryValidateCodeRepository();
         }
     }

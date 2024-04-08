@@ -11,7 +11,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.annotation.OperationLogParam;
@@ -52,7 +52,7 @@ import java.util.*;
 @ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLogAspect {
 
-    private final static Logger log = LoggerFactory.getLogger(OperationLogAspect.class);
+    private final static Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
     /**
      * 保存操作日志上次的上下文

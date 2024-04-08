@@ -7,7 +7,7 @@ import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.guid.FixedInstanceIdProvider;
 import org.shoulder.core.guid.InstanceIdProvider;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -30,7 +30,7 @@ import java.util.Objects;
 @EnableConfigurationProperties(InstanceIdProperties.class)
 public class InstanceIdProviderAutoConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(InstanceIdProviderAutoConfiguration.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
     /**
      * 配置

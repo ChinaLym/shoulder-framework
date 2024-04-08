@@ -74,7 +74,7 @@
 //
 //    public BrowserSecurityConfiguration() {
 //        // 提示使用了默认的，一般都是自定义
-//        Logger log = LoggerFactory.getLogger(getClass());
+//        Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 //        log.warn("use default BrowserSecurityConfiguration, csrf protect was closed.");
 //    }
 //

@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.core;
 
 import jakarta.annotation.Nonnull;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.ContextUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -31,7 +31,7 @@ public class ContextUtilsAutoConfiguration implements BeanFactoryAware, BeanFact
         try {
             ContextUtils.setBeanFactory((ConfigurableListableBeanFactory) beanFactory);
         } catch (ClassCastException e) {
-            LoggerFactory.getLogger(getClass()).debug("SpringUtils.setBeanFactory fail when BeanFactoryAware.", e);
+            ShoulderLoggers.SHOULDER_CONFIG.debug("SpringUtils.setBeanFactory fail when BeanFactoryAware.", e);
         }
     }
 

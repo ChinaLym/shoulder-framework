@@ -3,7 +3,7 @@ package org.shoulder.autoconfigure.security.token;
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.code.ValidateCodeSecurityConfig;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.FormAuthenticationSecurityConfig;
@@ -70,7 +70,7 @@ public class TokenSecurityConfiguration {
 
     public TokenSecurityConfiguration() {
         // 提示使用了默认的，一般都是自定义
-        Logger log = LoggerFactory.getLogger(getClass());
+        Logger log = ShoulderLoggers.SHOULDER_CONFIG;
         log.warn("use default TokenSecurityConfiguration, csrf protect was closed.");
     }
 

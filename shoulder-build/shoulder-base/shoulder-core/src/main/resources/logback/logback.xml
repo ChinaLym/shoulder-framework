@@ -182,7 +182,27 @@
             <charset>${LOG_ENCODE}</charset>
         </encoder>
     </appender>
-
+    <appender name="SHOULDER-CONFIG-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LOG_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/config.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/config.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
     <!--  logback loggers -->
 
     <logger name="SHOULDER-DEFAULT" level="${LOG_LEVEL}" additivity="false">
@@ -198,6 +218,10 @@
     </logger>
     <logger name="SHOULDER-CONVERT" level="${LOG_LEVEL}" additivity="false">
         <appender-ref ref="SHOULDER-CONVERT-APPENDER"/>
+        <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+    </logger>
+    <logger name="SHOULDER-CONFIG" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="SHOULDER-CONFIG-APPENDER"/>
         <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
     </logger>
     <logger name="RPC-CLIENT" level="${LOG_LEVEL}" additivity="false">
@@ -219,6 +243,7 @@
 
     <root level="${LOG_LEVEL}">
         <appender-ref ref="SHOULDER-DEFAULT-APPENDER"/>
+        <appender-ref ref="SHOULDER-CONFIG-APPENDER"/>
         <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
     </root>
 

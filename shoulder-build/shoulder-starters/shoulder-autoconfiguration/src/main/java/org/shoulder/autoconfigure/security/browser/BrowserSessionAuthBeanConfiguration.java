@@ -2,13 +2,13 @@ package org.shoulder.autoconfigure.security.browser;
 
 import org.shoulder.autoconfigure.condition.ConditionalOnAuthType;
 import org.shoulder.autoconfigure.security.AuthenticationBeanConfig;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.AuthenticationType;
 import org.shoulder.security.authentication.BeforeAuthEndpoint;
 import org.shoulder.security.authentication.browser.ConcurrentLogInExpiredSessionStrategy;
 import org.shoulder.security.authentication.browser.DefaultInvalidSessionStrategy;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -37,7 +37,7 @@ import javax.sql.DataSource;
 @ConditionalOnAuthType(type = AuthenticationType.SESSION)
 public class BrowserSessionAuthBeanConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(BrowserSessionAuthBeanConfiguration.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
     private final BrowserSessionAuthProperties browserSessionAuthProperties;
 

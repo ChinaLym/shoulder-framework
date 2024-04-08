@@ -1,12 +1,12 @@
 package org.shoulder.autoconfigure.web;
 
-import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.util.AssertUtils;
-import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.dictionary.model.DictionaryItemEnum;
 import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.ShoulderLoggers;
+import org.shoulder.core.util.AssertUtils;
+import org.shoulder.core.util.ContextUtils;
 
 import java.util.Collection;
 import java.util.Set;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class PackageScanDictionaryEnumRepositoryRegister implements DictionaryEnumRepositoryCustomizer {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = ShoulderLoggers.SHOULDER_CONFIG;
 
     private final Set<String> toScanPackages;
 

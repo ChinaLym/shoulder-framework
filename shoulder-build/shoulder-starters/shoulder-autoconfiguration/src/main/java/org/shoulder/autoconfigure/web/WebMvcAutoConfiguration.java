@@ -35,7 +35,7 @@ public class WebMvcAutoConfiguration {
     //    Format format = mvcProperties.getFormat();
     //    boolean matchSpringConfig = AppInfo.dateTimeFormat().equals(format.getDateTime());
     //    if(!matchSpringConfig) {
-    //        LoggerFactory.getLogger(WebMvcAutoConfiguration.class)
+    //        ShoulderLoggers.SHOULDER_CONFIG;
     //            .warn("Configuration inconsistent detected: spring.mvc.format.datetime, not match "
     //                  + BaseAppProperties.dateTimeFormatConfigPath
     //                  + ", use spring config first! please keep the configuration consistent.");

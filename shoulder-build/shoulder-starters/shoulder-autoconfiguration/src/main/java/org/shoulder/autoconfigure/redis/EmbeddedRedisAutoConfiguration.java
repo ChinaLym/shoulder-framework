@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.redis;
 
 import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -41,7 +41,7 @@ public class EmbeddedRedisAutoConfiguration {
             return redisServer;
         } catch (Exception e) {
             // 用 mock 肯定时本地/单侧，启动失败打印异常
-            LoggerFactory.getLogger(getClass())
+            ShoulderLoggers.SHOULDER_CONFIG;
                     .error(CommonErrorCodeEnum.UNKNOWN, e);
             // 考虑到可能本机已经启动一个 redis 导致启动失败，故这里失败不阻塞应用启动
             return null;

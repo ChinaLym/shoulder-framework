@@ -2,6 +2,7 @@ package org.shoulder.autoconfigure.operation;
 
 import jakarta.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.format.impl.ShoulderOpLogFormatter;
@@ -13,7 +14,6 @@ import org.shoulder.log.operation.logger.impl.JdbcOperationLogger;
 import org.shoulder.log.operation.logger.impl.LogOperationLogger;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -45,7 +45,7 @@ import java.util.concurrent.*;
 @ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLoggerAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
 
-    private static final Logger log = LoggerFactory.getLogger(OperationLoggerAutoConfiguration.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
     private final OperationLogProperties operationLogProperties;
 

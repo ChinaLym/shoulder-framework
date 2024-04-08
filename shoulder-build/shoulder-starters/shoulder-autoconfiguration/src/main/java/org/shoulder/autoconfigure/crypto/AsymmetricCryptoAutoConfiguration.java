@@ -4,7 +4,7 @@ import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.cluster.redis.annotation.AppExclusive;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.asymmetric.AsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
@@ -101,7 +101,7 @@ public class AsymmetricCryptoAutoConfiguration {
             }
             KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate);
             keyPairCache.put(cryptoProperties.getKeyPair());
-            LoggerFactory.getLogger(getClass()).debug("redisKeyPairCache provide RedisKeyPairCache.");
+            ShoulderLoggers.SHOULDER_CONFIG.debug("redisKeyPairCache provide RedisKeyPairCache.");
 
             return new CryptoDelegateKeyPairCache(keyPairCache, localTextCipher);
         }

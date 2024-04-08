@@ -3,8 +3,8 @@ package org.shoulder.autoconfigure.core.current.enhancer;
 import jakarta.annotation.Nonnull;
 import org.aopalliance.aop.Advice;
 import org.shoulder.core.concurrent.enhance.*;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopConfigException;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.BeansException;
@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  */
 public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
 
-    private static final Logger log = LoggerFactory.getLogger(EnhanceableExecutorBeanPostProcessor.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
     @Override
     public Object postProcessBeforeInitialization(@Nonnull Object bean, String beanName)

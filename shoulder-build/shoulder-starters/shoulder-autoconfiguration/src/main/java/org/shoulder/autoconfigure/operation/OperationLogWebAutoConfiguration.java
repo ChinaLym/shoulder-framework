@@ -1,9 +1,9 @@
 package org.shoulder.autoconfigure.operation;
 
 import jakarta.annotation.Nonnull;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -28,7 +28,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConditionalOnProperty(value = "shoulder.log.operation.enable", havingValue = "true", matchIfMissing = true)
 public class OperationLogWebAutoConfiguration implements WebMvcConfigurer {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
     @Autowired
     private OperationLogProperties operationLogProperties;

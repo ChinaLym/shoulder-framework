@@ -13,6 +13,8 @@ public interface ShoulderLoggers {
 
     Logger SHOULDER_THREADS = LoggerFactory.getLogger("SHOULDER-THREADS");
 
+    Logger SHOULDER_CONFIG = LoggerFactory.getLogger("SHOULDER-CONFIG");
+
     Logger SHOULDER_CONVERT = LoggerFactory.getLogger("SHOULDER-CONVERT");
 
     Logger RPC_CLIENT = LoggerFactory.getLogger("RPC-CLIENT");

@@ -10,7 +10,7 @@ import net.sf.jsqlparser.expression.StringValue;
 import org.shoulder.autoconfigure.db.DatabaseProperties;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.data.mybatis.config.handler.ModelMetaObjectHandler;
 import org.shoulder.data.mybatis.injector.ShoulderSqlInjector;
 import org.shoulder.data.mybatis.interceptor.WriteProhibitedInterceptor;
@@ -40,7 +40,7 @@ public class MybatisPlusAutoConfiguration {
 
     protected final DatabaseProperties databaseProperties;
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
     public MybatisPlusAutoConfiguration(DatabaseProperties databaseProperties) {
         this.databaseProperties = databaseProperties;

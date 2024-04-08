@@ -35,7 +35,7 @@
         <appender-ref ref="SHOULDER-OPERATION-APPENDER"/>
     </logger>
     <root level="${LOG_LEVEL}">
-        <appender-ref ref="SHOULDER-BATCH-APPENDER"/>
+        <appender-ref ref="SHOULDER-OPERATION-APPENDER"/>
     </root>
 
 </configuration>

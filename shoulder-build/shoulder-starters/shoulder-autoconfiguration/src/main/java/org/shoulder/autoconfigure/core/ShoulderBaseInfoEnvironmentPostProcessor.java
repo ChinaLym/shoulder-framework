@@ -1,7 +1,7 @@
 package org.shoulder.autoconfigure.core;
 
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
@@ -45,7 +45,7 @@ public class ShoulderBaseInfoEnvironmentPostProcessor implements EnvironmentPost
      * @param environment 环境与配置
      */
     private void initApplicationInfo(ConfigurableEnvironment environment) {
-        Logger log = LoggerFactory.getLogger(getClass());
+        Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
         Properties shoulderProperties = new Properties();
 

@@ -4,7 +4,7 @@ import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.autoconfigure.http.HttpAutoConfiguration;
 import org.shoulder.autoconfigure.redis.RedisAutoConfiguration;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.negotiation.algorithm.DelegateNegotiationAsymmetricCipher;
 import org.shoulder.crypto.negotiation.cache.LocalNegotiationResultCache;
@@ -38,7 +38,7 @@ import org.springframework.web.client.RestTemplate;
 @ConditionalOnProperty(value = "shoulder.crypto.transport.enable", havingValue = "true", matchIfMissing = true)
 public class TransportCryptoAutoConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(TransportCryptoAutoConfiguration.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
     public TransportCryptoAutoConfiguration() {
         // just for debug

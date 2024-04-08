@@ -2,9 +2,9 @@ package org.shoulder.autoconfigure.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.JsonUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 @ConditionalOnClass(ObjectMapper.class)
 public class JacksonObjectMapperPostProcessor implements BeanPostProcessor {
 
-    private static final Logger log = LoggerFactory.getLogger(JacksonObjectMapperPostProcessor.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
     public JacksonObjectMapperPostProcessor() {
         // just for debug

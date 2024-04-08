@@ -70,7 +70,7 @@ package org.shoulder.autoconfigure.security.token;//package org.shoulder.autocon
 //
 //    public TokenSecurityConfiguration() {
 //        // 提示使用了默认的，一般都是自定义
-//        Logger log = LoggerFactory.getLogger(getClass());
+//        Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 //        log.warn("use default TokenSecurityConfiguration, csrf protect was closed.");
 //    }
 //
