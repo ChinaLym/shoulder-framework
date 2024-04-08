@@ -9,12 +9,12 @@ import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
 import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
+import org.shoulder.crypto.log.ShoulderCryptoLoggers;
 import org.shoulder.crypto.symmetric.SymmetricAlgorithmEnum;
 import org.shoulder.crypto.symmetric.SymmetricCipher;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.nio.charset.Charset;
@@ -54,7 +54,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
      * 长度为6的加密标记，与加密版本挂钩，该字段的存在支持升级版本。AES256 2^8
      */
     public static final String ALGORITHM_HEADER = "${a8} ";
-    private final static Logger log = LoggerFactory.getLogger(DefaultLocalTextCipher.class);
+    private final static Logger log = ShoulderCryptoLoggers.DEFAULT;
     private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
 
     /**

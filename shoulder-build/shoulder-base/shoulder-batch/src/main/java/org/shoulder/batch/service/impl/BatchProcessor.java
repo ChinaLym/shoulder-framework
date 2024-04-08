@@ -5,13 +5,13 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
+import org.shoulder.batch.log.ShoulderBatchLoggers;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.spi.BatchTaskSliceHandler;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ContextUtils;
 
 import java.util.*;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class BatchProcessor implements Runnable {
 
-    private final static Logger log = LoggerFactory.getLogger(BatchProcessor.class);
+    private final static Logger log = ShoulderBatchLoggers.DEFAULT;
 
     /**
      * 任务队列

@@ -1,6 +1,6 @@
 package org.shoulder.data.sequence.monitor;
 
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.data.log.ShoulderDBLoggers;
 import org.shoulder.data.sequence.model.DoubleSequenceRange;
 import org.shoulder.data.sequence.model.SequenceRange;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class SequenceLogPrintRunnable implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("SEQUENCE_MONITOR");
+    private static final Logger LOGGER = ShoulderDBLoggers.SEQUENCE_MONITOR;
     private SequenceMonitorThreadBuilder builder;
 
     public SequenceLogPrintRunnable(SequenceMonitorThreadBuilder builder) {

@@ -4,7 +4,7 @@ package org.shoulder.data.mybatis.config.handler;
 @MappedTypes(Object.class)
 public class JsonbTypeHandler extends BaseTypeHandler<Object> {
 
-    private static Logger log = LoggerFactory.getLogger(JsonbTypeHandler.class);
+    private static Logger log = ShoulderDBLoggers.DEFAULT;
 
     private static final String EXTENDED_ATTRIBUTE = "attribute_extended";
 

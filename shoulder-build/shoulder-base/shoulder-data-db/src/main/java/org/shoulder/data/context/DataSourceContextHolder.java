@@ -1,7 +1,7 @@
 package org.shoulder.data.context;
 
+import org.shoulder.data.log.ShoulderDBLoggers;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 多数据源上下文存储
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DataSourceContextHolder {
 
-    private static final Logger log = LoggerFactory.getLogger(DataSourceContextHolder.class);
+    private static final Logger log = ShoulderDBLoggers.DEFAULT;
 
     /**
      * 数据源上下文

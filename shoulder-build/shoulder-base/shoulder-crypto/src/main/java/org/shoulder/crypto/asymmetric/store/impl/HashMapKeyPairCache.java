@@ -1,13 +1,13 @@
 package org.shoulder.crypto.asymmetric.store.impl;
 
-import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
-import org.shoulder.crypto.asymmetric.exception.NoSuchKeyPairException;
-import org.shoulder.crypto.asymmetric.store.KeyPairCache;
-import org.slf4j.LoggerFactory;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
+import org.shoulder.crypto.asymmetric.exception.NoSuchKeyPairException;
+import org.shoulder.crypto.asymmetric.store.KeyPairCache;
+import org.shoulder.crypto.log.ShoulderCryptoLoggers;
+
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -23,7 +23,7 @@ public class HashMapKeyPairCache implements KeyPairCache {
 
     @PostConstruct
     public void init() {
-        LoggerFactory.getLogger(HashMapKeyPairCache.class).debug("LocalKeyPairCache init.");
+        ShoulderCryptoLoggers.DEFAULT.debug("LocalKeyPairCache init.");
     }
 
     @Override

@@ -3,7 +3,7 @@ package org.shoulder.log.operation.logger.impl;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.PreDestroy;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.logger.OperationLoggerInterceptor;
@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class AsyncOperationLogger implements OperationLogger {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.DEFAULT;
 
     /**
      * 日志记录器

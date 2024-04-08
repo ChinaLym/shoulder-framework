@@ -5,11 +5,11 @@ import jakarta.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
+import org.shoulder.crypto.log.ShoulderCryptoLoggers;
 import org.springframework.util.ClassUtils;
 
 import java.io.File;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderCryptoLoggers.DEFAULT;
 
     /**
      * 存储文件字符集

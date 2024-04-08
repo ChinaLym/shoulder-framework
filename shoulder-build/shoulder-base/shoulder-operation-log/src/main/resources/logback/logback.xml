@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Logback config -->
+<configuration>
+    <property scope="local" name="LOG_HOME" value="${logging.path}/shoulder"/>
+    <property scope="local" name="LOG_LEVEL" value="${logging.level.org.shoulder}"/>
+    <property scope="local" name="LOG_ENCODE" value="${file.encoding}"/>
+    <property scope="local" name="LOG_ROLLING_DAY" value="${logging.rolling.day}"/>
+
+    <!--  logback appenders -->
+    <appender name="SHOULDER-OPERATION-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LOG_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/operation.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/operation.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+
+    <!--  logback loggers -->
+
+    <logger name="SHOULDER-OPERATION" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="SHOULDER-OPERATION-APPENDER"/>
+    </logger>
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="SHOULDER-BATCH-APPENDER"/>
+    </root>
+
+</configuration>

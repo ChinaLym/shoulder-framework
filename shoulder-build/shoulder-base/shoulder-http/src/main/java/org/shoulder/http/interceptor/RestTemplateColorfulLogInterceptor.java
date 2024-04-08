@@ -2,6 +2,7 @@ package org.shoulder.http.interceptor;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.log.beautify.ColorString;
 import org.shoulder.core.log.beautify.ColorStringBuilder;
 import org.shoulder.core.log.beautify.LogHelper;
@@ -17,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInterceptor {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.RPC_CLIENT;
 
     private static final String SELF_CLASS_NAME = RestTemplateColorfulLogInterceptor.class.getSimpleName();
 

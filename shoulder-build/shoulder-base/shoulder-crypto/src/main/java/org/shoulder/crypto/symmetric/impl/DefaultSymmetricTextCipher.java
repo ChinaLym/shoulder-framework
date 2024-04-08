@@ -2,7 +2,7 @@ package org.shoulder.crypto.symmetric.impl;
 
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.crypto.log.ShoulderCryptoLoggers;
 import org.shoulder.crypto.symmetric.SymmetricCipher;
 import org.shoulder.crypto.symmetric.SymmetricTextCipher;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
  */
 public class DefaultSymmetricTextCipher implements SymmetricTextCipher {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultSymmetricTextCipher.class);
+    private static final Logger log = ShoulderCryptoLoggers.DEFAULT;
 
     private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
 

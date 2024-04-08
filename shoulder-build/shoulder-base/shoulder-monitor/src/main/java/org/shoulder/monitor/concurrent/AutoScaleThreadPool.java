@@ -1,7 +1,7 @@
 package org.shoulder.monitor.concurrent;
 
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.springframework.util.Assert;
 
 import java.time.Duration;
@@ -30,7 +30,7 @@ public class AutoScaleThreadPool extends ThreadPoolExecutor {
     /**
      * 日志
      */
-    private static final Logger log = LoggerFactory.getLogger(AutoScaleThreadPool.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_THREADS;
 
     /**
      * 是否支持扩容缩容，corePoolSize < maximumPoolSize

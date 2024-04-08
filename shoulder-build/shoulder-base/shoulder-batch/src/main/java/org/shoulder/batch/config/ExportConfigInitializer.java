@@ -3,9 +3,9 @@ package org.shoulder.batch.config;
 import org.shoulder.batch.config.model.BatchInitializationSettings;
 import org.shoulder.batch.config.model.ExportFileConfig;
 import org.shoulder.batch.config.model.ExportLocalizeConfig;
+import org.shoulder.batch.log.ShoulderBatchLoggers;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.JsonUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.sql.init.AbstractScriptDatabaseInitializer;
@@ -32,7 +32,7 @@ import java.util.function.Function;
  */
 public class ExportConfigInitializer implements ResourceLoaderAware, InitializingBean {
 
-    private final Logger log = LoggerFactory.getLogger(ExportConfigInitializer.class);
+    private final Logger log = ShoulderBatchLoggers.DEFAULT;
 
     private final BatchInitializationSettings settings;
     private final ExportConfigManager         exportConfigManager;

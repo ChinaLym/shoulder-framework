@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.shoulder.batch.config.model.ExportColumnConfig;
 import org.shoulder.batch.config.model.ExportFileConfig;
 import org.shoulder.batch.config.model.ExportLocalizeConfig;
+import org.shoulder.batch.log.ShoulderBatchLoggers;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.JsonUtils;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class DefaultExportConfigManager implements ExportConfigManager {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultExportConfigManager.class);
+    private static final Logger log = ShoulderBatchLoggers.DEFAULT;
 
     private final String LOCALIZE_FILE_PATH = "META-INF/export-localize.json";
 

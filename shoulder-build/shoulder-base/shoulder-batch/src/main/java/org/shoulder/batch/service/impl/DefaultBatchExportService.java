@@ -9,6 +9,7 @@ import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.batch.enums.BatchErrorCodeEnum;
 import org.shoulder.batch.enums.BatchI18nEnum;
+import org.shoulder.batch.log.ShoulderBatchLoggers;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchRecord;
 import org.shoulder.batch.model.BatchRecordDetail;
@@ -27,7 +28,6 @@ import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.JsonUtils;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  */
 public class DefaultBatchExportService implements BatchAndExportService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderBatchLoggers.DEFAULT;
 
     /**
      * 默认的最大同时执行任务数，cpu 的两倍

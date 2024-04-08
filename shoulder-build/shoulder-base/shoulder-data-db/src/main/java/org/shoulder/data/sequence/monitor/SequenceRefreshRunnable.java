@@ -1,7 +1,7 @@
 package org.shoulder.data.sequence.monitor;
 
 import org.shoulder.core.context.AppContext;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.data.log.ShoulderDBLoggers;
 import org.shoulder.data.sequence.model.DoubleSequenceRange;
 import org.shoulder.data.sequence.model.SequenceRange;
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ import java.util.concurrent.Semaphore;
  */
 public class SequenceRefreshRunnable implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("SEQUENCE_MONITOR");
+    private static final Logger LOGGER = ShoulderDBLoggers.SEQUENCE_MONITOR;
 
     private SequenceMonitorThreadBuilder builder;
 
@@ -122,7 +122,7 @@ public class SequenceRefreshRunnable implements Runnable {
     }
 
     private SequenceRange loadNextSequence(String sequenceId, SequenceRange sequenceRange)
-        throws Exception {
+            throws Exception {
         // Map<String, Serializable> allContext = sequenceRange.getAllContext();
         try {
             // 适用外部上下文，如压测标识、分库key等线程变量

@@ -2,6 +2,7 @@ package org.shoulder.log.operation.logger.impl;
 
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.logger.AbstractOperationLogger;
 import org.shoulder.log.operation.logger.OperationLogger;
@@ -16,12 +17,12 @@ import org.shoulder.log.operation.model.OperationLogDTO;
  */
 public class LogOperationLogger extends AbstractOperationLogger implements OperationLogger {
 
-    private static final Logger log = LoggerFactory.getLogger(LogOperationLogger.class);
+    private static final Logger log = ShoulderLoggers.DEFAULT;
 
     /**
      * logback.xml / log4j.xml 中用于记录操作日志的 logger 的名称 默认值
      */
-    private static final String DEFAULT_OPERATION_LOGGER_NAME = "OPERATION_LOGGER";
+    private static final String DEFAULT_OPERATION_LOGGER_NAME = "SHOULDER_OPERATION";
 
     private final OperationLogFormatter operationLogFormatter;
 

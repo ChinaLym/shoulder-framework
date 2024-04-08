@@ -3,7 +3,7 @@ package org.shoulder.log.operation.context;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.logger.OperationLogger;
@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class OpLogContextHolder {
 
-    private final static Logger log = LoggerFactory.getLogger(OpLogContextHolder.class);
+    private final static Logger log = ShoulderLoggers.DEFAULT;
 
     /**
      * 保存操作日志上下文

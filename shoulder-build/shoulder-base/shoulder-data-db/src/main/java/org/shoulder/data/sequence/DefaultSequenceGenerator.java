@@ -3,16 +3,16 @@ package org.shoulder.data.sequence;
 import lombok.Getter;
 import lombok.Setter;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.log.LoggerFactory;
-
 import org.shoulder.core.util.AssertUtils;
-import org.shoulder.data.sequence.model.SequenceRange;
+import org.shoulder.data.log.ShoulderDBLoggers;
 import org.shoulder.data.sequence.dao.SequenceDao;
 import org.shoulder.data.sequence.exceptions.CombinationSequenceException;
+import org.shoulder.data.sequence.model.SequenceRange;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class DefaultSequenceGenerator implements SequenceGenerator {
 
-    protected final Logger logger = LoggerFactory.getLogger("MONITOR");
+    protected final Logger logger = ShoulderDBLoggers.SEQUENCE;
     // todo put DEFAULT
 
     // @Getter

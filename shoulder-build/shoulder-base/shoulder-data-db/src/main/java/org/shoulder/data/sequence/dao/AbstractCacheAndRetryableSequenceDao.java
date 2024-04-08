@@ -3,9 +3,9 @@ package org.shoulder.data.sequence.dao;
 import lombok.Getter;
 import lombok.Setter;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.StringUtils;
+import org.shoulder.data.log.ShoulderDBLoggers;
 import org.shoulder.data.sequence.exceptions.SequenceException;
 import org.shoulder.data.sequence.model.DoubleSequenceRange;
 import org.shoulder.data.sequence.model.SequenceRange;
@@ -36,9 +36,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDao, InitializingBean {
 
 
-    protected static final Logger logger = LoggerFactory.getLogger("EXECUTION");
+    protected static final Logger logger = ShoulderDBLoggers.SEQUENCE;
 
-    protected static final Logger monitorLogger = LoggerFactory.getLogger("MONITOR");
+    protected static final Logger monitorLogger = ShoulderDBLoggers.SEQUENCE_MONITOR;
 
 
     // ---------------------------------------config----------------------------------------------

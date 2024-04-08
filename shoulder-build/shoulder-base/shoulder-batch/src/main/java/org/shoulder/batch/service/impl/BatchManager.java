@@ -2,6 +2,7 @@ package org.shoulder.batch.service.impl;
 
 import org.shoulder.batch.constant.BatchConstants;
 import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
+import org.shoulder.batch.log.ShoulderBatchLoggers;
 import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecord;
@@ -15,19 +16,12 @@ import org.shoulder.batch.spi.TaskSplitHandler;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.enums.OperationResult;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -41,7 +35,7 @@ import java.util.stream.Collectors;
  */
 public class BatchManager implements Runnable, ProgressAble {
 
-    protected final static Logger log = LoggerFactory.getLogger(BatchManager.class);
+    protected final static Logger log = ShoulderBatchLoggers.DEFAULT;
 
     /**
      * 异步工作单元的最大数量

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Logback config -->
+<configuration>
+    <property scope="local" name="LOG_HOME" value="${logging.path}/shoulder"/>
+    <property scope="local" name="LOG_LEVEL" value="${logging.level.org.shoulder}"/>
+    <property scope="local" name="LOG_ENCODE" value="${file.encoding}"/>
+    <property scope="local" name="LOG_ROLLING_DAY" value="${logging.rolling.day}"/>
+
+    <!--  logback appenders -->
+    <appender name="SHOULDER-DB-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LOG_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/db-default.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/db-default.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="SHOULDER-DB-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <!-- 过滤器，只记录 error 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- 日志名称 -->
+        <file>${LOG_HOME}/db-error.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/db-error.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!-- 日期、级别、类名#行号、线程、日志内容、换行符 -->
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+
+
+    <appender name="SHOULDER-SEQUENCE-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LOG_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/sequence-default.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/sequence-default.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+    <appender name="SHOULDER-SEQUENCE-MONITOR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LOG_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/sequence-monitor.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/sequence-monitor.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+
+    <!--  logback loggers -->
+
+    <logger name="SHOULDER-DB" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="SHOULDER-DB-APPENDER"/>
+        <appender-ref ref="SHOULDER-DB-ERROR-APPENDER"/>
+    </logger>
+    <logger name="SHOULDER-DB-ERROR" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="SHOULDER-DB-ERROR-APPENDER"/>
+    </logger>
+    <logger name="SHOULDER-SEQUENCE" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="SHOULDER-SEQUENCE-APPENDER"/>
+    </logger>
+    <logger name="SHOULDER-SEQUENCE-MONITOR" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="SHOULDER-SEQUENCE-MONITOR-APPENDER"/>
+    </logger>
+
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="SHOULDER-DB-APPENDER"/>
+        <appender-ref ref="SHOULDER-DB-ERROR-APPENDER"/>
+        <appender-ref ref="SHOULDER-SEQUENCE-APPENDER"/>
+        <appender-ref ref="SHOULDER-SEQUENCE-MONITOR-APPENDER"/>
+    </root>
+
+</configuration>

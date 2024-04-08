@@ -5,10 +5,10 @@ import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 import org.shoulder.batch.config.model.ExportFileConfig;
 import org.shoulder.batch.constant.BatchConstants;
+import org.shoulder.batch.log.ShoulderBatchLoggers;
 import org.shoulder.batch.service.BatchOutputContext;
 import org.shoulder.batch.spi.DataExporter;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.StringJoiner;
  */
 public class CsvExporter implements DataExporter {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderBatchLoggers.DEFAULT;
     private static final String LOCAL_CSV_WRITER = "CsvWriter";
     private static final String LOCAL_BUFFER_WRITER = "BufferedWriter";
     private static final String LOCAL_CSV_WRITER_SETTINGS = "CsvWriterSettings";

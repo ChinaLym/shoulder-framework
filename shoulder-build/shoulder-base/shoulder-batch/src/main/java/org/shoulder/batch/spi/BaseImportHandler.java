@@ -2,13 +2,13 @@
 package org.shoulder.batch.spi;
 
 import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
+import org.shoulder.batch.log.ShoulderBatchLoggers;
 import org.shoulder.batch.model.BatchDataSlice;
 import org.shoulder.batch.model.BatchRecordDetail;
 import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.AssertUtils;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.Objects;
  */
 public abstract class BaseImportHandler implements BatchTaskSliceHandler {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Logger logger = ShoulderBatchLoggers.DEFAULT;
 
     private final String dataType;
     private final String operationType;

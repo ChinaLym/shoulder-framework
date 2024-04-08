@@ -3,7 +3,7 @@ package org.shoulder.monitor.concurrent;
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.concurrent.enhance.EnhancedRunnable;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 
 import java.util.List;
 import java.util.concurrent.*;
@@ -19,7 +19,7 @@ public class MonitorableThreadPool extends ThreadPoolExecutor {
     /**
      * 日志
      */
-    private static final Logger log = LoggerFactory.getLogger(MonitorableThreadPool.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_THREADS;
 
     /**
      * 线程池名称，一般根据业务名称进行唯一命名，以便更好的管理线程池。

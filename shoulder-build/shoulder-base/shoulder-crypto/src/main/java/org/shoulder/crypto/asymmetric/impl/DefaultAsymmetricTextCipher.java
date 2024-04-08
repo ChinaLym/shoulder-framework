@@ -9,8 +9,8 @@ import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
 import org.shoulder.crypto.exception.CipherRuntimeException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
+import org.shoulder.crypto.log.ShoulderCryptoLoggers;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 
@@ -25,7 +25,7 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
 
     private static final Charset CHAR_SET = ByteSpecification.STD_CHAR_SET;
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultAsymmetricTextCipher.class);
+    private static final Logger log = ShoulderCryptoLoggers.DEFAULT;
 
     /**
      * 非对称加密处理器
