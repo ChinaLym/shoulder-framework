@@ -3,16 +3,16 @@ package org.shoulder.core.util;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.HexUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
+import jakarta.annotation.Nonnull;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Hex;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.annotation.Nonnull;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.security.MessageDigest;
 import java.util.*;
@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FileUtils extends FileUtil {
 
-    private final static Logger log = LoggerFactory.getLogger(FileUtils.class);
+    private final static Logger log = ShoulderLoggers.DEFAULT;
     public static final String UPLOAD_FILE_ROOT_PATH = "upload";
     public static final String COMMA_SEPARATOR = ",";
     public static final String TEMP_DIR_NAME = "temp";

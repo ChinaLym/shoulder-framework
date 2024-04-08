@@ -3,7 +3,7 @@ package org.shoulder.core.concurrent;
 import org.shoulder.core.concurrent.delay.DelayTask;
 import org.shoulder.core.concurrent.delay.DelayTaskHolder;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.log.beautify.LogHelper;
 import org.shoulder.core.util.ContextUtils;
 import org.springframework.lang.NonNull;
@@ -22,7 +22,7 @@ import java.util.concurrent.*;
  */
 public class Threads {
 
-    private static final Logger log = LoggerFactory.getLogger(Threads.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_THREADS;
 
     /**
      * shoulder 通用线程池名称
@@ -194,7 +194,7 @@ public class Threads {
      */
     public static class Discard implements RejectedExecutionHandler {
 
-        private static final Logger log = LoggerFactory.getLogger(Discard.class);
+        private static final Logger log = ShoulderLoggers.SHOULDER_THREADS;
 
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
@@ -213,7 +213,7 @@ public class Threads {
      */
     public static class DiscardOldest implements RejectedExecutionHandler {
 
-        private static final Logger log = LoggerFactory.getLogger(DiscardOldest.class);
+        private static final Logger log = ShoulderLoggers.SHOULDER_THREADS;
 
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
@@ -245,7 +245,7 @@ public class Threads {
      */
     public static class Block implements RejectedExecutionHandler {
 
-        private static final Logger log = LoggerFactory.getLogger(Abort.class);
+        private static final Logger log = ShoulderLoggers.SHOULDER_THREADS;
 
         /**
          * 最长等待时间 null 代表永远阻塞，直至放入

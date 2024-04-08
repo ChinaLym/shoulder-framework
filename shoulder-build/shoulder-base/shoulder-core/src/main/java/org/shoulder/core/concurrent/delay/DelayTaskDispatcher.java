@@ -1,7 +1,7 @@
 package org.shoulder.core.concurrent.delay;
 
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
  */
 public class DelayTaskDispatcher implements Runnable {
 
-    private static final Logger log = LoggerFactory.getLogger(DelayTaskDispatcher.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_THREADS;
 
     private static volatile boolean running = false;
     /**

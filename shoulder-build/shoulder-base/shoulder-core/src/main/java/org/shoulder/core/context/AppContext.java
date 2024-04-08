@@ -4,7 +4,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.MapUtils;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.StringUtils;
 
 import java.io.Serializable;
@@ -22,7 +22,7 @@ import java.util.Optional;
  */
 public class AppContext {
 
-    private static final Logger log = LoggerFactory.getLogger(AppContext.class);
+    private static final Logger log = ShoulderLoggers.DEFAULT;
 
     private static final ThreadLocal<Map<String, Serializable>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(16));
 

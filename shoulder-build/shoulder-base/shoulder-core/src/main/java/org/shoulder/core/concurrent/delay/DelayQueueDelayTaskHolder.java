@@ -2,7 +2,7 @@ package org.shoulder.core.concurrent.delay;
 
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 
 import java.util.concurrent.DelayQueue;
 
@@ -14,7 +14,7 @@ import java.util.concurrent.DelayQueue;
  */
 public class DelayQueueDelayTaskHolder implements DelayTaskHolder {
 
-    protected static final Logger log = LoggerFactory.getLogger(DelayQueueDelayTaskHolder.class);
+    protected static final Logger log = ShoulderLoggers.SHOULDER_THREADS;
 
     /**
      * 延迟队列，默认不限制大小，需要限制可自定义

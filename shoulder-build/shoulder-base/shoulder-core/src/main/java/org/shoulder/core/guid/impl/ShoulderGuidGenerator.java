@@ -2,7 +2,7 @@ package org.shoulder.core.guid.impl;
 
 import org.shoulder.core.guid.LongGuidGenerator;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.PaddedAtomicLong;
 
 import java.lang.invoke.MethodHandles;
@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ShoulderGuidGenerator implements LongGuidGenerator {
 
-    private static final Logger log = LoggerFactory.getLogger(ShoulderGuidGenerator.class);
+    private static final Logger log = ShoulderLoggers.DEFAULT;
 
     // ---------------------- Fields（7个不变的） -------------------------
 

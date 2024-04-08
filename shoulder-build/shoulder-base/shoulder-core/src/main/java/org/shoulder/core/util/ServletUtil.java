@@ -5,8 +5,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -25,7 +25,7 @@ public class ServletUtil {
 
     private static final String XML_HTTP_REQ_VALUE = "XMLHttpRequest";
 
-    private static Logger logger = LoggerFactory.getLogger(ServletUtil.class);
+    private static Logger logger = ShoulderLoggers.DEFAULT;
 
     public static String getCookie(String cookieName) {
         HttpServletRequest request = ServletUtil.getRequest();

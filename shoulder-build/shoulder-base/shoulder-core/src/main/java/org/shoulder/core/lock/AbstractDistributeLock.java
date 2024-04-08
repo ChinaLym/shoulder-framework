@@ -1,7 +1,7 @@
 package org.shoulder.core.lock;
 
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -15,7 +15,7 @@ import java.time.Instant;
  */
 public abstract class AbstractDistributeLock extends AbstractServerLock {
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    protected final Logger log = ShoulderLoggers.DEFAULT;
 
     /**
      * 重试等待时间间隔 50ms

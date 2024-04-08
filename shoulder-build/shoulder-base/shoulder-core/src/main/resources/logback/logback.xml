@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Logback config -->
+<configuration>
+    <property scope="local" name="LOG_HOME" value="${logging.path}/shoulder"/>
+    <property scope="local" name="LOG_LEVEL" value="${logging.level.org.shoulder}"/>
+    <property scope="local" name="LOG_ENCODE" value="${file.encoding}"/>
+    <property scope="local" name="LOG_ROLLING_DAY" value="${logging.rolling.day}"/>
+
+    <!--  logback appenders -->
+    <appender name="SHOULDER-DEFAULT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LOG_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/common-default.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/common-default.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="SHOULDER-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <!-- 过滤器，只记录 error 级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- 日志名称 -->
+        <file>${LOG_HOME}/common-error.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/common-error.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!-- 日期、级别、类名#行号、线程、日志内容、换行符 -->
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="SHOULDER-THREADS-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LOG_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/common-threads.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/common-threads.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+    <appender name="SHOULDER-CONVERT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LOG_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/common-convert.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/common-convert.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="RPC-CLIENT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LOG_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/rpc-client.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/rpc-client.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="RPC-CLIENT-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/rpc-client-error.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/rpc-client-error.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+    <appender name="RPC-SERVER-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>${LOG_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/rpc-server.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/rpc-server.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+    <appender name="RPC-SERVER-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <file>${LOG_HOME}/rpc-server.log</file>
+        <!-- 每天生成一个日志文件，保存30天的日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名:按天回滚 daily -->
+            <FileNamePattern>${LOG_HOME}/rpc-server.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <!-- 编码 -->
+            <charset>${LOG_ENCODE}</charset>
+        </encoder>
+    </appender>
+
+    <!--  logback loggers -->
+
+    <logger name="SHOULDER-DEFAULT" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="SHOULDER-DEFAULT-APPENDER"/>
+        <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+    </logger>
+    <logger name="SHOULDER-ERROR" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+    </logger>
+    <logger name="SHOULDER-THREADS" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="SHOULDER-THREADS-APPENDER"/>
+        <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+    </logger>
+    <logger name="SHOULDER-CONVERT" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="SHOULDER-CONVERT-APPENDER"/>
+        <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+    </logger>
+    <logger name="RPC-CLIENT" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="RPC-CLIENT-APPENDER"/>
+        <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+    </logger>
+    <logger name="RPC-CLIENT-ERROR" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="RPC-CLIENT-ERROR-APPENDER"/>
+        <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+    </logger>
+    <logger name="RPC-SERVER" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="RPC-SERVER-APPENDER"/>
+        <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+    </logger>
+    <logger name="RPC-SERVER-ERROR" level="${LOG_LEVEL}" additivity="false">
+        <appender-ref ref="RPC-SERVER-ERROR-APPENDER"/>
+        <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+    </logger>
+
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="SHOULDER-DEFAULT-APPENDER"/>
+        <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+    </root>
+
+</configuration>

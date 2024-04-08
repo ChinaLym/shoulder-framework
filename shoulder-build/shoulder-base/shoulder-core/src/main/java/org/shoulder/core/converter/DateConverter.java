@@ -4,7 +4,7 @@ import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 
 import java.text.ParseException;
 import java.time.Instant;
@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class DateConverter extends BaseDateConverter<Date> {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.SHOULDER_CONVERT;
 
     public static final DateConverter INSTANCE = new DateConverter();
 

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.shoulder.core.converter.EnumConverterFactory;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.springframework.beans.BeanUtils;
 
 /**
@@ -18,7 +18,7 @@ import org.springframework.beans.BeanUtils;
  */
 public class ShoulderEnumDeserializer extends StdDeserializer<Enum<?>> {
 
-    private static final Logger log = LoggerFactory.getLogger(ShoulderEnumDeserializer.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_CONVERT;
 
     public static final ShoulderEnumDeserializer INSTANCE = new ShoulderEnumDeserializer();
 

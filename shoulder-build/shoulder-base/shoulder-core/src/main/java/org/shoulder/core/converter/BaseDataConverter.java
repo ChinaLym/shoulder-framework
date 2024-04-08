@@ -4,8 +4,8 @@ import jakarta.annotation.Nullable;
 import lombok.Setter;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
@@ -50,7 +50,7 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
     /**
      * logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseDataConverter.class);
+    private static final Logger LOGGER = ShoulderLoggers.SHOULDER_CONVERT;
 
     /**
      * 实体类型
