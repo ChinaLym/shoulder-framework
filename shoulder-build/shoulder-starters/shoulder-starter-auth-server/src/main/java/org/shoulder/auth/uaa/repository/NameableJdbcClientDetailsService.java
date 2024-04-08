@@ -1,7 +1,7 @@
 package org.shoulder.auth.uaa.repository;
 
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationService;
@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 public class NameableJdbcClientDetailsService extends JdbcClientDetailsService implements ClientDetailsService,
     ClientRegistrationService {
 
-    private static final Logger log = LoggerFactory.getLogger(NameableJdbcClientDetailsService.class);
+    private static final Logger log = ShoulderLoggers.DEFAULT;
 
     // ----------- super default ---------------------
 

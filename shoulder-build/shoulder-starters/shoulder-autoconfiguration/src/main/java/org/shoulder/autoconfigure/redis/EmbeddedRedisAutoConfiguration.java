@@ -41,7 +41,7 @@ public class EmbeddedRedisAutoConfiguration {
             return redisServer;
         } catch (Exception e) {
             // 用 mock 肯定时本地/单侧，启动失败打印异常
-            ShoulderLoggers.SHOULDER_CONFIG;
+            ShoulderLoggers.SHOULDER_CONFIG
                     .error(CommonErrorCodeEnum.UNKNOWN, e);
             // 考虑到可能本机已经启动一个 redis 导致启动失败，故这里失败不阻塞应用启动
             return null;
