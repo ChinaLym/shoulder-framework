@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Logback config -->
 <configuration>
-    <property scope="local" name="LOG_HOME" value="${logging.path}/shoulder"/>
+    <property scope="local" name="LOG_HOME" value="${logging.file.path}/shoulder"/>
     <property scope="local" name="LOG_LEVEL" value="${logging.level.org.shoulder}"/>
     <property scope="local" name="LOG_ENCODE" value="${file.encoding}"/>
-    <property scope="local" name="LOG_ROLLING_DAY" value="${logging.rolling.day}"/>
+    <!--自定义日志留存天数-->
+    <property scope="local" name="LOG_MAX_DAYS" value="${logging.max-history:30}"/>
+    <!--自定义单个文件大小，超过生成新的文件-->
+    <property name="LOG_MAX_FILE_SIZE" value="${logging.max-size:512MB}"/>
+    <!--自定义日志总体的大小，超过将删除最旧的日志存档-->
+    <property name="LOG_TOTAL_SIZE_CAP" value="${logging.total-size-cap:5GB}"/>
+    <property scope="local" name="SHOULDER_LOG_PATTERN"
+              value="${CONSOLE_LOG_PATTERN:%d %-5p [%C{0}#%L] [%t] %m%n}"/>
 
     <!--  logback appenders -->
     <appender name="SHOULDER-OPERATION-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -16,14 +23,18 @@
         </filter>
         <file>${LOG_HOME}/operation.log</file>
         <!-- 每天生成一个日志文件，保存30天的日志文件 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--日志文件输出的文件名:按天回滚 daily -->
-            <FileNamePattern>${LOG_HOME}/operation.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <FileNamePattern>${LOG_HOME}/operation.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
             <!--日志文件保留天数-->
-            <MaxHistory>${LOG_ROLLING_DAY}</MaxHistory>
+            <MaxHistory>${LOG_MAX_DAYS}</MaxHistory>
+            <!--单个文件大小-->
+            <maxFileSize>${LOG_MAX_FILE_SIZE}</maxFileSize>
+            <!--日志最大容量-->
+            <total-size-capCap>${LOG_TOTAL_SIZE_CAP}</total-size-capCap>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d %-5p [%C{0}#%L] [%t] %m%n</pattern>
+            <pattern>${SHOULDER_LOG_PATTERN}</pattern>
             <!-- 编码 -->
             <charset>${LOG_ENCODE}</charset>
         </encoder>

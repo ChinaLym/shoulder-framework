@@ -13,6 +13,14 @@
 
     <property name="CONSOLE_LOG_PATTERN"
               value="${CONSOLE_LOG_PATTERN:-%sclear(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %sclear(%-5p) %cyan([${PID:-}]){magenta} %cyan(---){faint} %sclear([%15.15t]){faint} %cyan(%-40.40logger{39} :){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <!--自定义日志留存天数-->
+    <property scope="local" name="LOG_MAX_DAYS" value="${logging.maxDay:30}"/>
+    <!--自定义单个文件大小，超过生成新的文件-->
+    <property name="LOG_MAX_FILE_SIZE" value="${logging.fileSize:512MB}"/>
+    <!--自定义日志总体的大小，超过将删除最旧的日志存档-->
+    <property name="LOG_TOTAL_SIZE_CAP" value="${logging.totalSize:5GB}"/>
+    <property scope="local" name="SHOULDER_LOG_PATTERN"
+              value="${CONSOLE_LOG_PATTERN:%d %-5p [%C{0}#%L] [%t] %m%n}"/>
 
     <!-- 开发者本地 debug 运行时激活的配置 -->
     <springProfile name="!prod,!test">
