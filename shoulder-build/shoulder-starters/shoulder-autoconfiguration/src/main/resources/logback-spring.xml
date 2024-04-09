@@ -6,24 +6,22 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 
     <!--从 Spring Environment 中获取应用标识 -->
-    <springProperty scope="context" name="appId" source="shoulder.application.id"/>
-
+    <springProperty scope="context" name="APP_ID" source="shoulder.application.id" defaultValue="appUnnamed"/>
     <!-- 日志默认输出路径 -->
-    <property name="LOG_HOME" value="/opt/logs/${appId}/"/>
-
-    <property name="CONSOLE_LOG_PATTERN"
-              value="${CONSOLE_LOG_PATTERN:-%sclear(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %sclear(%-5p) %cyan([${PID:-}]){magenta} %cyan(---){faint} %sclear([%15.15t]){faint} %cyan(%-40.40logger{39} :){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="/opt/logs/${APP_ID}/"/>
+    <springProperty scope="context" name="LOG_ENCODE" source="logging.file.charset" defaultValue="UTF-8"/>
     <!--自定义日志留存天数-->
-    <property scope="local" name="LOG_MAX_DAYS" value="${logging.maxDay:30}"/>
+    <springProperty scope="local" name="LOG_FILE_MAX_HISTORY" source="logging.max-history" defaultValue="30"/>
     <!--自定义单个文件大小，超过生成新的文件-->
-    <property name="LOG_MAX_FILE_SIZE" value="${logging.fileSize:512MB}"/>
+    <springProperty scope="context" name="LOG_FILE_MAX_SIZE" source="logging.max-size" defaultValue="512MB"/>
     <!--自定义日志总体的大小，超过将删除最旧的日志存档-->
-    <property name="LOG_TOTAL_SIZE_CAP" value="${logging.totalSize:5GB}"/>
-    <property scope="local" name="SHOULDER_LOG_PATTERN"
-              value="${CONSOLE_LOG_PATTERN:%d %-5p [%C{0}#%L] [%t] %m%n}"/>
-
+    <springProperty scope="context" name="LOG_FILE_TOTAL_SIZE_CAP" source="logging.total-size-cap" defaultValue="5GB"/>
     <!-- 开发者本地 debug 运行时激活的配置 -->
     <springProfile name="!prod,!test">
+        <!-- 开发环境打印的很全 -->
+        <springProperty scope="context" name="CONSOLE_LOG_PATTERN" source="logging.pattern"
+                        defaultValue="-%sclear(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %sclear(%-5p) %cyan([${PID:-}]){magenta} %cyan(---){faint} %sclear([%15.15t]){faint} %cyan(%-40.40logger{39} :){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
         <!-- 彩色日志依赖的渲染类 -->
         <conversionRule conversionWord="sclear"
                         converterClass="org.shoulder.core.log.logback.pattern.color.ShoulderClearCompositeConverter"/>
@@ -63,101 +61,1010 @@
 
     <!-- 测试、生产环境配置-->
     <springProfile name="prod,test">
-        <!-- 操作日志 -->
-        <appender name="OP_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <File>${LOG_HOME}/${appId}.op.log</File>
-            <!-- 保留最近十个文件的日志 -->
-            <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-                <FileNamePattern>${LOG_HOME}/${appId}.op.log.%i.zip</FileNamePattern>
-                <MinIndex>1</MinIndex>
-                <!--最多十个文件 -->
-                <MaxIndex>10</MaxIndex>
+        <!-- 日期、级别、类名#行号(#%L])、线程、日志内容、换行符；注意生产环境保证性能故不打印行号 -->
+        <springProperty scope="local" name="SHOULDER_LOG_PATTERN" source="logging.pattern"
+                        defaultValue="%d %-5p [${APP_ID}] [%C{0}] [%t] %m%n"/>
+        <!--    <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${APP_ID} [%thread] [%logger{50}:%line] - %msg%n-->
+
+        <!-- ======================= 默认给 APP 定义的日志 BEGIN ========================= -->
+        <appender name="APP-DEFAULT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <!-- 过滤器，只记录 error 级别的日志 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <!-- 日志名称 -->
+            <file>${LOG_PATH}/${APP_ID}/default.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/default.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
             </rollingPolicy>
-            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-                <MaxFileSize>10MB</MaxFileSize>
-            </triggeringPolicy>
-            <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
-                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} - %msg%n</pattern>
-                <charset>UTF-8</charset>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
             </encoder>
         </appender>
 
-        <logger name="SHOULDER_OPERATION" level="INFO" additivity="false">
-            <appender-ref ref="OP_APPENDER"/>
+        <appender name="APP-WARN-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <!-- 过滤器，只记录 error 级别的日志 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>warn</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <!-- 日志名称 -->
+            <file>${LOG_PATH}/${APP_ID}/warn.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/warn.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/error.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/error.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-ROUTER-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>${LOG_LEVEL}</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/router.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/router.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-BIZ-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/biz.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/biz.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-INTEGRATION-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/integration.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/integration.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-INTEGRATION-DIGEST-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/integration-digest.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/integration-digest.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-SERVICE-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/service.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/service.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-SERVICE-DIGEST-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/service-digest.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/service-digest.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-SERVICE-WARN-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>warn</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/service-warn.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/service-warn.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-SERVICE-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/service-error.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/service-error.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-DAL-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/dal.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/dal.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-DAL-DIGEST-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/dal-digest.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/dal-digest.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+
+        <appender name="APP-CAL-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/cal.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/cal.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-CAL-DIGEST-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/cal-digest.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/cal-digest.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-DAEMON-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/daemon.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/daemon.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-MSG-CONSUMER-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/msg-consumer.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/msg-consumer.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-MSG-PRODUCER-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/msg-producer.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/msg-producer.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-NOTIFY-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/notify.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/notify.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-CONFIG-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/config.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/config.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="APP-CODE-MAPPING-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/${APP_ID}/code-mapping.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/${APP_ID}/code-mapping.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+
+        <logger name="APP-DEFAULT" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-DEFAULT-APPENDER"/>
+            <appender-ref ref="APP-WARN"/>
+            <appender-ref ref="APP-ERROR"/>
         </logger>
+        <logger name="APP-WARN" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-WARN"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-ERROR" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-BIZ" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-BIZ"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-BIZ" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-BIZ"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-ROUTER" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-ROUTER"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-INTEGRATION" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-INTEGRATION"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-INTEGRATION-DIGEST" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-INTEGRATION-DIGEST"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-SERVICE" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-SERVICE"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-SERVICE-DIGEST" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-SERVICE-DIGEST"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-SERVICE-WARN" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-SERVICE-WARN"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-SERVICE-ERROR" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-SERVICE-ERROR"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-DAL" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-DAL"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-DAL-DIGEST" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-DAL-DIGEST"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-CAL" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-CAL"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-CAL-DIGEST" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-CAL-DIGEST"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-DAEMON" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-DAEMON"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-MSG-CONSUMER" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-MSG-CONSUMER"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-MSG-PRODUCER" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-MSG-PRODUCER"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-NOTIFY" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-NOTIFY"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-CONFIG" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-CONFIG"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <logger name="APP-CODE-MAPPING" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="APP-CODE-MAPPING"/>
+            <appender-ref ref="APP-ERROR"/>
+        </logger>
+        <!-- ======================= 默认给 APP 定义的日志 END ========================= -->
 
-        <!-- 操作日志 结束 -->
+        <!-- 操作日志 -->
+        <appender name="SHOULDER-OPERATION-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/operation.log</file>
 
-        <!-- 系统运行日志文件打印配置     开始 -->
-        <!--
-        增加自定义模块日志打印时配置推荐：
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/operation.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <logger name="SHOULDER-OPERATION" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-OPERATION-APPENDER"/>
+        </logger>
+        <!-- ========================= 操作日志 结束 =============================== -->
+        <!-- ===================== Shoulder 基础内置日志 ============================= -->
+        <appender name="SHOULDER-DEFAULT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/common-default.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/common-default.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+
+        <appender name="SHOULDER-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <!-- 过滤器，只记录 error 级别的日志 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <!-- 日志名称 -->
+            <file>${LOG_PATH}/shoulder/common-error.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/common-error.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+
+        <appender name="SHOULDER-THREADS-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/common-threads.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/common-threads.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="SHOULDER-CONVERT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/common-convert.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/common-convert.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+
+        <appender name="RPC-CLIENT-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/rpc-client.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/rpc-client.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+
+        <appender name="RPC-CLIENT-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/rpc-client-error.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/rpc-client-error.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="RPC-SERVER-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/rpc-server.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/rpc-server.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="RPC-SERVER-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/rpc-server.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/rpc-server.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="SHOULDER-CONFIG-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/config.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/config.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <logger name="SHOULDER-DEFAULT" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-DEFAULT-APPENDER"/>
+            <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+        </logger>
+        <logger name="SHOULDER-ERROR" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+        </logger>
+        <logger name="SHOULDER-THREADS" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-THREADS-APPENDER"/>
+            <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+        </logger>
+        <logger name="SHOULDER-CONVERT" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-CONVERT-APPENDER"/>
+            <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+        </logger>
+        <logger name="SHOULDER-CONFIG" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-CONFIG-APPENDER"/>
+            <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+        </logger>
+        <logger name="RPC-CLIENT" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="RPC-CLIENT-APPENDER"/>
+            <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+        </logger>
+        <logger name="RPC-CLIENT-ERROR" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="RPC-CLIENT-ERROR-APPENDER"/>
+            <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+        </logger>
+        <logger name="RPC-SERVER" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="RPC-SERVER-APPENDER"/>
+            <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+        </logger>
+        <logger name="RPC-SERVER-ERROR" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="RPC-SERVER-ERROR-APPENDER"/>
+            <appender-ref ref="SHOULDER-ERROR-APPENDER"/>
+        </logger>
+        <!-- ======================= Shoulder 基础内置日志 END ========================= -->
+
+        <!-- ======================= Shoulder-Batch 相关日志 BEGIN ========================= -->
+        <appender name="SHOULDER-BATCH-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/batch-default.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/batch-default.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+
+        <appender name="SHOULDER-BATCH-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <!-- 过滤器，只记录 error 级别的日志 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <!-- 日志名称 -->
+            <file>${LOG_PATH}/shoulder/batch-error.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/batch-error.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <logger name="SHOULDER-BATCH" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-BATCH-APPENDER"/>
+            <appender-ref ref="SHOULDER-BATCH-ERROR-APPENDER"/>
+        </logger>
+        <logger name="SHOULDER-BATCH-ERROR" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-BATCH-ERROR-APPENDER"/>
+        </logger>
+        <!-- ======================= Shoulder-Batch 相关日志 END ========================= -->
+
+        <!-- ======================= Shoulder-DB 日志 BEGIN ========================= -->
+        <appender name="SHOULDER-DB-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/db-default.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/db-default.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="SHOULDER-DB-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <!-- 过滤器，只记录 error 级别的日志 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <!-- 日志名称 -->
+            <file>${LOG_PATH}/shoulder/db-error.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/db-error.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="SHOULDER-SEQUENCE-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/sequence-default.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/sequence-default.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <appender name="SHOULDER-SEQUENCE-MONITOR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/sequence-monitor.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/sequence-monitor.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <logger name="SHOULDER-DB" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-DB-APPENDER"/>
+            <appender-ref ref="SHOULDER-DB-ERROR-APPENDER"/>
+        </logger>
+        <logger name="SHOULDER-DB-ERROR" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-DB-ERROR-APPENDER"/>
+        </logger>
+        <logger name="SHOULDER-SEQUENCE" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-SEQUENCE-APPENDER"/>
+        </logger>
+        <logger name="SHOULDER-SEQUENCE-MONITOR" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-SEQUENCE-MONITOR-APPENDER"/>
+        </logger>
+        <!-- ======================= Shoulder-DB 日志 END ========================= -->
+
+        <!-- ======================= Shoulder-Crypto 日志 BEGIN ========================= -->
+        <appender name="SHOULDER-CRYPTO-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>${LOG_LEVEL}</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <file>${LOG_PATH}/shoulder/crypto-default.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/crypto-default.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+
+        <appender name="SHOULDER-CRYPTO-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <!-- 过滤器，只记录 error 级别的日志 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <!-- 日志名称 -->
+            <file>${LOG_PATH}/shoulder/crypto-error.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/shoulder/crypto-error.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+
+                <charset>${LOG_ENCODE}</charset>
+            </encoder>
+        </appender>
+        <logger name="SHOULDER-CRYPTO" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-CRYPTO-APPENDER"/>
+            <appender-ref ref="SHOULDER-CRYPTO-ERROR-APPENDER"/>
+        </logger>
+        <logger name="SHOULDER-CRYPTO-ERROR" level="${LOG_LEVEL}" additivity="false">
+            <appender-ref ref="SHOULDER-CRYPTO-ERROR-APPENDER"/>
+        </logger>
+        <!-- ======================= Shoulder-Crypto 日志 END ========================= -->
+
+        <!-- 增加自定义模块日志打印时配置推荐：
             appender名称格式为：FILE-debug-模块名
-            推荐文件名格式：${appId}.模块名.debug.log
+            推荐文件名格式：${APP_ID}.模块名.debug.log
             注意：日志打印文件越多, 越影响磁盘I/O效率, 可能会造成程度卡顿
         -->
-        <!-- TRACE及以上级别打印在 *.debug.log中 -->
-        <appender name="FILE-debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-                <level>TRACE</level>
-            </filter>
-            <File>${LOG_HOME}/${appId}.debug.log</File>
-            <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-                <FileNamePattern>${LOG_HOME}/${appId}.debug.log.%i.zip
-                </FileNamePattern>
-                <MinIndex>1</MinIndex>
-                <MaxIndex>10</MaxIndex>
-            </rollingPolicy>
-            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-                <!-- debug文件大小达到 100M 后再压缩 -->
-                <MaxFileSize>100MB</MaxFileSize>
-            </triggeringPolicy>
-            <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
-                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${appId} [%thread] [%logger{50}:%line] %msg%n</pattern>
-                <charset>UTF-8</charset>
-            </encoder>
-        </appender>
-
-        <!-- 错误日志输出配置, error及以上日志额外打印到 *.error.log 专门记录错误日志 -->
-        <appender name="FILE-error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-                <level>ERROR</level>
-            </filter>
-            <File>${LOG_HOME}/${appId}.error.log</File>
-            <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-                <FileNamePattern>${LOG_HOME}/${appId}.error.log.%i.zip
-                </FileNamePattern>
-                <MinIndex>1</MinIndex>
-                <MaxIndex>10</MaxIndex>
-            </rollingPolicy>
-            <triggeringPolicy
-                class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-                <MaxFileSize>20MB</MaxFileSize>
-            </triggeringPolicy>
-            <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
-                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${appId} [%thread] [%logger{50}:%line] %msg%n</pattern>
-                <charset>UTF-8</charset>
-            </encoder>
-        </appender>
 
         <!-- 第三方框架类代码日志打印, 输出到 OTHER 文件中, 默认 WARN 以上 （这类日志无法统一解析） -->
-        <appender name="OTHER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <appender name="OTHER-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <append>true</append>
+            <!-- 过滤器，只记录 error 级别的日志 -->
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-                <level>WARN</level>
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
             </filter>
-            <File>${LOG_HOME}/${appId}.other.log</File>
-            <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-                <FileNamePattern>${LOG_HOME}/${appId}.other.log.%i.zip</FileNamePattern>
-                <MinIndex>1</MinIndex>
-                <!--最多十个文件 -->
-                <MaxIndex>10</MaxIndex>
+            <!-- 日志名称 -->
+            <file>${LOG_PATH}/other/common.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <FileNamePattern>${LOG_PATH}/other/common.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
+                <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
+                <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
             </rollingPolicy>
-            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-                <MaxFileSize>20MB</MaxFileSize>
-            </triggeringPolicy>
-            <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
-                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${appId} [%thread] [%logger{50}:%line] - %msg%n
-                </pattern>
-                <charset>UTF-8</charset>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+                <pattern>${SHOULDER_LOG_PATTERN}</pattern>
+                <charset>${LOG_ENCODE}</charset>
             </encoder>
         </appender>
 
@@ -171,9 +1078,9 @@
         <!-- shoulder 框架配置模块日志只在启动时输出，故的打印级别为 INFO -->
         <logger name="org.shoulder.autoconfigure" level="INFO"/>
 
-        <!-- 默认为 WARN -->
-        <root level="WARN">
-            <appender-ref ref="OTHER"/>
+        <!-- 其余未指定的日志 -->
+        <root level="${LOG_LEVEL}">
+            <appender-ref ref="OTHER-APPENDER"/>
         </root>
 
     </springProfile>

@@ -22,7 +22,7 @@ public class LogOperationLogger extends AbstractOperationLogger implements Opera
     /**
      * logback.xml / log4j.xml 中用于记录操作日志的 logger 的名称 默认值
      */
-    private static final String DEFAULT_OPERATION_LOGGER_NAME = "SHOULDER_OPERATION";
+    private static final String DEFAULT_OPERATION_LOGGER_NAME = "SHOULDER-OPERATION";
 
     private final OperationLogFormatter operationLogFormatter;
 

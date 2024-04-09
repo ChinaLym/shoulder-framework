@@ -68,13 +68,17 @@ public interface AppLoggers {
      */
     Logger APP_DAL_DIGEST = LoggerFactory.getLogger("APP-DAL-DIGEST");
     /**
+     * 数据访问层-缓存日志
+     */
+    Logger APP_CAL = LoggerFactory.getLogger("APP-CAL");
+    /**
      * 数据访问层-缓存-摘要日志
      */
-    Logger APP_CACHE_ACCESS_DIGEST = LoggerFactory.getLogger("APP-CACHE-ACCESS-DIGEST");
+    Logger APP_CAL_DIGEST = LoggerFactory.getLogger("APP-CAL");
     /**
      * 定时任务触发记录
      */
-    Logger APP_DAEMON = LoggerFactory.getLogger("APP-MSG-DAEMON");
+    Logger APP_DAEMON = LoggerFactory.getLogger("APP-DAEMON");
     /**
      * 消费消息记录，如消息内容，消息来源等
      */
