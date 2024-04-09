@@ -615,6 +615,7 @@
             <dependency>
                 <groupId>com.github.codemonstur</groupId>
                 <artifactId>embedded-redis</artifactId>
+                <!-- redis-version: linux/mac: 6.2.x windows: 5.0.x-->
                 <version>1.4.3</version>
             </dependency>
             <!-- mybatis-plus -->

@@ -7,6 +7,7 @@
 
     <!--从 Spring Environment 中获取应用标识 -->
     <springProperty scope="context" name="APP_ID" source="shoulder.application.id" defaultValue="appUnnamed"/>
+    <springProperty scope="context" name="LOG_LEVEL" source="logging.level.global" defaultValue="info"/>
     <!-- 日志默认输出路径 -->
     <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="/opt/logs/${APP_ID}/"/>
     <springProperty scope="context" name="LOG_ENCODE" source="logging.file.charset" defaultValue="UTF-8"/>
@@ -477,91 +478,91 @@
 
         <logger name="APP-DEFAULT" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="APP-DEFAULT-APPENDER"/>
-            <appender-ref ref="APP-WARN"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-WARN-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-WARN" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-WARN"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-WARN-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-ERROR" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-BIZ" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-BIZ"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-BIZ-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-BIZ" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-BIZ"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-BIZ-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-ROUTER" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-ROUTER"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-ROUTER-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-INTEGRATION" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-INTEGRATION"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-INTEGRATION-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-INTEGRATION-DIGEST" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-INTEGRATION-DIGEST"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-INTEGRATION-DIGEST-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-SERVICE" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-SERVICE"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-SERVICE-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-SERVICE-DIGEST" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-SERVICE-DIGEST"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-SERVICE-DIGEST-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-SERVICE-WARN" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-SERVICE-WARN"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-SERVICE-WARN-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-SERVICE-ERROR" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-SERVICE-ERROR"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-SERVICE-ERROR-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-DAL" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-DAL"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-DAL-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-DAL-DIGEST" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-DAL-DIGEST"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-DAL-DIGEST-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-CAL" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-CAL"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-CAL-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-CAL-DIGEST" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-CAL-DIGEST"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-CAL-DIGEST-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-DAEMON" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-DAEMON"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-DAEMON-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-MSG-CONSUMER" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-MSG-CONSUMER"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-MSG-CONSUMER-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-MSG-PRODUCER" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-MSG-PRODUCER"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-MSG-PRODUCER-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-NOTIFY" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-NOTIFY"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-NOTIFY-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-CONFIG" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-CONFIG"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-CONFIG-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-CODE-MAPPING" level="${LOG_LEVEL}" additivity="false">
-            <appender-ref ref="APP-CODE-MAPPING"/>
-            <appender-ref ref="APP-ERROR"/>
+            <appender-ref ref="APP-CODE-MAPPING-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <!-- ======================= 默认给 APP 定义的日志 END ========================= -->
 
@@ -1062,7 +1063,6 @@
                 <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
             </rollingPolicy>
             <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-
                 <pattern>${SHOULDER_LOG_PATTERN}</pattern>
                 <charset>${LOG_ENCODE}</charset>
             </encoder>
@@ -1081,6 +1081,7 @@
         <!-- 其余未指定的日志 -->
         <root level="${LOG_LEVEL}">
             <appender-ref ref="OTHER-APPENDER"/>
+            <appender-ref ref="APP-ERROR-APPENDER"/>
         </root>
 
     </springProfile>

@@ -15,6 +15,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.log.AppLoggers;
+import org.shoulder.core.log.Logger;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
@@ -42,6 +44,8 @@ public abstract class BaseServiceImpl<MAPPER extends BaseMapper<ENTITY>,
         ENTITY extends BaseEntity<? extends Serializable>>
         extends ServiceImpl<MAPPER, ENTITY>
         implements BaseService<ENTITY> {
+
+    protected Logger logger = AppLoggers.APP_BIZ;
 
     /**
      * 转换
