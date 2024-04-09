@@ -52,7 +52,7 @@ public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>
             cache = event.getApplicationContext().getBean(Cache.class);
         } catch (Exception e) {
             cache = new CacheDecorate(new ConcurrentMapCache("cacheService_" + getClass().getName()));
-            log.warn("No cache bean, fail back to memory: " + getClass().getName());
+            logger.warn("No cache bean, fail back to memory: " + getClass().getName());
         }
     }
 
