@@ -45,7 +45,7 @@ public abstract class BaseServiceImpl<MAPPER extends BaseMapper<ENTITY>,
         extends ServiceImpl<MAPPER, ENTITY>
         implements BaseService<ENTITY> {
 
-    protected Logger logger = AppLoggers.APP_BIZ;
+    protected Logger log = AppLoggers.APP_BIZ;
 
     /**
      * 转换
