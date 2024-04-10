@@ -9,7 +9,7 @@
     <springProperty scope="context" name="APP_ID" source="shoulder.application.id" defaultValue="appUnnamed"/>
     <springProperty scope="context" name="LOG_LEVEL" source="logging.level.global" defaultValue="info"/>
     <!-- 日志默认输出路径 -->
-    <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="/opt/logs/${APP_ID}/"/>
+    <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="/opt/logs/${APP_ID}"/>
     <springProperty scope="context" name="LOG_ENCODE" source="logging.file.charset" defaultValue="UTF-8"/>
     <!--自定义日志留存天数-->
     <springProperty scope="local" name="LOG_FILE_MAX_HISTORY" source="logging.max-history" defaultValue="30"/>
@@ -73,8 +73,6 @@
             <!-- 过滤器，只记录 error 级别的日志 -->
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <!-- 日志名称 -->
             <file>${LOG_PATH}/${APP_ID}/default.log</file>
@@ -96,8 +94,6 @@
             <!-- 过滤器，只记录 error 级别的日志 -->
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>warn</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <!-- 日志名称 -->
             <file>${LOG_PATH}/${APP_ID}/warn.log</file>
@@ -117,8 +113,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/error.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -133,11 +127,9 @@
             </encoder>
         </appender>
         <appender name="APP-ROUTER-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <append>${LOG_LEVEL}</append>
+            <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-                <level>error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
+                <level>${LOG_LEVEL}</level>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/router.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -155,8 +147,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/biz.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -174,8 +164,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/integration.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -193,8 +181,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/integration-digest.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -212,8 +198,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/service.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -231,8 +215,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/service-digest.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -250,8 +232,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>warn</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/service-warn.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -269,8 +249,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/service-error.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -288,8 +266,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/dal.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -307,8 +283,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/dal-digest.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -327,8 +301,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/cal.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -346,8 +318,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/cal-digest.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -365,8 +335,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/daemon.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -384,8 +352,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/msg-consumer.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -403,8 +369,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/msg-producer.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -422,8 +386,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/notify.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -441,8 +403,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/config.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -460,8 +420,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/${APP_ID}/code-mapping.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -571,8 +529,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/operation.log</file>
 
@@ -597,8 +553,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/common-default.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -619,8 +573,6 @@
             <!-- 过滤器，只记录 error 级别的日志 -->
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <!-- 日志名称 -->
             <file>${LOG_PATH}/shoulder/common-error.log</file>
@@ -642,8 +594,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/common-threads.log</file>
 
@@ -663,8 +613,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/common-convert.log</file>
 
@@ -685,8 +633,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/rpc-client.log</file>
 
@@ -705,10 +651,8 @@
 
         <appender name="RPC-CLIENT-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <append>true</append>
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/rpc-client-error.log</file>
 
@@ -726,10 +670,8 @@
         </appender>
         <appender name="RPC-SERVER-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <append>true</append>
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/rpc-server.log</file>
 
@@ -747,10 +689,8 @@
         </appender>
         <appender name="RPC-SERVER-ERROR-APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <append>true</append>
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/rpc-server.log</file>
 
@@ -770,8 +710,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/config.log</file>
 
@@ -829,8 +767,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/batch-default.log</file>
 
@@ -852,8 +788,6 @@
             <!-- 过滤器，只记录 error 级别的日志 -->
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <!-- 日志名称 -->
             <file>${LOG_PATH}/shoulder/batch-error.log</file>
@@ -885,8 +819,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/db-default.log</file>
 
@@ -907,8 +839,6 @@
             <!-- 过滤器，只记录 error 级别的日志 -->
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <!-- 日志名称 -->
             <file>${LOG_PATH}/shoulder/db-error.log</file>
@@ -930,8 +860,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/sequence-default.log</file>
 
@@ -951,8 +879,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/sequence-monitor.log</file>
 
@@ -988,8 +914,6 @@
             <append>true</append>
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <file>${LOG_PATH}/shoulder/crypto-default.log</file>
 
@@ -1011,8 +935,6 @@
             <!-- 过滤器，只记录 error 级别的日志 -->
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <!-- 日志名称 -->
             <file>${LOG_PATH}/shoulder/crypto-error.log</file>
@@ -1051,8 +973,6 @@
             <!-- 过滤器，只记录 error 级别的日志 -->
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>error</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
             </filter>
             <!-- 日志名称 -->
             <file>${LOG_PATH}/other/common.log</file>
@@ -1070,11 +990,11 @@
 
         <!-- 对第三方框架日志打印频率特别高的部分进行限制 -->
         <logger name="org.apache.zookeeper.ClientCnxn" level="ERROR"/>
-        <logger name="org.springframework.boot" level="WARN"/>
-        <logger name="org.springframework.boot.web.filter" level="ERROR"/>
+        <logger name="org.springframework.boot" level="info"/>
+        <logger name="org.springframework.boot.web.filter" level="info"/>
 
         <!-- shoulder 框架中日志的默认输出级别 WARN additivity="false" 可以修改日志文件 -->
-        <logger name="org.shoulder" level="WARN"/>
+        <logger name="org.shoulder" level="info"/>
         <!-- shoulder 框架配置模块日志只在启动时输出，故的打印级别为 INFO -->
         <logger name="org.shoulder.autoconfigure" level="INFO"/>
 
