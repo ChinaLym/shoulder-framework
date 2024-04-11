@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class SecurityRestTemplate extends RestTemplate {
 
-    private static final Logger log = ShoulderLoggers.RPC_CLIENT;
+    private static final Logger log = ShoulderLoggers.SHOULDER_CLIENT;
 
     private static final ThreadLocal<URI> URI_LOCAL = new ThreadLocal<>();
 

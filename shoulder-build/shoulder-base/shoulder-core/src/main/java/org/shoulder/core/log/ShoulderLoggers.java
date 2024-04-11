@@ -11,12 +11,12 @@ public interface ShoulderLoggers {
      * 通用能力 / 基础能力 相关
      * 如对象转换、Json、String、Array工具类等
      */
-    Logger DEFAULT = LoggerFactory.getLogger("SHOULDER-DEFAULT");
+    Logger SHOULDER_DEFAULT = LoggerFactory.getLogger("SHOULDER-DEFAULT");
 
     /**
      * 通用能力 / 基础能力 相关
      */
-    Logger ERROR = LoggerFactory.getLogger("SHOULDER-ERROR");
+    Logger SHOULDER_ERROR = LoggerFactory.getLogger("SHOULDER-ERROR");
 
     /**
      * 并发 / 多线程增强相关
@@ -31,12 +31,12 @@ public interface ShoulderLoggers {
     /**
      * 发起请求相关增强
      */
-    Logger RPC_CLIENT = LoggerFactory.getLogger("RPC-CLIENT");
+    Logger SHOULDER_CLIENT = LoggerFactory.getLogger("SHOULDER-CLIENT");
 
     /**
      * 发起请求相关增强
      */
-    Logger RPC_CLIENT_ERROR = LoggerFactory.getLogger("RPC-CLIENT-ERROR");
+    Logger SHOULDER_CLIENT_ERROR = LoggerFactory.getLogger("SHOULDER-CLIENT-ERROR");
 
     /**
      * shoulder 内提供的与 web server 相关增强功能记录
@@ -63,5 +63,5 @@ public interface ShoulderLoggers {
      * 通用加解密相关
      * 通用加密、密钥协商等
      */
-    Logger CRYPTO = LoggerFactory.getLogger("SHOULDER-CRYPTO");
+    Logger SHOULDER_CRYPTO = LoggerFactory.getLogger("SHOULDER-CRYPTO");
 }

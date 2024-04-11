@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInterceptor {
 
-    private final Logger log = ShoulderLoggers.RPC_CLIENT;
+    private final Logger log = ShoulderLoggers.SHOULDER_CLIENT;
 
     private static final String SELF_CLASS_NAME = RestTemplateColorfulLogInterceptor.class.getSimpleName();
 

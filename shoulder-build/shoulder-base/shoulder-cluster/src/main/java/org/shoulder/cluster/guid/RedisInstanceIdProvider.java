@@ -4,7 +4,6 @@ import jakarta.annotation.Nonnull;
 import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.guid.AbstractInstanceIdProvider;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationListener;
@@ -25,7 +24,7 @@ import java.util.List;
 @SuppressWarnings("rawtypes, unchecked")
 public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implements ApplicationListener<ContextRefreshedEvent>, DisposableBean {
 
-    private final Logger log = ShoulderLoggers.DEFAULT;
+    private final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     /**
      * redis key

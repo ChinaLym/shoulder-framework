@@ -19,7 +19,7 @@ import java.util.List;
  */
 public abstract class AbstractOperationLogger implements OperationLogger {
 
-    protected final Logger log = ShoulderLoggers.DEFAULT;
+    protected final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     /**
      * 日志拦截器

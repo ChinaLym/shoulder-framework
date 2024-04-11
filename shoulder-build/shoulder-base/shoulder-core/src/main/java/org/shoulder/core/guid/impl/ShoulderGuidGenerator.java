@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ShoulderGuidGenerator implements LongGuidGenerator {
 
-    private static final Logger log = ShoulderLoggers.DEFAULT;
+    private static final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     // ---------------------- Fields（7个不变的） -------------------------
 

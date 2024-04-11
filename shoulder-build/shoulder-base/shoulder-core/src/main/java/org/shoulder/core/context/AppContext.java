@@ -22,7 +22,7 @@ import java.util.Optional;
  */
 public class AppContext {
 
-    private static final Logger log = ShoulderLoggers.DEFAULT;
+    private static final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     private static final ThreadLocal<Map<String, Serializable>> THREAD_LOCAL = ThreadLocal.withInitial(() -> new HashMap<>(16));
 

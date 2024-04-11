@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FileUtils extends FileUtil {
 
-    private final static Logger log = ShoulderLoggers.DEFAULT;
+    private final static Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
     public static final String UPLOAD_FILE_ROOT_PATH = "upload";
     public static final String COMMA_SEPARATOR = ",";
     public static final String TEMP_DIR_NAME = "temp";

@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class AsyncOperationLogger implements OperationLogger {
 
-    private final Logger log = ShoulderLoggers.DEFAULT;
+    private final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     /**
      * 日志记录器

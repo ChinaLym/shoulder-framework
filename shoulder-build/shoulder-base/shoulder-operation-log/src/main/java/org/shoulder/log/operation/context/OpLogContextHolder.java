@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class OpLogContextHolder {
 
-    private final static Logger log = ShoulderLoggers.DEFAULT;
+    private final static Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     /**
      * 保存操作日志上下文

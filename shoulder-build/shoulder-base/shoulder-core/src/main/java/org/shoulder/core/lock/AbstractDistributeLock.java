@@ -15,7 +15,7 @@ import java.time.Instant;
  */
 public abstract class AbstractDistributeLock extends AbstractServerLock {
 
-    protected final Logger log = ShoulderLoggers.DEFAULT;
+    protected final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     /**
      * 重试等待时间间隔 50ms

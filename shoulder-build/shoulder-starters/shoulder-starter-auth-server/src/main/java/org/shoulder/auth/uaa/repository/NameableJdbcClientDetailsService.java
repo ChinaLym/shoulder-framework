@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 public class NameableJdbcClientDetailsService extends JdbcClientDetailsService implements ClientDetailsService,
     ClientRegistrationService {
 
-    private static final Logger log = ShoulderLoggers.DEFAULT;
+    private static final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     // ----------- super default ---------------------
 

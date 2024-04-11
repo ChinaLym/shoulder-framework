@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
  */
 public class EnumDeserializer extends StdDeserializer<Enum<?>> {
 
-    private final Logger log = ShoulderLoggers.DEFAULT;
+    private final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
     /**
      * 约定方法名，当且仅当枚举中存在
      * <code>public static Enum from(String str)</code> Enum代表自身

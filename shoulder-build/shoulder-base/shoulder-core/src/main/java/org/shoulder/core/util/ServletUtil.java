@@ -25,7 +25,7 @@ public class ServletUtil {
 
     private static final String XML_HTTP_REQ_VALUE = "XMLHttpRequest";
 
-    private static Logger logger = ShoulderLoggers.DEFAULT;
+    private static Logger logger = ShoulderLoggers.SHOULDER_DEFAULT;
 
     public static String getCookie(String cookieName) {
         HttpServletRequest request = ServletUtil.getRequest();

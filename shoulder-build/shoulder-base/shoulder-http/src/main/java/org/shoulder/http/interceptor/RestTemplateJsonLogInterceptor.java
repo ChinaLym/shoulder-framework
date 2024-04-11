@@ -12,7 +12,7 @@ import org.shoulder.core.util.JsonUtils;
  */
 public class RestTemplateJsonLogInterceptor extends BaseRestTemplateLogInterceptor {
 
-    private static final Logger log = ShoulderLoggers.RPC_CLIENT;
+    private static final Logger log = ShoulderLoggers.SHOULDER_CLIENT;
 
     public RestTemplateJsonLogInterceptor(boolean logTillResponse) {
         super(logTillResponse);

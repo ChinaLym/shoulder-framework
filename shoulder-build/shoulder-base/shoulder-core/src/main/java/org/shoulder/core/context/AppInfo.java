@@ -21,7 +21,7 @@ import java.util.TimeZone;
  */
 public class AppInfo {
 
-    private static final Logger log = ShoulderLoggers.DEFAULT;
+    private static final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     /**
      * T can be replaced by any character

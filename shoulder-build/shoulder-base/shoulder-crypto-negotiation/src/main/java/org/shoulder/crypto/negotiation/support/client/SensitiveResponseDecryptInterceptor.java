@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInterceptor, Ordered {
 
-    private static final Logger log = ShoulderLoggers.RPC_CLIENT;
+    private static final Logger log = ShoulderLoggers.SHOULDER_CLIENT;
 
     private final TransportCryptoUtil transportCryptoUtil;
 
