@@ -17,8 +17,9 @@
     <springProperty scope="context" name="LOG_FILE_MAX_SIZE" source="logging.max-size" defaultValue="512MB"/>
     <!--自定义日志总体的大小，超过将删除最旧的日志存档-->
     <springProperty scope="context" name="LOG_FILE_TOTAL_SIZE_CAP" source="logging.total-size-cap" defaultValue="5GB"/>
+
     <!-- 开发者本地 debug 运行时激活的配置 -->
-    <springProfile name="!prod,!test">
+    <springProfile name="!prod">
         <!-- 开发环境打印的很全 -->
         <springProperty scope="context" name="CONSOLE_LOG_PATTERN" source="logging.pattern"
                         defaultValue="-%sclear(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %sclear(%-5p) %cyan([${PID:-}]){magenta} %cyan(---){faint} %sclear([%15.15t]){faint} %cyan(%-40.40logger{39} :){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
@@ -61,7 +62,7 @@
     </springProfile>
 
     <!-- 测试、生产环境配置-->
-    <springProfile name="prod,test">
+    <springProfile name="prod|test">
         <!-- 日期、级别、类名#行号(#%L])、线程、日志内容、换行符；注意生产环境保证性能故不打印行号 -->
         <springProperty scope="local" name="SHOULDER_LOG_PATTERN" source="logging.pattern"
                         defaultValue="%d %-5p [${APP_ID}] [%C{0}] [%t] %m%n"/>
