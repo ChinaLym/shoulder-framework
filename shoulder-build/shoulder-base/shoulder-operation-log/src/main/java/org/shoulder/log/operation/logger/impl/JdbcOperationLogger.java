@@ -41,7 +41,10 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
 
     private static final String VALUES = "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String BATCH_INSERT = "INSERT INTO log_operation (" + ALL_INSERT_COLUMNS + ") " + VALUES;
+    private static final String SQL_BATCH_INSERT = "INSERT INTO log_operation (" + ALL_INSERT_COLUMNS + ") " + VALUES;
+    private static final String SQL_COUNT        = "SELECT count(*) FROM log_operation ";
+
+    private static final String SQL_QUERY_PAGE = "SELECT " + ALL_INSERT_COLUMNS + " FROM log_operation ";
 
     static {
         // 由于字段过多，这里断言能对应上，没有缺少字段
@@ -54,7 +57,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
     @Override
     public void log(@Nonnull Collection<? extends OperationLogDTO> opLogList) {
         // 如果过多，需要考虑多线程/分片，默认使用批量插入
-        jdbcTemplate.batchUpdate(BATCH_INSERT, flatFieldsToArray(opLogList));
+        jdbcTemplate.batchUpdate(SQL_BATCH_INSERT, flatFieldsToArray(opLogList));
         log.debug("persistent {} opLogs with jdbc.", opLogList.size());
     }
 
