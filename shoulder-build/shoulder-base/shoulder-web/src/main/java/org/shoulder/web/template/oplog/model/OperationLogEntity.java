@@ -22,7 +22,7 @@ import java.time.Instant;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("tb_dictionary_type")
+@TableName("log_operation")
 public class OperationLogEntity
     extends BaseEntity<Long> {
 

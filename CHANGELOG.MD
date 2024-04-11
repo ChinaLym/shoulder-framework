@@ -36,10 +36,11 @@
 - batch
   - 批处理模块进入可用状态（0.6 引入并开始孵化）
 ----------
-- Threads 区分IO、cpu
-- IO部分使用 VirtualThread
-- 完善 VirtualThread
-- 自动装饰线程池支持ThreadPoolExecutor
+- ~~VirtualThread~~ delay for jdk bugs
+  - IO部分使用
+  - Threads 区分IO、cpu
+  - 完善 VirtualThread
+  - 自动装饰线程池支持ThreadPoolExecutor
 
 安全：支持开关，将带@sensitive 注解的字段在自动打印日志中脱敏/不打印
 

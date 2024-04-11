@@ -84,7 +84,7 @@ public class WebAdvanceAutoConfiguration {
     @Order(value = 0)
     @ConditionalOnProperty(name = "shoulder.web.log.type", havingValue = "json")
     public RestControllerJsonLogAspect restControllerJsonLogAspect(
-        @Value("${shoulder.web.log.useCallerLogger:true}") boolean useCallerLogger
+        @Value("${shoulder.web.log.useCallerLogger:false}") boolean useCallerLogger
     ) {
         return new RestControllerJsonLogAspect(useCallerLogger);
     }
