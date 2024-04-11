@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.web;
 
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.web.advice.*;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,6 +74,7 @@ public class WebAdvanceAutoConfiguration {
     public RestControllerColorfulLogAspect restControllerColorfulLogAspect(
         @Value("${shoulder.web.log.logTillResponse:true}") boolean logTillResponse,
         @Value("${shoulder.web.log.useCallerLogger:true}") boolean useCallerLogger) {
+        ShoulderLoggers.SHOULDER_CONFIG.info("active shoulder.web.log.type=colorful");
         return new RestControllerColorfulLogAspect(useCallerLogger, logTillResponse);
     }
 
@@ -86,6 +88,7 @@ public class WebAdvanceAutoConfiguration {
     public RestControllerJsonLogAspect restControllerJsonLogAspect(
         @Value("${shoulder.web.log.useCallerLogger:false}") boolean useCallerLogger
     ) {
+        ShoulderLoggers.SHOULDER_CONFIG.info("active shoulder.web.log.type=json");
         return new RestControllerJsonLogAspect(useCallerLogger);
     }
 

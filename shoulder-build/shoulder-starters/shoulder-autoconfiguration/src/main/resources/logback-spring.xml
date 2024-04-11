@@ -467,14 +467,17 @@
         </logger>
         <logger name="APP-SERVICE" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="APP-SERVICE-APPENDER"/>
+            <appender-ref ref="APP-SERVICE-ERROR-APPENDER"/>
             <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-SERVICE-DIGEST" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="APP-SERVICE-DIGEST-APPENDER"/>
+            <appender-ref ref="APP-SERVICE-ERROR-APPENDER"/>
             <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-SERVICE-WARN" level="${LOG_LEVEL}" additivity="false">
             <appender-ref ref="APP-SERVICE-WARN-APPENDER"/>
+            <appender-ref ref="APP-SERVICE-ERROR-APPENDER"/>
             <appender-ref ref="APP-ERROR-APPENDER"/>
         </logger>
         <logger name="APP-SERVICE-ERROR" level="${LOG_LEVEL}" additivity="false">
