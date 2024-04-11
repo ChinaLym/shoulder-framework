@@ -74,7 +74,7 @@ public interface AppLoggers {
     /**
      * 数据访问层-缓存-摘要日志
      */
-    Logger APP_CAL_DIGEST = LoggerFactory.getLogger("APP-CAL");
+    Logger APP_CAL_DIGEST = LoggerFactory.getLogger("APP-CAL-DIGEST");
     /**
      * 定时任务触发记录
      */

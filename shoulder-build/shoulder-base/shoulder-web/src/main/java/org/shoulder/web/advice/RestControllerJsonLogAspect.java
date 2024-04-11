@@ -80,7 +80,7 @@ public class RestControllerJsonLogAspect extends BaseRestControllerLogAspect {
         }
         requestInfo.append(JsonUtils.toJson(argsMap));
 
-        log.debug(requestInfo.toString());
+        log.info(requestInfo.toString());
 
     }
 
@@ -88,7 +88,7 @@ public class RestControllerJsonLogAspect extends BaseRestControllerLogAspect {
     protected void after(ProceedingJoinPoint jp, Logger log, Object returnObject) {
         String requestUrl = ServletUtil.getRequest().getRequestURI();
         String returnStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
-        log.debug("{} Result: {}", requestUrl, returnStr);
+        log.info("{} Result: {}", requestUrl, returnStr);
     }
 
 }

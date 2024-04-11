@@ -609,9 +609,9 @@
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>${LOG_LEVEL}</level>
             </filter>
-            <file>${LOG_PATH}/shoulder/SHOULDER-CLIENT.log</file>
+            <file>${LOG_PATH}/shoulder/client.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <FileNamePattern>${LOG_PATH}/shoulder/SHOULDER-CLIENT.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <FileNamePattern>${LOG_PATH}/shoulder/client.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
                 <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
                 <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
                 <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>
@@ -627,9 +627,9 @@
             <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                 <level>error</level>
             </filter>
-            <file>${LOG_PATH}/shoulder/SHOULDER-CLIENT-error.log</file>
+            <file>${LOG_PATH}/shoulder/client-error.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <FileNamePattern>${LOG_PATH}/shoulder/SHOULDER-CLIENT-error.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
+                <FileNamePattern>${LOG_PATH}/shoulder/client-error.log.%d{yyyy-MM-dd}.%i</FileNamePattern>
                 <MaxHistory>${LOG_FILE_MAX_HISTORY}</MaxHistory>
                 <maxFileSize>${LOG_FILE_MAX_SIZE}</maxFileSize>
                 <total-size-capCap>${LOG_FILE_TOTAL_SIZE_CAP}</total-size-capCap>

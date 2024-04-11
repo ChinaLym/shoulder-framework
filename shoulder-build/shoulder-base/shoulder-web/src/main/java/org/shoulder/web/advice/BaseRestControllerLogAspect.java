@@ -26,7 +26,7 @@ public abstract class BaseRestControllerLogAspect {
     /**
      * 帮助 应用 记录请求摘要，所以打印在 app 目录下
      */
-    protected static final Logger logger = AppLoggers.APP_SERVICE_DIGEST;
+    protected static final Logger logger = AppLoggers.APP_SERVICE;
 
     protected final boolean useControllerLogger;
 
