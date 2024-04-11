@@ -8,6 +8,7 @@ import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.context.ShoulderContextKey;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,7 +26,7 @@ import java.util.Locale;
  */
 public class HttpLocaleInterceptor implements AsyncHandlerInterceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(HttpLocaleInterceptor.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_WEB;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

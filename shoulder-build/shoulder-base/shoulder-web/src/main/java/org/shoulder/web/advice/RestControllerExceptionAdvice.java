@@ -13,6 +13,7 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
 import org.springframework.core.Ordered;
@@ -50,7 +51,7 @@ import java.util.StringJoiner;
 @RestControllerAdvice
 public class RestControllerExceptionAdvice {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.SHOULDER_WEB;
 
     /**
      * 缺少参数

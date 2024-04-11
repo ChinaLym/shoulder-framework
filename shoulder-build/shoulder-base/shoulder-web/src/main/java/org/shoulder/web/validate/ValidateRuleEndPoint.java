@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.validate.support.dto.FieldValidationRuleDTO;
 import org.shoulder.validate.support.extract.ConstraintExtract;
 import org.shoulder.validate.support.model.ValidConstraint;
@@ -47,7 +47,7 @@ import java.util.List;
 @RequestMapping(value = ValidateRuleEndPoint.VALIDATION_RULE_URL_VALUE_EXPRESSION)
 public class ValidateRuleEndPoint {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.SHOULDER_WEB;
 
     public static final String VALIDATION_RULE_URL_VALUE_EXPRESSION = "${shoulder.web.ext.dynamic-validate.path:/api/v1/validate/rule}";
 

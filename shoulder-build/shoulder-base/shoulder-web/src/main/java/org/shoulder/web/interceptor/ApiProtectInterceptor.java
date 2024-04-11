@@ -5,9 +5,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class ApiProtectInterceptor implements HandlerInterceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(ApiProtectInterceptor.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_SECURITY;
 
     @Value("${shoulder.web.waf.token.failed-code:Token}")
     public String tokenNameInHeader;

@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.JsonUtils;
 import org.slf4j.Logger;
 import org.springframework.http.MediaType;
@@ -23,7 +23,7 @@ import java.io.PrintWriter;
  */
 public class Restful401AuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.SHOULDER_SECURITY;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {

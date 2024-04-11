@@ -6,7 +6,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.ServletUtil;
 import org.shoulder.core.util.StringUtils;
@@ -48,7 +48,7 @@ import java.util.Optional;
 @RestControllerAdvice
 public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Object> {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.SHOULDER_WEB;
 
     private PathMatcher matcher = new AntPathMatcher();
 

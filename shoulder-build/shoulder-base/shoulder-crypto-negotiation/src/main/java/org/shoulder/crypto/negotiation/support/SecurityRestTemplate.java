@@ -4,7 +4,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class SecurityRestTemplate extends RestTemplate {
 
-    private static final Logger log = LoggerFactory.getLogger(SecurityRestTemplate.class);
+    private static final Logger log = ShoulderLoggers.RPC_CLIENT;
 
     private static final ThreadLocal<URI> URI_LOCAL = new ThreadLocal<>();
 

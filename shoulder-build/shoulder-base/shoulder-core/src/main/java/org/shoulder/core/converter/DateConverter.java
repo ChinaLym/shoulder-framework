@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class DateConverter extends BaseDateConverter<Date> {
 
-    private final Logger log = ShoulderLoggers.SHOULDER_CONVERT;
+    private final Logger log = ShoulderLoggers.DEFAULT;
 
     public static final DateConverter INSTANCE = new DateConverter();
 

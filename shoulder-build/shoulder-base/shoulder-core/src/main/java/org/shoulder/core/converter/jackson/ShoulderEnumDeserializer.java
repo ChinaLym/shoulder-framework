@@ -18,7 +18,7 @@ import org.springframework.beans.BeanUtils;
  */
 public class ShoulderEnumDeserializer extends StdDeserializer<Enum<?>> {
 
-    private static final Logger log = ShoulderLoggers.SHOULDER_CONVERT;
+    private static final Logger log = ShoulderLoggers.DEFAULT;
 
     public static final ShoulderEnumDeserializer INSTANCE = new ShoulderEnumDeserializer();
 

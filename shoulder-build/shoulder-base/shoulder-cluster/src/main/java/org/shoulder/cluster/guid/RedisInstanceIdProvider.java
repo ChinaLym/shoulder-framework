@@ -5,6 +5,7 @@ import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.guid.AbstractInstanceIdProvider;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -24,7 +25,7 @@ import java.util.List;
 @SuppressWarnings("rawtypes, unchecked")
 public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implements ApplicationListener<ContextRefreshedEvent>, DisposableBean {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.DEFAULT;
 
     /**
      * redis key
@@ -99,9 +100,9 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
 
         long result = (long) redis.execute(tryInstanceIdScript, List.of(idAssignCacheKey), maxId);
         if (result < 0) {
-            log.error("assignInstanceId FAIL({}): idAssignCacheName={}, maxId={}", result, idAssignCacheKey, maxId);
+            log.error("redisInstanceIdProvider assignInstanceId FAIL({}): idAssignCacheName={}, maxId={}", result, idAssignCacheKey, maxId);
         } else {
-            log.debug("assignInstanceId SUCCESS.");
+            log.debug("redisInstanceIdProvider assignInstanceId SUCCESS.");
         }
 
         return result;
@@ -119,12 +120,12 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
         try {
             long result = (long) redis.execute(heartbeatScript, List.of(idAssignCacheKey), super.getCurrentInstanceId());
             if (result == 1) {
-                log.debug("heartbeat SUCCESS.");
+                log.debug("redisInstanceIdProvider heartbeat SUCCESS.");
             } else {
-                log.warn("heartbeat FAIL: idAssignCacheName={}, instanceId={}", idAssignCacheKey, super.getCurrentInstanceId());
+                log.warn("redisInstanceIdProvider heartbeat FAIL: idAssignCacheName={}, instanceId={}", idAssignCacheKey, super.getCurrentInstanceId());
             }
         } catch (Exception e) {
-            log.error("heartbeat ex FAIL!", e);
+            log.error("redisInstanceIdProvider heartbeat ex FAIL!", e);
         } finally {
             Threads.delay(this::heartbeat, Duration.ofMinutes(1));
         }

@@ -34,7 +34,7 @@ public class RestTemplateLogAutoConfiguration {
     @ConditionalOnProperty(name = "shoulder.http.log.type", havingValue = "colorful", matchIfMissing = true)
     public ClientHttpRequestInterceptor restTemplateColorfulLogInterceptor(
         @Value("${shoulder.http.log.logTillResponse:true}") boolean logTillResponse,
-        @Value("${shoulder.http.log.useCallerLogger:true}") boolean useCallerLogger
+        @Value("${shoulder.http.log.useCallerLogger:false}") boolean useCallerLogger
     ) {
         return new RestTemplateColorfulLogInterceptor(logTillResponse, useCallerLogger);
     }

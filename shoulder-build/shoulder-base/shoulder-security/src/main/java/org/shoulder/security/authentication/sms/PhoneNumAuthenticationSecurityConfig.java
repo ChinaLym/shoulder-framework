@@ -1,7 +1,7 @@
 package org.shoulder.security.authentication.sms;
 
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 public class PhoneNumAuthenticationSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private static final Logger log = LoggerFactory.getLogger(PhoneNumAuthenticationSecurityConfig.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_SECURITY;
 
     private AuthenticationSuccessHandler authenticationSuccessHandler;
 

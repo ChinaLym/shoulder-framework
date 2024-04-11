@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.StringUtils;
@@ -39,7 +40,7 @@ import java.util.Collections;
  */
 public class BasicAuthorizationTokenAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    protected final Logger log = ShoulderLoggers.SHOULDER_SECURITY;
 
     /**
      * 借用 spring-security-oauth 的 oauth2 存储代码

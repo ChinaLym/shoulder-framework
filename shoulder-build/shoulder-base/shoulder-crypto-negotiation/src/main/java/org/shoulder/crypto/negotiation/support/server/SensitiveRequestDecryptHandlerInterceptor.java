@@ -3,6 +3,7 @@ package org.shoulder.crypto.negotiation.support.server;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.dto.response.BaseResult;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -13,7 +14,6 @@ import org.shoulder.crypto.negotiation.exception.NegotiationErrorCodeEnum;
 import org.shoulder.crypto.negotiation.support.Sensitive;
 import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -30,7 +30,7 @@ import org.springframework.web.servlet.AsyncHandlerInterceptor;
  */
 public class SensitiveRequestDecryptHandlerInterceptor implements AsyncHandlerInterceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(SensitiveRequestDecryptHandlerInterceptor.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_WEB;
 
     private NegotiationResultCache negotiationResultCache;
 

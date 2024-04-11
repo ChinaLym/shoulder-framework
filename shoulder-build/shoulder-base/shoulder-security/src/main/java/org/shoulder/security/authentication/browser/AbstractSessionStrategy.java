@@ -5,10 +5,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -27,7 +27,7 @@ import java.io.IOException;
  */
 public class AbstractSessionStrategy {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = ShoulderLoggers.SHOULDER_WEB;
     /**
      * 跳转的url
      */

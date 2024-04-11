@@ -13,16 +13,16 @@ import java.util.Arrays;
  */
 public class InvokeLogInterceptor implements MethodInterceptor {
 
-    private final String loggerName;
+    private final Logger logger;
 
     public InvokeLogInterceptor(String loggerName) {
-        this.loggerName = loggerName;
+        this.logger = LoggerFactory.getLogger(loggerName);
+        ShoulderLoggers.SHOULDER_CONFIG.debug("InvokeLogInterceptor init with loggerName=" + loggerName);
     }
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Method method = invocation.getMethod();
-        Logger logger = LoggerFactory.getLogger(this.loggerName);
         String invokeIndex = method.getDeclaringClass().getSimpleName() + "." + method.getName();
         Object[] args = invocation.getArguments();
         logger.info(invokeIndex, " invoke params:", Arrays.toString(args));

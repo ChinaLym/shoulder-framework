@@ -50,7 +50,7 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
     /**
      * logger
      */
-    private static final Logger LOGGER = ShoulderLoggers.SHOULDER_CONVERT;
+    private static final Logger LOGGER = ShoulderLoggers.DEFAULT;
 
     /**
      * 实体类型

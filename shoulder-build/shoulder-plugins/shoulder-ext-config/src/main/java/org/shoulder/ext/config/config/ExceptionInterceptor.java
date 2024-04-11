@@ -11,6 +11,7 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.StringUtils;
+import org.shoulder.ext.common.constant.ShoulderExtConstants;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.Set;
  */
 public class ExceptionInterceptor implements MethodInterceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(ExceptionInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(ShoulderExtConstants.BACKSTAGE_BIZ_SERVICE_LOGGER);
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {

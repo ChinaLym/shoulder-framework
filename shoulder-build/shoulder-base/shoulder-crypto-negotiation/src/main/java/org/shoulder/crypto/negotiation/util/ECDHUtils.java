@@ -1,14 +1,13 @@
 package org.shoulder.crypto.negotiation.util;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.ByteUtils;
 import org.shoulder.crypto.digest.Sha256Utils;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-import javax.crypto.KeyAgreement;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -17,6 +16,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.KeyAgreement;
 
 /**
  * ECDH 密钥谈判工具
@@ -28,7 +29,7 @@ public class ECDHUtils {
 
     private final static String PROVIDER = "BC";
     private final static String ECDH = "ECDH";
-    private static Logger logger = LoggerFactory.getLogger(ECDHUtils.class);
+    private static Logger logger = ShoulderLoggers.CRYPTO;
 
     static {
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {

@@ -1,5 +1,6 @@
 package org.shoulder.crypto.negotiation.support.client;
 
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -12,7 +13,6 @@ import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.shoulder.http.AppIdExtractor;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInterceptor, Ordered {
 
-    private static final Logger log = LoggerFactory.getLogger(SensitiveResponseDecryptInterceptor.class);
+    private static final Logger log = ShoulderLoggers.RPC_CLIENT;
 
     private final TransportCryptoUtil transportCryptoUtil;
 

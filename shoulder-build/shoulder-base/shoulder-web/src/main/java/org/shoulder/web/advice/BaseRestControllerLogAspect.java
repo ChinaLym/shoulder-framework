@@ -6,6 +6,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.shoulder.core.log.AppLoggers;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.util.ServletUtil;
@@ -22,7 +23,10 @@ import java.lang.reflect.Method;
 @Aspect
 public abstract class BaseRestControllerLogAspect {
 
-    protected static final Logger logger = LoggerFactory.getLogger(BaseRestControllerLogAspect.class);
+    /**
+     * 帮助 应用 记录请求摘要，所以打印在 app 目录下
+     */
+    protected static final Logger logger = AppLoggers.APP_SERVICE_DIGEST;
 
     protected final boolean useControllerLogger;
 

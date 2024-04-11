@@ -1,8 +1,8 @@
 package org.shoulder.web.template.crud;
 
 import org.shoulder.core.converter.ShoulderConversionService;
+import org.shoulder.core.log.AppLoggers;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.io.Serializable;
  */
 public abstract class BaseControllerImpl<SERVICE extends BaseService<ENTITY>, ENTITY extends BaseEntity<? extends Serializable>> implements BaseController<ENTITY> {
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    protected final Logger log = AppLoggers.APP_SERVICE;
 
     @Autowired
     protected SERVICE service;

@@ -5,6 +5,7 @@ import jakarta.annotation.Nullable;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
@@ -39,7 +40,7 @@ import java.util.List;
 @RestControllerAdvice
 public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object> {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.SHOULDER_WEB;
 
     private final TransportCryptoUtil transportCryptoUtil;
 

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.browser.AbstractSessionStrategy;
@@ -36,7 +37,7 @@ import java.util.List;
 @RestController
 public class BeforeAuthEndpoint {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = ShoulderLoggers.SHOULDER_SECURITY;
 
     /**
      * 登录页面，为 null 则不会触发跳转

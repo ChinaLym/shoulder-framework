@@ -17,8 +17,6 @@ import org.shoulder.log.operation.model.OperationLogDTO;
  */
 public class LogOperationLogger extends AbstractOperationLogger implements OperationLogger {
 
-    private static final Logger log = ShoulderLoggers.DEFAULT;
-
     /**
      * logback.xml / log4j.xml 中用于记录操作日志的 logger 的名称 默认值
      */
@@ -47,7 +45,7 @@ public class LogOperationLogger extends AbstractOperationLogger implements Opera
     private Logger getOperationLogger(final String loggerName) {
         Logger logger = LoggerFactory.getLogger(loggerName);
         if (logger != null) {
-            log.debug("use '{}' as opLogger", loggerName);
+            ShoulderLoggers.SHOULDER_CONFIG.debug("use '{}' as opLogger", loggerName);
             return logger;
         }
         throw new RuntimeException("No OperationLogger named " + loggerName + " in LoggerFactory! " +
