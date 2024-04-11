@@ -31,7 +31,7 @@ public class ContextUtilsAutoConfiguration implements BeanFactoryAware, BeanFact
         try {
             ContextUtils.setBeanFactory((ConfigurableListableBeanFactory) beanFactory);
         } catch (ClassCastException e) {
-            ShoulderLoggers.SHOULDER_CONFIG.debug("SpringUtils.setBeanFactory fail when BeanFactoryAware.", e);
+            ShoulderLoggers.SHOULDER_CONFIG.info("ContextUtils.setBeanFactory fail when BeanFactoryAware.", e);
         }
     }
 

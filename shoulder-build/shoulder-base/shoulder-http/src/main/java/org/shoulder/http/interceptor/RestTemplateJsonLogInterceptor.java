@@ -20,7 +20,7 @@ public class RestTemplateJsonLogInterceptor extends BaseRestTemplateLogIntercept
 
     @Override
     protected void logResponse(RestRequestRecord record) {
-        log.debug(JsonUtils.toJson(record));
+        log.info(JsonUtils.toJson(record));
     }
 
 }

@@ -45,7 +45,7 @@ public class LogOperationLogger extends AbstractOperationLogger implements Opera
     private Logger getOperationLogger(final String loggerName) {
         Logger logger = LoggerFactory.getLogger(loggerName);
         if (logger != null) {
-            ShoulderLoggers.SHOULDER_CONFIG.debug("use '{}' as opLogger", loggerName);
+            ShoulderLoggers.SHOULDER_CONFIG.info("use '{}' as opLogger", loggerName);
             return logger;
         }
         throw new RuntimeException("No OperationLogger named " + loggerName + " in LoggerFactory! " +

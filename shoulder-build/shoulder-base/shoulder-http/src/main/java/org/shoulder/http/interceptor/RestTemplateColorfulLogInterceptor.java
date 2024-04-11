@@ -109,7 +109,7 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
         builder.newLine()
             .cyan("+---------------------------------------------------------------------------------------");
 
-        logger.debug(builder.toString());
+        logger.info(builder.toString());
     }
 
 }

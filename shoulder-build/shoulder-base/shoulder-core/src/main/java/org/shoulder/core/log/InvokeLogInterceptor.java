@@ -17,7 +17,7 @@ public class InvokeLogInterceptor implements MethodInterceptor {
 
     public InvokeLogInterceptor(String loggerName) {
         this.logger = LoggerFactory.getLogger(loggerName);
-        ShoulderLoggers.SHOULDER_CONFIG.debug("InvokeLogInterceptor init with loggerName=" + loggerName);
+        ShoulderLoggers.SHOULDER_CONFIG.info("InvokeLogInterceptor init with loggerName=" + loggerName);
     }
 
     @Override

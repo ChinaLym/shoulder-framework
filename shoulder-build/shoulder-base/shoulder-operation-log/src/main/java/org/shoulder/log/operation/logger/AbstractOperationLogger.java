@@ -121,7 +121,7 @@ public abstract class AbstractOperationLogger implements OperationLogger {
     public void addInterceptor(OperationLoggerInterceptor logInterceptor) {
         logInterceptors.add(logInterceptor);
         if (ShoulderLoggers.SHOULDER_CONFIG.isDebugEnabled()) {
-            ShoulderLoggers.SHOULDER_CONFIG.debug("add a OperationLogInterceptor: " + logInterceptor.getClass().getName());
+            ShoulderLoggers.SHOULDER_CONFIG.info("add a OperationLogInterceptor: " + logInterceptor.getClass().getName());
         }
     }
 

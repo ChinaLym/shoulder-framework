@@ -101,7 +101,7 @@ public class AsymmetricCryptoAutoConfiguration {
             }
             KeyPairCache keyPairCache = new RedisKeyPairCache(redisTemplate);
             keyPairCache.put(cryptoProperties.getKeyPair());
-            ShoulderLoggers.SHOULDER_CONFIG.debug("redisKeyPairCache provide RedisKeyPairCache.");
+            ShoulderLoggers.SHOULDER_CONFIG.info("redisKeyPairCache provide RedisKeyPairCache.");
 
             return new CryptoDelegateKeyPairCache(keyPairCache, localTextCipher);
         }
