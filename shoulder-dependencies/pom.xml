@@ -101,6 +101,7 @@
         <druid.version>1.2.8</druid.version>
         <!-- mybatis-plus 功能稳定性较差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
+        <freemarker.version>2.3.32</freemarker.version>
         <pagehelper.version>6.1.0</pagehelper.version>
         <pagehelper-starter.version>2.1.0</pagehelper-starter.version>
         <beecp.version>3.5.0</beecp.version>
@@ -628,6 +629,11 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-generator</artifactId>
                 <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
             </dependency>
             <!-- mybatis的分页插件 -->
             <dependency>
