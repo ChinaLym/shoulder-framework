@@ -5,7 +5,7 @@ package ${package}.controller;
 
 import lombok.extern.shoulder.SLog;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.AppLoggers;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +25,7 @@ public class DemoController {
     /**
      * 定义 shoulder 的 logger， 使用注解 {@link SLog} 时则可不写这行代码
      */
-    private static final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
+    private static final Logger log = AppLoggers.APP_DEFAULT;
 
 
     /**
