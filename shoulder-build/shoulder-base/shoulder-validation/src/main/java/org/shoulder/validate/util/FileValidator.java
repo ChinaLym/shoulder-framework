@@ -1,10 +1,10 @@
 package org.shoulder.validate.util;
 
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.FileUtils;
 import org.shoulder.core.util.RegexpUtils;
 import org.shoulder.core.util.StringUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class FileValidator {
 
-    private static final Logger log = LoggerFactory.getLogger(FileValidator.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     public static boolean isValid(FileValidatorProperties properties, MultipartFile multipartFile) {
         if (multipartFile == null) {
@@ -65,7 +65,8 @@ public class FileValidator {
         // no allowNamePattern or match
         // no forbiddenNamePattern or disMatch
         return (StringUtils.isEmpty(properties.getAllowNamePattern()) || RegexpUtils.matches(fileName, properties.getAllowNamePattern())) &&
-                (StringUtils.isEmpty(properties.getForbiddenNamePattern()) || !RegexpUtils.matches(fileName, properties.getForbiddenNamePattern()));
+               (StringUtils.isEmpty(properties.getForbiddenNamePattern()) || !RegexpUtils.matches(fileName,
+                   properties.getForbiddenNamePattern()));
 
     }
 

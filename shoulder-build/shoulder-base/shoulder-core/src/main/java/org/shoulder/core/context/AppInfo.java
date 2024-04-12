@@ -60,6 +60,14 @@ public class AppInfo {
     private static boolean cluster = false;
 
     /**
+     * 当前环境：DEV / TEST / PRE / GRAY / PROD
+     * 线下：DEV 包括 stable、dev
+     * 线下：TEST 包括 SIT、UNION_SIT
+     * 线上：PRE、GRAY、PROD 每个都有仿真、正式
+     */
+    private static String env;
+
+    /**
      * 全局统一日期格式，默认世界标准时间格式
      * @see org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties.Format
      */
@@ -69,6 +77,11 @@ public class AppInfo {
      * 全局统一字符集，默认 UTF-8
      */
     private static Charset charset = LocaleInfo.getSystemDefault().getCharset();
+
+    /**
+     * 部署 Region
+     */
+    private static String region = "default";
 
     /**
      * 默认语言环境，从用户中获取不到地区/语言信息时，将采用该值，若不设置则从系统中获取

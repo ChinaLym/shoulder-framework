@@ -14,7 +14,7 @@ import org.hibernate.validator.internal.metadata.core.MetaConstraint;
 import org.hibernate.validator.internal.metadata.location.ConstraintLocation;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.ArrayUtils;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.support.dto.ConstraintInfoDTO;
@@ -25,18 +25,27 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 默认约束提取器
- * 当且实现依赖 hibernate 中的实现类 for JSR 的无法获取到 字段所在类信息
+ * 默认校验约束提取器
+ * <p>
+ *     功能：解析并提取类与方法的校验注解（如 @NotEmpty @Size 等JSR标准注解），生成接口文档
+ * </p>
+ * Note 当前实现依赖 hibernate 中的实现类 for JSR 的无法获取到 字段所在类信息
  *
  * @author lym
  */
 public class DefaultConstraintExtractImpl implements ConstraintExtract {
 
-    public static final Logger log = LoggerFactory.getLogger(ConstraintExtract.class);
+    public static final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     /**
      * 字段校验信息缓存
@@ -66,7 +75,7 @@ public class DefaultConstraintExtractImpl implements ConstraintExtract {
             beanMetaDataManagerField.setAccessible(true);
             beanMetaDataManager = (BeanMetaDataManager) beanMetaDataManagerField.get(validator);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            log.error("初始化验证器失败", e);
+            log.error("Fail to init DefaultConstraintExtractImpl.", e);
         }
     }
 

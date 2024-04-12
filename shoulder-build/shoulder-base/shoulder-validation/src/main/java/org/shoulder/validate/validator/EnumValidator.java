@@ -2,9 +2,9 @@ package org.shoulder.validate.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.validate.annotation.Enum;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link Enum} 注解校验处理
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class EnumValidator implements ConstraintValidator<Enum, CharSequence> {
 
-    private static final Logger log = LoggerFactory.getLogger(EnumValidator.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
     private String[] allowValues;
 

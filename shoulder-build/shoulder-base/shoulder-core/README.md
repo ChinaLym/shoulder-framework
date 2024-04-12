@@ -53,6 +53,26 @@
 
 [spring boot 注解解释](https://www.cnblogs.com/lovecindywang/p/9846846.html)
 
+## 基础日志
+
+可以直接使用 `AppLoggers` 定义好的日志
+> 基于 Spring 官方推荐方式，Shoulder默认提供了两套配置：
+
+> 当spring.profile=dev，会认为在本地开发阶段，日志输出到控制台，彩色打印，支持点击跳转（无须 idea 日志彩色、日志跳转等插件），且日志内容尽可能想尽
+
+> 当spring.profile=test 或 prod，会认为在服务器测试/部署阶段，日志分类输出到不同文件，高性能打印模式，忽略一些无关紧要的日志（如 DEBUG、TRACE级别日志）
+
+> 日志功能完全支持 spring boot 定义的 logging.xxx 配置。
+> Shoulder 总是遵循SpringBoot官方推荐的扩展方式，使用者可以总是只关注 SpringBoot 的扩展能力，对于Shoulder扩展功能的用法几乎都可以去 SpringBoot官网找到。
+
+```java
+class LogExample {
+    // 简单快速使用
+    private Logger log = AppLoggers.APP_DEFAULT;
+
+}
+```
+
 ## 插件
 提供加载机制，参考：
 https://gitee.com/core-lib/slot-maven-plugin
@@ -101,6 +121,7 @@ private static final org.shoulder.core.log.Logger log = org.shoulder.core.log.Lo
 
 }
 ```
+
 
 > 注：IDEA 中自动提示需要安装 [shoulder-lombok-plugins](https://github.com/ChinaLym/lombok-intellij-plugin)
 

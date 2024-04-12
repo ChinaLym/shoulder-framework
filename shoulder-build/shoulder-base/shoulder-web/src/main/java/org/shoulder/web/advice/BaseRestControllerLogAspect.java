@@ -65,16 +65,24 @@ public abstract class BaseRestControllerLogAspect {
             // 直接执行什么都不做
             return jp.proceed();
         }
+        long start = System.currentTimeMillis();
         // 前置
         before(jp, log);
 
         // 执行目标方法
-        Object returnObject = jp.proceed();
+        Object returnObject = null;
+        try {
+            returnObject = jp.proceed();
+            return returnObject;
+        } catch (Exception ignore) {
+            //AppContext.setError("xxx");
+            throw ignore;
+        }finally {
+            long cost = System.currentTimeMillis() - start;
+            // 全局异常处理器会记录详细异常，这里不需要详细记录异常相关
+            after(jp, log, returnObject);
+        }
 
-        // 异常后则不记录返回值，由全局异常处理器记录
-        after(jp, log, returnObject);
-
-        return returnObject;
     }
 
     /**

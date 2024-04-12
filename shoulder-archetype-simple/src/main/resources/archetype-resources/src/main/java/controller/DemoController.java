@@ -25,7 +25,7 @@ public class DemoController {
     /**
      * 定义 shoulder 的 logger， 使用注解 {@link SLog} 时则可不写这行代码
      */
-    private static final Logger log = LoggerFactory.getLogger(DemoController.class);
+    private static final Logger log = ShoulderLoggers.SHOULDER_DEFAULT;
 
 
     /**
