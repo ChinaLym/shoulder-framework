@@ -2,7 +2,7 @@
 
 ## 为什么使用 Swagger
 
-`Swagger` 是基于注解的，低侵入式的 api 文档标记规范。它的组织者是跨语言的 api 规范（`OpenAPI`） 
+`Swagger` 是基于注解的，低侵入式的 api 文档标记规范。它的组织者是跨语言的 api 规范（`OpenAPI`）
 的主要发起者，是编程语言接口文档规范的主要制定者，影响广泛，吸引了一些开发者简化`注解解析`、为其制作`UI界面`，选择规范和主流技术可以为使用者减少大量的宝贵时间，并提供相对优质的体验。
 
 为了支持使用 Swagger 的用户，Shoulder 默认也引入，就像 Spring Boot 同时支持 Jackson 和 Jackson2，两种工具的注解、实现都用了，实际只生效一种。
@@ -15,7 +15,7 @@
 ## 整体方案
 - Java 代码生成接口文档/在线预览/测试(`Swagger` + 任意 `Swagger-UI`)
 - 接口展示/测试平台：`YApi`、`swagger-admin`、``、``
-- 需求分析/效果图 `Axure` 
+- 需求分析/效果图 `Axure`
 - 流程图，时序图 `Visio`、`ProcessOn`
 - wiki：Confluence
 
@@ -25,8 +25,8 @@
 - 目前大多数开发者尤其国内开发者更熟悉 `Swagger2`
 - 主流第三方接口辅助软件（UI、文档、mock服务器）解析支持也是 swagger2居多（swagger2基本都支持，swagger3仅极少数软件支持）
 - 如果希望使用 swagger3 则可以使用 `springdoc-openapi` 相当于 `springfox-doc`
- 
- 
+
+
 ### Swaager 文档：`Markdown` 替代 `javadoc`（需要IDE 插件）
  ```xml
 <build>
@@ -87,6 +87,39 @@ public void configure(WebSecurity web) throws Exception {
 }
 ```
 
+openapi (swagger3)
+```java
+@Configuration
+public class SwaggerConfig {
+    @Bean
+    public OpenAPI openApi() {
+        return new OpenAPI()
+                .components(new Components()
+                        .addSecuritySchemes("Auth-AppName", new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER)
+                                .name("Auth-AppName"))
+                        .addSecuritySchemes("Auth-Token", new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER)
+                                .name("Auth-Token")))
+                .info(new Info().title("xxx系统")
+                        .description("xxx系统-接口文档")
+                        .version("v1.0"));
+    }
+}
+```
+举例：Controller上添加
+```java
+@Tag(name = "字典管理")
+```
+举例：接口上添加
+```java
+@Operation(summary = "字典删除", security = {@SecurityRequirement(name = "Auth-appId"), @SecurityRequirement(name = "Auth-Token")})
+```
+enable API DOC:
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.enabled=true
 ---
 
 ### swagger 原理
