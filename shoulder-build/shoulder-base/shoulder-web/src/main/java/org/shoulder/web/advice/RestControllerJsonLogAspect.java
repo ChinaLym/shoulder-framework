@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.shoulder.core.log.AppLoggers;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
@@ -85,10 +86,12 @@ public class RestControllerJsonLogAspect extends BaseRestControllerLogAspect {
     }
 
     @Override
-    protected void after(ProceedingJoinPoint jp, Logger log, Object returnObject) {
+    protected void after(ProceedingJoinPoint jp, Logger log, Object returnObject, long cost) {
         String requestUrl = ServletUtil.getRequest().getRequestURI();
         String returnStr = returnObject != null ? JsonUtils.toJson(returnObject) : "null";
-        log.info("{} Result: {}", requestUrl, returnStr);
+        log.info("url={}, success={}, result={}", requestUrl, true, returnStr);
+        AppLoggers.APP_SERVICE_DIGEST.info("url={}, success={}, cost={}, result={}", requestUrl, true, cost, returnStr);
+
     }
 
 }

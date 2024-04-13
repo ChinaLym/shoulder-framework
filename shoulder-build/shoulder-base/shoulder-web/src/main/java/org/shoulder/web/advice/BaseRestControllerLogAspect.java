@@ -23,11 +23,6 @@ import java.lang.reflect.Method;
 @Aspect
 public abstract class BaseRestControllerLogAspect {
 
-    /**
-     * 帮助 应用 记录请求摘要，所以打印在 app 目录下
-     */
-    protected static final Logger logger = AppLoggers.APP_SERVICE;
-
     protected final boolean useControllerLogger;
 
     public BaseRestControllerLogAspect(boolean useControllerLogger) {
@@ -60,7 +55,7 @@ public abstract class BaseRestControllerLogAspect {
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
         Method method = methodSignature.getMethod();
         // 根据配置项选择 logger
-        Logger log = useControllerLogger ? LoggerFactory.getLogger(method.getDeclaringClass()) : logger;
+        Logger log = useControllerLogger ? LoggerFactory.getLogger(method.getDeclaringClass()) : AppLoggers.APP_SERVICE;
         if (!log.isDebugEnabled()) {
             // 直接执行什么都不做
             return jp.proceed();
@@ -80,7 +75,7 @@ public abstract class BaseRestControllerLogAspect {
         }finally {
             long cost = System.currentTimeMillis() - start;
             // 全局异常处理器会记录详细异常，这里不需要详细记录异常相关
-            after(jp, log, returnObject);
+            after(jp, log, returnObject, cost);
         }
 
     }
@@ -99,7 +94,8 @@ public abstract class BaseRestControllerLogAspect {
      * @param jp           连接点
      * @param log          logger
      * @param returnObject 返回值
+     * @param cost
      */
-    protected abstract void after(ProceedingJoinPoint jp, Logger log, Object returnObject);
+    protected abstract void after(ProceedingJoinPoint jp, Logger log, Object returnObject, long cost);
 
 }

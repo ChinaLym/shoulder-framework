@@ -1,7 +1,7 @@
 package org.shoulder.http.interceptor;
 
+import org.shoulder.core.log.AppLoggers;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.JsonUtils;
 
 /**
@@ -12,7 +12,7 @@ import org.shoulder.core.util.JsonUtils;
  */
 public class RestTemplateJsonLogInterceptor extends BaseRestTemplateLogInterceptor {
 
-    private static final Logger log = ShoulderLoggers.SHOULDER_CLIENT;
+    private static final Logger log = AppLoggers.APP_INTEGRATION;
 
     public RestTemplateJsonLogInterceptor(boolean logTillResponse) {
         super(logTillResponse);
@@ -20,6 +20,9 @@ public class RestTemplateJsonLogInterceptor extends BaseRestTemplateLogIntercept
 
     @Override
     protected void logResponse(RestRequestRecord record) {
+        if (!log.isDebugEnabled()) {
+            return;
+        }
         log.info(JsonUtils.toJson(record));
     }
 

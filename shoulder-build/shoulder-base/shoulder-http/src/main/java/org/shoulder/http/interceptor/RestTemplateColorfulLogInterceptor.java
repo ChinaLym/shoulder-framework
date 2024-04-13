@@ -1,8 +1,8 @@
 package org.shoulder.http.interceptor;
 
+import org.shoulder.core.log.AppLoggers;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
-import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.log.beautify.ColorString;
 import org.shoulder.core.log.beautify.ColorStringBuilder;
 import org.shoulder.core.log.beautify.LogHelper;
@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
  */
 public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInterceptor {
 
-    private final Logger log = ShoulderLoggers.SHOULDER_CLIENT;
+    private final Logger log = AppLoggers.APP_INTEGRATION;
 
     private static final String SELF_CLASS_NAME = RestTemplateColorfulLogInterceptor.class.getSimpleName();
 
@@ -54,6 +54,9 @@ public class RestTemplateColorfulLogInterceptor extends BaseRestTemplateLogInter
             throw new IllegalCallerException("Current StackTrack not contains any RestTemplate's method call!");
         }
         Logger logger = useCallerLogger ? LoggerFactory.getLogger(stack.getClassName()) : log;
+        if (!logger.isDebugEnabled()) {
+            return;
+        }
         String codeLocation = LogHelper.genCodeLocationLinkFromStack(stack);
 
         builder

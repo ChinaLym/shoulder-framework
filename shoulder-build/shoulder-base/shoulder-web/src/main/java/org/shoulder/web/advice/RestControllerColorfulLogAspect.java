@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.log.beautify.ColorString;
 import org.shoulder.core.log.beautify.ColorStringBuilder;
 import org.shoulder.core.log.beautify.LogHelper;
@@ -57,10 +58,6 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
      */
     private static final String NEW_LINE_SEPARATOR = System.getProperty("line.separator");
     /**
-     * 记录请求消耗时间
-     */
-    private ThreadLocal<Long> requestTimeLocal = new ThreadLocal<>();
-    /**
      * 代码位置
      */
     private ThreadLocal<String> codeLocationLocal = new ThreadLocal<>();
@@ -79,9 +76,6 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
     public void before(JoinPoint jp, Logger log) {
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
         Method method = methodSignature.getMethod();
-        if (!log.isDebugEnabled()) {
-            return;
-        }
 
         String codeLocation = LogHelper.genCodeLocationLink(method);
         codeLocationLocal.set(codeLocation);
@@ -148,8 +142,6 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         requestInfo.newLine();
 
         log.debug(requestInfo.toString());
-
-        requestTimeLocal.set(System.currentTimeMillis());
     }
 
     static String toLogValue(Object value) {
@@ -167,20 +159,22 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
         try {
             return JsonUtils.toJson(value);
         } catch (Exception e) {
-            logger.warnWithErrorCode(CommonErrorCodeEnum.UNKNOWN.getCode(), "This param type={} not support json, skip", value.getClass().getName());
+            ShoulderLoggers.SHOULDER_CONFIG.warnWithErrorCode(CommonErrorCodeEnum.UNKNOWN.getCode(), "This param type={} not support json, skip", value.getClass().getName());
             return "SKIP_LOG:NOT_SUPPORT_JSON";
         }
     }
 
 
     @Override
-    public void after(ProceedingJoinPoint jp, Logger log, Object returnObject) {
-        long cost = System.currentTimeMillis() - requestTimeLocal.get();
+    public void after(ProceedingJoinPoint jp, Logger log, Object returnObject, long cost) {
+        String codeLine = codeLocationLocal.get();
+        codeLocationLocal.remove();
+
         HttpServletResponse response = ServletUtil.getResponse();
         ColorStringBuilder responseInfo = new ColorStringBuilder().newLine();
         responseInfo
                 .magenta("Controller : ", ColorString.Style.BOLD)
-                .append(codeLocationLocal.get())
+                .append(codeLine)
                 .newLine();
 
         responseInfo
@@ -229,20 +223,10 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
 
         responseInfo.newLine()
                 .cyan("\\\\========================== ")
-                .lBlue(codeLocationLocal.get())
+                .lBlue(codeLine)
                 .cyan(" ==========================//");
 
         log.debug(responseInfo.toString());
-        cleanLocal();
-    }
-
-
-    /**
-     * 清理线程变量
-     */
-    private void cleanLocal() {
-        requestTimeLocal.remove();
-        codeLocationLocal.remove();
     }
 
     public static class MultiFileInfo {
