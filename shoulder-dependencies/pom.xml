@@ -45,7 +45,7 @@
         <swagger2.version>1.6.14</swagger2.version>
         <!-- openApi(swagger)是行业标准，swagger 1.7 更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
         <swagger3.version>2.2.21</swagger3.version>
-        <springdoc.version>1.7.0</springdoc.version>
+        <springdoc.version>2.5.0</springdoc.version>
 
         <!-- 使用 springfox 解析文档 暂时移除，其核心类 WebMvcOpenApiTransformationFilter 还依赖 javax.servlet -->
         <springfox.version>3.0.0_temp_removal_for_not_support_spring_boot_3</springfox.version>

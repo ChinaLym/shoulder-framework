@@ -5,7 +5,6 @@ import org.shoulder.core.log.AppLoggers;
 import org.shoulder.core.log.Logger;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 
@@ -19,11 +18,14 @@ public abstract class BaseControllerImpl<SERVICE extends BaseService<ENTITY>, EN
 
     protected final Logger log = AppLoggers.APP_SERVICE;
 
-    @Autowired
-    protected SERVICE service;
+    protected final SERVICE service;
 
-    @Autowired
-    protected ShoulderConversionService conversionService;
+    protected final ShoulderConversionService conversionService;
+
+    protected BaseControllerImpl(SERVICE service, ShoulderConversionService conversionService) {
+        this.service = service;
+        this.conversionService = conversionService;
+    }
 
     @Override
     public Class<ENTITY> getEntityClass() {

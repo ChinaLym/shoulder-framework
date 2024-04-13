@@ -1,5 +1,6 @@
 package org.shoulder.web.template.dictionary.controller;
 
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.web.template.crud.CrudCacheableController;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEntity;
@@ -23,5 +24,9 @@ public class DictionaryItemCrudController extends CrudCacheableController<
     DictionaryItemDTO,
     DictionaryItemDTO
     > implements DictionaryItemController {
+
+    public DictionaryItemCrudController(DictionaryItemService service, ShoulderConversionService conversionService) {
+        super(service, conversionService);
+    }
 
 }

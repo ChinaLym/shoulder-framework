@@ -26,48 +26,98 @@
 - 主流第三方接口辅助软件（UI、文档、mock服务器）解析支持也是 swagger2居多（swagger2基本都支持，swagger3仅极少数软件支持）
 - 如果希望使用 swagger3 则可以使用 `springdoc-openapi` 相当于 `springfox-doc`
 
-
-### Swaager 文档：`Markdown` 替代 `javadoc`（需要IDE 插件）
- ```xml
-<build>
-  <plugins>
-    <plugin>
-      <artifactId>maven-javadoc-plugin</artifactId>
-      <version>2.9</version>
-      <configuration>
-        <doclet>ch.raffael.doclets.pegdown.PegdownDoclet</doclet>
-        <docletArtifact>
-          <groupId>ch.raffael.pegdown-doclet</groupId>
-          <artifactId>pegdown-doclet</artifactId>
-          <version>1.1</version>
-        </docletArtifact>
-        <useStandardDocletOptions>true</useStandardDocletOptions>
-      </configuration>
-    </plugin>
-  </plugins>
-</build>
-```
-
 ---
 
 ## SpringBoot整合swagger3.X
 
 启动后访问：http://127.0.0.1:8080/swagger-ui/index.html
 
+## 基于 openapi
 
-使用 knife4j 增强 ui
+https://springdoc.org/
 
-生成环境关闭swagger
-```yaml
-# swagger3.0 settings
-springfox:
-  documentation:
-    swagger-ui:
-      enabled: true # true放开api文档，false关闭api文档
-
+```pom
+   <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+   </dependency>
 ```
 
-SpringSecurity集成swagger要放行swaggerAPI
+
+```java
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * 接口文档配置：
+ * <p><a href="http://127.0.0.1:8080/swagger-ui.html">接口文档-ui页面</a>
+ * <p><a href="http://127.0.0.1:8080/v3/api-docs.yaml">接口文档-json形式地址</a>
+ * <p><a href="http://127.0.0.1:8080/v3/api-docs.yaml">接口文档-yaml形式地址</a>
+ *
+ * @author lym
+ */
+@Configuration
+public class SwaggerConfig {
+  @Bean
+  public OpenAPI openApi() {
+    return new OpenAPI()
+            .components(new Components()
+                    // 可选：安全说明
+                    .addSecuritySchemes("Auth-AppName", new SecurityScheme()
+                            .type(SecurityScheme.Type.APIKEY)
+                            .in(SecurityScheme.In.HEADER)
+                            .name("Auth-appId"))
+                    // 可选：安全说明
+                    .addSecuritySchemes("Auth-Token", new SecurityScheme()
+                            .type(SecurityScheme.Type.APIKEY)
+                            .in(SecurityScheme.In.HEADER)
+                            .name("Auth-Token")))
+            .info(new Info().title("SHOULDER-DEMO")
+                    .description("SHOULDER-DEMO-接口文档")
+                    .version("v1.0"));
+  }
+}
+```
+
+可读性优化：Controller上添加
+```java
+@Tag(name = "字典管理")
+```
+
+可读性优化：RequestMapping 接口上添加
+```java
+@Operation(summary = "字典删除", security = {@SecurityRequirement(name = "Auth-appId"), @SecurityRequirement(name = "Auth-Token")})
+```
+
+开启 API DOC:
+
+```propertis
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.enabled=true
+```
+
+```yaml
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+```
+
+生产环境可考虑关闭 swagger
+
+#### 使用 knife4j 增强 ui
+
+TODO
+
+#### 若引入 SpringSecurity，集成swagger要放行swaggerAPI
+
 ```java
 @Override
 public void configure(WebSecurity web) throws Exception {
@@ -87,40 +137,27 @@ public void configure(WebSecurity web) throws Exception {
 }
 ```
 
-openapi (swagger3)
-```java
-@Configuration
-public class SwaggerConfig {
-    @Bean
-    public OpenAPI openApi() {
-        return new OpenAPI()
-                .components(new Components()
-                        .addSecuritySchemes("Auth-AppName", new SecurityScheme()
-                                .type(SecurityScheme.Type.APIKEY)
-                                .in(SecurityScheme.In.HEADER)
-                                .name("Auth-AppName"))
-                        .addSecuritySchemes("Auth-Token", new SecurityScheme()
-                                .type(SecurityScheme.Type.APIKEY)
-                                .in(SecurityScheme.In.HEADER)
-                                .name("Auth-Token")))
-                .info(new Info().title("xxx系统")
-                        .description("xxx系统-接口文档")
-                        .version("v1.0"));
-    }
-}
+### Swaager 文档：`Markdown` 替代 `javadoc`（需要IDE 插件）
+
+ ```xml
+<build>
+  <plugins>
+    <plugin>
+      <artifactId>maven-javadoc-plugin</artifactId>
+      <version>2.9</version>
+      <configuration>
+        <doclet>ch.raffael.doclets.pegdown.PegdownDoclet</doclet>
+        <docletArtifact>
+          <groupId>ch.raffael.pegdown-doclet</groupId>
+          <artifactId>pegdown-doclet</artifactId>
+          <version>1.1</version>
+        </docletArtifact>
+        <useStandardDocletOptions>true</useStandardDocletOptions>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
 ```
-举例：Controller上添加
-```java
-@Tag(name = "字典管理")
-```
-举例：接口上添加
-```java
-@Operation(summary = "字典删除", security = {@SecurityRequirement(name = "Auth-appId"), @SecurityRequirement(name = "Auth-Token")})
-```
-enable API DOC:
-springdoc.api-docs.enabled=true
-springdoc.swagger-ui.enabled=true
----
 
 ### swagger 原理
 
@@ -144,3 +181,50 @@ springdoc.swagger-ui.enabled=true
 [Swagger3 注解使用（Open API 3）](https://blog.csdn.net/qq_35425070/article/details/105347336)
 [swagger2 -> swagger3 官方教程](https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations#quick-annotation-overview)
 [SpringBoot整合swagger3.X](https://blog.csdn.net/weixin_42201180/article/details/111588194)
+
+# 相关名词概念解释
+
+谈到API文档，那就绕不开大名鼎鼎的Swagger，但是你是否还听说过：OpenAPI，Springfox，Springdoc？你第一次看到这些脑瓜子是不是嗡嗡的？
+
+## OpenAPI【组织 & 规范】
+
+是一个组织（OpenAPI Initiative），
+他们制定了一个如何描述HTTP API的规范（OpenAPI Specification）。
+既然是规范，那么谁想实现都可以，只要符合规范即可。
+
+## Swagger【UI实现】
+
+它是SmartBear这个公司的一个开源项目，里面提供了一系列工具，包括著名的 **swagger-ui**。
+swagger是早于OpenApi的，某一天swagger将自己的API设计贡献给了OpenApi，然后由OpenApi标准化了。
+
+## [knife4j](https://doc.xiaominfo.com/docs/quick-start)【UI实现】
+
+它是国内一个开源项目，替换swagger ui页面，页面更漂亮[（点这里查看效果）](https://doc.xiaominfo.com/docs/introduction/ui)。
+
+- 并伴有部分额外功能
+    - 更漂亮
+    - 登录
+    - 多语言：更好的支持中文
+    - 聚合网关（如系统中存在多个服务，可以将他们的接口聚合在一起，在网关暴露）
+
+## Springfox
+
+是Spring生态的一个开源库，是Swagger与OpenApi规范的具体实现。
+我们使用它就可以在spring中生成API文档。以前基本上是行业标准。
+目前最新版本可以支持 Swagger2, Swagger3 以及 OpenAPI3 三种格式。
+但是其从 2020年7月14号就不再更新了，**不支持springboot3**，所以业界都在不断的转向我们今天要谈论的另一个库Springdoc，*
+*新项目就不要用了**。
+
+## Springdoc
+
+算是后起之秀，带着继任Springfox的使命而来。
+支持OpenApi规范，支持Springboot3，**我们的新项目都应该使用这个**。
+
+
+---
+
+参考：
+
+- [springdoc 官网](https://springdoc.org/)
+- [Knife4j 官网](https://doc.xiaominfo.com/docs/quick-start)
+- [网友介绍](https://zhuanlan.zhihu.com/p/638887405)

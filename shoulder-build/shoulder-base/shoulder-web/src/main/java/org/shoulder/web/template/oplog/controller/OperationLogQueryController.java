@@ -1,5 +1,6 @@
 package org.shoulder.web.template.oplog.controller;
 
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.shoulder.web.template.crud.BaseControllerImpl;
 import org.shoulder.web.template.crud.QueryController;
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lym
  */
 @RestController
-@RequestMapping(value = "${shoulder.web.ext.oplog.apiPath + '/type':/api/v1/oplog}")
+@RequestMapping(value = "${shoulder.web.ext.oplog.apiPath:/api/v1/oplogs}")
 public class OperationLogQueryController extends BaseControllerImpl<OperationLogService, OperationLogEntity>
     implements QueryController<OperationLogEntity, Long, OperationLogDTO, OperationLogDTO> {
 
+    public OperationLogQueryController(OperationLogService service, ShoulderConversionService conversionService) {
+        super(service, conversionService);
+    }
 }

@@ -1,6 +1,7 @@
 package org.shoulder.web.template.crud;
 
 import io.swagger.annotations.ApiOperation;
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.service.BaseCacheableService;
@@ -37,6 +38,9 @@ public abstract class CrudCacheableController<
 //    public BaseResult<QueryResultDTO> get(@PathVariable ID id) {
 //        return BaseResult.success(convertEntityToQueryResult(service.getByIdFromCache(id)));
 //    }
+    public CrudCacheableController(SERVICE service, ShoulderConversionService conversionService) {
+        super(service, conversionService);
+    }
 
 
     /**

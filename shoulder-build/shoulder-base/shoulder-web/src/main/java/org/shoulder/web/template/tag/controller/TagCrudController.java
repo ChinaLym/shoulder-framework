@@ -2,6 +2,7 @@ package org.shoulder.web.template.tag.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.web.template.crud.CrudCacheableController;
@@ -10,7 +11,6 @@ import org.shoulder.web.template.tag.dto.TagDTO;
 import org.shoulder.web.template.tag.model.TagEntity;
 import org.shoulder.web.template.tag.service.TagCoreService;
 import org.shoulder.web.template.tag.service.TagServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,8 +37,12 @@ public class TagCrudController extends CrudCacheableController<
     TagDTO>
     implements TagController {
 
-    @Autowired
-    private TagCoreService tagCoreService;
+    private final TagCoreService tagCoreService;
+
+    public TagCrudController(TagServiceImpl service, ShoulderConversionService conversionService, TagCoreService tagCoreService) {
+        super(service, conversionService);
+        this.tagCoreService = tagCoreService;
+    }
 
     //save检查标签操作权限
 

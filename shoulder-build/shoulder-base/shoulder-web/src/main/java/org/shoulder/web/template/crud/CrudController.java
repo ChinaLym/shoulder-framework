@@ -1,5 +1,6 @@
 package org.shoulder.web.template.crud;
 
+import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 import org.shoulder.data.mybatis.template.service.BaseService;
@@ -42,6 +43,10 @@ public abstract class CrudController<
 
     @Autowired(required = false)
     protected BizIdGenerator bizIdGenerator;
+
+    public CrudController(SERVICE service, ShoulderConversionService conversionService) {
+        super(service, conversionService);
+    }
 
     //@PostConstruct
     //@SuppressWarnings("unchecked")

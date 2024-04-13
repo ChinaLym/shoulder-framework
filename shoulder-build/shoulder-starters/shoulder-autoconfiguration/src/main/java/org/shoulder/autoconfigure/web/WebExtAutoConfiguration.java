@@ -7,14 +7,18 @@ import org.shoulder.autoconfigure.core.CacheAutoConfiguration;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.autoconfigure.web.WebExtAutoConfiguration.BaseOnEnumDictionaryConfiguration;
 import org.shoulder.core.converter.ShoulderConversionService;
+import org.shoulder.core.dictionary.spi.DefaultDictionaryEnumStore;
+import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.data.mybatis.template.service.BaseServiceImpl;
 import org.shoulder.web.template.dictionary.controller.*;
 import org.shoulder.web.template.dictionary.convert.*;
 import org.shoulder.web.template.dictionary.service.DictionaryItemService;
 import org.shoulder.web.template.dictionary.service.DictionaryService;
-import org.shoulder.core.dictionary.spi.DefaultDictionaryEnumStore;
-import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
+import org.shoulder.web.template.oplog.controller.OperationLogQueryController;
+import org.shoulder.web.template.oplog.convert.OperationLogDTO2EntityConverter;
+import org.shoulder.web.template.oplog.convert.OperationLogEntity2DTOConverter;
+import org.shoulder.web.template.oplog.service.OperationLogService;
 import org.shoulder.web.template.tag.controller.TagController;
 import org.shoulder.web.template.tag.controller.TagCrudController;
 import org.shoulder.web.template.tag.converter.TagDTO2DomainConverter;
@@ -29,7 +33,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration.EnableWebMvcConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
 
 import java.util.List;
 
@@ -78,10 +81,47 @@ public class WebExtAutoConfiguration {
          * 必须要返回值是具体的 Controller，而非接口；另外注意 ConditionalOnMissingBean 要用接口，方便使用者替换
          */
         @Bean
-        @DependsOn({ "tagCoreService", "conversionService" })
         @ConditionalOnMissingBean(value = TagController.class)
-        public TagCrudController tagCrudController() {
-            return new TagCrudController();
+        public TagCrudController tagCrudController(TagServiceImpl service, ShoulderConversionService conversionService, TagCoreService tagCoreService) {
+            return new TagCrudController(service, conversionService, tagCoreService);
+        }
+
+    }
+
+
+    @MapperScan("org.shoulder.web.template.oplog.mapper")
+    @AutoConfiguration(after = {I18nAutoConfiguration.class, CacheAutoConfiguration.class})
+    @ConditionalOnClass(value = {BaseServiceImpl.class, OperationLogQueryController.class})
+    @EnableConfigurationProperties(WebExtProperties.class)
+    @ConditionalOnProperty(value = "shoulder.web.ext.oplog.enable", havingValue = "true", matchIfMissing = false)
+    public static class ExtOpLogAutoConfiguration {
+
+        @Bean("operationLogService")
+        @ConditionalOnMissingBean(value = OperationLogService.class)
+        public OperationLogService operationLogService() {
+            return new OperationLogService();
+        }
+
+        /**
+         * 想要 autoconfiguration 注入的 Controller 生效（能处理请求）
+         * 必须要返回值是具体的 Controller，而非接口；另外注意 ConditionalOnMissingBean 要用接口，方便使用者替换
+         */
+        @Bean
+        public OperationLogQueryController operationLogQueryController(OperationLogService service, ShoulderConversionService conversionService) {
+            return new OperationLogQueryController(service, conversionService);
+        }
+
+
+        @Bean
+        @ConditionalOnMissingBean(value = OperationLogDTO2EntityConverter.class)
+        public OperationLogDTO2EntityConverter operationLogDTO2EntityConverter() {
+            return new OperationLogDTO2EntityConverter();
+        }
+
+        @Bean
+        @ConditionalOnMissingBean(value = OperationLogEntity2DTOConverter.class)
+        public OperationLogEntity2DTOConverter operationLogEntity2DTOConverter() {
+            return new OperationLogEntity2DTOConverter();
         }
 
     }
@@ -151,9 +191,8 @@ public class WebExtAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(DictionaryTypeController.class)
-        @DependsOn({ "dictionaryService", "conversionService" })
-        public DictionaryTypeCrudController dictionaryCrudController() {
-            return new DictionaryTypeCrudController();
+        public DictionaryTypeCrudController dictionaryCrudController(DictionaryService service, ShoulderConversionService conversionService) {
+            return new DictionaryTypeCrudController(service, conversionService);
         }
 
         @Bean
@@ -164,9 +203,9 @@ public class WebExtAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(DictionaryItemController.class)
-        @DependsOn({ "dictionaryItemService", "conversionService" })
-        public DictionaryItemCrudController dictionaryItemCrudController() {
-            return new DictionaryItemCrudController();
+        public DictionaryItemCrudController dictionaryItemCrudController(DictionaryItemService dictionaryItemService,
+                                                                         ShoulderConversionService conversionService) {
+            return new DictionaryItemCrudController(dictionaryItemService, conversionService);
         }
 
         @Bean

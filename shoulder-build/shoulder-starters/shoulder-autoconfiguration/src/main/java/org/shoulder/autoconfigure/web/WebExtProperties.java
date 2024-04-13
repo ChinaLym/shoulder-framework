@@ -26,7 +26,8 @@ public class WebExtProperties {
     /**
      * tag 配置
      */
-    private TagProperties        tag        = new TagProperties();
+    private TagProperties tag = new TagProperties();
+    private OplogProperties oplog = new OplogProperties();
 
     @Data
     static class DictionaryProperties {
@@ -74,7 +75,22 @@ public class WebExtProperties {
         /**
          * api 路径
          */
-        private String apiPath = "/api/v1/tag";
+        private String apiPath = "/api/v1/tags";
+
+    }
+
+    @Data
+    static class OplogProperties {
+
+        /**
+         * 是否启用
+         */
+        private Boolean enable = Boolean.FALSE;
+
+        /**
+         * api 路径
+         */
+        private String apiPath = "/api/v1/oplogs";
 
     }
 

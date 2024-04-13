@@ -974,6 +974,7 @@
 
         <!-- 对第三方框架日志打印频率特别高的部分进行限制 -->
         <logger name="org.apache.zookeeper.ClientCnxn" level="ERROR"/>
+        <logger name="com.zaxxer.hikari" level="warn"/>
         <logger name="org.springframework.boot" level="info"/>
         <logger name="org.springframework.boot.web.filter" level="info"/>
 
