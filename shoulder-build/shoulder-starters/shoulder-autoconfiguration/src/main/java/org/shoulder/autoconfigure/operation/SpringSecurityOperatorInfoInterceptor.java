@@ -41,7 +41,7 @@ public class SpringSecurityOperatorInfoInterceptor extends OperationLogOperatorI
         if (details instanceof WebAuthenticationDetails webAuthenticationDetails) {
             operator.setTerminalType(TerminalType.BROWSER);
             operator.setTerminalId(webAuthenticationDetails.getSessionId());
-            operator.setRemoteAddress(webAuthenticationDetails.getRemoteAddress());
+            operator.setTerminalAddress(webAuthenticationDetails.getRemoteAddress());
             operator.setTerminalInfo(request.getHeader("User-Agent"));
         }
         // todo terminalInfo 解析

@@ -80,7 +80,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
      * 用户终端机器IP 例：192.168.0.10
      * 若系统内部触发为服务部署机器IP
      */
-    protected String remoteAddress;
+    protected String terminalAddress;
 
     /**
      * 操作者终端标识 （选填），也可以生成 UUID
@@ -231,7 +231,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
             this.userRealName = operator.getUserRealName();
             this.userOrgId = operator.getUserOrgId();
             this.userOrgName = operator.getUserOrgName();
-            this.remoteAddress = operator.getRemoteAddress();
+            this.terminalAddress = operator.getTerminalAddress();
             this.terminalType = operator.getTerminalType();
             this.terminalId = operator.getTerminalId();
             this.terminalInfo = operator.getTerminalInfo();
@@ -333,7 +333,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
         clone.setUserRealName(userRealName);
         clone.setUserOrgId(userOrgId);
         clone.setTerminalType(terminalType);
-        clone.setRemoteAddress(remoteAddress);
+        clone.setTerminalAddress(terminalAddress);
         clone.setTerminalId(terminalId);
         clone.setTerminalInfo(terminalInfo);
 

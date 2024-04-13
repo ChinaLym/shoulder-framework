@@ -29,7 +29,7 @@ public class CurrentContextOperatorInfoInterceptor extends OperationLogOperatorI
         } else {
             operator = new ShoulderCurrentUserOperator(AppContext.getUserId());
         }
-        operator.setRemoteAddress(ServletUtil.getRemoteAddress());
+        operator.setTerminalAddress(ServletUtil.getRemoteAddress());
         operator.setTerminalId(ServletUtil.getSession().getId());
         operator.setTerminalType(TerminalType.BROWSER);
         operator.setTerminalInfo(ServletUtil.getUserAgent());

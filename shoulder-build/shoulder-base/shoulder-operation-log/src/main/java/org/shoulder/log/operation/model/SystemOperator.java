@@ -47,7 +47,7 @@ public class SystemOperator implements Operator {
     }
 
     @Override
-    public String getRemoteAddress() {
+    public String getTerminalAddress() {
         return hostAddress;
     }
 

@@ -23,7 +23,7 @@ public class ShoulderCurrentUserOperator implements Serializable, Operator {
 
     protected String userId;
     protected String userRealName;
-    protected String remoteAddress;
+    protected String terminalAddress;
     protected TerminalType terminalType = TerminalType.UNKNOWN;
     protected String terminalId;
     protected String terminalInfo;
@@ -42,7 +42,7 @@ public class ShoulderCurrentUserOperator implements Serializable, Operator {
         this.userId = operator.getUserId();
         this.userRealName = operator.getUserName();
         this.userRealName = operator.getUserRealName();
-        this.remoteAddress = operator.getRemoteAddress();
+        this.terminalAddress = operator.getTerminalAddress();
         this.terminalId = operator.getTerminalId();
         this.terminalInfo = operator.getTerminalInfo();
     }

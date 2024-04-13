@@ -61,15 +61,4 @@ public class OperationLogEntity
     private String  extendedField3;
     private String  extendedField4;
 
-    @Override
-    public String getObjectType() {
-        // 这里如果过长，数据库保存时可能报错，强烈建议实现该接口
-        return "objectType.shoulder.operationLog";
-    }
-
-    @Override
-    public String getObjectName() {
-        return "operationLog";
-    }
-
 }

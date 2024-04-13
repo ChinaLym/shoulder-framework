@@ -9,14 +9,13 @@ import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.sql.DataSource;
 
 /**
  * 以 jdbc 记录操作日志记录，直接保存至数据库。适合微小型项目中，日志中心与业务组件同数据库。
@@ -81,7 +80,7 @@ public class JdbcOperationLogger extends AbstractOperationLogger implements Oper
         fields[5] = opLog.getUserOrgId();
         fields[6] = opLog.getUserOrgName();
         fields[7] = opLog.getTerminalType().getItemId();
-        fields[8] = opLog.getRemoteAddress();
+        fields[8] = opLog.getTerminalAddress();
         fields[9] = opLog.getTerminalId();
         fields[10] = opLog.getTerminalInfo();
 
