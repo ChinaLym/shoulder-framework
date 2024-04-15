@@ -1,5 +1,6 @@
 package org.shoulder.web.template.tag.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.shoulder.core.converter.ShoulderConversionService;
@@ -25,6 +26,7 @@ import java.util.List;
  *
  * @author lym
  */
+@Tag(name = "操作日志演示")
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.tag.path:/api/v1/tags}")
 public class TagCrudController extends CrudCacheableController<

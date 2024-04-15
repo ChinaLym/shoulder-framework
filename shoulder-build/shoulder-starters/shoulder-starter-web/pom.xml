@@ -25,7 +25,10 @@
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+        </dependency>
     </dependencies>
 
 

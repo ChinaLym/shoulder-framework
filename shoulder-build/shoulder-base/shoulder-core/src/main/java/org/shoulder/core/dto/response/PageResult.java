@@ -2,7 +2,7 @@ package org.shoulder.core.dto.response;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.pagehelper.PageInfo;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
@@ -17,48 +17,56 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
-@ApiModel(value = "分页数据返回格式")
+@Schema(name = "分页数据返回格式")
 public class PageResult<T> extends ListResult<T> {
 
     private static final long serialVersionUID = -1451879834966540928L;
     /**
      * 当前页
      */
+    @Schema(name = "当前页码", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageNum;
 
     /**
      * 每页的数量
      */
+    @Schema(name = "每页的数据数量", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageSize;
 
     /**
      * 当前页的数量
      */
+    @Schema(name = "当前页的数据数量", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer size;
 
     /**
      * 总页数
      */
+    @Schema(name = "总页数", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer totalPageNum;
 
     /**
      * 是否为第一页
      */
+    @Schema(name = "是第一页", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean firstPage = false;
 
     /**
      * 是否为最后一页
      */
+    @Schema(name = "是最后一页", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean lastPage = false;
 
     /**
      * 有前一页
      */
+    @Schema(name = "有前一页", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean hasPreviousPage = false;
 
     /**
      * 有后一页
      */
+    @Schema(name = "有后一页", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean hasNextPage = false;
 
     public PageResult() {

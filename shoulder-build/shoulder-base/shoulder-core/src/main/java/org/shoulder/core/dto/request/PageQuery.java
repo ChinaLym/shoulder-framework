@@ -2,7 +2,7 @@ package org.shoulder.core.dto.request;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.Getter;
@@ -31,7 +31,7 @@ import static org.shoulder.core.constant.PageConst.PARAM_SORT_BY;
  */
 @Getter
 @Setter
-@ApiModel("分页查询 DTO param")
+@Schema("分页查询 DTO param")
 public class PageQuery<DTO> extends ToStringObj {
 
     private static final long serialVersionUID = -3462907130101674607L;
@@ -40,25 +40,25 @@ public class PageQuery<DTO> extends ToStringObj {
      * 页码
      * 不设置默认值，有些框架（如 JPA）页码是从0开始
      */
-    @ApiModelProperty(value = "", dataType = "int", example = "1")
+    @Schema(name = "", type = "int", example = "1")
     private Integer pageNo;
 
     /**
      * 每页大小
      */
-    @ApiModelProperty(value = "", dataType = "int", example = "20")
+    @Schema(name = "", type = "int", example = "20")
     private Integer pageSize;
 
     /**
      * 排序规则
      */
-    @ApiModelProperty(value = "", example = "xxx")
+    @Schema(name = "", example = "[{\"fieldName\":\"name\", \"desc\":\"order\"}]")
     private List<OrderRule> orderRules;
 
     /**
      * 查询条件
      */
-    @ApiModelProperty("查询条件")
+    @Schema(name = "查询条件", requiredMode = )
     private DTO condition;
 
     /**

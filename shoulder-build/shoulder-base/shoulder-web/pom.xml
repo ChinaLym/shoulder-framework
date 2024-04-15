@@ -71,6 +71,13 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!-- 接口文档-注解 依赖 -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- spring boot 2.3+ 不在默认引入校验 -->
         <!--<dependency>
             <groupId>org.springframework.boot</groupId>

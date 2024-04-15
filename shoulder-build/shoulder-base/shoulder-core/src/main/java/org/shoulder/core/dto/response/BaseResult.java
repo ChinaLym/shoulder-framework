@@ -1,8 +1,7 @@
 package org.shoulder.core.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.shoulder.core.dto.ToStringObj;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
@@ -23,28 +22,24 @@ import java.util.Map;
  *
  * @author lym
  */
-@ApiModel(value = "接口响应统一返回值包装类 Restful 风格")
-//@Schema(name = "接口响应统一返回值包装类 Restful 风格")
+@Schema(name = "接口响应统一返回值包装类 Restful 风格")
 public class BaseResult<T> extends ToStringObj {
 
     private static final long serialVersionUID = -3829563105110651627L;
 
-    @ApiModelProperty(value = "状态码/错误码，成功为0，失败非0，必定返回", required = true, example = "0", position = 0)
-    //@Schema(name = "状态码/错误码，成功为0，失败非0", example = "0")
+    @Schema(name = "状态码/错误码，成功为0，失败非0，必定返回", requiredMode = Schema.RequiredMode.REQUIRED, example = "0")
     protected String code = "0";
 
-    @ApiModelProperty(value = "响应描述，成功时一般不需要该值，必定返回", example = "success", position = 1)
-    //@Schema(name = "响应描述，成功时一般不需要该值", example = "success")
+    @Schema(name = "响应描述，成功时一般不需要该值，必定返回", example = "success")
     protected String msg = "success";
 
-    @ApiModelProperty(value = "传输的数据", dataType = "Object", example = "{\"name\":\"shoulder\"}", position = 2)
-    //@Schema(name = "传输的数据")
+    @Schema(name = "传输的数据", type = "Object", example = "{\"name\":\"shoulder\"}")
     protected T data;
 
     /**
      * 预留的扩展属性
      */
-    @ApiModelProperty(value = "扩展属性", dataType = "", example = "", position = 4)
+    @Schema(name = "扩展属性", type = "", example = "")
     private Map<String, Object> ext = Collections.emptyMap();
 
     public BaseResult() {

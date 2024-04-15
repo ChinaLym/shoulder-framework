@@ -1,7 +1,6 @@
 package org.shoulder.core.dto.response;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.shoulder.core.dto.ToStringObj;
 
 import java.util.ArrayList;
@@ -16,17 +15,14 @@ import java.util.List;
  *
  * @author lym
  */
-@ApiModel(value = "列表数据返回格式")
-//@Schema(description = "列表数据返回内容")
+@Schema(name = "列表数据返回格式")
 public class ListResult<T> extends ToStringObj {
 
     private static final long serialVersionUID = -3134782461635924904L;
-    //@Schema(name = "数据总数")
-    @ApiModelProperty(value = "数据总数", dataType = "long", required = true, example = "4", position = 0)
+    @Schema(name = "数据总数", type = "long", requiredMode = Schema.RequiredMode.REQUIRED, example = "4")
     private Long total = 0L;
 
-    //@Schema(name = "列表数据")
-    @ApiModelProperty(value = "列表数据", dataType = "List", required = true, example = "[1,2,3,4]", position = 1)
+    @Schema(name = "列表数据", type = "List", requiredMode = Schema.RequiredMode.REQUIRED, example = "[1,2,3,4]")
     private List<T> list;
 
     public long getTotal() {
