@@ -1,6 +1,7 @@
 package org.shoulder.web.validate;
 
 import cn.hutool.core.util.StrUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
@@ -14,11 +15,7 @@ import org.shoulder.validate.support.extract.ConstraintExtract;
 import org.shoulder.validate.support.model.ValidConstraint;
 import org.springframework.core.MethodParameter;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -43,6 +40,7 @@ import java.util.List;
  *
  * @author lym
  */
+@Tag(name = "接口校验规则查询-ValidateRuleEndPoint")
 @RestController
 @RequestMapping(value = ValidateRuleEndPoint.VALIDATION_RULE_URL_VALUE_EXPRESSION)
 public class ValidateRuleEndPoint {

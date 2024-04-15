@@ -1,8 +1,9 @@
 package org.shoulder.web.template.dictionary.controller;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
 import org.shoulder.core.dto.response.BaseResult;
@@ -30,6 +31,7 @@ import java.util.Collection;
  *
  * @author lym
  */
+@Tag(name = "字典-枚举类查询-DictionaryEnumController")
 @RestController
 public class DictionaryEnumController implements DictionaryEnumQueryController {
 
@@ -49,10 +51,10 @@ public class DictionaryEnumController implements DictionaryEnumQueryController {
      *
      * @return 查询结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "dictionaryType", value = "字典类型", dataType = "String", paramType = "path"),
+    @Parameters({
+            @Parameter(name = "dictionaryType", description = "字典类型"),
     })
-    @ApiOperation(value = "查询所有支持的字典项名称", notes = "查询所有支持的字典项名称")
+    @Operation(summary = "查询所有支持的字典项名称", description = "查询所有支持的字典项名称")
     @RequestMapping(value = "${shoulder.web.ext.dictionary.apiPath:/api/v1/dictionary}/type/all", method = {RequestMethod.POST, RequestMethod.GET})
     public BaseResult<ListResult<String>> allTypes() {
         Collection<String> allTypeNames = dictionaryEnumStore.listAllTypeNames();

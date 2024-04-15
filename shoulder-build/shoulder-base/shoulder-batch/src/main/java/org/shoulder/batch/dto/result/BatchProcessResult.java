@@ -1,7 +1,7 @@
 package org.shoulder.batch.dto.result;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -20,43 +20,41 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@ApiModel(description = "批量处理结果——查询批量处理结果接口-返回DTO")
+@Schema(name = "BatchProcessResult 批量处理结果——查询批量处理结果接口-返回DTO")
 public class BatchProcessResult {
 
-    @ApiModelProperty(required = true, value = "总数", dataType = "Integer", example = "1", position = 1)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "总数", type = "Integer", example = "1")
     private Integer totalNum;
 
-    @ApiModelProperty(required = true, value = "已处理个数", dataType = "Integer", example = "1", position = 2)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "已处理个数", type = "Integer", example = "1")
     private Integer processed;
 
-    @ApiModelProperty(required = false, value = "成功个数", dataType = "Integer", example = "1", position = 3)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, name = "成功个数", type = "Integer", example = "1")
     private Integer successNum;
 
     /**
      * 重复数目未单独作为字段，在 fail 中
      */
-    @ApiModelProperty(required = false, value = "失败个数", dataType = "Integer", example = "1", position = 4)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, name = "失败个数", type = "Integer", example = "1")
     private Integer failNum;
 
-    @ApiModelProperty(required = true, value = "已执行时间，毫秒", dataType = "Integer", example = "1234", position = 5)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "已执行时间，毫秒", type = "Integer", example = "1234")
     private Long timeConsumed;
 
-    @ApiModelProperty(required = true, value = "预估剩余时间", dataType = "Integer", example = "1000", position = 6)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "预估剩余时间", type = "Integer", example = "1000")
     private Long timeLeft;
 
-    @ApiModelProperty(required = true, value = "是否完成标识", dataType = "boolean", example = "true", position = 7)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "是否完成标识", type = "boolean", example = "true")
     private Boolean finish;
 
-    @ApiModelProperty(required = true, value = "状态", dataType = "Integer", example = "1", position = 8)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "状态", type = "Integer", example = "1")
     @DictionaryEnumItem(value = BatchDetailResultStatusEnum.class)
     private Integer status;
 
     /**
      * 查进度时暂不返回
      */
-    @ApiModelProperty(required = false, value = "处理详情列表(查询进度暂不包含)", dataType = "list", example = "[{\"reason\":\"reason\"," +
-                                                                                             "\"row\":1,\"reasonParam\":[\"xxx\"]}]",
-        position = 9)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, name = "处理详情列表(查询进度暂不包含)", example = "[{'reason':'reason', row':1,'reasonParam':['xxx']}]")
     @Valid
     private List<BatchProcessDetail> progressList;
 

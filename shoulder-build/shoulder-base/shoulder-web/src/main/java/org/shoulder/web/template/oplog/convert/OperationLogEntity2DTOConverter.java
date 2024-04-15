@@ -18,7 +18,7 @@ public class OperationLogEntity2DTOConverter extends AbstractVODataConverter<Ope
 
     @Override
     public void doConvert(@Nonnull OperationLogEntity sourceModel, @Nonnull OperationLogDTO targetModel) {
-        // todo
+        // todo get/set
         BeanUtil.copyProperties(sourceModel, targetModel);
     }
 

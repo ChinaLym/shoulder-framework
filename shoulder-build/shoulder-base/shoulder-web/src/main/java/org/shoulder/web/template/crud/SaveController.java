@@ -1,7 +1,7 @@
 package org.shoulder.web.template.crud;
 
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.shoulder.core.dto.response.BaseResult;
@@ -43,7 +43,7 @@ public interface SaveController<
      * @param dto 保存参数
      * @return ok
      */
-    @ApiOperation(value = "新增")
+    @Operation(summary = "新增")
     @PostMapping
     @OperationLog(operation = OperationLog.Operations.CREATE)
     @Validated(Create.class)

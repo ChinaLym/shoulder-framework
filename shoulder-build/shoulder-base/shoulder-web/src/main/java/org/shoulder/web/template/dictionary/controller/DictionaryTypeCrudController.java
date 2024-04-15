@@ -1,5 +1,6 @@
 package org.shoulder.web.template.dictionary.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.web.template.crud.CrudCacheableController;
 import org.shoulder.web.template.dictionary.dto.DictionaryTypeDTO;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lym
  */
+@Tag(name = "字典类型管理-DictionaryTypeCrudController")
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.dictionary.apiPath + '/type':/api/v1/dictionary/type}")
 public class DictionaryTypeCrudController

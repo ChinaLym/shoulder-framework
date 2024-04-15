@@ -1,5 +1,6 @@
 package org.shoulder.web.template.dictionary.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class DictionaryBatchQueryParam implements Serializable {
      */
     @NotNull
     @Size(max = 20)
+    @Schema(description = "字典类型", example = "[\"UserStatus\"]", requiredMode = Schema.RequiredMode.REQUIRED, type = "List<String>", subTypes = {String.class})
     List<String> dictionaryTypeList;
 
 }

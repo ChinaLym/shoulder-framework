@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author lym
  */
-@Schema(name = "列表数据返回格式")
+@Schema(name = "ListResult<T> 列表数据返回格式")
 public class ListResult<T> extends ToStringObj {
 
     private static final long serialVersionUID = -3134782461635924904L;

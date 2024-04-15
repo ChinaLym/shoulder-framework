@@ -1,5 +1,6 @@
 package org.shoulder.web.common;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.context.AppContext;
@@ -18,6 +19,7 @@ import java.io.IOException;
  *
  * @author lym
  */
+@Tag(name = "通用接口-CommonEndpoint")
 @Order
 @RestController
 public class CommonEndpoint implements ApplicationListener<ApplicationStartedEvent> {

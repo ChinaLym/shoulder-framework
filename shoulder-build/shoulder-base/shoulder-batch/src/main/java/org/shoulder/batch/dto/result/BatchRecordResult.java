@@ -1,12 +1,8 @@
 package org.shoulder.batch.dto.result;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.shoulder.core.dto.ToStringObj;
 
@@ -22,10 +18,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@ApiModel(description = "批量处理结果——查询批量处理结果接口-返回DTO")
+@Schema(name = "BatchRecordResult 批量处理结果——查询批量处理结果接口-返回DTO")
 public class BatchRecordResult extends ToStringObj {
 
-    @ApiModelProperty(required = true, value = "批次id", dataType = "String", example = "aDemoBatchId", position = 1)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "批次id", type = "String", example = "aDemoBatchId")
     private String batchId;
 
 
@@ -39,16 +35,16 @@ public class BatchRecordResult extends ToStringObj {
      */
     private String operation;
 
-    @ApiModelProperty(required = true, value = "总数", dataType = "Integer", example = "1", position = 1)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "总数", type = "Integer", example = "1")
     private Integer totalNum;
 
-    @ApiModelProperty(required = true, value = "成功个数", dataType = "Integer", example = "1", position = 3)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "成功个数", type = "Integer", example = "1")
     private Integer successNum;
 
     /**
      * 失败数目（包括重复跳过等）
      */
-    @ApiModelProperty(required = true, value = "失败个数", dataType = "Integer", example = "1", position = 4)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "失败个数", type = "Integer", example = "1")
     private Integer failNum;
 
     /**
@@ -64,7 +60,7 @@ public class BatchRecordResult extends ToStringObj {
     /**
      * 操作详情项
      */
-    @ApiModelProperty(value = "操作详情项列表", dataType = "list", example = "[{}]", position = 9)
+    @Schema(name = "操作详情项列表", type = "list", example = "[{}]")
     private List<BatchRecordDetailResult> detailList;
 
 }

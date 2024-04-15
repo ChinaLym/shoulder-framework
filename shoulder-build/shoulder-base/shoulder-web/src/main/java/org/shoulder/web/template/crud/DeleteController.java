@@ -1,6 +1,6 @@
 package org.shoulder.web.template.crud;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.model.Operable;
@@ -41,7 +41,7 @@ public interface DeleteController<
      * @param bizId bizId
      * @return 是否成功
      */
-    @ApiOperation(value = "删除")
+    @Operation(summary = "删除")
     @DeleteMapping("{bizId}")
     @OperationLog(operation = OperationLog.Operations.DELETE)
     default BaseResult<Boolean> deleteByBizId(@OperationLogParam @PathVariable("bizId") String bizId) {
@@ -61,7 +61,7 @@ public interface DeleteController<
      * @param bizIdList
      * @return 是否成功
      */
-    @ApiOperation(value = "删除")
+    @Operation(summary = "删除")
     @DeleteMapping
     @OperationLog(operation = OperationLog.Operations.DELETE)
     default BaseResult<Boolean> deleteBatchByBizId(@OperationLogParam @RequestBody List<String> bizIdList) {

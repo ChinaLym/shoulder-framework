@@ -1,6 +1,6 @@
 package org.shoulder.web.template.crud;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
@@ -48,7 +48,7 @@ public abstract class CrudCacheableController<
      *
      * @return 是否成功
      */
-    @ApiOperation(value = "刷新缓存", notes = "刷新缓存")
+    @Operation(summary = "刷新缓存", description = "刷新缓存")
     @PostMapping("refreshCache")
     @OperationLog(operation = OperationLog.Operations.UPDATE)
     public BaseResult<Boolean> refreshCache() {
@@ -61,7 +61,7 @@ public abstract class CrudCacheableController<
      *
      * @return 是否成功
      */
-    @ApiOperation(value = "清理缓存", notes = "清理缓存")
+    @Operation(summary = "清理缓存", description = "清理缓存")
     @PostMapping("clearCache")
     @OperationLog(operation = OperationLog.Operations.DELETE)
     public BaseResult<Boolean> clearCache() {

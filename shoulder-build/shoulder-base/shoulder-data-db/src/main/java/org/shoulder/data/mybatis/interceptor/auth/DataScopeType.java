@@ -1,6 +1,5 @@
 package org.shoulder.data.mybatis.interceptor.auth;
 
-import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,7 +11,6 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-@ApiModel(value = "DataScopeType", description = "数据权限类型-枚举")
 public enum DataScopeType {
 
     /**

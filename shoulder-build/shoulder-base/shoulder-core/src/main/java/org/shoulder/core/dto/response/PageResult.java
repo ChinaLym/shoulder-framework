@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
-@Schema(name = "分页数据返回格式")
+@Schema(name = "PageResult<T> 分页数据返回格式")
 public class PageResult<T> extends ListResult<T> {
 
     private static final long serialVersionUID = -1451879834966540928L;

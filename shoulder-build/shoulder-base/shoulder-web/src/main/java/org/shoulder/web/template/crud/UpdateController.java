@@ -1,7 +1,7 @@
 package org.shoulder.web.template.crud;
 
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.shoulder.core.dto.response.BaseResult;
@@ -44,7 +44,7 @@ public interface UpdateController<
      * @param dto 修改DTO
      * @return 修改后的实体数据
      */
-    @ApiOperation(value = "修改", notes = "修改UpdateDTO中不为空的字段")
+    @Operation(summary = "修改", description = "修改UpdateDTO中不为空的字段")
     @PutMapping
     @OperationLog(operation = OperationLog.Operations.UPDATE)
     @Validated(Update.class)
@@ -63,7 +63,7 @@ public interface UpdateController<
      * @param dto 修改DTO
      * @return 修改后的实体数据
      */
-//    @ApiOperation(value = "修改所有字段", notes = "修改所有字段，没有传递的字段会被置空")
+//    @Operation(summary = "修改所有字段", description = "修改所有字段，没有传递的字段会被置空")
 //    @PutMapping("/allFields")
 //    @OperationLog(operation = OperationLog.Operations.UPDATE)
 //    @Validated(Update.class)

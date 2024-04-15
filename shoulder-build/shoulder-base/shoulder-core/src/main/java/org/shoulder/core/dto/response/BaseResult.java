@@ -22,7 +22,7 @@ import java.util.Map;
  *
  * @author lym
  */
-@Schema(name = "接口响应统一返回值包装类 Restful 风格")
+@Schema(name = "BaseResult<T> 接口响应统一返回值包装类 Restful 风格")
 public class BaseResult<T> extends ToStringObj {
 
     private static final long serialVersionUID = -3829563105110651627L;

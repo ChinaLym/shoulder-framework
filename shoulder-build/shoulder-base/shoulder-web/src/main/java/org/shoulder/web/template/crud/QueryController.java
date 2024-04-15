@@ -1,9 +1,9 @@
 package org.shoulder.web.template.crud;
 
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -20,11 +20,7 @@ import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -55,13 +51,13 @@ public interface QueryController<
      * 查询
      * service.getById —— mapper.selectById
      *
-     * @param id 主键id
+     * @param bizId 业务id
      * @return 查询结果
      */
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = DataBaseConsts.FIELD_BIZ_ID, value = "bizId", dataType = "String", paramType = "path"),
+    @Parameters({
+            @Parameter(name = DataBaseConsts.FIELD_BIZ_ID, description = "bizId"),
     })
-    @ApiOperation(value = "单个查询", notes = "单个查询")
+    @Operation(summary = "单个查询", description = "单个查询")
     @GetMapping("/{bizId}")
     @OperationLog(operation = OperationLog.Operations.QUERY)
     default BaseResult<QueryResultDTO> queryByBizId(@OperationLogParam @PathVariable(name = "bizId") String bizId) {
@@ -78,7 +74,7 @@ public interface QueryController<
      * @param pageQueryParam 分页参数
      * @return 分页数据
      */
-    @ApiOperation(value = "分页查询")
+    @Operation(summary = "分页查询")
     @PostMapping(value = "/page")
     @OperationLog(operation = OperationLog.Operations.QUERY)
     default BaseResult<PageResult<QueryResultDTO>> page(
@@ -97,7 +93,7 @@ public interface QueryController<
      * @param data 批量查询条件
      * @return 查询结果
      */
-    @ApiOperation(value = "批量查询", notes = "批量查询")
+    @Operation(summary = "批量查询", description = "批量查询")
     @PostMapping("/listAll")
     @OperationLog(operation = OperationLog.Operations.QUERY)
     default BaseResult<ListResult<QueryResultDTO>> listAll(@OperationLogParam @RequestBody ENTITY data,

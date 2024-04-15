@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author lym
  */
-@Tag(name = "操作日志演示")
+@Tag(name = "标签管理-TagCrudController")
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.tag.path:/api/v1/tags}")
 public class TagCrudController extends CrudCacheableController<

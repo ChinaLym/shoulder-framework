@@ -1,5 +1,6 @@
 package org.shoulder.web.template.oplog.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.shoulder.web.template.crud.BaseControllerImpl;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lym
  */
+@Tag(name = "操作日志查询-OperationLogQueryController")
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.oplog.apiPath:/api/v1/oplogs}")
 public class OperationLogQueryController extends BaseControllerImpl<OperationLogService, OperationLogEntity>

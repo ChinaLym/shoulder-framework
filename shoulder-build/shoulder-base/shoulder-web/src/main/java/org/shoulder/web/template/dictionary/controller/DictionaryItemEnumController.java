@@ -1,8 +1,9 @@
 package org.shoulder.web.template.dictionary.controller;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.dictionary.model.DictionaryItemEnum;
 import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
@@ -13,23 +14,13 @@ import org.shoulder.web.template.dictionary.dto.DictionaryBatchQueryParam;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 import org.shoulder.web.template.dictionary.dto.DictionaryTypeDTO;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * 枚举型字典接口-默认实现
- * 暂时不支持search，过滤由前端缓存后过滤，也避免每次咨询后端api
- * http://localhost:8080/api/v1/dictionary/listByType/xxx
- * http://localhost:8080/api/v1/dictionary/item/listByTypes?xxx
- *
- * @author lym
- */
+
+@Tag(name = "字典-枚举项查询-DictionaryItemEnumController")
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.dictionary.apiPath:/api/v1/dictionary}")
 public class DictionaryItemEnumController implements DictionaryItemController {
@@ -52,10 +43,10 @@ public class DictionaryItemEnumController implements DictionaryItemController {
      * @param dictionaryType 字典项类型
      * @return 查询结果
      */
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "dictionaryType", value = "字典类型", dataType = "String", paramType = "path"),
+    @Parameters({
+            @Parameter(name = "dictionaryType", description = "字典类型"),
     })
-    @ApiOperation(value = "查询单个字典项", notes = "查询单个字典项")
+    @Operation(summary = "查询单个字典项", description = "查询单个字典项")
     @GetMapping("/listByType/{dictionaryType}")
     public BaseResult<ListResult<DictionaryItemDTO>> listByType(@OperationLogParam @PathVariable("dictionaryType") String dictionaryType) {
         List<DictionaryItemDTO> dictionaryItemList = query(dictionaryType);
@@ -69,10 +60,10 @@ public class DictionaryItemEnumController implements DictionaryItemController {
      * @param batchQueryParam 字典项类型 List
      * @return 查询结果
      */
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "batchQueryParam", value = "字典类型 list", dataType = "List", paramType = "body"),
+    @Parameters({
+            @Parameter(name = "batchQueryParam", description = "字典类型 list"),
     })
-    @ApiOperation(value = "查询多个字典项", notes = "查询多个字典项")
+    @Operation(summary = "查询多个字典项", description = "查询多个字典项")
     @RequestMapping(value = "/listByTypes", method = { RequestMethod.GET, RequestMethod.POST })
     public BaseResult<ListResult<DictionaryTypeDTO>> listAllByTypes(@Validated DictionaryBatchQueryParam batchQueryParam) {
         List<DictionaryTypeDTO> dictionaryList = batchQueryParam.getDictionaryTypeList().stream()

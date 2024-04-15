@@ -1,7 +1,6 @@
 package org.shoulder.core.dto.request;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import io.swagger.annotations.ApiModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
@@ -17,12 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.util.List;
 import java.util.Map;
 
-import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_NO;
-import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_SIZE;
-import static org.shoulder.core.constant.PageConst.PARAM_PAGE_NO;
-import static org.shoulder.core.constant.PageConst.PARAM_PAGE_SIZE;
-import static org.shoulder.core.constant.PageConst.PARAM_RULES;
-import static org.shoulder.core.constant.PageConst.PARAM_SORT_BY;
+import static org.shoulder.core.constant.PageConst.*;
 
 /**
  * 分页参数 DTO
@@ -31,7 +25,7 @@ import static org.shoulder.core.constant.PageConst.PARAM_SORT_BY;
  */
 @Getter
 @Setter
-@Schema("分页查询 DTO param")
+@Schema(name = "PageQuery<DTO> 分页查询请求")
 public class PageQuery<DTO> extends ToStringObj {
 
     private static final long serialVersionUID = -3462907130101674607L;
@@ -40,32 +34,34 @@ public class PageQuery<DTO> extends ToStringObj {
      * 页码
      * 不设置默认值，有些框架（如 JPA）页码是从0开始
      */
-    @Schema(name = "", type = "int", example = "1")
+    @Schema(name = "页码", type = "int", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "1")
     private Integer pageNo;
 
     /**
      * 每页大小
      */
-    @Schema(name = "", type = "int", example = "20")
+    @Schema(name = "每页数量", type = "int", example = "20", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "20")
     private Integer pageSize;
 
     /**
      * 排序规则
      */
-    @Schema(name = "", example = "[{\"fieldName\":\"name\", \"desc\":\"order\"}]")
+    @Schema(name = "排序规则", example = "[{\"fieldName\":\"name\", \"desc\":\"order\"}]", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private List<OrderRule> orderRules;
 
     /**
      * 查询条件
      */
-    @Schema(name = "查询条件", requiredMode = )
+    @Schema(name = "查询条件", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private DTO condition;
 
     /**
      * 扩展
      */
+    @Schema(name = "扩展查询条件", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Map<String, Object> ext;
 
+    @Schema(hidden = true)
     private Class<DTO> dtoType = resolveModelClass();
 
     public PageQuery() {

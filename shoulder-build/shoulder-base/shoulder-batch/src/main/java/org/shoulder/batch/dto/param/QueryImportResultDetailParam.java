@@ -1,15 +1,9 @@
 package org.shoulder.batch.dto.param;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.core.dto.request.PageQuery;
@@ -26,13 +20,13 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@ApiModel(description = "导入记录详情查询条件")
+@Schema(name = "QueryImportResultDetailParam 导入记录详情查询条件")
 public class QueryImportResultDetailParam extends PageQuery<BatchRecordResult> {
 
     /**
      * 批量导入id
      */
-    @ApiModelProperty(value = "导入批次id", example = "dqw4244vgr20", dataType = "string", required = true)
+    @Schema(name = "导入批次id", example = "dqw4244vgr20", type = "string", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty
     @Size(max = 128)
     private String batchId;
@@ -40,7 +34,7 @@ public class QueryImportResultDetailParam extends PageQuery<BatchRecordResult> {
     /**
      * 业务类型
      */
-    @ApiModelProperty(value = "业务标识", example = "user_add_record", dataType = "string", required = true)
+    @Schema(name = "业务标识", example = "user_add_record", type = "string", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty
     @Size(max = 128)
     private String businessType;
@@ -51,14 +45,14 @@ public class QueryImportResultDetailParam extends PageQuery<BatchRecordResult> {
      * 1 - 3
      * 2 - 4，5，6，7，8  失败（5，8）成功（4，6，7）
      */
-    @ApiModelProperty(value = "数据状态列表：数据状态列表:状态 0-未校验，1-校验通过，2-校验不通过，3、校验重复，4-导入成功，5-导入失败，6-导入重复数据更新，7-导入跳过重复数据，8" +
-        "-导入校验失败", example = "[1,2]", required = true, dataType = "java.util.List<java.lang.Integer>")
+    @Schema(name = "数据状态列表", description = "状态 0-未校验，1-校验通过，2-校验不通过，3、校验重复，4-导入成功，5-导入失败，6-导入重复数据更新，7-导入跳过重复数据，8" +
+            "-导入校验失败", example = "[1,2]", requiredMode = Schema.RequiredMode.REQUIRED, type = "java.util.List<java.lang.Integer>")
     private List<Integer> statusList;
 
     /**
      * @deprecated 使用请求头
      */
-    @ApiModelProperty(name = "文件编码", dataType = "string", example = "gbk", required = false)
+    @Schema(name = "文件编码", type = "string", example = "gbk")
     private String charsetLanguage;
 
 }

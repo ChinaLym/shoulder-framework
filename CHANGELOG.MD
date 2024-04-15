@@ -16,7 +16,7 @@
 
 ## 0.8（升级 spring boot3.2, JDK 17）
 
-升级并支持 spring-boot3（jdk、spring-cloud、spring security6等）
+升级并支持 spring-boot3（jdk、spring-cloud、spring security6等）；升级 swagger v3(OPEN-APIv2)
 
 - core
   - concurrent 引入双buffer缓存通用工具类 DoubleBufferCache，便于更简单的实现该高性能算法。

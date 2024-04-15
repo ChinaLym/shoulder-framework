@@ -111,7 +111,6 @@ public class WebExtAutoConfiguration {
             return new OperationLogQueryController(service, conversionService);
         }
 
-
         @Bean
         @ConditionalOnMissingBean(value = OperationLogDTO2EntityConverter.class)
         public OperationLogDTO2EntityConverter operationLogDTO2EntityConverter() {
