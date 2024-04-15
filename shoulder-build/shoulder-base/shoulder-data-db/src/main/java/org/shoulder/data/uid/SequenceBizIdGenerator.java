@@ -24,7 +24,7 @@ public class SequenceBizIdGenerator implements ConditionalBizIdGenerator {
 
     @Override
     public String generateBizId(BizEntity entity, Class<? extends BizEntity> entityClass) {
-        // todo 通过部分字段信息 + bizType + SequenceGenerator
+        // todo P1 通过部分字段信息 + bizType + SequenceGenerator
         String sequenceName = parseSequenceName(entity, entityClass);
         String dataVersion = parseDataVersion(entity, entityClass);
         long sequence = sequenceGenerator.next(sequenceName);

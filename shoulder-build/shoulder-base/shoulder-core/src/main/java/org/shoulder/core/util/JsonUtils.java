@@ -307,10 +307,9 @@ public class JsonUtils {
             DateTimeFormatter datetimeFormat = DateTimeFormatter.ofPattern(datetimeFormatStr);
             this.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(datetimeFormat));
             this.addDeserializer(LocalDateTime.class, ShoulderLocalDateTimeDeserializer.INSTANCE);
-            // todo Date 是java旧的日期工具，暂不对其提供宽泛反序列化支持，后续版本支持
 
             // 解决 17位+的 Long 给前端导致精度丢失问题，前端将以 str 接收（序列换成json时,将所有的long变成string）
-            // todo 【系统设计】JSON序列化时，枚举；long、BigInteger、BigDecimal 可以转为字符串处理
+            // 【系统设计】使用者可自行添加以下，方便JSON序列化时，枚举；long、BigInteger、BigDecimal 可以转为字符串，以使得前端可以正确显示
 //            this.addSerializer(Long.class, ToStringSerializer.instance);
 //            this.addSerializer(Long.TYPE, ToStringSerializer.instance);
 //            this.addSerializer(BigInteger.class, ToStringSerializer.instance);

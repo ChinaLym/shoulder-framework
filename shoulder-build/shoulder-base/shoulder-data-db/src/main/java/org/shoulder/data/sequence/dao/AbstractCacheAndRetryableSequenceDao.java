@@ -20,13 +20,18 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.sql.DataSource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.sql.DataSource;
 
 /**
  * 额外增加了 重试、锁、指标记录、双buffer cache
@@ -433,7 +438,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
     }
 
     private String computeSequenceLockId(String sequenceName) {
-        // todo loadtest mirror
+        // todo P2 loadtest mirror
         // return sequenceName + "_" + "01" + "_" + "01";
         return sequenceName;
     }
@@ -445,7 +450,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
     private SequenceRange createNewSequenceRange(String sequenceName) {
         SequenceRange sequenceRange = new SequenceRange(
             sequenceName, getMinValue(), getMaxValue(), getStep(), 0);
-        // 设置上下文信息 todo 分库分表信息
+        // 设置上下文信息 todo P2 扩展 分库分表信息
         // priorSequenceRange.captureAppContext();
         return sequenceRange;
     }

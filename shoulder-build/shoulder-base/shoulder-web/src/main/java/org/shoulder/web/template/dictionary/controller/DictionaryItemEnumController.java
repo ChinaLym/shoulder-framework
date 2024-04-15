@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 /**
  * 枚举型字典接口-默认实现
- * todo暂时不支持search，过滤由前端缓存后过滤，也避免每次咨询后端api
+ * 暂时不支持search，过滤由前端缓存后过滤，也避免每次咨询后端api
  * http://localhost:8080/api/v1/dictionary/listByType/xxx
  * http://localhost:8080/api/v1/dictionary/item/listByTypes?xxx
  *

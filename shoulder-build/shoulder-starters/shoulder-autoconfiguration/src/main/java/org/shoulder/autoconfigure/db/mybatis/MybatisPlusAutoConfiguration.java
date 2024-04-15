@@ -94,7 +94,8 @@ public class MybatisPlusAutoConfiguration {
     }
 
     /**
-     * todo 【安全|扩展】考虑继承 PaginationInnerInterceptor 处理分页查询页码溢出，风控可能认为不是系统本身发出的请求，而是外部伪造，需要记录本次请求的ip等端信息
+     * 【安全|扩展】使用者若发现系统中爬虫请求很多，考虑继承 PaginationInnerInterceptor 处理分页查询页码溢出
+     * 风控可能认为不是系统本身发出的请求，而是外部伪造，需要记录本次请求的ip等端信息
      */
     @Bean
     @Order(20)

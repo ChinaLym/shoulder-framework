@@ -61,7 +61,7 @@ public class TraceFilter implements Filter {
     private void startTrace(String traceId, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         AppContext.setTraceId(traceId);
         httpResponse.setHeader(TRACE_ID_IN_HEADER, traceId);
-        // TODO SPAN ID 透传的数据、用户信息等
+        // TODO P2 SPAN ID 透传的数据、用户信息等
     }
 
     private void endTrace(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
@@ -76,7 +76,7 @@ public class TraceFilter implements Filter {
             return localTraceId;
         }
         try {
-            // todo validate replace notBlank
+            // todo P2 validate replace notBlank
             //1. parse From RequestQueryString
             String paramTrace = StringUtils.trim(request.getParameter(TRACE_ID_IN_PARAM));
             if (StringUtils.isNotBlank(paramTrace)) {

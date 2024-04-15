@@ -32,7 +32,7 @@ public class TagDomain2DTOConverter extends AbstractVODataConverter<TagEntity, T
         // abstract 处理
         //targetModel.setCreator(sourceModel.getCreator());
         targetModel.setType(sourceModel.getType());
-        // todo i18n?
+        // todo P2 i18n?
         targetModel.setDisplayName(sourceModel.getDisplayName());
         targetModel.setDisplayOrder(sourceModel.getDisplayOrder());
         targetModel.setIcon(sourceModel.getIcon());

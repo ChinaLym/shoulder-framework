@@ -31,7 +31,7 @@ public class Threads {
 
     /**
      * 通用线程池
-     * todo 使用带调度的线程池！！！ 0.8
+     * todo P0 使用带调度的线程池方便刷进度等定时调度的任务！ 0.8
      */
     private static volatile ExecutorService SHOULDER_THREAD_POOL;
 

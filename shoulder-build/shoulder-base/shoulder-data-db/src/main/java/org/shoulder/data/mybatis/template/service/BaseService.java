@@ -350,7 +350,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
      */
     @SuppressWarnings("unchecked")
     default boolean updateBatchByBizId(Collection<? extends ENTITY> entityList, int batchSize) {
-        // todo fxime
+        // todo P1 dev
         throw new RuntimeException();
         //return updateBatchByBizId((Collection<ENTITY>) entityList, batchSize);
     }

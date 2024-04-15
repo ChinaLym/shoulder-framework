@@ -88,7 +88,7 @@ public abstract class AbstractDeleteInLogicMethod extends AbstractMethod {
      * set sql
      * SET delete_version=NOW()
      */
-    // set todo 需要 version 增加
+    // set todo P1 需要 version 增加
     protected String genSetSql(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         // SET delete_version = id
         return "SET " + tableInfo.getLogicDeleteFieldInfo().getColumn() + "=" + tableInfo.getKeyColumn();

@@ -111,7 +111,7 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
         AssertUtils.notNull(pageQueryCondition.getCondition().getRefType(), CommonErrorCodeEnum.ILLEGAL_PARAM);
         TagEntity tagEntity = super.getById(tagId);
         AssertUtils.notNull(tagEntity, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
-        // TODO 根据标签 order排序？
+        // TODO P2 根据标签 order排序？
         return tagMappingService.page(pageQueryCondition);
     }
 
@@ -246,11 +246,11 @@ public class TagServiceImpl extends BaseCacheableServiceImpl<TagMapper, TagEntit
     }
 
     private void tryDeleteTag(Long tagId) {
+        // todo P2【优化】可以用 lockInShare Mode 提高并发
         TagEntity tag = super.lockById(tagId);
         AssertUtils.notNull(tag, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
         TagMappingEntity tagMapping = new TagMappingEntity();
         tagMapping.setTagId(tagId);
-        // todo count
         long existCount = tagMappingService.count(tagMappingService.query(tagMapping, null));
         if (existCount == 0) {
             // 当且仅当没有引用才删除

@@ -226,7 +226,7 @@ public interface IdSpecification {
     static void validateStandardId(String standardId) {
         AssertUtils.isTrue(standardId != null && standardId.length() > MIN_STAND_ID_LENGTH, CommonErrorCodeEnum.CODING,
             "standardId.length must > " + MIN_STAND_ID_LENGTH);
-        // todo
+        // todo P2 region
         extractRegionCode(standardId);
     }
 
@@ -327,13 +327,13 @@ public interface IdSpecification {
     // ----------------------------------------------------------------
 
     static String getCurrentRegionCode() {
-        // todo
+        // todo P2 region
         //return AppInfo.xxx;
         return "000";
     }
 
     static void validateRegionCode(String regionCode) {
         AssertUtils.notNull(regionCode, CommonErrorCodeEnum.CODING, "sequence must > 0");
-        // todo enum check
+        // todo P2 region enum check
     }
 }

@@ -8,7 +8,7 @@ DEMO4: org.springframework.security.config.annotation.web.configuration.WebSecur
 ## 依赖优化
 
 ~~demo 改为 h2 、内嵌方便本地启动，完成~~
-op-log, local-crypto 在db引入后,表未创建,采用打印log的兜底逻辑
+~~op-log, local-crypto 在db引入后,表未创建,采用打印log的兜底逻辑~~，不添加默认策略
 
 # 实现
 
@@ -28,12 +28,12 @@ op-log, local-crypto 在db引入后,表未创建,采用打印log的兜底逻辑
 租户这个概念，不同的业务场景有不同的决策逻辑，直接用租户承载未必是最合适的，而是贴近业务场景，将业务最真实的隔离条件依据作为隔离标更好，如地区，国家，公司主体等，否则随着业务的深入，技术会因为"租户"概念而被拖累。
 
 #### api 文档
-- open-api v2/v3 ?
+- open-api v3
 - 接口上报到网关？【platform 用client SDK支持】
     - 自动推送
     - 插件生成网关可解析的格式
     - 推到系统中心/字典组件
-- api 带版本
+- ~~api 带版本~~，由API说明附带，减少对 shoulder 的感知
 - @API 注解区分哪些是对外（第三方）暴露的接口，哪些是系统内部的接口
 
 #### 枚举与字典集成【Preview】

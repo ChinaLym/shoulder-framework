@@ -44,7 +44,7 @@ public class SpringSecurityOperatorInfoInterceptor extends OperationLogOperatorI
             operator.setTerminalAddress(webAuthenticationDetails.getRemoteAddress());
             operator.setTerminalInfo(request.getHeader("User-Agent"));
         }
-        // todo terminalInfo 解析
+        // todo P2 完善记录请求信息 terminalInfo 解析
         //operator.setTerminalInfo(request.getHeader("User-Agent"));
         return operator;
     }

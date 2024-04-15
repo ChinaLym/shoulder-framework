@@ -69,7 +69,7 @@ public class LockAutoConfiguration {
 
         @Scheduled(cron = "0/30 * * * * *")
         public void cleanExpiredJdbcLock() {
-            // todo 后续放Threads 作为基础能力，左到可以不依赖 @EnableScheduling，尽量减少Bean启动
+            // todo P2优化 后续放Threads 作为基础能力定时扫描，避免引入 Spring 依赖（@EnableScheduling）减少Bean启动
             if (useJdbcLock && jdbcLock != null) {
                 jdbcLock.cleanExpiredLock();
             }

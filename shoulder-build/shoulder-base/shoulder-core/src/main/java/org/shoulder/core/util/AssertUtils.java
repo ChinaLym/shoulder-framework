@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  * 且实现构造方法: {@link BaseRuntimeException#BaseRuntimeException(String)}
  * {@link BaseRuntimeException#BaseRuntimeException(org.shoulder.core.exception.ErrorCode, Object[])}
  * </ul>
- * todo add collection function
+ * todo P1 add collection function
  *
  * @author lym
  */
