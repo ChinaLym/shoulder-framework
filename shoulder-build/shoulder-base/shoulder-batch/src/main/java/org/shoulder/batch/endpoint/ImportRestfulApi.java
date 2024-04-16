@@ -23,11 +23,7 @@ import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.validate.annotation.FileType;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -53,7 +49,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  *
  * @author lym
  */
-@Tag(name = "数据批量操作-ImportRestfulApi")
+@Tag(name = "ImportRestfulApi", description = "数据批处理接口")
 @RequestMapping(value = "${shoulder.web.ext.batch.apiPath:/api/v1/batch/{dataType}}")
 @Validated
 public interface ImportRestfulApi {

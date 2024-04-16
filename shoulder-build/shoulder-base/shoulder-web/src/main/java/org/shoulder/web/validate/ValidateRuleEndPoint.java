@@ -6,6 +6,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.log.Logger;
@@ -40,7 +41,7 @@ import java.util.List;
  *
  * @author lym
  */
-@Tag(name = "接口校验规则查询-ValidateRuleEndPoint")
+@Tag(name = "ValidateRuleEndPoint", description = "接口校验规则-查询(只读)；识别后端代码 JSR 校验规则注解，生成校验规则。")
 @RestController
 @RequestMapping(value = ValidateRuleEndPoint.VALIDATION_RULE_URL_VALUE_EXPRESSION)
 public class ValidateRuleEndPoint {
@@ -82,7 +83,9 @@ public class ValidateRuleEndPoint {
      */
     @GetMapping("/**")
     @ResponseBody
-    public BaseResult<ListResult<FieldValidationRuleDTO>> viaPathVariable(@RequestParam(value = "method", required = false) String method,
+    public BaseResult<ListResult<FieldValidationRuleDTO>> viaPathVariable(@RequestParam(value = "method")
+                                                                          @Pattern(regexp = "POST|GET|DELETE|PUT|HEAD|PATCH|OPTIONS|TRACE")
+                                                                          String method,
                                                                           HttpServletRequest request) throws Exception {
         String requestUri = request.getRequestURI();
         String uri = StrUtil.subAfter(requestUri, validationRuleUrl, false);
@@ -112,7 +115,8 @@ public class ValidateRuleEndPoint {
     private List<FieldValidationRuleDTO> localFieldValidatorDescribe(HttpServletRequest request) throws Exception {
         HandlerExecutionChain chains = requestMappingHandlerMapping.getHandler(request);
         if (chains == null) {
-            log.info("can't find handler match method={}, uri={}", request.getMethod(), request.getRequestURI());
+            // 避免被黑客拿该接口来探测接口，故若接口不存在，返回内容与无校验规则一致
+            log.info("ValidateRuleEndPoint can't find handler match method={}, uri={}", request.getMethod(), request.getRequestURI());
             return Collections.emptyList();
         }
         HandlerMethod method = (HandlerMethod) chains.getHandler();

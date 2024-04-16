@@ -6,16 +6,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.StringUtils;
+import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.boot.autoconfigure.availability.ApplicationAvailabilityAutoConfiguration;
 import org.springframework.boot.availability.ApplicationAvailabilityBean;
 import org.springframework.boot.availability.LivenessState;
 import org.springframework.boot.availability.ReadinessState;
 import org.springframework.core.annotation.Order;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -25,7 +22,7 @@ import java.io.IOException;
  * @author lym
  * @see ApplicationAvailabilityAutoConfiguration
  */
-@Tag(name = "通用接口-CommonEndpoint")
+@Tag(name = "CommonEndpoint", description = "通用-接口")
 @Order
 @RestController
 public class CommonEndpoint extends ApplicationAvailabilityBean {
@@ -52,7 +49,8 @@ public class CommonEndpoint extends ApplicationAvailabilityBean {
         return AppContext.getUserId();
     }
 
-    @Operation(summary = "健康检查", description = "判断应用是否启动完成/是否夯住，可以对外提供服务。0: 启动成功 && 可接受流量；1: 启动中；2：启动了，但目前无法接受流量和请求；3：启动失败。")
+    @SkipResponseWrap
+    @Operation(summary = "健康检查", description = "判断应用是否启动完成/是否夯住，是否能对外提供服务，为了便于脚本检测与解析，本接口只返回单个数字。0: 启动成功 && 可接受流量；1: 启动中；2：启动了，但目前无法接受流量和请求；3：启动失败。")
     @GetMapping("/health/check")
     public int healthCheck() {
         LivenessState livenessState = getState(LivenessState.class);

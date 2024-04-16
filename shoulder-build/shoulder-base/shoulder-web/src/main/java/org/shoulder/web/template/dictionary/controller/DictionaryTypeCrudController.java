@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lym
  */
-@Tag(name = "字典类型管理-DictionaryTypeCrudController")
+@Tag(name = "DictionaryTypeCrudController", description = "字典-类型管理")
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.dictionary.apiPath + '/type':/api/v1/dictionary/type}")
 public class DictionaryTypeCrudController

@@ -31,7 +31,7 @@ import java.util.Collection;
  *
  * @author lym
  */
-@Tag(name = "字典-枚举类查询-DictionaryEnumController")
+@Tag(name = "DictionaryEnumController", description = "枚举字典-类型查询(只读)")
 @RestController
 public class DictionaryEnumController implements DictionaryEnumQueryController {
 

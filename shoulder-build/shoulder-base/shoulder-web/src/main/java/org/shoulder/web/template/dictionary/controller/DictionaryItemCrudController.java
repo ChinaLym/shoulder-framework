@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lym
  */
-@Tag(name = "字典项管理-DictionaryItemCrudController")
+@Tag(name = "DictionaryItemCrudController", description = "字典-明细项管理")
 @RestController
 @RequestMapping(value = "${shoulder.web.ext.dictionary.apiPath + '/item':/api/v1/dictionary/item}")
 public class DictionaryItemCrudController extends CrudCacheableController<
