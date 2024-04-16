@@ -20,13 +20,13 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@Schema(name = "QueryImportResultDetailParam 导入记录详情查询条件")
+@Schema(description = "QueryImportResultDetailParam 导入记录详情查询条件")
 public class QueryImportResultDetailParam extends PageQuery<BatchRecordResult> {
 
     /**
      * 批量导入id
      */
-    @Schema(name = "导入批次id", example = "dqw4244vgr20", type = "string", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "导入批次id", example = "dqw4244vgr20", type = "string", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty
     @Size(max = 128)
     private String batchId;
@@ -34,7 +34,7 @@ public class QueryImportResultDetailParam extends PageQuery<BatchRecordResult> {
     /**
      * 业务类型
      */
-    @Schema(name = "业务标识", example = "user_add_record", type = "string", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "业务标识", example = "user_add_record", type = "string", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty
     @Size(max = 128)
     private String businessType;
@@ -45,14 +45,15 @@ public class QueryImportResultDetailParam extends PageQuery<BatchRecordResult> {
      * 1 - 3
      * 2 - 4，5，6，7，8  失败（5，8）成功（4，6，7）
      */
-    @Schema(name = "数据状态列表", description = "状态 0-未校验，1-校验通过，2-校验不通过，3、校验重复，4-导入成功，5-导入失败，6-导入重复数据更新，7-导入跳过重复数据，8" +
-            "-导入校验失败", example = "[1,2]", requiredMode = Schema.RequiredMode.REQUIRED, type = "java.util.List<java.lang.Integer>")
+    @Schema(description = "数据状态列表，状态 0-未校验，1-校验通过，2-校验不通过，3、校验重复，4-导入成功，5-导入失败，"
+                          + "6-导入重复数据更新，7-导入跳过重复数据，8-导入校验失败", example = "[1,2]", requiredMode = Schema.RequiredMode.REQUIRED,
+        type = "java.util.List<java.lang.Integer>")
     private List<Integer> statusList;
 
     /**
      * @deprecated 使用请求头
      */
-    @Schema(name = "文件编码", type = "string", example = "gbk")
+    @Schema(description = "文件编码", type = "string", example = "gbk")
     private String charsetLanguage;
 
 }

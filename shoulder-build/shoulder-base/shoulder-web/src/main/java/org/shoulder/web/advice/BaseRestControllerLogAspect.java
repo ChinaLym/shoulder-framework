@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
  * 生产环境接口入参默认，以 Json 形式记录接口出入参数
  * 记录日志通常用 filter 方式记录，在参数序列化、校验之前记录（因为filter的内容为实际内容，而其他地方很可能被二次修改）
  * - 但需要注意在使用 filter 记录时，要将流拷贝才能使得可以重复读取
- *
+ * todo P1【性能】应对大报文响应，如：减少打印内容
  * @author lym
  */
 @Aspect

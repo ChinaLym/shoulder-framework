@@ -10,7 +10,7 @@ import org.shoulder.core.dto.ToStringObj;
  * @author lym
  */
 @Data
-@Schema(name = "TreeNodeResult 树形结构返回形式")
+@Schema(description = "TreeNodeResult 树形结构返回形式")
 public class TreeNodeResult extends ToStringObj {
 
     private static final long serialVersionUID = -3515352250874606693L;

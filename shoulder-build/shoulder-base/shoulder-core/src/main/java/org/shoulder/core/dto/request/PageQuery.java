@@ -25,7 +25,7 @@ import static org.shoulder.core.constant.PageConst.*;
  */
 @Getter
 @Setter
-@Schema(name = "PageQuery<DTO> 分页查询请求")
+@Schema(description = "PageQuery<DTO> 分页查询请求")
 public class PageQuery<DTO> extends ToStringObj {
 
     private static final long serialVersionUID = -3462907130101674607L;
@@ -34,31 +34,31 @@ public class PageQuery<DTO> extends ToStringObj {
      * 页码
      * 不设置默认值，有些框架（如 JPA）页码是从0开始
      */
-    @Schema(name = "页码", type = "int", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "1")
+    @Schema(description = "页码", type = "int", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "1")
     private Integer pageNo;
 
     /**
      * 每页大小
      */
-    @Schema(name = "每页数量", type = "int", example = "20", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "20")
+    @Schema(description = "每页数量", type = "int", example = "20", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "20")
     private Integer pageSize;
 
     /**
      * 排序规则
      */
-    @Schema(name = "排序规则", example = "[{\"fieldName\":\"name\", \"desc\":\"order\"}]", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "排序规则", example = "[{\"fieldName\":\"name\", \"desc\":\"order\"}]", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private List<OrderRule> orderRules;
 
     /**
      * 查询条件
      */
-    @Schema(name = "查询条件", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "查询条件", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private DTO condition;
 
     /**
      * 扩展
      */
-    @Schema(name = "扩展查询条件", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "扩展查询条件", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Map<String, Object> ext;
 
     @Schema(hidden = true)

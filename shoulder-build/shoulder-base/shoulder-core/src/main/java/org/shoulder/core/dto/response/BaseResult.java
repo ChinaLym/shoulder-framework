@@ -22,24 +22,24 @@ import java.util.Map;
  *
  * @author lym
  */
-@Schema(name = "BaseResult<T> 接口响应统一返回值包装类 Restful 风格")
+@Schema(description = "BaseResult<T> 接口响应统一返回值包装类 Restful 风格")
 public class BaseResult<T> extends ToStringObj {
 
     private static final long serialVersionUID = -3829563105110651627L;
 
-    @Schema(name = "状态码/错误码，成功为0，失败非0，必定返回", requiredMode = Schema.RequiredMode.REQUIRED, example = "0")
+    @Schema(description = "状态码/错误码，成功为0，失败非0，必定返回", requiredMode = Schema.RequiredMode.REQUIRED, example = "0")
     protected String code = "0";
 
-    @Schema(name = "响应描述，成功时一般不需要该值，必定返回", example = "success")
+    @Schema(description = "响应描述，成功时一般不需要该值，必定返回", example = "success")
     protected String msg = "success";
 
-    @Schema(name = "传输的数据", type = "Object", example = "{\"name\":\"shoulder\"}")
+    @Schema(description = "传输的数据", type = "Object", example = "{\"name\":\"shoulder\"}")
     protected T data;
 
     /**
      * 预留的扩展属性
      */
-    @Schema(name = "扩展属性", type = "", example = "")
+    @Schema(description = "扩展属性", type = "", example = "")
     private Map<String, Object> ext = Collections.emptyMap();
 
     public BaseResult() {

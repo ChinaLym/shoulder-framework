@@ -17,56 +17,56 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
-@Schema(name = "PageResult<T> 分页数据返回格式")
+@Schema(description = "PageResult<T> 分页数据返回格式")
 public class PageResult<T> extends ListResult<T> {
 
     private static final long serialVersionUID = -1451879834966540928L;
     /**
      * 当前页
      */
-    @Schema(name = "当前页码", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "当前页码", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageNum;
 
     /**
      * 每页的数量
      */
-    @Schema(name = "每页的数据数量", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "每页的数据数量", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer pageSize;
 
     /**
      * 当前页的数量
      */
-    @Schema(name = "当前页的数据数量", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "当前页的数据数量", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer size;
 
     /**
      * 总页数
      */
-    @Schema(name = "总页数", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "总页数", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer totalPageNum;
 
     /**
      * 是否为第一页
      */
-    @Schema(name = "是第一页", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "是第一页", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean firstPage = false;
 
     /**
      * 是否为最后一页
      */
-    @Schema(name = "是最后一页", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "是最后一页", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean lastPage = false;
 
     /**
      * 有前一页
      */
-    @Schema(name = "有前一页", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "有前一页", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean hasPreviousPage = false;
 
     /**
      * 有后一页
      */
-    @Schema(name = "有后一页", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "有后一页", requiredMode = Schema.RequiredMode.REQUIRED)
     private Boolean hasNextPage = false;
 
     public PageResult() {
@@ -239,9 +239,9 @@ public class PageResult<T> extends ListResult<T> {
     }
 
     public static final class PageResultBuilder {
-        //@Schema(name = "数据总数")
+        //@Schema(description = "数据总数")
         private Long total = 0L;
-        //@Schema(name = "列表数据")
+        //@Schema(description = "列表数据")
         private List list;
         private Integer pageNum;
         private Integer pageSize;

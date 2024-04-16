@@ -1,5 +1,6 @@
 package org.shoulder.web.common;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,8 +9,10 @@ import org.shoulder.core.util.StringUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.annotation.Order;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -26,7 +29,8 @@ public class CommonEndpoint implements ApplicationListener<ApplicationStartedEve
 
     private volatile boolean hasStart = false;
 
-    @RequestMapping({"/redirect/**"})
+    @Operation(summary = "重定向", description = "重定向到xx地址")
+    @RequestMapping(value = "/redirect/**", method = { RequestMethod.GET, RequestMethod.POST})
     public String redirect(HttpServletRequest request, HttpServletResponse response,
                            @RequestHeader(value = "Host") String host) throws IOException {
         String requestUri = request.getRequestURI();
@@ -41,13 +45,15 @@ public class CommonEndpoint implements ApplicationListener<ApplicationStartedEve
         return redirect;
     }
 
-    @RequestMapping({"/current/user"})
+    @Operation(summary = "获取当前用户信息")
+    @GetMapping("/current/user")
     public String currentUser() {
         // todo P2 getUserId
         return AppContext.getUserId();
     }
 
-    @RequestMapping({"/health/check"})
+    @Operation(summary = "健康检查", description = "判断应用是否启动完成/是否夯住，可以对外提供服务")
+    @GetMapping("/health/check")
     public int healthCheck() {
         return hasStart ? 0 : 1;
     }

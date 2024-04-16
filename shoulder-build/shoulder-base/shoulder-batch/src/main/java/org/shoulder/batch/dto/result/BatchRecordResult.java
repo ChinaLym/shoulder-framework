@@ -18,10 +18,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Schema(name = "BatchRecordResult 批量处理结果——查询批量处理结果接口-返回DTO")
+@Schema(description = "BatchRecordResult 批量处理结果——查询批量处理结果接口-返回DTO")
 public class BatchRecordResult extends ToStringObj {
 
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "批次id", type = "String", example = "aDemoBatchId")
+    @Schema(description = "批次id", requiredMode = Schema.RequiredMode.REQUIRED, type = "String", example = "aDemoBatchId")
     private String batchId;
 
 
@@ -35,16 +35,16 @@ public class BatchRecordResult extends ToStringObj {
      */
     private String operation;
 
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "总数", type = "Integer", example = "1")
+    @Schema(description = "总数", requiredMode = Schema.RequiredMode.REQUIRED, type = "Integer", example = "1")
     private Integer totalNum;
 
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "成功个数", type = "Integer", example = "1")
+    @Schema(description = "成功个数", requiredMode = Schema.RequiredMode.REQUIRED, type = "Integer", example = "1")
     private Integer successNum;
 
     /**
      * 失败数目（包括重复跳过等）
      */
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, name = "失败个数", type = "Integer", example = "1")
+    @Schema(description = "失败个数", requiredMode = Schema.RequiredMode.REQUIRED, type = "Integer", example = "1")
     private Integer failNum;
 
     /**
@@ -60,7 +60,7 @@ public class BatchRecordResult extends ToStringObj {
     /**
      * 操作详情项
      */
-    @Schema(name = "操作详情项列表", type = "list", example = "[{}]")
+    @Schema(description = "操作详情项列表", type = "list", example = "[{}]")
     private List<BatchRecordDetailResult> detailList;
 
 }
