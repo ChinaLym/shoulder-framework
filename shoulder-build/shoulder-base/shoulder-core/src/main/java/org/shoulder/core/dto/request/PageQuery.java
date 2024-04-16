@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.shoulder.core.dto.ToStringObj;
 import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.StringUtils;
+import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -16,7 +17,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.util.List;
 import java.util.Map;
 
-import static org.shoulder.core.constant.PageConst.*;
+import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_NO;
+import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_SIZE;
+import static org.shoulder.core.constant.PageConst.PARAM_PAGE_NO;
+import static org.shoulder.core.constant.PageConst.PARAM_PAGE_SIZE;
+import static org.shoulder.core.constant.PageConst.PARAM_RULES;
+import static org.shoulder.core.constant.PageConst.PARAM_SORT_BY;
 
 /**
  * 分页参数 DTO
@@ -25,7 +31,7 @@ import static org.shoulder.core.constant.PageConst.*;
  */
 @Getter
 @Setter
-@Schema(description = "PageQuery<DTO> 分页查询请求")
+@Schema(description = "PageQuery<DTO> 分页查询请求", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class PageQuery<DTO> extends ToStringObj {
 
     private static final long serialVersionUID = -3462907130101674607L;
@@ -46,7 +52,7 @@ public class PageQuery<DTO> extends ToStringObj {
     /**
      * 排序规则
      */
-    @Schema(description = "排序规则", example = "[{\"fieldName\":\"name\", \"desc\":\"order\"}]", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "排序规则", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private List<OrderRule> orderRules;
 
     /**

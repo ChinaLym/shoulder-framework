@@ -2,6 +2,7 @@ package org.shoulder.web.template.dictionary.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.springframework.http.MediaType;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * @author lym
  */
 @Data
+@Schema(description = "字典类型", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class DictionaryTypeDTO implements Serializable {
 
     private static final long serialVersionUID = -8214768522392888509L;

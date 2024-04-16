@@ -47,6 +47,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -116,7 +117,7 @@ public class ImportController implements ImportRestfulApi {
     @Override
     @OperationLog(operation = Operations.UPLOAD_AND_VALIDATE)
     public BaseResult<String> validate(String businessType, MultipartFile file,
-                                       String charsetLanguage) throws Exception {
+                                       String encoding) throws Exception {
         // todo 【进阶】文件 > 10M Error; > 1M persistent and validate; > 100kb;
         // 暂时只支持 csv
         AssertUtils.isTrue(file.getOriginalFilename().endsWith(".csv"), BatchErrorCodeEnum.CSV_HEADER_ERROR);
@@ -130,7 +131,8 @@ public class ImportController implements ImportRestfulApi {
         CsvParser csvParser = new CsvParser(settings);
 
         List<Record> recordList;
-        try (InputStreamReader in = new InputStreamReader(file.getInputStream(), AppInfo.charset())) {
+        Charset charset = encoding != null && Charset.isSupported(encoding) ? Charset.forName(encoding) : AppInfo.charset();
+        try (InputStreamReader in = new InputStreamReader(file.getInputStream(), charset)) {
             recordList = csvParser.parseAllRecords(in);
         }
 
@@ -245,10 +247,10 @@ public class ImportController implements ImportRestfulApi {
      * 示例： 导出 导入数据模板
      */
     @Override
-    public void exportImportTemplate(HttpServletResponse response, String businessType) throws IOException {
+    public void exportImportTemplate(HttpServletResponse response, String businessType, String encoding) throws IOException {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        String encoding = exportService.export(byteArrayOutputStream, BatchConstants.CSV, Collections.emptyList(), businessType);
+        encoding = encoding != null ? encoding : exportService.export(byteArrayOutputStream, BatchConstants.CSV, Collections.emptyList(), businessType);
 
         compositeResponse(response, businessType, byteArrayOutputStream, encoding);
     }

@@ -1,10 +1,14 @@
 package org.shoulder.batch.dto.result;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.shoulder.core.dto.ToStringObj;
+import org.springframework.http.MediaType;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Schema(description = "BatchRecordResult 批量处理结果——查询批量处理结果接口-返回DTO")
+@Schema(description = "BatchRecordResult 批量处理结果——查询批量处理结果接口-返回DTO", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class BatchRecordResult extends ToStringObj {
 
     @Schema(description = "批次id", requiredMode = Schema.RequiredMode.REQUIRED, type = "String", example = "aDemoBatchId")

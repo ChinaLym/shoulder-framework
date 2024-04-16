@@ -3,10 +3,16 @@ package org.shoulder.batch.dto.param;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.core.dto.request.PageQuery;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -20,7 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@Schema(description = "QueryImportResultDetailParam 导入记录详情查询条件")
+@Schema(description = "QueryImportResultDetailParam 导入记录详情查询条件", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class QueryImportResultDetailParam extends PageQuery<BatchRecordResult> {
 
     /**
@@ -51,9 +57,10 @@ public class QueryImportResultDetailParam extends PageQuery<BatchRecordResult> {
     private List<Integer> statusList;
 
     /**
-     * @deprecated 使用请求头
+     * 建议使用 Content-Type
+     * 如：text/html; charset=utf-8
      */
     @Schema(description = "文件编码", type = "string", example = "gbk")
-    private String charsetLanguage;
+    private String encoding;
 
 }

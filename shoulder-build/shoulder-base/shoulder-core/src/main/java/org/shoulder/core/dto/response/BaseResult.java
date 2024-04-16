@@ -8,6 +8,7 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.exception.ErrorContext;
 import org.shoulder.core.util.ExceptionUtil;
+import org.springframework.http.MediaType;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +23,7 @@ import java.util.Map;
  *
  * @author lym
  */
-@Schema(description = "BaseResult<T> 接口响应统一返回值包装类 Restful 风格")
+@Schema(description = "BaseResult<T> 接口响应统一返回值包装类 Restful 风格", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class BaseResult<T> extends ToStringObj {
 
     private static final long serialVersionUID = -3829563105110651627L;
@@ -33,7 +34,7 @@ public class BaseResult<T> extends ToStringObj {
     @Schema(description = "响应描述，成功时一般不需要该值，必定返回", example = "success")
     protected String msg = "success";
 
-    @Schema(description = "传输的数据", type = "Object", example = "{\"name\":\"shoulder\"}")
+    @Schema(description = "传输的数据")
     protected T data;
 
     /**

@@ -1,11 +1,16 @@
 package org.shoulder.batch.dto.result;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -19,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@Schema(description = "BatchRecordDetailResult 批量处理详情")
+@Schema(description = "BatchRecordDetailResult 批量处理详情", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class BatchRecordDetailResult {
 
     /**

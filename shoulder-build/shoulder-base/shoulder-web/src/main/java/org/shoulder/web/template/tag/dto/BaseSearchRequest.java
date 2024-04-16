@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.http.MediaType;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
+@Schema(description = "标签查询请求", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class BaseSearchRequest implements Serializable {
 
     @Serial

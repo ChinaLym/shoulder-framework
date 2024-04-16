@@ -1,12 +1,17 @@
 package org.shoulder.batch.dto.result;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
 import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -20,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@Schema(description = "BatchProcessResult 批量处理结果——查询批量处理结果接口-返回DTO")
+@Schema(description = "BatchProcessResult 批量处理结果——查询批量处理结果接口-返回DTO", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class BatchProcessResult {
 
     @Schema(description = "总数", requiredMode = Schema.RequiredMode.REQUIRED, type = "Integer", example = "1")

@@ -3,6 +3,7 @@ package org.shoulder.web.template.dictionary.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.MediaType;
 
 import java.io.Serializable;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
+@Schema(description = "字典项", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class DictionaryItemDTO implements Serializable, Comparable<DictionaryItemDTO> {
 
     private static final long serialVersionUID = 1L;

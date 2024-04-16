@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
+import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
-@Schema(description = "PageResult<T> 分页数据返回格式")
+@Schema(description = "PageResult<T> 分页数据返回格式", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class PageResult<T> extends ListResult<T> {
 
     private static final long serialVersionUID = -1451879834966540928L;
