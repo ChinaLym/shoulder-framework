@@ -5,15 +5,13 @@ Framework（一个肩膀）</a></h1>
 
 > 如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
 
-[![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://github.com/ChinaLym/shoulder-framework)
-[![](https://img.shields.io/badge/Author-lym-blue.svg)](https://github.com/ChinaLym)
-[![](https://img.shields.io/badge/version-0.7-brightgreen.svg)](https://github.com/ChinaLym/shoulder-framework)
+[![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework)
+[![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)
+[![](https://img.shields.io/badge/CICD-PASS-green.svg)](https://github.com/ChinaLym/shoulder-framework)
 
-![](https://img.shields.io/badge/Spring%20Boot%20Version-2.7.16-blue.svg)
-![](https://img.shields.io/badge/Spring%20Cloud%20Version-2021.0.8-blue.svg)
-
-[![GitHub stars](https://img.shields.io/github/stars/ChinaLym/shoulder-framework.svg?style=social&label=Stars)](https://github.com/ChinaLym/shoulder-framework/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/ChinaLym/shoulder-framework.svg?style=social&label=Fork)](https://github.com/ChinaLym/shoulder-framework/network/members)
+[![](https://img.shields.io/badge/Developing%20Version-0.8_SNAPSHOT-lightgrey.svg)](https://github.com/ChinaLym/shoulder-framework)
+![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-lightgrey.svg)
+![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-lightgrey.svg)
 
 - Learn with
   DEMO：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
@@ -144,7 +142,7 @@ Shoulder 不求使用最广，而是致力于成为使用体验最好的开发�
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-      <version>0.7.1</version><!-- shoulder-version -->
+      <version>0.8</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- 你的 groupId -->

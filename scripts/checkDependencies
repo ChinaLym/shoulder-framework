@@ -1,0 +1,1 @@
+curl --location --request POST 'http://autopom.itlym.cn:12345/projects/create' --form 'email=cn_lym@foxmail.com' --form 'pomXml=@shoulder-dependencies/pom.xml' --form 'notifyInstantlyAfterCheck=true' --form 'notifyReason=checkDependencies.sh' || echo '======= SKIP dependency check. ======='
