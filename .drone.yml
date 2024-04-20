@@ -22,17 +22,9 @@ steps:
     commands:
       # 异步快速检查依赖
       - curl --location --request POST 'http://10.10.10.1:12345/projects/create' --form 'email=cn_lym@foxmail.com' --form 'pomXml=@shoulder-dependencies/pom.xml' --form 'notifyInstantlyAfterCheck=true' --form 'notifyReason=CI-<a href="https://git.itlym.cn/gogs/${DRONE_REPO_NAME}">${DRONE_REPO_NAME}::${DRONE_REPO_BRANCH}</a><br> with <a href="https://drone.itlym.cn/gogs/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}">Drone Build-${DRONE_BUILD_NUMBER}</a><br>' || echo '======= SKIP dependency check. ======='
-      # 改成部署前签名，否则不会上传
-
-      #- mvn clean install -P release -Dmaven.test.skip=true -B -V -T 1.5C
-      # 自动化升级所有带-SNAPSHOT依赖项目版本号到release版本
-      #- mvn versions:use-releases
-      #- cat pom.xml |grep 'shoulder-version'
-      #- mvn versions:use-next-releases
-      # mvn versions:use-latest-releases
-      - mvn versions:display-dependency-updates
-      # - bash script/install.sh
-      - echo 'FINISHED CICD!!'
+      # 安装到本地
+      - bash scripts/install.sh
+      - echo '========FINISHED CICD=========='
 #
       #  - name: 根据 commit 自动生成 CHANGELOG、README https://github.com/mbinary-toys/csdn-tools
       # - https://github.com/crawlab-team/artipub
