@@ -47,14 +47,8 @@
   - fix spring6 RestTemplate 底层方法不兼容变更bug
 - batch
   - 批处理模块进入可用状态（0.6 引入并开始孵化）
-----------
-- ~~VirtualThread~~ delay for jdk bugs
-  - IO部分使用
-  - Threads 区分IO、cpu
-  - 完善 VirtualThread
-  - 自动装饰线程池支持ThreadPoolExecutor
-
-安全：支持开关，将带@sensitive 注解的字段在自动打印日志中脱敏/不打印
+- configuration
+  - 支持开关，将带@sensitive 注解的字段在自动打印日志中脱敏/不打印
 
 ## 0.7.1（较大更新：依赖版本，新增功能 2023年10月2日 发布）
 
