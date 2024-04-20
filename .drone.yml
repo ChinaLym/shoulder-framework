@@ -25,13 +25,13 @@ steps:
       # 改成部署前签名，否则不会上传
 
       #- mvn clean install -P release -Dmaven.test.skip=true -B -V -T 1.5C
-      # 自动化升级依赖项目版本号到release版本
-      - mvn versions:use-releases
-      - cat pom.xml |grep 'shoulder-version'
+      # 自动化升级所有带-SNAPSHOT依赖项目版本号到release版本
+      #- mvn versions:use-releases
+      #- cat pom.xml |grep 'shoulder-version'
       #- mvn versions:use-next-releases
       # mvn versions:use-latest-releases
-      # mvn versions:display-dependency-updates
-      - bash script/install.sh
+      - mvn versions:display-dependency-updates
+      # - bash script/install.sh
       - echo 'FINISHED CICD!!'
 #
       #  - name: 根据 commit 自动生成 CHANGELOG、README https://github.com/mbinary-toys/csdn-tools
