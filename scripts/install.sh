@@ -1,8 +1,6 @@
 export MAVEN_OPTS="-Xmx400m -Xms400m"
-mvn clean deploy -Dmaven.test.skip=true -pl shoulder-dependencies -am
-mvn clean deploy -Dmaven.test.skip=true -pl shoulder-parent -am
-mvn clean deploy -P release -Dmaven.test.skip=true -B -V -T 1.5C
-echo 'FINISHED TO [deploy] !!'
+
+echo 'FINISHED TO [install] !!'
 # deploy 主要是发布，与网络相关，-T 1.5 最多用1.5个线程 -B batch 批量处理 -V Display version information
 
 # 不要包含 -U，将强制下载最新 SNAPSHOT
