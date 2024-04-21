@@ -25,7 +25,6 @@ steps:
       # 安装到本地
       - bash scripts/prepareRelease.sh
       #- bash scripts/deploy.sh
-      - bash scripts/install.sh
       # install script ==========
       - export MAVEN_OPTS="-Xmx400m -Xms400m"
       - mvn clean install -P release -Dmaven.test.skip=true -B -V -T 1.5C
