@@ -1,3 +1,5 @@
+#
+rm -rf /root/.m2/repository/cn/itlym
 # remove -SNAPSHOT
 sed -i 's#-SNAPSHOT</shoulder.version>#</shoulder.version>#g' pom.xml
 sed -i 's#-SNAPSHOT</shoulder.version>#</shoulder.version>#g' shoulder-archetype-simple/src/main/resources/archetype-resources/pom.xml
