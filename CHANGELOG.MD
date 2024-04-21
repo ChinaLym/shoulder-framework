@@ -8,6 +8,8 @@
     - cors 一键开关
     - 现在会自动引入 shoulder-api-doc
     - 提供操作日志查询
+- ext-ai
+  - 提供AI 工程里额外能力，如意图识别，输出内容管控、会话历史、会话分析等
 - ext-config
     - 提供动态配置管理功能
 - ext-moments
@@ -16,9 +18,9 @@
 
 ## 0.8（升级 spring boot3.2, JDK 17）
 
-升级并支持 spring-boot3（jdk、spring-cloud、spring security6等）；升级 swagger v3(OPEN-APIv2)
-
+> 升级并支持 spring-boot3（并将相关生态升级，如 jdk、spring-cloud、spring security6、swaggerv3/OPEN-APIv2等）
 - core
+  - 升级 jdk17
   - concurrent 引入双buffer缓存通用工具类 DoubleBufferCache，便于更简单的实现该高性能算法。
   - 提供增强的 ConversionService，支持集合、更多的类转换，比如日期解析时支持多种格式，Jdk8的各类时间互转
   - Translator 增加支持默认message方法

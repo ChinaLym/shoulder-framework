@@ -1,5 +1,5 @@
-![icon](.idea/icon.png=40x40)<h1 align="center"><a href="https://github.com/ChinaLym" target="_blank">Shoulder
-Framework（一个肩膀）</a></h1>
+<h1 align="center"><img src=".idea/icon.png" height="40" width="40" /><a href="https://github.com/ChinaLym" target="_blank">Shoulder
+Framework</a></h1>
 
 ![LOGO](doc/img/logo.jpg)
 
@@ -13,45 +13,45 @@ Framework（一个肩膀）</a></h1>
 ![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-lightgrey.svg)
 ![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-lightgrey.svg)
 
-- Learn with
-  DEMO：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
+一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能，再次极大程度降低业务代码开发工作量。
 
-一款 `Java WEB` / `微服务` 开发框架，在 `Spring Boot`、`Spring Cloud` 基础上实现了一些`可扩展`的常用功能。
-
-Shoulder 不求使用最广，而是致力于成为使用体验最好的开发框架，您任何的使用需求、建议、想法都可以留下来与我们沟通，Shoulder 将与您一起思考攻克疑难，助天下的开发者更好更安心得通过技术赋能业务！同时，利用业务疑难解决方案的积累反哺技术发展！
-
+- 示例工程 **See DEMO IN
+  **：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
 ---
 
-### 与 `Spring Boot`
+### Compare with `Spring Boot`
 
-可以把 `Shoulder` 看作为 `Spring Boot` 的一个 `插件`。即在 `Spring Boot` 基础上实现了常用能力的集合，将 **[软件优雅设计与开发最佳实践](https://spec.itlym.cn)** 落地。
+`Shoulder` 基于 `Spring Boot`，是 `Spring Boot` 的可拔插 `插件`。额外实现了常用能力，将 *
+*[软件优雅设计与开发最佳实践](https://spec.itlym.cn)** 落地。
 
-- 许多系统内部有一些统一规范，为降低实现该目的难度，`Shoulder` 实现了这项工作中重复的部分，提供了支持扩展、二次开发的能力。
-- 非常适合里将 `Shoulder` 作为公司里的基础脚手架，或是在`毕设`、`外包`、等项目中快速获得一些常用功能，加速开发！
+- `毕设`、`外包` 场景：快速获得一些常用功能，加速开发！
+- 将 `Shoulder` 作为公司/组织里的基础jar：许多组织内部往往有些统一编码规范，`Shoulder`
+  实现了这项工作中重复的部分（jar包设计、编译、分发、模块化、提供默认实现等），极大程度上降低了实现难度；
+- 基于 `Shoulder` 二次开发公司/组织里的基础jar：`Shoulder`对于规范处的实现类似 `Spring Boot`，均为`可扩展`
+  的，可以非常方便的扩展、二次开发。
 
 ### 功能
 
-- 统一配置项
-    - 各模块命名统一，支持多级配置
-    - 统一系统级配置入口，无需 `session.store.cluster=true crypto.store.cluster=true token.store.cluster=true`
-      ，仅需统一指定 `application.cluster=true`
-    - 一处配置，处处默认：如字符集、语言、日期格式等
-    - 一键支持集群：只需配置 `cluster=true`，自动切换至集群模式，无状态化
-    - 允许模块配置优先（优先级：`显式模块级配置 > 显式全局级配置 > 模块默认值 > 环境变量 > 系统默认值 > 未设置`）
-
-- 错误码(契约精神)
+- `Spring Boot`一致的风格和使用体验
+  - maven 工程模块命名为 `Spring Boot` 官方唯一指定风格
+  -
+  一处配置，处处默认：如字符集、语言、日期格式等，无需 `session.store.cluster=true crypto.store.cluster=true token.store.cluster=true`
+  ，仅需统一指定 `application.cluster=true`，一配置切换至集群模式，无状态化
+  - 约定大于配置，配置生效优先级：`显式模块级配置 > 显式全局级配置 > 模块默认值 > 环境变量 > 系统默认值 > 未设置`）
+  - 体验同`Spring Boot`，就像`Shoulder`不存在一样，只有 `starter` 和几个配置，但节省了巨大工作量。
+-
+- 错误码（契约精神）
     - 错误可通过错误码溯源，提供表意、传递、追踪机制
     - 与日志记录、链路追踪、接口契约、消息传递打通，有全局自动化兜底处理机制
 
-- 日志、异常、
+- 日志、异常（周到全面的异常设计）
     - 基于业界标准的日志标准（base on `Slf4j`），无兼容问题，最小化配置、开箱即用，优化内部并发机制，并结合shoulder技术栈提供增强能力
     - `日志`、`异常`、`错误码` 打通、改造了 `lombok` 源码，提供简化开发注解，极大减少代码量
     - 统一错误码格式（也支持配置）、规范代码中的错误
     - 提供错误码实践方案，让 `错误码规范` 不在头疼
     - 提供全局`异常`、`错误码`处理
 
-
-- 操作/审计日志
+- 操作/审计日志（周到全面的溯源审核设计）
     - 基于注解的使用：一个注解简单上手
     - 可扩展的输出格式：便于统一日志规范、提供默认推荐格式
     - 可扩展的目标源：无论是打印日志、保存至数据库、发送至Kafka，ELK等
@@ -67,8 +67,9 @@ Shoulder 不求使用最广，而是致力于成为使用体验最好的开发�
 - 完备的 session 管理
     - 包含存储、分析
 
-- *完善的*加密方案与实现
-    - 不像其他第三方 jar ，仅提供只提供 `AES\RSA\ECC\SHA\MD5` 等公开算法的实现。*shoulder* 还在这之上提供了`安全` `可靠` `可生产落地` 的方案与实现，如 `多级密钥管理`
+- 先进完备的加密与安全
+  - 不像其他第三方 jar ，仅提供只提供 `AES\RSA\ECC\SHA\MD5` 等公开算法的实现。`Shoulder`
+    还在这之上提供了`安全` `可靠` `可生产落地` 的方案与实现，如 `多级密钥管理`
       、`加密算法平滑升级`
     - 安全本地存储加解密：LocalCrypto，仅本应用/服务可以解密
     - 可配置的非对称密钥端点：无论是 `RSA`、`ECC` 还是国产化的 `SM2`，通过配置即刻实现切换；设置为集群时，自动将密钥存储转移至redis
@@ -88,7 +89,7 @@ Shoulder 不求使用最广，而是致力于成为使用体验最好的开发�
     - 与异常、错误码、多语言打通，简化开发难度
     - 包含文件、熟悉、DTO
 
-- 安全系列
+- WEB 认证 & 安全
     - 常见 `WEB` 攻击的防御器：CSRF、XSS、SQL Inject
     - Oauth2 授权
         - 认证服务器、资源服务器等（扩展 `Spring Security` ）
@@ -107,14 +108,17 @@ Shoulder 不求使用最广，而是致力于成为使用体验最好的开发�
   - **Java中性能最高**、灵活配置的**分布式、全局递增、唯一标识生成器（单节点持续高压场景为 twitter 雪花算法**200w倍+**、JDK UUID的 **120倍！**、百度开源算法的近 **60 倍！**）。
     巧妙处理时钟回拨，突发峰值、持续高压，并支持配置与扩展。
   - 可扩展的生产级分布式锁：优雅处理持锁宕机、并发加锁、可重入；默认支持数据库（巧妙处理事务可见性）、内存（提供模拟器）、Redis、zookeeper...
-  - 提供使用demo、部分单元测试：提供优秀的应用案例，懒人可以直接复制代码即可。
   - 可扩展的延迟任务
+  - 几乎去SQL开发的设计
+  - 类型转换（枚举 - int - String - json 自动互转、各类时间格式互转）
+  - 可动态调节，具备监控能力的线程池
   - 灵活的多环境配置
-  - 分布式的任务调度
   - 标准可扩展的链路追踪（`Open Tracing`）
+  - 认证、注册、权限管理
+  - 分布式的任务调度
   - 与 Spring Boot 天衣无缝的自动集成能力
   - 能力保证可扩展、可监控、可回滚（单独屏蔽下线）
-  - 认证、注册、权限管理
+  - 提供使用demo、部分单元测试：提供优秀的应用案例，懒人可以直接复制代码即可。
   - **等你探索...**
 ---
 
@@ -124,7 +128,8 @@ Shoulder 不求使用最广，而是致力于成为使用体验最好的开发�
 
 ### 自动创建
 
-`shoulder` 提供了 maven [archetype](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-archetype-simple)
+`Shoulder` 提供了
+maven [archetype](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-archetype-simple)
 ，可通过该工程快速创建
 
 ### 在新的 Maven 项目中使用
@@ -232,7 +237,7 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
         - **shoulder-xxx**: xxx模块代码（开发时可以把一个模块当作一个工程）。
         - ...
 
-    - **shoulder-starters**: 带 `Spring Boot` 自动配置的开箱即用模块，并提供 `shoulder` 功能的默认实现，简化使用者上手难度。
+  - **shoulder-starters**: 带 `Spring Boot` 自动配置的开箱即用模块，并提供 `Shoulder` 功能的默认实现，简化使用者上手难度。
         - **shoulder-starter-xxx**: xxx模块的自动配置，供使用者直接引入。
         - ...
 
@@ -290,3 +295,5 @@ Shoulder提供的能力可以参见[使用手册]()（TODO wiki）
 
 欢迎 `fork` 并提交合并请求一起改善该框架 [合作开发流程与项目介绍](CONTRIBUTING.MD)
 
+Shoulder 不求使用最广，而是致力于成为使用体验最好的开发框架，您任何的使用需求、建议、想法都可以留下来与我们沟通，Shoulder
+将与您一起思考攻克疑难，助天下的开发者更好更安心得通过技术赋能业务！同时，利用业务疑难解决方案的积累反哺技术发展！
