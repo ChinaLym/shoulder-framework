@@ -1,4 +1,3 @@
-export MAVEN_OPTS="-Xmx400m -Xms400m"
 mvn clean deploy -Dmaven.test.skip=true -pl shoulder-dependencies -am
 mvn clean deploy -Dmaven.test.skip=true -pl shoulder-parent -am
 mvn clean deploy -P release -Dmaven.test.skip=true -B -V -T 1.5C
