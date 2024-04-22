@@ -6,7 +6,7 @@
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
         <version>0.8-SNAPSHOT</version><!-- shoulder-version -->
-        <!--<relativePath>../pom.xml</relativePath>-->
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>shoulder-archetype-simple</artifactId>
