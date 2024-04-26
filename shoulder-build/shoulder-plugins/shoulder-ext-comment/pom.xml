@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-plugins</artifactId>
-        <version>0.8-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.8</version><!-- shoulder-version -->
     </parent>
 
     <artifactId>shoulder-ext-comment</artifactId>
