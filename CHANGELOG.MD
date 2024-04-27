@@ -16,7 +16,15 @@
     - 提供社交功能模块
         - 动态、文章、评论、点赞、朋友圈、通知等
 
-## 0.8（升级 spring boot3.2, JDK 17）
+## 0.8.1
+
+- shoulder-dependencies 升级依赖
+  - `mybatis-plus` 3.5.5 -> 3.5.6
+  - `commons-io`   2.16.0 -> 2.16.1
+- shoulder-archetype-simple bugfix
+  - 去除不需要的 import，修复 readme渲染格式错误，去除多余的配置文件内容
+
+## 0.8（升级 spring boot3.2, JDK 17，2024年4月24日 发布）
 
 > 升级并支持 spring-boot3（并将相关生态升级，如 jdk、spring-cloud、spring security6、swaggerv3/OPEN-APIv2等）
 - core

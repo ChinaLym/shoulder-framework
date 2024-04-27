@@ -9,8 +9,3 @@ spring:
     username: root
     password: ${MYSQL_PWD}
 
-shoulder:
-  application:
-    id: ${spring.application.name}
-    # unique code to mark a application
-    errorCodePrefix: @errorCodePrefix@
