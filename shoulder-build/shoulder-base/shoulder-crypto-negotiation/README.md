@@ -184,4 +184,6 @@ class SendRequest {
     - key agreement，协商的密钥，尤其至协商完毕的共识密钥。
     - key negotiation，密钥协商的过程。
 
+以安全通信为著称的知名APP `Instagram` ，其绝密的通信是基于 AES + DH，而Shoulder 使用**性能更好更安全的加密算法** AES(
+或其他) + ECDH。
 
