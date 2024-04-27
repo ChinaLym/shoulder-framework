@@ -37,7 +37,7 @@ groupId.artifactId
 
 \\#\\#\\# 依据
 
-* Tomcat 
+* Tomcat
     * 部署能极大的减少内存占用
     * 统一调参
     * 基础 Jar包共用、节约硬盘空间
@@ -45,7 +45,7 @@ groupId.artifactId
     * 成果物定制方便
     * 简化运维
     * 可以利用maven提供的机制进行热部署
-  
+
 * Fat Jar
     * 隔离性差，不会因为单个应用影响其他所有应用
     * 移植性好，打包后可直接运行，不需要绑定tomcat

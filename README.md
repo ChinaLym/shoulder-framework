@@ -1,4 +1,4 @@
-<h1 align="center"><img src="doc/img/logo.png" height="40" width="40" /><a href="" target="_blank">Shoulder Framework</a></h1>
+<h1 align="center"><img src="doc/img/logo.png" height="40" width="40" /><a href="https://github.com/ChinaLym/shoulder-framework" target="_blank">Shoulder Framework</a></h1>
 
 ![LOGO](doc/img/logo.jpg)
 
