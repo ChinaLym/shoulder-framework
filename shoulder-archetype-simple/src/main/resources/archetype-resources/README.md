@@ -1,7 +1,7 @@
 ## maven archtype 基于 Velocity 生成工程，所以两个井号之间内容会被忽略，所以要输出必须要加反斜线
-
 # ${appId}
 
+# 📖介绍
 该工程由 [Shoulder](https://github.com/ChinaLym/shoulder-framework) 的 `shoulder-archetype-simple` 创建 ，包目录结构如下
 
 ```
@@ -23,13 +23,15 @@ groupId.artifactId
 
 ---
 
-# 部署建议
+# 🚀 快速开始
 
 * 不间断运行 / 互联网类软件：通过 spring-boot jar 方式 + docker 部署。
 
 * 传统型软件产品：通过 tomcat 部署。
 
-分析：
+# ❓常见问题 & FAQ
+
+### 问题举例：Spring Boot 项目打包成 Tomcat 或 Fat Jar 方式运行有什么区别？
 
 * Tomcat
     * 部署能极大的减少内存占用
@@ -45,4 +47,16 @@ groupId.artifactId
     * 移植性好，打包后可直接运行，不需要绑定tomcat
     * 可以选择其他服务器，如`Undertow`、更底层的 `Netty`
 
+# 📒 版本变更记录
 
+当前版本为 `${version}`，更多见 [CHANGELOG.MD](CHANGELOG.MD)
+
+# 💗 贡献代码
+
+欢迎各类型代码提交，不限于`优化代码格式`、`优化注释/JavaDoc`、`修复 BUG`、`新增功能`
+，更多请参考 [如何贡献代码](CONTRIBUTING.MD)
+
+# 📩 反馈 or 联系我
+
+感谢小伙伴们的 **[🌟Star](https://gitee.com/ChinaLym/shoulder-framework/star)** 、 **🍴Fork** 、 **🏁PR**，欢迎使用 `issue`
+或 [Email](mailto:yourEmail@yourEmail.com) 交流，如 留下你的建议、期待的新功能等~

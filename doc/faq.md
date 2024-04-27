@@ -17,4 +17,5 @@
 
 ## 🤝 3.Shoulder 自身问题
 
-这类问题比较少，若您发现，请自豪得在 `ISSUE` 或 [向 cn_lym@foxmai.com 发送邮件](mailto:cn_lym@foxmai.com) 告诉我们你发现了一个，我们将收集 & 记录 & 确认问题，若需要解决则会尽快修复问题，感谢您的贡献！
+这类问题比较少，若您发现，请自豪得在 `ISSUE` 或 [向 cn_lym@foxmail.com 发送邮件](mailto:cn_lym@foxmail.com)
+告诉我们你发现了一个，我们将收集 & 记录 & 确认问题，若需要解决则会尽快修复问题，感谢您的贡献！
