@@ -1,10 +1,12 @@
-# ${appId}
+# maven archtype 基于 Velocity 生成工程，所以两个井号之间内容会被忽略，所以要输出必须要加反斜线 #
+
+\\# ${appId}
 
 该工程通过 `shoulder-archetype-simple` 创建
 
 - Shoulder 开源地址：[github](https://github.com/ChinaLym/shoulder-framework)
 
-## 包目录结构
+\\#\\# 包目录结构
 
 ```
 groupId.artifactId
@@ -25,16 +27,15 @@ groupId.artifactId
 
 ---
 
-## 部署方案建议
+\\#\\# 部署方案建议
 
-
-### 结论 
+\\#\\#\\# 结论
 
 * 不间断运行 / 互联网类软件：通过 spring-boot jar 方式 + docker 部署。
 
 * 传统型软件产品：通过 tomcat 部署。
 
-### 依据
+\\#\\#\\# 依据
 
 * Tomcat 
     * 部署能极大的减少内存占用

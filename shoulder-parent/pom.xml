@@ -33,7 +33,7 @@
         <git-commit-id-plugin.version>6.0.0</git-commit-id-plugin.version>
         <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
 
-        <shoulder-maven-plugin.version>1.1</shoulder-maven-plugin.version>
+        <shoulder-maven-plugin.version>1.2.1</shoulder-maven-plugin.version>
         <shoulder-framework.errcode-prefix>0x0000</shoulder-framework.errcode-prefix>
 
         <springdoc-openapi-maven-plugin.version>0.3</springdoc-openapi-maven-plugin.version>

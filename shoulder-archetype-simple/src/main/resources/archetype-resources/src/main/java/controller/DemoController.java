@@ -3,7 +3,6 @@
 #set( $symbol_escape = '\' )
 package ${package}.controller;
 
-import lombok.extern.shoulder.SLog;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.AppLoggers;
 import org.shoulder.web.annotation.SkipResponseWrap;

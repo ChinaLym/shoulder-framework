@@ -56,14 +56,21 @@ v{x.y.z}.RELEASE
 
 ---
 
+## 克隆仓库与开发
+
+1. Fork 本仓库
+2. 新建 issue/{issue对应编号} 分支
+3. 提交代码
+4. 新建 Pull Request(建议PR前先 Merge)
+5. 等待合并
+
 ## 发布流程
 
 - **发布前（准备）**
-    - TODO 需要插件
     - 更新依赖版本
     - 更新发行版本号
     - 本地构建、测试
-    - CHANGELOG、README 修订或使用工具 TODO 根据 commit 自动生成
+  - CHANGELOG、README 修订或使用工具 (TODO 优化:后续规范commit信息, 根据 commit 自动生成)
 
 - **发布**
   - 推送到`Maven Central`，提交至代码库（git）并触发 CI flow
@@ -74,7 +81,7 @@ v{x.y.z}.RELEASE
     - pom.xml更新到下一个开发版本，推到github
     - 在web页面上更新版本
     - 在GitHub上更新发行说明
-    - 关闭/创建里程碑、标签。TODO spring 开源的 label robot
+  - 关闭/创建里程碑、标签。(TODO 后续使用自动化工具如 spring 开源的 label robot)
   - 分支清理，删掉里程碑内的无用分支，包括开发分支（如：1.5/dev/lym/feature-1），发布分支
     - 在其他频道、社交平台上宣布发行
 

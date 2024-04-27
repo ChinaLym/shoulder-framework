@@ -1,5 +1,4 @@
-<h1 align="center"><img src=".idea/icon.png" height="40" width="40" /><a href="https://github.com/ChinaLym" target="_blank">Shoulder
-Framework</a></h1>
+<h1 align="center"><img src="doc/img/logo.png" height="40" width="40" /><a href="" target="_blank">Shoulder Framework</a></h1>
 
 ![LOGO](doc/img/logo.jpg)
 
@@ -50,10 +49,12 @@ mvn archetype:generate \
   -DarchetypeArtifactId=shoulder-archetype-simple \
   -DarchetypeVersion=0.8 \
   -DgroupId=com.yourcompany \
-  -DartifactId=yourproject \
+  -DartifactId=appName \
   -Dversion=1.0-SNAPSHOT
 ```
 
+mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple
+-DarchetypeVersion=0.8 -DgroupId=com.yourcompany -DartifactId=appName -Dversion=1.0-SNAPSHOT
 ## 手动创建新 Maven 项目
 
 可以直接使用以下 `pom.xml`，与 Spring Boot 工程唯一区别就是 `pom.xml` 中 `parent` 不同
@@ -143,20 +144,23 @@ mvn archetype:generate \
 | shoulder-lombok-idea-plugin | [github](https://github.com/ChinaLym/lombok-intellij-plugin)、[gitee](https://gitee.com/ChinaLym/lombok-intellij-plugin)   | 在 `lombok-idea-plugin`之上，在 IDEA 中增加`@SLog`的编码提示，以更好的使用 `shoulder-lombok`（非必须，使用 shoulder-lombok 时推荐）                                  |
 | Shoulder iPaaS              | [github](https://github.com/ChinaLym/shoulder-ipaas)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS)                   | iPaaS 平台，介绍了常见中间件、监控系统、私有基础平台如何部署                                                                                                     |
 
-# 版本变更记录
+# 📒 版本变更记录
 
 当前版本为 `0.8`，更多见 [CHANGELOG.MD](CHANGELOG.MD)
 
-# ✉️ 建议与反馈
+# 💗 贡献代码
+
+欢迎各类型代码提交，不限于`优化代码格式`、`优化注释/JavaDoc`、`修复 BUG`、`新增功能`
+，更多请参考 [如何贡献代码](CONTRIBUTING.MD)
+
+# ✉️ 反馈 or 联系我
 
 感谢小伙伴们的 **[Star](https://gitee.com/ChinaLym/shoulder-framework/star)** 、 **Fork** 、 **PR**，欢迎使用 `issue` 或 [cn_lym@foxmai.com](mailto:cn_lym@foxmai.com) 交流，如 留下你的建议、期待的新功能等~
 
-欢迎各类型代码提交，不限于`优化代码格式`、`优化注释/JavaDoc`、`修复 BUG`、`新增功能`，更多请参考 [如何贡献代码](CONTRIBUTING.MD)
+`Shoulder` 不求使用最广，而是致力于成为使用体验最好的开发框架，您任何的使用需求、建议、想法都可以留下来与我们沟通，`Shoulder`
+将与您一起思考攻克疑难，助天下的开发者更好更安心得使用技术助力业务腾飞！
 
-Shoulder 不求使用最广，而是致力于成为使用体验最好的开发框架，您任何的使用需求、建议、想法都可以留下来与我们沟通，Shoulder
-将与您一起思考攻克疑难，助天下的开发者更好更安心得通过技术赋能业务！同时，利用业务疑难解决方案的积累反哺技术发展！
+### 👨‍💼 关于作者
 
-### 关于作者
-
-曾参与多次 Alibaba 核心系统重构，主导过多次 D11 级别大促保障，欢迎技术交流与简历投递～
+多次参与 Alibaba 核心系统重构与设计，主导过多次 D11 级别大促保障，欢迎技术交流与简历投递～
 - 该项目为作者在业余时间独立开发和维护的个人项目，非阿里巴巴官方产品。
