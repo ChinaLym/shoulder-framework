@@ -4,9 +4,9 @@
 
 > 如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
 
-[![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework)[![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)[![](https://img.shields.io/badge/CICD-PASS-green.svg)](https://github.com/ChinaLym/shoulder-framework)
+[![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework) [![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)
 
-[![](https://img.shields.io/badge/Release%20Version-0.8-blue.svg)](https://github.com/ChinaLym/shoulder-framework)![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-blue.svg)![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-blue.svg)
+[![](https://img.shields.io/badge/Release%20Version-0.8-blue.svg)](https://github.com/ChinaLym/shoulder-framework) ![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-blue.svg) ![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-blue.svg)
 
 # 📖介绍 [English language](README.md)
 
