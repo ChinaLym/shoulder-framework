@@ -18,7 +18,7 @@
 
 - 示例工程 **See DEMO IN**：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
 
-### Compare with `Spring Boot`
+### 对比 `Spring Boot`
 
 `Shoulder Framework` 是 `Spring Boot` 的插件，融合了 **[软件优雅设计与开发最佳实践](https://spec.itlym.cn)** 和增强功能，在以下场景会比 `Spring Boot` 更好用！
 
