@@ -2,7 +2,7 @@
 
 ![LOGO](doc/img/logo.jpg)
 
-> 如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
+> "If I have seen further, it is by standing on the shoulders of giants." — Isaac Newton
 
 [![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework)
 [![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)
@@ -12,50 +12,61 @@
 ![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-lightgrey.svg)
 ![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-lightgrey.svg)
 
-# 📖介绍
+# 📖Introduction [中文 language](README_zh.md)
 
-`Shoulder Framework` 是一个基于 `Spring Boot` 的 `Java WEB` 开发框架，内置精巧功能，降低开发成本，提升WEB开发幸福感。
+`Shoulder Framework` is a Java WEB framework based on `Spring Boot`, featuring built-in elegant functionalities, which aims to lower the
+cost of coding and enhance the happiness of WEB development.
 
-- 示例工程 **See DEMO IN**：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
+- **See DEMO IN
+  **：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
 
-### 对比 `Spring Boot`
+### Compared with `Spring Boot`
 
-`Shoulder Framework` 是 `Spring Boot` 的插件，融合了 **[软件优雅设计与开发最佳实践](https://spec.itlym.cn)** 和增强功能，在以下场景会比 `Spring Boot` 更好用！
+`Shoulder Framework` is a plugin for `Spring Boot`, integrating *
+*[the best practices of elegant software design and development](https://spec.itlym.cn)** with enhanced functionalities.
 
-- `毕业设计`、`外包项目` 等场景：快速获得一些常用功能（AOP自动日志、AOP异常处理、低SQL、WEB安全、内嵌式DB/Redis、多语言等），加速开发！
-- `微服务底座框架`：许多公司/组织内部往往有些统一编码规范，`Shoulder`
-  实现了这项工作中重复的部分（jar包设计、编译、分发、模块化、提供默认实现等），基于`Shoulder`二次开放将极大程度上降低了实现难度；
-- `内部框架开发`: 基于 `Shoulder` 二次开发公司/组织里的基础jar：`Shoulder`对于规范处的实现类似 `Spring Boot`，均为`可扩展`
-  的，可以非常方便的扩展、二次开发。
+It proves to be more efficient in the following scenarios!
+
+- Scenarios such as `graduation projects`, `outsourced projects`, etc.: Quickly access some common functionalities (AOP auto logging, AOP
+  exception handling, low SQL, WEB security, embedded DB/Redis, multi-language, etc.), accelerating development!
+- For developing a `microservice base framework`: Many companies/organizations usually have some unified coding standards. `Shoulder`
+  implements the repetitive parts of this work (jar package design, compilation, distribution, modularization, providing default
+  implementation, etc.). Secondary development based on `Shoulder` will significantly reduce the difficulty of implementation.
+- For `internal framework development`: Based on `Shoulder` for secondary development of the basic jar in the
+  company/organization: `Shoulder`'s implementation of standards is similar to `Spring Boot` and is `extendable`. It can be very convenient
+  for extension and secondary development.
 
 ---
 
-# 🚀 快速开始
+# 🚀 Quick Start
 
-## 体验官方 Demo
+## Start with a Demo
 
-通过简单的 **[示例工程](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)**（[github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)），快速感受 `Shoulder` 带来的优雅编码体验。
+Through the simple in **[demo projects](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)
+** / ([github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1), [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)),
+feel the elegant coding experience brought by `Shoulder`.
 
+## Using in an existing `Spring-Boot` project
 
-## 在已有的 `Spring-Boot` 工程中使用
-
-添加你需要的模块即可使用，如：希望使用`shoulder-web 的动态字典能力` ，则引入对应starter即可~
+Just add the module you want to use, for instance, if you want to use `shoulder-web's dynamic dictionary ability`, simply include the
+corresponding starter:
 
 ```xml
-        <!--如希望使用 Shoulder 中 web 相关的能力增强，只需引入 web 模块-->
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-web</artifactId>
-            <version>0.8</version>
-        </dependency>
+
+<dependency>
+    <groupId>cn.itlym</groupId>
+    <artifactId>shoulder-starter-web</artifactId>
+    <version>0.8</version>
+</dependency>
 ```
 
-## 通过 maven-archetype 创建 Shoulder 项目
+## Create a Shoulder project via `maven-archetype`
 
-`Shoulder` 提供了 maven [archetype](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-archetype-simple)，可通过该工程快速创建。请确保您本地已经安装 `JDK17+`、`Maven`
+`Shoulder` provides a [maven archetype](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-archetype-simple) to quickly
+create projects. Just ensure you have `JDK17+` and `Maven` installed locally.
 
-1. 打开终端或命令提示符。
-2. 运行以下命令来生成新的 Shoulder 项目：
+1. Open terminal.
+2. Run the following command to generate a new Shoulder project:
 
 ```shell
 mvn archetype:generate \
@@ -63,16 +74,13 @@ mvn archetype:generate \
   -DarchetypeArtifactId=shoulder-archetype-simple \
   -DarchetypeVersion=0.8 \
   -DgroupId=com.yourcompany \
-  -DartifactId=appName \
+  -DartifactId=yourappName \
   -Dversion=1.0-SNAPSHOT
 ```
 
-mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple
--DarchetypeVersion=0.8 -DgroupId=com.yourcompany -DartifactId=appName -Dversion=1.0-SNAPSHOT
+## Manually creating a new project
 
-## 手动创建新 Maven 项目
-
-可以直接使用以下 `pom.xml`，与 Spring Boot 工程唯一区别就是 `pom.xml` 中 `parent` 不同
+Just use the following `pom.xml` directly, the only difference from a Spring Boot project is the difference `<parent>` of `pom.xml.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -80,19 +88,19 @@ mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulde
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- 继承 shoulder 提供的父工程，自动管理版本号，包含了 spring-boot-parent -->
+    <!-- for global version control. include spring-boot-parent -->
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-      <version>0.8</version><!-- shoulder-version -->
+        <version>0.8</version><!-- shoulder-version -->
     </parent>
 
-    <groupId>com.demo</groupId><!-- 你的 groupId -->
-    <artifactId>hello-shoulder</artifactId><!-- 你的 artifactId -->
-    <version>1.0.0-SNAPSHOT</version><!-- 你的 version -->
+    <groupId>com.demo</groupId><!-- your groupId -->
+    <artifactId>hello-shoulder</artifactId><!-- your artifactId -->
+    <version>1.0.0-SNAPSHOT</version><!-- your version -->
 
     <dependencies>
-        <!-- 版本号、web 相关依赖 自动管理。已自动引入对应的 spring-boot-starter-web -->
+        <!-- add module with version tag like using spring-boot-starter -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
@@ -105,52 +113,66 @@ mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulde
 
 ---
 
-# ❓常见问题 & FAQ
+# ❓FAQ
 
-优先参见 [FAQ 文档](doc/faq.md)
+See [FAQ Document](doc/faq.md)
 
-更多： [功能介绍.md](doc/ability-intro.md)、[工程目录 & 模块划分](doc/module-intro.md)、[设计理念 & 发展路线](ROADMAP.MD)
+More: [Ability.md](doc/ability-intro.md)、[Roadmap](ROADMAP.MD)
 
-# ✈ 规划 & 发展路线
+# ✈ Planning & Development Roadmap
 
-`Shoulder` 希望做一个整套的可复用的平台（`PaaS`），使用者只需要做做自己的业务即可。整体格局如下
+`Shoulder` aims to be a complete re-usable platform (PaaS), where users only need to focus on their business logic. Here is the overall
+outlook:
 
-- `Shoulder iPaaS` 基础中间件环境 Shoulder 提供依赖中间件的`Docker`镜像或部署教程（如 数据库、消息队列、服务注册中心、任务调度中心、搜索引擎、报警与监控系统等）。
-- `Shoulder Specific` 软件系开发设计注意事项、[落地方案和规范](https://spec.itlym.cn)
-- **Shoulder Framework**  即本开源项目，提供共性能力封装，减少代码冗余，降低系统开发维护成本。
-- `Shoulder Platform` 共性业务平台，提供 `用户平台`、`支付平台`、`通知中心`、`业务网关`、`数据字典`、`全局ID生产器` 等基础、通用业务能力平台
-- `Shoulder Platform SDK` 以 sdk 形式方便业务层对接使用。
+- `Shoulder iPaaS` iPaaS Basic middleware environment: Shoulder offers dependency middleware Docker images or deployment guides (e.g.,
+  databases, message queues, service registration centers, task scheduling centers, search engines, alarm and monitoring systems, etc.).
+- `Shoulder Specific` manuel of development, see **[the best practices of elegant software design and development](https://spec.itlym.cn)**
+- **Shoulder Framework**  This project, aims to encapsulation of common capabilities, reducing code redundancy and lowering system
+  development and maintenance costs.
+- `Shoulder Platform` General business platform, provides user platform, payment platform, notification center, business gateway, data
+  dictionary, global ID generator, and other basic, common business capabilities.
+- `Shoulder Platform SDK` Provides SDKs to facilitate business layer integration.
 
-## 相关项目代码地址
+## Relevant Project
 
-| 项目                          | 开源地址                                                                                                                      | 说明                                                                                                                                    |
-|-----------------------------|---------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| Shoulder Framework          | [github](https://github.com/ChinaLym/shoulder-framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)           | 开发框架，在 Spring Boot 基础之上，结合[软件优雅设计与开发最佳实践](https://spec.itlym.cn)，增加常用的功能，任何基于`Spring Boot`/`Spring Cloud`的项目都可以使用。                    |
-| Shoulder Platform           | [github](https://github.com/ChinaLym/shoulder-platform)、[gitee](https://gitee.com/ChinaLym/shoulder-platform)             | SaaS 开发平台，提供了基础通用能力，与具体业务无关                                                                                                           |
-| shoulder-framework-demo     | [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework-demo) | 以简单的例子介绍 `Shoulder Framework` 的使用                                                                                                     |
-| shoulder-plugins            | [github](https://gitee.com/ChinaLym/shoulder-plugins)、[gitee](https://gitee.com/ChinaLym/shoulder-plugins)                | shoulder 提供的的减少开发工作量的`maven`插件（非必须，如遵循[软件优雅设计与开发最佳实践-国际化开发](https://doc.itlym.cn/specs/base/i18n.html)时推荐希望使用自动生成多语言翻译资源文件的插件减少开发工作量） |
-| shoulder-lombok             | [github](https://github.com/ChinaLym/shoulder-lombok)、[gitee](https://gitee.com/ChinaLym/shoulder-lombok)                 | 在`lombok`之上，增加 `@SLog` 注解，用于简化[软件优雅设计与开发最佳实践-错误码与日志](https://spec.itlym.cn/specs/base/errorCode.html) -shoulder 实现的日志框架的使用（非必须）       |
-| shoulder-lombok-idea-plugin | [github](https://github.com/ChinaLym/lombok-intellij-plugin)、[gitee](https://gitee.com/ChinaLym/lombok-intellij-plugin)   | 在 `lombok-idea-plugin`之上，在 IDEA 中增加`@SLog`的编码提示，以更好的使用 `shoulder-lombok`（非必须，使用 shoulder-lombok 时推荐）                                  |
-| Shoulder iPaaS              | [github](https://github.com/ChinaLym/shoulder-ipaas)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS)                   | iPaaS 平台，介绍了常见中间件、监控系统、私有基础平台如何部署                                                                                                     |
+| Project Name                | Open Source URLs                                                                                                          | Description                                                                                                                                                                              |
+|-----------------------------|---------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Shoulder Framework          | [github](https://github.com/ChinaLym/shoulder-framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)           | a `Java WEB framework` based on `Spring Boot` which easily integrates with `Spring Boot` and provides a set of common capabilities.                                                      |
+| Shoulder Platform           | [github](https://github.com/ChinaLym/shoulder-platform)、[gitee](https://gitee.com/ChinaLym/shoulder-platform)             | `SaaS platform`, provides user platform, payment platform, notification center, business gateway, data dictionary, global ID generator, and other basic, common business capabilities... |                                                                                                                                  |
+| shoulder-framework-demo     | [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework-demo) | `Shoulder Framework` Demos                                                                                                                                                               |
+| shoulder-plugins            | [github](https://gitee.com/ChinaLym/shoulder-plugins)、[gitee](https://gitee.com/ChinaLym/shoulder-plugins)                | a `maven plugin` for `shoulder-framework` aiming reduce code.                                                                                                                            |
+| shoulder-lombok             | [github](https://github.com/ChinaLym/shoulder-lombok)、[gitee](https://gitee.com/ChinaLym/shoulder-lombok)                 | a `library` based on `lombok`，provide an annotation `@SLog` to simplify logging operation or auditing.                                                                                   |
+| shoulder-lombok-idea-plugin | [github](https://github.com/ChinaLym/lombok-intellij-plugin)、[gitee](https://gitee.com/ChinaLym/lombok-intellij-plugin)   | a `IDEA plugin` based on `lombok-idea-plugin`, provide promotions of `@SLog` while coding in `IDEA`.                                                                                     |
+| Shoulder iPaaS              | [github](https://github.com/ChinaLym/shoulder-ipaas)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS)                   | `iPaaS platform`，introduces how to deploy common middlewares, monitoring systems, and internal basic platforms.                                                                          |
 
-# 📒 版本变更记录
+# 📒 Version & Change log
 
-当前版本为 `0.8`，更多见 [CHANGELOG.MD](CHANGELOG.MD)
+Current version: `0.8`, see more in [CHANGELOG.MD](CHANGELOG.MD).
 
-# 💗 贡献代码
+# 💗 Contribution
 
-欢迎各类型代码提交，不限于`优化代码格式`、`优化注释/JavaDoc`、`修复 BUG`、`新增功能`
-，更多请参考 [如何贡献代码](CONTRIBUTING.MD)
+It is appreciated that you can contribute to this project, such as issues, code formatting, comments, bugfix, new features, etc.
 
-# 📩 反馈 or 联系我
+See more in [How to contribute](CONTRIBUTING.MD)
 
-感谢小伙伴们的 **[🌟Star](https://gitee.com/ChinaLym/shoulder-framework/star)** 、 **🍴Fork** 、 **🏁PR**，欢迎使用 `issue`
-或 [cn_lym@foxmail.com](mailto:cn_lym@foxmail.com) 交流，如 留下你的建议、期待的新功能等~
+# 📩 Feedback & Contact
 
-`Shoulder` 不求使用最广，而是致力于成为使用体验最好的开发框架，您任何的使用需求、建议、想法都可以留下来与我们沟通，`Shoulder`
-将与您一起思考攻克疑难，助天下的开发者更好更安心得使用技术助力业务腾飞！
+Thanks for your **[🌟Star](https://gitee.com/ChinaLym/shoulder-framework/star)** 、 **🍴Fork** 、 **🏁PR**.
 
-### 👨‍💼 关于作者
+Please feel free to contact with use in `issues`or [email to cn_lym@foxmail.com](mailto:cn_lym@foxmail.com) . For example: your ideas,
+expectations~
 
-多次参与 Alibaba 核心系统重构与设计，主导过多次 D11 级别大促保障，欢迎技术交流与简历投递～
-- 该项目为作者在业余时间独立开发和维护的个人项目，非阿里巴巴官方产品。
+`Shoulder` does not seek to be the most widely used, but is committed to becoming the development framework with the best user experience.
+Any of your usage needs, suggestions, and ideas can be left to communicate with us, `Shoulder`
+
+Let's help developers around the world use technology better and more securely to help their business take off together!
+
+Wish you overcome any difficulties in your business.
+
+### 👨‍💼 About author
+
+Participated in Alibaba core system reconstruction and design many times, and guarantees D11 level promotion. Technical exchanges and resume
+submissions are welcome~
+
+- This project is a personal project independently developed and maintained by the author in his spare time and is not an official Alibaba
+  product.
