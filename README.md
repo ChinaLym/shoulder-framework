@@ -14,7 +14,7 @@
 
 # 📖介绍
 
-`Shoulder Framework` 是一个增强的 `Java WEB` / `微服务`开发框架，基于 Spring Boot，大幅简化了常用功能的实现。
+`Shoulder Framework` 是一个基于 `Spring Boot` 的 `Java WEB` 开发框架，内置精巧功能，降低开发成本，提升WEB开发幸福感。
 
 - 示例工程 **See DEMO IN**：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
 
@@ -36,7 +36,21 @@
 
 通过简单的 **[示例工程](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)**（[github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)  [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)），快速感受 `Shoulder` 带来的优雅编码体验。
 
-## 通过 maven-archetype 创建新项目
+
+## 在已有的 `Spring-Boot` 工程中使用
+
+添加你需要的模块即可使用，如：希望使用`shoulder-web 的动态字典能力` ，则引入对应starter即可~
+
+```xml
+        <!--如希望使用 Shoulder 中 web 相关的能力增强，只需引入 web 模块-->
+        <dependency>
+            <groupId>cn.itlym</groupId>
+            <artifactId>shoulder-starter-web</artifactId>
+            <version>0.8</version>
+        </dependency>
+```
+
+## 通过 maven-archetype 创建 Shoulder 项目
 
 `Shoulder` 提供了 maven [archetype](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-archetype-simple)，可通过该工程快速创建。请确保您本地已经安装 `JDK17+`、`Maven`
 
@@ -55,6 +69,7 @@ mvn archetype:generate \
 
 mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple
 -DarchetypeVersion=0.8 -DgroupId=com.yourcompany -DartifactId=appName -Dversion=1.0-SNAPSHOT
+
 ## 手动创建新 Maven 项目
 
 可以直接使用以下 `pom.xml`，与 Spring Boot 工程唯一区别就是 `pom.xml` 中 `parent` 不同
@@ -88,32 +103,6 @@ mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulde
 
 ```
 
-## 在已有的工程中使用（不继承shoulder-parent）
-
-已经继承了其他父工程，如（`spring-boot-parent`）且不想修改，只需加入 `Shoulder` 的依赖清单，然后在 `dependency` 中引入想要的模块即可~
-
-```xml
-    <!-- shoulder 的依赖管理 -->
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>cn.itlym</groupId>
-                <artifactId>shoulder-dependencies</artifactId>
-                <version>${shoulder.version}</version><!-- shoulder-version -->
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <dependencies>
-        <!--如希望使用 Shoulder 中 web 相关的能力增强，只需引入 web 模块-->
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-web</artifactId>
-        </dependency>
-    </dependencies>
-```
 ---
 
 # ❓常见问题 & FAQ
