@@ -8,17 +8,16 @@
 [![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)
 [![](https://img.shields.io/badge/CICD-PASS-green.svg)](https://github.com/ChinaLym/shoulder-framework)
 
-[![](https://img.shields.io/badge/Developing%20Version-0.8_SNAPSHOT-lightgrey.svg)](https://github.com/ChinaLym/shoulder-framework)
-![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-lightgrey.svg)
-![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-lightgrey.svg)
+[![](https://img.shields.io/badge/Release%20Version-0.8-blue.svg)](https://github.com/ChinaLym/shoulder-framework)
+![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-blue.svg)
+![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-blue.svg)
 
 # 📖Introduction [中文 language](README_zh.md)
 
 `Shoulder Framework` is a Java WEB framework based on `Spring Boot`, featuring built-in elegant functionalities, which aims to lower the
 cost of coding and enhance the happiness of WEB development.
 
-- **See DEMO IN
-  **：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
+- **See DEMO IN**：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo) / [Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
 
 ### Compared with `Spring Boot`
 
