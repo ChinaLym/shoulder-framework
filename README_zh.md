@@ -6,7 +6,7 @@
 
 [![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework) [![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)
 
-[![](https://img.shields.io/badge/Release%20Version-0.8-blue.svg)](https://github.com/ChinaLym/shoulder-framework) ![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-blue.svg) ![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-blue.svg)
+[![](https://img.shields.io/badge/Release%20Version-0.8-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v0.8) ![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-blue.svg) ![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-blue.svg)
 
 # 📖介绍 [English language](README.md)
 

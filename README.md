@@ -4,13 +4,9 @@
 
 > "If I have seen further, it is by standing on the shoulders of giants." — Isaac Newton
 
-[![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework)
-[![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)
-[![](https://img.shields.io/badge/CICD-PASS-green.svg)](https://github.com/ChinaLym/shoulder-framework)
+[![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework) [![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)
 
-[![](https://img.shields.io/badge/Release%20Version-0.8-blue.svg)](https://github.com/ChinaLym/shoulder-framework)
-![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-blue.svg)
-![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-blue.svg)
+[![](https://img.shields.io/badge/Release%20Version-0.8-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v0.8) ![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-blue.svg) ![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-blue.svg)
 
 # 📖Introduction [中文 language](README_zh.md)
 
@@ -41,8 +37,8 @@ It proves to be more efficient in the following scenarios!
 
 ## Start with a Demo
 
-Through the simple in **[demo projects](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)
-** / ([github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1), [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)),
+Through the simple
+in [demo projects](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1) / ([github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1), [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)),
 feel the elegant coding experience brought by `Shoulder`.
 
 ## Using in an existing `Spring-Boot` project
