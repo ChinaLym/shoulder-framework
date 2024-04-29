@@ -41,10 +41,10 @@
 
 # 🚀 Quick Start
 
-## Start with a Demo
+## [Start with a Demo](https://github.com/ChinaLym/shoulder-framework-demo/tree/main/demo1)
 
-Through the simple in **[demo projects](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)**
-([github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)/ [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)),
+Through the simple in 👉 **[Demo](https://github.com/ChinaLym/shoulder-framework-demo/tree/main/demo1)** 👈
+([github](https://github.com/ChinaLym/shoulder-framework-demo/tree/main/demo1)/ [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/main/demo1)),
 feel the elegant coding experience brought by `Shoulder`.
 
 ## Using in an existing `Spring-Boot` project

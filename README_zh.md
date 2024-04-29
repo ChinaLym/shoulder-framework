@@ -42,11 +42,11 @@
 
 # 🚀 快速开始
 
-## 体验官方 Demo
+## [体验官方 Demo](https://github.com/ChinaLym/shoulder-framework-demo)
 
-通过简单的 [示例工程](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)，快速体验 `Shoulder`
+通过简单的 👉 **[示例工程](https://github.com/ChinaLym/shoulder-framework-demo/tree/main/demo1)** 👈，快速体验 `Shoulder`
 的顺滑编码感觉。
-在（[github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1) / [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)
+在（[github](https://github.com/ChinaLym/shoulder-framework-demo/tree/main/demo1) / [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/main/demo1)
 ）上体验。
 
 
