@@ -1,58 +1,5 @@
 # shoulder-core
 
-本框架定义的一些类，如异常、枚举、DTO(入参、响应)、通用工具等。
-
-这些类为 shoulder 其他能力提供规范定义与约束，以保证使用该框架编写的系统易维护。
-
-规范定义同业界主流保持一致。
-
-## 异常、错误码、日志
-
-异常类、错误码的使用需求：
-
-- 定义了异常常量
-    - 抛出
-        - 需要填充参数（有默认值）
-        - 不需要填充参数
-        - 需要包裹上层异常
-    - api 返回值
-        - 需要填充参数 `"data": [参数1, 参数1, ... , 参数n]`
-        - 不需要填充参数
-        - 需要包裹上层异常
-- 定义了异常类
-    - 抛出
-        - 需要填充参数（有默认值）
-        - 不需要填充参数
-    - api 返回值
-        - 需要填充参数（有默认值）
-        - 不需要填充参数
-        - 需要填充 data（上层异常的msg）
-
-
-其中响应为 4xx/5xx 类的错误码应直接抛出
-
-异常需求：框架/工具类等可二次开发/使用的代码定义异常为检查异常，实现类/默认实现类需要定义带错误码的异常。
-
-- 异常 带错误码
-- 日期格式 yyyy-MM-dd
-- 日志 支持记录带错误码
-- HTTP RESTFUL 返回值
-- 日志划分：
-  - biz 摘要日志，记录一次请求关键信息：时间 / 业务 / 执行方法 / 结果 / 耗时
-  - 业务日志 info：记录执行信息
-  - 业务日志 warn 记录业务重要关注点，不常触发的兜底逻辑
-  - 业务日志 error 记录业务失败
-  - 通用 info/warn/error：业务无关代码 / 中间件依赖未分类时默认打印文件（理论都要分类）
-  - 通用 perf：记录线程池等表现，用于监控（可选，可以通过 endpoint 提供）
-  - integration-info
-  - integration-digest
-- 模块日志
-  - 超时上报的case，配置刷新，关键运行日志()
-  - 框架切面执行，耗时，异常、周期运行摘要、限流等
-    spring、core、mq、shoulder-common、shoulder-runtime（关键）、stdout.log、log-clean.log、gc.log、参数中心、mq等、sentinel、endpoint、thread、缓存、数据库、机器cpu等监控、tracelog
-
-[spring boot 注解解释](https://www.cnblogs.com/lovecindywang/p/9846846.html)
-
 ## 基础日志
 
 可以直接使用 `AppLoggers` 定义好的日志
@@ -73,7 +20,8 @@ class LogExample {
 }
 ```
 
-## 插件
+
+## ~~插件机制设计~~
 提供加载机制，参考：
 https://gitee.com/core-lib/slot-maven-plugin
 https://github.com/zlt2000/springs-boot-plugin-test
@@ -125,8 +73,8 @@ private static final org.shoulder.core.log.Logger log = org.shoulder.core.log.Lo
 
 > 注：IDEA 中自动提示需要安装 [shoulder-lombok-plugins](https://github.com/ChinaLym/lombok-intellij-plugin)
 
----
 
+---
 
 ## 翻译与多语言
 
@@ -150,7 +98,7 @@ private static final org.shoulder.core.log.Logger log = org.shoulder.core.log.Lo
 
 ----
 
-# [GUID（全局唯一标识符生成器）](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-base/shoulder-core#guid%E5%85%A8%E5%B1%80%E5%94%AF%E4%B8%80%E6%A0%87%E8%AF%86%E7%AC%A6%E7%94%9F%E6%88%90%E5%99%A8)
+## [GUID（全局唯一标识生成器）](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-build/shoulder-base/shoulder-core#guid%E5%85%A8%E5%B1%80%E5%94%AF%E4%B8%80%E6%A0%87%E8%AF%86%E7%AC%A6%E7%94%9F%E6%88%90%E5%99%A8)
 
 全局唯一 id 生成器，接口有 LongGuidGenerator、StringGuidGenerator 两种，常用于生成流水数据的主键、标识字段，经测试分布式场景不会重复，且性能相当高，并容忍时间回拨。
 
@@ -257,6 +205,95 @@ shoulder-guid 利用了时间预支解决了单时间段序列达到上限问题
 
 ---
 
+# 高级·Shoulder框架开发者须知
+## 模块定位
+
+定位：本框架核心能力类定义，模块定位类似 `Spring`中的` spring-core`。
+
+模块内容：异常、枚举、DTO(入参、响应)、日志Logger、多语言、动态字典、模型转换、并发类、通用工具等。
+
+目的：这些类为 `Shoulder` 其他模块能力提供规范定义与约束，以保证`Shoulder`其他各模块遵循统一的规范，更易于维护，同时也为使用者提供一些通用能力。
+
+使用场景，该模块不限制使用场景，可以在无Spring、无WEB的任何java场景用。
+
+## 框架设计理念-统一返回值格式
+
+> 统一接口的返回值可以大大提升多团队协作效率，也是接口复用提效的有力手段。
+
+Shoulder 中 HTTP 接口返回值统一按照以下 JSON 格式 `{"code":"0x00abcd", "msg":"operation msg.", "data":{}}`，另外也推荐在维护大量接口时使用 `Restful` 风格，在海量接口场景，`Restful`风格的接口定义相比传统定义维护起来更简单～
+
+## 框架设计理念-通用日志
+
+> 统一日志格式可以大幅降低运维团队对系统洞察的成本，如服务监控、问题定位、AI 自动分析等。
+
+- 日志：日期格式 `yyyy-MM-dd`
+- 日志：支持记录带错误码
+
+- 日志划分：
+    - biz 摘要日志，记录一次请求关键信息：时间 / 业务 / 执行方法 / 结果 / 耗时
+    - 业务日志 info：记录执行信息
+    - 业务日志 warn 记录业务重要关注点，不常触发的兜底逻辑
+    - 业务日志 error 记录业务失败
+    - 通用 info/warn/error：业务无关代码 / 中间件依赖未分类时默认打印文件（理论都要分类）
+    - 通用 perf：记录线程池等表现，用于监控（可选，可以通过 endpoint 提供）
+    - integration-info
+    - integration-digest
+- 模块日志
+    - 超时上报的case，配置刷新，关键运行日志()
+    - 框架切面执行，耗时，异常、周期运行摘要、限流等
+      spring、core、mq、shoulder-common、shoulder-runtime（关键）、stdout.log、log-clean.log、gc.log、参数中心、mq等、sentinel、endpoint、thread、缓存、数据库、机器cpu等监控、tracelog
+
+
+## 框架设计理念-异常处理：异常、错误码、错误日志
+
+> `错误码`是`异常`定位的有力抓手，而`日志`又是还原现场的必备手段，故谈异常处理时三者不分家，放一起聊。
+
+异常设计规范：响应为 4xx/5xx 类的错误码（如参数错误，下游调用超时）可直接抛出，不强制使用者显示编写代码捕获处理.
+> 设计出发点：
+> 现有痛点：层次代码 catch Exception打印异常日志，继续上抛异常，这导致**代码片段长**且**大量重复日志打印**，**处理方式不统一**，**日志打印格式不统一**，不利于排查问题&维护代码；
+>
+> 建议：`Shoulder` 推荐由全局异常处理器识别处理异常，根据异常类和属性自动返回正确的HTTP Status、错误码、打印日志，另外这样做不会限制对新鲜方式接受度低的使用者编码，其仍可自行捕获异常实现更高级的编码，
+> 如：调用A服务超时，使用者可以自行捕获 runtimeException 判断错误码是调用第三方超时，可编排流程兜底调用B等。
+> 同时，这样做也能减少使用者大量重复编码，将宝贵的精力放在核心逻辑开发上，或更好的生活。
+
+异常设计规范：
+- 异常需要带错误码，便于团队开发的场景，遇到异常/报错，可以通过`错误码`查询`错误码中心`
+- 使用者可二次开发，定义异常为检查异常，但检查异常实现类需要定义带错误码的异常。
+> 综上，错误码，异常不分家，将错误码定义为接口，将异常定义为RuntimeException，并继承错误码接口定义。
+
+
+### 全局异常处理
+
+虽然`shoulder-core`中无全局异常处理能力，但不排除其他模块（如`shoulder-web`），或二次开发者希望实现，故`shoulder-core`不能随意定义通用异常或照查其他项目。
+
+首先，来看一下开发者在抛异常的编码方式：
+
+1. 定义异常类，throw 该异常，对于编码方式一般有三种：
+- 直接抛，不需要填充参数，如 `throw InvokeGptTimeoutRuntimeException();`
+  - InvokeGptTimeoutRuntimeException.class 中已经定义了错误码，报错信息，这类非常报错精准，全局异常处理器在处理HTTP 接口返回值时可以非常轻松的拿到错误信息。
+- 只填充`msg`（或部分msg），如 `throw ThirdServiceTimeoutException("invoke gpt timeout.");`,  `throw ThirdServiceTimeoutException("gpt.");` + 异常内部根据参数`"gpt"`填充参数
+- 填充`msg` + `上级异常`，如 `throw ThirdServiceInvokeFailException("invoke gpt timeout.", e);`，这里上级异常可能是 `SocketTimeoutException`
+
+> 第一种编码最清晰准确，适合小型或通用性强的项目中，如一些工具类lib中，`JDK`,`common-lang`,`hutool-xx`,但在大量业务逻辑场景往往伴随大量错误码，故这样做会发生`类爆炸`问题，导致JVM大量类加载，影响性能，且类多了就会导致代码可读性、可维护性下降。
+
+> 第二种编码已经有一定的通用性了，适合在一些逻辑复杂的模块中使用这类设计，既能一定程度复用，又能较清晰地呈现异常原因，如`加密`模块中定义几类异常。
+
+> 第三种编码方式通常是追求异常处理，可以大幅降低开发者对异常感知程度。减少异常处理的代码，通常在定义在 `框架通用异常` / `应用通用异常`。
+
+
+一个应用往往有上百个错误码，这显然适不适合定义为异常类的，很多使用者会用枚举来管理错误码, 如定义 `XxxErrorCodeEnum`，在使用错误码时通常会这么写：
+```java
+throw new ThirdServiceInvokeFailException(XxxErrorCodeEnum.INVOKE_GPT_TIMEOUT.getErrorCode(), XxxErrorCodeEnum.INVOKE_GPT_TIMEOUT.getMsg());
+```
+但`Shoulder`更建议这么写：
+```java
+// 减少 import 类，减少冗余代码，减少代码量，提升代码可读性，可维护性
+XxxErrorCodeEnum.INVOKE_GPT_TIMEOUT.throwEx();
+```
+或使用`AssertUtil`工具类：
+```java
+AssertUtil.notNull(gptResp, XxxErrorCodeEnum.INVOKE_GPT_TIMEOUT);
+```
 
 
 ## 工具包
@@ -268,10 +305,3 @@ shoulder-guid 利用了时间预支解决了单时间段序列达到上限问题
 JSON，采用 jackson，比 fastJson 更安全，同时性能基本无差别。
 
 XML，可选依赖：Xstream：API简单，使用方便（这里适合读取配置文件，而非作为传输体请求/响应界别的频繁读写的场景，更快的选型可考虑 `Toplink JAXB` 等）
-
-
-# 其他
-
-- [阿里巴巴开发规约](https://github.com/alibaba/p3c)
-  Spring Boot 2.2.X以后 `org.junit.jupiter.api.Test` 替代之前的 `org.junit.Test` (JUnitTest 4->5)
-

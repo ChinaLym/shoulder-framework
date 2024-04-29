@@ -151,5 +151,8 @@ IDEA 可以为我们自动转化：
 - 打开设置 `File -> Settings -> Editor -> File Encodings`
 - 勾选 `Transparent native-to-ascii conversion`
 
+#### 建议的编码风格？
+- [阿里巴巴开发规约](https://github.com/alibaba/p3c)
+
 #### gpg 发布错误
 https://blog.csdn.net/u011781521/article/details/130454386

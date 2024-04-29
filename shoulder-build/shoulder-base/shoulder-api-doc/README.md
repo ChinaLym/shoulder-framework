@@ -166,7 +166,7 @@ public void configure(WebSecurity web) throws Exception {
 - 访问 swagger-ui 时，返回生成好的这些数据
 
 `swagger - Spring Boot` 在步骤二中扩展了扫描 `Spring MVC` 定义的注解，从而可以快速看到文档，而若使用默认注解，相当于补充注释
-`swagger-jaxrs2` 扩展了 `JAX-RS`(java restful server标准注解) 中定义的注解
+`swagger-jaxrs2` 扩展了 `JAX-RS`(Java Restful Server标准注解) 中定义的注解
 
 
 因此，不推荐在生产环境中激活文档，因为这会影响启动速度、并占用一定的内存。

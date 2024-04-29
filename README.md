@@ -10,26 +10,40 @@
 
 # 📖Introduction [中文 language](README_zh.md)
 
-`Shoulder Framework` is a Java WEB framework based on `Spring Boot`, featuring built-in elegant functionalities, which aims to lower the
-cost of coding and enhance the happiness of WEB development.
+`Shoulder Framework` is a plug-in for `Spring Boot` and provides some useful functions to speed up development! Some examples of functions:
 
-- **See DEMO IN**：  [GitHub](https://github.com/ChinaLym/shoulder-framework-demo) / [Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
+- `AOP logging/exception handling`
+- `One config switch to cluster mode`
+- `Log tracking and collecting`
+- `Multi-language / I18n`
+- `Fully automatic dynamic dictionary`
+- `Global ID Generator`
+- `Unified message format`
+- `Operation Audit`
+- `Multiple verification codes`
+- `Asynchronous upload and download`
+- `Top Secret Communications`
+- `Embedded DB / Redis`
 
-### Compared with `Spring Boot`
+### 🔥 Sample project: [GitHub](https://github.com/ChinaLym/shoulder-framework-demo), [Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
 
-`Shoulder Framework` is a plugin for `Spring Boot`, integrating *
-*[the best practices of elegant software design and development](https://spec.itlym.cn)** with enhanced functionalities.
+### 🆚Compare with other web frameworks
 
-It proves to be more efficient in the following scenarios!
+Is it reinventing the wheel? No! The `Shoulder` design concept is as named - "standing on the shoulders of giants". It does not advocate
+reinventing the wheel, but focuses on bringing the "shoulders of giants" (excellent three-party packages) to users safely and efficiently,
+allowing developers to Feel free to feel the charm of the former "giant shoulders" 🤩.
 
-- Scenarios such as `graduation projects`, `outsourced projects`, etc.: Quickly access some common functionalities (AOP auto logging, AOP
-  exception handling, low SQL, WEB security, embedded DB/Redis, multi-language, etc.), accelerating development!
-- For developing a `microservice base framework`: Many companies/organizations usually have some unified coding standards. `Shoulder`
-  implements the repetitive parts of this work (jar package design, compilation, distribution, modularization, providing default
-  implementation, etc.). Secondary development based on `Shoulder` will significantly reduce the difficulty of implementation.
-- For `internal framework development`: Based on `Shoulder` for secondary development of the basic jar in the
-  company/organization: `Shoulder`'s implementation of standards is similar to `Spring Boot` and is `extendable`. It can be very convenient
-  for extension and secondary development.
+**More Secure**, **Easy to expand**, **High readability of user code**, **Low maintenance cost**, **Low start-up cost**: The design follows
+**[Software Elegance] Design and development best practices](https://spec.itlym.cn)**, allowing user projects to not only improve
+development efficiency, but also lower maintenance costs!
+
+### ✨Applicable scenarios
+
+- `Graduation Project`, `Outsourcing Project`: Rapid development based on provided capabilities.
+- `Microservice base framework`: `Shoulder` follows coding standards when designing, and has unified coding interfaces and products, making
+  it easy for development/operation and maintenance teams to maintain.
+- `Internal framework development`: `Shoulder` is designed to fully absorb the ideas of `Spring Boot` and focus on scalability, which allows
+  some companies/organizations who want to build internal frameworks to quickly develop internal frameworks.
 
 ---
 

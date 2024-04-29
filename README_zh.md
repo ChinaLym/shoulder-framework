@@ -10,19 +10,33 @@
 
 # 📖介绍 [English language](README.md)
 
-`Shoulder Framework` 是一个基于 `Spring Boot` 的 `Java WEB` 开发框架，内置精巧功能，降低开发成本，提升WEB开发幸福感。
+`Shoulder Framework` 是 `Spring Boot` 的插件，并提供了一些好用功能加速开发！ 部分功能举例：
+- `AOP日志/异常处理`
+- `一键切换集群模式`
+- `日志追踪上报`
+- `多语言`
+- `全自动动态字典`
+- `全局ID`
+- `统一报文格式`
+- `操作审计`
+- `多种验证码`
+- `异步上传、下载`
+- `绝密通信`
+- `内嵌式DB/Redis`
 
-- 示例工程： [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
+### 🔥 示例工程： [GitHub](https://github.com/ChinaLym/shoulder-framework-demo)、[Gitee](https://gitee.com/ChinaLym/shoulder-framework-demo)
 
-### 对比 `Spring Boot`
+### 🆚对比其他 Web 框架
 
-`Shoulder Framework` 是 `Spring Boot` 的插件，融合了 **[软件优雅设计与开发最佳实践](https://spec.itlym.cn)** 和增强功能，在以下场景会比 `Spring Boot` 更好用！
+是重复造轮子吗？非也，`Shoulder`设计理念如命名——“站在巨人肩膀上”，不倡导重复造轮子，重在将“巨人的肩膀”（优秀的三方包）安全高效地带给使用者，让开发者放心地感受前“巨人肩膀”的魅力🤩。
 
-- `毕业设计`、`外包项目` 等场景：快速获得一些常用功能（AOP自动日志、AOP异常处理、低SQL、WEB安全、内嵌式DB/Redis、多语言等），加速开发！
-- `微服务底座框架`：许多公司/组织内部往往有些统一编码规范，`Shoulder`
-  实现了这项工作中重复的部分（jar包设计、编译、分发、模块化、提供默认实现等），基于`Shoulder`二次开放将极大程度上降低了实现难度；
-- `内部框架开发`: 基于 `Shoulder` 二次开发公司/组织里的基础jar：`Shoulder`对于规范处的实现类似 `Spring Boot`，均为`可扩展`
-  的，可以非常方便的扩展、二次开发。
+**更安全**、**易扩展**、**使用者代码可读性强**、**维护成本低**、**上手成本低**：设计上遵循 **[软件优雅设计与开发最佳实践](https://spec.itlym.cn)** ，让使用者项目不仅开发提效，维护成本也更低！
+
+### ✨适用场景
+
+- `毕业设计`、`外包项目` ：基于提供能力飞速开发。
+- `微服务基层框架`：`Shoulder` 设计时遵循编码规范，统一的编码界面和产物，让开发 / 运维团队轻松维护。
+- `内部框架开发`: `Shoulder`设计时充分吸收`Spring Boot`的思想，注重可扩展，这使得一些希望构建内部框架的 公司/组织 可以快速二次为内部框架。
 
 ---
 
@@ -143,8 +157,7 @@ mvn archetype:generate \
 感谢小伙伴们的 **[🌟Star](https://gitee.com/ChinaLym/shoulder-framework/star)** 、 **🍴Fork** 、 **🏁PR**，欢迎使用 `issue`
 或 [cn_lym@foxmail.com](mailto:cn_lym@foxmail.com) 交流，如 留下你的建议、期待的新功能等~
 
-`Shoulder` 不求使用最广，而是致力于成为使用体验最好的开发框架，您任何的使用需求、建议、想法都可以留下来与我们沟通，`Shoulder`
-将与您一起思考攻克疑难，助天下的开发者更好更安心得使用技术助力业务腾飞！
+`Shoulder` 不求使用最广，而致力于成为使用体验最好的开发框架，您任何的使用需求、建议、想法都可以留下来与我们沟通，`Shoulder` 将与您一起思考攻克疑难，助天下的开发者更好更安心得使用技术助力业务腾飞！
 
 ### 👨‍💼 关于作者
 

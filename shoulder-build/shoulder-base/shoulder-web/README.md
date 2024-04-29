@@ -1,6 +1,6 @@
 # shoulder-web
 
-对外暴露restful http 接口时引入该jar。
+对外暴露 Restful HTTP 接口时引入该jar。
 
 能力：
 - 依赖管理（自动引入相关 jar）
@@ -92,12 +92,12 @@ http method
 
 - OrderedHiddenHttpMethodFilter（HiddenHttpMethodFilter）
     - 普通浏览器form表单只支持 `GET` 与 `POST` 请求，而 `DELETE`、`PUT` 等 method 并不支持。spring 在接收请求时，
-      使用 ` <input type="hidden" name="_method" value="put" />` 的value当做http的method，常用与兼容 RestFul 风格请求
+      使用 ` <input type="hidden" name="_method" value="put" />` 的value当做http的method，常用与兼容 Restful 风格请求
     - 自动装配，`WebMvcAutoConfiguration` 可通过 `spring.mvc.hiddenmethod.filter.enabled=false` 关闭
 
 - OrderedFormContentFilter（FormContentFilter）
     - 普通浏览器form表单只支持 `GET` 与 `POST` 请求，而 `DELETE`、`PUT` 等 method 并不支持。spring 在接收请求时，
-      使用 ` <input type="hidden" name="_method" value="put" />` 的value当做http的method，常用与兼容 RestFul 风格请求
+      使用 ` <input type="hidden" name="_method" value="put" />` 的value当做http的method，常用与兼容 Restful 风格请求
     - 自动装配，`WebMvcAutoConfiguration` 可通过 `spring.mvc.hiddenmethod.filter.enabled=false` 关闭
 
 - ForwardedHeaderFilter（[5.1后不再推荐](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/filter/reactive/ForwardedHeaderFilter.html)）
