@@ -29,21 +29,13 @@
 
 ### 🆚Compare with other web frameworks
 
-Is it reinventing the wheel? No! The `Shoulder` design concept is as named - "standing on the shoulders of giants". It does not advocate
-reinventing the wheel, but focuses on bringing the "shoulders of giants" (excellent three-party packages) to users safely and efficiently,
-allowing developers to Feel free to feel the charm of the former "giant shoulders" 🤩.
-
-**More Secure**, **Easy to expand**, **High readability of user code**, **Low maintenance cost**, **Low start-up cost**: The design follows
-**[Software Elegance] Design and development best practices](https://spec.itlym.cn)**, allowing user projects to not only improve
-development efficiency, but also lower maintenance costs!
-
-### ✨Applicable scenarios
-
-- `Graduation Project`, `Outsourcing Project`: Rapid development based on provided capabilities.
-- `Microservice base framework`: `Shoulder` follows coding standards when designing, and has unified coding interfaces and products, making
-  it easy for development/operation and maintenance teams to maintain.
-- `Internal framework development`: `Shoulder` is designed to fully absorb the ideas of `Spring Boot` and focus on scalability, which allows
-  some companies/organizations who want to build internal frameworks to quickly develop internal frameworks.
+- **More Secure**
+- **Easy to expand**
+- **High readability of user code**
+- **Low maintenance cost**
+- **Low start-up cost**
+- **With specification**：**[Software Elegance Design and development best practices](https://spec.itlym.cn)**
+- Not only **improve development efficiency**, but also **lower maintenance costs**!
 
 ---
 
@@ -51,8 +43,8 @@ development efficiency, but also lower maintenance costs!
 
 ## Start with a Demo
 
-Through the simple
-in [demo projects](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1) / ([github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1), [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)),
+Through the simple in **[demo projects](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)**
+([github](https://github.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)/ [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/master/demo1)),
 feel the elegant coding experience brought by `Shoulder`.
 
 ## Using in an existing `Spring-Boot` project
@@ -127,6 +119,14 @@ Just use the following `pom.xml` directly, the only difference from a Spring Boo
 See [FAQ Document](doc/faq.md)
 
 More: [Ability.md](doc/ability-intro.md)、[Roadmap](ROADMAP.MD)
+
+# ✨Applicable scenarios
+
+- `Graduation Project`, `Outsourcing Project`: Rapid development based on provided capabilities.
+- `Microservice base framework`: `Shoulder` follows coding standards when designing, and has unified coding interfaces and products, making
+  it easy for development/operation and maintenance teams to maintain.
+- `Internal framework development`: `Shoulder` is designed to fully absorb the ideas of `Spring Boot` and focus on scalability, which allows
+  some companies/organizations who want to build internal frameworks to quickly develop internal frameworks.
 
 # ✈ Planning & Development Roadmap
 
