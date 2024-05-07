@@ -62,15 +62,33 @@ public class LockInfo {
     }
 
     public LockInfo(String resource, Duration holdTime) {
+        this(resource,
+            // appId:instanceId:threadId 不用于区分是否唯一，token 需要唯一
+            AddressUtils.getIp() + ":" + AppInfo.appId() + ":" + AppInfo.instanceId() + ":" + Thread.currentThread().getId(),
+            holdTime
+        );
+    }
+
+    public LockInfo(String resource, String owner, Duration holdTime) {
+        this(resource,
+            owner,
+            UUID.randomUUID().toString(),
+            LocalDateTime.now(),
+            LocalDateTime.now().plus(holdTime),
+            holdTime,
+            0, 0
+        );
+    }
+
+    public LockInfo(String resource, String owner, String token, LocalDateTime lockTime, LocalDateTime releaseTime, Duration holdTime, int reenterCount, int version) {
         this.resource = resource;
-        // appId:instanceId:threadId 不用于区分是否唯一，token 需要唯一
-        this.owner = AddressUtils.getIp() + ":" +
-                AppInfo.appId() + ":" + AppInfo.instanceId() + ":" + Thread.currentThread().getId();
-        this.token = UUID.randomUUID().toString();
+        this.owner = owner;
+        this.token = token;
+        this.lockTime = lockTime;
+        this.releaseTime = releaseTime;
         this.holdTime = holdTime;
-        // 先填充一下
-        this.lockTime = LocalDateTime.now();
-        this.releaseTime = lockTime.plus(holdTime);
+        this.reenterCount = reenterCount;
+        this.version = version;
     }
 
     /**

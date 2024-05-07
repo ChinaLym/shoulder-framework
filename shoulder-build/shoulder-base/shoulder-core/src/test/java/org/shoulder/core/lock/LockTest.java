@@ -30,7 +30,7 @@ public class LockTest {
         mightExecutionTime.add(sleepSecond);
         mightExecutionTime.add(sleepSecond << 1);
         Runnable testLockRunnable = () -> {
-            LockInfo lockInfo = new LockInfo("test");
+            LockInfo lockInfo = new LockInfo("test", String.valueOf(Thread.currentThread().getId()), Duration.ofDays(1));
             Instant preLock = Instant.now();
             lock.lock(lockInfo);
             // 断言获取到了
