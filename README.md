@@ -143,7 +143,6 @@ outlook:
 - `Shoulder Platform SDK` Provides SDKs to facilitate business layer integration.
 
 ## Relevant Project
-
 | Project Name                | Open Source URLs                                                                                                          | Description                                                                                        |
 |-----------------------------|---------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
 | Shoulder Framework          | [github](https://github.com/ChinaLym/shoulder-framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)           | a `Java WEB framework` based on `Spring Boot` while provides a set of common capabilities.         |
@@ -153,6 +152,8 @@ outlook:
 | shoulder-lombok             | [github](https://github.com/ChinaLym/shoulder-lombok)、[gitee](https://gitee.com/ChinaLym/shoulder-lombok)                 | a `library` based on `lombok`，provide an annotation `@SLog` to simplify code.                      |
 | shoulder-lombok-idea-plugin | [github](https://github.com/ChinaLym/lombok-intellij-plugin)、[gitee](https://gitee.com/ChinaLym/lombok-intellij-plugin)   | a `IDEA plugin` based on `lombok-idea-plugin`, to support `@SLog` in `IDEA`.                       |
 | Shoulder iPaaS              | [github](https://github.com/ChinaLym/shoulder-ipaas)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS)                   | `iPaaS platform`，introduces how to deploy common middlewares, monitoring systems, basic platforms. |
+
+![releated_projects.png](doc/img/releated_projects.png)
 
 # 📒 Version & Change log
 
