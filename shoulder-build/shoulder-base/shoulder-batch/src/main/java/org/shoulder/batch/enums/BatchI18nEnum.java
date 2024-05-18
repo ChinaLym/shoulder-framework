@@ -144,7 +144,7 @@ public enum BatchI18nEnum {
     }
 
     public String i18nValue(Object... args) {
-        return ContextUtils.getBeanOptional(Translator.class))
+        return ContextUtils.getBeanOptional(Translator.class)
                 .map(t -> t.getMessageOrDefault(this.code, this.defaultName, args))
                 .filter(String::isBlank)
                 .orElse(this.defaultName);

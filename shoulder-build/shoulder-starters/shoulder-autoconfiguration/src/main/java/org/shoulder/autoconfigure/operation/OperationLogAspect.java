@@ -184,8 +184,8 @@ public class OperationLogAspect {
         // 创建日志
         OperationLogDTO entity = createLog(joinPoint, methodAnnotation, classAnnotation);
         context.setOperationLog(entity);
-        if (log.isDebugEnabled()) {
-            log.debug("auto create a OperationLog: " + entity);
+        if (log.isTraceEnabled()) {
+            log.trace("auto create a OperationLog: " + entity);
         }
         OpLogContextHolder.setContext(context);
     }
