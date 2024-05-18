@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8.1</version><!-- shoulder-version -->
+        <version>0.8.1-SNAPSHOT</version><!-- shoulder-version -->
     </parent>
 
     <groupId>${groupId}</groupId>

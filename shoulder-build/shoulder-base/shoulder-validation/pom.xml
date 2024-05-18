@@ -5,15 +5,15 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8.1</version><!-- shoulder-version -->
+        <version>0.8.1-SNAPSHOT</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>shoulder-validation</artifactId>
     <description>
-        Shoulder 基于 Spring Boot Validation
-        轻量的Jar，提供了枚举、Json、白名单等校验注解，同时提供接口可查看各接口校验规则，甚至可以自动上报Api网关，实现快速开发，高效管理，降低前后端沟通成本。
+        Shoulder 基于 Spring Boot
+        Validation轻量的Jar，提供了枚举、Json、白名单等校验注解，同时提供接口可查看各接口校验规则，甚至可以自动上报Api网关，实现快速开发，高效管理，降低前后端沟通成本。
     </description>
 
     <dependencies>
