@@ -73,10 +73,14 @@ public class ContextUtils {
      */
     public static <T> T getBeanOrNull(Class<T> clz) throws BeansException {
         try {
-            return (T) getBeanFactory().getBean(clz);
+            return getBeanFactory() == null ? null : (T) getBeanFactory().getBean(clz);
         } catch (BeansException e) {
             return null;
         }
+    }
+
+    public static <T> Optional<T> getBeanOptional(Class<T> clz) throws BeansException {
+        return Optional.ofNullable(getBeanOrNull(clz));
     }
 
     /**

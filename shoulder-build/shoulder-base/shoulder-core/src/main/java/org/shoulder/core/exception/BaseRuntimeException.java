@@ -228,11 +228,9 @@ public class BaseRuntimeException extends RuntimeException implements ErrorCode 
 
     @Override
     public String getLocalizedMessage() {
-        // todo 【稳定性】 考虑是否去除该方法，因为目前多语言不完善
-        if (ContextUtils.hasContextRefreshed()) {
-            ContextUtils.getBean(Translator.class).getMessage(this);
-        }
-        return getMessage();
+        return ContextUtils.getBeanOptional(Translator.class)
+                .map(t -> t.getMessage(this))
+                .orElse(getMessage());
     }
 
 

@@ -118,12 +118,20 @@ public class DefaultExportConfigManager implements ExportConfigManager {
             AssertUtils.notEmpty(column.getModelField(), CommonErrorCodeEnum.ILLEGAL_PARAM);
             if (StringUtils.isEmpty(column.getDisplayName())) {
                 AssertUtils.notEmpty(column.getDisplayNameI18n(), CommonErrorCodeEnum.ILLEGAL_PARAM);
-                column.setDisplayName(
-                        ContextUtils.getBean(Translator.class).getMessage(column.getDisplayNameI18n(), new Object[]{}, locale));
+                column.setDisplayName(ContextUtils.getBeanOptional(Translator.class)
+                        .map(t -> t.getMessage(column.getDisplayNameI18n(), new Object[]{}, locale))
+                        // 没有 Translator 则使用 modelField 作为 默认值
+                        .orElse(column.getModelField())
+                );
             }
             if (StringUtils.isEmpty(column.getDescription()) && StringUtils.isNotEmpty(column.getDescriptionI18n())) {
                 column.setDescription(
-                        ContextUtils.getBean(Translator.class).getMessage(column.getDescriptionI18n(), new Object[]{}, locale));
+                        ContextUtils.getBeanOptional(Translator.class)
+                                .map(t -> t.getMessage(column.getDescriptionI18n(), new Object[]{}, locale))
+                                // 没有 Translator 则默认值为空
+                                .orElse("")
+
+                );
             }
         }
 

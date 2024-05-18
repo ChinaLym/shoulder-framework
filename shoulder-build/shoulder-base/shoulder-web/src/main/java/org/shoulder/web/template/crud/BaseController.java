@@ -66,7 +66,9 @@ public interface BaseController<ENTITY extends BaseEntity<? extends Serializable
      * @return 对象类型
      */
     default String getEntityObjectType() {
-        return ContextUtils.getBean(OperableObjectTypeRepository.class).getObjectType(getEntityClass());
+        return ContextUtils.getBeanOptional(OperableObjectTypeRepository.class)
+                .map(r -> r.getObjectType(getEntityClass()))
+                .orElse("objType." + getEntityClass().getSimpleName());
     }
 
     ShoulderConversionService getConversionService();

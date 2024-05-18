@@ -5,12 +5,16 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8</version><!-- shoulder-version -->
+        <version>0.8.1</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>shoulder-web</artifactId>
+    <description>
+        shoulder WEB 模块，基于Spring Boot Web提供了 Controller AOP 日志、AOP异常处理，统一返回值，健康检查，租户、用户解析，Web
+        安全防护，通用CrudController，动态字典，标签管理，HTTP client AOP日志、AOP异常处理等能力，助力Web飞速开发。
+    </description>
 
     <dependencies>
 

@@ -14,11 +14,11 @@
 
 第一次使用时需要添加，以后都不用这一步咯，除非调整 `version`
 
-本次以 `0.8` 为例说明
+本次以 `0.8.1` 为例说明
 ```
 groupId     cn.itlym
 artifactId  shoulder-archetype-simple
-version     0.8
+version     0.8.1
 ```
 
 ![添加 shoulder 的 archetype](../doc/img/archetype/idea/add.png)
@@ -35,7 +35,7 @@ version     0.8
 mvn archetype:generate\
     -DarchetypeGroupId=cn.itlym\
     -DarchetypeArtifactId=shoulder-archetype-simple\
-    -DarchetypeVersion=0.8\
+    -DarchetypeVersion=0.8.1\
     -DgroupId=com.foo -DartifactId=demo -DappId=demo\
     -Dauthor=shoulder -Dversion=1.0.0-SNAPSHOT\
     -B

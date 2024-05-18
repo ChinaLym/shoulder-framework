@@ -99,7 +99,10 @@ public class AppInfo {
 
     public static long instanceId() {
         if (instanceId == -1) {
-            instanceId = ContextUtils.getBean(InstanceIdProvider.class).getCurrentInstanceId();
+            // 尝试由 InstanceIdProvider 提供 instanceId，找不到为 -1
+            instanceId = ContextUtils.getBeanOptional(InstanceIdProvider.class)
+                    .map(InstanceIdProvider::getCurrentInstanceId)
+                    .orElse(-1L);
         }
         return instanceId;
     }

@@ -21,7 +21,7 @@ steps:
     pull: if-not-exists
     commands:
       # 异步快速检查依赖
-      - curl --location --request POST 'http://10.10.10.1:12345/projects/create' --form 'email=cn_lym@foxmail.com' --form 'pomXml=@shoulder-dependencies/pom.xml' --form 'notifyInstantlyAfterCheck=true' --form 'notifyReason=CI-<a href="https://git.itlym.cn/gogs/${DRONE_REPO_NAME}">${DRONE_REPO_NAME}::${DRONE_REPO_BRANCH}</a><br> with <a href="https://drone.itlym.cn/gogs/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}">Drone Build-${DRONE_BUILD_NUMBER}</a><br>' || echo '======= SKIP dependency check. ======='
+      - curl --location --request POST 'http://autopom.itlym.cn:12345/projects/create' --form 'email=cn_lym@foxmail.com' --form 'pomXml=@shoulder-dependencies/pom.xml' --form 'notifyInstantlyAfterCheck=true' --form 'notifyReason=CI-<a href="https://git.itlym.cn/gogs/${DRONE_REPO_NAME}">${DRONE_REPO_NAME}::${DRONE_REPO_BRANCH}</a><br> with <a href="https://drone.itlym.cn/gogs/${DRONE_REPO_NAME}/${DRONE_BUILD_NUMBER}">Drone Build-${DRONE_BUILD_NUMBER}</a><br>' || echo '======= SKIP dependency check. ======='
       #
       - export MAVEN_OPTS="-Xmx400m -Xms400m"
       # ========== 安装到本地 install script ==========
@@ -29,7 +29,7 @@ steps:
       # ========== install script end ==========
       #
       # ========== deploy script ==========
-      - bash scripts/prepareRelease.sh
+      #- bash scripts/prepareRelease.sh
       #      - mvn clean deploy -P release -Dmaven.test.skip=true -B -V -T 1.5C
       # ========== deploy script end ==========
       - echo '========FINISHED CICD=========='

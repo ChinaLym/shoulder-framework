@@ -22,6 +22,7 @@
 > 小的依赖版本调整，bugfix（若有）
 
 - shoulder-dependencies 升级依赖
+  - `spring-boot` 3.2.4 -> 3.2.4
   - `mybatis-plus` 3.5.5 -> 3.5.6
   - `commons-io`   2.16.0 -> 2.16.1
 - shoulder-archetype-simple bugfix

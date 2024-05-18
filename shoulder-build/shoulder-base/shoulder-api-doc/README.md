@@ -32,7 +32,7 @@
 
 启动后访问：http://127.0.0.1:8080/swagger-ui/index.html (懒加载模式，第一次访问时会解析所有文档，生成 apidoc.json会比较慢，后续访问会因缓存快很多)
 
-## 基于 openapi
+## 基于 OpenApi
 
 https://springdoc.org/
 

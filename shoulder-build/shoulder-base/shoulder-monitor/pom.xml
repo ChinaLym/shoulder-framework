@@ -5,12 +5,16 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8</version><!-- shoulder-version -->
+        <version>0.8.1</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>shoulder-monitor</artifactId>
+    <description>
+        Shoulder 基础模块-监控能力，面向生产环境部署的应用，整合 Micrometer 提供运行监控能力，可与 Prometheus 轻易监控
+        Spring Boot 应用中线程池全面信息。
+    </description>
 
     <dependencies>
         <dependency>

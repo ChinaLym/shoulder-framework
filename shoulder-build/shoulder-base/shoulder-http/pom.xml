@@ -5,14 +5,14 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8</version><!-- shoulder-version -->
+        <version>0.8.1</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>shoulder-http</artifactId>
     <description>
-        http 相关，如接口调用等
+        Shoulder 基础模块-Http，非常轻量的一个模块，含几十行核心代码，在 Spring RestTemplate 基础上实现了AOP日志、异常处理、统一响应解析能力。
     </description>
 
     <dependencies>

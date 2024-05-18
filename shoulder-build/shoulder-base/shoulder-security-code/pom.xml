@@ -5,12 +5,16 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8</version><!-- shoulder-version -->
+        <version>0.8.1</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>shoulder-security-code</artifactId>
+    <description>
+        Shoulder Security 的扩展，提供了“验证码”功能基础框架。可扩展支持各类验证码，如手机短信、图形验证码、邮件验证码、滑块验证码、App验证码等。
+    </description>
+
 
     <dependencies>
         <dependency>

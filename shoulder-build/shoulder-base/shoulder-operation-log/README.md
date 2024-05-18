@@ -25,7 +25,8 @@
 
 # 代码示例
 
-[操作日志 DEMO]() 中模拟了开发中各种可能的场景：普通业务、定时任务、异步线程怎、批量操作、性能调优等。
+[操作日志 DEMO](https://github.com/ChinaLym/shoulder-framework-demo/blob/main/demo1/src/main/java/com/example/demo1/controller/log/OperationLogDemoController.java)
+中模拟了开发中各种可能的场景：普通业务、定时任务、异步线程怎、批量操作、性能调优等。
 
 一般来说使用者只需关心 操作动作、被操作对象、操作结果、操作详情。下面举几个简单场景的例子。
 

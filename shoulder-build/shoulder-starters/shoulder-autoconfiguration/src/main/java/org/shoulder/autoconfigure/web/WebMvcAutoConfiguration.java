@@ -21,6 +21,8 @@ import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.Nonnull;
+
 /**
  * WebMvcAutoConfiguration
  *
@@ -101,12 +103,12 @@ public class WebMvcAutoConfiguration {
         }
 
         @Override
-        public void addInterceptors(InterceptorRegistry registry) {
-            BaseRejectRepeatSubmitInterceptor rejectRepeatSubmitInterceptor = ContextUtils.getBeanOrNull(BaseRejectRepeatSubmitInterceptor.class);
-            if (rejectRepeatSubmitInterceptor != null) {
-                registry.addInterceptor(rejectRepeatSubmitInterceptor).order(Ordered.HIGHEST_PRECEDENCE);
-                WebMvcConfigurer.super.addInterceptors(registry);
-            }
+        public void addInterceptors(@Nonnull InterceptorRegistry registry) {
+            ContextUtils.getBeanOptional(BaseRejectRepeatSubmitInterceptor.class)
+                    .ifPresent(rejectRepeatSubmitInterceptor -> {
+                        registry.addInterceptor(rejectRepeatSubmitInterceptor).order(Ordered.HIGHEST_PRECEDENCE);
+                        WebMvcConfigurer.super.addInterceptors(registry);
+                    });
         }
     }
 

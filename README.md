@@ -57,7 +57,7 @@ corresponding starter:
 <dependency>
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-starter-web</artifactId>
-    <version>0.8</version>
+    <version>0.8.1-SNAPSHOT</version><!-- shoulder-version -->
 </dependency>
 ```
 
@@ -73,7 +73,7 @@ create projects. Just ensure you have `JDK17+` and `Maven` installed locally.
 mvn archetype:generate \
   -DarchetypeGroupId=cn.itlym \
   -DarchetypeArtifactId=shoulder-archetype-simple \
-  -DarchetypeVersion=0.8 \
+  -DarchetypeVersion=0.8.1 \
   -DgroupId=com.yourcompany \
   -DartifactId=yourappName \
   -Dversion=1.0-SNAPSHOT
@@ -93,7 +93,7 @@ Just use the following `pom.xml` directly, the only difference from a Spring Boo
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8</version><!-- shoulder-version -->
+        <version>0.8.1-SNAPSHOT</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- your groupId -->
@@ -157,7 +157,7 @@ outlook:
 
 # 📒 Version & Change log
 
-Current version: `0.8`, see more in [CHANGELOG.MD](CHANGELOG.MD).
+Current version: `0.8.1`, see more in [CHANGELOG.MD](CHANGELOG.MD).
 
 # 💗 Contribution
 

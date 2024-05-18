@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.8</version><!-- shoulder-version -->
+        <version>0.8.1</version><!-- shoulder-version -->
         <!--<relativePath>../pom.xml</relativePath>-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
     <properties>
         <!-- shoulder framework bom -->
         <shoulder-lombok.version>0.1</shoulder-lombok.version>
-        <shoulder.version>0.8</shoulder.version><!-- shoulder-version -->
+        <shoulder.version>0.8.1-SNAPSHOT</shoulder.version><!-- shoulder-version -->
 
         <!-- dependencies bom -->
 
@@ -55,7 +55,7 @@
 
         <!-- apache-common-tools -->
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
-        <commons-codec.version>1.16.1</commons-codec.version>
+        <commons-codec.version>1.17.0</commons-codec.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-exec.version>1.3</commons-exec.version>
         <commons-email.version>1.5</commons-email.version>
@@ -73,7 +73,7 @@
         <javassist.version>3.30.2-GA</javassist.version>
         <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
 
-        <guava.version>33.1.0-jre</guava.version>
+        <guava.version>33.2.0-jre</guava.version>
         <!-- google 最新 3.0.1版本（jdk1.7+）还用的javax.xxx 不支持 jakarta.xxx 暂时移除  https://findbugs.sourceforge.net/ -->
         <findbugs-annotations.version>3.0.1_temp_removal_for_not_support_spring_boot_3</findbugs-annotations.version>
         <!-- inheritable threadLocal https://github.com/alibaba/transmittable-thread-local/releases -->

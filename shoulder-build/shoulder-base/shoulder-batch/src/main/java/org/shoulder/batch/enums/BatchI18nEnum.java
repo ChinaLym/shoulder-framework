@@ -5,8 +5,6 @@ import lombok.Getter;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.ContextUtils;
 
-import java.util.Optional;
-
 /**
  * 批处理国际化
  * todo rowNumber 数据行、lineNum 文本行
@@ -146,8 +144,8 @@ public enum BatchI18nEnum {
     }
 
     public String i18nValue(Object... args) {
-        return Optional.ofNullable(ContextUtils.getBean(Translator.class)
-                        .getMessageOrDefault(this.code, this.defaultName, args))
+        return ContextUtils.getBeanOptional(Translator.class))
+                .map(t -> t.getMessageOrDefault(this.code, this.defaultName, args))
                 .filter(String::isBlank)
                 .orElse(this.defaultName);
     }

@@ -5,13 +5,17 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8</version><!-- shoulder-version -->
+        <version>0.8.1</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <name>shoulder-data-db</name>
     <artifactId>shoulder-data-db</artifactId>
+    <description>
+        Shoulder 数据访问层模块，基于Spring Data + MyBatis-Plus 提供多数据源、ORM 等能力，且在其基础上额外实现二十余项实用增强能力，此外支持全局
+        id 生成，通用 DAO 模板等能力。
+    </description>
 
     <dependencies>
 

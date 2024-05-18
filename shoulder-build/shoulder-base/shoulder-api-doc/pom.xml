@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8</version><!-- shoulder-version -->
+        <version>0.8.1</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,7 @@
     <artifactId>shoulder-api-doc</artifactId>
 
     <description>
-        扫描 api 生成文档
+        Shoulder 基于 OpenApi 规范做了依赖选型，通过扫描标准 Swagger 注解自动生成 api 生成文档。该模块仅几Kb，仅包含依赖管理。
     </description>
 
     <dependencies>
