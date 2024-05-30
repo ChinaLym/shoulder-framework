@@ -1,6 +1,5 @@
-package org.shoulder.autoconfigure.http;
+package org.shoulder.autoconfigure.web;
 
-import org.shoulder.autoconfigure.web.WebFilterProperties;
 import org.shoulder.web.filter.CleanContextFilter;
 import org.shoulder.web.filter.DefaultTenantFilter;
 import org.shoulder.web.filter.MockUserFilter;

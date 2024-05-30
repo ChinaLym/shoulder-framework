@@ -24,10 +24,10 @@
         <spring-security-oauth2-autoconfigure.version>2.6.8</spring-security-oauth2-autoconfigure.version>
         <!-- spring security oauth2 不再维护，不引入-->
         <spring-security-oauth2.version>2.5.2.RELEASE</spring-security-oauth2.version>
-        <nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>9.39.1</nimbus-jose-jwt.version>
         <spring-oauth2-server.version>1.2.3</spring-oauth2-server.version>
 
-        <spring-boot.version>3.2.5</spring-boot.version>
+        <spring-boot.version>3.2.6</spring-boot.version>
         <!-- 由于Spring Boot提供了Maven BOM来管理依赖版本，因此您无需指定版本 -->
 
         <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info https://www.json.cn/  -->
@@ -43,7 +43,7 @@
 
         <!-- api-doc -->
         <!-- openApi(swagger)是行业标准，swagger 1.7 更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
-        <swagger3.version>2.2.21</swagger3.version>
+        <swagger3.version>2.2.22</swagger3.version>
         <springdoc.version>2.5.0</springdoc.version>
         <!-- knife4j 前身是 swagger-bootstrap-ui，一个用于优化 swagger-ui 的项目，视觉效果更好 -->
         <knife4j.version>3.0.3</knife4j.version>
@@ -79,8 +79,8 @@
         <!-- inheritable threadLocal https://github.com/alibaba/transmittable-thread-local/releases -->
         <alibaba.transmittable.version>2.14.5</alibaba.transmittable.version>
 
-        <bcprov.jdk18on.version>1.78</bcprov.jdk18on.version>
-        <bcpkix.jdk18on.version>1.78</bcpkix.jdk18on.version>
+        <bcprov.jdk18on.version>1.78.1</bcprov.jdk18on.version>
+        <bcpkix.jdk18on.version>1.78.1</bcpkix.jdk18on.version>
 
         <caffeine.version>3.0.5</caffeine.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
@@ -93,7 +93,7 @@
         <lombok.version>1.18.32</lombok.version>
 
         <!-- dataBase-->
-        <mysql-connector-j.version>8.3.0</mysql-connector-j.version>
+        <mysql-connector-j.version>8.4.0</mysql-connector-j.version>
         <h2.version>2.2.224</h2.version>
         <druid.version>1.2.8</druid.version>
         <!-- mybatis-plus 功能稳定性较差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
@@ -102,9 +102,9 @@
         <velocity.version>2.3</velocity.version>
         <pagehelper.version>6.1.0</pagehelper.version>
         <pagehelper-starter.version>2.1.0</pagehelper-starter.version>
-        <beecp.version>3.5.0</beecp.version>
+        <beecp.version>4.0.4</beecp.version>
         <p6spy.version>3.9.1</p6spy.version>
-        <redisson.version>3.27.2</redisson.version>
+        <redisson.version>3.30.0</redisson.version>
 
         <!-- test -->
         <mockito-all.version>1.10.19</mockito-all.version>

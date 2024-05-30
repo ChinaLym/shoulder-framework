@@ -49,7 +49,7 @@ public class WebExtProperties {
         private String path = "/api/v1/dictionary";
 
         /**
-         * api 路径
+         * ui 路径
          */
         private String pageUrl = "/ui/dictionary/page.html";
 
@@ -61,7 +61,7 @@ public class WebExtProperties {
         /**
          * 字典 / 字典项 数据存在哪
          */
-        private DictionaryStorageType storageType;
+        private DictionaryStorage storage;
 
     }
 
@@ -109,7 +109,7 @@ public class WebExtProperties {
 
     }
 
-    public enum DictionaryStorageType {
+    public enum DictionaryStorage {
 
         /**
          * 枚举
