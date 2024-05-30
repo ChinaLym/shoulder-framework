@@ -50,6 +50,7 @@ public class RestControllerColorfulLogAspect extends BaseRestControllerLogAspect
     /**
      * 等待响应返回后再进行统一记录（分开打印会导致请求日志和响应日志不在一起，推荐在开发阶段打印在一起方便查看）。
      * tip:若请求过慢可能导致日志迟迟不打印
+     * mergeReqAndResp
      */
     private final boolean logTillResponse;
 

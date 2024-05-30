@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "DictionaryTypeCrudController", description = "字典-类型管理")
 @RestController
-@RequestMapping(value = "${shoulder.web.ext.dictionary.apiPath + '/type':/api/v1/dictionary/type}")
+@RequestMapping(value = "${shoulder.web.ext.dictionary.path + '/type':/api/v1/dictionary/type}")
 public class DictionaryTypeCrudController
     extends CrudCacheableController<
         DictionaryService,

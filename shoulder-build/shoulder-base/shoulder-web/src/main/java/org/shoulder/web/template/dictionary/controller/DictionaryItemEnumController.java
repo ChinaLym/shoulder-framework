@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Tag(name = "DictionaryItemEnumController", description = "枚举字典-枚举项查询(只读)")
 @RestController
-@RequestMapping(value = "${shoulder.web.ext.dictionary.apiPath:/api/v1/dictionary}")
+@RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}")
 public class DictionaryItemEnumController implements DictionaryItemController {
 
     /**

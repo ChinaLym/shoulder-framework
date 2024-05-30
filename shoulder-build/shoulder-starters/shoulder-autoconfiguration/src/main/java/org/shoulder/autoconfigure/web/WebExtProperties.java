@@ -28,6 +28,7 @@ public class WebExtProperties {
      */
     private TagProperties tag = new TagProperties();
     private OplogProperties oplog = new OplogProperties();
+    private ValidationEndPointProperties validationRule = new ValidationEndPointProperties();
 
     @Data
     static class DictionaryProperties {
@@ -45,7 +46,7 @@ public class WebExtProperties {
         /**
          * api 路径
          */
-        private String apiPath = "/api/v1/dictionary";
+        private String path = "/api/v1/dictionary";
 
         /**
          * api 路径
@@ -75,7 +76,21 @@ public class WebExtProperties {
         /**
          * api 路径
          */
-        private String apiPath = "/api/v1/tags";
+        private String path = "/api/v1/tags";
+
+    }
+    @Data
+    static class ValidationEndPointProperties {
+
+        /**
+         * 是否启用
+         */
+        private Boolean enable = Boolean.TRUE;
+
+        /**
+         * api 路径
+         */
+        private String path = "/api/v1/validate/rule";
 
     }
 
@@ -90,7 +105,7 @@ public class WebExtProperties {
         /**
          * api 路径
          */
-        private String apiPath = "/api/v1/oplogs";
+        private String path = "/api/v1/oplogs";
 
     }
 

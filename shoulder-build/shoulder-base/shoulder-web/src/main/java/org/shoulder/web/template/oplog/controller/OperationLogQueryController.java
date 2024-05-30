@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Tag(name = "OperationLogQueryController", description = "操作日志-查询(只读)")
 @RestController
-@RequestMapping(value = "${shoulder.web.ext.oplog.apiPath:/api/v1/oplogs}")
+@RequestMapping(value = "${shoulder.web.ext.oplog.path:/api/v1/oplogs}")
 public class OperationLogQueryController extends BaseControllerImpl<OperationLogService, OperationLogEntity>
     implements QueryController<OperationLogEntity, Long, OperationLogDTO, OperationLogDTO> {
 

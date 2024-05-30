@@ -50,7 +50,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @author lym
  */
 @Tag(name = "ImportRestfulApi", description = "数据批处理接口")
-@RequestMapping(value = "${shoulder.web.ext.batch.apiPath:/api/v1/batch/{dataType}}")
+@RequestMapping(value = "${shoulder.web.ext.batch.path:/api/v1/batch/{dataType}}")
 @Validated
 public interface ImportRestfulApi {
 

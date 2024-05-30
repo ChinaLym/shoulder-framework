@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
@@ -30,6 +31,7 @@ import javax.annotation.Nonnull;
  */
 @AutoConfiguration
 @ConditionalOnWebApplication
+@EnableConfigurationProperties(WebProperties.class)
 public class WebMvcAutoConfiguration {
 
     //@Bean fixme 日期格式 shoulder / spring 配置一致性
@@ -53,7 +55,7 @@ public class WebMvcAutoConfiguration {
     @ConditionalOnClass(CommonEndpoint.class)
     protected static class CommonEndpointWebConfig {
         @Bean
-        @ConditionalOnProperty(name = "shoulder.web.enableCommonEndpoint", havingValue = "true", matchIfMissing = true)
+        @ConditionalOnProperty(name = "shoulder.web.commonEndpoint.enable", havingValue = "true", matchIfMissing = true)
         public CommonEndpoint commonEndpoint() {
             return new CommonEndpoint();
         }

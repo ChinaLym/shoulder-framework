@@ -55,7 +55,7 @@ public class DictionaryEnumController implements DictionaryEnumQueryController {
             @Parameter(name = "dictionaryType", description = "字典类型"),
     })
     @Operation(summary = "查询所有支持的字典项名称", description = "查询所有支持的字典项名称")
-    @RequestMapping(value = "${shoulder.web.ext.dictionary.apiPath:/api/v1/dictionary}/type/all", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}/type/all", method = {RequestMethod.POST, RequestMethod.GET})
     public BaseResult<ListResult<String>> allTypes() {
         Collection<String> allTypeNames = dictionaryEnumStore.listAllTypeNames();
         return BaseResult.success(allTypeNames);

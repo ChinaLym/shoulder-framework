@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
@@ -22,6 +23,7 @@ import java.util.List;
 @ConditionalOnClass(value = SkipResponseWrap.class)
 @AutoConfiguration
 @ConditionalOnWebApplication
+@EnableConfigurationProperties(WebProperties.class)
 public class WebAdvanceAutoConfiguration {
 
 
@@ -58,9 +60,9 @@ public class WebAdvanceAutoConfiguration {
      */
     @Bean
     @Order(value = 0)
-    @ConditionalOnProperty(name = "shoulder.web.restResponse.auto-warp", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "shoulder.web.restResponse.autoWrapFormat", havingValue = "true", matchIfMissing = true)
     public RestControllerUnionResponseAdvice restControllerUnionResponseAdvice(
-            @Value("#{'${shoulder.web.restResponse.skipWarpPathPatterns:}'.split(',')}") List<String> skipWarpPathPatterns) {
+            @Value("#{'${shoulder.web.restResponse.skipWrapPathPatterns:}'.split(',')}") List<String> skipWarpPathPatterns) {
         return new RestControllerUnionResponseAdvice(skipWarpPathPatterns);
     }
 
@@ -72,7 +74,7 @@ public class WebAdvanceAutoConfiguration {
     @Order(value = 0)
     @ConditionalOnProperty(name = "shoulder.web.log.type", havingValue = "colorful", matchIfMissing = true)
     public RestControllerColorfulLogAspect restControllerColorfulLogAspect(
-        @Value("${shoulder.web.log.logTillResponse:true}") boolean logTillResponse,
+        @Value("${shoulder.web.log.combineReqResp:true}") boolean logTillResponse,
         @Value("${shoulder.web.log.useCallerLogger:true}") boolean useCallerLogger) {
         ShoulderLoggers.SHOULDER_CONFIG.info("active shoulder.web.log.type=colorful");
         return new RestControllerColorfulLogAspect(useCallerLogger, logTillResponse);
