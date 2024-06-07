@@ -40,7 +40,7 @@
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
-    <version>0.8.1-SNAPSHOT</version><!-- shoulder-version -->
+    <version>0.8.1</version><!-- shoulder-version -->
         </dependency>
 ```
 
@@ -69,7 +69,7 @@ mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulde
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8.1-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.8.1</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- 你的 groupId -->

@@ -57,7 +57,7 @@ corresponding starter:
 <dependency>
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-starter-web</artifactId>
-    <version>0.8.1-SNAPSHOT</version><!-- shoulder-version -->
+    <version>0.8.1</version><!-- shoulder-version -->
 </dependency>
 ```
 
@@ -93,7 +93,7 @@ Just use the following `pom.xml` directly, the only difference from a Spring Boo
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8.1-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.8.1</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- your groupId -->

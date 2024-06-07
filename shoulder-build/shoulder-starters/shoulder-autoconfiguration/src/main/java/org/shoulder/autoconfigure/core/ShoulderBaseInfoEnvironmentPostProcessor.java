@@ -11,6 +11,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 
+import java.util.Objects;
 import java.util.Properties;
 import java.util.TimeZone;
 
@@ -66,10 +67,10 @@ public class ShoulderBaseInfoEnvironmentPostProcessor implements EnvironmentPost
         shoulderProperties.setProperty(shoulderAppIdKey, appName);
         AppInfo.initAppId(shoulderProperties.getProperty(shoulderAppIdKey));
         // 这些设置了默认值，不必担心为 null
-        AppInfo.initErrorCodePrefix(environment.getProperty("shoulder.application.errorCodePrefix"));
-        AppInfo.initVersion(environment.getProperty("shoulder.application.version"));
-        AppInfo.initDateTimeFormat(environment.getProperty(BaseAppProperties.dateTimeFormatConfigPath));
-        AppInfo.initCharset(environment.getProperty("shoulder.application.charset"));
+        AppInfo.initErrorCodePrefix(Objects.requireNonNull(environment.getProperty("shoulder.application.errorCodePrefix")));
+        AppInfo.initVersion(Objects.requireNonNull(environment.getProperty("shoulder.application.version")));
+        AppInfo.initDateTimeFormat(Objects.requireNonNull(environment.getProperty(BaseAppProperties.dateTimeFormatConfigPath)));
+        AppInfo.initCharset(Objects.requireNonNull(environment.getProperty("shoulder.application.charset")));
         AppInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
         AppInfo.initDefaultLocale(StringUtils.parseLocale(environment.getProperty("shoulder.application.defaultLocale")));
         AppInfo.initTimeZone(TimeZone.getTimeZone(environment.getProperty("shoulder.application.timeZone")));

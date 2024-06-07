@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>0.8.1-SNAPSHOT</version><!-- shoulder-version -->
+        <version>0.8.1</version><!-- shoulder-version -->
         <!--<relativePath>../pom.xml</relativePath>-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
     <properties>
         <!-- shoulder framework bom -->
         <shoulder-lombok.version>0.1</shoulder-lombok.version>
-        <shoulder.version>0.8.1-SNAPSHOT</shoulder.version><!-- shoulder-version -->
+        <shoulder.version>0.8.1</shoulder.version><!-- shoulder-version -->
 
         <!-- dependencies bom -->
 
@@ -496,7 +496,6 @@
                 <groupId>com.belerweb</groupId>
                 <artifactId>pinyin4j</artifactId>
                 <version>${pinyin4j.version}</version>
-                <optional>true</optional>
             </dependency>
 
             <dependency>
