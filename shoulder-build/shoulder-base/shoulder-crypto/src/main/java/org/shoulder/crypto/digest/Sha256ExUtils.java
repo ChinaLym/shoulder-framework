@@ -46,22 +46,22 @@ public class Sha256ExUtils implements ByteSpecification {
      * 验证原文hash后是否与密文相同
      *
      * @param text   cipher的明文
-     * @param cipher text hash厚的
+     * @param digest text hash后的摘要内容
      */
-    public static boolean verify(byte[] text, byte[] cipher) {
-        byte[] salt = getSalt(cipher);
+    public static boolean verify(byte[] text, byte[] digest) {
+        byte[] salt = getSalt(digest);
         byte[] hashValue = doHashWithSalt(text, salt);
-        return Arrays.equals(hashValue, cipher);
+        return Arrays.equals(hashValue, digest);
     }
 
     /**
      * 验证原文hash后是否与密文相同
      *
      * @param text   cipher的明文
-     * @param cipher text hash厚的
+     * @param cipher text hash后的摘要内容
      */
-    public static boolean verify(String text, String cipher) {
-        return verify(text.getBytes(ByteSpecification.STD_CHAR_SET), ByteSpecification.decodeToBytes(cipher));
+    public static boolean verify(String text, String digest) {
+        return verify(text.getBytes(ByteSpecification.STD_CHAR_SET), ByteSpecification.decodeToBytes(digest));
     }
 
 

@@ -1,13 +1,7 @@
 package org.shoulder.crypto.stream;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import javax.crypto.Cipher;
+import java.io.*;
 
 /**
  * TODO
@@ -34,17 +28,6 @@ public class FakerCryptoableOutputStream extends BufferedOutputStream {
         }
         buf = new byte[size];
         this.mode = mode;
-    }
-
-    public static void main(String[] args) throws IOException {
-        File fileDir = new File("F:\\codes\\projects\\xxx");
-        File[] files = fileDir.listFiles();
-        for (File file : files) {
-            if (file.getName().endsWith(".7zx")) {
-                decryptFile(file.getAbsolutePath(), file.getAbsolutePath().replace(".7zx", ".7z"));
-            }
-        }
-
     }
 
     public static void encryptFile(String from, String to) throws IOException {

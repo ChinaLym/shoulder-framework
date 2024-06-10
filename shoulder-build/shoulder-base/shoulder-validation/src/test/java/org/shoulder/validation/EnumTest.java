@@ -12,9 +12,6 @@ import org.springframework.validation.annotation.Validated;
 public class EnumTest {
 
 
-    public static void main(String[] args) {
-
-    }
 
     public String acceptEnumNameDemo(@Validated DemoDTO demoDTO) {
         return demoDTO.getName();

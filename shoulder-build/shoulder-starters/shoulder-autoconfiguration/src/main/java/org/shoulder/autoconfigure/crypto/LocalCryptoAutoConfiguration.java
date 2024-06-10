@@ -95,10 +95,38 @@ public class LocalCryptoAutoConfiguration {
         return new LocalTextCipherManager(judgeAbleLocalTextCiphers);
     }
 
+    @ConditionalOnClass(JdbcTemplate.class)
+    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "jdbc", matchIfMissing = true)
+    public static class JdbcLocalCryptoInfoRepositoryAutoConfiguration {
+        /**
+         * 使用了 redis，通常并不推荐，因为 redis 大多时候是作缓存的，而加密元数据最好要持久化存储
+         */
+        @Bean
+        @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
+        public LocalCryptoInfoRepository jdbcLocalCryptoInfoRepository(DataSource dataSource) {
+            return new JdbcLocalCryptoInfoRepository(dataSource);
+        }
+    }
+
+    @ConditionalOnClass(RedisTemplate.class)
+    @AutoConfigureAfter(JdbcLocalCryptoInfoRepositoryAutoConfiguration.class)
+    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "redis", matchIfMissing = true)
+    public static class RedisLocalCryptoInfoRepositoryAutoConfiguration {
+        /**
+         * 使用了 redis，通常并不推荐，因为 redis 大多时候是作缓存的，而加密元数据最好要持久化存储
+         */
+        @Bean
+        @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
+        public LocalCryptoInfoRepository redisLocalCryptoInfoRepository(RedisTemplate<String, Object> redisTemplate) {
+            return new RedisLocalCryptoInfoRepository(redisTemplate);
+        }
+    }
+
     @ConditionalOnCluster(cluster = false)
     @EnableConfigurationProperties(CryptoProperties.class)
     @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
     @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "file", matchIfMissing = true)
+    @AutoConfigureAfter({JdbcLocalCryptoInfoRepositoryAutoConfiguration.class, RedisLocalCryptoInfoRepositoryAutoConfiguration.class})
     public static class TempFileLocalCryptoInfoRepositoryAutoConfiguration {
 
         /**
@@ -139,33 +167,5 @@ public class LocalCryptoAutoConfiguration {
         }
 
     }
-
-    @ConditionalOnClass(RedisTemplate.class)
-    @AutoConfigureAfter(JdbcLocalCryptoInfoRepositoryAutoConfiguration.class)
-    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "redis", matchIfMissing = true)
-    public static class RedisLocalCryptoInfoRepositoryAutoConfiguration {
-        /**
-         * 使用了 redis，通常并不推荐，因为 redis 大多时候是作缓存的，而加密元数据最好要持久化存储
-         */
-        @Bean
-        @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
-        public LocalCryptoInfoRepository redisLocalCryptoInfoRepository(RedisTemplate<String, Object> redisTemplate) {
-            return new RedisLocalCryptoInfoRepository(redisTemplate);
-        }
-    }
-
-    @ConditionalOnClass(JdbcTemplate.class)
-    @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "jdbc", matchIfMissing = true)
-    public static class JdbcLocalCryptoInfoRepositoryAutoConfiguration {
-        /**
-         * 使用了 redis，通常并不推荐，因为 redis 大多时候是作缓存的，而加密元数据最好要持久化存储
-         */
-        @Bean
-        @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)
-        public LocalCryptoInfoRepository jdbcLocalCryptoInfoRepository(DataSource dataSource) {
-            return new JdbcLocalCryptoInfoRepository(dataSource);
-        }
-    }
-
 
 }

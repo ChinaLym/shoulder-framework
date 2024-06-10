@@ -63,7 +63,7 @@ public class Sha256Utils implements ByteSpecification {
      * 验证原文hash后是否与密文相同
      *
      * @param text        cipher的明文
-     * @param digestBytes text hash厚的
+     * @param digestBytes text hash后的摘要内容
      */
     public static boolean verify(byte[] text, byte[] digestBytes) {
         return Arrays.equals(digest(text), digestBytes);
@@ -73,10 +73,10 @@ public class Sha256Utils implements ByteSpecification {
      * 验证原文hash后是否与密文相同
      *
      * @param text   cipher的明文
-     * @param cipher text hash厚的
+     * @param digest text hash后的摘要内容
      */
-    public static boolean verify(String text, String cipher) {
-        return verify(text.getBytes(ByteSpecification.STD_CHAR_SET), ByteSpecification.decodeToBytes(cipher));
+    public static boolean verify(String text, String digest) {
+        return verify(text.getBytes(ByteSpecification.STD_CHAR_SET), ByteSpecification.decodeToBytes(digest));
     }
 
 }

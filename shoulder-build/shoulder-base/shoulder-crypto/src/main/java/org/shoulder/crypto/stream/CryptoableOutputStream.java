@@ -1,16 +1,11 @@
 package org.shoulder.crypto.stream;
 
+import org.shoulder.crypto.symmetric.SymmetricAlgorithmEnum;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import javax.crypto.Cipher;
+import java.io.*;
 
 /**
  * TODO
@@ -21,7 +16,7 @@ public class CryptoableOutputStream extends BufferedOutputStream {
 
     protected byte[] buf;
     protected int    count;
-    private DefaultSymmetricCipher aes_gcm = new DefaultSymmetricCipher("AES/CBC/PKCS5Padding");
+    private DefaultSymmetricCipher aes_gcm = new DefaultSymmetricCipher(SymmetricAlgorithmEnum.AES_GCM.getAlgorithmName());
     private byte[] key = "1234567890123456".getBytes();
     private byte[] iv = "1234567890123456".getBytes();
     private int mode;
@@ -40,9 +35,6 @@ public class CryptoableOutputStream extends BufferedOutputStream {
         }
         buf = new byte[size];
         this.mode = mode;
-    }
-
-    public static void main(String[] args) throws IOException {
     }
 
     public static void encryptFile(String from, String to) throws IOException {

@@ -4,9 +4,6 @@ import jakarta.annotation.Nonnull;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 
 /**
  * 通用错误（2^14以下框架使用）错误码标识 = 0 的那部分
@@ -238,15 +235,6 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     @Override
     public HttpStatus getHttpStatusCode() {
         return httpStatus;
-    }
-
-    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        CommonErrorCodeEnum[] codeEnums = CommonErrorCodeEnum.class.getEnumConstants();
-        for (CommonErrorCodeEnum codeEnum : codeEnums) {
-            Method method = CommonErrorCodeEnum.class.getMethod("getCode");
-            String code = (String) method.invoke(codeEnum);
-            System.out.println(code);
-        }
     }
 
 }
