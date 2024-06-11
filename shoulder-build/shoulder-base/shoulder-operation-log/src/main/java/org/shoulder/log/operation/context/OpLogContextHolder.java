@@ -210,7 +210,7 @@ public class OpLogContextHolder {
 
     /**
      * 线程变量清理：
-     * 除非你很明白框架原理，否则不要主动调用该方法
+     * 除非您很明白框架原理，否则不要主动调用该方法
      */
     public static void clean() {
         CURRENT_OP_LOG_CONTEXT.remove();

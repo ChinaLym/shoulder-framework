@@ -184,7 +184,7 @@ public void configure(WebSecurity web) throws Exception {
 
 # 相关名词概念解释
 
-谈到API文档，那就绕不开大名鼎鼎的Swagger，但是你是否还听说过：OpenAPI，Springfox，Springdoc？你第一次看到这些脑瓜子是不是嗡嗡的？
+谈到API文档，那就绕不开大名鼎鼎的Swagger，但是您是否还听说过：OpenAPI，Springfox，Springdoc？您第一次看到这些脑瓜子是不是嗡嗡的？
 
 ## OpenAPI【组织 & 规范】
 

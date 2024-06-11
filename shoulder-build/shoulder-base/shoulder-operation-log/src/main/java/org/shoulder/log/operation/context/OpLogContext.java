@@ -40,7 +40,7 @@ public class OpLogContext {
 
     /**
      * 清理线程变量
-     * 推荐由拦截器负责，使用者不要在业务代码中调用该方法，除非你很清楚日志框架的原理
+     * 推荐由拦截器负责，使用者不要在业务代码中调用该方法，除非您很清楚日志框架的原理
      */
     public static void cleanDefaultOperator() {
         currentOperatorThreadLocal.remove();

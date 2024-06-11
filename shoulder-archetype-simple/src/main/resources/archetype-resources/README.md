@@ -4,6 +4,8 @@
 # 📖介绍
 该工程由 [Shoulder](https://github.com/ChinaLym/shoulder-framework) 的 `shoulder-archetype-simple` 创建 ，包目录结构如下
 
+[Shoulder 文档地址](https://shoulder.itlym.cn/shoulder.html)
+
 ```
 groupId.artifactId
     ├─config                 配置类
@@ -59,4 +61,4 @@ groupId.artifactId
 # 📩 反馈 or 联系我
 
 感谢小伙伴们的 **[🌟Star](https://gitee.com/ChinaLym/shoulder-framework/star)** 、 **🍴Fork** 、 **🏁PR**，欢迎使用 `issue`
-或 [Email](mailto:yourEmail@yourEmail.com) 交流，如 留下你的建议、期待的新功能等~
+或 [Email](mailto:yourEmail@yourEmail.com) 交流，如 留下您的建议、期待的新功能等~

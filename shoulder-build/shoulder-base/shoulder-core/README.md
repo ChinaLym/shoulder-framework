@@ -168,7 +168,7 @@ twitter 首个提出 GUID 的可行方案，该算法容易理解，为进一步
 ![shoulder-guid 单线程批量获取测试](img/guid_multi.png)
 
 > 为了证明 `Shoulder` 是高性能不是"投机取巧"换来的，特附 `shoulder-guid` 生成id是的`单调递增``无重复`的测试图证明。
->这 1kw 个id是无重复的，完全单调递增的！你可能 Shoulder-Guid 的高超性能感觉惊讶，没错！学 Shoulder，带你认使高并发！
+> 这 1kw 个id是无重复的，完全单调递增的！您可能 Shoulder-Guid 的高超性能感觉惊讶，没错！学 Shoulder，带您认使高并发！
 ![shoulder-guid 单线程批量获取测试-无重复-单调递增](img/guid_notRpeat_increasing.png)
 
 - 3. `8`线程生成需要 335-360ms 左右（由于竞争带来的性能下降，CAS导致范围波地较大），性能是百度算法的 **660 %** 倍。

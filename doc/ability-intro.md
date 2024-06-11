@@ -66,7 +66,7 @@
 
 - 依赖管理 & 开箱即用
     - 与 `Spring Boot` 类似，无需再思考引入哪个版本，会不会冲突，`Shoulder` 管理了常用依赖的版本号，如 `spring-boot`、`spring-cloud`、`spring-cloud-alibaba`
-    - 自动依赖，当你引入 `shoulder-starter-web` 不需要再引入 `spring-boot-starter-web` 也不需要担心还要依赖什么
+  - 自动依赖，当您引入 `shoulder-starter-web` 不需要再引入 `spring-boot-starter-web` 也不需要担心还要依赖什么
     - 最小化配置，提供了默认的配置项，自带建议配置。
     - 配置项支持 `IDE` 的自动提示
 
@@ -85,4 +85,4 @@
     - 与 Spring Boot 天衣无缝的自动集成能力
     - 能力保证可扩展、可监控、可回滚（单独屏蔽下线）
     - 提供使用demo、部分单元测试：提供优秀的应用案例，懒人可以直接复制代码即可。
-    - **等你探索...**
+  - **待您探索...**

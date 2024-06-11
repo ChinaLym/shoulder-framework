@@ -33,7 +33,7 @@
 
 ## 🔥在已有的 `Spring-Boot` 工程中使用
 
-`pom.xml` 中添加你需要的模块即可使用，如：希望使用`shoulder-web 的动态字典能力` ，则引入对应starter即可~
+`pom.xml` 中添加您需要的模块即可使用，如：希望使用`shoulder-web 的动态字典能力` ，则引入对应starter即可~
 
 ```xml
         <!--如希望使用 Shoulder 中 web 相关的能力增强，只需引入 web 模块-->
@@ -72,9 +72,9 @@ mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulde
         <version>0.8.1</version><!-- shoulder-version -->
     </parent>
 
-    <groupId>com.demo</groupId><!-- 你的 groupId -->
-    <artifactId>hello-shoulder</artifactId><!-- 你的 artifactId -->
-    <version>1.0.0-SNAPSHOT</version><!-- 你的 version -->
+    <groupId>com.demo</groupId><!-- 您的 groupId -->
+    <artifactId>hello-shoulder</artifactId><!-- 您的 artifactId -->
+    <version>1.0.0-SNAPSHOT</version><!-- 您的 version -->
 
     <dependencies>
         <!-- 版本号、web 相关依赖 自动管理。已自动引入对应的 spring-boot-starter-web -->
@@ -143,7 +143,7 @@ mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulde
 # 📩 反馈 or 联系我
 
 感谢小伙伴们的 **[🌟Star](https://gitee.com/ChinaLym/shoulder-framework/star)** 、 **🍴Fork** 、 **🏁PR**，欢迎使用 `issue`
-或 [cn_lym@foxmail.com](mailto:cn_lym@foxmail.com) 交流，如 留下你的建议、期待的新功能等~
+或 [cn_lym@foxmail.com](mailto:cn_lym@foxmail.com) 交流，如 留下您的建议、期待的新功能等~
 
 `Shoulder` 不求使用最广，而致力于成为使用体验最好的开发框架，您任何的使用需求、建议、想法都可以留下来与我们沟通，`Shoulder` 将与您一起思考攻克疑难，助天下的开发者更好更安心得使用技术助力业务腾飞！
 

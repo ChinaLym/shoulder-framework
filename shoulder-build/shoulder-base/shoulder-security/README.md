@@ -198,7 +198,9 @@ Token（JWT）：
 - 新建类，实现 `AuthenticationSuccessHandler`，主要用于记录客户端已经认证过了，如把token - 认证凭证放到 Map 中
 - 新建类，实现 `AbstractSecurityInterceptor`，用于从 AuthenticationSuccessHandler 保存处根据传来的 token，找到对应的认证凭证。
 
-注意：第二步初学者容易遗忘，遗忘时，往往难以排查，甚至会跟源码跟到`SPEL`反射源码（ReflectiveMethodExecutor.execute）时，会发现是鉴权失败，而不是认证失败（因为 Spring Security默认不认识你的 token，使用了默认的 `anonymousUser`，导致无所需权限）
+注意：第二步初学者容易遗忘，遗忘时，往往难以排查，甚至会跟源码跟到`SPEL`
+反射源码（ReflectiveMethodExecutor.execute）时，会发现是鉴权失败，而不是认证失败（因为 Spring Security默认不认识您的
+token，使用了默认的 `anonymousUser`，导致无所需权限）
 
 小结：要增加认证方式，需要认证服务器 **可以认证 `申请认证凭证请求`** 、**签发凭证**（、**认证凭证**），还需要资源服务器能够 **认证（认证服务器签发的）凭证**。
 

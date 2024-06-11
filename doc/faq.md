@@ -7,7 +7,8 @@
 
 ## 🔥 2.非 Shoulder 问题（主要）
 
-`Shoulder` 自动引入并管理了 `Spring Boot` 的版本，但未屏蔽或改变 `Spring Boot` 用法，一些功能并不是 Shoulder 提供的，Shoulder仅仅是帮你引入咯~
+`Shoulder` 自动引入并管理了 `Spring Boot` 的版本，但未屏蔽或改变 `Spring Boot` 用法，一些功能并不是 Shoulder
+提供的，Shoulder仅仅是帮您引入咯~
 如 `Spring Boot`、`Spring Cloud` 等优秀第三方库为我们提供了大量能力（致敬），使用这些时可以去看他们官方的一手教程，或到搜索引擎搜索对应关键词。如
 
 - shoulder Web 工程中如何使用添加自己的过滤器、拦截器
@@ -18,4 +19,4 @@
 ## 🤝 3.Shoulder 自身问题
 
 这类问题比较少，若您发现，请自豪得在 `ISSUE` 或 [向 cn_lym@foxmail.com 发送邮件](mailto:cn_lym@foxmail.com)
-告诉我们你发现了一个，我们将收集 & 记录 & 确认问题，若需要解决则会尽快修复问题，感谢您的贡献！
+告诉我们您发现了一个，我们将收集 & 记录 & 确认问题，若需要解决则会尽快修复问题，感谢您的贡献！

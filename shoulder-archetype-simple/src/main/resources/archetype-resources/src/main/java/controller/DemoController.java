@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
+ * RestController 示例
  *
  * @author ${author}
  */
-//@SLog // 与 @Slf4j 类似，在希望打日志的类上添加 @SLog 注解，编译时将生成类似下面定义 logger 的代码
-@SkipResponseWrap // 该类所有方法的返回值将不被包装
 @RestController
 @RequestMapping("demo")
 public class DemoController {
@@ -29,10 +27,22 @@ public class DemoController {
 
     /**
      * 访问 http://localhost:8080/demo/test 测试
+     */    /**
+     * 访问 <a href="http://localhost:8080/demo/hello">http://localhost:8080/demo/hello</a> 进行测试
      */
-    @GetMapping("test")
-    public String test() {
+    @SkipResponseWrap // 跳过响应值包装
+    @GetMapping("hello")
+    public String hello() {
         return "this is a demo controller";
+    }
+
+
+    /**
+     * 访问 <a href="http://localhost:8080/demo/api">http://localhost:8080/demo/api</a> 进行测试
+     */
+    @GetMapping("api")
+    public String api() {
+        return "this is api data";
     }
 
 
