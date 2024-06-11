@@ -51,7 +51,7 @@ groupId.artifactId
 
 # 📒 版本变更记录
 
-当前版本为 `${version}`，更多见 [CHANGELOG.MD](CHANGELOG.MD)
+当前版本为 `${version}`，更多见 [CHANGELOG.md](CHANGELOG.md)
 
 # 💗 贡献代码
 

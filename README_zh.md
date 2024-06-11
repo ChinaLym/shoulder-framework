@@ -133,7 +133,7 @@ mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulde
 
 # 📒 版本变更记录
 
-当前版本为 `0.8.1`，更多见 [CHANGELOG.MD](CHANGELOG.MD)
+当前版本为 `0.8.1`，更多见 [CHANGELOG.adoc](CHANGELOG.adoc)
 
 # 💗 贡献代码
 

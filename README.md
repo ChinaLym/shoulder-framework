@@ -157,7 +157,7 @@ outlook:
 
 # 📒 Version & Change log
 
-Current version: `0.8.1`, see more in [CHANGELOG.MD](CHANGELOG.MD).
+Current version: `0.8.1`, see more in [CHANGELOG.adoc](CHANGELOG.adoc).
 
 # 💗 Contribution
 

@@ -73,7 +73,7 @@
                 <include>.editorconfig</include>
                 <include>__gitattributes__</include>
                 <include>__gitignore__</include>
-                <include>CHANGELOG.MD</include>
+                <include>CHANGELOG.adoc</include>
                 <include>LICENSE</include>
             </includes>
         </fileSet>
