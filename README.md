@@ -1,6 +1,4 @@
-<h1 align="center"><img src="doc/img/logo.png" height="40" width="40" /><a href="https://github.com/ChinaLym/shoulder-framework" target="_blank">Shoulder Framework</a></h1>
-
-![LOGO](doc/img/shoulder-banner.jpg)
+<h1 align="center"><a href="https://shoulder.itlym.cn/shoulder" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
 
 > "If I have seen further, it is by standing on the shoulders of giants." — Isaac Newton
 

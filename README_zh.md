@@ -1,6 +1,4 @@
-<h1 align="center"><img src="doc/img/logo.png" height="40" width="40" /><a href="https://github.com/ChinaLym/shoulder-framework" target="_blank">Shoulder Framework</a></h1>
-
-![LOGO](doc/img/shoulder-banner.jpg)
+<h1 align="center"><a href="https://shoulder.itlym.cn/shoulder" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
 
 > 如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
 
