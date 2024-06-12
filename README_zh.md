@@ -6,7 +6,7 @@
 
 [![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework/blob/master/LICENSE) [![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)
 
-[![](https://img.shields.io/badge/Release%20Version-0.8-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v0.8) [![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-blue.svg)](https://spring.io/projects/spring-boot) [![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-blue.svg)](https://spring.io/projects/spring-cloud/)
+[![](https://img.shields.io/badge/Release%20Version-0.8.1-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v0.8.1) [![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.x-blue.svg)](https://spring.io/projects/spring-boot) [![](https://img.shields.io/badge/Spring%20Cloud%20Version-2023.0.x-blue.svg)](https://spring.io/projects/spring-cloud/)
 
 # 📖介绍 [English language](README.md)
 
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
-    <version>0.8.1</version><!-- shoulder-version -->
+            <version>0.8.1</version><!-- shoulder-version -->
         </dependency>
 ```
 
@@ -51,8 +51,13 @@
 打开命令行，运行以下命令来生成新的 `Shoulder` 项目：
 
 ```shell
-mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple -DarchetypeVersion=0.8.1 \
-  -DgroupId=com.yourcompany -DartifactId=appName -Dversion=1.0-SNAPSHOT
+mvn archetype:generate \
+  -DarchetypeGroupId=cn.itlym \
+  -DarchetypeArtifactId=shoulder-archetype-simple \
+  -DarchetypeVersion=0.8.1 \
+  -DgroupId=com.yourcompany \
+  -DartifactId=yourappName \
+  -Dversion=1.0-SNAPSHOT
 ```
 
 ## 🚄 手动创建新项目
@@ -133,7 +138,7 @@ mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulde
 
 # 📒 版本变更记录
 
-当前版本为 `0.8.1`，更多见 [CHANGELOG.adoc](CHANGELOG.adoc)
+见 [CHANGELOG.adoc](CHANGELOG.adoc)
 
 # 💗 贡献代码
 
