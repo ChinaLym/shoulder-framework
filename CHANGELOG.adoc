@@ -1,6 +1,6 @@
 = 更新记录
 
-== 0.9（规划中）
+== 1.0（规划中）
 
 * api-doc
 ** 提供开箱即用的接口说明
@@ -20,21 +20,23 @@
 ** 提供社交功能模块
 ** 动态、文章、评论、点赞、朋友圈、通知等
 
-== 0.8.1（规划中，小的依赖版本调整，bugfix（若有））
+== 0.8.1（2024-6-11）
 
-> 小的依赖版本调整，bugfix（若有）
+> 小的依赖版本调整
 
 * shoulder-dependencies 升级依赖
-** `spring-boot` 3.2.4 -> 3.2.5
+** `spring-boot` 3.2.4 -> 3.2.6
 ** `mybatis-plus` 3.5.5 -> 3.5.6
 ** `commons-io`   2.16.0 -> 2.16.1
+* autoconfiguration
+** 添加提示项
 * shoulder-archetype-simple 优化
 ** 去除不需要的 import
 ** readme.md 介绍文件内容优化
 ** 去除多余的配置文件内容
 ** 源码目录添加 `model`
 
-== 0.8（升级 spring boot3.2, JDK 17，2024年4月24日 发布）
+== 0.8 （2024-4-24）【升级 spring boot3.2, JDK 17】
 
 > 升级并支持 spring-boot3（并将相关生态升级，如 jdk、spring-cloud、spring security6、swaggerv3/OPEN-APIv2等）
 
@@ -69,14 +71,12 @@
 * batch
 ** 批处理模块进入可用状态（0.6 引入并开始孵化）
 
-== 0.7.1（较大更新：依赖版本，新增功能 2023年10月2日 发布）
+== 0.7.1（2023-10-2）【较大更新】
 
 更新较多，列出主要更新：
 
-* shoulder 不再为除spring boot外的三方jar定制能力（如mybatis-plus）以减少三分jar定制功能学习成本，
-  也不考虑没有spring上下文的情况，本框架强依赖Spring，定位为Spring的能力扩展。
-* 升级到了 **SpringBoot 2.7.x**,
-  关于springfox升级注意事项[spring boot2.x升级到2.6](https://springfox.github.io/springfox/docs/snapshot/#migrating-from-existing-2-x-version)
+* shoulder 不再为除spring boot外的三方jar定制能力（如mybatis-plus）以减少三分jar定制功能学习成本， 也不考虑没有spring上下文的情况，本框架强依赖Spring，定位为Spring的能力扩展。
+* 升级到了 **SpringBoot 2.7.x**, 关于springfox升级注意事项[spring boot2.x升级到2.6](https://springfox.github.io/springfox/docs/snapshot/#migrating-from-existing-2-x-version)
 * 升级2.7注意： https://spring.io/blog/2022/05/19/spring-boot-2-7-0-available-now
 * META-INF/spring.factories - META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
 
@@ -170,7 +170,7 @@ maven-archetype-plugin 3.2.0 -> 3.2.1 +
 archetype-packaging  3.2.0 -> 3.2.1
 ====
 
-== 0.6 （2021年5月21日 发布）
+== 0.6 （2021-5-21）
 
 0.6 版本主要致力于基本能力的完善，也是标志着基本使用方式确定，具体的实现可能有部分调整，方向不再大幅变动。
 
@@ -248,7 +248,7 @@ archetype-packaging  3.2.0 -> 3.2.1
 ** 引入 shoulder-starter-mysql 快速对接 mysql
 ** 允许监听 redis 重连、集群变更等事件
 
-== 0.5 （2020年12月6日 发布）
+== 0.5 （2020-12-6）
 
 更新内容较多：拓展新功能，维护已有模块的设计，对接错误码等规范，修复多个缺陷。
 
@@ -331,8 +331,7 @@ archetype-packaging  3.2.0 -> 3.2.1
 *** 支持自定义业务传播行为（日志上下文创建策略），接口：OperationContextStrategy
 *** 调整日志上下文的包名、创建器类名 `OperationLogBuilder` -> `OperationLogFactory`
 
-== 0.4 （stable）
-
+== 0.4 （2020-11-2）
 * 提供 starters
 *** mysql
 
@@ -358,8 +357,7 @@ archetype-packaging  3.2.0 -> 3.2.1
 * 翻译支持spring原生用法、增加识别jar内多语言资源文件夹
 * 增加 `maven archetype`，便于快速创建工程
 
-== 0.3
-
+== 0.3 （2020-9-25）
 * 数据库功能增强：分页、自动补充创建者、修改者、创建时间、修改时间
 * 更简单的服务间安全传输(基于`ECDH`，jdk15中才加的功能，shoulder已经在jdk8中实现，且为Spring Boot 提供了开箱即用的能力)
 * 增加 `ColorStringBuilder`，方便构建彩色输出
@@ -373,8 +371,7 @@ archetype-packaging  3.2.0 -> 3.2.1
 * 升级依赖 Spring Boot-> 2.3.4, Cloud-> H.S8，修复 RFD 漏洞
 * 废弃 trace、minio、aopx 三个模块，移动至 shoulder-platform 中，Spring 高级特性使用保留原生用法
 
-== [.line-through]#0.2（2020年9月10日）#
-
+== 0.2 （2020-9-10）
 * 数据库功能支撑
 *** 连接池选型为 beeCP，近似 spring boot 默认连接池两倍性能
 *** 引入 `mybatis-plus` 增强 mybatis
@@ -393,6 +390,6 @@ archetype-packaging  3.2.0 -> 3.2.1
 *** 版本号不正确（snapshot）
 *** 签名异常
 
-== 0.1 （2020年8月5日）
+== 0.1 （2020-8-5）
 
 首次发布，将大多数基本功能测试并发布
