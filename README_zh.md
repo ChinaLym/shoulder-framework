@@ -1,6 +1,6 @@
 <h1 align="center"><a href="https://shoulder.itlym.cn/shoulder" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
 
-> 如果说我比别人看得更远些,那是因为我站在了巨人的肩上. ——牛顿
+> 基于 `Spring Boot` 的增强工具，为简化开发、提高效率而生。希望成为 `Spring-Boot` 最好的搭档。
 
 [![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework/blob/master/LICENSE) [![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)
 

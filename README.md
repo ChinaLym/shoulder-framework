@@ -1,6 +1,7 @@
 <h1 align="center"><a href="https://shoulder.itlym.cn/shoulder" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
 
-> "If I have seen further, it is by standing on the shoulders of giants." — Isaac Newton
+> Based on `Spring Boot` dedicated to simplify development, improve efficiency. Hope to become the best partner
+> for `Spring Boot`.
 
 [![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework/blob/master/LICENSE) [![](https://img.shields.io/badge/Author-lym-yellow.svg)](https://github.com/ChinaLym)
 
