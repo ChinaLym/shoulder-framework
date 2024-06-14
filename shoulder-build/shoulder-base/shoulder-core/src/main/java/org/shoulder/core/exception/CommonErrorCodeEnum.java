@@ -132,7 +132,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 包装 HttpMessageNotReadableException；请求体读取失败：传来的参数与controller声明的参数类型不匹配。如 Post 请求缺少参数或者解析 json 时失败了
      */
-    PARAM_BODY_NOT_READABLE(331, "HttpMessageNotReadable. %s", Level.INFO, HttpStatus.BAD_REQUEST),
+    PARAM_BODY_NOT_READABLE(331, "HttpMessageNotReadable, check your request format please. %s", Level.INFO, HttpStatus.BAD_REQUEST),
     /**
      * content-type 不正确
      */

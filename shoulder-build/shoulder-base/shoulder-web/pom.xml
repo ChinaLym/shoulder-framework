@@ -50,7 +50,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- 操作日志相关 -->
+        <!-- 操作日志相关，用 CrudController 相关 Template 就需要引入了 -->
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-operation-log</artifactId>
