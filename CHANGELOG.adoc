@@ -20,7 +20,7 @@
 ** 提供社交功能模块
 ** 动态、文章、评论、点赞、朋友圈、通知等
 
-== 0.8.1（2024-6-11）
+== 0.8.1（2024-6-15）
 
 > 小的依赖版本调整
 
@@ -28,6 +28,7 @@
 ** `spring-boot` 3.2.4 -> 3.2.6
 ** `mybatis-plus` 3.5.5 -> 3.5.6
 ** `commons-io`   2.16.0 -> 2.16.1
+** `shoulder-maven-plugin`   1.2.1 -> 1.2.2
 * autoconfiguration
 ** 添加提示项
 * shoulder-archetype-simple 优化
