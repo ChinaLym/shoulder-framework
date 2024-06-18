@@ -202,7 +202,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
     protected String traceId;
 
     /**
-     * 扩展字段 （选填） key 不能为 null
+     * 扩展字段 （选填） key 不能为 null，value Object，打印时默认会调用其 toString 方法
      */
     protected Map<String, Object> extFields;
 
