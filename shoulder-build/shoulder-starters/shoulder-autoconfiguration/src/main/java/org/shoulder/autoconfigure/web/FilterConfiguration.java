@@ -82,7 +82,7 @@ public class FilterConfiguration {
     }
     @Bean
     @ConditionalOnProperty(value = "shoulder.web.filter.defaultTenant.enable", havingValue = "true", matchIfMissing = true)
-    public FilterRegistrationBean<DefaultTenantFilter> defaultTenantFilterRegistration(@Value("${shoulder.web.filter.tenant.default:'DEFAULT'}") String tenantCode) {
+    public FilterRegistrationBean<DefaultTenantFilter> defaultTenantFilterRegistration(@Value("${shoulder.web.filter.tenant.default:DEFAULT}") String tenantCode) {
         FilterRegistrationBean<DefaultTenantFilter> registration = new FilterRegistrationBean<>();
         // 将过滤器配置到FilterRegistrationBean对象中
         registration.setFilter(new DefaultTenantFilter(tenantCode));
