@@ -111,22 +111,27 @@ public class OperationLogProperties {
          */
         JDBC,
 
+        /**
+         * 不输出
+         */
+        NONE,
+
         // ---------------------------------- 不在默认实现 ----------------------------------
 
         /**
          * 保存到消息队列，RabbitMQ
          */
-        RABBITMQ,
+        //RABBITMQ,
 
         /**
          * 保存到消息队列，Kafka
          */
-        KAFKA,
+        //KAFKA,
 
         /**
          * 调用日志服务接口
          */
-        HTTP,
+        //HTTP,
 
         /**
          * 调用日志服务接口

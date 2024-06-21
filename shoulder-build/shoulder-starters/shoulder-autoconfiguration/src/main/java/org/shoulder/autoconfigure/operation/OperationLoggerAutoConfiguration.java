@@ -12,6 +12,7 @@ import org.shoulder.log.operation.logger.impl.AsyncOperationLogger;
 import org.shoulder.log.operation.logger.impl.BufferedOperationLogger;
 import org.shoulder.log.operation.logger.impl.JdbcOperationLogger;
 import org.shoulder.log.operation.logger.impl.LogOperationLogger;
+import org.shoulder.log.operation.logger.impl.NoOpOperationLogger;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
@@ -29,10 +30,17 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
-import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.StringJoiner;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import javax.sql.DataSource;
 
 /**
  * This configuration class registers a {@link OperationLogger} able to logging operation-log.
@@ -107,6 +115,18 @@ public class OperationLoggerAutoConfiguration implements ApplicationListener<Con
                         flushInterval, flushThreshold, perFlushMax);
             }
         };
+    }
+
+    /**
+     * Provide a no output logger.
+     *
+     * @see NoOpOperationLogger
+     */
+    @Bean
+    @ConditionalOnMissingBean(value = {OperationLogger.class})
+    @ConditionalOnProperty(name = "shoulder.log.operation.logger.type", havingValue = "none")
+    public NoOpOperationLogger noOpOperationLogger() {
+        return new NoOpOperationLogger();
     }
 
     /**
