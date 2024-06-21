@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class JdbcBatchRecordDetailPersistentServiceImpl implements BatchRecordDetailPersistentService {
 
-    private static final String ALL_COLUMNS = "id, record_id, index, operation, status, fail_reason, source";
+    private static final String ALL_COLUMNS = "id, record_id, index_no, operation, status, fail_reason, source";
 
     private static final String BATCH_INSERT = "INSERT INTO batch_record_detail (" + ALL_COLUMNS + ") " +
                                                "VALUES (?,?,?,?,?,?,?)";
@@ -89,11 +89,11 @@ public class JdbcBatchRecordDetailPersistentServiceImpl implements BatchRecordDe
         }
 
         if (indexStart != null) {
-            sql.append(" AND index >= ?");
+            sql.append(" AND index_no >= ?");
             argsList.add(indexStart);
         }
         if (indexEnd != null) {
-            sql.append(" AND index <= ?");
+            sql.append(" AND index_no <= ?");
             argsList.add(indexEnd);
         }
         Object[] sqlArgs = argsList.toArray();

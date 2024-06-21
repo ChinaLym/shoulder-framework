@@ -181,7 +181,7 @@ public class OpLogContextHolder {
      * 场景：批量导入时，使用新线程对导入内容的校验，日志记录也在新日志上下文中做， 处理请求的方法中不希望记录操作日志
      * 在方法中调用 closeAutoLog，告诉框架在本方法结束后不要记录操作日志
      */
-    public static void closeAutoLog() {
+    public static void disableAutoLog() {
         getContextOrException().setAutoLog(false);
     }
 

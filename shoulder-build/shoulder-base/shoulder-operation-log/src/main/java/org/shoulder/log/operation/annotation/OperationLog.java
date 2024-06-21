@@ -1,6 +1,5 @@
 package org.shoulder.log.operation.annotation;
 
-import org.shoulder.log.operation.context.OpLogContext;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.context.OperationContextStrategyEnum;
 import org.shoulder.log.operation.context.OperationLogFactory;
@@ -89,7 +88,7 @@ public @interface OperationLog {
 
     /**
      * 在创建子线程 / 提交线程池时，将日志上下文拷贝到新的线程中，默认不传播
-     * 传播后，若当前线程不需要记录日志（因为被操作对象信息可能不完整），需要 {@link OpLogContext#setAutoLog)} false
+     * 传播后，若当前线程不需要记录日志（因为被操作对象信息可能不完整），需要 {@link OpLogContextHolder#disableAutoLog())}
      */
     boolean enableCrossThread() default false;
 
