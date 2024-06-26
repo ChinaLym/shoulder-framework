@@ -1,4 +1,4 @@
-<h1 align="center"><a href="https://shoulder.itlym.cn/shoulder" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
+<h1 align="center"><a href="https://doc.itlym.cn/shoulder" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
 
 > 基于 `Spring Boot` 的增强工具，为简化开发、提高效率而生。希望成为 `Spring-Boot` 最好的搭档。
 
@@ -93,7 +93,8 @@ mvn archetype:generate \
 
 # 🆚对比其他 Web 框架
 
-**更安全**、**易扩展**、**使用者代码可读性强**、**维护成本低**、**上手成本低**：设计上遵循 **[软件优雅设计与开发最佳实践](https://spec.itlym.cn)** ，让使用者项目不仅开发提效，维护成本也更低！
+**更安全**、**易扩展**、**使用者代码可读性强**、**维护成本低**、**上手成本低**：设计上遵循 *
+*[软件优雅设计与开发最佳实践](https://doc.itlym.cn)** ，让使用者项目不仅开发提效，维护成本也更低！
 
 ## ✨适用场景
 
@@ -115,22 +116,22 @@ mvn archetype:generate \
 `Shoulder` 希望做一个整套的可复用的平台（`PaaS`），使用者只需要做做自己的业务即可。整体格局如下
 
 - `Shoulder iPaaS` 基础中间件环境 Shoulder 提供依赖中间件的`Docker`镜像或部署教程（如 数据库、消息队列、服务注册中心、任务调度中心、搜索引擎、报警与监控系统等）。
-- `Shoulder Specific` 软件系开发设计注意事项、[落地方案和规范](https://spec.itlym.cn)
+- `Shoulder Specific` 软件系开发设计注意事项、[落地方案和规范](https://doc.itlym.cn)
 - **Shoulder Framework**  本项目，提供共性能力封装，减少代码冗余，降低系统开发维护成本。
 - `Shoulder Platform` 共性业务平台，提供 `用户平台`、`支付平台`、`通知中心`、`业务网关`、`数据字典`、`全局ID生产器` 等基础、通用业务能力平台
 - `Shoulder Platform SDK` 以 sdk 形式方便业务层对接使用。
 
 ## 相关项目
 
-| 项目                          | 开源地址                                                                                                                      | 说明                                                                                     |
-|-----------------------------|---------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| Shoulder Framework          | [github](https://github.com/ChinaLym/shoulder-framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)           | 开发框架 / 在 Spring Boot Start 插件，结合[软件优雅设计与开发最佳实践](https://spec.itlym.cn)，增加常用的功能，助力高效开发。 |
-| Shoulder Platform           | [github](https://github.com/ChinaLym/shoulder-platform)、[gitee](https://gitee.com/ChinaLym/shoulder-platform)             | `SaaS` 开发平台，提供了基础通用能力，与具体业务无关                                                          |
-| shoulder-framework-demo     | [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework-demo) | 以简单的例子介绍 `Shoulder` 的使用                                                                |
-| shoulder-plugins            | [github](https://github.com/ChinaLym/shoulder-plugins)、[gitee](https://gitee.com/ChinaLym/shoulder-plugins)               | `Shoulder` 提供的 `maven`插件，构建时扫描代码注释自动生成多语言翻译文件，从而提效                                     |
-| shoulder-lombok             | [github](https://github.com/ChinaLym/shoulder-lombok)、[gitee](https://gitee.com/ChinaLym/shoulder-lombok)                 | 同`lombok`，额外支持 `@SLog` 注解，`lombok`风格省略 `Shoulder` 扩展的 `Logger` 代码                      |
-| shoulder-lombok-idea-plugin | [github](https://github.com/ChinaLym/lombok-intellij-plugin)、[gitee](https://gitee.com/ChinaLym/lombok-intellij-plugin)   | `IDEA 插件`，同 `lombok-idea-plugin`，额外支持`shoulder-lombok` 中的 `@SLog`                      |
-| Shoulder iPaaS              | [github](https://github.com/ChinaLym/shoulder-ipaas)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS)                   | `iPaaS` 平台，分享部署常见中间件步骤、如何自建监控系统、私有基础平台                                                 |
+| 项目                          | 开源地址                                                                                                                      | 说明                                                                                    |
+|-----------------------------|---------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| Shoulder Framework          | [github](https://github.com/ChinaLym/shoulder-framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)           | 开发框架 / 在 Spring Boot Start 插件，结合[软件优雅设计与开发最佳实践](https://doc.itlym.cn)，增加常用的功能，助力高效开发。 |
+| Shoulder Platform           | [github](https://github.com/ChinaLym/shoulder-platform)、[gitee](https://gitee.com/ChinaLym/shoulder-platform)             | `SaaS` 开发平台，提供了基础通用能力，与具体业务无关                                                         |
+| shoulder-framework-demo     | [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework-demo) | 以简单的例子介绍 `Shoulder` 的使用                                                               |
+| shoulder-plugins            | [github](https://github.com/ChinaLym/shoulder-plugins)、[gitee](https://gitee.com/ChinaLym/shoulder-plugins)               | `Shoulder` 提供的 `maven`插件，构建时扫描代码注释自动生成多语言翻译文件，从而提效                                    |
+| shoulder-lombok             | [github](https://github.com/ChinaLym/shoulder-lombok)、[gitee](https://gitee.com/ChinaLym/shoulder-lombok)                 | 同`lombok`，额外支持 `@SLog` 注解，`lombok`风格省略 `Shoulder` 扩展的 `Logger` 代码                     |
+| shoulder-lombok-idea-plugin | [github](https://github.com/ChinaLym/lombok-intellij-plugin)、[gitee](https://gitee.com/ChinaLym/lombok-intellij-plugin)   | `IDEA 插件`，同 `lombok-idea-plugin`，额外支持`shoulder-lombok` 中的 `@SLog`                     |
+| Shoulder iPaaS              | [github](https://github.com/ChinaLym/shoulder-ipaas)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS)                   | `iPaaS` 平台，分享部署常见中间件步骤、如何自建监控系统、私有基础平台                                                |
 
 ![releated_projects.png](doc/img/releated_projects.png)
 

@@ -1,4 +1,4 @@
-<h1 align="center"><a href="https://shoulder.itlym.cn/shoulder" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
+<h1 align="center"><a href="https://doc.itlym.cn/shoulder" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
 
 > Based on `Spring Boot` dedicated to simplify development, improve efficiency. Hope to become the best partner
 > for `Spring Boot`.
@@ -33,7 +33,7 @@
 - **High readability of user code**
 - **Low maintenance cost**
 - **Low start-up cost**
-- **With specification**：**[Software Elegance Design and development best practices](https://spec.itlym.cn)**
+- **With specification**：**[Software Elegance Design and development best practices](https://doc.itlym.cn)**
 - Not only **improve development efficiency**, but also **lower maintenance costs**!
 
 ---
@@ -134,7 +134,8 @@ outlook:
 
 - `Shoulder iPaaS` iPaaS Basic middleware environment: Shoulder offers dependency middleware Docker images or deployment guides (e.g.,
   databases, message queues, service registration centers, task scheduling centers, search engines, alarm and monitoring systems, etc.).
-- `Shoulder Specific` manuel of development, see **[the best practices of elegant software design and development](https://spec.itlym.cn)**
+- `Shoulder Specific` manuel of development, see *
+  *[the best practices of elegant software design and development](https://doc.itlym.cn)**
 - **Shoulder Framework**  This project, aims to encapsulation of common capabilities, reducing code redundancy and lowering system
   development and maintenance costs.
 - `Shoulder Platform` General business platform, provides user platform, payment platform, notification center, business gateway, data

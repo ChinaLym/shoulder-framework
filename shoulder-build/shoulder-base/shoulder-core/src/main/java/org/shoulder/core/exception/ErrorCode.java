@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
  * 通常错误码枚举、自定义异常类实现该接口
  * <p>
  * 小提示：业务中可以按模块或按业务定义枚举 保存错误码、错误提示信息
- * 详细的错误码规范见 <a href="https://spec.itlym.cn/specs/base/errorCode.html">错误码规范<a/>
+ * 详细的错误码规范见 <a href="https://doc.itlym.cn/specs/base/errorCode.html">错误码规范<a/>
  * 也可考虑前缀区分来源，调用方出错（如参数）/ 系统内部错误（如取缓存时反序列失败） / 第三方服务失败（如调用其他服务，结果其他服务挂了，返回500）
  * 当且shoulder 采用的以模块code区分，不够明显，不统一
  * <p>
@@ -152,7 +152,7 @@ public interface ErrorCode extends Translatable {
      * 故意 / 无意未遵守交互约定、外部依赖偶现失败、的记录 WARN
      * 核心业务失败，ERROR
      * 强依赖的服务连接失败 FATAL
-     * 详细的日志级别建议见 <a href="https://spec.itlym.cn/specs/base/log.html">软件开发日志规范<a/> - 日志级别规范
+     * 详细的日志级别建议见 <a href="https://doc.itlym.cn/specs/base/log.html">软件开发日志规范<a/> - 日志级别规范
      *
      * @return 日志级别
      */

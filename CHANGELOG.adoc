@@ -12,6 +12,9 @@
 * crypto
 ** 支持关闭公钥查询接口
 ** 支持修改公钥查询接口地址
+* operation-log
+** OpLogContextHolder 方法名调整 closeAutoLog -> disableAutoLog
+** 可通过配置 logger.type=none 关闭日志打印，但保留操作日志其他功能。
 * ext-ai
 ** 提供AI 工程里额外能力，如意图识别，输出内容管控、会话历史、会话分析等
 * ext-config

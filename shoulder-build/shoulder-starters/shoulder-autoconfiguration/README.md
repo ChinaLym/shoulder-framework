@@ -10,7 +10,8 @@
 
 ## 系统日志
 
-默认使用 logback，输出格式采用 [Shoulder Log Specification](http://spec.itlym.cn/specs/base/log.html) 中约定的格式，使用者无需再配置 `logback.xml`
+默认使用 logback，输出格式采用 [Shoulder Log Specification](http://doc.itlym.cn/specs/base/log.html)
+中约定的格式，使用者无需再配置 `logback.xml`
 
 
 
