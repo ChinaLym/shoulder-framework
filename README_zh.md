@@ -1,4 +1,4 @@
-<h1 align="center"><a href="https://doc.itlym.cn/shoulder" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
+<h1 align="center"><a href="https://doc.itlym.cn/shoulder.html" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
 
 > 基于 `Spring Boot` 的增强工具，为简化开发、提高效率而生。希望成为 `Spring-Boot` 最好的搭档。
 

@@ -1,5 +1,7 @@
 # 功能介绍
 
+![shoulder-arch.png](img/shoulder-arch.png)
+
 - `Spring Boot`一致的风格和使用体验
     - maven 工程模块命名为 `Spring Boot` 官方唯一指定风格
     - 一处配置，处处默认：如字符集、语言、日期格式等，无需 `session.store.cluster=true crypto.store.cluster=true token.store.cluster=true` ，仅需统一指定 `application.cluster=true`，一配置切换至集群模式，无状态化

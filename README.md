@@ -1,4 +1,4 @@
-<h1 align="center"><a href="https://doc.itlym.cn/shoulder" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
+<h1 align="center"><a href="https://doc.itlym.cn/shoulder.html" target="_blank"><img src="doc/img/shoulder_with_world_logo.svg" /></a></h1>
 
 > Based on `Spring Boot` dedicated to simplify development, improve efficiency. Hope to become the best partner
 > for `Spring Boot`.
