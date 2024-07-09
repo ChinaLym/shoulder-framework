@@ -13,6 +13,7 @@ import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.CryptoDelegateKeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.RedisKeyPairCache;
+import org.shoulder.crypto.endpoint.CryptoEndpoint;
 import org.shoulder.crypto.local.LocalTextCipher;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 非对称加密自动配置
@@ -33,6 +35,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
         AsymmetricCryptoAutoConfiguration.AsymmetricKeyClusterPairCacheConfig.class})
 @ConditionalOnClass(AsymmetricTextCipher.class)
 @ConditionalOnProperty(value = "shoulder.crypto.asymmetric.enable", havingValue = "true", matchIfMissing = true)
+@EnableConfigurationProperties(CryptoProperties.class)
 public class AsymmetricCryptoAutoConfiguration {
 
     public AsymmetricCryptoAutoConfiguration() {
@@ -58,6 +61,16 @@ public class AsymmetricCryptoAutoConfiguration {
     @ConditionalOnMissingBean
     public AsymmetricTextCipher asymmetricCrypto(AsymmetricCipher asymmetricCipher) {
         return new DefaultAsymmetricTextCipher(asymmetricCipher);
+    }
+
+    /**
+     * 如果引入了 web 模块，则开启公钥查询端口
+     */
+    @Bean
+    @ConditionalOnClass({ RestController.class, CryptoEndpoint.class})
+    @ConditionalOnProperty(value = "shoulder.crypto.asymmetric.endpoint.enable", havingValue = "true")
+    public CryptoEndpoint cryptoEndpoint(AsymmetricTextCipher asymmetricTextCipher) {
+        return new CryptoEndpoint(asymmetricTextCipher);
     }
 
     /**

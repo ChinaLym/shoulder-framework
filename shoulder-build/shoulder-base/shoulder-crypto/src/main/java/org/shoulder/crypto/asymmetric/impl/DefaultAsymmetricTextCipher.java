@@ -94,7 +94,7 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     @Nonnull
     public String getPublicKey(String keyPairId) throws CipherRuntimeException {
         try {
-            return processor.getPublicKeyString(this.defaultKeyPairId);
+            return processor.getPublicKeyString(keyPairId);
         } catch (KeyPairException e) {
             throw CryptoErrorCodeEnum.NO_SUCH_KEY_PAIR.toException(e);
         }

@@ -36,11 +36,6 @@ public class WebExtProperties {
         /**
          * 是否启用
          */
-        private Boolean enableEnum = Boolean.TRUE;
-
-        /**
-         * 是否启用
-         */
         private Boolean enable = Boolean.FALSE;
 
         /**

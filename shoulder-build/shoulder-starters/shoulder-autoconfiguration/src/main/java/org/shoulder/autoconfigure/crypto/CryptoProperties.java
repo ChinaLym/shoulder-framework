@@ -73,6 +73,26 @@ public class CryptoProperties {
          * 签名算法名称
          */
         private String signatureAlgorithm = "SHA256withECDSA";
+
+        /**
+         * 公钥端点
+         */
+        private EndpointProperties endpoint = new EndpointProperties();
+
+        @Data
+        static class EndpointProperties {
+
+            /**
+             * 是否启用
+             */
+            private Boolean enable = Boolean.TRUE;
+
+            /**
+             * 获取公钥 api 路径
+             */
+            private String path = "/api/v1/crypto/publicKey/default";
+
+        }
     }
 
 }
