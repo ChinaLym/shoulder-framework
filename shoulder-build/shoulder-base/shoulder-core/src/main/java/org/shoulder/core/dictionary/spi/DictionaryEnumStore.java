@@ -21,7 +21,7 @@ public interface DictionaryEnumStore {
      * @param <ENUM>         枚举
      */
     default <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> void register(@Nonnull Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>> dictionaryEnum) {
-        register(dictionaryEnum, dictionaryEnum.getSimpleName());
+        register(dictionaryEnum, mapToStorageKey(dictionaryEnum));
     }
 
 
@@ -46,7 +46,7 @@ public interface DictionaryEnumStore {
      */
     @Nonnull
     default <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> List<DictionaryItemEnum<ENUM, ID>> list(@Nonnull Class<? extends DictionaryItemEnum<ENUM, ID>> enumClass) {
-        return list(enumClass.getTypeName());
+        return list(mapToStorageKey((Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>>) enumClass));
     }
 
     /**
@@ -88,10 +88,21 @@ public interface DictionaryEnumStore {
     Collection<Class<? extends Enum<? extends DictionaryItemEnum>>> listAllTypes();
 
     default boolean contains(Class<?> enumClass) {
-        return contains(enumClass.getSimpleName());
+        return contains(mapToStorageKey((Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>>) enumClass));
     }
 
     boolean contains(String dictionaryType);
 
+    default void remove(Class<?> enumClass) {
+        remove(mapToStorageKey((Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>>) enumClass));
+    }
+
+    Class<? extends Enum<? extends DictionaryItemEnum>> remove(String dictionaryType);
+
     Class<? extends Enum<? extends DictionaryItemEnum>> getActuallyType(String dictionaryType);
+
+    @Nonnull
+    default <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> String mapToStorageKey(@Nonnull Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>> dictionaryEnum) {
+        return dictionaryEnum.getSimpleName();
+    }
 }

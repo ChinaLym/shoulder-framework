@@ -91,7 +91,7 @@ public interface DictionaryItem<IDENTIFY> {
      * @return 是否满足
      */
     default boolean matchCondition(String key, String value) {
-        return true;
+        return false;
     }
 
     /**

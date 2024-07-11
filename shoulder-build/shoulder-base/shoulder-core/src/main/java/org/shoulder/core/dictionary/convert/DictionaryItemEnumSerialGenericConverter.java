@@ -26,7 +26,8 @@ public class DictionaryItemEnumSerialGenericConverter implements ConditionalGene
 
     @Override
     public boolean matches(TypeDescriptor sourceType, @NonNull TypeDescriptor targetType) {
-        return sourceType.getType().isEnum();
+        return sourceType.getType().isEnum()
+               && (targetType.getType().isAssignableFrom(String.class) || targetType.getType().isAssignableFrom(Integer.class));
     }
 
     @Override

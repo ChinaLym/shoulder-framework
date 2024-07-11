@@ -10,12 +10,12 @@ import org.springframework.core.convert.converter.GenericConverter;
  * @author lym
  */
 public class DictionaryItemConversions {
-    public static DictionaryItem<String> toItem(Object value, Class<?> actuallyType) {
-        return (DictionaryItem<String>) ToDictionaryEnumGenericConverter.INSTANCE.convert(value, TypeDescriptor.valueOf(String.class),
+    public static DictionaryItem<?> toItem(Object value, Class<?> actuallyType) {
+        return (DictionaryItem<?>) ToDictionaryEnumGenericConverter.INSTANCE.convert(value, TypeDescriptor.valueOf(String.class),
             TypeDescriptor.valueOf(actuallyType));
     }
 
-    public static String toStr(DictionaryItem<String> value) {
+    public static String toStr(DictionaryItem<?> value) {
         if (value == null) {
             return null;
         }

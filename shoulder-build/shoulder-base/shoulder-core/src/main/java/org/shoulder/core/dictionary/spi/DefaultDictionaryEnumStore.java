@@ -81,6 +81,10 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
         return repo.containsKey(processDictionaryTypeName(dictionaryType));
     }
 
+    @Override public Class<? extends Enum<? extends DictionaryItemEnum>> remove(String dictionaryType) {
+        return repo.remove(dictionaryType);
+    }
+
     @Override
     public Class<? extends Enum<? extends DictionaryItemEnum>> getActuallyType(String dictionaryType) {
         return repo.get(processDictionaryTypeName(dictionaryType));
@@ -92,6 +96,13 @@ public class DefaultDictionaryEnumStore implements DictionaryEnumStore {
 
     protected String processDictionaryTypeName(String dictionaryTypeName) {
         return ignoreCase ? dictionaryTypeName.toLowerCase(Locale.ROOT) : dictionaryTypeName;
+    }
+
+
+    @Nonnull @Override
+    public  <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> String mapToStorageKey(@Nonnull Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>> dictionaryEnum) {
+        String key = DictionaryEnumStore.super.mapToStorageKey(dictionaryEnum);
+        return processDictionaryTypeName(key);
     }
 
     public boolean isIgnoreCase() {

@@ -1,7 +1,3 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2024 All Rights Reserved.
- */
 package org.shoulder.autoconfigure.db.mybatis;
 
 import org.shoulder.autoconfigure.db.DatabaseProperties;

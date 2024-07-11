@@ -42,8 +42,8 @@ public interface DictionaryItemEnum<E extends Enum<? extends DictionaryItemEnum<
     }
 
     static <ID, ENUM extends Enum<? extends DictionaryItemEnum<?, ID>>> ENUM fromOrder(
-            Class<? extends Enum<? extends DictionaryItemEnum<?, ID>>> enumClass, ID id) {
-        return decideActualEnum(enumClass.getEnumConstants(), id, compareWithEnumOrdinal(), DictionaryItemEnum::onMissMatch);
+            Class<? extends Enum<? extends DictionaryItemEnum<?, ID>>> enumClass, int order) {
+        return decideActualEnum(enumClass.getEnumConstants(), order, compareWithEnumOrdinal(), DictionaryItemEnum::onMissMatch);
     }
 
     /**
@@ -67,7 +67,7 @@ public interface DictionaryItemEnum<E extends Enum<? extends DictionaryItemEnum<
     }
 
     static BiFunction<Enum<? extends DictionaryItemEnum<?, ?>>, Object, Boolean> compareWithEnumOrdinal() {
-        return (e, integer) -> integer.equals(e.ordinal());
+        return (e, orderInt) -> orderInt.equals(e.ordinal());
     }
 
     static BiFunction<Enum<? extends DictionaryItemEnum<?, ?>>, Object, Boolean> compareWithEnumCodingName() {
@@ -119,11 +119,23 @@ public interface DictionaryItemEnum<E extends Enum<? extends DictionaryItemEnum<
         return enumClass.getEnumConstants();
     }
 
-    static Class<?> resovleEnumItemIdClass(Class<?> enumClass) {
+    /**
+     * 解析枚举类 itemId 类型
+     *
+     * @param dictionaryItemClass 枚举类
+     * @return integer / string
+     */
+    static Class<?> resovleEnumItemIdClass(Class<?> dictionaryItemClass) {
         // 第二个泛型是 itemId 类型
-        return Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(enumClass, DictionaryItemEnum.class)).orElseThrow()[1];
+        return Optional.ofNullable(GenericTypeResolver.resolveTypeArguments(dictionaryItemClass, DictionaryItemEnum.class)).orElseThrow()[1];
     }
 
+    /**
+     * 获取当前枚举类 itemId 类型
+     *
+     * @param enumClass 枚举类
+     * @return integer / string
+     */
     default Class<?> getEnumItemIdClass() {
         // 第二个泛型是 itemId 类型
         return resovleEnumItemIdClass(getClass());
