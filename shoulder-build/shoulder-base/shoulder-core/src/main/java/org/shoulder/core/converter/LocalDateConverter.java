@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
- * Controller 方法 String 类型入参自动转为日期类型
+ * String -> LocalDate，且支持如 2020-6-6 这类非标准日期
  *
  * @author lym
  */
@@ -37,7 +37,7 @@ public class LocalDateConverter extends BaseLocalDateTimeConverter<LocalDate> {
     @Nonnull
     @Override
     protected String toStandFormat(@Nonnull String sourceDateString) {
-        return super.toStandYearMonthDay(sourceDateString);
+        return toStandYearMonthDay(sourceDateString);
     }
 
     @Override

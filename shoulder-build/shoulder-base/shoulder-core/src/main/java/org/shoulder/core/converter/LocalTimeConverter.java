@@ -14,9 +14,9 @@ import java.util.Map;
  * Controller 方法 String 类型入参自动转为日期类型
  *
  * @author lym
+ * @deprecated 1.0 在 Spring 新版本中已经内置支持了
  */
 public class LocalTimeConverter extends BaseDateConverter<LocalTime> implements Converter<String, LocalTime> {
-
 
     public static final LocalTimeConverter INSTANCE = new LocalTimeConverter();
 

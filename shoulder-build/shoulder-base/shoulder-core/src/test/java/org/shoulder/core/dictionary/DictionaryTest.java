@@ -92,7 +92,7 @@ public class DictionaryTest {
 
 
     @Test
-    public void testConvertDictionaryItemConversions() {
+    public void testDictionaryItemConversions() {
         DictionaryItem item = DictionaryItemConversions.toItem(ColorStrEnum.WHITE.name(), ColorStrEnum.class);
         Assertions.assertNotNull(item);
         Assertions.assertEquals(DictionaryItemEnum.resovleEnumItemIdClass(item.getClass()), DictionaryItemEnum.resovleEnumItemIdClass(ColorStrEnum.class));

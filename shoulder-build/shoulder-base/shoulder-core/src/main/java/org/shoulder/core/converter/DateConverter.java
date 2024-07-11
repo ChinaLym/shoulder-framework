@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Controller 方法 String 类型入参自动转为日期类型
+ * String -> Date，且支持如 2020-6-6 这类非标准日期
  *
  * @author lym
  */
@@ -42,7 +42,6 @@ public class DateConverter extends BaseDateConverter<Date> {
         formatMap.put("yyyy-MM-dd HH:mm:ss", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}$");
         formatMap.put("yyyy-MM-dd HH:mm:ss.SSS", "^\\d{4}-\\d{1,2}-\\d{1,2} {1}\\d{1,2}:\\d{1,2}:\\d{1,2}.\\d{1,3}$");
         // UTC: yyyy-MM-dd'T'HH:mm:ss.SSSXXX  yyyy-MM-dd'T'HH:mm:ss.SSS Z
-        formatMap.put(AppInfo.UTC_DATE_TIME_FORMAT, "^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{1,2}:\\d{1,2}");
         formatMap.put("yyyy/MM", "^\\d{4}/\\d{1,2}$");
         formatMap.put("yyyy/MM/dd", "^\\d{4}/\\d{1,2}/\\d{1,2}$");
         formatMap.put("yyyy/MM/dd HH", "^\\d{4}/\\d{1,2}/\\d{1,2} {1}\\d{1,2}");
@@ -57,6 +56,12 @@ public class DateConverter extends BaseDateConverter<Date> {
         return Date.from(instant);
     }
 
+
+    @Nonnull
+    @Override
+    protected String toStandFormat(@Nonnull String sourceDateString) {
+        return toStandDateFormat(sourceDateString, false);
+    }
 
     @Override
     protected Date parseDateOrTime(@Nonnull String sourceDateString, String dateTimeTemplate) {
