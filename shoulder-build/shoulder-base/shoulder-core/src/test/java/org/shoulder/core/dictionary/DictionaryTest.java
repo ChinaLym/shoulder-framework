@@ -2,6 +2,11 @@ package org.shoulder.core.dictionary;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.shoulder.core.converter.DateConverter;
+import org.shoulder.core.converter.EnumConverterFactory;
+import org.shoulder.core.converter.LocalDateConverter;
+import org.shoulder.core.converter.LocalDateTimeConverter;
+import org.shoulder.core.converter.LocalTimeConverter;
 import org.shoulder.core.dictionary.convert.DictionaryItemConversions;
 import org.shoulder.core.dictionary.convert.DictionaryItemEnumSerialGenericConverter;
 import org.shoulder.core.dictionary.convert.DictionaryItemToStrGenericConverter;
@@ -11,6 +16,7 @@ import org.shoulder.core.dictionary.model.DictionaryItemEnum;
 import org.shoulder.core.dictionary.spi.DefaultDictionaryEnumStore;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.util.ArrayUtils;
+import org.shoulder.core.util.ConvertUtil;
 import org.springframework.core.convert.TypeDescriptor;
 
 import java.util.HashMap;
@@ -172,6 +178,20 @@ public class DictionaryTest {
     }
 
     @Test
+    public void testStrToDictionaryEnum() {
+        ConvertUtil.addConverter(DateConverter.INSTANCE);
+        ConvertUtil.addConverter(LocalDateConverter.INSTANCE);
+        ConvertUtil.addConverter(LocalTimeConverter.INSTANCE);
+        ConvertUtil.addConverter(LocalDateTimeConverter.INSTANCE);
+        ConvertUtil.addConverterFactory(EnumConverterFactory.getDefaultInstance());
+
+        Assertions.assertEquals(ColorIntEnum.GRAY, ConvertUtil.convert("GRAY", ColorIntEnum.class));
+        ConvertUtil.addConverter(ToDictionaryEnumGenericConverter.INSTANCE);
+        // 优先使用精细的
+        Assertions.assertEquals(ColorIntEnum.GRAY, ConvertUtil.convert("128", ColorIntEnum.class));
+    }
+
+    @Test
     public void testToDictionaryEnumGenericConverter() {
         ToDictionaryEnumGenericConverter.INSTANCE.getConvertibleTypes();
         TypeDescriptor sourceType;
@@ -202,8 +222,6 @@ public class DictionaryTest {
             ToDictionaryEnumGenericConverter.INSTANCE.convert(ColorIntEnum.GRAY.name(), sourceType, targetType));
         Assertions.assertEquals(ColorIntEnum.GRAY,
             ToDictionaryEnumGenericConverter.INSTANCE.convert(String.valueOf(ColorIntEnum.GRAY.getItemId()), sourceType, targetType));
-
-
     }
 
 

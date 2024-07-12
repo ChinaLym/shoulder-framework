@@ -42,6 +42,9 @@ public abstract class BaseDateConverter<T> implements Converter<String, T> {
         }
         // 匹配模板
         source = source.replace("T", " ");
+        if(StringUtils.countMatches(source, "-") > 2 || source.contains("+")) {
+            source = toStandFormat(source.trim());
+        }
 
         for (Map.Entry<String, String> entry : formatMap.entrySet()) {
             String template = entry.getKey();

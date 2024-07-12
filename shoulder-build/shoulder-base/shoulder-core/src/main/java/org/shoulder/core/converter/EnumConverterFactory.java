@@ -8,7 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * 枚举转换工厂
+ * 枚举转换工厂，实现 str -> Enum 的通用逻辑
+ * 好处：更灵活：支持全局处理枚举未识别的异常、也支持单独处理。
  * <p>
  * 需要在WebMvcConfigurer 实现类中注册该类
  *

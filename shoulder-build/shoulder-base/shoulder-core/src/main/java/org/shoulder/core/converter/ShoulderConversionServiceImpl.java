@@ -106,6 +106,7 @@ public class ShoulderConversionServiceImpl extends WebConversionService implemen
             if (source == null) {
                 listResult.add(null);
             } else {
+                // 第一个非 null 元素，识别 sourceCollection 中的元素类型
                 if (sourceTypeDescriptor == null) {
                     sourceTypeDescriptor = TypeDescriptor.valueOf(source.getClass());
                 }

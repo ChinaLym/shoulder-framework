@@ -220,6 +220,7 @@ public abstract class BaseDataConverter<S, T> implements Converter<S, T> {
      * @see #doConvert(Object) 跳过时必须实现
      */
     protected boolean skipPreHandle() {
+        // 预处理：新建 targetObject，塞一些公共字段
         return skipPreHandle || targetEntityClass.isEnum() || targetEntityClass.isInterface() || targetEntityClass.isPrimitive();
     }
 

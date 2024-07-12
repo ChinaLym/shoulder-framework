@@ -19,10 +19,10 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 /**
- * jackson 反序列化，支持多种格式解析
+ * jackson LocalDateTime 反序列化，支持更多多种格式解析，如 2020-5-1 而原版只能支持 2020-05-01
  *
  * @author lym
- * @see LocalDateTimeDeserializer 参考这里
+ * @see LocalDateTimeDeserializer  Jackson 内置实现参考这里
  */
 public class ShoulderLocalDateTimeDeserializer extends JSR310DateTimeDeserializerBase<LocalDateTime> {
 

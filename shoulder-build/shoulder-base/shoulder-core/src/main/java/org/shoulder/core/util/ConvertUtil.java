@@ -49,7 +49,7 @@ public class ConvertUtil {
         return CONVERSION_SERVICE.convert(source, sourceType, targetType);
     }
 
-    public <S, T> List<T> convert(Collection<? extends S> source, Class<T> targetType) {
+    public static <S, T> List<T> convert(Collection<? extends S> source, Class<T> targetType) {
         return CONVERSION_SERVICE.convert(source, targetType);
     }
 
