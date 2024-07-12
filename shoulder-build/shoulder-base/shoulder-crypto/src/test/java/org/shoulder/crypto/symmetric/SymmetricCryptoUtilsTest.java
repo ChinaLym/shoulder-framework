@@ -1,6 +1,6 @@
 package org.shoulder.crypto.symmetric;
 
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.shoulder.crypto.symmetric.impl.DefaultSymmetricCipher;
@@ -19,7 +19,7 @@ public class SymmetricCryptoUtilsTest {
 
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
-    private SymmetricCipher symmetricCipher = DefaultSymmetricCipher.getFlyweight(
+    private final SymmetricCipher symmetricCipher = DefaultSymmetricCipher.getFlyweight(
             SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName()
     );
 
@@ -43,7 +43,7 @@ public class SymmetricCryptoUtilsTest {
 
         // 解密后的加密过的明文
         byte[] processedData = symmetricCipher.decrypt(key, iv, symmetricCipher.encrypt(key, iv, text));
-        Assertions.assertThat(text).isEqualTo(processedData);
+        Assertions.assertArrayEquals(text, processedData);
     }
 
     /**
@@ -51,7 +51,7 @@ public class SymmetricCryptoUtilsTest {
      * 密钥长度不符合标准 aes 的要求（必须为16/24/32）
      */
     @Test
-    public void testAesKeyVerify() throws Exception {
+    public void testAesKeyVerify() {
 
         byte[] text = "testAes".getBytes(UTF8);
 
@@ -78,7 +78,7 @@ public class SymmetricCryptoUtilsTest {
      * 向量长度不符合标准 aes 的要求（必须为16）
      */
     @Test
-    public void testAesIvVerify() throws Exception {
+    public void testAesIvVerify() {
 
         byte[] text = "testAes".getBytes(UTF8);
         // iv length 不对

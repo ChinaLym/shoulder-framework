@@ -24,16 +24,16 @@ public class DefaultSymmetricTextCipher implements SymmetricTextCipher {
     /**
      * 对称加密器
      */
-    private final SymmetricCipher processor;
+    private final SymmetricCipher byteCipher;
 
-    public DefaultSymmetricTextCipher(SymmetricCipher processor) {
-        this.processor = processor;
+    public DefaultSymmetricTextCipher(SymmetricCipher byteCipher) {
+        this.byteCipher = byteCipher;
     }
 
 
     @Override
     public byte[] encryptAsBytes(byte[] key, byte[] iv, String text) throws SymmetricCryptoException {
-        return processor.encrypt(key, iv, text.getBytes(CHAR_SET));
+        return byteCipher.encrypt(key, iv, text.getBytes(CHAR_SET));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class DefaultSymmetricTextCipher implements SymmetricTextCipher {
 
     @Override
     public byte[] decryptAsBytes(byte[] key, byte[] iv, String cipher) throws SymmetricCryptoException {
-        return processor.decrypt(key, iv, ByteSpecification.decodeToBytes(cipher));
+        return byteCipher.decrypt(key, iv, ByteSpecification.decodeToBytes(cipher));
     }
 
 

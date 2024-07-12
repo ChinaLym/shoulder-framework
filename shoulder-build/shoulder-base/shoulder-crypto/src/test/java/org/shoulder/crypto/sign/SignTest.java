@@ -1,6 +1,6 @@
 package org.shoulder.crypto.sign;
 
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
@@ -22,7 +22,7 @@ public class SignTest {
 
         String sign = SignUtil.sign(key, data);
         log.debug(sign);
-        Assertions.assertThat(SignUtil.verify(sign, key, 0)).isTrue();
+        Assertions.assertTrue(SignUtil.verify(sign, key, 0, data));
     }
 
 }
