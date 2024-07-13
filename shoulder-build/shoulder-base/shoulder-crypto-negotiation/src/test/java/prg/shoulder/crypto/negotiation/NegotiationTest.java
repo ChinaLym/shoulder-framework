@@ -43,12 +43,13 @@ public class NegotiationTest {
         // 设置成对方的密钥进行握手
         serverNegotiationParam.setPublicKey(clientNegotiationRequest.getPublicKey());
         NegotiationResult serverNegotiationResult = server.negotiation(serverNegotiationParam);
-
+        Assertions.assertEquals(clientNegotiationRequest.getPublicKey(), clientNegotiationRequest.getPublicKey());
 
         // client 确认 握手 + 生成DK---------------------------
         boolean clientVerifyNegoRespToken = client.verifyToken(serverPrepareResponse);
         Assertions.assertTrue(clientVerifyNegoRespToken);
         NegotiationResult clientNegotiationResult = client.negotiation(serverPrepareResponse);
+        Assertions.assertArrayEquals(ByteSpecification.decodeToBytes(serverPrepareResponse.getPublicKey()), clientNegotiationResult.getPublicKey());
 //        Assertions.assertArrayEquals(clientNegotiationResult.getPublicKey());
         // check 不为空
 
@@ -88,8 +89,8 @@ public class NegotiationTest {
         String xSessionIdByServerResp = serverRespHeader.getFirst(NegotiationConstants.SECURITY_SESSION_ID);
         String tokenByServerResp = serverRespHeader.getFirst(NegotiationConstants.TOKEN);
 
-        boolean clientCheckDk = client.verifyToken(xDkByServerResp, xSessionIdByServerResp, tokenByServerResp, ByteSpecification.decodeToBytes(serverPrepareResponse.getPublicKey()));
-//        Assertions.assertTrue(clientCheckDk);
+        boolean clientCheckDk = client.verifyToken(xSessionIdByServerResp, xDkByServerResp, tokenByServerResp, clientNegotiationResult.getPublicKey());
+        Assertions.assertTrue(clientCheckDk);
         byte[] respDkInClient = TransportCryptoUtil.decryptDk(clientNegotiationResult, xDkByServerResp);
         Assertions.assertArrayEquals(responseDk, respDkInClient);
         // client 端解密响应密文
