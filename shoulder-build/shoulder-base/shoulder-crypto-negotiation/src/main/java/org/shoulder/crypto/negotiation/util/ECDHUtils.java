@@ -2,7 +2,6 @@ package org.shoulder.crypto.negotiation.util;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.core.log.ShoulderLoggers;
-import org.shoulder.core.util.ByteUtils;
 import org.shoulder.crypto.digest.Sha256Utils;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.slf4j.Logger;
@@ -27,8 +26,10 @@ import java.util.List;
 public class ECDHUtils {
 
     private final static String PROVIDER = "BC";
+
     private final static String ECDH = "ECDH";
-    private static Logger logger = ShoulderLoggers.SHOULDER_CRYPTO;
+
+    private static final Logger logger = ShoulderLoggers.SHOULDER_CRYPTO;
 
     static {
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
@@ -93,45 +94,4 @@ public class ECDHUtils {
 
     }
 
-    /**
-     * 生成一次请求使用的数据密钥
-     *
-     * @param length 16/24/32
-     * @return 数据密钥
-     */
-    private static byte[] newTempKey(int length) {
-        return ByteUtils.randomBytes(length);
-    }
-
-
-    /*public static void main(String[] args) throws Exception {
-        KeyPair severKeyPair = EccUtil.getKeyPair();
-        byte[] sPubKey = ByteSpecification.decodeToBytes(EccUtil.getPublicKey(severKeyPair));
-        byte[] sPriKey = ByteSpecification.decodeToBytes(EccUtil.getPrivateKey(severKeyPair));
-
-
-        KeyPair clientKeyPair = EccUtil.getKeyPair();
-        byte[] cPubKey = ByteSpecification.decodeToBytes(EccUtil.getPublicKey(clientKeyPair));
-        byte[] cPriKey = ByteSpecification.decodeToBytes(EccUtil.getPrivateKey(clientKeyPair));
-
-        List<byte[]> sResult = negotiationToKeyAndIv(sPriKey, cPubKey, 16);
-        List<byte[]> cResult = negotiationToKeyAndIv(cPriKey, sPubKey, 16);
-
-
-        outBytes(sResult.get(0));
-        outBytes(sResult.get(1));
-
-        outBytes(cResult.get(0));
-        outBytes(cResult.get(1));
-    }
-
-    private static void outBytes(byte[] param) {
-        for (byte b : param) {
-            if (((char) b) == '-') {
-                continue;
-            }
-            System.out.print(b);
-        }
-        System.out.println();
-    }*/
 }

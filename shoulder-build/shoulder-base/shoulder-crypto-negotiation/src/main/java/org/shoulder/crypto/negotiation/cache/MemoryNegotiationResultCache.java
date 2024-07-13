@@ -12,17 +12,17 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author lym
  */
-public class LocalNegotiationResultCache implements NegotiationResultCache {
+public class MemoryNegotiationResultCache implements NegotiationResultCache {
 
     /**
      * 客户端缓存，key为对方应用标识
      */
-    private static Map<String, NegotiationResult> clientKeyExchangeResultMap = new ConcurrentHashMap<>(8);
+    private static final Map<String, NegotiationResult> clientKeyExchangeResultMap = new ConcurrentHashMap<>(8);
 
     /**
      * 作为服务方缓存，key为 xSessionId
      */
-    private static Map<String, NegotiationResult> serverKeyExchangeResultMap = new ConcurrentHashMap<>(8);
+    private static final Map<String, NegotiationResult> serverKeyExchangeResultMap = new ConcurrentHashMap<>(8);
 
     @Override
     public void put(@Nonnull String cacheKey, @Nonnull NegotiationResult negotiationResult, boolean asClient) {

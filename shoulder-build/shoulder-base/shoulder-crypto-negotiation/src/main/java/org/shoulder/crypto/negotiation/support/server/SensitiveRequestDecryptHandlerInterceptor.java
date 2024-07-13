@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.JsonUtils;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
@@ -16,7 +17,6 @@ import org.shoulder.crypto.negotiation.util.TransportCryptoUtil;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
@@ -87,7 +87,7 @@ public class SensitiveRequestDecryptHandlerInterceptor implements AsyncHandlerIn
         NegotiationResultCache.SERVER_LOCAL_CACHE.set(cacheNegotiationResult);
 
         // 校验token是否正确
-        if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, cacheNegotiationResult.getPublicKey())) {
+        if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, cacheNegotiationResult.getOtherPublicKey())) {
             log.debug("Token({}) invalid! xSessionId={}", token, xSessionId);
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
             BaseResult<Void> r = BaseResult.error(NegotiationErrorCodeEnum.TOKEN_INVALID);

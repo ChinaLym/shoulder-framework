@@ -37,10 +37,8 @@ public interface TransportTextCipher extends TextCipher {
      * 加密或解密，根据实现类具体职责决定
      *
      * @param input input
-     * @return 处理完的
+     * @return 加/解密处理结果
      */
-    default String doCipher(String input) {
-        throw new UnsupportedOperationException("not support!");
-    }
+    String doCipher(String input);
 
 }

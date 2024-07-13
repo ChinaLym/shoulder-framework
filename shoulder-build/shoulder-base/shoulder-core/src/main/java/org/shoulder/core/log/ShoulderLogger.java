@@ -2,12 +2,12 @@ package org.shoulder.core.log;
 
 import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.util.ExceptionUtil;
+import org.shoulder.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
-import org.springframework.util.StringUtils;
 
 /**
  * 在 slf4j 之上封装一层带错误码的记录实现

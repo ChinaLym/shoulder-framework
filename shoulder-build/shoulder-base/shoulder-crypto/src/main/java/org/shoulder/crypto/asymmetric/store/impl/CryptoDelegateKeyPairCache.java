@@ -8,7 +8,7 @@ import org.shoulder.crypto.local.LocalTextCipher;
 
 /**
  * RSA 密钥对存储-Redis 存储，适合应用支持集群部署的场景
- * 如果不使用过期时间等redis特有操作，可以通过双层缓存优化访问速度
+ * 更多优化策略：如果不使用过期时间等redis特有操作，还可以通过双层缓存优化访问速度
  *
  * @author lym
  */
@@ -24,7 +24,7 @@ public class CryptoDelegateKeyPairCache implements KeyPairCache {
     /**
      * 注意维护应用隔离
      */
-    private KeyPairCache delegate;
+    private final KeyPairCache delegate;
 
 
     public CryptoDelegateKeyPairCache(KeyPairCache delegate, LocalTextCipher localTextCipher) {

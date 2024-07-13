@@ -41,11 +41,11 @@ public class NegotiationResponse implements Cloneable {
      */
     private int expireTime = NegotiationConstants.EXPIRE_TIME;
 
-    public String getxSessionId() {
+    public String getXSessionId() {
         return xSessionId;
     }
 
-    public void setxSessionId(String xSessionId) {
+    public void setXSessionId(String xSessionId) {
         this.xSessionId = xSessionId;
     }
 

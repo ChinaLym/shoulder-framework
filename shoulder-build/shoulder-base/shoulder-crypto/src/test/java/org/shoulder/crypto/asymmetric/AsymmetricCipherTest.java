@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
-import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
+import org.shoulder.crypto.asymmetric.store.impl.MemoryKeyPairCache;
 
 /**
  * 非对称加密测试-框架基础封装
@@ -14,9 +14,9 @@ import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
  */
 public class AsymmetricCipherTest {
 
-    private AsymmetricCipher ecc256 = DefaultAsymmetricCipher.ecc256(new HashMapKeyPairCache());
+    private AsymmetricCipher ecc256 = DefaultAsymmetricCipher.ecc256(new MemoryKeyPairCache());
 
-    private AsymmetricCipher rsa2048 = DefaultAsymmetricCipher.rsa2048(new HashMapKeyPairCache());
+    private AsymmetricCipher rsa2048 = DefaultAsymmetricCipher.rsa2048(new MemoryKeyPairCache());
 
     /**
      * 测试加解密

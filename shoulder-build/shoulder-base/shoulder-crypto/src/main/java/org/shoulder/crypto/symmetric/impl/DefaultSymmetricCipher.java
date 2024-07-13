@@ -4,6 +4,7 @@ import jakarta.annotation.Nonnull;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.core.util.StringUtils;
+import org.shoulder.crypto.symmetric.SymmetricAlgorithmEnum;
 import org.shoulder.crypto.symmetric.SymmetricCipher;
 import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
 import org.springframework.util.Assert;
@@ -23,7 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecification {
 
     /**
-     * 享元工厂模式
+     * 享元工厂
+     * key: 建议使用 {@link SymmetricAlgorithmEnum#getAlgorithmName()}
+     * value: {@link DefaultSymmetricCipher} object
      */
     private static final ConcurrentHashMap<String, DefaultSymmetricCipher> FLYWEIGHT_CACHE = new ConcurrentHashMap<>();
 
@@ -67,14 +70,10 @@ public class DefaultSymmetricCipher implements SymmetricCipher, ByteSpecificatio
     // ------------------ 提供两个推荐使用的安全加密方案 ------------------
 
     public DefaultSymmetricCipher(String transformation) {
-        this.transformation = transformation;
-        this.provider = "BC";
-        this.algorithm = transformation.substring(0, transformation.indexOf("/"));
-        this.keyLengthSupports = new int[]{16, 24, 32};
-        needIv = StringUtils.contains(transformation, "/CBC/")
-            || StringUtils.contains(transformation, "/CFB/")
-            || StringUtils.contains(transformation, "/GCM/")
-        ;
+        this(transformation.substring(0, transformation.indexOf("/")),
+                // 128 192 256
+                new int[]{16, 24, 32}, transformation, "BC",
+                StringUtils.containsAny(transformation, "/CBC/", "/CFB/", "/GCM/"));
     }
 
     @Nonnull

@@ -17,13 +17,13 @@ import java.util.concurrent.ConcurrentMap;
  *
  * @author lym
  */
-public class HashMapKeyPairCache implements KeyPairCache {
+public class MemoryKeyPairCache implements KeyPairCache {
 
     protected ConcurrentMap<String, KeyPairDto> store = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void init() {
-        ShoulderCryptoLoggers.DEFAULT.debug("LocalKeyPairCache init.");
+        ShoulderCryptoLoggers.DEFAULT.debug("MemoryKeyPairCache init.");
     }
 
     @Override

@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricTextCipher;
-import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
+import org.shoulder.crypto.asymmetric.store.impl.MemoryKeyPairCache;
 
 /**
  * 非对称加密测试-框架上层封装
@@ -14,7 +14,7 @@ import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
 public class AsymmetricTextCipherTest {
 
     private DefaultAsymmetricTextCipher textCipher = new DefaultAsymmetricTextCipher(
-        DefaultAsymmetricCipher.ecc256(new HashMapKeyPairCache())
+            DefaultAsymmetricCipher.ecc256(new MemoryKeyPairCache())
     );
 
     /**

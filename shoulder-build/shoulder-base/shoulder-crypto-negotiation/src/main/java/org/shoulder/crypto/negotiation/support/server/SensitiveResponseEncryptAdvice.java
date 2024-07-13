@@ -4,7 +4,6 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.log.Logger;
-import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
@@ -120,7 +119,7 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
 
             HttpHeaders responseHeaders = response.getHeaders();
             responseHeaders.add(NegotiationConstants.TOKEN, transportCryptoUtil.generateToken(xSessionId, responseX_Dk));
-            responseHeaders.add(NegotiationConstants.SECURITY_SESSION_ID, cacheNegotiationResult.getxSessionId());
+            responseHeaders.add(NegotiationConstants.SECURITY_SESSION_ID, cacheNegotiationResult.getXSessionId());
             responseHeaders.add(NegotiationConstants.SECURITY_DATA_KEY, responseX_Dk);
         } catch (AsymmetricCryptoException e) {
             log.warn("token generate fail!", e);

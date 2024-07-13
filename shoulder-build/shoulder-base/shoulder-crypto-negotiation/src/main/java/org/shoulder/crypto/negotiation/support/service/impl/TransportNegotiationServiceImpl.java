@@ -28,6 +28,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 安全会话，密钥协商默认逻辑
@@ -49,7 +50,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
 
     private final AppIdExtractor appIdExtractor;
 
-    private Map<String, String> negotiationUrls = new HashMap<>();
+    private final Map<String, String> negotiationUrls = new HashMap<>();
 
     public TransportNegotiationServiceImpl(TransportCryptoUtil transportCryptoUtil, RestTemplate restTemplate,
                                            NegotiationResultCache negotiationResultCache, AppIdExtractor appIdExtractor) {
@@ -115,7 +116,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         NegotiationRequest requestParam = transportCryptoUtil.createRequest();
 
         // 2. 处理请求头，如 token 相关
-        String xSessionId = requestParam.getxSessionId();
+        String xSessionId = requestParam.getXSessionId();
         String token = requestParam.getToken();
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -151,7 +152,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         Assert.notEmpty(encryptionScheme, "response.encryptionScheme can't be empty");
         // 校验报文加密算法自身支持，对方没有乱返回
 
-        negotiationResponse.setxSessionId(xSessionId);
+        negotiationResponse.setXSessionId(xSessionId);
         negotiationResponse.setToken(token);
 
         if (!transportCryptoUtil.verifyToken(negotiationResponse)) {
@@ -179,7 +180,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             validateAndFill(negotiationRequest);
             if (!negotiationRequest.isRefresh()) {
                 //不强制刷新 尝试走缓存
-                negotiationResult = negotiationResultCache.getAsServer(negotiationRequest.getxSessionId());
+                negotiationResult = negotiationResultCache.getAsServer(negotiationRequest.getXSessionId());
                 if (negotiationResult != null) {
                     return transportCryptoUtil.createResponse(negotiationResult);
                 }
@@ -192,14 +193,14 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
             // 协商密钥，生成 shareKey、根据 shareKey 生成 localKey，localIv
             NegotiationResult result = transportCryptoUtil.negotiation(negotiationParam);
             long expireTime = result.getExpireTime();
-            // 放缓存 (作为响应方 协商缓存失效时间加1分钟，以尽量保证比对方提前过期，避免临界时大量请求失败)
-            result.setExpireTime(expireTime + 60 * 1000);
-            negotiationResultCache.putAsServer(response.getxSessionId(), result);
+            // 放缓存 (作为响应方 协商缓存失效时间加1~3分钟，以尽量保证比对方提前过期，避免临界时大量请求失败、也避免集群同时过期影响耗时)
+            result.setExpireTime(expireTime + 60L * 1000 * ThreadLocalRandom.current().nextInt(1, 3));
+            negotiationResultCache.putAsServer(response.getXSessionId(), result);
 
             // processHeaders
             HttpServletResponse httpResponse = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse();
             assert httpResponse != null;
-            httpResponse.setHeader(NegotiationConstants.SECURITY_SESSION_ID, response.getxSessionId());
+            httpResponse.setHeader(NegotiationConstants.SECURITY_SESSION_ID, response.getXSessionId());
             httpResponse.setHeader(NegotiationConstants.TOKEN, response.getToken());
 
             return response;
@@ -221,7 +222,7 @@ public class TransportNegotiationServiceImpl implements TransportNegotiationServ
         String xSessionId = request.getHeader(NegotiationConstants.SECURITY_SESSION_ID);
         String token = request.getHeader(NegotiationConstants.TOKEN);
 
-        negotiationRequest.setxSessionId(xSessionId);
+        negotiationRequest.setXSessionId(xSessionId);
         negotiationRequest.setToken(token);
 
         if (!transportCryptoUtil.verifyToken(negotiationRequest)) {

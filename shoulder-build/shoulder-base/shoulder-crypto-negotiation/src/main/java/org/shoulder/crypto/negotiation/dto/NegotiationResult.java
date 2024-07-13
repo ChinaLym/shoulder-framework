@@ -1,5 +1,7 @@
 package org.shoulder.crypto.negotiation.dto;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -7,12 +9,13 @@ import java.io.Serializable;
  *
  * @author lym
  */
+@Data
 public class NegotiationResult implements Serializable {
 
     /**
      * 对方的公钥
      */
-    private byte[] publicKey;
+    private byte[] otherPublicKey;
 
     /**
      * 协商标识
@@ -37,8 +40,6 @@ public class NegotiationResult implements Serializable {
 
     /**
      * 协商结果key长度 256/8=32
-     *
-     * @deprecated 考虑使用 encryptionScheme 替代
      */
     private int keyLength;
 
@@ -60,22 +61,6 @@ public class NegotiationResult implements Serializable {
         this.keyLength = keyLength;
     }
 
-    public byte[] getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(byte[] publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public String getxSessionId() {
-        return xSessionId;
-    }
-
-    public void setxSessionId(String xSessionId) {
-        this.xSessionId = xSessionId;
-    }
-
     public byte[] getShareKey() {
         return shareKey == null ? null : shareKey.clone();
     }
@@ -90,29 +75,5 @@ public class NegotiationResult implements Serializable {
 
     public void setLocalIv(byte[] localIv) {
         this.localIv = localIv == null ? null : localIv.clone();
-    }
-
-    public String getEncryptionScheme() {
-        return encryptionScheme;
-    }
-
-    public void setEncryptionScheme(String encryptionScheme) {
-        this.encryptionScheme = encryptionScheme;
-    }
-
-    public int getKeyLength() {
-        return keyLength;
-    }
-
-    public void setKeyLength(int keyLength) {
-        this.keyLength = keyLength;
-    }
-
-    public long getExpireTime() {
-        return expireTime;
-    }
-
-    public void setExpireTime(long expireTime) {
-        this.expireTime = expireTime;
     }
 }

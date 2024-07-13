@@ -11,7 +11,7 @@ import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricTextCipher;
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.CryptoDelegateKeyPairCache;
-import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
+import org.shoulder.crypto.asymmetric.store.impl.MemoryKeyPairCache;
 import org.shoulder.crypto.asymmetric.store.impl.RedisKeyPairCache;
 import org.shoulder.crypto.endpoint.CryptoEndpoint;
 import org.shoulder.crypto.local.LocalTextCipher;
@@ -82,8 +82,8 @@ public class AsymmetricCryptoAutoConfiguration {
     @ConditionalOnMissingBean(KeyPairCache.class)
     public static class AsymmetricKeyNonClusterPairCacheConfig {
         @Bean
-        public KeyPairCache hashMapKeyPairCache(CryptoProperties cryptoProperties) {
-            KeyPairCache keyPairCache = new HashMapKeyPairCache();
+        public KeyPairCache memoryKeyPairCache(CryptoProperties cryptoProperties) {
+            KeyPairCache keyPairCache = new MemoryKeyPairCache();
             // 将配置文件中的预置密钥对加入临时存储
             keyPairCache.put(cryptoProperties.getKeyPair());
             return keyPairCache;

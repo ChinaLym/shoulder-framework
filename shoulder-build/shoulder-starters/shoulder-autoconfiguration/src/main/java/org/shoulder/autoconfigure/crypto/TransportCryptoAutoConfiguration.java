@@ -7,7 +7,7 @@ import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.crypto.asymmetric.AsymmetricCipher;
 import org.shoulder.crypto.negotiation.algorithm.DelegateNegotiationAsymmetricCipher;
-import org.shoulder.crypto.negotiation.cache.LocalNegotiationResultCache;
+import org.shoulder.crypto.negotiation.cache.MemoryNegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.RedisNegotiationResultCache;
 import org.shoulder.crypto.negotiation.support.endpoint.NegotiationEndPoint;
@@ -54,6 +54,8 @@ public class TransportCryptoAutoConfiguration {
     @ConditionalOnMissingBean
     public TransportCryptoUtil transportCryptoUtil(AsymmetricCipher delegate) {
         TransportCryptoByteUtil util = new TransportCryptoByteUtil(new DelegateNegotiationAsymmetricCipher(delegate));
+        // TODO P2 【可配置】支持通过配置设置
+        //        TransportCryptoByteUtil.setSupportEncryptionSchemes();
         return new TransportCryptoUtil(util);
     }
 
@@ -93,8 +95,8 @@ public class TransportCryptoAutoConfiguration {
     public static class KeyNegotiationCacheLocalAutoConfiguration {
 
         @Bean
-        public NegotiationResultCache localKeyNegotiationCache() {
-            return new LocalNegotiationResultCache();
+        public NegotiationResultCache memoryKeyNegotiationCache() {
+            return new MemoryNegotiationResultCache();
         }
     }
 

@@ -3,6 +3,7 @@ package org.shoulder.crypto.negotiation.support.client;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.AssertUtils;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -22,7 +23,6 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -90,7 +90,7 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
         // 确定为加密的响应拦截
         try {
             // 1. 验证服务端签名
-            boolean goodToken = transportCryptoUtil.verifyToken(xSessionId, xDk, token, NegotiationResultCache.CLIENT_LOCAL_CACHE.get().getPublicKey());
+            boolean goodToken = transportCryptoUtil.verifyToken(xSessionId, xDk, token, NegotiationResultCache.CLIENT_LOCAL_CACHE.get().getOtherPublicKey());
             AssertUtils.isTrue(goodToken, CommonErrorCodeEnum.AUTH_403_TOKEN_INVALID, "security token validate fail!");
 
             // 2. 获取本次请求真正的数据密钥

@@ -2,12 +2,12 @@ package org.shoulder.crypto.asymmetric.store.impl;
 
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.util.JsonUtils;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
 import org.shoulder.crypto.asymmetric.exception.NoSuchKeyPairException;
 import org.shoulder.crypto.asymmetric.store.KeyPairCache;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -28,7 +28,7 @@ public class RedisKeyPairCache implements KeyPairCache {
     /**
      * 注意维护应用隔离
      */
-    private RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public RedisKeyPairCache(StringRedisTemplate redisTemplate) {
         this(redisTemplate, "crypto:asymmetric:");

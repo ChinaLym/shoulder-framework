@@ -1,10 +1,10 @@
-package prg.shoulder.crypto.negotiation;
+package org.shoulder.crypto.negotiation;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.shoulder.core.constant.ByteSpecification;
 import org.shoulder.crypto.asymmetric.impl.DefaultAsymmetricCipher;
-import org.shoulder.crypto.asymmetric.store.impl.HashMapKeyPairCache;
+import org.shoulder.crypto.asymmetric.store.impl.MemoryKeyPairCache;
 import org.shoulder.crypto.negotiation.algorithm.DelegateNegotiationAsymmetricCipher;
 import org.shoulder.crypto.negotiation.cipher.DefaultTransportCipher;
 import org.shoulder.crypto.negotiation.cipher.TransportTextCipher;
@@ -18,9 +18,9 @@ import org.springframework.http.HttpHeaders;
 
 public class NegotiationTest {
 
-    private static final TransportCryptoUtil client = new TransportCryptoUtil(new TransportCryptoByteUtil(new DelegateNegotiationAsymmetricCipher(DefaultAsymmetricCipher.ecc256(new HashMapKeyPairCache()))));
+    private static final TransportCryptoUtil client = new TransportCryptoUtil(new TransportCryptoByteUtil(new DelegateNegotiationAsymmetricCipher(DefaultAsymmetricCipher.ecc256(new MemoryKeyPairCache()))));
 
-    private static final TransportCryptoUtil server = new TransportCryptoUtil(new TransportCryptoByteUtil(new DelegateNegotiationAsymmetricCipher(DefaultAsymmetricCipher.ecc256(new HashMapKeyPairCache()))));
+    private static final TransportCryptoUtil server = new TransportCryptoUtil(new TransportCryptoByteUtil(new DelegateNegotiationAsymmetricCipher(DefaultAsymmetricCipher.ecc256(new MemoryKeyPairCache()))));
 
     /**
      * 测试密钥协商机制和请求加解密正确
@@ -32,7 +32,7 @@ public class NegotiationTest {
         Assertions.assertNotNull(clientNegotiationRequest);
         Assertions.assertFalse(clientNegotiationRequest.isRefresh());
         Assertions.assertNotNull(clientNegotiationRequest.getToken());
-        Assertions.assertNotNull(clientNegotiationRequest.getxSessionId());
+        Assertions.assertNotNull(clientNegotiationRequest.getXSessionId());
         Assertions.assertNotNull(clientNegotiationRequest.getPublicKey());
 
         // server 响应 握手---------------------------
@@ -49,7 +49,7 @@ public class NegotiationTest {
         boolean clientVerifyNegoRespToken = client.verifyToken(serverPrepareResponse);
         Assertions.assertTrue(clientVerifyNegoRespToken);
         NegotiationResult clientNegotiationResult = client.negotiation(serverPrepareResponse);
-        Assertions.assertArrayEquals(ByteSpecification.decodeToBytes(serverPrepareResponse.getPublicKey()), clientNegotiationResult.getPublicKey());
+        Assertions.assertArrayEquals(ByteSpecification.decodeToBytes(serverPrepareResponse.getPublicKey()), clientNegotiationResult.getOtherPublicKey());
 //        Assertions.assertArrayEquals(clientNegotiationResult.getPublicKey());
         // check 不为空
 
@@ -66,7 +66,7 @@ public class NegotiationTest {
         String xDkByClientReq = clientReqHeader.getFirst(NegotiationConstants.SECURITY_DATA_KEY);
         String xSessionIdByClientReq = clientReqHeader.getFirst(NegotiationConstants.SECURITY_SESSION_ID);
         String tokenByClientReq = clientReqHeader.getFirst(NegotiationConstants.TOKEN);
-        boolean serverCheckDk = server.verifyToken(xSessionIdByClientReq, xDkByClientReq, tokenByClientReq, serverNegotiationResult.getPublicKey());
+        boolean serverCheckDk = server.verifyToken(xSessionIdByClientReq, xDkByClientReq, tokenByClientReq, serverNegotiationResult.getOtherPublicKey());
         Assertions.assertTrue(serverCheckDk);
         byte[] requestDkInServer = TransportCryptoUtil.decryptDk(serverNegotiationResult, xDkByClientReq);
         Assertions.assertArrayEquals(requestDkInClient, requestDkInServer);
@@ -89,7 +89,7 @@ public class NegotiationTest {
         String xSessionIdByServerResp = serverRespHeader.getFirst(NegotiationConstants.SECURITY_SESSION_ID);
         String tokenByServerResp = serverRespHeader.getFirst(NegotiationConstants.TOKEN);
 
-        boolean clientCheckDk = client.verifyToken(xSessionIdByServerResp, xDkByServerResp, tokenByServerResp, clientNegotiationResult.getPublicKey());
+        boolean clientCheckDk = client.verifyToken(xSessionIdByServerResp, xDkByServerResp, tokenByServerResp, clientNegotiationResult.getOtherPublicKey());
         Assertions.assertTrue(clientCheckDk);
         byte[] respDkInClient = TransportCryptoUtil.decryptDk(clientNegotiationResult, xDkByServerResp);
         Assertions.assertArrayEquals(responseDk, respDkInClient);

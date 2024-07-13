@@ -138,16 +138,16 @@ public class TransportCryptoUtil {
     public NegotiationResponse createResponse(NegotiationResult negotiationResult) throws AsymmetricCryptoException {
         NegotiationResponse response = new NegotiationResponse();
 
-        byte[] publicKey = negotiationResult.getPublicKey();
+        byte[] publicKey = negotiationResult.getOtherPublicKey();
 
         response.setPublicKey(ByteSpecification.encodeToString(publicKey));
         response.setExpireTime((int) (negotiationResult.getExpireTime() - System.currentTimeMillis()));
         response.setKeyBytesLength(negotiationResult.getKeyLength());
-        // todo 【使用范围】不应该写死256，而是支持的密钥算法，如 aes、sm4
-        response.setEncryptionScheme("256");
+        // todo P1【扩展性】不应该写死256，而是支持的密钥算法，如 aes、sm4
+        response.setEncryptionScheme(negotiationResult.getEncryptionScheme());
 
-        response.setxSessionId(negotiationResult.getxSessionId());
-        // todo 【流程】处理 token 生成失败
+        response.setXSessionId(negotiationResult.getXSessionId());
+        // todo P2 【健壮性】处理 token 生成失败
         String token = generateResponseToken(response);
         response.setToken(token);
         return response;
@@ -221,8 +221,8 @@ public class TransportCryptoUtil {
     public HttpHeaders generateHeaders(NegotiationResult negotiationResult, @Nullable byte[] dataKey) throws AsymmetricCryptoException, SymmetricCryptoException {
         String xDk = encryptDk(negotiationResult, dataKey);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(NegotiationConstants.TOKEN, generateToken(negotiationResult.getxSessionId(), xDk));
-        headers.add(NegotiationConstants.SECURITY_SESSION_ID, negotiationResult.getxSessionId());
+        headers.add(NegotiationConstants.TOKEN, generateToken(negotiationResult.getXSessionId(), xDk));
+        headers.add(NegotiationConstants.SECURITY_SESSION_ID, negotiationResult.getXSessionId());
         if (ByteUtils.isNotEmpty(dataKey)) {
             headers.add(NegotiationConstants.SECURITY_DATA_KEY, xDk);
         }

@@ -3,6 +3,7 @@ package org.shoulder.autoconfigure.redis;
 import jakarta.annotation.Nullable;
 import org.shoulder.cluster.redis.annotation.AppExclusive;
 import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.util.StringUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +12,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.util.StringUtils;
 
 /**
  * redis相关配置，提供 string 和 string-object 两种
