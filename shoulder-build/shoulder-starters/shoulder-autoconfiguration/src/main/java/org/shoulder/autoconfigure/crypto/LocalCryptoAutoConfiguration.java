@@ -13,8 +13,8 @@ import org.shoulder.crypto.local.impl.DefaultLocalTextCipher;
 import org.shoulder.crypto.local.impl.LocalTextCipherManager;
 import org.shoulder.crypto.local.repository.LocalCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.FileLocalCryptoInfoRepository;
-import org.shoulder.crypto.local.repository.impl.HashMapCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.JdbcLocalCryptoInfoRepository;
+import org.shoulder.crypto.local.repository.impl.MemoryCryptoInfoRepository;
 import org.shoulder.crypto.local.repository.impl.RedisLocalCryptoInfoRepository;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -163,7 +163,7 @@ public class LocalCryptoAutoConfiguration {
             log.error("You are using memory as LocalCryptoInfoRepository! " +
                 "Shoulder strongly recommend that you replace it with other implements " +
                 "that can save the IMPORT DATA(root crypto meta data) for a long time");
-            return new HashMapCryptoInfoRepository();
+            return new MemoryCryptoInfoRepository();
         }
 
     }

@@ -9,6 +9,7 @@ import org.shoulder.crypto.local.LocalTextCipher;
 
 /**
  * 加解密工具
+ * 注意：该类必须要在上下文启动后才能使用
  *
  * @author lym
  */

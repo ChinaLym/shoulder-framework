@@ -13,12 +13,12 @@ import org.shoulder.crypto.symmetric.exception.SymmetricCryptoException;
  */
 public class DefaultTransportCipher implements TransportTextCipher {
 
-    private NegotiationResult negotiationResult;
+    private final NegotiationResult negotiationResult;
 
     /**
      * 数据密钥明文
      */
-    private byte[] dk;
+    private final byte[] dk;
 
 
     private DefaultTransportCipher(NegotiationResult keyExchangeInfo, byte[] dk) {
@@ -74,7 +74,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
         try {
             return TransportCryptoUtil.decrypt(negotiationResult, dk, cipherText);
         } catch (SymmetricCryptoException e) {
-            throw CryptoErrorCodeEnum.ENCRYPT_FAIL.toException(e);
+            throw CryptoErrorCodeEnum.DECRYPT_FAIL.toException(e);
         }
     }
 
@@ -91,7 +91,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
     /**
      * 加密器
      */
-    private static class EncryptCipher extends DefaultTransportCipher {
+    public static class EncryptCipher extends DefaultTransportCipher {
 
         private EncryptCipher(NegotiationResult keyExchangeInfo, byte[] dk) {
             super(keyExchangeInfo, dk);
@@ -115,7 +115,7 @@ public class DefaultTransportCipher implements TransportTextCipher {
     /**
      * 解密器
      */
-    private static class DecryptCipher extends DefaultTransportCipher {
+    public static class DecryptCipher extends DefaultTransportCipher {
 
         private DecryptCipher(NegotiationResult keyExchangeInfo, byte[] dk) {
             super(keyExchangeInfo, dk);

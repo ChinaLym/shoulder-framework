@@ -40,13 +40,13 @@ public class RedisLocalCryptoInfoRepository implements LocalCryptoInfoRepository
     }
 
     @Override
-    public LocalCryptoMetaInfo get(@Nonnull String appId, @Nonnull String markHeader) {
+    public LocalCryptoMetaInfo queryOneByAppIdAndHeader(@Nonnull String appId, @Nonnull String markHeader) {
         return (LocalCryptoMetaInfo) redisTemplate.opsForHash().get(getCacheId(), markHeader);
     }
 
     @Override
     @Nonnull
-    public List<LocalCryptoMetaInfo> get(@Nonnull String appId) {
+    public List<LocalCryptoMetaInfo> queryAllByAppId(@Nonnull String appId) {
         List<Object> objects = redisTemplate.opsForHash().values(getCacheId());
         if (CollectionUtils.isEmpty(objects)) {
             return Collections.emptyList();

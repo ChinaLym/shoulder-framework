@@ -88,7 +88,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    public LocalCryptoMetaInfo get(@Nonnull String appId, @Nonnull String markHeader) {
+    public LocalCryptoMetaInfo queryOneByAppIdAndHeader(@Nonnull String appId, @Nonnull String markHeader) {
         return getAll().stream()
             .filter(info -> appId.equals(info.getAppId()) && markHeader.equals(info.getHeader()))
             .findFirst().orElse(null);
@@ -96,7 +96,7 @@ public class FileLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     @Override
     @Nonnull
-    public List<LocalCryptoMetaInfo> get(@Nonnull String appId) {
+    public List<LocalCryptoMetaInfo> queryAllByAppId(@Nonnull String appId) {
         return getAll().stream()
             .filter(info -> appId.equals(info.getAppId()))
             .collect(Collectors.toList());

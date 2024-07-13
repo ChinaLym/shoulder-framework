@@ -28,7 +28,7 @@ public interface LocalCryptoInfoRepository {
      * @return AesInfoEntity
      */
     @Nullable
-    LocalCryptoMetaInfo get(@Nonnull String appId, @Nonnull String markHeader) throws Exception;
+    LocalCryptoMetaInfo queryOneByAppIdAndHeader(@Nonnull String appId, @Nonnull String markHeader) throws Exception;
 
     /**
      * 获取加密信息
@@ -37,7 +37,7 @@ public interface LocalCryptoInfoRepository {
      * @return List<AesInfoEntity>
      */
     @Nonnull
-    List<LocalCryptoMetaInfo> get(@Nonnull String appId) throws Exception;
+    List<LocalCryptoMetaInfo> queryAllByAppId(@Nonnull String appId) throws Exception;
 
     /**
      * 是否支持集群

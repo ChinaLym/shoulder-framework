@@ -83,6 +83,7 @@ public class FakerCryptoableOutputStream extends BufferedOutputStream {
     private void flushBuffer() throws IOException {
         if (count > 0) {
             for (int i = 0; i < count; i++) {
+                // 这里异或，两次会产出完全一样的值
                 buf[i] ^= 26;
             }
             out.write(buf, 0, count);

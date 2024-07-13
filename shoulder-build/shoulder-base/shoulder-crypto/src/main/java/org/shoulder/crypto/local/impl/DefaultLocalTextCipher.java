@@ -2,9 +2,9 @@ package org.shoulder.crypto.local.impl;
 
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.constant.ByteSpecification;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ByteUtils;
 import org.shoulder.crypto.digest.Sha256Utils;
-import org.shoulder.crypto.exception.CipherRuntimeException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.local.JudgeAbleLocalTextCipher;
 import org.shoulder.crypto.local.entity.LocalCryptoMetaInfo;
@@ -139,15 +139,11 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
 
     @Override
     public String decrypt(@Nonnull String cipherText) {
-        ensureInit();
         String[] cipherTextAndHeader = splitHeader(cipherText);
         String cipherTextHeader = cipherTextAndHeader[0];
         String realCipherText = cipherTextAndHeader[1];
         AesInfoCache cacheInfo = CacheManager.getAesInfoCache(cipherTextHeader);
-        if (cacheInfo == null) {
-            throw new CipherRuntimeException(CryptoErrorCodeEnum.ENCRYPT_FAIL.getCode(),
-                "cipher's markHeader is {}", cipherTextHeader);
-        }
+        AssertUtils.notNull(cacheInfo, CryptoErrorCodeEnum.DECRYPT_FAIL, "unrecognized cipher header: ", cipherTextHeader);
         try {
             byte[] decryptData = dataCipher.decrypt(cacheInfo.dataKey, cacheInfo.dateIv, ByteSpecification.decodeToBytes(realCipherText));
             return new String(decryptData, CHAR_SET);
@@ -225,7 +221,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
         List<LocalCryptoMetaInfo> aesInfos;
         try {
             // get All aesInfo
-            aesInfos = aesInfoRepository.get(appId);
+            aesInfos = aesInfoRepository.queryAllByAppId(appId);
             if (CollectionUtils.isEmpty(aesInfos)) {
                 log.info("LocalCrypto-load fail for load nothing. Maybe this is the app first launch.");
                 return false;
@@ -236,7 +232,7 @@ public class DefaultLocalTextCipher implements JudgeAbleLocalTextCipher {
         }
         CacheManager.addToCacheMap(aesInfos);
         if (CacheManager.getAesInfoCache(ALGORITHM_HEADER) == null) {
-            log.info("LocalCrypto-load fail for not exist special markHeader. Maybe the algorithm has upgrade.");
+            log.info("LocalCrypto-load fail for not fund special markHeader({}). Maybe the algorithm has upgrade.", ALGORITHM_HEADER);
             return false;
         }
         log.info("LocalCrypto-load success!");

@@ -1,6 +1,8 @@
 package org.shoulder.crypto.negotiation.support.client;
 
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.ShoulderLoggers;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.negotiation.cache.NegotiationResultCache;
 import org.shoulder.crypto.negotiation.cache.TransportCipherHolder;
@@ -86,19 +88,17 @@ public class SensitiveResponseDecryptInterceptor implements ClientHttpRequestInt
         }
 
         // 确定为加密的响应拦截
-        // 1. 验证服务端签名
         try {
-            if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, NegotiationResultCache.CLIENT_LOCAL_CACHE.get().getPublicKey())) {
-                throw new RuntimeException("security token validate fail!");
-            }
+            // 1. 验证服务端签名
+            boolean goodToken = transportCryptoUtil.verifyToken(xSessionId, xDk, token, NegotiationResultCache.CLIENT_LOCAL_CACHE.get().getPublicKey());
+            AssertUtils.isTrue(goodToken, CommonErrorCodeEnum.AUTH_403_TOKEN_INVALID, "security token validate fail!");
 
             // 2. 获取本次请求真正的数据密钥
             NegotiationResult keyExchangeInfo = NegotiationResultCache.CLIENT_LOCAL_CACHE.get();
-            if (keyExchangeInfo == null) {
-                throw new IllegalStateException("keyExchangeInfo can't be null!");
-            }
+            AssertUtils.notNull(keyExchangeInfo, CommonErrorCodeEnum.ILLEGAL_STATUS, "keyExchangeInfo can't be null!");
             byte[] realDataKey = TransportCryptoUtil.decryptDk(keyExchangeInfo, xDk);
 
+            // 3. 根据数据密钥构建响应解密器
             TransportTextCipher responseDecryptCipher = DefaultTransportCipher.buildDecryptCipher(keyExchangeInfo, realDataKey);
             TransportCipherHolder.setResponseCipher(responseDecryptCipher);
 

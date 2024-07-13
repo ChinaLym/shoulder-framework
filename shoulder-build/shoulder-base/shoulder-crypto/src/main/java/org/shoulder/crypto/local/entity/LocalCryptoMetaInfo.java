@@ -1,5 +1,7 @@
 package org.shoulder.crypto.local.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,6 +10,7 @@ import java.util.Date;
  *
  * @author lym
  */
+@Data
 public class LocalCryptoMetaInfo implements Serializable {
 
     /**
@@ -40,65 +43,5 @@ public class LocalCryptoMetaInfo implements Serializable {
      */
     private Date createTime;
 
-    public LocalCryptoMetaInfo() {
-    }
-
-    public LocalCryptoMetaInfo(String appId, String dataKey, String rootKeyPart, String vector,
-                               String header, Date createTime) {
-        this.appId = appId;
-        this.dataKey = dataKey;
-        this.rootKeyPart = rootKeyPart;
-        this.vector = vector;
-        this.header = header;
-        this.createTime = createTime;
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public String getDataKey() {
-        return dataKey;
-    }
-
-    public void setDataKey(String dataKey) {
-        this.dataKey = dataKey;
-    }
-
-    public String getRootKeyPart() {
-        return rootKeyPart;
-    }
-
-    public void setRootKeyPart(String rootKeyPart) {
-        this.rootKeyPart = rootKeyPart;
-    }
-
-    public String getVector() {
-        return vector;
-    }
-
-    public void setVector(String vector) {
-        this.vector = vector;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getHeader() {
-        return header;
-    }
-
-    public void setHeader(String header) {
-        this.header = header;
-    }
 }
 

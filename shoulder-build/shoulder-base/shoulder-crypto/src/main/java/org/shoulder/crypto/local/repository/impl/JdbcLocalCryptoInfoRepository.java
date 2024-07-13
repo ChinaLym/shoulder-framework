@@ -93,7 +93,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
     }
 
     @Override
-    public LocalCryptoMetaInfo get(@Nonnull String appId, @Nonnull String markHeader) {
+    public LocalCryptoMetaInfo queryOneByAppIdAndHeader(@Nonnull String appId, @Nonnull String markHeader) {
         try {
             Object[] whereFields = new Object[]{appId, markHeader};
             return jdbcTemplate.queryForObject(selectSingleSql, rowMapper, whereFields);
@@ -105,7 +105,7 @@ public class JdbcLocalCryptoInfoRepository implements LocalCryptoInfoRepository 
 
     @Override
     @Nonnull
-    public List<LocalCryptoMetaInfo> get(@Nonnull String appId) {
+    public List<LocalCryptoMetaInfo> queryAllByAppId(@Nonnull String appId) {
         try {
             Object[] whereFields = new Object[]{appId};
             return jdbcTemplate.query(selectBatchSql, rowMapper, whereFields);
