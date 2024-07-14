@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
+import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.util.TransportCryptoByteUtil;
 import org.shoulder.crypto.symmetric.SymmetricAlgorithmEnum;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -120,7 +121,7 @@ public class CryptoProperties {
         /**
          * 密钥协商 url
          */
-        private EndpointProperties endpoint = new EndpointProperties(true, "/api/v1/crypto/negotiation");
+        private EndpointProperties endpoint = new EndpointProperties(true, NegotiationConstants.DEFAULT_NEGOTIATION_URL);
 
     }
 

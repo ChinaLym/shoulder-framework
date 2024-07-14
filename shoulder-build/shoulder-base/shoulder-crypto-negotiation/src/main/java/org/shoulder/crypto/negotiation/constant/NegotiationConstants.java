@@ -42,7 +42,7 @@ public class NegotiationConstants {
     /**
      * 默认的密钥协商接口
      */
-    public static final String DEFAULT_NEGOTIATION_URL = "/api/security/v1/negotiation";
+    public static final String DEFAULT_NEGOTIATION_URL = "/api/v1/crypto/negotiation";
 
 
 }
