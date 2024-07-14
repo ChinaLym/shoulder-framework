@@ -1,13 +1,13 @@
 package org.shoulder.crypto.negotiation.support.endpoint;
 
 import org.shoulder.core.dto.response.BaseResult;
-import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.shoulder.crypto.negotiation.support.dto.NegotiationRequest;
 import org.shoulder.crypto.negotiation.support.dto.NegotiationResponse;
 import org.shoulder.crypto.negotiation.support.service.TransportNegotiationService;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,10 +31,9 @@ public class NegotiationEndPoint {
      * @return 密钥协商结论
      * @throws NegotiationException 密钥交换失败
      */
-    @PostMapping(NegotiationConstants.DEFAULT_NEGOTIATION_URL)
+    @RequestMapping(value = "${shoulder.crypto.negotiation.endpoint.path:/api/v1/crypto/negotiation}", method = {RequestMethod.GET, RequestMethod.POST})
     public BaseResult<NegotiationResponse> handleNegotiate(@RequestBody NegotiationRequest negotiationRequest) throws NegotiationException {
         return BaseResult.success(negotiationService.handleNegotiate(negotiationRequest));
     }
-
 
 }

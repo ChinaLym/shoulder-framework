@@ -1,11 +1,16 @@
 package org.shoulder.autoconfigure.crypto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
+import org.shoulder.crypto.negotiation.util.TransportCryptoByteUtil;
+import org.shoulder.crypto.symmetric.SymmetricAlgorithmEnum;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 加密相关配置
@@ -26,6 +31,11 @@ public class CryptoProperties {
      * 对称加密相关配置
      */
     private LocalCryptoProperties local = new LocalCryptoProperties();
+
+    /**
+     * 密钥协商相关配置
+     */
+    private NegotiationProperties negotiation = new NegotiationProperties();
 
     /**
      * @deprecated 不支持也不推荐使用配置方式，推荐使用 @Bean 注入方式
@@ -77,22 +87,57 @@ public class CryptoProperties {
         /**
          * 公钥端点
          */
-        private EndpointProperties endpoint = new EndpointProperties();
+        private EndpointProperties endpoint = new EndpointProperties(true, "/api/v1/crypto/publicKey/default");
 
-        @Data
-        static class EndpointProperties {
-
-            /**
-             * 是否启用
-             */
-            private Boolean enable = Boolean.TRUE;
-
-            /**
-             * 获取公钥 api 路径
-             */
-            private String path = "/api/v1/crypto/publicKey/default";
-
-        }
     }
 
+    @Data
+    public static class NegotiationProperties {
+
+        /**
+         * 是否启用
+         */
+        private Boolean enable = true;
+
+        /**
+         * 算法实现
+         */
+        private String transformation = "ECIES";
+
+        /**
+         * 协商支持的算法的算法（数据密钥），如 AES、DES、SM4
+         *
+         * @see TransportCryptoByteUtil#SUPPORT_ENCRYPTION_SCHEMES
+         * @see SymmetricAlgorithmEnum#getAlgorithmName
+         */
+        private Set<String> supportEncryptionSchemes = Set.of(SymmetricAlgorithmEnum.AES_CBC_PKCS5Padding.getAlgorithmName());
+
+        /**
+         * 数据密钥长度
+         */
+//        private List<Integer> supportKeyByteLength = ListUtil.of(16, 16, 24, 32);
+
+        /**
+         * 密钥协商 url
+         */
+        private EndpointProperties endpoint = new EndpointProperties(true, "/api/v1/crypto/negotiation");
+
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class EndpointProperties {
+
+        /**
+         * 是否启用
+         */
+        private Boolean enable;
+
+        /**
+         * 获取公钥 api 路径
+         */
+        private String path;
+
+    }
 }

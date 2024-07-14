@@ -38,7 +38,7 @@ public class CryptoEndpoint {
      *
      * @return 返回公钥
      */
-    @RequestMapping(value = "${shoulder.crypto.asymmetric.endpoint.path:/api/v1/crypto/publicKey}", method = RequestMethod.GET)
+    @RequestMapping(value = "${shoulder.crypto.asymmetric.endpoint.path:/api/v1/crypto/publicKey}", method = {RequestMethod.GET, RequestMethod.POST})
     public String getPublicKey(@RequestParam(required = false) String keyPairId) throws KeyPairException {
         if(StringUtils.isBlank(keyPairId)) {
             // 不传使用默认的

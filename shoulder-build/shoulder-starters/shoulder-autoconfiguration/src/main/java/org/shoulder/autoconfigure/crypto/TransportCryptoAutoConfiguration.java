@@ -22,11 +22,14 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Optional;
 
 /**
  * 传输加密自动配置
@@ -35,15 +38,17 @@ import org.springframework.web.client.RestTemplate;
  */
 @AutoConfiguration(after = {LocalCryptoAutoConfiguration.class, HttpAutoConfiguration.class})
 @ConditionalOnClass(TransportNegotiationService.class)
-@ConditionalOnProperty(value = "shoulder.crypto.transport.enable", havingValue = "true", matchIfMissing = true)
+@EnableConfigurationProperties(CryptoProperties.class)
+@ConditionalOnProperty(value = "shoulder.crypto.negotiation.enable", havingValue = "true", matchIfMissing = true)
 public class TransportCryptoAutoConfiguration {
 
     private static final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
-    public TransportCryptoAutoConfiguration() {
-        // just for debug
-    }
+    private final CryptoProperties cryptoProperties;
 
+    public TransportCryptoAutoConfiguration(CryptoProperties cryptoProperties) {
+        this.cryptoProperties = cryptoProperties;
+    }
 
     /**
      * 密钥协商工具，封装密钥协商相关基本方法单元
@@ -54,8 +59,13 @@ public class TransportCryptoAutoConfiguration {
     @ConditionalOnMissingBean
     public TransportCryptoUtil transportCryptoUtil(AsymmetricCipher delegate) {
         TransportCryptoByteUtil util = new TransportCryptoByteUtil(new DelegateNegotiationAsymmetricCipher(delegate));
-        // TODO P2 【可配置】支持通过配置设置
-        //        TransportCryptoByteUtil.setSupportEncryptionSchemes();
+
+        // 设置支持的加密算法
+        Optional.ofNullable(cryptoProperties)
+                .map(CryptoProperties::getNegotiation)
+                .map(CryptoProperties.NegotiationProperties::getSupportEncryptionSchemes)
+                .ifPresent(TransportCryptoByteUtil::setSupportEncryptionSchemes);
+
         return new TransportCryptoUtil(util);
     }
 
@@ -104,7 +114,7 @@ public class TransportCryptoAutoConfiguration {
      * 密钥协商默认端点
      */
     @Bean
-    @ConditionalOnProperty(value = "shoulder.crypto.negotiation.default-endpoint.enable", matchIfMissing = true)
+    @ConditionalOnProperty(value = "shoulder.crypto.negotiation.endpoint.enable", matchIfMissing = true)
     public NegotiationEndPoint negotiationEndPoint(TransportNegotiationService negotiationService) {
         return new NegotiationEndPoint(negotiationService);
     }

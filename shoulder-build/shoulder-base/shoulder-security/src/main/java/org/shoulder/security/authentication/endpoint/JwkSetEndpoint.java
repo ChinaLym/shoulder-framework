@@ -1,9 +1,8 @@
 package org.shoulder.security.authentication.endpoint;
 
 import com.nimbusds.jose.jwk.JWKSet;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -22,7 +21,7 @@ import java.util.Map;
  *
  * @author lym
  */
-@Controller
+@RestController
 public class JwkSetEndpoint {
 
     /**
@@ -33,7 +32,7 @@ public class JwkSetEndpoint {
     /**
      * keyPairId，默认只有一个，可以存在多个
      */
-    private JWKSet jwkSet;
+    private final JWKSet jwkSet;
 
     public JwkSetEndpoint(JWKSet jwkSet) {
         this.jwkSet = jwkSet;
@@ -43,7 +42,6 @@ public class JwkSetEndpoint {
      * 查看接口返回结果 http://localhost:8080/.well-known/jwks.json
      */
     @GetMapping(PUBLIC_KEY_END_POINT)
-    @ResponseBody
     public Map<String, Object> getKey() {
         return jwkSet.toJSONObject();
     }
