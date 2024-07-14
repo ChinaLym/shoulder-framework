@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * api 用于保护 api 不被意外调用 —— 所有调用 api 接口的方法必须携带特定格式 token
+ * 用于避免接口被意外调用 —— 所有调用 api 接口的方法必须携带特定格式 token
  * 适用于基于 Session 的 web 应用，检验是否存在合法 Token
  * 基于JWT的服务不必装配该拦截器，校验 JWT 即可
  *

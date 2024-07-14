@@ -1,5 +1,6 @@
 package org.shoulder.http;
 
+import javax.annotation.Nonnull;
 import java.net.URI;
 
 /**
@@ -16,6 +17,7 @@ public class ShoulderDslAppIdExtractor implements AppIdExtractor {
      * @return 应用标识，如 order
      * 如果不是 shoulder dsl 形式，则返回 host, 如 http://order/hello 则返回 order
      */
+    @Nonnull
     @Override
     public String extract(URI uri) {
         return uri.getHost();

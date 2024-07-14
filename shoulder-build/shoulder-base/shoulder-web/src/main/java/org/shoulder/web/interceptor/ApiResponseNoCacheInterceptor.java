@@ -4,10 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Nonnull;
 import java.lang.invoke.MethodHandle;
 
 /**
- * 阻止浏览器缓存接口返回值【适用于非查询类的管理 web 应用，达到展示实时数据的效果，默认不生效，用户想用则自行注入该类】
+ * 阻止浏览器缓存接口返回值
+ * 适用于非查询类的管理 web 应用，达到展示实时数据的效果。
  *
  * @author lym
  */
@@ -17,7 +19,7 @@ public class ApiResponseNoCacheInterceptor implements HandlerInterceptor {
      * 抛异常也要执行，因为异常返回值也不能缓存
      */
     @Override
-    public void afterCompletion(HttpServletRequest req, HttpServletResponse resp, Object handler, Exception e) {
+    public void afterCompletion(@Nonnull HttpServletRequest req, @Nonnull HttpServletResponse resp, @Nonnull Object handler, Exception e) {
         if (handler instanceof MethodHandle) {
             addNoCacheResponseHeaders(resp);
         }

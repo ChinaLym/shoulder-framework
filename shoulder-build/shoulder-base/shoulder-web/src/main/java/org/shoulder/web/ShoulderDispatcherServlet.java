@@ -10,6 +10,7 @@ import org.springframework.context.i18n.TimeZoneAwareLocaleContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import java.io.Serial;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -22,6 +23,7 @@ import java.util.TimeZone;
  */
 public class ShoulderDispatcherServlet extends DispatcherServlet {
 
+    @Serial
     private static final long serialVersionUID = -8413315383105362540L;
 
     public ShoulderDispatcherServlet() {

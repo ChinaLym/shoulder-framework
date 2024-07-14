@@ -29,8 +29,6 @@ import java.io.InputStreamReader;
  */
 public abstract class BaseRestTemplateLogInterceptor implements ClientHttpRequestInterceptor, Ordered {
 
-    protected static final boolean LOG_TILL_RESPONSE_DEFAULT = true;
-
     public static final int DEFAULT_ORDER = Ordered.HIGHEST_PRECEDENCE + 10;
 
     /**
@@ -39,10 +37,6 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
      * tip:若请求过慢可能导致日志迟迟不打印
      */
     private final boolean logTillResponse;
-
-    public BaseRestTemplateLogInterceptor() {
-        this(LOG_TILL_RESPONSE_DEFAULT);
-    }
 
     public BaseRestTemplateLogInterceptor(boolean logTillResponse) {
         this.logTillResponse = logTillResponse;
@@ -75,7 +69,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
         String bodyStr = needLogBody ? readBody(response) : "response.Content-Type not readable, " +
             "default support 'json/xml/plain' only";
 
-        record.setCostTime(stopWatch.getLastTaskTimeMillis())
+        record.setCostTime(stopWatch.lastTaskInfo().getTimeMillis())
             .setStatusCode(response.getStatusCode().value())
             .setStatusText(response.getStatusText())
             .setResponseHeaders(response.getHeaders())
@@ -117,6 +111,7 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
      *
      * @param record 本次请求详情
      */
+    @SuppressWarnings("unused")
     protected void logRequest(RestRequestRecord record) {
         // 一般接口调用都是打在一起的，故不需要实现
     }
@@ -145,7 +140,6 @@ public abstract class BaseRestTemplateLogInterceptor implements ClientHttpReques
     @Data
     @Builder
     @Accessors(chain = true)
-    @SuppressWarnings("rawtypes")
     protected static class RestRequestRecord {
         private String method;
         private String url;
