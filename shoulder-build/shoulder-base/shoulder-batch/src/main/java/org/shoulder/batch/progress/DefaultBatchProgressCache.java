@@ -3,8 +3,8 @@ package org.shoulder.batch.progress;
 import org.shoulder.core.concurrent.Threads;
 import org.springframework.cache.Cache;
 
+import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -126,7 +126,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
             String id = batchProgressRecord.getId();
             if (!batchProgressRecord.hasFinish()) {
                 // 未处理完毕，仍需要执行这个任务
-                Threads.delay(genFlushProgressTask(progressHolder), 1, TimeUnit.SECONDS);
+                Threads.delay(genFlushProgressTask(progressHolder), Duration.ofSeconds(1));
             } else {
                 progressHolder.onFinished(id, progressHolder);
             }
@@ -145,7 +145,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
             String id = batchProgress.getId();
             if (!batchProgress.hasFinish()) {
                 // 未处理完毕，仍需要执行这个任务
-                Threads.delay(genFlushProgressTask(batchProgress), 1, TimeUnit.SECONDS);
+                Threads.delay(genFlushProgressTask(batchProgress), Duration.ofSeconds(1));
             }
             progressCache.put(id, batchProgress);
         };

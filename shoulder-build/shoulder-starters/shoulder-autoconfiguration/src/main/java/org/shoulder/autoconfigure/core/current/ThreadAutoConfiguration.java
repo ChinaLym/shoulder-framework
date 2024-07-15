@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -28,10 +29,25 @@ public class ThreadAutoConfiguration {
         // 默认使用 5 个线程，非守护线程
         ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 5,
                 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3000),
-                new CustomizableThreadFactory("shoulder"));
-        // 提前设置，方便使用
+                new CustomizableThreadFactory("sd-executor-"));
+        // 提前设置，方便在启动时使用
         Threads.setExecutorService(executor);
+        // 异步预热
+        executor.execute(executor::prestartAllCoreThreads);
         return executor;
+    }
+
+    @Bean(Threads.SHOULDER_TASK_SCHEDULER)
+    @ConditionalOnMissingBean(name = Threads.SHOULDER_TASK_SCHEDULER)
+    public ThreadPoolTaskScheduler shoulderTaskScheduler() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setThreadNamePrefix("sd-scheduler-");
+        scheduler.setThreadFactory(new CustomizableThreadFactory("sd-scheduler-"));
+        scheduler.setRejectedExecutionHandler(new Threads.Abort());
+        scheduler.initialize();
+        // 提前设置，方便在启动时使用
+        Threads.setTaskScheduler(scheduler);
+        return scheduler;
     }
 
 
@@ -40,7 +56,10 @@ public class ThreadAutoConfiguration {
      */
     @Bean
     public ApplicationListener<ContextRefreshedEvent> shoulderThreadsUtilPostProcessor() {
-        return event -> Threads.setExecutorService(ContextUtils.getBean(Threads.SHOULDER_THREAD_POOL_NAME));
+        return event -> {
+            Threads.setExecutorService(ContextUtils.getBean(Threads.SHOULDER_THREAD_POOL_NAME));
+            Threads.setDelayTaskHolder(ContextUtils.getBean(Threads.SHOULDER_TASK_SCHEDULER));
+        };
     }
 
 }

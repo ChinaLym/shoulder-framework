@@ -1,6 +1,5 @@
 package org.shoulder.core.concurrent;
 
-import org.shoulder.core.concurrent.delay.DelayTask;
 import org.shoulder.core.concurrent.delay.DelayTaskHolder;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
@@ -12,20 +11,11 @@ import org.springframework.lang.NonNull;
 import org.springframework.scheduling.TaskScheduler;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 线程工具类
@@ -58,66 +48,37 @@ public class Threads {
      */
     private static volatile TaskScheduler TASK_SCHEDULER;
 
-    /**
-     * 延迟任务存放者
-     */
-    private static DelayTaskHolder DELAY_TASK_HOLDER;
-
-
     public static synchronized void setExecutorService(ExecutorService executorService) {
         Threads.EXECUTOR_SERVICE = executorService;
-        log.info("Threads' THREAD_POOL has changed to " + executorService);
+        log.debug("Threads' THREAD_POOL has changed to " + executorService);
     }
 
-    private static void setTaskScheduler(TaskScheduler taskScheduler) {
+    public static void setTaskScheduler(TaskScheduler taskScheduler) {
         Threads.TASK_SCHEDULER = taskScheduler;
-        log.info("Threads' TASK_SCHEDULER has changed to " + taskScheduler);
+        log.debug("Threads' TASK_SCHEDULER has changed to " + taskScheduler);
     }
 
     public static synchronized void setDelayTaskHolder(DelayTaskHolder delayTaskHolder) {
-        Threads.DELAY_TASK_HOLDER = delayTaskHolder;
-        log.info("Threads' DELAY_TASK_HOLDER has changed to " + delayTaskHolder);
-    }
-
-    /**
-     * 使用该方法包装线程类，将自动将线程放入延迟队列并延时执行，适合非强可靠的任务，重启会丢失
-     *
-     * @param runnable 要延时执行的事情
-     * @param time     延时时间
-     * @param unit     time 的单位
-     * @see #delay(Runnable, Duration) 推荐使用 jdk8 的时间
-     */
-    public static void delay(Runnable runnable, long time, TimeUnit unit) {
-        DelayTask task = new DelayTask(runnable, time, unit);
-        delay(task);
+//        Threads.DELAY_TASK_HOLDER = delayTaskHolder;
+        log.debug("Threads' DELAY_TASK_HOLDER has changed to " + delayTaskHolder);
     }
 
     /**
      * 使用该方法包装线程类，将自动将线程放入延迟队列并延时执行
+     * 适合刷缓存等非强可靠的任务，重启会丢失
      *
      * @param runnable  要延时执行的事情
      * @param delayTime 延时时间
      */
     public static void delay(Runnable runnable, Duration delayTime) {
-        DelayTask task = new DelayTask(runnable, delayTime);
-        delay(task);
-    }
-
-    /**
-     * 使用该方法包装线程类，将自动将线程放入延迟队列并延时执行
-     *
-     * @param delayTask 要延时执行的任务
-     */
-    public static void delay(DelayTask delayTask) {
-        if (DELAY_TASK_HOLDER == null) {
-            throw new IllegalStateException("You must setDelayTaskHolder first.");
-        }
+        ensureInit();
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "delay", true);
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
-            log.debug("{} creat delay task will run in {}ms", callerName, delayTask.getDelay(TimeUnit.MILLISECONDS));
+            log.debug("{} creat delay task will run in {}ms", callerName, delayTime.toMillis());
         }
-        DELAY_TASK_HOLDER.put(delayTask);
+        // 执行时放在 EXECUTOR_SERVICE 执行，避免阻塞调度
+        TASK_SCHEDULER.schedule(() -> EXECUTOR_SERVICE.execute(runnable), Instant.now().plus(delayTime));
     }
 
     /**
@@ -144,7 +105,7 @@ public class Threads {
 
     private static void ensureInit() {
         // 是否去掉 null 判断，这里应该认为一定不为空
-        if (EXECUTOR_SERVICE == null) {
+        if (EXECUTOR_SERVICE == null || TASK_SCHEDULER == null) {
             synchronized (Threads.class) {
                 if (EXECUTOR_SERVICE == null) {
                     boolean containsBean = ContextUtils.containsBean(SHOULDER_THREAD_POOL_NAME);
@@ -283,7 +244,7 @@ public class Threads {
     }
 
     /**
-     * 阻塞调用者策略
+     * 阻塞调用者（一定时间） + 日志
      */
     public static class Block implements RejectedExecutionHandler {
 
