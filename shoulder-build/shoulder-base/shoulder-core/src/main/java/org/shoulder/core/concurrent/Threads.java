@@ -2,16 +2,30 @@ package org.shoulder.core.concurrent;
 
 import org.shoulder.core.concurrent.delay.DelayTask;
 import org.shoulder.core.concurrent.delay.DelayTaskHolder;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.log.beautify.LogHelper;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.springframework.lang.NonNull;
+import org.springframework.scheduling.TaskScheduler;
 
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.Optional;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 线程工具类
@@ -25,15 +39,24 @@ public class Threads {
     private static final Logger log = ShoulderLoggers.SHOULDER_THREADS;
 
     /**
-     * shoulder 通用线程池名称
+     * shoulder 通用线程池 bean 名称
      */
     public final static String SHOULDER_THREAD_POOL_NAME = "shoulderThreadPool";
 
     /**
-     * 通用线程池
-     * todo P0 使用带调度的线程池方便刷进度等定时调度的任务！ 0.8
+     * Shoulder 通用调度器 bean 名称
      */
-    private static volatile ExecutorService SHOULDER_THREAD_POOL;
+    public final static String SHOULDER_TASK_SCHEDULER = "shoulderTaskScheduler";
+
+    /**
+     * 执行任务线程池
+     */
+    private static volatile ExecutorService EXECUTOR_SERVICE;
+
+    /**
+     * 县城调度器：主要做延迟执行等任务
+     */
+    private static volatile TaskScheduler TASK_SCHEDULER;
 
     /**
      * 延迟任务存放者
@@ -42,8 +65,13 @@ public class Threads {
 
 
     public static synchronized void setExecutorService(ExecutorService executorService) {
-        Threads.SHOULDER_THREAD_POOL = executorService;
-        log.info("Threads' DEFAULT_THREAD_POOL has changed to " + executorService);
+        Threads.EXECUTOR_SERVICE = executorService;
+        log.info("Threads' THREAD_POOL has changed to " + executorService);
+    }
+
+    private static void setTaskScheduler(TaskScheduler taskScheduler) {
+        Threads.TASK_SCHEDULER = taskScheduler;
+        log.info("Threads' TASK_SCHEDULER has changed to " + taskScheduler);
     }
 
     public static synchronized void setDelayTaskHolder(DelayTaskHolder delayTaskHolder) {
@@ -100,15 +128,15 @@ public class Threads {
     public static void execute(Runnable runnable) {
         ensureInit();
         debugLog("execute");
-        SHOULDER_THREAD_POOL.execute(runnable);
+        EXECUTOR_SERVICE.execute(runnable);
     }
 
     private static void debugLog(String methodName) {
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, methodName, true);
-//            if(caller!= null && caller.getClassName().startsWith("java")) {
-//                caller = LogHelper.findStackTraceElement(Threads.class, "executeAndWait", true);
-//            }
+            //            if(caller!= null && caller.getClassName().startsWith("java")) {
+            //                caller = LogHelper.findStackTraceElement(Threads.class, "executeAndWait", true);
+            //            }
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
             log.debug("{} create new Thread.", callerName);
         }
@@ -116,20 +144,38 @@ public class Threads {
 
     private static void ensureInit() {
         // 是否去掉 null 判断，这里应该认为一定不为空
-        if (SHOULDER_THREAD_POOL == null) {
+        if (EXECUTOR_SERVICE == null) {
             synchronized (Threads.class) {
-                if (SHOULDER_THREAD_POOL == null) {
-                    log.warn("not set threadPool fall back: use bean named '{}' in context.", SHOULDER_THREAD_POOL_NAME);
-                    Object threadPoolBean = ContextUtils.getBean(SHOULDER_THREAD_POOL_NAME);
-                    if (threadPoolBean instanceof ExecutorService) {
-                        setExecutorService((ExecutorService) threadPoolBean);
-                    } else {
-                        throw new IllegalStateException("Need invoke setExecutorService first!");
-                    }
+                if (EXECUTOR_SERVICE == null) {
+                    boolean containsBean = ContextUtils.containsBean(SHOULDER_THREAD_POOL_NAME);
+                    AssertUtils.isTrue(containsBean, CommonErrorCodeEnum.CODING,
+                        "Need invoke setExecutorService first! no fallback threadPool named " + SHOULDER_THREAD_POOL_NAME);
+
+                    Object threadPoolBean = ContextUtils.getBeanOrNull(SHOULDER_THREAD_POOL_NAME);
+                    AssertUtils.isTrue(threadPoolBean instanceof ExecutorService, CommonErrorCodeEnum.CODING,
+                        "Need invoke setExecutorService first! Error fallback threadPool.class="
+                        + Optional.ofNullable(threadPoolBean).map(Object::getClass).map(Class::getName).orElse(null));
+
+                    log.warn("not set threadPool fall back: try use bean named '{}' in context.", SHOULDER_THREAD_POOL_NAME);
+                    setExecutorService((ExecutorService) threadPoolBean);
+                }
+                if (TASK_SCHEDULER == null) {
+                    boolean containsBean = ContextUtils.containsBean(SHOULDER_TASK_SCHEDULER);
+                    AssertUtils.isTrue(containsBean, CommonErrorCodeEnum.CODING,
+                        "Need invoke setTaskScheduler first! no fallback taskScheduler named " + SHOULDER_TASK_SCHEDULER);
+
+                    Object taskScheduler = ContextUtils.getBeanOrNull(SHOULDER_TASK_SCHEDULER);
+                    AssertUtils.isTrue(taskScheduler instanceof TaskScheduler, CommonErrorCodeEnum.CODING,
+                        "Need invoke setTaskScheduler first! Error fallback taskScheduler.class="
+                        + Optional.ofNullable(taskScheduler).map(Object::getClass).map(Class::getName).orElse(null));
+
+                    log.warn("not set threadPool fall back: try use bean named '{}' in context.", SHOULDER_TASK_SCHEDULER);
+                    setTaskScheduler((TaskScheduler) taskScheduler);
                 }
             }
         }
     }
+
 
     /**
      * 提交线程池内一批任务，且阻塞至所有的任务执行完毕
@@ -140,17 +186,16 @@ public class Threads {
      * @throws InterruptedException executeAndWait
      */
     public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout)
-            throws InterruptedException {
+        throws InterruptedException {
         ensureInit();
         debugLog("executeAndWait");
         CountDownLatch latch = new CountDownLatch(tasks.size());
         List<Callable<Object>> callList = tasks.stream().map(runnable -> new NotifyOnFinishRunnable(runnable, latch::countDown))
-                .map(Executors::callable)
-                .toList();
-        SHOULDER_THREAD_POOL.invokeAll(callList, timeout.toNanos(), TimeUnit.NANOSECONDS);
+            .map(Executors::callable)
+            .toList();
+        EXECUTOR_SERVICE.invokeAll(callList, timeout.toNanos(), TimeUnit.NANOSECONDS);
         return latch.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
-
 
     /**
      * 放入线程池执行
@@ -159,7 +204,7 @@ public class Threads {
      * @return 当前任务执行的 Future
      */
     public static <T> Future<T> submit(Callable<T> callable) {
-        if (SHOULDER_THREAD_POOL == null) {
+        if (EXECUTOR_SERVICE == null) {
             throw new IllegalStateException("You must setExecutorService first.");
         }
         if (log.isDebugEnabled()) {
@@ -167,18 +212,17 @@ public class Threads {
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
             log.debug("{} submit a new callable.", callerName);
         }
-        return SHOULDER_THREAD_POOL.submit(callable);
+        return EXECUTOR_SERVICE.submit(callable);
     }
 
-
     public static void shutDown() {
-        if (SHOULDER_THREAD_POOL == null) {
+        if (EXECUTOR_SERVICE == null) {
             log.info("no threadPool need shutdown.");
             return;
         }
         log.debug("prepare shutdown");
         try {
-            SHOULDER_THREAD_POOL.shutdown();
+            EXECUTOR_SERVICE.shutdown();
         } catch (Exception e) {
             // on shutDown 钩子可能抛异常
             log.error("shutdown FAIL! - ", e);
@@ -187,7 +231,6 @@ public class Threads {
     }
 
     // ------------------------ Shoulder 的线程池拒绝策略 ------------------------
-
 
     /**
      * 修复了 jdk 使用 FutureTask 可能一直阻塞的 bug {@link ThreadPoolExecutor.DiscardPolicy}
@@ -204,7 +247,7 @@ public class Threads {
                 }
             }
             log.warn("Discard for the executor's queue is full. Task({}), Executor({})", r.toString(),
-                    executor);
+                executor);
         }
     }
 
@@ -223,7 +266,7 @@ public class Threads {
                 }
             }
             log.warn("Discard for the executor's queue is full. Task({}), Executor({})", r.toString(),
-                    executor);
+                executor);
         }
     }
 
@@ -235,10 +278,9 @@ public class Threads {
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
             throw new RejectedExecutionException("Discard for the executor's queue is full. " +
-                    "Task(" + r.toString() + "), Executor({" + executor.toString() + "})");
+                                                 "Task(" + r.toString() + "), Executor({" + executor.toString() + "})");
         }
     }
-
 
     /**
      * 阻塞调用者策略

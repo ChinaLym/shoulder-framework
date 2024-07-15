@@ -115,7 +115,7 @@
   - 更新依赖版本
   - 更新发行版本号
   - 本地构建、测试
-  - CHANGELOG、README 修订或使用工具 (TODO 优化:后续规范commit信息, 根据 commit 自动生成)
+  - CHANGELOG、README 修订或使用工具
 
 - **发布**
   - 推送到`Maven Central`，提交至代码库（git）并触发 CI flow

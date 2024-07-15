@@ -1,0 +1,28 @@
+# 改进列表
+
+将可选改进罗列，仅用于记录想法。
+
+- - -
+
+## 安全
+
+
+### 可选优化
+
+- - -
+
+## 功能
+
+### 可选优化
+
+
+#### autoconfiguration
+
+* 【操作日志】SpringSecurityOperatorInfoInterceptor 新增支持解析 UserAgent
+
+
+
+### 已关闭
+
+* 【操作日志】考虑记录请求 url？
+** 已添加扩展字段，由使用者自行判断是否需要记录

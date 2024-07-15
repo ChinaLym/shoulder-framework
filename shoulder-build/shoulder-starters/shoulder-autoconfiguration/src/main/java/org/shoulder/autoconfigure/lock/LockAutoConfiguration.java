@@ -73,7 +73,9 @@ public class LockAutoConfiguration {
             if (useJdbcLock && jdbcLock != null) {
                 jdbcLock.cleanExpiredLock();
             }
+
         }
+
     }
 
 

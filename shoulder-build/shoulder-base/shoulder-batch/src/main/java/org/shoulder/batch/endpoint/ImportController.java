@@ -118,7 +118,7 @@ public class ImportController implements ImportRestfulApi {
     @OperationLog(operation = Operations.UPLOAD_AND_VALIDATE)
     public BaseResult<String> validate(String businessType, MultipartFile file,
                                        String encoding) throws Exception {
-        // todo 【进阶】文件 > 10M Error; > 1M persistent and validate; > 100kb;
+        // todo P2 功能增强 文件 > 10M Error; > 1M persistent and validate; > 100kb;
         // 暂时只支持 csv
         AssertUtils.isTrue(file.getOriginalFilename().endsWith(".csv"), BatchErrorCodeEnum.CSV_HEADER_ERROR);
 

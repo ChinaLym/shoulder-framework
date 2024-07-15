@@ -40,7 +40,6 @@ public class AppContext {
      * @param userId 用户标识
      */
     public static void setUserId(Serializable userId) {
-        // todo P2 getUserId
         log.trace("setUserId ({})", userId);
         set(ShoulderContextKey.USER_ID, userId);
     }
