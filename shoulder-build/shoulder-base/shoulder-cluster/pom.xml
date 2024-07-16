@@ -11,6 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>shoulder-cluster</artifactId>
+    <name>${project.artifactId}</name>
     <description>
         Shoulder 面向集群/分布式部署模式的应用，提供了一些企业级解决方案，如分布式锁、全局 id、分布式 Session。
     </description>

@@ -10,6 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <artifactId>shoulder-parent</artifactId>
+    <name>${project.artifactId}</name>
+    <description>
+        Shoulder 工程的父模块，包含了默认组件的版本管理以及构建插件的默认设置。
+    </description>
 
     <properties>
         <java.version>17</java.version>
@@ -74,6 +78,11 @@
         <url>git@github.com:ChinaLym/shoulder-framework.git</url>
     </scm>
 
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/ChinaLym/shoulder-framework/issues</url>
+    </issueManagement>
+
     <url>https://github.com/ChinaLym/shoulder-framework</url>
 
     <!--开源许可协议采用 Apache 2.0 协议-->
@@ -126,6 +135,8 @@
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
+                        <!-- 编译时打印告警，方便排查问题 -->
+                        <compilerArgument>-Xlint:unchecked</compilerArgument>
                         <compilerArgs>
                             <!--                                                    <arg>-XDcompilePolicy=simple</arg>-->
                             <!--                                                    <arg>-Xplugin:ErrorProne</arg>-->
@@ -406,7 +417,14 @@
                     <version>${maven-jar-plugin.version}</version>
                     <configuration>
                         <archive>
+                            <index>true</index>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
                             <manifestEntries>
+                                <Build-OS>${os.name}</Build-OS>
+                                <Build-Jdk>${java.version}</Build-Jdk>
+                                <Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
                                 <Implementation-Title>${project.artifactId}</Implementation-Title>
                                 <Implementation-Version>${project.version}</Implementation-Version>
                                 <Implementation-Vendor-Id>org.shoulder</Implementation-Vendor-Id>

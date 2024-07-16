@@ -11,6 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>shoulder-monitor</artifactId>
+    <name>${project.artifactId}</name>
     <description>
         Shoulder 基础模块-监控能力，面向生产环境部署的应用，整合 Micrometer 提供运行监控能力，可与 Prometheus 轻易监控
         Spring Boot 应用中线程池全面信息。

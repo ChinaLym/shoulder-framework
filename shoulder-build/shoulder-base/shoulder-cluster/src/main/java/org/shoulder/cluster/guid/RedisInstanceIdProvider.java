@@ -111,24 +111,6 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
         return result;
     }
 
-    private void releaseInstanceId() {
-        alreadyStop = true;
-        final String luaScript =
-                """
-                        redis.call('hdel', KEYS[1], ARGV[1]);
-                        return 1;
-                        """;
-        RedisScript<Long> releaseInstanceIdScript = new DefaultRedisScript<>(luaScript, Long.class);
-
-        long result = (long) redis.execute(releaseInstanceIdScript, List.of(idAssignCacheKey), super.getCurrentInstanceId());
-        if (result == 1) {
-            log.debug("releaseInstanceId SUCCESS.");
-            instanceId = ILLEGAL;
-        } else {
-            log.debug("releaseInstanceId FAIL: idAssignCacheName={}, instanceId={}", idAssignCacheKey, super.getCurrentInstanceId());
-        }
-    }
-
     @Override
     public void onApplicationEvent(@Nonnull ContextRefreshedEvent event) {
         PeriodicTask hearBeatTask = new PeriodicTask() {
@@ -170,4 +152,23 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
     public void destroy() {
         releaseInstanceId();
     }
+
+    private void releaseInstanceId() {
+        alreadyStop = true;
+        final String luaScript =
+                """
+                        redis.call('hdel', KEYS[1], ARGV[1]);
+                        return 1;
+                        """;
+        RedisScript<Long> releaseInstanceIdScript = new DefaultRedisScript<>(luaScript, Long.class);
+
+        long result = (long) redis.execute(releaseInstanceIdScript, List.of(idAssignCacheKey), super.getCurrentInstanceId());
+        if (result == 1) {
+            log.debug("releaseInstanceId SUCCESS.");
+            instanceId = ILLEGAL;
+        } else {
+            log.debug("releaseInstanceId FAIL: idAssignCacheName={}, instanceId={}", idAssignCacheKey, super.getCurrentInstanceId());
+        }
+    }
+
 }

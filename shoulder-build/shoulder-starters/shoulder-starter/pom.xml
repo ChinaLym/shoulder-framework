@@ -11,6 +11,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>shoulder-starter</artifactId>
+    <name>${project.artifactId}</name>
+    <description>
+        Shoulder 开箱即用的依赖包，引入了 shoulder-core 与 shoulder-autoconfiguration。
+    </description>
 
     <dependencies>
         <dependency>

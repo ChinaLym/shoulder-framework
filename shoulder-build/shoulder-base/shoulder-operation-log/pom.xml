@@ -11,6 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>shoulder-operation-log</artifactId>
+    <name>${project.artifactId}</name>
     <description>
         Shoulder 基础模块，围绕操作日志设计了可扩展记录框架，包含 AOP、异步化、跨线程、批处理、输出格式可定制、输出源可扩展、过程可监听的灵活实现。
     </description>

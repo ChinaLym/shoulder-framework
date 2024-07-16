@@ -9,6 +9,12 @@
         <version>1.0.0-PRE-SNPASHOT</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
+    <artifactId>shoulder-core</artifactId>
+    <name>${project.artifactId}</name>
+    <description>
+        shoulder 核心模块，提供了错误码、异常处理、日志、字典、锁、统一上下文、提供了常用并发、数据处理工具。
+    </description>
+
 
     <dependencies>
 
@@ -138,13 +144,6 @@
         </dependency>
 
     </dependencies>
-    <name>shoulder-core</name>
-    <artifactId>shoulder-core</artifactId>
-
-    <description>
-        shoulder 核心模块，提供了 shoulder 规范标准 Java 类（如错误码，异常，日志，统一 REST 返回值），提供了常用工具
-    </description>
-
 
     <build>
         <plugins>

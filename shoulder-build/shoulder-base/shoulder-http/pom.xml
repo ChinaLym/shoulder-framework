@@ -11,8 +11,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>shoulder-http</artifactId>
+    <name>${project.artifactId}</name>
     <description>
-        Shoulder 基础模块-Http，非常轻量的一个模块，含几十行核心代码，在 Spring RestTemplate 基础上实现了AOP日志、异常处理、统一响应解析能力。
+        Shoulder 提供的 Http 通信模块，几十行核心代码，在 Spring RestTemplate 基础上实现了AOP日志、异常处理、统一响应解析能力。
     </description>
 
     <dependencies>

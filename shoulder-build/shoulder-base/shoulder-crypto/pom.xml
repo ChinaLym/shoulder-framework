@@ -10,10 +10,10 @@
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
 
-    <name>shoulder-crypto</name>
     <artifactId>shoulder-crypto</artifactId>
+    <name>${project.artifactId}</name>
     <description>
-        Shoulder 基础模块，提供了核心的加解密能力，如AES、RSA、ECC、MD5、SHA等先进安全算法，并额外实现绝密级别的加密算法。
+        Shoulder 提供的 加密模块，提供了 AES、RSA、ECC、MD5、SHA 等先进安全算法，并额外实现绝密级别的本地加密算法。
     </description>
 
     <dependencies>

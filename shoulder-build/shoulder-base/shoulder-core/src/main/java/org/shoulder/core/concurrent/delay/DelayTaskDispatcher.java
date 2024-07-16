@@ -1,5 +1,6 @@
 package org.shoulder.core.concurrent.delay;
 
+import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.ShoulderLoggers;
 
@@ -8,8 +9,11 @@ import java.util.concurrent.Executors;
 
 /**
  * 延迟任务能力的默认实现
+ *
  * 延时任务调度器，负责从 {@link DelayTaskHolder} 中拿任务，放入线程池中。
  * 该线程在容器初始化完毕后将在线程池中开始进行延迟任务的搬运工作，且长期占用线程池一个线程。
+ *
+ * @deprecated 1.0 已被 {@link Threads#schedule} 替代
  *
  * @author lym
  */

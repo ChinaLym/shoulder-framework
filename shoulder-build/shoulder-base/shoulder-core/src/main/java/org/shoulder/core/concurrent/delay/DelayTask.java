@@ -1,6 +1,7 @@
 package org.shoulder.core.concurrent.delay;
 
 import jakarta.annotation.Nonnull;
+import org.shoulder.core.concurrent.Threads;
 
 import java.time.Duration;
 import java.util.concurrent.Delayed;
@@ -8,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 延迟任务 DTO，包装 runnable
+ *
+ * @deprecated 1.0 已被 {@link Threads#schedule} 替代
  *
  * @author lym
  */

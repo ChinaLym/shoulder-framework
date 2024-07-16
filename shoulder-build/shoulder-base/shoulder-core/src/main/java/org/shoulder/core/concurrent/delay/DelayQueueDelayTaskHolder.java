@@ -1,6 +1,7 @@
 package org.shoulder.core.concurrent.delay;
 
 import jakarta.annotation.Nonnull;
+import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.ShoulderLoggers;
 
@@ -9,6 +10,8 @@ import java.util.concurrent.DelayQueue;
 /**
  * 内部封装一个延迟队列，基于阻塞式，适合延迟任务较少的场景
  * 若延迟任务量特别大，推荐通过时间轮方式做
+ *
+ * @deprecated 1.0 已被 {@link Threads#schedule} 替代
  *
  * @author lym
  */

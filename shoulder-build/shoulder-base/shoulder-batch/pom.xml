@@ -10,8 +10,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>shoulder-batch</name>
     <artifactId>shoulder-batch</artifactId>
+    <name>${project.artifactId}</name>
     <description>
         Shoulder 扩展-批处理模块，提供批量数据导入、导出、异步校验、导入历史记录管理等能力。
     </description>
