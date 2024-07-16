@@ -1,6 +1,7 @@
 package org.shoulder.cluster.guid;
 
 import jakarta.annotation.Nonnull;
+import org.shoulder.core.concurrent.PeriodicTask;
 import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.guid.AbstractInstanceIdProvider;
 import org.shoulder.core.log.Logger;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -40,6 +42,8 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
      * 不能是 StringRedisTemplate
      */
     private final RedisTemplate redis;
+
+    private volatile boolean alreadyStop = false;
 
     public RedisInstanceIdProvider(String idAssignCacheKey, long maxId, RedisTemplate redisTemplate) {
         this.idAssignCacheKey = idAssignCacheKey;
@@ -107,32 +111,8 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
         return result;
     }
 
-    protected void heartbeat() {
-        final String luaScript =
-                """
-                        local currentTime=redis.call('time')[1];
-                        redis.call('hset', KEYS[1], ARGV[1], currentTime);
-                        return 1;
-                        """;
-        RedisScript<Long> heartbeatScript = new DefaultRedisScript<>(luaScript, Long.class);
-
-        try {
-            long result = (long) redis.execute(heartbeatScript, List.of(idAssignCacheKey), super.getCurrentInstanceId());
-            if (result == 1) {
-                log.debug("redisInstanceIdProvider heartbeat SUCCESS.");
-            } else {
-                log.warn("redisInstanceIdProvider heartbeat FAIL: idAssignCacheName={}, instanceId={}", idAssignCacheKey, super.getCurrentInstanceId());
-            }
-        } catch (Exception e) {
-            log.error("redisInstanceIdProvider heartbeat ex FAIL!", e);
-        } finally {
-            Threads.delay(this::heartbeat, Duration.ofMinutes(1));
-        }
-
-    }
-
-
     private void releaseInstanceId() {
+        alreadyStop = true;
         final String luaScript =
                 """
                         redis.call('hdel', KEYS[1], ARGV[1]);
@@ -151,11 +131,43 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
 
     @Override
     public void onApplicationEvent(@Nonnull ContextRefreshedEvent event) {
-        Threads.execute(this::heartbeat);
+        PeriodicTask hearBeatTask = new PeriodicTask() {
+
+            @Override public String getTaskName() {
+                return "RedisInstanceIdProviderHeartBeat";
+            }
+
+            @Override public void process() {
+                final String luaScript =
+                    """
+                            local currentTime=redis.call('time')[1];
+                            redis.call('hset', KEYS[1], ARGV[1], currentTime);
+                            return 1;
+                            """;
+                RedisScript<Long> heartbeatScript = new DefaultRedisScript<>(luaScript, Long.class);
+
+                try {
+                    long result = (long) redis.execute(heartbeatScript, List.of(idAssignCacheKey), getCurrentInstanceId());
+                    if (result == 1) {
+                        log.debug("redisInstanceIdProvider heartbeat SUCCESS.");
+                    } else {
+                        log.warn("redisInstanceIdProvider heartbeat FAIL: idAssignCacheName={}, instanceId={}", idAssignCacheKey, getCurrentInstanceId());
+                    }
+                } catch (Exception e) {
+                    log.error("redisInstanceIdProvider heartbeat ex FAIL!", e);
+                }
+            }
+
+            @Override public Instant calculateNextRunTime(Instant now, int runCount) {
+                // 每分钟执行一次
+                return alreadyStop ? NO_NEED_EXECUTE : now.plus(Duration.ofMinutes(1));
+            }
+        };
+        Threads.schedule(hearBeatTask, Instant.now());
     }
 
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         releaseInstanceId();
     }
 }

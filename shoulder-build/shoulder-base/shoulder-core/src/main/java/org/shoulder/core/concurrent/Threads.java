@@ -15,7 +15,18 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 
 /**
  * 线程工具类
@@ -41,12 +52,12 @@ public class Threads {
     /**
      * 执行任务线程池
      */
-    private static volatile ExecutorService EXECUTOR_SERVICE;
+    static volatile ExecutorService EXECUTOR_SERVICE;
 
     /**
      * 县城调度器：主要做延迟执行等任务
      */
-    private static volatile TaskScheduler TASK_SCHEDULER;
+    static volatile TaskScheduler TASK_SCHEDULER;
 
     public static synchronized void setExecutorService(ExecutorService executorService) {
         Threads.EXECUTOR_SERVICE = executorService;
@@ -64,21 +75,46 @@ public class Threads {
     }
 
     /**
-     * 使用该方法包装线程类，将自动将线程放入延迟队列并延时执行
-     * 适合刷缓存等非强可靠的任务，重启会丢失
+     * 定期调度执行
      *
-     * @param runnable  要延时执行的事情
-     * @param delayTime 延时时间
+     * @param taskName 要执行的任务名称
+     * @param task 要执行的任务
+     * @param firstExecutionDelayDuration （null 或 ZERO 立即执行）
+     * @param executionPeriodCalculator 调度间隔计算器
      */
-    public static void delay(Runnable runnable, Duration delayTime) {
+    public static void schedule(String taskName, Runnable task, Duration firstExecutionDelayDuration, BiFunction<Instant, Integer, Instant> executionPeriodCalculator) {
+        PeriodicTask periodicTask = new PeriodicTask() {
+            @Override public String getTaskName() {
+                return taskName;
+            }
+
+            @Override public void process() {
+                task.run();
+            }
+
+            @Override public Instant calculateNextRunTime(Instant now, int runCount) {
+                return executionPeriodCalculator == null ? NO_NEED_EXECUTE : executionPeriodCalculator.apply(now, runCount);
+            }
+        };
+
+        // 执行时放在 EXECUTOR_SERVICE 执行，避免阻塞调度
+        schedule(periodicTask, firstExecutionDelayDuration == null ? null : Instant.now().plus(firstExecutionDelayDuration));
+    }
+
+    /**
+     * 定期调度执行
+     *
+     * @param periodicTask 要执行的任务
+     * @param firstExecutionTime （null 或小与当前时间则立即执行）
+     */
+    public static void schedule(PeriodicTask periodicTask, Instant firstExecutionTime) {
         ensureInit();
         if (log.isDebugEnabled()) {
-            StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "delay", true);
+            StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "schedule", true);
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
-            log.debug("{} creat delay task will run in {}ms", callerName, delayTime.toMillis());
+            log.debug("{} creat delay task will run at {}", callerName, firstExecutionTime.toEpochMilli());
         }
-        // 执行时放在 EXECUTOR_SERVICE 执行，避免阻塞调度
-        TASK_SCHEDULER.schedule(() -> EXECUTOR_SERVICE.execute(runnable), Instant.now().plus(delayTime));
+        TASK_SCHEDULER.schedule(new PeriodicTaskTemplate(periodicTask, TASK_SCHEDULER), firstExecutionTime);
     }
 
     /**
