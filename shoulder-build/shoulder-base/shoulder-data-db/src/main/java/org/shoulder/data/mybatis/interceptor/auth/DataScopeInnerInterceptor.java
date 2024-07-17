@@ -36,6 +36,9 @@ public class DataScopeInnerInterceptor implements InnerInterceptor {
 
     private final Function<String, Map<String, Object>> function;
 
+    private static final String DATA_SOURCE_TYPE = "dsType";
+
+    private static final String ORG_IDS = "orgIds";
 
     /**
      * 查找参数是否包括DataScope对象
@@ -59,6 +62,7 @@ public class DataScopeInnerInterceptor implements InnerInterceptor {
         return Optional.empty();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         DataScope dataScope = findDataScope(parameter).orElse(null);
@@ -83,9 +87,9 @@ public class DataScopeInnerInterceptor implements InnerInterceptor {
                 return;
             }
 
-            String type = (String) result.get("dsType");
+            String type = (String) result.get(DATA_SOURCE_TYPE);
             dsType = DataScopeType.getByName(type);
-            orgIds = (List<Long>) result.get("orgIds");
+            orgIds = (List<Long>) result.get(ORG_IDS);
         }
 
         //查全部

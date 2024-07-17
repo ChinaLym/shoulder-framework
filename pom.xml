@@ -83,7 +83,7 @@
         <connection>scm:git:git://github.com/ChinaLym/shoulder-framework.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/ChinaLym/shoulder-framework.git</developerConnection>
         <url>git@github.com:ChinaLym/shoulder-framework.git</url>
-        <tag>${version}</tag>
+        <tag>${project.version}</tag>
     </scm>
 
     <!--开源许可协议采用 Apache 2.0 协议-->

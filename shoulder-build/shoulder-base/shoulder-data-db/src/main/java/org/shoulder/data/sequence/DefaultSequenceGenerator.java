@@ -1,7 +1,6 @@
 package org.shoulder.data.sequence;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.data.log.ShoulderDBLoggers;
@@ -31,7 +30,6 @@ public class DefaultSequenceGenerator implements SequenceGenerator {
     // private Map<String, ISequenceCombinationRule> sequenceRuleMap;
 
     @Getter
-    @Setter
     private final SequenceDao sequenceDao;
 
     public DefaultSequenceGenerator(SequenceDao sequenceDao) {

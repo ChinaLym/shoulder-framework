@@ -99,7 +99,6 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
     private String sequenceTableName;
 
     @Getter
-    @Setter
     private List<String> sequenceShardingColumnNames = new ArrayList<>();
 
     private final AtomicBoolean sequenceMonitorInitialized = new AtomicBoolean(false);

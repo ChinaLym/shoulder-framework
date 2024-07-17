@@ -96,7 +96,7 @@
         <connection>scm:git:git://github.com/ChinaLym/shoulder-framework.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/ChinaLym/shoulder-framework.git</developerConnection>
         <url>git@github.com:ChinaLym/shoulder-framework.git</url>
-        <tag>${version}</tag>
+        <tag>${project.version}</tag>
     </scm>
 
     <issueManagement>
@@ -154,8 +154,6 @@
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
-                        <fork>true</fork>
-                        <optimize>true</optimize>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
                         <!-- 编译时打印告警，方便排查问题 -->

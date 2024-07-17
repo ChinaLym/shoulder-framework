@@ -2,6 +2,9 @@ package org.shoulder.crypto.digest;
 
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.constant.ByteSpecification;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.ArrayUtils;
+import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.StringUtils;
 
 import java.security.MessageDigest;
@@ -22,9 +25,7 @@ public class Sha256Utils implements ByteSpecification {
      * @return 结果
      */
     public static byte[] digest(@Nonnull byte[] toHashBytes) {
-        if (toHashBytes == null || toHashBytes.length == 0) {
-            throw new IllegalArgumentException("text can't be empty!");
-        }
+        AssertUtils.isTrue(ArrayUtils.isNotEmpty(toHashBytes), CommonErrorCodeEnum.ILLEGAL_PARAM, "text can't be empty!");
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(toHashBytes);
