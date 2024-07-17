@@ -5,7 +5,12 @@ import jakarta.validation.Payload;
 import org.shoulder.validate.validator.FileTypeValidator;
 import org.shoulder.validate.validator.JsonTypeValidator;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * 校验某 String 属性 不为空时，是否为 json 类型

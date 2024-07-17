@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.MediaType;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -17,12 +18,12 @@ import java.io.Serializable;
 @Schema(description = "字典项", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class DictionaryItemDTO implements Serializable, Comparable<DictionaryItemDTO> {
 
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long   serialVersionUID = 1L;
     /**
      * 字典类型，如性别 SEX
      */
     @Schema(description = "字典类型标识，如性别（SEX）", example = "SEX", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String dictionaryType;
+    private                      String dictionaryType;
 
     /**
      * 字典码，该类型下(前后交互)唯一标记，如 MALE 可用 1、M、MALE 表示

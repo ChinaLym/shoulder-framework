@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class ConfigDeleteRequest implements Serializable {
 
-    private static final long serialVersionUID = -3930917032812315390L;
+    @Serial private static final long serialVersionUID = -3930917032812315390L;
 
     @NotNull
     @Size(min = 1, max = 500, message = "configItemList size need between 1,500 ")

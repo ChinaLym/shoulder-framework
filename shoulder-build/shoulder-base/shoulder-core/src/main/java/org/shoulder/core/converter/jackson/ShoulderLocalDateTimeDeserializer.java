@@ -12,6 +12,7 @@ import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.converter.LocalDateTimeConverter;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ public class ShoulderLocalDateTimeDeserializer extends JSR310DateTimeDeserialize
 
     public static final ShoulderLocalDateTimeDeserializer INSTANCE = new ShoulderLocalDateTimeDeserializer();
 
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern(AppInfo.dateTimeFormat());
 

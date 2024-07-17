@@ -9,6 +9,8 @@ import org.shoulder.core.util.ExceptionUtil;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serial;
+
 /**
  * 基础通用异常
  * 代码中可直接抛出该类异常，会通过统一异常处理将该错误信息捕获封装返回
@@ -20,7 +22,7 @@ import org.springframework.http.HttpStatus;
  */
 public class BaseRuntimeException extends RuntimeException implements ErrorCode {
 
-    private static final long serialVersionUID = 8917762936709850638L;
+    @Serial private static final long serialVersionUID = 8917762936709850638L;
 
     /**
      * 错误码，默认unknown

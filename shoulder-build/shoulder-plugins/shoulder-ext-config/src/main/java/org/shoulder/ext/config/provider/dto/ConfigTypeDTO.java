@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ConfigTypeDTO implements Serializable {
 
-    private static final long serialVersionUID = -1212800132345290597L;
+    @Serial private static final long serialVersionUID = -1212800132345290597L;
 
     private String name;
 

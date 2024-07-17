@@ -1,6 +1,11 @@
 package org.shoulder.data.mybatis.template.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,8 +35,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BaseEntity<ID extends Serializable> implements Operable, Serializable {
 
-    @Serial
-    private static final long serialVersionUID = -7975111840965852408L;
+    @Serial private static final long serialVersionUID = -7975111840965852408L;
 
     @TableId(value = DataBaseConsts.COLUMN_ID, type = IdType.INPUT)
 //    @NotNull(message = "id can't be null", groups = Update.class)

@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
+@SuppressWarnings("unchecked")
 public class PackageScanDictionaryEnumRepositoryRegister implements DictionaryEnumRepositoryCustomizer {
 
     private final Logger logger = ShoulderLoggers.SHOULDER_CONFIG;

@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.shoulder.data.annotation.BizIdSource;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 
 import java.util.Map;

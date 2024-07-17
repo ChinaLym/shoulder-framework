@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="220px" height="220px" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="220px" height="220px"
+     style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd">
     <title>Shoulder Logos and Graphics</title>
     <!-- 顶层 -->
     <g><path style="opacity:1" fill="#c0ce28" d="M 168.5,28.5 C 172.967,28.1326 177.3,28.6326 181.5,30C 184.851,32.7932 185.018,35.9599 182,39.5C 170.82,54.675 155.987,64.175 137.5,68C 116.97,73.4171 96.8036,68.5838 77,68.5C 75.9326,67.8095 74.7659,67.3095 73.5,67C 74.0686,64.0971 75.7352,62.0971 78.5,61C 95.496,50.8373 113.496,42.8373 132.5,37C 144.776,32.7626 156.776,31.9292 168.5,28.5 Z"/></g>

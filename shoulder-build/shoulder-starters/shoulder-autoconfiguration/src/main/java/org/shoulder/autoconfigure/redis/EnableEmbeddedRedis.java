@@ -2,7 +2,11 @@ package org.shoulder.autoconfigure.redis;
 
 import org.springframework.context.annotation.Import;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * （可选）启用内嵌 Redis：标记在启动类后，会在启动时尽早的激活 EmbeddedRedisServer

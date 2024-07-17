@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,11 +17,11 @@ import java.util.List;
 @ToString
 @Accessors(chain = true)
 public class FieldValidationRuleDTO implements Serializable {
-    private static final long serialVersionUID = 5909045743743888980L;
+    @Serial private static final long   serialVersionUID = 5909045743743888980L;
     /**
      * bean 字段名称
      */
-    private String field;
+    private                      String field;
     /**
      * 字段的类型 （js 的），如 Array、Integer、Float
      */

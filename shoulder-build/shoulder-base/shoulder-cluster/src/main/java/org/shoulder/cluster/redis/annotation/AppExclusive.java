@@ -2,7 +2,12 @@ package org.shoulder.cluster.redis.annotation;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * 各个应用间隔离、即使连接相同中间件实例，其中数据也相互不可见。

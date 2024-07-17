@@ -6,7 +6,12 @@ import org.shoulder.log.operation.context.OperationLogFactory;
 import org.shoulder.log.operation.enums.TerminalType;
 import org.shoulder.log.operation.model.OperationLogDTO;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * 创建操作日志注解

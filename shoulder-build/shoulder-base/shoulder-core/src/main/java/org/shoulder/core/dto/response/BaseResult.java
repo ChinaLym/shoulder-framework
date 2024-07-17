@@ -10,6 +10,7 @@ import org.shoulder.core.exception.ErrorContext;
 import org.shoulder.core.util.ExceptionUtil;
 import org.springframework.http.MediaType;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ import java.util.Map;
 @Schema(description = "BaseResult<T> 接口响应统一返回值包装类 Restful 风格", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class BaseResult<T> extends ToStringObj {
 
-    private static final long serialVersionUID = -3829563105110651627L;
+    @Serial private static final long serialVersionUID = -3829563105110651627L;
 
     @Schema(description = "状态码/错误码，成功为0，失败非0，必定返回", requiredMode = Schema.RequiredMode.REQUIRED, example = "0")
     protected String code = "0";

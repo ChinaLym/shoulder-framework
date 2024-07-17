@@ -93,6 +93,7 @@ public class ExportConfigInitializer implements ResourceLoaderAware, Initializin
         return readResource(resource, ExportFileConfig.class);
     }
 
+    @SuppressWarnings("unchecked")
     private <T> List<T> readResource(Resource resource, Class<T> tclass) {
         Charset charset = AppInfo.charset();
         try {

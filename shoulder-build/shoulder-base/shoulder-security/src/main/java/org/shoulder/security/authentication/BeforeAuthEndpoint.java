@@ -10,7 +10,6 @@ import org.shoulder.core.util.StringUtils;
 import org.shoulder.security.SecurityConst;
 import org.shoulder.security.authentication.browser.AbstractSessionStrategy;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.DefaultRedirectStrategy;

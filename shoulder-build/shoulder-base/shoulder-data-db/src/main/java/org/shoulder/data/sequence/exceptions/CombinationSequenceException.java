@@ -2,6 +2,8 @@ package org.shoulder.data.sequence.exceptions;
 
 import org.springframework.dao.DataAccessException;
 
+import java.io.Serial;
+
 /**
  *
  * @author lym
@@ -9,7 +11,7 @@ import org.springframework.dao.DataAccessException;
 public class CombinationSequenceException extends DataAccessException {
 
     /**  */
-    private static final long serialVersionUID = -1L;
+    @Serial private static final long serialVersionUID = -1L;
 
     public CombinationSequenceException(String message) {
         super(message);

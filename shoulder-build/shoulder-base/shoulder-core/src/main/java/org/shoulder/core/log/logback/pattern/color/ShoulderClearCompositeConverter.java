@@ -4,7 +4,11 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.pattern.color.ForegroundCompositeConverterBase;
 
-import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.BLUE_FG;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.BOLD;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.DEFAULT_FG;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.RED_FG;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.WHITE_FG;
 
 /**
  * Shoulder 定义的彩色日志转换器，专门为控制台中输出彩色日志做转换，比如 启动LOGO

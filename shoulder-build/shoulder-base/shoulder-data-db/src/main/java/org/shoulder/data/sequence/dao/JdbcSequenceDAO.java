@@ -1,10 +1,14 @@
 package org.shoulder.data.sequence.dao;
 
-import org.shoulder.data.sequence.model.SequenceRange;
 import org.shoulder.data.sequence.exceptions.CombinationSequenceException;
+import org.shoulder.data.sequence.model.SequenceRange;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

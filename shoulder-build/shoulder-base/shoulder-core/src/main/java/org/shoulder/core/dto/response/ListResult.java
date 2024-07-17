@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.shoulder.core.dto.ToStringObj;
 import org.springframework.http.MediaType;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,9 +20,9 @@ import java.util.List;
 @Schema(description = "ListResult<T> 列表数据返回格式", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class ListResult<T> extends ToStringObj {
 
-    private static final long serialVersionUID = -3134782461635924904L;
+    @Serial private static final long serialVersionUID = -3134782461635924904L;
     @Schema(description = "数据总数", type = "long", requiredMode = Schema.RequiredMode.REQUIRED, example = "0")
-    private Long total = 0L;
+    private                      Long total            = 0L;
 
     @Schema(description = "列表数据", type = "List", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<T> list;

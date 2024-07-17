@@ -7,7 +7,6 @@ import org.shoulder.crypto.negotiation.exception.NegotiationException;
 import org.slf4j.Logger;
 import org.springframework.util.Assert;
 
-import javax.crypto.KeyAgreement;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -16,6 +15,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.KeyAgreement;
 
 /**
  * ECDH 密钥谈判工具

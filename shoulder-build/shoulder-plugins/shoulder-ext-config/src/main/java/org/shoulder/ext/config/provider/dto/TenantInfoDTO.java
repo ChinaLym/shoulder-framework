@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 public class TenantInfoDTO implements Serializable {
 
-    private static final long serialVersionUID = 1947695686908521732L;
+    @Serial private static final long serialVersionUID = 1947695686908521732L;
     /**
      * 英文名称
      */

@@ -3,7 +3,7 @@ package org.shoulder.core.dto.mq;
 import lombok.Data;
 import org.shoulder.core.dto.ToStringObj;
 
-import java.io.Serializable;
+import java.io.Serial;
 import java.util.Map;
 
 /**
@@ -14,11 +14,11 @@ import java.util.Map;
 @Data
 public class MqMessageWrapper extends ToStringObj {
 
-    private static final long serialVersionUID = -7520329108105397099L;
+    @Serial private static final long   serialVersionUID = -7520329108105397099L;
     /**
      * 消息类型
      */
-    private String type;
+    private                      String type;
 
     /**
      * 消息唯一标识

@@ -34,10 +34,12 @@ public class BatchOutputContext {
 
     private Map<String, Object> ext = new HashMap<>();
 
+    @SuppressWarnings("unchecked")
     public <T> T getExtValue(String key) {
         return (T) ext.get(key);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T putExtValue(String key, T value) {
         return (T) ext.put(key, value);
     }

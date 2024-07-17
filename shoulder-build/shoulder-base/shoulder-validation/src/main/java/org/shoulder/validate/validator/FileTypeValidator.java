@@ -1,12 +1,11 @@
 package org.shoulder.validate.validator;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.shoulder.validate.annotation.FileType;
 import org.shoulder.validate.util.FileValidator;
 import org.shoulder.validate.util.FileValidatorProperties;
 import org.springframework.web.multipart.MultipartFile;
-
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * {@link FileType} 注解校验处理

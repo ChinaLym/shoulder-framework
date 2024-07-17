@@ -14,7 +14,7 @@ import java.util.Map;
 @Data
 public class ConfigDataDTO implements Serializable {
 
-    private static final long serialVersionUID = 9040359877503481492L;
+    @Serial private static final long serialVersionUID = 9040359877503481492L;
 
     /**
      * 租户信息

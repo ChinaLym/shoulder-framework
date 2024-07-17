@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.shoulder.log.operation.enums.TerminalType;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -19,7 +20,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class ShoulderCurrentUserOperator implements Serializable, Operator {
-    private static final long serialVersionUID = 1429478242021042150L;
+    @Serial private static final long serialVersionUID = 1429478242021042150L;
 
     protected String userId;
     protected String userRealName;

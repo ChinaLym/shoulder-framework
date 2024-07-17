@@ -3,6 +3,8 @@ package org.shoulder.crypto.exception;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.ErrorCode;
 
+import java.io.Serial;
+
 /**
  * 加解密相关运行时异常
  *
@@ -10,7 +12,7 @@ import org.shoulder.core.exception.ErrorCode;
  */
 public class CipherRuntimeException extends BaseRuntimeException {
 
-    private static final long serialVersionUID = -1391563921356126481L;
+    @Serial private static final long serialVersionUID = -1391563921356126481L;
 
     public CipherRuntimeException(Throwable cause) {
         super(cause);

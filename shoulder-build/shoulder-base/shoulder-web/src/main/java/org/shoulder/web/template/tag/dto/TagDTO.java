@@ -5,13 +5,14 @@ import lombok.Data;
 import org.shoulder.core.dto.ToStringObj;
 import org.springframework.http.MediaType;
 
+import java.io.Serial;
 import java.util.Date;
 
 @Data
 @Schema(description = "标签", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class TagDTO extends ToStringObj {
 
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * id (long)

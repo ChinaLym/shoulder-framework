@@ -12,6 +12,7 @@ import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.enums.OperationResult;
 import org.shoulder.log.operation.enums.TerminalType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -32,7 +33,7 @@ import java.util.Map;
 @Data
 @Accessors(chain = true)
 public class OperationLogDTO implements Cloneable, Serializable {
-    private static final long serialVersionUID = 1998019128906395110L;
+    @Serial private static final long serialVersionUID = 1998019128906395110L;
 
     /** ============= 操作者描述（操作者分两种情况，用户、系统内部触发） {@link Operator }  ================ */
 

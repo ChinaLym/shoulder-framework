@@ -92,6 +92,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
         progressCache.put(record.getId(), record);
     }
 
+    @SuppressWarnings("unechked")
     @Override
     public Iterable<String> getAllTaskProgressId() {
         Object nativeCache = getNativeCache();
@@ -107,6 +108,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
 //        return Collections.emptyList();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Map<String, Progress> getAllTaskProgress() {
         Object nativeCache = getNativeCache();

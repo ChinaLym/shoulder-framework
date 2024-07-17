@@ -1,12 +1,14 @@
 package org.shoulder.data.sequence.exceptions;
 
+import java.io.Serial;
+
 /**
  *
  * @author lym
  *
  */
 public class SequenceException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     public SequenceException() {
         super();

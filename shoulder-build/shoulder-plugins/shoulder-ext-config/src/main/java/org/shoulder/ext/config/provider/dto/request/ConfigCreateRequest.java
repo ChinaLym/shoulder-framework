@@ -13,7 +13,7 @@ import java.util.Map;
 @Data
 public class ConfigCreateRequest implements Serializable {
 
-    private static final long serialVersionUID = -3930917032812315390L;
+    @Serial private static final long serialVersionUID = -3930917032812315390L;
 
     @NotNull
     private String tenant;

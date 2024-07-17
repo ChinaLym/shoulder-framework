@@ -2,8 +2,11 @@ package org.shoulder.core.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.shoulder.core.dto.ToStringObj;
 import org.springframework.http.MediaType;
+
+import java.io.Serial;
 
 /**
  * 树状数据
@@ -11,10 +14,11 @@ import org.springframework.http.MediaType;
  * @author lym
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Schema(description = "TreeNodeResult 树形结构返回形式", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class TreeNodeResult extends ToStringObj {
 
-    private static final long serialVersionUID = -3515352250874606693L;
+    @Serial private static final long serialVersionUID = -3515352250874606693L;
 
     /**
      * 数据标识

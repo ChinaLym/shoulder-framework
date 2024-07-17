@@ -67,7 +67,7 @@ public class SensitiveRequestDecryptHandlerInterceptor implements AsyncHandlerIn
             // xSessionId 没有说明不是一个 ecdh 请求；没有 xDk 仅出现在密钥协商阶段；没有 token 不能保证安全
             log.debug("reject for invalid security headers.");
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             BaseResult<Void> r = BaseResult.error(NegotiationErrorCodeEnum.MISSING_REQUIRED_PARAM);
             response.getWriter().write(JsonUtils.toJson(r));
             return false;
@@ -79,7 +79,7 @@ public class SensitiveRequestDecryptHandlerInterceptor implements AsyncHandlerIn
             log.debug("cache missing, xSessionId:{}", xSessionId);
             // 返回重新握手错误码
             response.setHeader(NegotiationConstants.NEGOTIATION_INVALID_TAG, NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode());
-            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             BaseResult<Void> r = BaseResult.error(NegotiationErrorCodeEnum.NEGOTIATION_INVALID);
             response.getWriter().write(JsonUtils.toJson(r));
             return false;
@@ -89,7 +89,7 @@ public class SensitiveRequestDecryptHandlerInterceptor implements AsyncHandlerIn
         // 校验token是否正确
         if (!transportCryptoUtil.verifyToken(xSessionId, xDk, token, cacheNegotiationResult.getOtherPublicKey())) {
             log.debug("Token({}) invalid! xSessionId={}", token, xSessionId);
-            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             BaseResult<Void> r = BaseResult.error(NegotiationErrorCodeEnum.TOKEN_INVALID);
             response.getWriter().write(JsonUtils.toJson(r));
             return false;

@@ -13,7 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.shoulder.batch.spec.ShopBO;
 import org.shoulder.core.context.AppInfo;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.UUID;
 

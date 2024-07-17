@@ -10,7 +10,7 @@ import org.shoulder.core.exception.ErrorCode;
  */
 public class ConfigException extends BaseRuntimeException {
 
-    private static final long serialVersionUID = 6894693369570821029L;
+    @Serial private static final long serialVersionUID = 6894693369570821029L;
 
     /**
      * Constructor.

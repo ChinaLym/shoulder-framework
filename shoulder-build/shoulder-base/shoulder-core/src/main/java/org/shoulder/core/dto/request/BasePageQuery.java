@@ -7,6 +7,7 @@ import org.shoulder.core.dto.ToStringObj;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 
+import java.io.Serial;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -24,11 +25,11 @@ import static org.shoulder.core.constant.PageConst.MIN_PAGE_NO;
  */
 public class BasePageQuery<T> extends ToStringObj {
 
-    private static final long serialVersionUID = 6532091359995631065L;
+    @Serial private static final long serialVersionUID = 6532091359995631065L;
     /**
      * 页码
      */
-    private int pageNo = DEFAULT_PAGE_NO;
+    private                      int  pageNo           = DEFAULT_PAGE_NO;
 
     /**
      * 每页大小

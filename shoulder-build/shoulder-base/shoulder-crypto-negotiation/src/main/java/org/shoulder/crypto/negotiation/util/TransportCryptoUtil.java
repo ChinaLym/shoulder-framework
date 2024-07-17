@@ -1,8 +1,8 @@
 package org.shoulder.crypto.negotiation.util;
 
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.shoulder.core.constant.ByteSpecification;
-import org.shoulder.core.util.ByteUtils;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.crypto.asymmetric.exception.AsymmetricCryptoException;
 import org.shoulder.crypto.asymmetric.exception.KeyPairException;
@@ -198,18 +198,6 @@ public class TransportCryptoUtil {
     }
 
     /**
-     * 发起请求前，生成头部信息【请求中不带敏感信息】
-     *
-     * @param negotiationResult 密钥交换结果
-     * @return 请求头
-     * @throws AsymmetricCryptoException 签名出错
-     * @throws SymmetricCryptoException  加密 dataKey 出错
-     */
-    public HttpHeaders generateHeaders(NegotiationResult negotiationResult) throws AsymmetricCryptoException, SymmetricCryptoException {
-        return generateHeaders(negotiationResult, null);
-    }
-
-    /**
      * 发起请求前，生成头部信息
      *
      * @param negotiationResult 密钥交换结果
@@ -218,15 +206,13 @@ public class TransportCryptoUtil {
      * @throws AsymmetricCryptoException 签名出错
      * @throws SymmetricCryptoException  加密 dataKey 出错
      */
-    public HttpHeaders generateHeaders(NegotiationResult negotiationResult, @Nullable byte[] dataKey) throws AsymmetricCryptoException, SymmetricCryptoException {
-        String xDk = encryptDk(negotiationResult, dataKey);
+    public HttpHeaders generateHeaders(NegotiationResult negotiationResult, @Nonnull byte[] dataKey) throws AsymmetricCryptoException, SymmetricCryptoException {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(NegotiationConstants.TOKEN, generateToken(negotiationResult.getXSessionId(), xDk));
         headers.add(NegotiationConstants.SECURITY_SESSION_ID, negotiationResult.getXSessionId());
-        if (ByteUtils.isNotEmpty(dataKey)) {
-            headers.add(NegotiationConstants.SECURITY_DATA_KEY, xDk);
-        }
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        String xDk = encryptDk(negotiationResult, dataKey);
+        headers.add(NegotiationConstants.TOKEN, generateToken(negotiationResult.getXSessionId(), xDk));
+        headers.add(NegotiationConstants.SECURITY_DATA_KEY, xDk);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
     }
 

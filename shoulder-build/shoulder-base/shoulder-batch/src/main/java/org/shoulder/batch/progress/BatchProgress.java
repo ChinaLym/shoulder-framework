@@ -3,6 +3,7 @@ package org.shoulder.batch.progress;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ import java.util.function.BiConsumer;
 //@javax.annotation.concurrent.ThreadSafe
 public class BatchProgress implements Serializable, Progress {
 
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private boolean autoFished = true;
 

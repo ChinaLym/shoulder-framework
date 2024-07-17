@@ -1,5 +1,7 @@
 package org.shoulder.core.exception;
 
+import java.io.Serial;
+
 /**
  * 序列化异常，非强制捕获
  * 由于这类异常及其可能为编码导致，故不应该报给前端暴露代码漏洞，应由开发排查
@@ -8,7 +10,7 @@ package org.shoulder.core.exception;
  */
 public class SerialException extends BaseRuntimeException {
 
-    private static final long serialVersionUID = 5330049957369887114L;
+    @Serial private static final long serialVersionUID = 5330049957369887114L;
 
     public SerialException(Throwable cause) {
         this(CommonErrorCodeEnum.PROCESS_FAIL.getCode(), cause);

@@ -18,8 +18,7 @@ import java.util.Map;
 @Schema(description = "标签查询请求", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class BaseSearchRequest implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 业务类型

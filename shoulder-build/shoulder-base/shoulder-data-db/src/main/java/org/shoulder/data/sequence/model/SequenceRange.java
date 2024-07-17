@@ -23,8 +23,7 @@ import java.util.stream.LongStream;
 @NoArgsConstructor
 public class SequenceRange {//extends SequenceRouteInfo {
 
-    @Serial
-    private static final long serialVersionUID = -8033123630197877163L;
+    @Serial private static final long serialVersionUID = -8033123630197877163L;
 
     public static final String NAME = "name";
     public static final String VALUE = "current_value";

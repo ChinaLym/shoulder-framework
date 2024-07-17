@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Data
 public class ConfigItemDTO implements Serializable {
 
-    private static final long serialVersionUID = 8298444466875922486L;
+    @Serial private static final long serialVersionUID = 8298444466875922486L;
     /**
      * 主键
      */

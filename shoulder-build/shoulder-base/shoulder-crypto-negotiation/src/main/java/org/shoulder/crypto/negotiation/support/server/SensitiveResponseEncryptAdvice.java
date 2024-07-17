@@ -105,7 +105,7 @@ public class SensitiveResponseEncryptAdvice implements ResponseBodyAdvice<Object
             // 按理说不会为 null，因为这里读取是时线程变量
             response.getHeaders().set(NegotiationConstants.NEGOTIATION_INVALID_TAG, NegotiationErrorCodeEnum.NEGOTIATION_INVALID.getCode());
             response.setStatusCode(HttpStatus.OK);
-            response.getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
+            response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
             return BaseResult.error(NegotiationErrorCodeEnum.NEGOTIATION_INVALID);
         }
         try {

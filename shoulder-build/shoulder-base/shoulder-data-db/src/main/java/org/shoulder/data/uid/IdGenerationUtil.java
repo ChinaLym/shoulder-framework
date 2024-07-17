@@ -4,7 +4,23 @@ import org.shoulder.core.util.StringUtils;
 
 import java.util.Date;
 
-import static org.shoulder.data.uid.IdSpecification.*;
+import static org.shoulder.data.uid.IdSpecification.adjustSequenceLength;
+import static org.shoulder.data.uid.IdSpecification.extractRandomShardingFromStandardId;
+import static org.shoulder.data.uid.IdSpecification.extractTenantCodeFromStandardId;
+import static org.shoulder.data.uid.IdSpecification.extractUserRandomShardingFromUserIdOrDefault;
+import static org.shoulder.data.uid.IdSpecification.extractUserShardingFromStandardId;
+import static org.shoulder.data.uid.IdSpecification.extractUserShardingFromUserIdOrDefault;
+import static org.shoulder.data.uid.IdSpecification.getCurrentRegionCode;
+import static org.shoulder.data.uid.IdSpecification.standardizeBizCode;
+import static org.shoulder.data.uid.IdSpecification.standardizeDataVersion;
+import static org.shoulder.data.uid.IdSpecification.standardizeDate;
+import static org.shoulder.data.uid.IdSpecification.standardizeEventCode;
+import static org.shoulder.data.uid.IdSpecification.standardizeExtension;
+import static org.shoulder.data.uid.IdSpecification.standardizeSequence;
+import static org.shoulder.data.uid.IdSpecification.standardizeSharding;
+import static org.shoulder.data.uid.IdSpecification.standardizeSystemCode;
+import static org.shoulder.data.uid.IdSpecification.standardizeTenantCode;
+import static org.shoulder.data.uid.IdSpecification.standardizeUserRandomSharding;
 
 /**
  * 流水号生成工具（除标记位其他位都是数字）

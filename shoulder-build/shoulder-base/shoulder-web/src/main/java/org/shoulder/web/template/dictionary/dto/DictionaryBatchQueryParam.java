@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.http.MediaType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
 @Schema(description = "字典批量查询参数", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class DictionaryBatchQueryParam implements Serializable {
 
-    private static final long serialVersionUID = 2773729771586823614L;
+    @Serial private static final long serialVersionUID = 2773729771586823614L;
 
     /**
      * 字典类型

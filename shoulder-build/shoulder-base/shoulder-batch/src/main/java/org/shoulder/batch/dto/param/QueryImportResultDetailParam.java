@@ -24,7 +24,7 @@ import java.util.List;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @ToString
 @Schema(description = "QueryImportResultDetailParam 导入记录详情查询条件", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class QueryImportResultDetailParam extends PageQuery<BatchRecordResult> {

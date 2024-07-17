@@ -1,6 +1,5 @@
 package org.shoulder.data.sequence;
 
-import org.shoulder.data.sequence.model.SequenceResult;
 import org.springframework.dao.DataAccessException;
 
 import java.util.List;

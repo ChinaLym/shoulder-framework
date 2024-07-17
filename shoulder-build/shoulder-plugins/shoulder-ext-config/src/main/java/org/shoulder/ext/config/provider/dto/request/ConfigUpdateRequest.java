@@ -14,7 +14,7 @@ import java.util.Map;
 @Data
 public class ConfigUpdateRequest implements Serializable {
 
-    private static final long serialVersionUID = -3930917032812315390L;
+    @Serial private static final long serialVersionUID = -3930917032812315390L;
 
     @NotNull
     @Length(min = 32, max = 32, message = "bizId must be 32 digits.")

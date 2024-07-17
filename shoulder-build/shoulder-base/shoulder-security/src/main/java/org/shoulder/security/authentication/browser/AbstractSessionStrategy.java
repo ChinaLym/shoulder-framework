@@ -82,7 +82,7 @@ public class AbstractSessionStrategy {
             BaseResult needAuthResponse = new BaseResult(CommonErrorCodeEnum.AUTH_401_NEED_AUTH);
             String resultMsg = buildResponseContent(request);
             needAuthResponse.setMsg(resultMsg);
-            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getWriter().write(JsonUtils.toJson(needAuthResponse));
         }
 

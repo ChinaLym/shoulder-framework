@@ -30,11 +30,14 @@ import java.util.Map;
 public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
 
     private final String[]              data;
+
     private final RecordMetaDataImpl<C> metaData;
 
     private final    int    index;
+
     private volatile String serialStr;
 
+    @SuppressWarnings("unchecked")
     public IndexedRecordImpl(Record record, int index) {
         this.data = record.getValues();
         this.metaData = (RecordMetaDataImpl<C>) record.getMetaData();
@@ -66,19 +69,16 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
         return metaData.getObjectValue(data, columnIndex, expectedType, null);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public <T> T getValue(String headerName, Class<T> expectedType, Conversion... conversions) {
         return metaData.getValue(data, headerName, expectedType, conversions);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public <T> T getValue(Enum<?> column, Class<T> expectedType, Conversion... conversions) {
         return metaData.getValue(data, column, expectedType, conversions);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public <T> T getValue(int columnIndex, Class<T> expectedType, Conversion... conversions) {
         return metaData.getValue(data, columnIndex, expectedType, conversions);
@@ -102,19 +102,16 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
         return metaData.getObjectValue(data, columnIndex, (Class<T>) defaultValue.getClass(), defaultValue);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public <T> T getValue(String headerName, T defaultValue, Conversion... conversions) {
         return metaData.getValue(data, headerName, defaultValue, conversions);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public <T> T getValue(Enum<?> column, T defaultValue, Conversion... conversions) {
         return metaData.getValue(data, column, defaultValue, conversions);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public <T> T getValue(int columnIndex, T defaultValue, Conversion... conversions) {
         return metaData.getValue(data, columnIndex, defaultValue, conversions);
@@ -359,7 +356,7 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
     }
 
     private String[] buildSelection(String[] selectedFields) {
-        if (selectedFields.length == 0) {
+        if (selectedFields == null || selectedFields.length == 0) {
             selectedFields = metaData.headers();
         }
         return selectedFields;
@@ -384,24 +381,24 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
 
     @Override
     public Map<Integer, String> toIndexMap(int... selectedIndexes) {
-        return fillIndexMap(new HashMap<Integer, String>(selectedIndexes.length), selectedIndexes);
+        return fillIndexMap(new HashMap<>(selectedIndexes.length), selectedIndexes);
     }
 
     @Override
     public Map<String, String> toFieldMap(String... selectedFields) {
-        return fillFieldMap(new HashMap<String, String>(selectedFields.length), selectedFields);
+        return fillFieldMap(new HashMap<>(selectedFields.length), selectedFields);
     }
 
     @Override
-    public <T extends Enum<T>> Map<T, String> toEnumMap(Class<T> enumType, T... selectedColumns) {
-        return fillEnumMap(new EnumMap<T, String>(enumType), selectedColumns);
+    public final <T extends Enum<T>> Map<T, String> toEnumMap(Class<T> enumType, T... selectedColumns) {
+        return fillEnumMap(new EnumMap<>(enumType), selectedColumns);
     }
 
     @Override
     public Map<String, String> fillFieldMap(Map<String, String> map, String... selectedFields) {
         selectedFields = buildSelection(selectedFields);
-        for (int i = 0; i < selectedFields.length; i++) {
-            map.put(selectedFields[i], getString(selectedFields[i]));
+        for (String selectedField : selectedFields) {
+            map.put(selectedField, getString(selectedField));
         }
         return map;
     }
@@ -409,40 +406,40 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
     @Override
     public Map<Integer, String> fillIndexMap(Map<Integer, String> map, int... selectedIndexes) {
         selectedIndexes = buildSelection(selectedIndexes);
-        for (int i = 0; i < selectedIndexes.length; i++) {
-            map.put(selectedIndexes[i], getString(selectedIndexes[i]));
+        for (int selectedIndex : selectedIndexes) {
+            map.put(selectedIndex, getString(selectedIndex));
         }
         return map;
     }
 
     @Override
     public <T extends Enum<T>> Map<T, String> fillEnumMap(Map<T, String> map, T... selectedColumns) {
-        for (int i = 0; i < selectedColumns.length; i++) {
-            map.put(selectedColumns[i], getString(selectedColumns[i]));
+        for (T selectedColumn : selectedColumns) {
+            map.put(selectedColumn, getString(selectedColumn));
         }
         return map;
     }
 
     @Override
     public Map<String, Object> toFieldObjectMap(String... selectedFields) {
-        return fillFieldObjectMap(new HashMap<String, Object>(selectedFields.length), selectedFields);
+        return fillFieldObjectMap(new HashMap<>(selectedFields.length), selectedFields);
     }
 
     @Override
     public Map<Integer, Object> toIndexObjectMap(int... selectedIndex) {
-        return fillIndexObjectMap(new HashMap<Integer, Object>(selectedIndex.length), selectedIndex);
+        return fillIndexObjectMap(new HashMap<>(selectedIndex.length), selectedIndex);
     }
 
     @Override
     public <T extends Enum<T>> Map<T, Object> toEnumObjectMap(Class<T> enumType, T... selectedColumns) {
-        return fillEnumObjectMap(new EnumMap<T, Object>(enumType), selectedColumns);
+        return fillEnumObjectMap(new EnumMap<>(enumType), selectedColumns);
     }
 
     @Override
     public Map<String, Object> fillFieldObjectMap(Map<String, Object> map, String... selectedFields) {
         selectedFields = buildSelection(selectedFields);
-        for (int i = 0; i < selectedFields.length; i++) {
-            map.put(selectedFields[i], metaData.getObjectValue(data, selectedFields[i], null, null));
+        for (String selectedField : selectedFields) {
+            map.put(selectedField, metaData.getObjectValue(data, selectedField, null, null));
         }
         return map;
     }
@@ -450,17 +447,18 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
     @Override
     public Map<Integer, Object> fillIndexObjectMap(Map<Integer, Object> map, int... selectedIndexes) {
         selectedIndexes = buildSelection(selectedIndexes);
-        for (int i = 0; i < selectedIndexes.length; i++) {
-            map.put(selectedIndexes[i], metaData.getObjectValue(data, selectedIndexes[i], null, null));
+        for (int selectedIndex : selectedIndexes) {
+            map.put(selectedIndex, metaData.getObjectValue(data, selectedIndex, null, null));
         }
         return map;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends Enum<T>> Map<T, Object> fillEnumObjectMap(Map<T, Object> map, T... selectedColumns) {
         selectedColumns = buildSelection((Class<T>) selectedColumns.getClass().getComponentType(), selectedColumns);
-        for (int i = 0; i < selectedColumns.length; i++) {
-            map.put(selectedColumns[i], metaData.getObjectValue(data, selectedColumns[i], null, null));
+        for (T selectedColumn : selectedColumns) {
+            map.put(selectedColumn, metaData.getObjectValue(data, selectedColumn, null, null));
         }
         return map;
     }
@@ -623,11 +621,11 @@ public class IndexedRecordImpl<C extends Context> implements Record, DataItem {
             return "[]";
         }
         StringBuilder out = new StringBuilder();
-        for (int i = 0; i < data.length; i++) {
-            if (out.length() != 0) {
+        for (String datum : data) {
+            if (!out.isEmpty()) {
                 out.append(',').append(' ');
             }
-            out.append(data[i]);
+            out.append(datum);
         }
 
         return out.toString();

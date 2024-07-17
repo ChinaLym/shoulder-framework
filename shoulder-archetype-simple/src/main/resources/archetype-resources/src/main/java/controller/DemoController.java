@@ -1,10 +1,5 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
-package ${package}.controller;
-
-import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.AppLoggers;
+import org.shoulder.core.log.Logger;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -4,7 +4,14 @@ import jakarta.annotation.Nonnull;
 
 import java.util.stream.IntStream;
 
-import static org.shoulder.core.log.beautify.ColorString.*;
+import static org.shoulder.core.log.beautify.ColorString.BLACK;
+import static org.shoulder.core.log.beautify.ColorString.BLUE;
+import static org.shoulder.core.log.beautify.ColorString.CYAN;
+import static org.shoulder.core.log.beautify.ColorString.GREEN;
+import static org.shoulder.core.log.beautify.ColorString.MAGENTA;
+import static org.shoulder.core.log.beautify.ColorString.RED;
+import static org.shoulder.core.log.beautify.ColorString.WHITE;
+import static org.shoulder.core.log.beautify.ColorString.YELLOW;
 
 /**
  * 带颜色的 StringBuilder

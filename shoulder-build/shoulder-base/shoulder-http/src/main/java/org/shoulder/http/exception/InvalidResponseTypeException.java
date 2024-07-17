@@ -10,8 +10,7 @@ import java.io.Serial;
  */
 public class InvalidResponseTypeException extends InvalidResponseException {
 
-    @Serial
-    private static final long serialVersionUID = 5681540721974066752L;
+    @Serial private static final long serialVersionUID = 5681540721974066752L;
 
     public InvalidResponseTypeException(Throwable cause) {
         super(cause);

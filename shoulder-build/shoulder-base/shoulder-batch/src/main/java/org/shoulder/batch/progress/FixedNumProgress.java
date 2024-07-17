@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ import java.util.function.BiConsumer;
 //@javax.annotation.concurrent.NotThreadSafe
 public class FixedNumProgress implements Serializable, Progress {
 
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private boolean autoFished = true;
 

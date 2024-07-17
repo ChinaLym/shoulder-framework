@@ -9,13 +9,14 @@ import org.shoulder.log.operation.logger.OperationLogger;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.sql.DataSource;
 
 /**
  * 以 jdbc 记录操作日志记录，直接保存至数据库。适合微小型项目中，日志中心与业务组件同数据库。

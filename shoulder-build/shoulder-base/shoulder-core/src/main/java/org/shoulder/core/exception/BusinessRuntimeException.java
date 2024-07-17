@@ -1,5 +1,7 @@
 package org.shoulder.core.exception;
 
+import java.io.Serial;
+
 /**
  * 业务场景中可预料到的异常【特定业务场景下意料之中的问题，一般不需要排查】
  * <p>
@@ -12,7 +14,7 @@ package org.shoulder.core.exception;
  */
 public class BusinessRuntimeException extends BaseRuntimeException implements ErrorCode {
 
-    private static final long serialVersionUID = -3940675117866395789L;
+    @Serial private static final long serialVersionUID = -3940675117866395789L;
 
     public BusinessRuntimeException(String code, String message) {
         super(code, message);

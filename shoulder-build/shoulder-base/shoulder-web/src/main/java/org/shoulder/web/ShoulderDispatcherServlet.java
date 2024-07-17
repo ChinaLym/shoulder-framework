@@ -23,8 +23,7 @@ import java.util.TimeZone;
  */
 public class ShoulderDispatcherServlet extends DispatcherServlet {
 
-    @Serial
-    private static final long serialVersionUID = -8413315383105362540L;
+    @Serial private static final long serialVersionUID = -8413315383105362540L;
 
     public ShoulderDispatcherServlet() {
         super();

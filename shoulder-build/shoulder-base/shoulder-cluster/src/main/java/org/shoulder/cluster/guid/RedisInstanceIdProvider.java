@@ -101,11 +101,12 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                         "return -1;\n";
         RedisScript<Long> tryInstanceIdScript = new DefaultRedisScript<>(luaScript, Long.class);
 
-        long result = (long) redis.execute(tryInstanceIdScript, List.of(idAssignCacheKey), maxId);
-        if (result < 0) {
-            log.error("redisInstanceIdProvider assignInstanceId FAIL({}): idAssignCacheName={}, maxId={}", result, idAssignCacheKey, maxId);
-        } else {
+        Long result = (Long) redis.execute(tryInstanceIdScript, List.of(idAssignCacheKey), maxId);
+        if (result != null && result > 0) {
             log.debug("redisInstanceIdProvider assignInstanceId SUCCESS.");
+        } else {
+            result = ILLEGAL;
+            log.error("redisInstanceIdProvider assignInstanceId FAIL({}): idAssignCacheName={}, maxId={}", result, idAssignCacheKey, maxId);
         }
 
         return result;
@@ -129,8 +130,8 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                 RedisScript<Long> heartbeatScript = new DefaultRedisScript<>(luaScript, Long.class);
 
                 try {
-                    long result = (long) redis.execute(heartbeatScript, List.of(idAssignCacheKey), getCurrentInstanceId());
-                    if (result == 1) {
+                    Long result = (Long) redis.execute(heartbeatScript, List.of(idAssignCacheKey), getCurrentInstanceId());
+                    if (result != null && result == 1) {
                         log.debug("redisInstanceIdProvider heartbeat SUCCESS.");
                     } else {
                         log.warn("redisInstanceIdProvider heartbeat FAIL: idAssignCacheName={}, instanceId={}", idAssignCacheKey, getCurrentInstanceId());
@@ -162,8 +163,8 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                         """;
         RedisScript<Long> releaseInstanceIdScript = new DefaultRedisScript<>(luaScript, Long.class);
 
-        long result = (long) redis.execute(releaseInstanceIdScript, List.of(idAssignCacheKey), super.getCurrentInstanceId());
-        if (result == 1) {
+        Long result = (Long) redis.execute(releaseInstanceIdScript, List.of(idAssignCacheKey), super.getCurrentInstanceId());
+        if (result != null && result == 1) {
             log.debug("releaseInstanceId SUCCESS.");
             instanceId = ILLEGAL;
         } else {

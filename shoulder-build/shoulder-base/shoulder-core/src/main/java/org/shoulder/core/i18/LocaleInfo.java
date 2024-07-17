@@ -2,9 +2,9 @@ package org.shoulder.core.i18;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.springframework.lang.NonNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.shoulder.core.context.AppInfo;
+import org.springframework.lang.NonNull;
 
 import java.nio.charset.Charset;
 import java.util.Locale;

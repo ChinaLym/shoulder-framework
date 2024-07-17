@@ -80,6 +80,7 @@ public interface Cache extends org.springframework.cache.Cache {
      * @param <T>  t
      * @return 返回的 list 可能包含null
      */
+    @SuppressWarnings("unchecked")
     default <T> List<T> getMulti(@NonNull List<? extends Serializable> keys) {
         if (CollectionUtils.isNotEmpty(keys)) {
             return keys.stream()

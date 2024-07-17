@@ -17,8 +17,7 @@ import java.io.Serial;
 @NoArgsConstructor
 public class ExportColumnConfig extends ToStringObj {
 
-    @Serial
-    private static final long serialVersionUID = -9003361621730630092L;
+    @Serial private static final long serialVersionUID = -9003361621730630092L;
 
     /**
      * 业务/领域模型字段名称，如 Person 类的 name 字段需要对应该列，则会有一个 Column 的 modelName=name

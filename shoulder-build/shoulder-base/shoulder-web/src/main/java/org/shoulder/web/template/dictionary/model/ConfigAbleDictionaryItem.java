@@ -13,6 +13,7 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -22,8 +23,8 @@ import java.io.Serializable;
 @Setter
 public class ConfigAbleDictionaryItem implements DictionaryItem<String>, Serializable {
 
-    private static final SpelExpressionParser EXPRESS_PARSER = new SpelExpressionParser();
-    private static final long serialVersionUID = -1;
+    private static final         SpelExpressionParser EXPRESS_PARSER   = new SpelExpressionParser();
+    @Serial private static final long                 serialVersionUID = -1;
 
     @NotNull
     @NotBlank

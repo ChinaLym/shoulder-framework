@@ -2,7 +2,11 @@ package org.shoulder.autoconfigure.redis;
 
 import io.lettuce.core.cluster.event.ClusterTopologyChangedEvent;
 import io.lettuce.core.event.cluster.AdaptiveRefreshTriggeredEvent;
-import io.lettuce.core.event.connection.*;
+import io.lettuce.core.event.connection.ConnectedEvent;
+import io.lettuce.core.event.connection.ConnectionActivatedEvent;
+import io.lettuce.core.event.connection.ConnectionDeactivatedEvent;
+import io.lettuce.core.event.connection.DisconnectedEvent;
+import io.lettuce.core.event.connection.ReconnectFailedEvent;
 import io.lettuce.core.event.metrics.CommandLatencyEvent;
 
 /**

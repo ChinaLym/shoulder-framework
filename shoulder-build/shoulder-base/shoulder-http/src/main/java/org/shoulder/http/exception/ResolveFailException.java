@@ -11,8 +11,7 @@ import java.io.Serial;
  */
 public class ResolveFailException extends BaseRuntimeException {
 
-    @Serial
-    private static final long serialVersionUID = -2745556685325930983L;
+    @Serial private static final long serialVersionUID = -2745556685325930983L;
 
     public ResolveFailException(Throwable cause) {
         super(cause);

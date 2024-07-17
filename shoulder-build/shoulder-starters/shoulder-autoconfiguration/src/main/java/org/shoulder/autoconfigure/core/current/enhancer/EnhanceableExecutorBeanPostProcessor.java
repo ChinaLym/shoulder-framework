@@ -2,7 +2,11 @@ package org.shoulder.autoconfigure.core.current.enhancer;
 
 import jakarta.annotation.Nonnull;
 import org.aopalliance.aop.Advice;
-import org.shoulder.core.concurrent.enhance.*;
+import org.shoulder.core.concurrent.enhance.EnhanceableAsyncListenableTaskExecutor;
+import org.shoulder.core.concurrent.enhance.EnhanceableAsyncTaskExecutor;
+import org.shoulder.core.concurrent.enhance.EnhanceableExecutor;
+import org.shoulder.core.concurrent.enhance.EnhanceableExecutorService;
+import org.shoulder.core.concurrent.enhance.EnhanceableThreadPoolExecutor;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.slf4j.Logger;
 import org.springframework.aop.framework.AopConfigException;
@@ -31,14 +35,14 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
     private static final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
 
     @Override
-    public Object postProcessBeforeInitialization(@Nonnull Object bean, String beanName)
+    public Object postProcessBeforeInitialization(@Nonnull Object bean, @Nonnull String beanName)
         throws BeansException {
         // do nothing
         return bean;
     }
 
     @Override
-    public Object postProcessAfterInitialization(@Nonnull Object bean, String beanName)
+    public Object postProcessAfterInitialization(@Nonnull Object bean, @Nonnull String beanName)
         throws BeansException {
         // 只处理 Executor
         if (bean instanceof Executor) {

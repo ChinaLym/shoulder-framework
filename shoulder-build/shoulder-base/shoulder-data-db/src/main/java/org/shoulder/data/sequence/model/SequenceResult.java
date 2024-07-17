@@ -15,8 +15,7 @@ import java.util.Date;
 
 public class SequenceResult implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 7267206837567860910L;
+    @Serial private static final long serialVersionUID = 7267206837567860910L;
     /**
      * 结果
      */

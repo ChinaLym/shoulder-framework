@@ -6,7 +6,18 @@ import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import org.shoulder.data.constant.DataBaseConsts;
-import org.shoulder.data.mybatis.injector.methods.*;
+import org.shoulder.data.mybatis.injector.methods.DeleteInLogicByBizId;
+import org.shoulder.data.mybatis.injector.methods.DeleteInLogicByBizIdList;
+import org.shoulder.data.mybatis.injector.methods.DeleteInLogicById;
+import org.shoulder.data.mybatis.injector.methods.DeleteInLogicByIdList;
+import org.shoulder.data.mybatis.injector.methods.InsertBatch;
+import org.shoulder.data.mybatis.injector.methods.SelectBatchByBizIds;
+import org.shoulder.data.mybatis.injector.methods.SelectBatchForUpdateByBizIds;
+import org.shoulder.data.mybatis.injector.methods.SelectByBizId;
+import org.shoulder.data.mybatis.injector.methods.SelectForUpdateByBizId;
+import org.shoulder.data.mybatis.injector.methods.SelectForUpdateById;
+import org.shoulder.data.mybatis.injector.methods.UpdateAllFieldsById;
+import org.shoulder.data.mybatis.injector.methods.UpdateByBizId;
 
 import java.util.List;
 

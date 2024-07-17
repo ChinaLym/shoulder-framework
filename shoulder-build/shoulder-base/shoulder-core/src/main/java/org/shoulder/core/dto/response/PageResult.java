@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -21,12 +22,12 @@ import java.util.stream.Collectors;
 @Schema(description = "PageResult<T> 分页数据返回格式", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class PageResult<T> extends ListResult<T> {
 
-    private static final long serialVersionUID = -1451879834966540928L;
+    @Serial private static final long    serialVersionUID = -1451879834966540928L;
     /**
      * 当前页
      */
     @Schema(description = "当前页码", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer pageNum;
+    private                      Integer pageNum;
 
     /**
      * 每页的数量

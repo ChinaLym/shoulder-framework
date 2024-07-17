@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 public class ConfigFieldInfoDTO implements Serializable {
 
-    private static final long serialVersionUID = -6199304842326961220L;
+    @Serial private static final long serialVersionUID = -6199304842326961220L;
 
     /**
      * 显示顺序

@@ -25,7 +25,7 @@ public abstract class AbstractInstanceIdProvider implements InstanceIdProvider {
             synchronized (this) {
                 if (instanceId < 0) {
                     instanceId = assignInstanceId();
-                    if (instanceId == ILLEGAL) {
+                    if (instanceId < 0) {
                         throw new IllegalStateException();
                     }
                 }

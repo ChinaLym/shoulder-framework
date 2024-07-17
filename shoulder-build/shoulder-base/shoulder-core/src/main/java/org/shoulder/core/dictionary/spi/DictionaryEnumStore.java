@@ -44,6 +44,7 @@ public interface DictionaryEnumStore {
      * @param enumClass 枚举类
      * @return 所有符合条件的枚举
      */
+    @SuppressWarnings("unchecked")
     @Nonnull
     default <ID, ENUM extends Enum<? extends DictionaryItemEnum<ENUM, ID>>> List<DictionaryItemEnum<ENUM, ID>> list(@Nonnull Class<? extends DictionaryItemEnum<ENUM, ID>> enumClass) {
         return list(mapToStorageKey((Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>>) enumClass));
@@ -87,18 +88,22 @@ public interface DictionaryEnumStore {
     @SuppressWarnings("rawtypes")
     Collection<Class<? extends Enum<? extends DictionaryItemEnum>>> listAllTypes();
 
+    @SuppressWarnings("unchecked")
     default boolean contains(Class<?> enumClass) {
         return contains(mapToStorageKey((Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>>) enumClass));
     }
 
     boolean contains(String dictionaryType);
 
+    @SuppressWarnings("unchecked")
     default void remove(Class<?> enumClass) {
         remove(mapToStorageKey((Class<? extends Enum<? extends DictionaryItemEnum<?, ?>>>) enumClass));
     }
 
+    @SuppressWarnings("rawtypes")
     Class<? extends Enum<? extends DictionaryItemEnum>> remove(String dictionaryType);
 
+    @SuppressWarnings("rawtypes")
     Class<? extends Enum<? extends DictionaryItemEnum>> getActuallyType(String dictionaryType);
 
     @Nonnull

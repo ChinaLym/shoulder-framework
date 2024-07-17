@@ -14,6 +14,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.Serial;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ import static org.shoulder.core.constant.PageConst.PARAM_SORT_BY;
 @Schema(description = "PageQuery<DTO> 分页查询请求", contentMediaType = MediaType.APPLICATION_JSON_VALUE)
 public class PageQuery<DTO> extends ToStringObj {
 
-    private static final long serialVersionUID = -3462907130101674607L;
+    @Serial private static final long serialVersionUID = -3462907130101674607L;
 
     /**
      * 页码

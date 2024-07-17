@@ -11,8 +11,7 @@ import java.io.Serial;
  */
 public class InvalidResponseException extends BaseRuntimeException {
 
-    @Serial
-    private static final long serialVersionUID = -1935896109628796740L;
+    @Serial private static final long serialVersionUID = -1935896109628796740L;
 
     public InvalidResponseException(Throwable cause) {
         super(cause);

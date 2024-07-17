@@ -1,7 +1,11 @@
 package org.shoulder.autoconfigure.web;
 
 import org.shoulder.core.log.ShoulderLoggers;
-import org.shoulder.web.advice.*;
+import org.shoulder.web.advice.RestControllerColorfulLogAspect;
+import org.shoulder.web.advice.RestControllerDataExceptionAdvice;
+import org.shoulder.web.advice.RestControllerExceptionAdvice;
+import org.shoulder.web.advice.RestControllerJsonLogAspect;
+import org.shoulder.web.advice.RestControllerUnionResponseAdvice;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;

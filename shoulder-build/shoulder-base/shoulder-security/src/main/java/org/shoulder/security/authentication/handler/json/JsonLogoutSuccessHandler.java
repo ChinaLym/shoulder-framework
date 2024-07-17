@@ -29,7 +29,7 @@ public class JsonLogoutSuccessHandler implements LogoutSuccessHandler {
 
         log.debug("logout SUCCESS.");
 
-        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(JsonUtils.toJson(BaseResult.error(CommonErrorCodeEnum.AUTH_401_EXPIRED)));
     }
 
