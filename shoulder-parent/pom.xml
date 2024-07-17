@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
     <artifactId>shoulder-parent</artifactId>
     <name>${project.artifactId}</name>
+    <url>https://doc.itlym.cn</url>
     <description>
         Shoulder 工程的父模块，包含了默认组件的版本管理以及构建插件的默认设置。
     </description>
@@ -26,6 +27,7 @@
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
+        <jacoco.version>0.8.12</jacoco.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 
@@ -56,34 +58,51 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <site>
+            <id>shoulder</id>
+            <name>document</name>
+            <url>https://doc.itlym.cn</url>
+        </site>
+    </distributionManagement>
+
+    <!-- 开源组织 -->
+    <organization>
+        <name>ChinaLym</name>
+        <url>https://doc.itlym.cn</url>
+    </organization>
+
     <!-- 开发者 -->
     <developers>
         <developer>
-            <id>ChinaLym</id>
-            <name>cnlym</name>
+            <id>lym</id>
+            <name>lym</name>
             <email>cn_lym@foxmail.com</email>
-            <organization>shoulder.</organization>
-            <organizationUrl>coming soon</organizationUrl>
+            <organization>${project.organization.name}</organization>
+            <organizationUrl>${project.organization.url}</organizationUrl>
             <roles>
-                <role>CAFE BABE</role>
+                <role>architect</role>
+                <role>developer</role>
             </roles>
             <timezone>+8</timezone>
+            <properties>
+                <picUrl>http://doc.itlym.cn/shoulder</picUrl>
+            </properties>
         </developer>
     </developers>
 
     <!-- 版本控制，供其他插件使用 -->
     <scm>
-        <connection>scm:git@github.com:ChinaLym/shoulder-framework.git</connection>
-        <developerConnection>scm:git@github.com:ChinaLym/shoulder-framework.git</developerConnection>
+        <connection>scm:git:git://github.com/ChinaLym/shoulder-framework.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/ChinaLym/shoulder-framework.git</developerConnection>
         <url>git@github.com:ChinaLym/shoulder-framework.git</url>
+        <tag>${version}</tag>
     </scm>
 
     <issueManagement>
         <system>Github Issue</system>
         <url>https://github.com/ChinaLym/shoulder-framework/issues</url>
     </issueManagement>
-
-    <url>https://github.com/ChinaLym/shoulder-framework</url>
 
     <!--开源许可协议采用 Apache 2.0 协议-->
     <licenses>
@@ -135,6 +154,10 @@
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
+                        <fork>true</fork>
+                        <optimize>true</optimize>
+                        <showDeprecation>true</showDeprecation>
+                        <showWarnings>true</showWarnings>
                         <!-- 编译时打印告警，方便排查问题 -->
                         <compilerArgument>-Xlint:unchecked</compilerArgument>
                         <compilerArgs>
@@ -212,7 +235,7 @@
                         <!-- config for license:update-file-header -->
                         <licenseName>apache_v2</licenseName>
                         <inceptionYear>2020</inceptionYear>
-                        <organizationName>shoulder</organizationName>
+                        <organizationName>${project.organization.name}</organizationName>
                         <projectName>shoulder-framework</projectName>
                         <roots>
                             <root>src/main/java</root>
@@ -310,6 +333,31 @@
                             <configuration>
                                 <!-- 取消对源码中的doc参数注释等检查 3.x 之前为 additionalparam -->
                                 <additionalJOption>-Xdoclint:none</additionalJOption>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- 单测覆盖率 -->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/jacoco-report</outputDirectory>
+                                <outputEncoding>UTF-8</outputEncoding>
                             </configuration>
                         </execution>
                     </executions>

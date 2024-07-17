@@ -21,6 +21,7 @@ import org.springframework.lang.NonNull;
 public class EnumToStringPropertyValueConverter
         implements PropertyValueConverter<DictionaryItem<String>, String, ValueConversionContext<? extends PersistentProperty>> {
 
+    @SuppressWarnings("unchecked")
     @Override
     public DictionaryItem<String> read(@NonNull String value, ValueConversionContext<? extends PersistentProperty> context) {
         Class<?> actuallyType = context.getProperty().getActualType();

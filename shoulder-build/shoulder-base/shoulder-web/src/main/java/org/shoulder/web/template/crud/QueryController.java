@@ -126,6 +126,7 @@ public interface QueryController<
         return getConversionService().convert(entity, getQueryDtoClass());
     }
 
+    @SuppressWarnings("unchecked")
     default Class<QueryResultDTO> getQueryDtoClass() {
         return (Class<QueryResultDTO>) GenericTypeUtils.resolveTypeArguments(this.getClass(), QueryController.class)[3];
     }

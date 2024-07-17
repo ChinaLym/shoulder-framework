@@ -11,6 +11,7 @@
     </parent>
     <artifactId>shoulder-core</artifactId>
     <name>${project.artifactId}</name>
+    <url>https://doc.itlym.cn</url>
     <description>
         shoulder 核心模块，提供了错误码、异常处理、日志、字典、锁、统一上下文、提供了常用并发、数据处理工具。
     </description>

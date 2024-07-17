@@ -73,6 +73,7 @@ public class MybatisLikeSqlInterceptor implements Interceptor {
      * @param parameterObject 参数对象
      * @param boundSql        绑定SQL对象
      */
+    @SuppressWarnings("unchecked,rawtypes")
     private void transferLikeSql(String sql, Object parameterObject, BoundSql boundSql) {
         if (!isEscape(sql)) {
             return;

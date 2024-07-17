@@ -13,6 +13,7 @@
 
     <artifactId>shoulder-autoconfiguration</artifactId>
     <name>${project.artifactId}</name>
+    <url>https://doc.itlym.cn</url>
     <description>
         Shoulder 默认功能激活模块，包含了默认 Bean 装配的实现，以便在 spring-boot 环境开箱即用。
     </description>

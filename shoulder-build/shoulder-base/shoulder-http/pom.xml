@@ -12,6 +12,7 @@
 
     <artifactId>shoulder-http</artifactId>
     <name>${project.artifactId}</name>
+    <url>https://doc.itlym.cn</url>
     <description>
         Shoulder 提供的 Http 通信模块，几十行核心代码，在 Spring RestTemplate 基础上实现了AOP日志、异常处理、统一响应解析能力。
     </description>

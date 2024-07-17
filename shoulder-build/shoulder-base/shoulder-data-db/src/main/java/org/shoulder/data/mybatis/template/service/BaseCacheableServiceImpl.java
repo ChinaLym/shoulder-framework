@@ -163,6 +163,7 @@ public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>
      * 删除后，逐出缓存
      */
     @Override
+    @SuppressWarnings("unchecked")
     @Transactional(rollbackFor = Exception.class)
     public boolean removeByIds(Collection<?> idList) {
         if (CollUtil.isEmpty(idList)) {

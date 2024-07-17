@@ -102,7 +102,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
     @Setter
     private List<String> sequenceShardingColumnNames = new ArrayList<>();
 
-    private AtomicBoolean sequenceMonitorInited = new AtomicBoolean(false);
+    private final AtomicBoolean sequenceMonitorInitialized = new AtomicBoolean(false);
 
 
     /**
@@ -131,7 +131,7 @@ public abstract class AbstractCacheAndRetryableSequenceDao implements SequenceDa
     @Override
     public void initialize() throws Exception {
         this.sequenceRangeCache = new SequenceRangeCache(cacheSize, cacheExpireSeconds);
-        if (sequenceMonitorInited.compareAndSet(false, true)) {
+        if (sequenceMonitorInitialized.compareAndSet(false, true)) {
             SequenceMonitorThreadBuilder.build(sequenceRangeCache, sequenceSemaphoreMap, this).start();
         }
     }

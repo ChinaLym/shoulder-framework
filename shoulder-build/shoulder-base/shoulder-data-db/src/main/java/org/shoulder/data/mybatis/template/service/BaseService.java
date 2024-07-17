@@ -303,6 +303,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
      *
      * @param entity 实体对象
      */
+    @SuppressWarnings("unchecked,rawtypes")
     @Transactional(rollbackFor = Exception.class)
     default boolean updateByBizId(ENTITY entity) {
         checkEntityAs(BizEntity.class);

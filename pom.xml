@@ -15,12 +15,12 @@
     <!-- 简介: 方便统一编译打包发布的模块，仅配置无代码 -->
     <name>shoulder Build</name>
     <description>Modules to centralize common resources and configuration for shoulder Maven builds.</description>
-    <url>https://github.com/ChinaLym/shoulder-framework</url>
+    <url>https://doc.itlym.cn</url>
 
     <!-- 开源组织 -->
     <organization>
         <name>ChinaLym</name>
-        <url>https://github.com/ChinaLym</url>
+        <url>https://doc.itlym.cn</url>
     </organization>
 
     <!-- 模块 -->
@@ -42,6 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
+        <jacoco.version>0.8.12</jacoco.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <license-maven-plugin.version>2.2.0</license-maven-plugin.version>
@@ -56,25 +57,33 @@
     <!--发布前检查依赖是否有新版本 mvn dependency:analyze-->
 
     <!-- 开发者 -->
+    <!-- 开发者 -->
     <developers>
         <developer>
-            <id>ChinaLym</id>
-            <name>cnlym</name>
+            <id>lym</id>
+            <name>lym</name>
             <email>cn_lym@foxmail.com</email>
-            <organization>shoulder.</organization>
-            <organizationUrl>coming soon</organizationUrl>
+            <organization>${project.organization.name}</organization>
+            <organizationUrl>${project.organization.url}</organizationUrl>
             <roles>
-                <role>CAFE BABE</role>
+                <role>architect</role>
+                <role>developer</role>
             </roles>
             <timezone>+8</timezone>
         </developer>
     </developers>
 
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/ChinaLym/shoulder-framework/issues</url>
+    </issueManagement>
+
     <!-- 版本控制，供其他插件使用 -->
     <scm>
-        <connection>scm:git@github.com:ChinaLym/shoulder-framework.git</connection>
-        <developerConnection>scm:git@github.com:ChinaLym/shoulder-framework.git</developerConnection>
+        <connection>scm:git:git://github.com/ChinaLym/shoulder-framework.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/ChinaLym/shoulder-framework.git</developerConnection>
         <url>git@github.com:ChinaLym/shoulder-framework.git</url>
+        <tag>${version}</tag>
     </scm>
 
     <!--开源许可协议采用 Apache 2.0 协议-->
@@ -115,14 +124,28 @@
     </pluginRepositories>-->
 
     <distributionManagement>
-        <repository>
-            <id>oss</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
+<!--        私域仓库，已停止运行 -->
+<!--        <snapshotRepository>-->
+<!--            <id>nexus</id>-->
+<!--            <url>http://mvn.itlym.cn/repository/maven-snapshots/</url>-->
+<!--        </snapshotRepository>-->
+<!--        <repository>-->
+<!--            <id>nexus</id>-->
+<!--            <url>http://mvn.itlym.cn/repository/maven-releases/</url>-->
+<!--        </repository>-->
         <snapshotRepository>
             <id>oss</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <repository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <site>
+            <id>shoulder</id>
+            <name>document</name>
+            <url>https://doc.itlym.cn</url>
+        </site>
     </distributionManagement>
 
     <!--<profiles>
@@ -149,6 +172,31 @@
             </plugins>
         </pluginManagement>
         <plugins>
+
+            <!-- 单测覆盖率 -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/jacoco-report</outputDirectory>
+                            <outputEncoding>UTF-8</outputEncoding>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- 测试覆盖率统计工具 -->
             <!-- <plugin>
@@ -278,22 +326,14 @@
                 </configuration>
             </plugin>
 
+<!--            检查 api 兼容性-->
+<!--            <groupId>org.revapi</groupId>-->
+<!--            <artifactId>revapi-maven-plugin</artifactId>-->
+<!--            <groupId>com.github.siom79.japicmp</groupId>-->
+<!--            <artifactId>japicmp-maven-plugin</artifactId>-->
+
+
         </plugins>
     </build>
-
-    <!-- 发布仓库 -->
-    <!--<distributionManagement>
-        <snapshotRepository>
-            <id>nexus</id>
-            <url>http://mvn.itlym.cn/repository/maven-snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>nexus</id>
-            <url>http://mvn.itlym.cn/repository/maven-releases/</url>
-        </repository>
-    </distributionManagement>-->
-    <!--</profile>
-
-</profiles>-->
 
 </project>

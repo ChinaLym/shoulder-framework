@@ -112,6 +112,7 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
         return !hasSpecialProduces && withoutMethodAnnotation && withoutClassAnnotation && (restController || responseBody);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Object beforeBodyWrite(@Nullable Object body, @Nonnull MethodParameter returnType,
                                   @Nonnull MediaType selectedContentType,

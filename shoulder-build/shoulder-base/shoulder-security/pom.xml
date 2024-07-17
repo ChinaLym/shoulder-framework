@@ -12,6 +12,7 @@
 
     <artifactId>shoulder-security</artifactId>
     <name>${project.artifactId}</name>
+    <url>https://doc.itlym.cn</url>
     <description>
         Shoulder 基础模块，基于 Spring Security + Spring Boot Web的安全模块，除了提供用户认证、授权、会话管理等基础功能，还允许轻松更换认证模式，如
         Session / Token（JWT） 模式切换。

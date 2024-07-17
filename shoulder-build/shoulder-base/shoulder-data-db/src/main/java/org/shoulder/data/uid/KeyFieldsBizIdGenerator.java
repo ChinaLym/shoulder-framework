@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
  *
  * @author lym
  */
+@SuppressWarnings("unchecked,rawtypes")
 public class KeyFieldsBizIdGenerator implements ConditionalBizIdGenerator {
 
     private final String fieldValueSplit;

@@ -110,11 +110,11 @@ public interface UpdateController<
      * @param dto DTO
      * @return entity
      */
-    @SuppressWarnings("unchecked")
     default UPDATE_RESULT_DTO handleAfterUpdateAndConvertToDTO(ENTITY entity) {
         return getConversionService().convert(entity, getUpdateResultDtoClass());
     }
 
+    @SuppressWarnings("unchecked")
     default Class<UPDATE_RESULT_DTO> getUpdateResultDtoClass() {
         return (Class<UPDATE_RESULT_DTO>) GenericTypeUtils.resolveTypeArguments(this.getClass(), UpdateController.class)[2];
     }

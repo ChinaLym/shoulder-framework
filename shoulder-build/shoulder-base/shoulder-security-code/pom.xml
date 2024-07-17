@@ -12,6 +12,7 @@
 
     <artifactId>shoulder-security-code</artifactId>
     <name>${project.artifactId}</name>
+    <url>https://doc.itlym.cn</url>
     <description>
         Shoulder Security 的扩展，提供了“验证码”功能基础框架。可扩展支持各类验证码，如手机短信、图形验证码、邮件验证码、滑块验证码、App验证码等。
     </description>

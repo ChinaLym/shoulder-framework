@@ -12,6 +12,7 @@
 
     <artifactId>shoulder-data-db</artifactId>
     <name>${project.artifactId}</name>
+    <url>https://doc.itlym.cn</url>
     <description>
         Shoulder 数据访问层模块，基于Spring Data + MyBatis-Plus 提供多数据源、ORM 等能力，且在其基础上额外实现二十余项实用增强能力，此外支持全局
         id 生成，通用 DAO 模板等能力。

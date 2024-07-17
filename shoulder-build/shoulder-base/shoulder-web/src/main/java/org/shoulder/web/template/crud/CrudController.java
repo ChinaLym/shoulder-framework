@@ -89,6 +89,7 @@ public abstract class CrudController<
         return bizIdGenerator.generateBizId((BizEntity) entity, (Class<? extends BizEntity>) entity.getClass());
     }
 
+    @SuppressWarnings("unchecked")
     @Override public Class<QueryResultDTO> getQueryDtoClass() {
         return genericClasses[3];
     }

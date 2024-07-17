@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
     <artifactId>shoulder-dependencies</artifactId>
     <name>${project.artifactId}</name>
+    <url>https://doc.itlym.cn</url>
     <description>
         Shoulder 所有的依赖项版本管理模块，仅包含依赖项与其版本定义，不包含代码。
     </description>
