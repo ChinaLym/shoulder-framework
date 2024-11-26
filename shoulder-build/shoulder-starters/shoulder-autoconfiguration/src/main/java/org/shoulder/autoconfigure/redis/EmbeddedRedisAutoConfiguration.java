@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
 import redis.embedded.RedisServer;
 import redis.embedded.core.RedisServerBuilder;
@@ -21,7 +20,7 @@ import redis.embedded.core.RedisServerBuilder;
         beforeName = "org.springframework.boot.autoconfigure.data.redis.LettuceConnectionConfiguration"
 )
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@ConditionalOnClass(value = {RedisTemplate.class, RedisServer.class})
+@ConditionalOnClass(value = RedisServer.class)
 public class EmbeddedRedisAutoConfiguration {
 
     @Bean
@@ -38,6 +37,7 @@ public class EmbeddedRedisAutoConfiguration {
             redisServer.start();
             // java进程退出时，自动关闭 redisServer
             //Runtime.getRuntime().addShutdownHook(new Thread(redisServer::stop));
+            ShoulderLoggers.SHOULDER_CONFIG.info("EmbeddedRedis active on localhost:6379 (64M mem) success.");
             return redisServer;
         } catch (Exception e) {
             // 用 mock 肯定时本地/单侧，启动失败打印异常
