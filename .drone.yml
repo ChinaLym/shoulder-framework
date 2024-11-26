@@ -31,8 +31,8 @@ steps:
       # ========== install script end ==========
       #
       # ========== deploy script ==========
-      #- bash scripts/prepareRelease.sh
-      #- mvn clean deploy -P release -Dmaven.test.skip=true -B -V -T 1.5C
+      - bash scripts/prepareRelease.sh
+      - mvn clean deploy -P release -Dmaven.test.skip=true -B -V -T 1.5C
       # ========== deploy script end ==========
       - echo '========FINISHED CICD=========='
 
