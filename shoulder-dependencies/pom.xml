@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>1.0.0-PRE-SNPASHOT</version><!-- shoulder-version -->
+        <version>1.0.0-M1</version><!-- shoulder-version -->
         <!--<relativePath>../pom.xml</relativePath>-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -21,7 +21,7 @@
     <properties>
         <!-- shoulder framework bom -->
         <shoulder-lombok.version>0.1</shoulder-lombok.version>
-        <shoulder.version>1.0.0-PRE-SNPASHOT</shoulder.version><!-- shoulder-version -->
+        <shoulder.version>1.0.0-M1</shoulder.version><!-- shoulder-version -->
 
         <!-- dependencies bom -->
 
@@ -32,7 +32,7 @@
         <nimbus-jose-jwt.version>9.39.1</nimbus-jose-jwt.version>
         <spring-oauth2-server.version>1.2.3</spring-oauth2-server.version>
 
-        <spring-boot.version>3.2.6</spring-boot.version>
+        <spring-boot.version>3.2.12</spring-boot.version>
         <!-- 由于Spring Boot提供了Maven BOM来管理依赖版本，因此您无需指定版本 -->
 
         <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info https://www.json.cn/  -->

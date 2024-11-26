@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>1.0.0-PRE-SNPASHOT</version><!-- shoulder-version -->
+        <version>1.0.0-M1</version><!-- shoulder-version -->
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <artifactId>shoulder-core</artifactId>
