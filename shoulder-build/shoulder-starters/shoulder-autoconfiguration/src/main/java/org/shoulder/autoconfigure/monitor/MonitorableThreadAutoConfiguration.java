@@ -45,8 +45,11 @@ public class MonitorableThreadAutoConfiguration {
         return executor;
     }
 
-    @Bean
-    @ConditionalOnMissingBean(DelayTaskHolder.class)
+    /**
+     * @deprecated 1.0
+     */
+//    @Bean
+//    @ConditionalOnMissingBean(DelayTaskHolder.class)
     public MonitorableDelayTaskHolder delayTaskHolder() {
         MonitorableDelayTaskHolder delayTaskHolder = new MonitorableDelayTaskHolder(new DelayQueueDelayTaskHolder(new DelayQueue<>()),
                 AppInfo.appId() + "_delayTaskHolder");

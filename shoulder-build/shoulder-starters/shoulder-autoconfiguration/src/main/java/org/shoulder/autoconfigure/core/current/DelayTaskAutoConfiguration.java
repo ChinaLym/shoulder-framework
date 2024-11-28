@@ -24,8 +24,9 @@ import java.util.concurrent.Executor;
  * 延迟任务相关配置
  *
  * @author lym
+ * @deprecated 1.0
  */
-@AutoConfiguration
+//@AutoConfiguration
 @ConditionalOnProperty(name = "shoulder.delayTask.enable", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(DelayTaskProperties.class)
 public class DelayTaskAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {

@@ -1,5 +1,4 @@
 org.shoulder.autoconfigure.core.current.ThreadAutoConfiguration
-org.shoulder.autoconfigure.core.current.DelayTaskAutoConfiguration
 org.shoulder.autoconfigure.core.current.enhancer.ThreadEnhancerConfiguration
 org.shoulder.autoconfigure.core.current.enhancer.EnhanceableAsyncCustomAutoConfiguration
 org.shoulder.autoconfigure.core.current.enhancer.EnhanceableAsyncDefaultAutoConfiguration

@@ -71,7 +71,7 @@ public class Threads {
 
     public static synchronized void setDelayTaskHolder(DelayTaskHolder delayTaskHolder) {
 //        Threads.DELAY_TASK_HOLDER = delayTaskHolder;
-        log.debug("Threads' DELAY_TASK_HOLDER has changed to " + delayTaskHolder);
+//        log.debug("Threads' DELAY_TASK_HOLDER has changed to " + delayTaskHolder);
     }
 
     /**

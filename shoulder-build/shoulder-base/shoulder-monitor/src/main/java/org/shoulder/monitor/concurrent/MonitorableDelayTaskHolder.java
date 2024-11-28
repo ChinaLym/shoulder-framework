@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 包了一层延迟队列的数量
  *
  * @author lym
+ * @deprecated 1.0
  */
 public class MonitorableDelayTaskHolder implements DelayTaskHolder {
 

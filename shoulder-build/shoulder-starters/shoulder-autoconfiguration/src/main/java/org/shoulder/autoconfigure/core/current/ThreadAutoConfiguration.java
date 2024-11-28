@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.core.current;
 
 import org.shoulder.core.concurrent.Threads;
+import org.shoulder.core.concurrent.delay.DelayTaskHolder;
 import org.shoulder.core.util.ContextUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -57,8 +58,9 @@ public class ThreadAutoConfiguration {
     @Bean
     public ApplicationListener<ContextRefreshedEvent> shoulderThreadsUtilPostProcessor() {
         return event -> {
-            Threads.setExecutorService(ContextUtils.getBean(Threads.SHOULDER_THREAD_POOL_NAME));
-            Threads.setDelayTaskHolder(ContextUtils.getBean(Threads.SHOULDER_TASK_SCHEDULER));
+            Threads.setExecutorService((ExecutorService) ContextUtils.getBean(Threads.SHOULDER_THREAD_POOL_NAME));
+            // fixme @deprecated delayTask 1.0
+//            Threads.setDelayTaskHolder((DelayTaskHolder) ContextUtils.getBean(Threads.SHOULDER_TASK_SCHEDULER));
         };
     }
 
