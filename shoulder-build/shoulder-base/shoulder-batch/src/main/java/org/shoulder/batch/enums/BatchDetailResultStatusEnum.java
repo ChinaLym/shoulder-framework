@@ -24,10 +24,12 @@ public enum BatchDetailResultStatusEnum implements IntDictionaryItemEnum<BatchDe
      * 处理中
      */
 //    PROCESSING(1, BatchI18nEnum.RESULT_UNKNOWN.getCode(), BatchDetailResultStatusEnum.TYPE_INIT),
+
     /**
      * 成功 / 通过
      */
-    SUCCESS(10, BatchI18nEnum.RESULT_UNKNOWN.getCode(), BatchDetailResultStatusEnum.TYPE_SUCCESS),
+    SUCCESS(10, BatchI18nEnum.RESULT_IMPORT_SUCCESS.getCode(), BatchDetailResultStatusEnum.TYPE_SUCCESS),
+
     /**
      * 成功 - 重复（数据已存在）并更新旧值
      */

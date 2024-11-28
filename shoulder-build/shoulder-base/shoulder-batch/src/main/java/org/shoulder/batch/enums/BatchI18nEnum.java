@@ -4,6 +4,7 @@ package org.shoulder.batch.enums;
 import lombok.Getter;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.util.ContextUtils;
+import org.shoulder.core.util.StringUtils;
 
 /**
  * 批处理国际化
@@ -146,7 +147,7 @@ public enum BatchI18nEnum {
     public String i18nValue(Object... args) {
         return ContextUtils.getBeanOptional(Translator.class)
                 .map(t -> t.getMessageOrDefault(this.code, this.defaultName, args))
-                .filter(String::isBlank)
+                .filter(StringUtils::isNotBlank)
                 .orElse(this.defaultName);
     }
 

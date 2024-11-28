@@ -206,10 +206,19 @@ public class DefaultBatchExportService implements BatchAndExportService {
     private String[] toDataArray(Map<String, String> dataMap) {
         ExportFileConfig exportFileConfig = BatchOutputContext.get().getExportConfig();
         List<ExportColumnConfig> columnList = exportFileConfig.getColumns();
-        String[] dataArray = new String[dataMap.size()];
-        for (int i = 0; i < columnList.size(); i++) {
+        boolean exportRecordInfo = BatchOutputContext.get().isExtraDetail();
+        int dataColumnNum = columnList.size();
+        String[] dataArray = new String[dataColumnNum + (exportRecordInfo ? 3 : 0)];
+        // 数据
+        for (int i = 0; i < dataColumnNum; i++) {
             ExportColumnConfig column = columnList.get(i);
             dataArray[i] = dataMap.get(column.getModelField());
+        }
+        // 导出信息
+        if (exportRecordInfo) {
+            dataArray[dataColumnNum] = dataMap.get(BatchConstants.INDEX);
+            dataArray[dataColumnNum + 1] = dataMap.get(BatchConstants.RESULT);
+            dataArray[dataColumnNum + 2] = dataMap.get(BatchConstants.DETAIL);
         }
         return dataArray;
     }
@@ -234,7 +243,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
                     dataMap.put(BatchConstants.INDEX, BatchI18nEnum.SPECIAL_ROW.i18nValue(batchRecordDetail.getIndex()));
                     dataMap.put(BatchConstants.RESULT, translator.getMessage(
                             BatchDetailResultStatusEnum.of(batchRecordDetail.getStatus()).getTip()));
-                    dataMap.put(BatchConstants.DETAIL, StringUtils.isBlank(batchRecordDetail.getFailReason()) ? null :
+                    dataMap.put(BatchConstants.DETAIL, StringUtils.isBlank(batchRecordDetail.getFailReason()) ? "" :
                         translator.getMessage(batchRecordDetail.getFailReason()));
                     return dataMap;
                 })
