@@ -51,6 +51,7 @@ Google 等互联网顶尖公司已经探索 `ServiceMesh` 许久，虽然当前�
 - 默认容器由 alpaquita 替换 alpine，以获得更好的内存管理支持（musl-perf，JDK16后兼容）、支持 Graavl VN
 - redis Lettuce 6.3 修复了redis宕机会导致15分钟不可用（客户端无主动探活，问题链接未释放），netty-transport-native-epoll:4.1.65.Final:linux-x86_64，在 EPOLL 可用时；https://xie.infoq.cn/article/8d5ecb7b1bc9c84a35de43674
 - JDK 21 https://www.oracle.com/java/technologies/downloads/#jdk21-windows
+- 可监控的 ThreadPoolTaskScheduler
 
 ---
 ## 技术选型

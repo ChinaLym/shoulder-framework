@@ -1,13 +1,14 @@
 package org.shoulder.autoconfigure.core.current;
 
 import org.shoulder.core.concurrent.Threads;
-import org.shoulder.core.concurrent.delay.DelayTaskHolder;
 import org.shoulder.core.util.ContextUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author lym
  */
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @AutoConfiguration
 public class ThreadAutoConfiguration {
 
@@ -41,14 +43,20 @@ public class ThreadAutoConfiguration {
     @Bean(Threads.SHOULDER_TASK_SCHEDULER)
     @ConditionalOnMissingBean(name = Threads.SHOULDER_TASK_SCHEDULER)
     public ThreadPoolTaskScheduler shoulderTaskScheduler() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setThreadNamePrefix("sd-scheduler-");
-        scheduler.setThreadFactory(new CustomizableThreadFactory("sd-scheduler-"));
-        scheduler.setRejectedExecutionHandler(new Threads.Abort());
-        scheduler.initialize();
+        // 默认使用 5 个线程，非守护线程
+        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.setPoolSize(5);
+        taskScheduler.setRemoveOnCancelPolicy(true);
+        taskScheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(true);
+        taskScheduler.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
+        taskScheduler.setAcceptTasksAfterContextClose(true);
+        taskScheduler.setDaemon(true);
+        taskScheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        taskScheduler.setThreadFactory(new CustomizableThreadFactory("sd-sTask-"));
+
         // 提前设置，方便在启动时使用
-        Threads.setTaskScheduler(scheduler);
-        return scheduler;
+        Threads.setTaskScheduler(taskScheduler);
+        return taskScheduler;
     }
 
 
@@ -56,11 +64,10 @@ public class ThreadAutoConfiguration {
      * 自动注册，保证 Threads 中使用的是经过增强的
      */
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public ApplicationListener<ContextRefreshedEvent> shoulderThreadsUtilPostProcessor() {
         return event -> {
             Threads.setExecutorService((ExecutorService) ContextUtils.getBean(Threads.SHOULDER_THREAD_POOL_NAME));
-            // fixme @deprecated delayTask 1.0
-//            Threads.setDelayTaskHolder((DelayTaskHolder) ContextUtils.getBean(Threads.SHOULDER_TASK_SCHEDULER));
         };
     }
 

@@ -1,6 +1,5 @@
 package org.shoulder.core.concurrent;
 
-import org.shoulder.core.concurrent.delay.DelayTaskHolder;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.ShoulderLoggers;
@@ -8,6 +7,7 @@ import org.shoulder.core.log.beautify.LogHelper;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
 
 import java.time.Duration;
@@ -15,17 +15,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.BiFunction;
 
 /**
@@ -69,9 +59,15 @@ public class Threads {
         log.debug("Threads' TASK_SCHEDULER has changed to " + taskScheduler);
     }
 
-    public static synchronized void setDelayTaskHolder(DelayTaskHolder delayTaskHolder) {
-//        Threads.DELAY_TASK_HOLDER = delayTaskHolder;
-//        log.debug("Threads' DELAY_TASK_HOLDER has changed to " + delayTaskHolder);
+    /**
+     * 延迟执行
+     *
+     * @param taskName      要执行的任务名称
+     * @param task          要执行的任务
+     * @param delayDuration 延迟的时间
+     */
+    public static ScheduledFuture<?> delay(@NonNull String taskName, @NonNull Runnable task, @NonNull Duration delayDuration) {
+        return schedule(taskName, task, Instant.now().plus(delayDuration), null);
     }
 
     /**
@@ -79,10 +75,10 @@ public class Threads {
      *
      * @param taskName 要执行的任务名称
      * @param task 要执行的任务
-     * @param firstExecutionDelayDuration （null 或 ZERO 立即执行）
-     * @param executionPeriodCalculator 调度间隔计算器
+     * @param firstExecutionTime （null 或 过去时间 立即执行）
+     * @param executionPeriodCalculator 调度间隔计算器 null 只执行一次，否则计算下次执行时间
      */
-    public static void schedule(String taskName, Runnable task, Duration firstExecutionDelayDuration, BiFunction<Instant, Integer, Instant> executionPeriodCalculator) {
+    public static ScheduledFuture<?> schedule(@NonNull String taskName, @NonNull Runnable task, @NonNull Instant firstExecutionTime, @Nullable BiFunction<Instant, Integer, Instant> executionPeriodCalculator) {
         PeriodicTask periodicTask = new PeriodicTask() {
             @Override public String getTaskName() {
                 return taskName;
@@ -98,7 +94,7 @@ public class Threads {
         };
 
         // 执行时放在 EXECUTOR_SERVICE 执行，避免阻塞调度
-        schedule(periodicTask, firstExecutionDelayDuration == null ? null : Instant.now().plus(firstExecutionDelayDuration));
+        return schedule(periodicTask, firstExecutionTime);
     }
 
     /**
@@ -107,14 +103,14 @@ public class Threads {
      * @param periodicTask 要执行的任务
      * @param firstExecutionTime （null 或小与当前时间则立即执行）
      */
-    public static void schedule(PeriodicTask periodicTask, Instant firstExecutionTime) {
+    public static ScheduledFuture<?> schedule(PeriodicTask periodicTask, Instant firstExecutionTime) {
         ensureInit();
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "schedule", true);
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
             log.debug("{} creat delay task will run at {}", callerName, firstExecutionTime.toEpochMilli());
         }
-        TASK_SCHEDULER.schedule(new PeriodicTaskTemplate(periodicTask, TASK_SCHEDULER), firstExecutionTime);
+        return TASK_SCHEDULER.schedule(new PeriodicTaskTemplate(periodicTask, TASK_SCHEDULER), firstExecutionTime);
     }
 
     /**
