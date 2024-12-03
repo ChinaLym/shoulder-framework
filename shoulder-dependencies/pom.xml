@@ -33,6 +33,7 @@
         <spring-oauth2-server.version>1.2.3</spring-oauth2-server.version>
 
         <spring-boot.version>3.2.12</spring-boot.version>
+        <crac.version>1.5.0</crac.version>
         <!-- 由于Spring Boot提供了Maven BOM来管理依赖版本，因此您无需指定版本 -->
 
         <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info https://www.json.cn/  -->
@@ -101,7 +102,7 @@
         <mysql-connector-j.version>8.4.0</mysql-connector-j.version>
         <h2.version>2.2.224</h2.version>
         <druid.version>1.2.8</druid.version>
-        <!-- mybatis-plus 功能稳定性较差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
+        <!-- 暂时不要向上升级 mybatis-plus 功能稳定性、兼容性差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
         <mybatis-plus.version>3.5.6</mybatis-plus.version>
         <freemarker.version>2.3.32</freemarker.version>
         <velocity.version>2.3</velocity.version>
@@ -165,6 +166,12 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <optional>true</optional>
+            </dependency>
+
+            <dependency>
+                <groupId>org.crac</groupId>
+                <artifactId>crac</artifactId>
+                <version>${crac.version}</version>
             </dependency>
 
             <!-- ================================== Shoulder-framework party ==================================== -->
@@ -514,6 +521,21 @@
                 <artifactId>hutool-http</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
+
+            <!-- http -->
+            <dependency>
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5</artifactId>
+                <version>5.4.1</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.core5/httpcore5 -->
+            <dependency>
+                <groupId>org.apache.httpcomponents.core5</groupId>
+                <artifactId>httpcore5</artifactId>
+                <version>5.3.1</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>com.google.guava</groupId>
