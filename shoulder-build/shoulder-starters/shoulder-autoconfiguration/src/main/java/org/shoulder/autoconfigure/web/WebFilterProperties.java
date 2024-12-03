@@ -4,6 +4,7 @@ import lombok.Data;
 import org.shoulder.autoconfigure.core.BaseAppProperties;
 import org.shoulder.web.filter.PathFilterProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * @author lym
@@ -17,8 +18,10 @@ public class WebFilterProperties {
      */
     public static final String PREFIX = BaseAppProperties.KEY_PREFIX + "web.filter";
 
+    @NestedConfigurationProperty
     private PathFilterProperties xss = new PathFilterProperties();
 
+    @NestedConfigurationProperty
     private PathFilterProperties mockUser = new PathFilterProperties();
 
 }
