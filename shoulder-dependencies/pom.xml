@@ -29,7 +29,7 @@
         <spring-security-oauth2-autoconfigure.version>2.6.8</spring-security-oauth2-autoconfigure.version>
         <!-- spring security oauth2 不再维护，不引入-->
         <spring-security-oauth2.version>2.5.2.RELEASE</spring-security-oauth2.version>
-        <nimbus-jose-jwt.version>9.39.1</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>9.40</nimbus-jose-jwt.version>
         <spring-oauth2-server.version>1.2.3</spring-oauth2-server.version>
 
         <spring-boot.version>3.2.12</spring-boot.version>
@@ -39,7 +39,7 @@
         <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info https://www.json.cn/  -->
         <!-- 最新 spring cloud 版本：https://spring.io/projects/spring-cloud#learn -->
         <!-- springboot 2.6-2.7 2021.0.9  springboot3.0/1: 2022.0.4  springboot3.2: 2023.0.x -->
-        <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
 
         <!-- build -->
         <java.version>17</java.version>
@@ -50,9 +50,9 @@
         <!-- api-doc -->
         <!-- openApi(swagger)是行业标准，swagger 1.7 更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
         <swagger3.version>2.2.22</swagger3.version>
-        <springdoc.version>2.5.0</springdoc.version>
+        <springdoc.version>2.6.0</springdoc.version>
         <!-- knife4j 前身是 swagger-bootstrap-ui，一个用于优化 swagger-ui 的项目，视觉效果更好 -->
-        <knife4j.version>4.4.0</knife4j.version>
+        <knife4j.version>4.5.0</knife4j.version>
 
         <!-- csv 解析 https://github.com/uniVocity/univocity-parsers/releases -->
         <univocity.version>2.9.1</univocity.version>
@@ -61,25 +61,25 @@
 
         <!-- apache-common-tools -->
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
-        <commons-codec.version>1.17.0</commons-codec.version>
+        <commons-codec.version>1.17.1</commons-codec.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-exec.version>1.3</commons-exec.version>
         <commons-email.version>1.5</commons-email.version>
         <commons-io.version>2.16.1</commons-io.version>
-        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <commons-lang3.version>3.16.0</commons-lang3.version>
         <commons-net.version>3.6</commons-net.version>
         <commons-configuration.version>1.10</commons-configuration.version>
-        <commons-daemon.version>1.3.4</commons-daemon.version>
+        <commons-daemon.version>1.4.0</commons-daemon.version>
 
         <!-- java native access -->
         <jna.version>5.14.0</jna.version>
         <!-- useful tools -->
         <pinyin4j.version>2.5.1</pinyin4j.version>
-        <hutool.version>5.8.27</hutool.version>
+        <hutool.version>5.8.31</hutool.version>
         <javassist.version>3.30.2-GA</javassist.version>
         <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
 
-        <guava.version>33.2.0-jre</guava.version>
+        <guava.version>33.2.1-jre</guava.version>
         <!-- google 最新 3.0.1版本（jdk1.7+）还用的javax.xxx 不支持 jakarta.xxx 暂时移除  https://findbugs.sourceforge.net/ -->
         <findbugs-annotations.version>3.0.1_temp_removal_for_not_support_spring_boot_3</findbugs-annotations.version>
         <!-- inheritable threadLocal https://github.com/alibaba/transmittable-thread-local/releases -->
@@ -96,21 +96,21 @@
         <opencsv.version>5.6</opencsv.version>
 
         <!-- JDK21 注意该版本： https://github.com/projectlombok/lombok/issues/3393-->
-        <lombok.version>1.18.32</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
 
         <!-- dataBase-->
         <mysql-connector-j.version>8.4.0</mysql-connector-j.version>
-        <h2.version>2.2.224</h2.version>
+        <h2.version>2.2.230</h2.version>
         <druid.version>1.2.8</druid.version>
         <!-- 暂时不要向上升级 mybatis-plus 功能稳定性、兼容性差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
         <mybatis-plus.version>3.5.6</mybatis-plus.version>
-        <freemarker.version>2.3.32</freemarker.version>
+        <freemarker.version>2.3.33</freemarker.version>
         <velocity.version>2.3</velocity.version>
         <pagehelper.version>6.1.0</pagehelper.version>
         <pagehelper-starter.version>2.1.0</pagehelper-starter.version>
-        <beecp.version>4.0.4</beecp.version>
+        <beecp.version>4.0.6</beecp.version>
         <p6spy.version>3.9.1</p6spy.version>
-        <redisson.version>3.30.0</redisson.version>
+        <redisson.version>3.34.1</redisson.version>
 
         <!-- test -->
         <mockito-all.version>1.10.19</mockito-all.version>
