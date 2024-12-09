@@ -25,6 +25,7 @@
 
 * WEB 模块
 ** 提供操作日志查询
+** dictionary: ui 页面支持动态配置字典 apiPath
 
 * crypto
 ** 支持配置关闭公钥查询接口、修改接口地址

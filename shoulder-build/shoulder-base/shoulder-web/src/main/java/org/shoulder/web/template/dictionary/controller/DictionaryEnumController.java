@@ -9,6 +9,7 @@ import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.web.annotation.SkipResponseWrap;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,9 @@ public class DictionaryEnumController implements DictionaryEnumQueryController {
     private final DictionaryEnumStore dictionaryEnumStore;
 
     private String page;
+
+    @Value("${shoulder.web.ext.dictionary.path:/api/v1/dictionary}")
+    private String dictionaryApiPath;
 
     public DictionaryEnumController(DictionaryEnumStore dictionaryEnumStore) {
         this.dictionaryEnumStore = dictionaryEnumStore;
@@ -85,6 +89,7 @@ public class DictionaryEnumController implements DictionaryEnumQueryController {
         } catch (IOException e) {
             page = "";
         }
+        page = page.replace("##DICTIONARY_API_PATH##", dictionaryApiPath);
         return page;
     }
 
