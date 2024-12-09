@@ -8,12 +8,14 @@ import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.model.Operable;
 import org.shoulder.core.util.AssertUtils;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.validate.groups.Update;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,15 +46,23 @@ public interface UpdateController<
      * @param dto 修改DTO
      * @return 修改后的实体数据
      */
-    @Operation(summary = "修改", description = "修改UpdateDTO中不为空的字段")
+    @Operation(summary = "修改", description = "修改UpdateDTO中不为空的字段，若")
     @PutMapping
     @OperationLog(operation = OperationLog.Operations.UPDATE)
     @Validated(Update.class)
+    @Transactional(rollbackFor = Exception.class)
     default BaseResult<UPDATE_RESULT_DTO> updateByBizId(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
         ENTITY entity = handleBeforeUpdateAndConvertToEntity(dto);
-        boolean success = update(dto, getService()::updateByBizId);
+        String bizId = null;
+        // 如果可用 bizId 则优先用 bizId，否则将根据id更新（id非空）
+        boolean useBizId = extendsFromBizEntity() && StringUtils.isNoneBlank(bizId = ((BizEntity<?>) entity).getBizId());
+        AssertUtils.isTrue(useBizId || entity.getId() != null, CommonErrorCodeEnum.ILLEGAL_PARAM);
+
+        boolean success = update(dto, useBizId ? getService()::updateByBizId : getService()::updateById);
         AssertUtils.isTrue(success, CommonErrorCodeEnum.DATA_STORAGE_FAIL);
-        ENTITY updated = getService().getByBizId(((BizEntity) entity).getBizId());
+
+        ENTITY updated = useBizId ? getService().getByBizId(bizId)
+            : getService().getById(entity.getId());
         return BaseResult.success(handleAfterUpdateAndConvertToDTO(updated));
     }
 
@@ -98,7 +108,6 @@ public interface UpdateController<
      * @param dto DTO
      * @return entity
      */
-    @SuppressWarnings("unchecked")
     default ENTITY handleBeforeUpdateAndConvertToEntity(UPDATE_DTO dto) {
         return getConversionService().convert(dto, getEntityClass());
     }

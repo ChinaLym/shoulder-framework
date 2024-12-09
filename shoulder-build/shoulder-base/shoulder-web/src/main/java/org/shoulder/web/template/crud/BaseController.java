@@ -4,6 +4,7 @@ import org.shoulder.core.context.AppContext;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
+import org.shoulder.data.mybatis.template.entity.BizEntity;
 import org.shoulder.data.mybatis.template.service.BaseService;
 import org.shoulder.log.operation.support.OperableObjectTypeRepository;
 
@@ -22,6 +23,18 @@ public interface BaseController<ENTITY extends BaseEntity<? extends Serializable
      * @return 实体的类型
      */
     Class<ENTITY> getEntityClass();
+
+    Class<? extends Serializable> getEntityIdType();
+
+    /**
+     * 判断是否为 BizEntity
+     *
+     * @return 是否为 BizEntity
+     * @see BizEntity
+     */
+    default boolean extendsFromBizEntity() {
+        return BizEntity.class.isAssignableFrom(getEntityClass());
+    }
 
     /**
      * 获取 Service

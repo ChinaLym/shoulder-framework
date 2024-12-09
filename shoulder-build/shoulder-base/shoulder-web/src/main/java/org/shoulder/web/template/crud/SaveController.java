@@ -14,6 +14,7 @@ import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.validate.groups.Create;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,6 +48,7 @@ public interface SaveController<
     @PostMapping
     @OperationLog(operation = OperationLog.Operations.CREATE)
     @Validated(Create.class)
+    @Transactional(rollbackFor = Exception.class)
     default BaseResult<SAVE_RESULT_DTO> save(@OperationLogParam @RequestBody @Valid @NotNull SAVE_DTO dto) {
         ENTITY entity = handleBeforeSaveAndConvertToEntity(dto);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
@@ -63,7 +65,7 @@ public interface SaveController<
                 bizEntity.setBizId(bizId);
             }
             ENTITY dataInDb = getService().lockByBizId(bizEntity.getBizId());
-            // 数据不存在
+            // 数据已存在
             AssertUtils.isNull(dataInDb, CommonErrorCodeEnum.DATA_ALREADY_EXISTS);
         }
         getService().save(entity);
@@ -78,7 +80,6 @@ public interface SaveController<
      * @param dto DTO
      * @return entity
      */
-    @SuppressWarnings("unchecked")
     default ENTITY handleBeforeSaveAndConvertToEntity(SAVE_DTO dto) {
         return getConversionService().convert(dto, getEntityClass());
     }

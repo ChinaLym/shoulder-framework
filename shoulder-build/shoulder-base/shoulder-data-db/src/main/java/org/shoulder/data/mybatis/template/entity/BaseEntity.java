@@ -16,6 +16,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.shoulder.core.model.Operable;
 import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.config.handler.ModelMetaObjectHandler;
+import org.springframework.core.GenericTypeResolver;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -60,6 +61,10 @@ public class BaseEntity<ID extends Serializable> implements Operable, Serializab
     @Override
     public String getObjectName() {
         return getObjectId();
+    }
+
+    public Class<?> parseIdType() {
+        return GenericTypeResolver.resolveTypeArguments(getClass(), BaseEntity.class)[0];
     }
 
 }

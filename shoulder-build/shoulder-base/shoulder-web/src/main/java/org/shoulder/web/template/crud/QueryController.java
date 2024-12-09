@@ -55,19 +55,17 @@ public interface QueryController<
      * 查询
      * service.getById —— mapper.selectById
      *
-     * @param bizId 业务id
+     * @param id 业务id
      * @return 查询结果
      */
-    @Parameters({
-            @Parameter(name = DataBaseConsts.FIELD_BIZ_ID, description = "bizId"),
-    })
     @Operation(summary = "单个查询", description = "单个查询")
-    @GetMapping("/{bizId}")
+    @GetMapping("/{id}")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<QueryResultDTO> queryByBizId(@OperationLogParam @PathVariable(name = "bizId") String bizId) {
-        OpLogContextHolder.getLog().setObjectId(bizId);
+    default BaseResult<QueryResultDTO> queryByBizId(@OperationLogParam @PathVariable(name = "id") String id) {
+        OpLogContextHolder.getLog().setObjectId(id);
         OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
-        ENTITY entity = getService().getByBizId(bizId);
+        ENTITY entity = extendsFromBizEntity() ? getService().getByBizId(id) :
+            getService().getById(getConversionService().convert(id, getEntityIdType()));
         return BaseResult.success(convertEntityToQueryResult(entity));
     }
 
@@ -94,22 +92,25 @@ public interface QueryController<
      * 批量查询match入参的
      * service.list —— mapper.selectList
      *
-     * @param data 批量查询条件
+     * @param example 批量查询条件
      * @return 查询结果
      */
+    @Parameters({
+        @Parameter(name = "example", description = "查询条件"),
+    })
     @Operation(summary = "批量查询", description = "批量查询")
     @PostMapping("/listAll")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<ListResult<QueryResultDTO>> listAll(@OperationLogParam @RequestBody ENTITY data,
+    default BaseResult<ListResult<QueryResultDTO>> listAll(@OperationLogParam @RequestBody ENTITY example,
                                                            @OperationLogParam @NotNull @RequestParam @Range(min = 1,
                                                                max = 1000) Integer limit) {
         if (Operable.class.isAssignableFrom(getEntityClass())) {
-            if (data != null) {
-                OpLogContextHolder.setOperableObject(data);
+            if (example != null) {
+                OpLogContextHolder.setOperableObject(example);
             }
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
-        List<ENTITY> entityList = getService().list(data, limit);
+        List<ENTITY> entityList = getService().list(example, limit);
         List<QueryResultDTO> dtoList = getConversionService().convert((Collection<ENTITY>) entityList, getQueryDtoClass());
         return BaseResult.success(dtoList);
     }
@@ -120,12 +121,10 @@ public interface QueryController<
      * @param pageQueryParam dto
      * @return entity
      */
-    @SuppressWarnings("unchecked")
     default ENTITY handleBeforeQueryAndConvertToEntity(PAGE_QUERY_PARAM pageQueryParam) {
         return getConversionService().convert(pageQueryParam, getEntityClass());
     }
 
-    @SuppressWarnings("unchecked")
     default QueryResultDTO convertEntityToQueryResult(ENTITY entity) {
         return getConversionService().convert(entity, getQueryDtoClass());
     }

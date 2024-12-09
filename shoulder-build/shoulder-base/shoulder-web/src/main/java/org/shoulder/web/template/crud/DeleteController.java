@@ -9,6 +9,7 @@ import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.model.sample.OperableObject;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,22 +36,25 @@ public interface DeleteController<
     extends BaseController<ENTITY> {
 
     /**
-     * 删除单个
+     * 删除单个（有限）
      * service.removeById —— mapper.deleteById
      *
-     * @param bizId bizId
+     * @param id id
      * @return 是否成功
      */
-    @Operation(summary = "删除")
-    @DeleteMapping("{bizId}")
+    @Operation(summary = "删除", description = "若为 BizEntity 则根据 bizId 软删除，否则根据 id 软删除")
+    @DeleteMapping("{id}")
     @OperationLog(operation = OperationLog.Operations.DELETE)
-    default BaseResult<Boolean> deleteByBizId(@OperationLogParam @PathVariable("bizId") String bizId) {
-        String realWantDeleteBizId = handlerBeforeDelete(bizId);
+    @Transactional(rollbackFor = Exception.class)
+    default BaseResult<Boolean> deleteByBizId(@OperationLogParam @PathVariable("id") String id) {
+        String realWantDeleteBizId = handlerBeforeDelete(id);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             OpLogContextHolder.getLog().setObjectId(String.valueOf(realWantDeleteBizId));
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
-        return BaseResult.success(getService().removeByBizId(realWantDeleteBizId));
+        return BaseResult.success(extendsFromBizEntity() ?
+            getService().removeByBizId(realWantDeleteBizId)
+            : getService().removeById(getConversionService().convert(realWantDeleteBizId, getEntityIdType())));
     }
 
     /**
