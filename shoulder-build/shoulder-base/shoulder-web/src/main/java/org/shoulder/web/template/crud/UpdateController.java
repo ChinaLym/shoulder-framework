@@ -51,7 +51,7 @@ public interface UpdateController<
     @OperationLog(operation = OperationLog.Operations.UPDATE)
     @Validated(Update.class)
     @Transactional(rollbackFor = Exception.class)
-    default BaseResult<UPDATE_RESULT_DTO> updateByBizId(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
+    default BaseResult<UPDATE_RESULT_DTO> updateByBizIdOrId(@OperationLogParam @RequestBody @Valid @NotNull UPDATE_DTO dto) {
         ENTITY entity = handleBeforeUpdateAndConvertToEntity(dto);
         String bizId = null;
         // 如果可用 bizId 则优先用 bizId，否则将根据id更新（id非空）

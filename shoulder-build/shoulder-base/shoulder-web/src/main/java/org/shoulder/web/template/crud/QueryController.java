@@ -14,7 +14,6 @@ import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.dto.response.PageResult;
 import org.shoulder.core.model.Operable;
-import org.shoulder.data.constant.DataBaseConsts;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
@@ -61,7 +60,7 @@ public interface QueryController<
     @Operation(summary = "单个查询", description = "单个查询")
     @GetMapping("/{id}")
     @OperationLog(operation = OperationLog.Operations.QUERY)
-    default BaseResult<QueryResultDTO> queryByBizId(@OperationLogParam @PathVariable(name = "id") String id) {
+    default BaseResult<QueryResultDTO> queryByBizIdOrId(@OperationLogParam @PathVariable(name = "id") String id) {
         OpLogContextHolder.getLog().setObjectId(id);
         OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         ENTITY entity = extendsFromBizEntity() ? getService().getByBizId(id) :

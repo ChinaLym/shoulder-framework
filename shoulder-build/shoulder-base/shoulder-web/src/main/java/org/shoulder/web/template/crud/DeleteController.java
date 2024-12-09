@@ -1,6 +1,7 @@
 package org.shoulder.web.template.crud;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.constraints.NotEmpty;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.model.Operable;
@@ -42,11 +43,11 @@ public interface DeleteController<
      * @param id id
      * @return 是否成功
      */
-    @Operation(summary = "删除", description = "若为 BizEntity 则根据 bizId 软删除，否则根据 id 软删除")
+    @Operation(summary = "删除", description = "若为 BizEntity 则根据 bizId 软删除，否则根据 id 删除")
     @DeleteMapping("{id}")
     @OperationLog(operation = OperationLog.Operations.DELETE)
     @Transactional(rollbackFor = Exception.class)
-    default BaseResult<Boolean> deleteByBizId(@OperationLogParam @PathVariable("id") String id) {
+    default BaseResult<Boolean> deleteByBizIdOrId(@OperationLogParam @PathVariable("id") String id) {
         String realWantDeleteBizId = handlerBeforeDelete(id);
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             OpLogContextHolder.getLog().setObjectId(String.valueOf(realWantDeleteBizId));
@@ -65,16 +66,25 @@ public interface DeleteController<
      * @param bizIdList
      * @return 是否成功
      */
-    @Operation(summary = "删除")
+    @Operation(summary = "批量删除", description = "若为 BizEntity 则根据 bizId 软删除，否则根据 id 删除")
     @DeleteMapping
     @OperationLog(operation = OperationLog.Operations.DELETE)
-    default BaseResult<Boolean> deleteBatchByBizId(@OperationLogParam @RequestBody List<String> bizIdList) {
+    default BaseResult<Boolean> deleteBatchByBizIdOrId(@OperationLogParam @NotEmpty @RequestBody List<String> bizIdList) {
         List<String> realWantDeleteIds = handlerBeforeDelete(bizIdList);
+        // todo 优化：所有判断可以拿掉了 if (Operable.class.isAssignableFrom(getEntityClass()))
         if (Operable.class.isAssignableFrom(getEntityClass())) {
             OpLogContextHolder.setOperableObjects(OperableObject.ofIds(realWantDeleteIds));
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
-        return BaseResult.success(getService().removeByBizIds(realWantDeleteIds) > 0);
+        if(extendsFromBizEntity()) {
+            // 根据 bizId 软删除
+            return BaseResult.success(getService().removeByBizIds(realWantDeleteIds) > 0);
+        } else {
+            // 根据 id 删除
+            List<? extends Serializable> idList = getConversionService().convert(realWantDeleteIds, getEntityIdType());
+            return BaseResult.success(getService().removeByIds(idList));
+        }
+
     }
 
     /**
