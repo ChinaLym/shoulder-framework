@@ -1,5 +1,6 @@
 package org.shoulder.web.template.crud;
 
+import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.log.AppLoggers;
 import org.shoulder.core.log.Logger;
@@ -42,9 +43,11 @@ public abstract class BaseControllerImpl<SERVICE extends BaseService<ENTITY>, EN
         return extendsFromBizEntity;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Class<ENTITY> getEntityClass() {
-        return getService().getEntityClass();
+        return getService() != null ? getService().getEntityClass() :
+            (Class<ENTITY>) ReflectionKit.getSuperClassGenericType(this.getClass(), BaseController.class, 0);
     }
 
     @Override

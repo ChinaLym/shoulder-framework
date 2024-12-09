@@ -58,8 +58,7 @@ public interface SaveController<
             OpLogContextHolder.getLog().setObjectType(getEntityObjectType());
         }
         AssertUtils.notNull(entity, CommonErrorCodeEnum.ILLEGAL_PARAM);
-        if (entity instanceof BizEntity) {
-            BizEntity<? extends Serializable> bizEntity = (BizEntity<? extends Serializable>) entity;
+        if (entity instanceof BizEntity<? extends Serializable> bizEntity) {
             if (bizEntity.getBizId() == null) {
                 String bizId = generateBizId(entity);
                 bizEntity.setBizId(bizId);
