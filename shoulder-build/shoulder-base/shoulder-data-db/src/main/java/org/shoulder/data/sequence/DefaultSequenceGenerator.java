@@ -1,12 +1,12 @@
 package org.shoulder.data.sequence;
 
 import lombok.Getter;
-import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.data.log.ShoulderDBLoggers;
 import org.shoulder.data.sequence.dao.SequenceDao;
 import org.shoulder.data.sequence.exceptions.CombinationSequenceException;
 import org.shoulder.data.sequence.model.SequenceRange;
+import org.shoulder.validate.exception.ParamErrorCodeEnum;
 import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 
@@ -79,7 +79,7 @@ public class DefaultSequenceGenerator implements SequenceGenerator {
 
     @Override
     public List<Long> next(String sequenceName, int size) throws DataAccessException {
-        AssertUtils.isTrue(size > 0 && size < 1000, CommonErrorCodeEnum.ILLEGAL_PARAM, "size must in [1, 1000]");
+        AssertUtils.isTrue(size > 0 && size < 1000, ParamErrorCodeEnum.PARAM_ILLEGAL, "size must in [1, 1000]");
         SequenceRange sequenceRange = getCombinateSequenceRange(sequenceName);
         // 2. 获取合格的具体 value
         List<Long> batchResult = sequenceRange.genNextValues(size);

@@ -20,14 +20,9 @@ import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.enums.OperationResult;
+import org.shoulder.validate.exception.ParamErrorCodeEnum;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -137,7 +132,7 @@ public class BatchManager implements Runnable, ProgressAble {
         List<BatchDataSlice> batchSliceList = splitTask(batchData);
 
         int jobSize = batchSliceList.size();
-        AssertUtils.isTrue(jobSize > 0, CommonErrorCodeEnum.ILLEGAL_PARAM, "after splitTask, jobSize can't be 0");
+        AssertUtils.isTrue(jobSize > 0, ParamErrorCodeEnum.PARAM_ILLEGAL, "after splitTask, jobSize can't be 0");
         jobQueue = new LinkedBlockingQueue<>(jobSize);
         jobQueue.addAll(batchSliceList);
 

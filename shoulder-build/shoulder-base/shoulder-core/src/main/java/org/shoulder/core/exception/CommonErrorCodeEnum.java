@@ -90,6 +90,9 @@ public enum CommonErrorCodeEnum implements ErrorCode {
      */
     REQUEST_BODY_INCORRECT(204, "Entity format not supported.", Level.ERROR),
 
+    /**
+     * 参数错误，但不提示具体原因
+     */
     ILLEGAL_PARAM(205, "illegal param.", Level.ERROR),
 
     // ----------------------- 作为服务提供者（要处理的HTTP请求参数校验未通过） ----------------------

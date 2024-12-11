@@ -3,8 +3,8 @@ package org.shoulder.data.sequence.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
+import org.shoulder.validate.exception.ParamErrorCodeEnum;
 
 import java.io.Serial;
 import java.util.Date;
@@ -121,7 +121,7 @@ public class SequenceRange {//extends SequenceRouteInfo {
     }
 
     public void validate() {
-        AssertUtils.isTrue(min < max && min + step < max, CommonErrorCodeEnum.ILLEGAL_PARAM, "SequenceRange_rule invalid.");
+        AssertUtils.isTrue(min < max && min + step < max, ParamErrorCodeEnum.PARAM_ILLEGAL, "SequenceRange_rule invalid.");
     }
 
     public void cloneContextValue(SequenceRange cloneSource) {

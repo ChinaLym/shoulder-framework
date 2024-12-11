@@ -6,6 +6,7 @@ import org.shoulder.core.concurrent.enhance.ThreadEnhancer;
 
 /**
  * 自动统计在线程池队列内等待时间
+ * @deprecated todo 规划后续实现中，暂不可用
  */
 public class MonitorRunnableEnhancer implements ThreadEnhancer {
 

@@ -73,7 +73,7 @@ public class RestControllerExceptionAdvice {
         final String springErrorTipHeader = "Could not read document:";
         final String errorStackSplit = " at ";
         String message = e.getMessage();
-        BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_BODY_NOT_READABLE, e);
+        BaseRuntimeException stdEx = new BaseRuntimeException(CommonErrorCodeEnum.PARAM_BODY_NOT_READABLE, e, e.getMessage());
         if (StringUtils.contains(message, springErrorTipHeader)) {
             String errorInfo = StringUtils.subBetween(message, springErrorTipHeader, errorStackSplit);
             stdEx.setArgs(errorInfo);
@@ -278,7 +278,7 @@ public class RestControllerExceptionAdvice {
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(SQLException.class)
     public BaseResult sqlExceptionHandler(SQLException e) {
-        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.DATA_STORAGE_FAIL, e);
+        BaseRuntimeException ex = new BaseRuntimeException(CommonErrorCodeEnum.DATA_STORAGE_FAIL, e, e.getMessage());
         log.error(ex);
         return ex.toResponse();
     }
