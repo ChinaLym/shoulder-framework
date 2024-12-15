@@ -1,30 +1,24 @@
 = 更新记录
 
-== 后续规划
-
-* ext-ai
-** 提供AI 工程里额外能力，如意图识别，输出内容管控、会话历史、会话分析等
-* ext-config
-** 提供动态配置管理功能
-* ext-moments
-** 提供社交功能模块
-** 动态、文章、评论、点赞、朋友圈、通知等
-
-== 1.0（规划中）
+== 1.0（即将发布，link:https://central.sonatype.com/artifact/cn.itlym/shoulder-core/versions[验证中]）
 
 === 🐞 BugFix 问题修复
 
 * 修复操作日志中，在引入 `Hutool` 并使用 `userAgent` 时，操作日志的扩展字段的 `UserAgent` 内容未打印完全问题。
 * 修复 `DefaultTenantFilter` 默认租户名带引号问题。
+* 修复字典枚举展示页在用户修改默认配置 apiPath 后展示异常问题。
 
 === 🛠️ Refactor 优化
 
 * Core
 ** 优化日期类型转换性能，增加更多支持格式。
-** 优化 Threads 工具类性能，降低内存占用和不必要的线程唤醒，保持方法不变前提下删除 Delay 系列类。
+** 优化 Threads 工具类性能，降低内存占用和不必要的线程唤醒，保持使用方法兼容前提下移除 Delay 系列类。
+** 时间转 String 格式优化，若用户配置了 `spring.mvc.format.date` 等日期格式配置，则转换时格式自动跟随。
 
 * WEB 模块
 ** 提供操作日志查询
+** 优化部分错误码提示内容，携带更全的报错提示
+** ⚠️ 调整枚举字典模块相关默认的 apiPath
 ** dictionary: ui 页面支持动态配置字典 apiPath
 
 * crypto
@@ -32,21 +26,36 @@
 ** 传输加解密（密钥协商）配置格式优化，支持配置可协商的加密算法
 
 * operation-log
-** OpLogContextHolder 方法名调整 closeAutoLog -> disableAutoLog
+** ⚠️ OpLogContextHolder 方法名调整 closeAutoLog -> disableAutoLog
 ** 可通过配置 logger.type=none 关闭日志打印，但保留操作日志其他功能。
 
 * batch
-** 调整 record 默认字段名 `index` -> `indexNo`
+** ⚠️ 调整 record 默认字段名 `index` -> `indexNo`
 
 * api-doc
 ** 提供开箱即用的接口说明
+
+* autoconfiguration
+** 使用 EmbeddedRedis 不再需要依赖 spring-data-redis
 
 * 其他
 ** 对关键模块（Core、Crypto、Negotiation）单测覆盖。
 ** 补充源码注释、降低 warn。
 ** 调整部分功能默认实现类命名，`HashMapXXX` -> `MemoryXXX`
+** 补全 application.xml / yaml 中的提示
 
-❌ Compatibility 非兼容变化
+=== 预览版本发布记录
+
+* 1.0.0-M1
+** 2024-11-26 发布
+* 1.0.0-M1.1
+** 2024-11-29
+* 1.0.0-M1.2
+** 2024-12-04
+* 1.0.0-M2
+** 2024-12-07
+* 1.0.0-M2.1
+** 2024-12-10
 
 [NOTE]
 ====

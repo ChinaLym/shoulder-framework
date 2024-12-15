@@ -52,6 +52,16 @@ Google 等互联网顶尖公司已经探索 `ServiceMesh` 许久，虽然当前�
 - redis Lettuce 6.3 修复了redis宕机会导致15分钟不可用（客户端无主动探活，问题链接未释放），netty-transport-native-epoll:4.1.65.Final:linux-x86_64，在 EPOLL 可用时；https://xie.infoq.cn/article/8d5ecb7b1bc9c84a35de43674【DONE】
 - JDK 21 https://www.oracle.com/java/technologies/downloads/#jdk21-windows 【DONE】
 - 可监控的 ThreadPoolTaskScheduler
+  == 后续规划
+
+* ext-ai
+  ** 提供AI 工程里额外能力，如意图识别，输出内容管控、会话历史、会话分析等
+* ext-config
+  ** 提供动态配置管理功能
+* ext-moments
+  ** 提供社交功能模块
+  ** 动态、文章、评论、点赞、朋友圈、通知等
+
 ---
 ## 技术选型
 
