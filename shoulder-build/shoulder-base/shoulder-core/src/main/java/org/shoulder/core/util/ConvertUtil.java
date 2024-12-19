@@ -22,13 +22,15 @@ public class ConvertUtil {
     /**
      * ex: 2024-01-16T21:26:08.219982
      */
-    public static final String ISO_DATE_FORMAT = "iso";
+    private static final String ISO_DATE_FORMAT = "iso";
+
+    public static final DateTimeFormatters ISO_DATE_TIME_FORMATTERS = new DateTimeFormatters()
+        .dateFormat(ConvertUtil.ISO_DATE_FORMAT)
+        .timeFormat(ConvertUtil.ISO_DATE_FORMAT)
+        .dateTimeFormat(ConvertUtil.ISO_DATE_FORMAT);
 
     private static volatile ShoulderConversionService CONVERSION_SERVICE = new ShoulderConversionServiceImpl(
-            new DateTimeFormatters()
-                    .dateFormat(ISO_DATE_FORMAT)
-                    .timeFormat(ISO_DATE_FORMAT)
-                    .dateTimeFormat(ISO_DATE_FORMAT)
+        ISO_DATE_TIME_FORMATTERS
     );
 
     public static boolean canConvert(@Nullable Class<?> source, Class<?> target) {

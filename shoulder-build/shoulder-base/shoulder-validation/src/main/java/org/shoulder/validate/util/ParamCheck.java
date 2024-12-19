@@ -15,7 +15,7 @@ import java.util.Map;
  * 接口参数校验类
  * 附带常用的校验方法，若不满足条件，则抛出带错误码和支持多语言翻译的参数非法异常，并暗示框架通常返回 400 Http 状态，记录 info 日志
  * <p>
- * 格式不正确（长度、范围、正则等）统一返回格式不正确，人性化提示由前端提示
+ * 格式不正确（长度、范围、正则等）统一返回格式不正确，人性化提示由前端提示，但注意不要打印待校验参数实际值（有可能是加密/敏感信息）
  *
  * @author lym
  */
@@ -30,7 +30,7 @@ public class ParamCheck {
      * @param paramName 参数名
      * @throws BaseRuntimeException 参数为空
      */
-    public static void notNull(Object param, Object... paramName) throws BaseRuntimeException {
+    public static void notNull(Object param, String paramName) throws BaseRuntimeException {
         if (param == null) {
             throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
@@ -43,7 +43,7 @@ public class ParamCheck {
      * @param paramName 参数名
      * @throws BaseRuntimeException 参数为空
      */
-    public static <T> void notEmpty(Collection<T> coll, Object... paramName) throws BaseRuntimeException {
+    public static <T> void notEmpty(Collection<T> coll, String paramName) throws BaseRuntimeException {
         if (CollectionUtils.isEmpty(coll)) {
             throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
@@ -57,7 +57,7 @@ public class ParamCheck {
      * @return 被检查的数组
      * @throws BaseRuntimeException array == null || array.length == 0
      */
-    public static Object[] notEmpty(Object[] array, Object... paramName) throws BaseRuntimeException {
+    public static Object[] notEmpty(Object[] array, String paramName) throws BaseRuntimeException {
         if (array == null || array.length == 0) {
             throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
@@ -73,7 +73,7 @@ public class ParamCheck {
      * @return array
      * @throws BaseRuntimeException array 中存在 null
      */
-    public static <T> T[] noNullElements(T[] array, Object... paramName) throws BaseRuntimeException {
+    public static <T> T[] noNullElements(T[] array, String paramName) throws BaseRuntimeException {
         if (ArrayUtil.hasNull(array)) {
             throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
@@ -90,7 +90,7 @@ public class ParamCheck {
      * @throws BaseRuntimeException coll 中存在 null
      */
     @SuppressWarnings("unchecked")
-    public static <T> Collection<T> noNullElements(Collection<T> coll, Object... paramName) throws BaseRuntimeException {
+    public static <T> Collection<T> noNullElements(Collection<T> coll, String paramName) throws BaseRuntimeException {
         if (CollectionUtils.containsAny(coll, (T) null)) {
             throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
@@ -108,7 +108,7 @@ public class ParamCheck {
      * @return map
      * @throws BaseRuntimeException MapUtils.isEmpty(map)
      */
-    public static <K, V> Map<K, V> notEmpty(Map<K, V> map, Object... paramName) throws BaseRuntimeException {
+    public static <K, V> Map<K, V> notEmpty(Map<K, V> map, String paramName) throws BaseRuntimeException {
         if (MapUtils.isEmpty(map)) {
             throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
@@ -124,7 +124,7 @@ public class ParamCheck {
      * @param paramName 参数名
      * @return param
      */
-    public static <T extends CharSequence> T notEmpty(T param, Object... paramName) throws BaseRuntimeException {
+    public static <T extends CharSequence> T notEmpty(T param, String paramName) throws BaseRuntimeException {
         if (StringUtils.isEmpty(param)) {
             throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
@@ -139,7 +139,7 @@ public class ParamCheck {
      * @param paramName 参数名
      * @return param
      */
-    public static <T extends CharSequence> T notBlank(T param, Object... paramName) throws BaseRuntimeException {
+    public static <T extends CharSequence> T notBlank(T param, String paramName) throws BaseRuntimeException {
         if (StringUtils.isBlank(param)) {
             throw ParamErrorCodeEnum.PARAM_BLANK.toException(paramName);
         }
@@ -167,7 +167,7 @@ public class ParamCheck {
     // ------------ 参数范围检查 ParamErrorCodeEnum.PARAM_OUT_RANGE -----------
 
     /**
-     * 大于等于某个值
+     * 大于等于某个值（注意，异常msg会提示最小值是什么）
      *
      * @param param     值
      * @param min       最小
@@ -176,7 +176,7 @@ public class ParamCheck {
      * @return param
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable> T eGreater(T param, T min, Object... paramName) throws BaseRuntimeException {
+    public static <T extends Comparable> T eGreater(T param, T min, String paramName) throws BaseRuntimeException {
         if (param == null || param.compareTo(min) >= 0) {
             return param;
         }
@@ -184,7 +184,7 @@ public class ParamCheck {
     }
 
     /**
-     * 大于某个值
+     * 大于某个值（注意，异常msg会提示最小值是什么）
      *
      * @param param     值
      * @param min       最小
@@ -193,7 +193,7 @@ public class ParamCheck {
      * @return param
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable> T greater(T param, T min, Object... paramName) throws BaseRuntimeException {
+    public static <T extends Comparable> T greater(T param, T min, String paramName) throws BaseRuntimeException {
         if (param != null && param.compareTo(min) <= 0) {
             throw ParamErrorCodeEnum.PARAM_OUT_RANGE.toException(paramName);
         }
@@ -201,7 +201,7 @@ public class ParamCheck {
     }
 
     /**
-     * 在指定范围内
+     * 在指定范围内（注意，异常msg会提示最大最小值是什么）
      *
      * @param param     值
      * @param min       最小值（包含）
@@ -211,7 +211,7 @@ public class ParamCheck {
      * @return 通过后返回 param
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable> T assertBetween(T param, T min, T max, Object... paramName) throws BaseRuntimeException {
+    public static <T extends Comparable> T assertBetween(T param, T min, T max, String paramName) throws BaseRuntimeException {
         if (param != null && (min.compareTo(param) > 0 || max.compareTo(param) < 0)) {
             throw ParamErrorCodeEnum.PARAM_OUT_RANGE.toException(paramName);
         }
@@ -242,7 +242,7 @@ public class ParamCheck {
      * @param paramName 参数名
      * @throws BaseRuntimeException 参数为空
      */
-    public static void isNull(Object object, Object... paramName) throws BaseRuntimeException {
+    public static void isNull(Object object, String paramName) throws BaseRuntimeException {
         if (object != null) {
             throw ParamErrorCodeEnum.PARAM_ILLEGAL.toException(paramName);
         }
@@ -255,7 +255,7 @@ public class ParamCheck {
      * @param limit     最大限制
      * @param paramName 参数名
      */
-    public static void sizeLimit(int size, int limit, Object... paramName) throws BaseRuntimeException {
+    public static void sizeLimit(int size, int limit, String paramName) throws BaseRuntimeException {
         if (size > 0 && size <= limit) {
             return;
         }
@@ -268,7 +268,7 @@ public class ParamCheck {
      *
      * @param paramName 参数名
      */
-    public static <T> void sizeLimit(Collection<T> coll, int limit, Object... paramName) throws BaseRuntimeException {
+    public static <T> void sizeLimit(Collection<T> coll, int limit, String paramName) throws BaseRuntimeException {
         if (coll != null) {
             sizeLimit(coll.size(), limit, paramName);
         }
@@ -281,7 +281,7 @@ public class ParamCheck {
      * @param allowData 允许的值
      * @param paramName 参数名
      */
-    public static <T> T assertIn(T param, Collection<? extends T> allowData, Object... paramName) throws BaseRuntimeException {
+    public static <T> T assertIn(T param, Collection<? extends T> allowData, String paramName) throws BaseRuntimeException {
         if (CollectionUtils.isEmpty(allowData) || !allowData.contains(param)) {
             throw ParamErrorCodeEnum.PARAM_ILLEGAL.toException(paramName);
         }
@@ -304,8 +304,9 @@ public class ParamCheck {
      * @param createTime 创建时间
      * @param updateTime 更新时间
      * @param paramName  参数名
+     * @deprecated jdk9 后推荐使用 LocalDate
      */
-    public static void dateLater(Date createTime, Date updateTime, Object... paramName) throws BaseRuntimeException {
+    public static void dateLater(Date createTime, Date updateTime, String paramName) throws BaseRuntimeException {
         if (createTime != null && updateTime != null && updateTime.before(createTime)) {
             throw ParamErrorCodeEnum.PARAM_ILLEGAL.toException(paramName);
         }
@@ -323,10 +324,10 @@ public class ParamCheck {
      * @throws BaseRuntimeException obj instanceof clazz == false
      * @see Class#isInstance
      */
-    public static <T> T isInstanceOf(Class<?> clazz, T obj, Object... paramName) throws BaseRuntimeException {
-        notNull(clazz);
+    public static <T> T isInstanceOf(T obj, Class<?> clazz, String paramName) throws BaseRuntimeException {
+        notNull(clazz, paramName);
         if (!clazz.isInstance(obj)) {
-            throw ParamErrorCodeEnum.PARAM_TYPE_NOT_MATCH.toException(paramName);
+            throw ParamErrorCodeEnum.PARAM_TYPE_NOT_MATCH.toException(paramName, obj.getClass().getName(), clazz.getName());
         }
         return obj;
     }
@@ -340,10 +341,10 @@ public class ParamCheck {
      * @throws BaseRuntimeException superType 不是 subType 的父类
      * @see Class#isAssignableFrom
      */
-    public static void isAssignable(Class<?> superType, Class<?> subType, Object... paramName) throws BaseRuntimeException {
+    public static void isAssignable(Class<?> superType, Class<?> subType, String paramName) throws BaseRuntimeException {
         notNull(superType, paramName);
         if (!superType.isAssignableFrom(subType)) {
-            throw ParamErrorCodeEnum.PARAM_TYPE_NOT_MATCH.toException(paramName);
+            throw ParamErrorCodeEnum.PARAM_TYPE_NOT_MATCH.toException(paramName, superType.getName(), subType.getName());
         }
     }
 

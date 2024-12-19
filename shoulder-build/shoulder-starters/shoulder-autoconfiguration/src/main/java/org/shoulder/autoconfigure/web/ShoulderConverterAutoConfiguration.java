@@ -2,20 +2,15 @@ package org.shoulder.autoconfigure.web;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.shoulder.core.context.AppInfo;
-import org.shoulder.core.converter.DateConverter;
-import org.shoulder.core.converter.DefaultEnumMissMatchHandler;
-import org.shoulder.core.converter.EnumConverterFactory;
-import org.shoulder.core.converter.EnumMissMatchHandler;
-import org.shoulder.core.converter.LocalDateConverter;
-import org.shoulder.core.converter.LocalDateTimeConverter;
-import org.shoulder.core.converter.LocalTimeConverter;
-import org.shoulder.core.converter.ShoulderConversionService;
-import org.shoulder.core.converter.ShoulderConversionServiceImpl;
+import org.shoulder.core.converter.*;
 import org.shoulder.core.util.ConvertUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.format.DateTimeFormatters;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -32,6 +27,7 @@ import java.util.Map;
  */
 @AutoConfiguration
 @ConditionalOnWebApplication
+@EnableConfigurationProperties(WebMvcProperties.class)
 public class ShoulderConverterAutoConfiguration implements ApplicationListener<ContextRefreshedEvent> {
 
 
@@ -41,11 +37,14 @@ public class ShoulderConverterAutoConfiguration implements ApplicationListener<C
      */
     @Bean
     @ConditionalOnMissingBean
-    public ShoulderConversionService conversionService() {
+    public ShoulderConversionService conversionService(@Value("${spring.mvc.format.date:iso}") String dateFormat,
+                                                       @Value("${spring.mvc.format.time:iso}") String timeFormat,
+                                                       @Value("${spring.mvc.format.date-time:iso}") String dateTimeFormat) {
         DateTimeFormatters dateTimeFormatters = new DateTimeFormatters()
-            .dateFormat(ConvertUtil.ISO_DATE_FORMAT)
-            .timeFormat(ConvertUtil.ISO_DATE_FORMAT)
-            .dateTimeFormat(ConvertUtil.ISO_DATE_FORMAT);
+            .dateFormat(dateFormat)
+            .timeFormat(timeFormat)
+            .dateTimeFormat(dateTimeFormat);
+
         ShoulderConversionServiceImpl conversionService = new ShoulderConversionServiceImpl(dateTimeFormatters);
         ConvertUtil.setConversionService(conversionService);
         return conversionService;
