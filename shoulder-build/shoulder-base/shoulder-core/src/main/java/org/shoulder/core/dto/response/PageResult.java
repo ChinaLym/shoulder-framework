@@ -231,8 +231,8 @@ public class PageResult<T> extends ListResult<T> {
                 pageResult.setList(new ArrayList<>(list));
             }
             pageResult.setPageNum((int) page.getCurrent());
-            pageResult.setPageSize((int) page.getPages());
-            pageResult.setSize((int) page.getSize());
+            pageResult.setPageSize((int) page.getSize());
+            pageResult.setSize(list == null ? 0 : list.size());
             pageResult.setHasPreviousPage(!pageResult.getFirstPage());
             pageResult.setHasNextPage(!pageResult.getLastPage());
 

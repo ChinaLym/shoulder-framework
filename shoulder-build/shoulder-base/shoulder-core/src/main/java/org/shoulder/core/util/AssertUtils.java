@@ -23,6 +23,7 @@ import java.util.function.Consumer;
  * 且实现构造方法: {@link BaseRuntimeException#BaseRuntimeException(String)}
  * {@link BaseRuntimeException#BaseRuntimeException(org.shoulder.core.exception.ErrorCode, Object[])}
  * </ul>
+ * 若用于参数校验/检查，可以使用更简化的 {@link org.shoulder.validate.util.ParamCheck}，且带有合适的提示信息。
  * todo P1 add collection function
  *
  * @author lym

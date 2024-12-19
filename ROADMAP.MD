@@ -61,8 +61,11 @@ Google 等互联网顶尖公司已经探索 `ServiceMesh` 许久，虽然当前�
 * ext-moments
   ** 提供社交功能模块
   ** 动态、文章、评论、点赞、朋友圈、通知等
+* db
+** mybatis-plus 一些常用配置支持 mybatis-plus.configuration.log-impl
 
 ---
+
 ## 技术选型
 
 喜欢引入新的优秀技术，但不盲目追捧，当且仅当有完整的实践方案

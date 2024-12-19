@@ -13,10 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_NO;
-import static org.shoulder.core.constant.PageConst.DEFAULT_PAGE_SIZE;
-import static org.shoulder.core.constant.PageConst.MAX_PAGE_SIZE;
-import static org.shoulder.core.constant.PageConst.MIN_PAGE_NO;
+import static org.shoulder.core.constant.PageConst.*;
 
 /**
  * 分页参数 BO
@@ -71,6 +68,7 @@ public class BasePageQuery<T> extends ToStringObj {
                     .map(r -> new OrderRule(r.getFieldName(), Order.getByName(r.getOrder())))
                     .collect(Collectors.toList());
         }
+        page.ext = pageQuery.getExt();
         return page;
     }
 
