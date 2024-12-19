@@ -1,4 +1,4 @@
-package org.shoulder.core.dictionary.convert;
+package org.shoulder.web.template.dictionary.convert;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -12,11 +12,13 @@ import java.io.IOException;
 /**
  * 支持前端传 String，后端用 DictionaryItemDTO 接收
  *
- * @param <DICTIONARY_TYPE> 字典枚举类型
  * @author lym
  */
 public abstract class DictionaryItemDTODeserializer extends JsonDeserializer<DictionaryItemDTO> {
 
+    /**
+     * 实际枚举字典类型
+     */
     protected final Class<? extends DictionaryItemEnum> dictionaryClass;
 
     public DictionaryItemDTODeserializer(Class<? extends DictionaryItemEnum> dictionaryClass) {
@@ -29,7 +31,12 @@ public abstract class DictionaryItemDTODeserializer extends JsonDeserializer<Dic
         if (text == null || text.isEmpty()) {
             return null;
         }
+//        if (!text.startsWith("{") && text.endsWith("}")) {
         DictionaryItemEnum dictionaryItemEnum = ConvertUtil.convert(text, dictionaryClass);
         return ConvertUtil.convert(dictionaryItemEnum, DictionaryItemDTO.class);
+//        }
+        // todo 直接转化
+//        return null;
+
     }
 }
