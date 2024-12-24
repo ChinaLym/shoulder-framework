@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author lym
  */
-public abstract class DictionaryItemDTODeserializer extends JsonDeserializer<DictionaryItemDTO> {
+public class DictionaryItemDTODeserializer extends JsonDeserializer<DictionaryItemDTO> {
 
     /**
      * 实际枚举字典类型
@@ -37,7 +37,7 @@ public abstract class DictionaryItemDTODeserializer extends JsonDeserializer<Dic
             return null;
         }
 
-        if (!text.startsWith("{")) {
+        if (text.startsWith("{")) {
             Object parseResult = new UntypedObjectDeserializer().deserialize(p, context);
             AssertUtils.isTrue(parseResult != null && parseResult instanceof Map, ParamErrorCodeEnum.PARAM_ILLEGAL, context.getParser().getParsingContext().getCurrentName());
             Map parsedMap = (Map) parseResult;
