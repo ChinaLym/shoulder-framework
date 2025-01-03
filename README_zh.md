@@ -6,8 +6,8 @@
 
 ![](https://img.shields.io/badge/👀%20即将发布-1.0.0-c0ce28.svg)
 
-[![](https://img.shields.io/badge/🚀%20Release%20Version-0.8.1-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v0.8.1) 
-[![](https://img.shields.io/badge/🌱%20Spring%20Boot%20Version-3.2.x-blue.svg)](https://spring.io/projects/spring-boot) 
+[![](https://img.shields.io/badge/🚀%20Release%20Version-0.8.1-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v0.8.1)
+[![](https://img.shields.io/badge/🌱%20Spring%20Boot%20Version-3.2.x-blue.svg)](https://spring.io/projects/spring-boot)
 
 # 📖介绍 [English language](README.md)
 
@@ -110,7 +110,7 @@ mvn archetype:generate \
 # ❓常见问题 & FAQ
 
 ### Q：是重复造轮子吗？
-非也，`Shoulder`设计理念如命名——“站在巨人肩膀上”，不倡导重复造轮子，重在将“巨人的肩膀”（优秀的三方包）安全高效地带给使用者，让开发者放心地感受前“巨人肩膀”的魅力🤩。
+非也，`Shoulder`设计理念如命名——“站在巨人肩膀上”，不倡导重复造轮子，重在将“巨人的肩膀”（业界卓越的代码与设计）安全高效地带给使用者，让开发者放心地感受 “肩膀”的魅力🤩。
 
 更多： [功能介绍.md](doc/ability-intro.md)、[工程目录 & 模块划分](doc/module-intro.md)、[设计理念 & 发展路线](ROADMAP.MD)
 

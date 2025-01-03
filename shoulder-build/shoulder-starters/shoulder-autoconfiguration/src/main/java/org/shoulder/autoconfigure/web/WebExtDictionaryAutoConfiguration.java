@@ -47,7 +47,7 @@ public class WebExtDictionaryAutoConfiguration {
 
     @AutoConfiguration(after = {I18nAutoConfiguration.class})
     @ConditionalOnClass(value = {DictionaryEnumStore.class})
-    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.storage", havingValue = "ENUM")
+    @ConditionalOnProperty(value = "shoulder.web.ext.dictionary.storage", havingValue = "ENUM", matchIfMissing = true)
     public static class BaseOnEnumDictionaryConfiguration {
 
         /**

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: @project.name@
+    name: @appName@
 
   datasource:
     type: com.zaxxer.hikari.HikariDataSource

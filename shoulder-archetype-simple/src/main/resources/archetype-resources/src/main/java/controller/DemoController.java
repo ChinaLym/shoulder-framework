@@ -1,3 +1,5 @@
+package ${package}.controller;
+
 import org.shoulder.core.log.AppLoggers;
 import org.shoulder.core.log.Logger;
 import org.shoulder.web.annotation.SkipResponseWrap;
@@ -21,8 +23,6 @@ public class DemoController {
 
 
     /**
-     * 访问 http://localhost:8080/demo/test 测试
-     */    /**
      * 访问 <a href="http://localhost:8080/demo/hello">http://localhost:8080/demo/hello</a> 进行测试
      */
     @SkipResponseWrap // 跳过响应值包装
