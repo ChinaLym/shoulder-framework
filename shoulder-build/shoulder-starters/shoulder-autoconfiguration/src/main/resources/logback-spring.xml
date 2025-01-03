@@ -22,7 +22,7 @@
     <springProfile name="!prod">
         <!-- 开发环境打印的很全 -->
         <springProperty scope="context" name="CONSOLE_LOG_PATTERN" source="logging.pattern"
-                        defaultValue="-%sclear(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %sclear(%-5p) %cyan([${PID:-}]){magenta} %cyan(---){faint} %sclear([%15.15t]){faint} %cyan(%-40.40logger{39} :){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+                        defaultValue="%sclear(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %X{S-TRACE} %sclear(%-5p) %X{S-ERR_CODE} %cyan([${PID:-}]){magenta} %cyan(---){faint} %sclear([%15.15t]){faint} %cyan(%-40.40logger{39} :){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
 
         <!-- 彩色日志依赖的渲染类 -->
         <conversionRule conversionWord="sclear"
@@ -65,7 +65,7 @@
     <springProfile name="prod|test">
         <!-- 日期、级别、类名#行号(#%L])、线程、日志内容、换行符；注意生产环境保证性能故不打印行号 -->
         <springProperty scope="local" name="SHOULDER_LOG_PATTERN" source="logging.pattern"
-                        defaultValue="%d %-5p [${APP_ID}] [%C{0}] [%t] %m%n"/>
+                        defaultValue="%d %X{S-TRACE} %-5p %X{S-ERR_CODE} [${APP_ID}] [%C{0}] [%t] [%MDC_ERROR_CODE_NAME] %m%n"/>
         <!--    <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${APP_ID} [%thread] [%logger{50}:%line] - %msg%n-->
 
         <!-- ======================= 默认给 APP 定义的日志 BEGIN ========================= -->

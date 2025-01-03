@@ -51,7 +51,8 @@ public class InstanceIdProviderAutoConfiguration {
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = InstanceIdProperties.PREFIX + ".type", havingValue = "fixed", matchIfMissing = true)
     public InstanceIdProvider fixedInstanceIdProvider() {
-        if(AppInfo.cluster() && Objects.equals(instanceIdProperties.getId(), 0L)) {
+        if (AppInfo.cluster() && Objects.equals(instanceIdProperties.getType(), 0L)) {
+            // 集群模式下，应确保每个进程 instantId 不同，要么在启动参数手动分配不同值，或者采用 REDIS 等其他方式自动分配 instantId
             log.warn("Active cluster mode, but instanceId is DEFAULT VALUE: 0! Please change shoulder.instance.id in application.properties!");
         }
         return new FixedInstanceIdProvider(instanceIdProperties.getId());

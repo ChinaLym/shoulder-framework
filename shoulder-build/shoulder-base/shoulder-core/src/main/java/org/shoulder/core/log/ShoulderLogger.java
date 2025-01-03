@@ -1,5 +1,6 @@
 package org.shoulder.core.log;
 
+import org.shoulder.core.context.AppContext;
 import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.util.ExceptionUtil;
 import org.shoulder.core.util.StringUtils;
@@ -38,8 +39,6 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
     private static final String MDC_SPAN_ID = "span_id";
 
     // 定义前后缀，以便于日志分割和分析
-
-    private static final String SPACE = " ";
 
     private static final String ERROR_CODE_PREFIX = "[";
     private static final String ERROR_CODE_SUFFIX = "]";
@@ -709,7 +708,7 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
      * @return [errorCodePrefix + errorCode]
      */
     private String generateErrorCode(String errorCode) {
-        return SPACE + ERROR_CODE_PREFIX + ExceptionUtil.formatErrorCode(errorCode) + ERROR_CODE_SUFFIX;
+        return ERROR_CODE_PREFIX + ExceptionUtil.formatErrorCode(errorCode) + ERROR_CODE_SUFFIX;
     }
 
     /**
@@ -718,13 +717,13 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
      * @return <traceId,spanId>
      */
     private String generateTraceInfo() {
-        String traceId = MDC.get(MDC_TRACE_ID);
+        String traceId = AppContext.getTraceId();
         if (StringUtils.isEmpty(traceId)) {
             return null;
         }
+        // todo 支持 spanId
         String spanId = MDC.get(MDC_SPAN_ID);
-        return SPACE +
-            TRACE_PREFIX + traceId +
+        return TRACE_PREFIX + traceId +
             DELIMITER + (spanId == null ? "" : spanId) +
             TRACE_SUFFIX;
     }

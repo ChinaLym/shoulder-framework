@@ -27,13 +27,11 @@ groupId.artifactId
 
 # 🚀 快速开始
 
-* 不间断运行 / 互联网类软件：通过 spring-boot jar 方式 + docker 部署。
-
-* 传统型软件产品：通过 tomcat 部署。
+* 就像 Spring Boot 使用即可。
 
 # ❓常见问题 & FAQ
 
-### 问题举例：Spring Boot 项目打包成 Tomcat 或 Fat Jar 方式运行有什么区别？
+### 【这是一个问题举例，实际可换成自己项目的 Q&A】：Spring Boot 项目打包成 Tomcat 或 Fat Jar 方式运行有什么区别？
 
 * Tomcat
     * 部署能极大的减少内存占用
@@ -45,7 +43,7 @@ groupId.artifactId
     * 可以利用maven提供的机制进行热部署
 
 * Fat Jar
-    * 隔离性差，不会因为单个应用影响其他所有应用
+    * 隔离性好，不会因为单个应用影响其他所有应用
     * 移植性好，打包后可直接运行，不需要绑定tomcat
     * 可以选择其他服务器，如`Undertow`、更底层的 `Netty`
 
