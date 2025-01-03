@@ -27,7 +27,7 @@ steps:
       #
       - export MAVEN_OPTS="-Xmx400m -Xms400m"
       # ========== 安装到本地 install script ==========
-      - mvn clean install -P release -Dmaven.test.skip=true -B -V -T 1.5C
+      #- mvn clean install -P release -Dmaven.test.skip=true -B -V -T 1.5C
       # ========== install script end ==========
       #
       # ========== deploy script ==========
