@@ -5,7 +5,7 @@
 [![AUR](https://img.shields.io/badge/©️%20license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework/blob/master/LICENSE) [![](https://img.shields.io/badge/🧑%20Author-lym-yellow.svg)](https://github.com/ChinaLym)
 
 ![](https://img.shields.io/badge/👀%20即将发布-1.0.0-c0ce28.svg)
-`⭐当前预览版本:` `1.0.0-M3`
+`⭐当前预览版本:` `1.0.0-M3.1`
 
 [![](https://img.shields.io/badge/🚀%20当前发布版-0.8.1-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v0.8.1)
 [![](https://img.shields.io/badge/🌱%20Spring%20Boot%20版本-3.2.x-blue.svg)](https://spring.io/projects/spring-boot)
