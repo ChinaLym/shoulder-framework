@@ -10,12 +10,16 @@ import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
 
+import java.util.Arrays;
+import java.util.function.Supplier;
+
 /**
  * 在 slf4j 之上封装一层带错误码的记录实现
  * 统一使用该 logger 记录日志，禁用 {@link System#out}
  * trace、debug、info 这些可能不输出的日志的级别采用占位符或条件判断，warn、error则推荐字符串拼接避免占位符查找替换，参数非法一般用warn
  * 推荐使用者开启异步日志优化IO（默认关闭）
  * 默认info以及以下级别，不配置日志框架输出日志打印处的类名，方法名及行号的信息（获取堆栈信息较消耗资源，应通过配置项是否开启）
+ * 支持传入 {@link Supplier} 类型参数，激活时再打印
  *
  * @author lym
  */
@@ -80,17 +84,17 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void trace(String format, Object arg) {
-        uniformLog(() -> delegateLogger.trace(format, arg));
+        uniformLog(() -> delegateLogger.trace(format, tryGet(arg)));
     }
 
     @Override
     public void trace(String format, Object arg1, Object arg2) {
-        uniformLog(() -> delegateLogger.trace(format, arg1, arg2));
+        uniformLog(() -> delegateLogger.trace(format, tryGet(arg1), tryGet(arg2)));
     }
 
     @Override
     public void trace(String format, Object... arguments) {
-        uniformLog(() -> delegateLogger.trace(format, arguments));
+        uniformLog(() -> delegateLogger.trace(format, tryGet(arguments)));
     }
 
     @Override
@@ -110,12 +114,12 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void trace(Marker marker, String format, Object arg) {
-        uniformLog(() -> delegateLogger.trace(marker, format, arg));
+        uniformLog(() -> delegateLogger.trace(marker, format, tryGet(arg)));
     }
 
     @Override
     public void trace(Marker marker, String format, Object arg1, Object arg2) {
-        uniformLog(() -> delegateLogger.trace(marker, format, arg1, arg2));
+        uniformLog(() -> delegateLogger.trace(marker, format, tryGet(arg1), tryGet(arg2)));
     }
 
     @Override
@@ -144,19 +148,19 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void debug(String format, Object arg) {
-        uniformLog(() -> delegateLogger.debug(format, arg));
+        uniformLog(() -> delegateLogger.debug(format, tryGet(arg)));
     }
 
 
     @Override
     public void debug(String format, Object arg1, Object arg2) {
-        uniformLog(() -> delegateLogger.debug(format, arg1, arg2));
+        uniformLog(() -> delegateLogger.debug(format, tryGet(arg1), tryGet(arg2)));
     }
 
 
     @Override
     public void debug(String format, Object... arguments) {
-        uniformLog(() -> delegateLogger.debug(format, arguments));
+        uniformLog(() -> delegateLogger.debug(format, tryGet(arguments)));
     }
 
 
@@ -180,19 +184,19 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void debug(Marker marker, String format, Object arg) {
-        uniformLog(() -> delegateLogger.debug(marker, format, arg));
+        uniformLog(() -> delegateLogger.debug(marker, format, tryGet(arg)));
     }
 
 
     @Override
     public void debug(Marker marker, String format, Object arg1, Object arg2) {
-        uniformLog(() -> delegateLogger.debug(marker, format, arg1, arg2));
+        uniformLog(() -> delegateLogger.debug(marker, format, tryGet(arg1), tryGet(arg2)));
     }
 
 
     @Override
     public void debug(Marker marker, String format, Object... arguments) {
-        uniformLog(() -> delegateLogger.debug(marker, format, arguments));
+        uniformLog(() -> delegateLogger.debug(marker, format, tryGet(arguments)));
     }
 
 
@@ -215,24 +219,46 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
         uniformLog(() -> delegateLogger.info(msg));
     }
 
-
+    /**
+     * 根据 sl4j 接口定义，一定不会将 arg 视为 Throwable
+     * 
+     * @param format the format string
+     * @param arg    the argument
+     */
     @Override
     public void info(String format, Object arg) {
-        uniformLog(() -> delegateLogger.info(format, arg));
+        uniformLog(() -> delegateLogger.info(format, tryGet(arg)));
     }
 
 
+    /**
+     * 根据 sl4j 接口定义，若 arg2 为 Throwable，则当作异常堆栈
+     *
+     * @param format the format string
+     * @param arg1    the argument
+     * @param arg2    the argument2
+     */
     @Override
     public void info(String format, Object arg1, Object arg2) {
-        uniformLog(() -> delegateLogger.info(format, arg1, arg2));
+        uniformLog(() -> delegateLogger.info(format, tryGet(arg1), tryGet(arg2)));
     }
 
 
     @Override
     public void info(String format, Object... arguments) {
-        uniformLog(() -> delegateLogger.info(format, arguments));
+        uniformLog(() -> delegateLogger.info(format, tryGet(arguments)));
     }
 
+    private static Object tryGet(Object o) {
+        return o instanceof Supplier? ((Supplier<?>) o).get() : o;
+    }
+    
+    private static Object[] tryGet(Object... arguments) {
+        return arguments == null ? null
+                : Arrays.stream(arguments)
+                .map(ShoulderLogger::tryGet)
+                .toArray();
+    }
 
     @Override
     public void info(String msg, Throwable t) {
@@ -254,19 +280,19 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void info(Marker marker, String format, Object arg) {
-        uniformLog(() -> delegateLogger.info(marker, format, arg));
+        uniformLog(() -> delegateLogger.info(marker, format, tryGet(arg)));
     }
 
 
     @Override
     public void info(Marker marker, String format, Object arg1, Object arg2) {
-        uniformLog(() -> delegateLogger.info(marker, format, arg1, arg2));
+        uniformLog(() -> delegateLogger.info(marker, format, tryGet(arg1), tryGet(arg2)));
     }
 
 
     @Override
     public void info(Marker marker, String format, Object... arguments) {
-        uniformLog(() -> delegateLogger.info(marker, format, arguments));
+        uniformLog(() -> delegateLogger.info(marker, format, tryGet(arguments)));
     }
 
 
@@ -293,19 +319,19 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void warn(String format, Object arg) {
-        uniformLog(() -> delegateLogger.warn(format, arg));
+        uniformLog(() -> delegateLogger.warn(format, tryGet(arg)));
     }
 
 
     @Override
     public void warn(String format, Object... arguments) {
-        uniformLog(() -> delegateLogger.warn(format, arguments));
+        uniformLog(() -> delegateLogger.warn(format, tryGet(arguments)));
     }
 
 
     @Override
     public void warn(String format, Object arg1, Object arg2) {
-        uniformLog(() -> delegateLogger.warn(format, arg1, arg2));
+        uniformLog(() -> delegateLogger.warn(format, tryGet(arg1), tryGet(arg2)));
     }
 
 
@@ -333,19 +359,19 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void warn(Marker marker, String format, Object arg) {
-        uniformLog(() -> delegateLogger.warn(marker, format, arg));
+        uniformLog(() -> delegateLogger.warn(marker, format, tryGet(arg)));
     }
 
 
     @Override
     public void warn(Marker marker, String format, Object arg1, Object arg2) {
-        uniformLog(() -> delegateLogger.warn(marker, format, arg1, arg2));
+        uniformLog(() -> delegateLogger.warn(marker, format, tryGet(arg1), tryGet(arg2)));
     }
 
 
     @Override
     public void warn(Marker marker, String format, Object... arguments) {
-        uniformLog(() -> delegateLogger.warn(marker, format, arguments));
+        uniformLog(() -> delegateLogger.warn(marker, format, tryGet(arguments)));
     }
 
 
@@ -410,20 +436,20 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void debugWithErrorCode(String errorCode, String format, Object arg) {
-        uniformLog(errorCode, () -> delegateLogger.debug(format, arg));
+        uniformLog(errorCode, () -> delegateLogger.debug(format, tryGet(arg)));
     }
 
 
     @Override
     public void debugWithErrorCode(String errorCode, String format, Object... arguments) {
-        uniformLog(errorCode, () -> delegateLogger.debug(format, arguments));
+        uniformLog(errorCode, () -> delegateLogger.debug(format, tryGet(arguments)));
 
     }
 
 
     @Override
     public void debugWithErrorCode(String errorCode, String format, Object arg1, Object arg2) {
-        uniformLog(errorCode, () -> delegateLogger.debug(format, arg1, arg2));
+        uniformLog(errorCode, () -> delegateLogger.debug(format, tryGet(arg1), tryGet(arg2)));
     }
 
 
@@ -460,20 +486,20 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void infoWithErrorCode(String errorCode, String format, Object arg) {
-        uniformLog(errorCode, () -> delegateLogger.info(format, arg));
+        uniformLog(errorCode, () -> delegateLogger.info(format, tryGet(arg)));
     }
 
 
     @Override
     public void infoWithErrorCode(String errorCode, String format, Object... arguments) {
-        uniformLog(errorCode, () -> delegateLogger.info(format, arguments));
+        uniformLog(errorCode, () -> delegateLogger.info(format, tryGet(arguments)));
 
     }
 
 
     @Override
     public void infoWithErrorCode(String errorCode, String format, Object arg1, Object arg2) {
-        uniformLog(errorCode, () -> delegateLogger.info(format, arg1, arg2));
+        uniformLog(errorCode, () -> delegateLogger.info(format, tryGet(arg1), tryGet(arg2)));
     }
 
 
@@ -509,20 +535,20 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void warnWithErrorCode(String errorCode, String format, Object arg) {
-        uniformLog(errorCode, () -> delegateLogger.warn(format, arg));
+        uniformLog(errorCode, () -> delegateLogger.warn(format, tryGet(arg)));
     }
 
 
     @Override
     public void warnWithErrorCode(String errorCode, String format, Object... arguments) {
-        uniformLog(errorCode, () -> delegateLogger.warn(format, arguments));
+        uniformLog(errorCode, () -> delegateLogger.warn(format, tryGet(arguments)));
 
     }
 
 
     @Override
     public void warnWithErrorCode(String errorCode, String format, Object arg1, Object arg2) {
-        uniformLog(errorCode, () -> delegateLogger.warn(format, arg1, arg2));
+        uniformLog(errorCode, () -> delegateLogger.warn(format, tryGet(arg1), tryGet(arg2)));
     }
 
 
@@ -547,19 +573,19 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void error(String format, Object arg) {
-        uniformLog(() -> delegateLogger.error(format, arg));
+        uniformLog(() -> delegateLogger.error(format, tryGet(arg)));
     }
 
 
     @Override
     public void error(String format, Object arg1, Object arg2) {
-        uniformLog(() -> delegateLogger.error(format, arg1, arg2));
+        uniformLog(() -> delegateLogger.error(format, tryGet(arg1), tryGet(arg2)));
     }
 
 
     @Override
     public void error(String format, Object... arguments) {
-        uniformLog(() -> delegateLogger.error(format, arguments));
+        uniformLog(() -> delegateLogger.error(format, tryGet(arguments)));
     }
 
 
@@ -587,19 +613,19 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void error(Marker marker, String format, Object arg) {
-        uniformLog(() -> delegateLogger.error(marker, format, arg));
+        uniformLog(() -> delegateLogger.error(marker, format, tryGet(arg)));
     }
 
 
     @Override
     public void error(Marker marker, String format, Object arg1, Object arg2) {
-        uniformLog(() -> delegateLogger.error(marker, format, arg1, arg2));
+        uniformLog(() -> delegateLogger.error(marker, format, tryGet(arg1), tryGet(arg2)));
     }
 
 
     @Override
     public void error(Marker marker, String format, Object... arguments) {
-        uniformLog(() -> delegateLogger.error(marker, format, arguments));
+        uniformLog(() -> delegateLogger.error(marker, format, tryGet(arguments)));
     }
 
 
@@ -634,19 +660,19 @@ public class ShoulderLogger implements org.shoulder.core.log.Logger {
 
     @Override
     public void errorWithErrorCode(String errorCode, String format, Object arg) {
-        uniformLog(errorCode, () -> delegateLogger.error(format, arg));
+        uniformLog(errorCode, () -> delegateLogger.error(format, tryGet(arg)));
     }
 
 
     @Override
     public void errorWithErrorCode(String errorCode, String format, Object arg1, Object arg2) {
-        uniformLog(errorCode, () -> delegateLogger.error(format, arg1, arg2));
+        uniformLog(errorCode, () -> delegateLogger.error(format, tryGet(arg1), tryGet(arg2)));
     }
 
 
     @Override
     public void errorWithErrorCode(String errorCode, String format, Object... arguments) {
-        uniformLog(errorCode, () -> delegateLogger.error(format, arguments));
+        uniformLog(errorCode, () -> delegateLogger.error(format, tryGet(arguments)));
     }
 
 
