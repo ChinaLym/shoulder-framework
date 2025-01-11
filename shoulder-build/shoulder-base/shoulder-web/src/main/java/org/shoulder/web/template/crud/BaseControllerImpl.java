@@ -1,9 +1,9 @@
 package org.shoulder.web.template.crud;
 
-import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.log.AppLoggers;
 import org.shoulder.core.log.Logger;
+import org.shoulder.core.util.ReflectionKit;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 import org.shoulder.data.mybatis.template.service.BaseService;

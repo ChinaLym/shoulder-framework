@@ -1,13 +1,12 @@
 package org.shoulder.security.authentication.handler.json;
 
+import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.springframework.security.oauth2.common.exceptions.UnapprovedClientAuthenticationException;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-
-import jakarta.annotation.Nonnull;
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 从请求中获取 clientId、clientSecret

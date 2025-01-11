@@ -1,8 +1,7 @@
 package org.shoulder.http;
 
-import java.net.URI;
-
 import javax.annotation.Nonnull;
+import java.net.URI;
 
 /**
  * shoulder framework 方言版的 应用标识提取器

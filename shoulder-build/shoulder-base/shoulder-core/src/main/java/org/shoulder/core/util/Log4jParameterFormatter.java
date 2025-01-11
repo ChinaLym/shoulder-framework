@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * 采用log4j的文本格式化工具

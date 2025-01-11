@@ -7,7 +7,6 @@ import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.JsonUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;

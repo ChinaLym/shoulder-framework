@@ -7,9 +7,8 @@ import org.shoulder.code.propertities.BaseValidateCodeProperties;
 import org.shoulder.code.store.ValidateCodeStore;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import java.util.Objects;
-
 import javax.imageio.ImageIO;
+import java.util.Objects;
 
 /**
  * 图片验证码处理器

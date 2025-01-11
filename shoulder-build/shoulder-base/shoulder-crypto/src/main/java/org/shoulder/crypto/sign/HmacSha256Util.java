@@ -2,10 +2,9 @@ package org.shoulder.crypto.sign;
 
 import org.shoulder.core.constant.ByteSpecification;
 
-import java.nio.charset.Charset;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.Charset;
 
 /**
  * HmacSha256
