@@ -36,9 +36,27 @@ public interface DictionaryItemEnum<E extends Enum<? extends DictionaryItemEnum<
         return decideActualEnum(enumClass.getEnumConstants(), id, compareWithId(), DictionaryItemEnum::onMissMatch);
     }
 
+    /**
+     * 将 id 转为 Enum
+     *
+     * @param enumClass 枚举类
+     * @param id        id
+     * @param defaultVal 不存在时默认值
+     * @return Enum
+     */
+    static <ID, ENUM extends Enum<? extends DictionaryItemEnum<?, ID>>> ENUM fromId(
+            Class<? extends Enum<? extends DictionaryItemEnum<?, ID>>> enumClass, ID id, ENUM defaultVal) {
+        return decideActualEnum(enumClass.getEnumConstants(), id, compareWithId(), (enumClazz, val) -> defaultVal );
+    }
+
     static <ID, ENUM extends Enum<? extends DictionaryItemEnum<?, ID>>> ENUM fromName(
             Class<? extends Enum<? extends DictionaryItemEnum<?, ID>>> enumClass, String name) {
         return decideActualEnum(enumClass.getEnumConstants(), name, compareWithName(), DictionaryItemEnum::onMissMatch);
+    }
+
+    static <ID, ENUM extends Enum<? extends DictionaryItemEnum<?, ID>>> ENUM fromName(
+            Class<? extends Enum<? extends DictionaryItemEnum<?, ID>>> enumClass, String name, ENUM defaultVal) {
+        return decideActualEnum(enumClass.getEnumConstants(), name, compareWithName(), (enumClazz, val) -> defaultVal );
     }
 
     static <ID, ENUM extends Enum<? extends DictionaryItemEnum<?, ID>>> ENUM fromOrder(

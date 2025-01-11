@@ -75,7 +75,7 @@ public class DictionaryEnumItemValidatorForCharSequence implements ConstraintVal
             // 判断该字典是否存在
             AssertUtils.isTrue(dictionaryEnumStore.contains(enumClass), CommonErrorCodeEnum.ILLEGAL_PARAM);
             // 判断该字典项是否存在
-            dictionaryItem = (DictionaryItem) DictionaryItemEnum.fromId((Class) enumClass, code);
+            dictionaryItem = (DictionaryItem) DictionaryItemEnum.fromId((Class) enumClass, code, null);
         } else {
             // 动态枚举 type 肯定不是 INVALID_TYPE
             AssertUtils.notEquals(dictionaryType, DictionaryEnumItem.INVALID_TYPE, CommonErrorCodeEnum.CODING);
@@ -87,7 +87,7 @@ public class DictionaryEnumItemValidatorForCharSequence implements ConstraintVal
                 DictionaryItemEntity entity = dictionaryItemService.getByTypeAndCodeFromCache(dictionaryType, code);
                 AssertUtils.notNull(entity, CommonErrorCodeEnum.ILLEGAL_PARAM);
             } else if (enumClass == ConfigAbleDictionaryItem.class) {
-                // 判断配置表中是否存在该字典项
+                // todo P2 后续版本再上线该功能 判断配置表中是否存在该字典项
                 //            dictionaryItem = configBizService.queryByDictionaryTypeAndCode( example);
             }
         }

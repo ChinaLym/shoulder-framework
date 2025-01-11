@@ -3,6 +3,7 @@ package org.shoulder.web.advice;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.hibernate.validator.internal.engine.path.NodeImpl;
@@ -11,11 +12,13 @@ import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.exception.ErrorCode;
+import org.shoulder.core.log.AppLoggers;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -36,6 +39,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MultipartException;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 /**
@@ -147,6 +151,18 @@ public class RestControllerExceptionAdvice {
         return new BaseResult<>(ParamErrorCodeEnum.PARAM_ILLEGAL.getCode(), msg, new Object[]{paramName});
     }
 
+    /**
+     * jsr303 验证时发生异常，需要关注
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = {ValidationException.class})
+    public BaseResult ValidationExceptionHandler(ValidationException e) {
+        String stageErrorMsg = e.getMessage();
+        String rootCauseErrorMsg = String.valueOf(Optional.ofNullable(NestedExceptionUtils.getRootCause(e)).map(Throwable::getMessage));
+        AppLoggers.APP_WARN.warnWithErrorCode(CommonErrorCodeEnum.ILLEGAL_PARAM.getCode(),
+                "ValidationException for {}, rootMsg: {}, please check the stackTrace.", stageErrorMsg, rootCauseErrorMsg);
+        return new BaseResult<>(CommonErrorCodeEnum.ILLEGAL_PARAM);
+    }
 
     /**
      * 获取绑定结果错误中第一个引发错误的描述信息
