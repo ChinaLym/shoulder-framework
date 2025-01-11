@@ -1,6 +1,5 @@
 package org.shoulder.web.template.crud;
 
-import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +14,7 @@ import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.validate.groups.Update;
+import org.springframework.core.GenericTypeResolver;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -125,6 +125,6 @@ public interface UpdateController<
 
     @SuppressWarnings("unchecked")
     default Class<UPDATE_RESULT_DTO> getUpdateResultDtoClass() {
-        return (Class<UPDATE_RESULT_DTO>) GenericTypeUtils.resolveTypeArguments(this.getClass(), UpdateController.class)[2];
+        return (Class<UPDATE_RESULT_DTO>) GenericTypeResolver.resolveTypeArguments(this.getClass(), UpdateController.class)[2];
     }
 }

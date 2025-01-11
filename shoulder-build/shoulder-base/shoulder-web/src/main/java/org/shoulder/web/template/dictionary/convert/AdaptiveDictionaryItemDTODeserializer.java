@@ -1,10 +1,10 @@
 package org.shoulder.web.template.dictionary.convert;
 
-import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.shoulder.core.dictionary.model.DictionaryItemEnum;
+import org.shoulder.core.util.ReflectionKit;
 import org.shoulder.web.template.dictionary.dto.DictionaryItemDTO;
 
 import java.io.IOException;
