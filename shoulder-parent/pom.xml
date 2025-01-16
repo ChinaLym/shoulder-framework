@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>1.0.0-M3.2</version><!-- shoulder-version -->
+        <version>1.0.0-M3.3</version><!-- shoulder-version -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -24,6 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.javadoc.charset>${project.build.sourceEncoding}</maven.javadoc.charset>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+        <spring-boot.run.main-class>${start-class}</spring-boot.run.main-class>
 
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
@@ -52,7 +53,7 @@
             <dependency>
                 <groupId>cn.itlym</groupId>
                 <artifactId>shoulder-dependencies</artifactId>
-                <version>1.0.0-M3.2</version><!-- shoulder-version -->
+                <version>1.0.0-M3.3</version><!-- shoulder-version -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -124,6 +125,21 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${spring-boot.version}</version>
+                    <configuration>
+                        <executable>true</executable>
+                        <mainClass>${spring-boot.run.main-class}</mainClass>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>repackage</id>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                            <configuration>
+                                <attach>false</attach>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
 
                 <!-- shoulder 开发的错误码插件 -->
@@ -471,6 +487,7 @@
                         <archive>
                             <index>true</index>
                             <manifest>
+                                <mainClass>${start-class}</mainClass>
                                 <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             </manifest>
                             <manifestEntries>
