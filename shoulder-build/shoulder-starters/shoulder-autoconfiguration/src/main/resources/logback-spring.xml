@@ -9,7 +9,7 @@
     <springProperty scope="context" name="APP_ID" source="shoulder.application.id" defaultValue="appUnnamed"/>
     <springProperty scope="context" name="LOG_LEVEL" source="logging.level.global" defaultValue="info"/>
     <!-- 日志默认输出路径 -->
-    <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="/opt/logs/${APP_ID}"/>
+    <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="~/logs/${APP_ID}"/>
     <springProperty scope="context" name="LOG_ENCODE" source="logging.file.charset" defaultValue="UTF-8"/>
     <!--自定义日志留存天数-->
     <springProperty scope="local" name="LOG_FILE_MAX_HISTORY" source="logging.max-history" defaultValue="30"/>
@@ -65,7 +65,7 @@
     <springProfile name="prod|test">
         <!-- 日期、级别、类名#行号(#%L])、线程、日志内容、换行符；注意生产环境保证性能故不打印行号 -->
         <springProperty scope="local" name="SHOULDER_LOG_PATTERN" source="logging.pattern"
-                        defaultValue="%d %X{S-TRACE} %-5p %X{S-ERR_CODE} [${APP_ID}] [%C{0}] [%t] [%MDC_ERROR_CODE_NAME] %m%n"/>
+                        defaultValue="%d %X{S-TRACE} %-5p %X{S-ERR_CODE} [${APP_ID}] [%C{0}] [%t] %m%n"/>
         <!--    <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${APP_ID} [%thread] [%logger{50}:%line] - %msg%n-->
 
         <!-- ======================= 默认给 APP 定义的日志 BEGIN ========================= -->
