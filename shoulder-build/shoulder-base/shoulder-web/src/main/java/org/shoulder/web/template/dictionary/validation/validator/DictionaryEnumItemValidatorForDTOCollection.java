@@ -14,14 +14,14 @@ import java.util.Collection;
  *
  * @author lym
  */
-public class DictionaryEnumItemValidatorForVOCollection
+public class DictionaryEnumItemValidatorForDTOCollection
     implements ConstraintValidator<DictionaryEnumItem, Collection<? extends DictionaryItemDTO>> {
 
-    private DictionaryEnumItemValidatorForVO validator;
+    private DictionaryEnumItemValidatorForDTO validator;
 
     @Override
     public void initialize(DictionaryEnumItem annotation) {
-        validator = new DictionaryEnumItemValidatorForVO();
+        validator = new DictionaryEnumItemValidatorForDTO();
         validator.initialize(annotation);
     }
 

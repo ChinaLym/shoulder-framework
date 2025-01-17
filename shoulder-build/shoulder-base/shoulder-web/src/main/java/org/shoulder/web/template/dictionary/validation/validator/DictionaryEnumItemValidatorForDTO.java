@@ -11,7 +11,7 @@ import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
  *
  * @author lym
  */
-public class DictionaryEnumItemValidatorForVO implements ConstraintValidator<DictionaryEnumItem, DictionaryItemDTO> {
+public class DictionaryEnumItemValidatorForDTO implements ConstraintValidator<DictionaryEnumItem, DictionaryItemDTO> {
 
     private DictionaryEnumItemValidatorForCharSequence validator;
 

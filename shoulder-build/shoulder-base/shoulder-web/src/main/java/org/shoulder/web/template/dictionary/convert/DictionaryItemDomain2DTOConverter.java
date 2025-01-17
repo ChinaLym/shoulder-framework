@@ -11,7 +11,7 @@ import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import java.util.Optional;
 
 /**
- * DictionaryItem domain -> VO
+ * DictionaryItem domain -> DTO
  *
  * @author lym
  */

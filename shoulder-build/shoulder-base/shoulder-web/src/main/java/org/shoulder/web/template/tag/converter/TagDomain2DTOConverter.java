@@ -1,6 +1,6 @@
 package org.shoulder.web.template.tag.converter;
 
-import org.shoulder.web.template.crud.AbstractVODataConverter;
+import org.shoulder.web.template.crud.AbstractDTODataConverter;
 import org.shoulder.web.template.tag.dto.TagDTO;
 import org.shoulder.web.template.tag.model.TagEntity;
 
@@ -8,11 +8,11 @@ import javax.annotation.Nonnull;
 import java.util.Date;
 
 /**
- * Tag domain -> VO
+ * Tag domain -> DTO
  *
  * @author lym
  */
-public class TagDomain2DTOConverter extends AbstractVODataConverter<TagEntity, TagDTO> {
+public class TagDomain2DTOConverter extends AbstractDTODataConverter<TagEntity, TagDTO> {
 
     @Override
     public void doConvert(@Nonnull TagEntity sourceModel, @Nonnull TagDTO targetModel) {

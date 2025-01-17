@@ -6,8 +6,8 @@ import jakarta.validation.ReportAsSingleViolation;
 import org.shoulder.core.dictionary.model.DictionaryItem;
 import org.shoulder.core.dictionary.model.DictionaryItemEnum;
 import org.shoulder.web.template.dictionary.validation.validator.DictionaryEnumItemValidatorForCharSequence;
-import org.shoulder.web.template.dictionary.validation.validator.DictionaryEnumItemValidatorForVO;
-import org.shoulder.web.template.dictionary.validation.validator.DictionaryEnumItemValidatorForVOCollection;
+import org.shoulder.web.template.dictionary.validation.validator.DictionaryEnumItemValidatorForDTO;
+import org.shoulder.web.template.dictionary.validation.validator.DictionaryEnumItemValidatorForDTOCollection;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -26,7 +26,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author lym
  */
 @Documented
-@Constraint(validatedBy = {DictionaryEnumItemValidatorForCharSequence.class, DictionaryEnumItemValidatorForVO.class, DictionaryEnumItemValidatorForVOCollection.class})
+@Constraint(validatedBy = {DictionaryEnumItemValidatorForCharSequence.class, DictionaryEnumItemValidatorForDTO.class, DictionaryEnumItemValidatorForDTOCollection.class})
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER})
 @Retention(RUNTIME)
 @ReportAsSingleViolation

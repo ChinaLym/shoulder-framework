@@ -38,7 +38,7 @@
             IDEA 中推荐使用控制台颜色过滤插件，实现更高的定制化，更高级的使用参见 http://logback.qos.ch/manual/layouts.html#conversionWord -->
             <encoder class="org.shoulder.core.log.logback.encoder.ShoulderPatternLayoutEncoder">
                 <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-                <charset>UTF-8</charset>
+                <charset>${LOG_ENCODE}</charset>
             </encoder>
         </appender>
 

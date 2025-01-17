@@ -2,17 +2,17 @@ package org.shoulder.web.template.oplog.convert;
 
 import cn.hutool.core.bean.BeanUtil;
 import org.shoulder.log.operation.model.OperationLogDTO;
-import org.shoulder.web.template.crud.AbstractVODataConverter;
+import org.shoulder.web.template.crud.AbstractDTODataConverter;
 import org.shoulder.web.template.oplog.model.OperationLogEntity;
 
 import javax.annotation.Nonnull;
 
 /**
- * VO -> domain
+ * DTO -> domain
  *
  * @author lym
  */
-public class OperationLogEntity2DTOConverter extends AbstractVODataConverter<OperationLogEntity, OperationLogDTO> {
+public class OperationLogEntity2DTOConverter extends AbstractDTODataConverter<OperationLogEntity, OperationLogDTO> {
 
     public static final OperationLogEntity2DTOConverter INSTANCE = new OperationLogEntity2DTOConverter();
 

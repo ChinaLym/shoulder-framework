@@ -1,17 +1,17 @@
 package org.shoulder.web.template.dictionary.convert;
 
-import org.shoulder.web.template.crud.AbstractVODataConverter;
+import org.shoulder.web.template.crud.AbstractDTODataConverter;
 import org.shoulder.web.template.dictionary.dto.DictionaryTypeDTO;
 import org.shoulder.web.template.dictionary.model.DictionaryTypeEntity;
 
 import javax.annotation.Nonnull;
 
 /**
- * Tag VO -> domain
+ * Tag DTO -> domain
  *
  * @author lym
  */
-public class DictionaryTypeDTO2EntityConverter extends AbstractVODataConverter<DictionaryTypeDTO, DictionaryTypeEntity> {
+public class DictionaryTypeDTO2EntityConverter extends AbstractDTODataConverter<DictionaryTypeDTO, DictionaryTypeEntity> {
 
     public static final DictionaryTypeDTO2EntityConverter INSTANCE = new DictionaryTypeDTO2EntityConverter();
 

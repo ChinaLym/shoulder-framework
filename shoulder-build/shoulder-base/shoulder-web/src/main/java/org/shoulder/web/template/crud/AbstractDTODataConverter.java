@@ -4,7 +4,7 @@ package org.shoulder.web.template.crud;
 import org.shoulder.core.converter.BaseDataConverter;
 
 /**
- * VO 模型转换器
+ * DTO 模型转换器
  * 自动转换 id、version、创建、更新时间、创建、更新人id、名称
  * <p>
  * targetModel\.set(.*?)\(\)\;
@@ -13,7 +13,7 @@ import org.shoulder.core.converter.BaseDataConverter;
  * @author lym
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractVODataConverter<S, T> extends BaseDataConverter<S, T> {
+public abstract class AbstractDTODataConverter<S, T> extends BaseDataConverter<S, T> {
 
     @Override
     protected void preHandle(S sourceModel, T targetModel) {

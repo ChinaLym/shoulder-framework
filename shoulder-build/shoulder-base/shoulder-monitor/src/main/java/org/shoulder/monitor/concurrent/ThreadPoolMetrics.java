@@ -48,7 +48,7 @@ public class ThreadPoolMetrics {
     private final String moduleName;
 
     /**
-     * 中正在执行任务的线程数量
+     * 正在执行任务的线程数量
      */
     private final AtomicInteger activeCount = new AtomicInteger();
 
