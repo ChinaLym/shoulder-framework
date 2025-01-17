@@ -9,6 +9,7 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
 import org.shoulder.core.util.StringUtils;
+import org.shoulder.validate.exception.ParamErrorCodeEnum;
 import org.shoulder.web.template.dictionary.model.ConfigAbleDictionaryItem;
 import org.shoulder.web.template.dictionary.model.DictionaryItemEntity;
 import org.shoulder.web.template.dictionary.service.DictionaryItemService;
@@ -91,7 +92,7 @@ public class DictionaryEnumItemValidatorForCharSequence implements ConstraintVal
                 //            dictionaryItem = configBizService.queryByDictionaryTypeAndCode( example);
             }
         }
-        AssertUtils.notNull(dictionaryItem, CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.notNull(dictionaryItem, ParamErrorCodeEnum.PARAM_NOT_SUPPORT, charSequence);
 
         // 黑名单
         for (String forbiddenCode : forbiddenCodes) {

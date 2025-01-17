@@ -160,7 +160,7 @@ public class RestControllerExceptionAdvice {
         String stageErrorMsg = e.getMessage();
         String rootCauseErrorMsg = String.valueOf(Optional.ofNullable(NestedExceptionUtils.getRootCause(e)).map(Throwable::getMessage));
         AppLoggers.APP_WARN.warnWithErrorCode(CommonErrorCodeEnum.ILLEGAL_PARAM.getCode(),
-                "ValidationException for {}, rootMsg: {}, please check the stackTrace.", stageErrorMsg, rootCauseErrorMsg);
+                "ValidationException for {}, rootMsg: {}, please check the stackTrace.", stageErrorMsg, rootCauseErrorMsg, e);
         return new BaseResult<>(CommonErrorCodeEnum.ILLEGAL_PARAM);
     }
 
