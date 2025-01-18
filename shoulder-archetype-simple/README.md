@@ -10,15 +10,15 @@
 
 下面以 IDEA 为例，介绍如何通过 `shoulder-archetype-simple` 快速创建一个引入了`shoulder`的 spring boot web 工程
 
-### 添加 shoulder 的 archetype（仅第一次需要） 
+### 添加 shoulder 的 archetype（仅第一次需要）
 
 第一次使用时需要添加，以后都不用这一步咯，除非调整 `version`
 
-本次以 `0.8.1` 为例说明
+本次以 `1.0.0-M3.3` 为例说明
 ```
 groupId     cn.itlym
 artifactId  shoulder-archetype-simple
-version     0.8.1
+version     1.0.0-M3.3
 ```
 
 ![添加 shoulder 的 archetype](../doc/img/archetype/idea/add.png)
@@ -32,10 +32,10 @@ version     0.8.1
 通过命令行快速创建
 
 ```bash
-mvn archetype:generate\
+mvn archetype:generate -X\
     -DarchetypeGroupId=cn.itlym\
     -DarchetypeArtifactId=shoulder-archetype-simple\
-    -DarchetypeVersion=0.8.1\
+    -DarchetypeVersion=1.0.0-M3.2\
     -DgroupId=com.foo -DartifactId=demo -DappId=demo\
     -Dauthor=shoulder -Dversion=1.0.0-SNAPSHOT\
     -B

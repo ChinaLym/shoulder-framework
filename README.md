@@ -5,7 +5,7 @@
 
 [![AUR](https://img.shields.io/badge/©️%20license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework/blob/master/LICENSE) [![](https://img.shields.io/badge/🧑%20Author-lym-yellow.svg)](https://github.com/ChinaLym)
 
-`👀Preview:` `1.0.0-M3.3`
+`👀Preview:` `1.0.0-M444`
 
 [![](https://img.shields.io/badge/🚀%20Release%20Version-0.8.1-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v0.8.1)
 [![](https://img.shields.io/badge/🌱%20Spring%20Boot%20Version-3.2.x-blue.svg)](https://spring.io/projects/spring-boot)
@@ -60,7 +60,7 @@ corresponding starter:
 <dependency>
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-starter-web</artifactId>
-    <version>0.8.1</version><!-- shoulder-version -->
+    <version>1.0.0-M3.3</version><!-- shoulder-version -->
 </dependency>
 ```
 
@@ -76,7 +76,7 @@ create projects. Just ensure you have `JDK17+` and `Maven` installed locally.
 mvn archetype:generate \
   -DarchetypeGroupId=cn.itlym \
   -DarchetypeArtifactId=shoulder-archetype-simple \
-  -DarchetypeVersion=0.8.1 \
+  -DarchetypeVersion=1.0.0-M3.3 \
   -DgroupId=com.yourcompany \
   -DartifactId=yourappName \
   -Dversion=1.0-SNAPSHOT
@@ -96,7 +96,7 @@ Just use the following `pom.xml` directly, the only difference from a Spring Boo
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>0.8.1</version><!-- shoulder-version -->
+        <version>1.0.0-M3.3</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- your groupId -->

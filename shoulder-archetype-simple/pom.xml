@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>1.0.0-M3.3</version><!-- shoulder-version -->
+        <version>1.0.0-M444</version><!-- shoulder-version -->
         <relativePath>../pom.xml</relativePath>
     </parent>
 
