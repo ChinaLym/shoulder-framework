@@ -30,7 +30,7 @@
 
         <!-- 类的作者 -->
         <requiredProperty key="author">
-            <defaultValue>shoulder</defaultValue>
+            <defaultValue>shoulder_archetype</defaultValue>
         </requiredProperty>
 
         <requiredProperty key="gitignore">

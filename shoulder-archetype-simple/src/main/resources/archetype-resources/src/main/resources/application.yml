@@ -1,6 +1,6 @@
 spring:
   application:
-    name: @appName@
+    name: ${artifactId}
 
   datasource:
     type: com.zaxxer.hikari.HikariDataSource

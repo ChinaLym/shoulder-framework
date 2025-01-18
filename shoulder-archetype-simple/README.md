@@ -14,11 +14,11 @@
 
 第一次使用时需要添加，以后都不用这一步咯，除非调整 `version`
 
-本次以 `1.0.0-M3.3` 为例说明
+本次以 `1.0.0-M4` 为例说明
 ```
 groupId     cn.itlym
 artifactId  shoulder-archetype-simple
-version     1.0.0-M3.3
+version     1.0.0-M4
 ```
 
 ![添加 shoulder 的 archetype](../doc/img/archetype/idea/add.png)
@@ -32,13 +32,7 @@ version     1.0.0-M3.3
 通过命令行快速创建
 
 ```bash
-mvn archetype:generate -X\
-    -DarchetypeGroupId=cn.itlym\
-    -DarchetypeArtifactId=shoulder-archetype-simple\
-    -DarchetypeVersion=1.0.0-M3.2\
-    -DgroupId=com.foo -DartifactId=demo -DappId=demo\
-    -Dauthor=yourName -Dversion=1.0.0-SNAPSHOT\
-    -B
+mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple  -DarchetypeVersion=1.0.0-M4  -DgroupId=com.yourcompany  -DartifactId=yourappName  -Dversion=1.0-SNAPSHOT
 ```
 创建一个工程，groupId=com.foo artifactId=demo，其中 appId、author 可选。
 

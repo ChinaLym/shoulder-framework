@@ -60,7 +60,7 @@ corresponding starter:
 <dependency>
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-starter-web</artifactId>
-    <version>1.0.0-M3.3</version><!-- shoulder-version -->
+    <version>1.0.0-M4</version><!-- shoulder-version -->
 </dependency>
 ```
 
@@ -73,13 +73,7 @@ create projects. Just ensure you have `JDK17+` and `Maven` installed locally.
 2. Run the following command to generate a new Shoulder project:
 
 ```shell
-mvn archetype:generate \
-  -DarchetypeGroupId=cn.itlym \
-  -DarchetypeArtifactId=shoulder-archetype-simple \
-  -DarchetypeVersion=1.0.0-M3.3 \
-  -DgroupId=com.yourcompany \
-  -DartifactId=yourappName \
-  -Dversion=1.0-SNAPSHOT
+mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple  -DarchetypeVersion=1.0.0-M4  -DgroupId=com.yourcompany  -DartifactId=yourappName  -Dversion=1.0-SNAPSHOT
 ```
 
 ## Manually creating a new project
@@ -96,7 +90,7 @@ Just use the following `pom.xml` directly, the only difference from a Spring Boo
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>1.0.0-M3.3</version><!-- shoulder-version -->
+        <version>1.0.0-M4</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- your groupId -->

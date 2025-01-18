@@ -168,11 +168,7 @@ private Object wrapExecutorService(Object bean) {
         try {
             return getObject(factory);
         } catch (Exception e) {
-            if (log.isDebugEnabled()) {
-                log.debug(
-                    "Exception occurred while trying to get a proxy. Will fallback to a different implementation",
-                    e);
-            }
+            log.debug("Exception occurred while trying to get a proxy for [{}]. Will fallback to a default implementation", bean.getClass());
             return supplier.get();
         }
     }

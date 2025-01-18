@@ -42,7 +42,7 @@
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
-            <version>1.0.0-M3.3</version><!-- shoulder-version -->
+            <version>1.0.0-M4</version><!-- shoulder-version -->
         </dependency>
 ```
 
@@ -53,7 +53,7 @@
 打开命令行，运行以下命令来生成新的 `Shoulder` 项目：
 
 ```shell
-mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple  -DarchetypeVersion=1.0.0-M3.3  -DgroupId=com.yourcompany  -DartifactId=yourappName  -Dversion=1.0-SNAPSHOT
+mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple  -DarchetypeVersion=1.0.0-M4  -DgroupId=com.yourcompany  -DartifactId=yourappName  -Dversion=1.0-SNAPSHOT
 ```
 
 ## 🚄 手动创建新项目
@@ -70,7 +70,7 @@ mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulde
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-parent</artifactId>
-        <version>1.0.0-M3.3</version><!-- shoulder-version -->
+        <version>1.0.0-M4</version><!-- shoulder-version -->
     </parent>
 
     <groupId>com.demo</groupId><!-- 您的 groupId -->
