@@ -37,7 +37,7 @@ mvn archetype:generate -X\
     -DarchetypeArtifactId=shoulder-archetype-simple\
     -DarchetypeVersion=1.0.0-M3.2\
     -DgroupId=com.foo -DartifactId=demo -DappId=demo\
-    -Dauthor=shoulder -Dversion=1.0.0-SNAPSHOT\
+    -Dauthor=yourName -Dversion=1.0.0-SNAPSHOT\
     -B
 ```
 创建一个工程，groupId=com.foo artifactId=demo，其中 appId、author 可选。
