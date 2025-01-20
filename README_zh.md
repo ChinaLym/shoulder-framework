@@ -26,14 +26,18 @@
 - `绝密通信`
 - `内嵌式DB/Redis`
 
-# 🚀 [快速开始](https://github.com/ChinaLym/shoulder-framework-demo)
+# 🚀 [快速开始](https://start.itlym.cn)
 
-## 🔥🔥【推荐】 👉 **[示例工程](https://github.com/ChinaLym/shoulder-framework-demo/tree/main/demo1)**
+## ✨ **[通过示例工程体验](https://github.com/ChinaLym/shoulder-framework-demo/tree/main/demo1)**
 
-快速感受 `Shoulder`的顺滑编码的魅力。
+下载后直接运行，快速感受 `Shoulder`的顺滑编码的魅力。
 [github](https://github.com/ChinaLym/shoulder-framework-demo/tree/main/demo1) / [gitee](https://gitee.com/ChinaLym/shoulder-framework-demo/tree/main/demo1)
 
-## 🔥在已有的 `Spring-Boot` 工程中使用
+## 🔥 **[在线创建新工程](https://start.itlym.cn)**
+
+![start-shoulder-ui.jpg](doc/img/start-shoulder-ui.jpg)
+
+## ✨ 在已有 `Spring-Boot` 工程中使用
 
 `pom.xml` 中添加您需要的模块即可使用，如：希望使用`shoulder-web 的动态字典能力` ，则引入对应starter即可~
 
@@ -46,7 +50,7 @@
         </dependency>
 ```
 
-## ✈️ 通过 maven-archetype 创建新项目
+## ✈️ 通过 maven-archetype 创建新项目（需要 Maven）
 
 通过 [shoulder-maven-archetype](https://github.com/ChinaLym/shoulder-framework/tree/master/shoulder-archetype-simple)，快速创建。
 
@@ -56,45 +60,20 @@
 mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple  -DarchetypeVersion=1.0.0-M4  -DgroupId=com.yourcompany  -DartifactId=yourappName  -Dversion=1.0-SNAPSHOT
 ```
 
-## 🚄 手动创建新项目
+## 🧩 更多创建方式
 
-同 `Spring Boot`，填好 `parent` 即用，可以直接使用以下 `pom.xml`：
+> 手动创建、Spring CLI、IDEA、STS...
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+See in [doc.itlym.cn](https://doc.itlym.cn/shoulder_start.html])
 
-    <!-- 继承 shoulder 提供的父工程，自动管理版本号，包含了 spring-boot-parent -->
-    <parent>
-        <groupId>cn.itlym</groupId>
-        <artifactId>shoulder-parent</artifactId>
-        <version>1.0.0-M4</version><!-- shoulder-version -->
-    </parent>
 
-    <groupId>com.demo</groupId><!-- 您的 groupId -->
-    <artifactId>hello-shoulder</artifactId><!-- 您的 artifactId -->
-    <version>1.0.0-SNAPSHOT</version><!-- 您的 version -->
+---
 
-    <dependencies>
-        <!-- 版本号、web 相关依赖 自动管理。已自动引入对应的 spring-boot-starter-web -->
-        <dependency>
-            <groupId>cn.itlym</groupId>
-            <artifactId>shoulder-starter-web</artifactId>
-        </dependency>
-    </dependencies>
+# 🆚 对比其他 Web 框架
 
-</project>
+**更安全**、**更简单**：设计上遵循 **[软件优雅设计与开发最佳实践](https://doc.itlym.cn)** ，让使用者不仅开发提效，质量也更高！
 
-```
-
-# 🆚对比其他 Web 框架
-
-**更安全**、**易扩展**、**使用者代码可读性强**、**维护成本低**、**上手成本低**：设计上遵循 *
-*[软件优雅设计与开发最佳实践](https://doc.itlym.cn)** ，让使用者项目不仅开发提效，维护成本也更低！
-
-## ✨适用场景
+# 🌛 适用场景
 
 - `毕业设计`、`外包项目` ：基于提供能力飞速开发。
 - `微服务基层框架`：`Shoulder` 设计时遵循编码规范，统一的编码界面和产物，让开发 / 运维团队轻松维护。
@@ -121,15 +100,16 @@ mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulde
 
 ## 相关项目
 
-| 项目                          | 开源地址                                                                                                                      | 说明                                                                                    |
-|-----------------------------|---------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| Shoulder Framework          | [github](https://github.com/ChinaLym/shoulder-framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)           | 开发框架 / 在 Spring Boot Start 插件，结合[软件优雅设计与开发最佳实践](https://doc.itlym.cn)，增加常用的功能，助力高效开发。 |
-| Shoulder Platform           | [github](https://github.com/ChinaLym/shoulder-platform)、[gitee](https://gitee.com/ChinaLym/shoulder-platform)             | `SaaS` 开发平台，提供了基础通用能力，与具体业务无关                                                         |
-| shoulder-framework-demo     | [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework-demo) | 以简单的例子介绍 `Shoulder` 的使用                                                               |
-| shoulder-plugins            | [github](https://github.com/ChinaLym/shoulder-plugins)、[gitee](https://gitee.com/ChinaLym/shoulder-plugins)               | `Shoulder` 提供的 `maven`插件，构建时扫描代码注释自动生成多语言翻译文件，从而提效                                    |
-| shoulder-lombok             | [github](https://github.com/ChinaLym/shoulder-lombok)、[gitee](https://gitee.com/ChinaLym/shoulder-lombok)                 | 同`lombok`，额外支持 `@SLog` 注解，`lombok`风格省略 `Shoulder` 扩展的 `Logger` 代码                     |
-| shoulder-lombok-idea-plugin | [github](https://github.com/ChinaLym/lombok-intellij-plugin)、[gitee](https://gitee.com/ChinaLym/lombok-intellij-plugin)   | `IDEA 插件`，同 `lombok-idea-plugin`，额外支持`shoulder-lombok` 中的 `@SLog`                     |
-| Shoulder iPaaS              | [github](https://github.com/ChinaLym/shoulder-ipaas)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS)                   | `iPaaS` 平台，分享部署常见中间件步骤、如何自建监控系统、私有基础平台                                                |
+| 项目                          | 开源地址                                                                                                                      | 说明                                                                                      |
+|-----------------------------|---------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| Shoulder Framework          | [github](https://github.com/ChinaLym/shoulder-framework)、[gitee](https://gitee.com/ChinaLym/shoulder-framework)           | 开发框架 / 在 Spring Boot Start 插件，结合[软件优雅设计与开发最佳实践](https://doc.itlym.cn)，增加常用的功能，助力高效开发。   |
+| Shoulder Platform           | [github](https://github.com/ChinaLym/shoulder-platform)、[gitee](https://gitee.com/ChinaLym/shoulder-platform)             | `SaaS` 开发平台，提供了基础通用能力，与具体业务无关                                                           |
+| shoulder-framework-demo     | [github](https://github.com/ChinaLym/shoulder-framework-demo)、[gitee](https://gitee.com/ChinaLym/shoulder-framework-demo) | 以简单的例子介绍 `Shoulder` 的使用                                                                 |
+| shoulder-plugins            | [github](https://github.com/ChinaLym/shoulder-plugins)、[gitee](https://gitee.com/ChinaLym/shoulder-plugins)               | `Shoulder` 提供的 `maven`插件，构建时扫描代码注释自动生成多语言翻译文件，从而提效                                      |
+| shoulder-lombok             | [github](https://github.com/ChinaLym/shoulder-lombok)、[gitee](https://gitee.com/ChinaLym/shoulder-lombok)                 | 同`lombok`，额外支持 `@SLog` 注解，`lombok`风格省略 `Shoulder` 扩展的 `Logger` 代码                       |
+| shoulder-lombok-idea-plugin | [github](https://github.com/ChinaLym/lombok-intellij-plugin)、[gitee](https://gitee.com/ChinaLym/lombok-intellij-plugin)   | `IDEA 插件`，同 `lombok-idea-plugin`，额外支持`shoulder-lombok` 中的 `@SLog`                       |
+| Shoulder iPaaS              | [github](https://github.com/ChinaLym/shoulder-ipaas)、[gitee](https://gitee.com/ChinaLym/shoulder-iPaaS)                   | `iPaaS` 平台，分享部署常见中间件步骤、如何自建监控系统、私有基础平台                                                  |
+| Shoulder Start              | 未开源                                                                                                                       | [start.itlym.cn](https://start.itlym.cn/), 像 `start.spring.io` 一样，更方便地创建 `Shoulder` 项目。 |
 
 ![releated_projects.png](doc/img/releated_projects.png)
 
