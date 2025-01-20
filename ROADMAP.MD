@@ -52,6 +52,7 @@ Google 等互联网顶尖公司已经探索 `ServiceMesh` 许久，虽然当前�
 - redis Lettuce 6.3 修复了redis宕机会导致15分钟不可用（客户端无主动探活，问题链接未释放），netty-transport-native-epoll:4.1.65.Final:linux-x86_64，在 EPOLL 可用时；https://xie.infoq.cn/article/8d5ecb7b1bc9c84a35de43674【DONE】
 - JDK 21 https://www.oracle.com/java/technologies/downloads/#jdk21-windows 【DONE】
 - 可监控的 ThreadPoolTaskScheduler
+- 可编辑 restTemplate 调用日志打印内容，如大的 body 不打印
 
 ## 后续规划
 
