@@ -37,7 +37,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-3-starter</artifactId>
-            <version>1.2.24</version>
         </dependency>
 
         <!-- Spring Boot 默认的 HikariCP 性能早就超过 druid 了，druid 为单机应用提供了更丰富的可视化监控能力，但 shoulder 认为这不应该由应用程序承载该能力，而是依赖更专业的监控系统（如 promethues） -->

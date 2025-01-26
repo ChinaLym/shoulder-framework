@@ -100,6 +100,7 @@
 
         <!-- dataBase-->
         <mysql-connector-j.version>8.4.0</mysql-connector-j.version>
+        <durid-boot3.version>1.2.24</durid-boot3.version>
         <h2.version>2.2.230</h2.version>
         <druid.version>1.2.8</druid.version>
         <!-- 暂时不要向上升级 mybatis-plus 功能稳定性、兼容性差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
@@ -623,6 +624,11 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <version>${durid-boot3.version}</version>
             </dependency>
             <!--            <dependency>-->
             <!--                &lt;!&ndash; mock redis https://github.com/kstyrc/embedded-redis/network/members &ndash;&gt;-->
