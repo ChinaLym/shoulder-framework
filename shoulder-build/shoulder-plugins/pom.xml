@@ -6,12 +6,12 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-build</artifactId>
-        <version>1.0.0-M4.1</version><!-- shoulder-version -->
+        <version>1.0.0</version><!-- shoulder-version -->
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>shoulder-plugins</artifactId>
-    <version>1.0.0-M4.1</version><!-- shoulder-version -->
+    <version>1.0.0</version><!-- shoulder-version -->
     <packaging>pom</packaging>
 
 

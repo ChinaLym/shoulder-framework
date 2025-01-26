@@ -5,7 +5,7 @@
 
 [![AUR](https://img.shields.io/badge/©️%20license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework/blob/master/LICENSE) [![](https://img.shields.io/badge/🧑%20Author-lym-yellow.svg)](https://github.com/ChinaLym)
 
-`👀Preview:` `1.0.0-M4.1`
+`👀Preview:` `1.0.0`
 
 [![](https://img.shields.io/badge/🚀%20Release%20Version-0.8.1-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v0.8.1)
 [![](https://img.shields.io/badge/🌱%20Spring%20Boot%20Version-3.2.x-blue.svg)](https://spring.io/projects/spring-boot)
@@ -63,7 +63,7 @@ Just add the dependencies that you want to use into your `pom.xml` like this:
 <dependency>
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-starter-web</artifactId>
-    <version>1.0.0-M4.1</version><!-- shoulder-version -->
+    <version>1.0.0</version><!-- shoulder-version -->
 </dependency>
 ```
 
@@ -74,7 +74,7 @@ Just add the dependencies that you want to use into your `pom.xml` like this:
 2. Run the command and create a project immediately.
 
 ```shell
-mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple  -DarchetypeVersion=1.0.0-M4.1  -DgroupId=com.yourcompany  -DartifactId=yourappName  -Dversion=1.0-SNAPSHOT
+mvn archetype:generate -DarchetypeGroupId=cn.itlym -DarchetypeArtifactId=shoulder-archetype-simple  -DarchetypeVersion=1.0.0  -DgroupId=com.yourcompany  -DartifactId=yourappName  -Dversion=1.0-SNAPSHOT
 ```
 
 ## 🧩 More..
