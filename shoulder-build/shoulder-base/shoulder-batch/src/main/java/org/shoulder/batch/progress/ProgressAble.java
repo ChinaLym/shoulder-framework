@@ -12,7 +12,7 @@ public interface ProgressAble {
      *
      * @return 进度
      */
-    BatchProgressRecord getBatchProgress();
+    BatchProgressRecord toProgressRecord();
 
     /**
      * 结束后的回调

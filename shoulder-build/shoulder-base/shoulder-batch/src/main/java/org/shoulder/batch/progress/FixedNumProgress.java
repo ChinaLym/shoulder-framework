@@ -71,13 +71,15 @@ public class FixedNumProgress implements Serializable, Progress {
         this.autoFished = autoFished;
     }
 
-
     @Override
-    public void start() {
-        // 只能从未开始到开始
+    public boolean start() {
         AssertUtils.notBlank(id, CommonErrorCodeEnum.ILLEGAL_STATUS);
-        AssertUtils.isTrue(status.compareAndSet(ProgressStatusEnum.WAITING.getCode(), ProgressStatusEnum.RUNNING.getCode()), CommonErrorCodeEnum.ILLEGAL_STATUS);
+        boolean started = status.compareAndSet(ProgressStatusEnum.WAITING.getCode(), ProgressStatusEnum.RUNNING.getCode());
+        if (!started) {
+            return false;
+        }
         startTime = LocalDateTime.now();
+        return true;
     }
 
     public void setTotal(int total) {
@@ -94,6 +96,9 @@ public class FixedNumProgress implements Serializable, Progress {
     public void finish() {
         status.getAndSet(ProgressStatusEnum.FINISHED.getCode());
         stopTime = LocalDateTime.now();
+        if (startTime == null) {
+            startTime = stopTime;
+        }
     }
 
     @Override
@@ -101,7 +106,7 @@ public class FixedNumProgress implements Serializable, Progress {
         if (status.get() > ProgressStatusEnum.RUNNING.getCode()) {
             return true;
         }
-        checkFinished();
+        checkFinished(autoFished);
         return status.get() > ProgressStatusEnum.RUNNING.getCode();
     }
 
@@ -187,7 +192,7 @@ public class FixedNumProgress implements Serializable, Progress {
     }
 
     @Override
-    public BatchProgressRecord getBatchProgress() {
+    public BatchProgressRecord toProgressRecord() {
         return toRecord();
     }
 
@@ -195,7 +200,7 @@ public class FixedNumProgress implements Serializable, Progress {
     public void finishPart(int partIndex) {
         synchronized (this.set) {
             this.set.set(partIndex);
-            checkFinished();
+            checkFinished(autoFished);
         }
     }
 
@@ -204,8 +209,8 @@ public class FixedNumProgress implements Serializable, Progress {
         onFinishCallback.accept(id, (Progress) task);
     }
 
-    private void checkFinished() {
-        if (set.cardinality() == set.cardinality() && autoFished) {
+    private void checkFinished(boolean autoFished) {
+        if (set.cardinality() == set.size() && autoFished) {
             finish();
         }
     }

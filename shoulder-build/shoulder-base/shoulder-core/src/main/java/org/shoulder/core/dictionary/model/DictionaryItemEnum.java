@@ -154,7 +154,7 @@ public interface DictionaryItemEnum<E extends Enum<? extends DictionaryItemEnum<
      * @param enumClass 枚举类
      * @return integer / string
      */
-    default Class<?> getEnumItemIdClass() {
+    default Class<?> resovleEnumItemIdClass() {
         // 第二个泛型是 itemId 类型
         return resovleEnumItemIdClass(getClass());
     }

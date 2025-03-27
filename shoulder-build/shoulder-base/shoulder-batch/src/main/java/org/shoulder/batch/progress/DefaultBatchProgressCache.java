@@ -7,6 +7,7 @@ import org.springframework.cache.Cache;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -22,12 +23,32 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     private final Cache progressCache;
 
     /**
+     * 默认刷缓存时间，非本地缓存才会使用
+     */
+    private final Duration defaultFlushCacheTime;
+
+    /**
+     * 是否本地缓存，本地缓存不定时刷新，节省资源
+     */
+    private final boolean localCache;
+
+    /**
+     * 已知的本地缓存类型
+     */
+    private static final Set<String> localCacheType = Set.of(
+        "org.springframework.cache.support.NoOpCache",
+        "org.springframework.cache.concurrent.ConcurrentMapCache",
+        "org.springframework.cache.caffeine.CaffeineCache");
+
+    /**
      * 缓存名
      */
     public static final String CACHE_NAME = "shoulder-batch-progressCache_DEFAULT";
 
-    public DefaultBatchProgressCache(Cache progressCache) {
+    public DefaultBatchProgressCache(Cache progressCache, Duration defaultFlushCacheTime) {
         this.progressCache = progressCache;
+        this.localCache = localCacheType.contains(progressCache.getClass().getName());
+        this.defaultFlushCacheTime = defaultFlushCacheTime;
     }
 
     @SuppressWarnings("unchecked")
@@ -43,9 +64,13 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      */
     @Override
     public void triggerFlushProgress(ProgressAble task) {
+        if (localCache) {
+            progressCache.put(task.toProgressRecord().getId(), task.toProgressRecord());
+            return;
+        }
         PeriodicTask flushBatchProgressTask = new PeriodicTask() {
 
-            private final String taskName = "flushBatchProgressTask-" + task.getBatchProgress().getId();
+            private final String taskName = "flushBatchProgressTask-" + task.toProgressRecord().getId();
 
             private final ProgressAble progressHolder = task;
 
@@ -54,7 +79,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
             }
 
             @Override public void process() {
-                BatchProgressRecord batchProgressRecord = progressHolder.getBatchProgress();
+                BatchProgressRecord batchProgressRecord = progressHolder.toProgressRecord();
                 String id = batchProgressRecord.getId();
                 if (batchProgressRecord.hasFinish()) {
                     // 处理完毕，更新状态
@@ -65,7 +90,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
             }
 
             @Override public Instant calculateNextRunTime(Instant now, int runCount) {
-                return task.getBatchProgress().hasFinish() ? NO_NEED_EXECUTE : now.plus(Duration.ofSeconds(2));
+                return task.toProgressRecord().hasFinish() ? NO_NEED_EXECUTE : now.plus(defaultFlushCacheTime);
             }
         };
         Threads.schedule(flushBatchProgressTask, Instant.now());
@@ -84,11 +109,15 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     /**
      * 刷缓存线程不安全，需要加锁，最少是 batchId 级别，这里默认实现直接用 sync 了
      *
-     * @param batchProgress 进度
+     * @param progress 进度
      */
     @Override
-    public synchronized void flushProgress(ProgressAble batchProgress) {
-        BatchProgressRecord record = batchProgress.getBatchProgress();
+    public synchronized void flushProgress(ProgressAble progress) {
+        if (localCache) {
+            progressCache.put(progress.toProgressRecord().getId(), progress.toProgressRecord());
+            return;
+        }
+        BatchProgressRecord record = progress.toProgressRecord();
         progressCache.put(record.getId(), record);
     }
 

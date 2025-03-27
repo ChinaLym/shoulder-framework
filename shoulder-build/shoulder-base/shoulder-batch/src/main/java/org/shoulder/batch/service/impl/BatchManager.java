@@ -334,7 +334,7 @@ public class BatchManager implements Runnable, ProgressAble {
         return batchData.getBatchId();
     }
 
-    public BatchProgressRecord getBatchProgress() {
+    public BatchProgressRecord toProgressRecord() {
         return progress;
     }
 

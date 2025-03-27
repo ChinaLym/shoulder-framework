@@ -2,11 +2,7 @@ package org.shoulder.core.dictionary;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.shoulder.core.converter.DateConverter;
-import org.shoulder.core.converter.EnumConverterFactory;
-import org.shoulder.core.converter.LocalDateConverter;
-import org.shoulder.core.converter.LocalDateTimeConverter;
-import org.shoulder.core.converter.LocalTimeConverter;
+import org.shoulder.core.converter.*;
 import org.shoulder.core.dictionary.convert.DictionaryItemConversions;
 import org.shoulder.core.dictionary.convert.DictionaryItemEnumSerialGenericConverter;
 import org.shoulder.core.dictionary.convert.DictionaryItemToStrGenericConverter;
@@ -90,7 +86,7 @@ public class DictionaryTest {
         Assertions.assertTrue(ArrayUtils.equals(ColorStrEnum.class.getEnumConstants(), DictionaryItemEnum.values(ColorStrEnum.class)));
         Assertions.assertEquals(String.class, DictionaryItemEnum.resovleEnumItemIdClass(ColorStrEnum.class));
 
-        Assertions.assertEquals(String.class, ColorStrEnum.WHITE.getEnumItemIdClass());
+        Assertions.assertEquals(String.class, ColorStrEnum.WHITE.resovleEnumItemIdClass());
         Assertions.assertEquals(ColorStrEnum.class.getSimpleName(), ColorStrEnum.WHITE.getDictionaryType());
         Assertions.assertEquals(0, ColorStrEnum.WHITE.getDisplayOrder());
 

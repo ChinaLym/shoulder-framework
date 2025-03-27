@@ -35,11 +35,7 @@ import org.shoulder.core.util.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -293,7 +289,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
             //执行持久化
             batchProgressCache.triggerFlushProgress(batchManager);
             batchThreadPool.execute(batchManager);
-            return batchManager.getBatchProgress().getId();
+            return batchManager.toProgressRecord().getId();
         }
     }
 
@@ -312,7 +308,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
             // 缓存过期无需从数据库中查，直接异常
             throw BatchErrorCodeEnum.BATCH_ID_NOT_EXIST.toException(batchId);
         }
-        return result.getBatchProgress();
+        return result.toProgressRecord();
     }
 
     @Override

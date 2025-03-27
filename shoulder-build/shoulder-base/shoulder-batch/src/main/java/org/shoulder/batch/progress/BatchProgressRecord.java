@@ -2,6 +2,8 @@ package org.shoulder.batch.progress;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AssertUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -75,12 +77,17 @@ public class BatchProgressRecord implements Serializable, Progress {
 
     private Map<String, Object> ext;
 
-    public void start() {
+    @Override
+    public boolean start() {
+        if (status != ProgressStatusEnum.WAITING.getCode()) {
+            return false;
+        }
         status = ProgressStatusEnum.RUNNING.getCode();
         startTime = LocalDateTime.now();
         if (total == 0) {
             finish();
         }
+        return true;
     }
 
     @Override
@@ -91,9 +98,13 @@ public class BatchProgressRecord implements Serializable, Progress {
 
     @Override
     public void finish() {
-        assert total == processed;
+        AssertUtils.equals(total, processed, CommonErrorCodeEnum.ILLEGAL_STATUS);
+        ;
         status = ProgressStatusEnum.FINISHED.getCode();
         stopTime = LocalDateTime.now();
+        if (startTime == null) {
+            startTime = stopTime;
+        }
     }
 
     public boolean hasFinish() {
@@ -176,7 +187,7 @@ public class BatchProgressRecord implements Serializable, Progress {
     }
 
     @Override
-    public BatchProgressRecord getBatchProgress() {
+    public BatchProgressRecord toProgressRecord() {
         return this;
     }
 

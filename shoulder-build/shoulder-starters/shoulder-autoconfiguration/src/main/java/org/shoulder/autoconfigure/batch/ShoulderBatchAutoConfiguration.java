@@ -17,12 +17,7 @@ import org.shoulder.batch.model.convert.BatchRecordDetailDomain2DTOConverter;
 import org.shoulder.batch.model.convert.BatchRecordDomain2DTOConverter;
 import org.shoulder.batch.progress.BatchProgressCache;
 import org.shoulder.batch.progress.DefaultBatchProgressCache;
-import org.shoulder.batch.repository.BatchRecordDetailPersistentService;
-import org.shoulder.batch.repository.BatchRecordPersistentService;
-import org.shoulder.batch.repository.CacheBatchRecordDetailPersistentServiceImpl;
-import org.shoulder.batch.repository.CacheBatchRecordPersistentServiceImpl;
-import org.shoulder.batch.repository.JdbcBatchRecordDetailPersistentServiceImpl;
-import org.shoulder.batch.repository.JdbcBatchRecordPersistentServiceImpl;
+import org.shoulder.batch.repository.*;
 import org.shoulder.batch.service.BatchAndExportService;
 import org.shoulder.batch.service.BatchService;
 import org.shoulder.batch.service.ExportService;
@@ -53,12 +48,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
+import javax.sql.DataSource;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import javax.sql.DataSource;
 
 /**
  * 批处理相关自动装配
@@ -194,7 +189,7 @@ public class ShoulderBatchAutoConfiguration {
     @ConditionalOnCluster(cluster = false)
     @ConditionalOnMissingBean
     public BatchProgressCache defaultBatchProgressCache() {
-        return new DefaultBatchProgressCache(new ConcurrentMapCache(DefaultBatchProgressCache.CACHE_NAME));
+        return new DefaultBatchProgressCache(new ConcurrentMapCache(DefaultBatchProgressCache.CACHE_NAME), Duration.ofSeconds(2));
     }
 
     /**
@@ -208,7 +203,7 @@ public class ShoulderBatchAutoConfiguration {
     @ConditionalOnMissingBean
     @ConditionalOnBean(CacheManager.class)
     public BatchProgressCache redisBatchProgressCache(CacheManager cacheManager) {
-        return new DefaultBatchProgressCache(cacheManager.getCache(DefaultBatchProgressCache.CACHE_NAME));
+        return new DefaultBatchProgressCache(cacheManager.getCache(DefaultBatchProgressCache.CACHE_NAME), Duration.ofSeconds(2));
     }
 
     @AutoConfiguration(

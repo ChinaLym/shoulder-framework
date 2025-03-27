@@ -1,5 +1,6 @@
 package org.shoulder.core.concurrent;
 
+import org.shoulder.core.concurrent.enhance.EnhancedRunnable;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.ShoulderLoggers;
@@ -16,7 +17,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 /**
  * 线程工具类
@@ -73,22 +77,25 @@ public class Threads {
     /**
      * 定期调度执行
      *
-     * @param taskName 要执行的任务名称
-     * @param task 要执行的任务
-     * @param firstExecutionTime （null 或 过去时间 立即执行）
+     * @param taskName                  要执行的任务名称
+     * @param task                      要执行的任务
+     * @param firstExecutionTime        （null 或 过去时间 立即执行）
      * @param executionPeriodCalculator 调度间隔计算器 null 只执行一次，否则计算下次执行时间
      */
     public static ScheduledFuture<?> schedule(@NonNull String taskName, @NonNull Runnable task, @NonNull Instant firstExecutionTime, @Nullable BiFunction<Instant, Integer, Instant> executionPeriodCalculator) {
         PeriodicTask periodicTask = new PeriodicTask() {
-            @Override public String getTaskName() {
+            @Override
+            public String getTaskName() {
                 return taskName;
             }
 
-            @Override public void process() {
+            @Override
+            public void process() {
                 task.run();
             }
 
-            @Override public Instant calculateNextRunTime(Instant now, int runCount) {
+            @Override
+            public Instant calculateNextRunTime(Instant now, int runCount) {
                 return executionPeriodCalculator == null ? NO_NEED_EXECUTE : executionPeriodCalculator.apply(now, runCount);
             }
         };
@@ -100,7 +107,7 @@ public class Threads {
     /**
      * 定期调度执行
      *
-     * @param periodicTask 要执行的任务
+     * @param periodicTask       要执行的任务
      * @param firstExecutionTime （null 或小与当前时间则立即执行）
      */
     public static ScheduledFuture<?> schedule(PeriodicTask periodicTask, Instant firstExecutionTime) {
@@ -120,11 +127,75 @@ public class Threads {
      */
     public static void execute(Runnable runnable) {
         ensureInit();
-        debugLog("execute");
+        printCallerDebugLog("execute");
         EXECUTOR_SERVICE.execute(runnable);
     }
 
-    private static void debugLog(String methodName) {
+    public static void execute(String taskName, Runnable runnable) {
+        execute(taskName, runnable, null, null);
+    }
+
+    /**
+     * 异步执行
+     *
+     * @param taskName           任务名称（线程名）
+     * @param runnable           任务
+     * @param exceptedFinishTime 预期完成时间
+     * @param exceptionCallBack  回调（监督人），预期时间未完成 or 执行出现异常则回调监督人
+     */
+    public static void execute(String taskName, Runnable runnable, Instant exceptedFinishTime, Consumer<TaskInfo> exceptionCallBack) {
+        ensureInit();
+        Instant submitTaskTime = Instant.now();
+        AtomicReference<Thread> threadRef = null;
+        AtomicReference<Exception> errorRef = null;
+        AtomicReference<Instant> runTimeRef = null;
+        AtomicReference<Instant> endTimeRef = null;
+        AtomicBoolean hasDetected = new AtomicBoolean(false);
+        if (log.isTraceEnabled()) {
+            log.trace("{} add to EXECUTOR_SERVICE", taskName);
+        }
+        Runnable detectRun = () -> {
+            boolean isFirstDetect = hasDetected.compareAndSet(false, true);
+            if (isFirstDetect) {
+                exceptionCallBack.accept(new TaskInfo(taskName, submitTaskTime, Instant.now(), threadRef, errorRef, runTimeRef, endTimeRef));
+            }
+        };
+        EnhancedRunnable enhancedRunnable = new EnhancedRunnable(() -> {
+            Instant runtime = Instant.now();
+            runTimeRef.set(runtime);
+            threadRef.set(Thread.currentThread());
+            String originThreadName = Thread.currentThread().getName();
+            boolean success = false;
+            try {
+                Thread.currentThread().setName(taskName);
+                runnable.run();
+                success = true;
+            } catch (Exception e) {
+                log.error("{} execute occur Exception! ", taskName, e);
+                errorRef.set(e);
+                if (exceptionCallBack != null) {
+                    // 回调监工
+                    endTimeRef.set(Instant.now());
+                    Threads.execute("D_" + taskName, detectRun, null, null);
+                }
+                throw e;
+            } finally {
+                Instant endTime = Instant.now();
+                endTimeRef.set(endTime);
+                log.info("{} execute end, success={}, cost={}ms.", taskName, success, Duration.between(runtime, endTime).toMillis());
+                Thread.currentThread().setName(originThreadName);
+            }
+        });
+
+        EXECUTOR_SERVICE.execute(enhancedRunnable);
+
+        // 注册监工
+        if (exceptionCallBack != null && exceptedFinishTime != null) {
+            Threads.schedule("D_" + taskName, detectRun, exceptedFinishTime, null);
+        }
+    }
+
+    private static void printCallerDebugLog(String methodName) {
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, methodName, true);
             //            if(caller!= null && caller.getClassName().startsWith("java")) {
@@ -147,7 +218,7 @@ public class Threads {
                     Object threadPoolBean = ContextUtils.getBeanOrNull(SHOULDER_THREAD_POOL_NAME);
                     AssertUtils.isTrue(threadPoolBean instanceof ExecutorService, CommonErrorCodeEnum.CODING,
                         "Need invoke setExecutorService first! Error fallback threadPool.class="
-                        + Optional.ofNullable(threadPoolBean).map(Object::getClass).map(Class::getName).orElse(null));
+                            + Optional.ofNullable(threadPoolBean).map(Object::getClass).map(Class::getName).orElse(null));
 
                     log.warn("not set threadPool fall back: try use bean named '{}' in context.", SHOULDER_THREAD_POOL_NAME);
                     setExecutorService((ExecutorService) threadPoolBean);
@@ -160,7 +231,7 @@ public class Threads {
                     Object taskScheduler = ContextUtils.getBeanOrNull(SHOULDER_TASK_SCHEDULER);
                     AssertUtils.isTrue(taskScheduler instanceof TaskScheduler, CommonErrorCodeEnum.CODING,
                         "Need invoke setTaskScheduler first! Error fallback taskScheduler.class="
-                        + Optional.ofNullable(taskScheduler).map(Object::getClass).map(Class::getName).orElse(null));
+                            + Optional.ofNullable(taskScheduler).map(Object::getClass).map(Class::getName).orElse(null));
 
                     log.warn("not set threadPool fall back: try use bean named '{}' in context.", SHOULDER_TASK_SCHEDULER);
                     setTaskScheduler((TaskScheduler) taskScheduler);
@@ -181,7 +252,7 @@ public class Threads {
     public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout)
         throws InterruptedException {
         ensureInit();
-        debugLog("executeAndWait");
+        printCallerDebugLog("executeAndWait");
         CountDownLatch latch = new CountDownLatch(tasks.size());
         List<Callable<Object>> callList = tasks.stream().map(runnable -> new NotifyOnFinishRunnable(runnable, latch::countDown))
             .map(Executors::callable)
@@ -271,7 +342,7 @@ public class Threads {
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
             throw new RejectedExecutionException("Discard for the executor's queue is full. " +
-                                                 "Task(" + r.toString() + "), Executor({" + executor.toString() + "})");
+                "Task(" + r.toString() + "), Executor({" + executor.toString() + "})");
         }
     }
 
@@ -339,6 +410,13 @@ public class Threads {
             }
         }
 
+    }
+
+
+    // 任务名、执行线程、异常（如果有）、提交任务时间、实际任务执行时间、检测时间
+    public record TaskInfo(String taskName, Instant submitTime, Instant detectTime, AtomicReference<Thread> threadRef,
+                           AtomicReference<Exception> exceptionRef, AtomicReference<Instant> runTimeRef,
+                           AtomicReference<Instant> endTimeRef) {
     }
 
 }

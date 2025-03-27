@@ -66,8 +66,8 @@ public class LocalCryptoAutoConfiguration {
                 localTextCipher.ensureInit();
                 log.info("localTextCipher init.");
             };
-            // 异步初始化本地存储加解密相关 bean
-            Threads.execute(preInitLocalCrypto);
+            // 预热：异步初始化本地存储加解密相关 bean
+            Threads.execute("localCryptoPreInit", preInitLocalCrypto);
         };
     }
 

@@ -9,7 +9,12 @@ import java.util.function.BiConsumer;
  */
 public interface Progress extends ProgressAble {
 
-    void start();
+    /**
+     * 只能从未开始到开始
+     *
+     * @return 如果任务未开始，则开始任务，返回 true；其他情况返回 false
+     */
+    boolean start();
 
     void failStop();
 
@@ -28,7 +33,7 @@ public interface Progress extends ProgressAble {
      *
      * @return 进度
      */
-    BatchProgressRecord getBatchProgress();
+    BatchProgressRecord toProgressRecord();
 
     String getId();
 

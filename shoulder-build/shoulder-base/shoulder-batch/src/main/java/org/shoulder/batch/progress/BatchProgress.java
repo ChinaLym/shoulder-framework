@@ -2,6 +2,8 @@ package org.shoulder.batch.progress;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AssertUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -27,6 +29,10 @@ public class BatchProgress implements Serializable, Progress {
 
     @Serial private static final long serialVersionUID = 1L;
 
+    /**
+     * 在判断是否完成 / success / failNumber 变化时，是否自动根据处理进度判断结束
+     * 如果total在任务开始前不确定或开始后会动态变化，建议设置为 false
+     */
     private boolean autoFished = true;
 
     private BiConsumer<String, Progress> onFinishCallback = Progress.super::onFinished;
@@ -87,30 +93,45 @@ public class BatchProgress implements Serializable, Progress {
         this.alreadyFinishedAtStart = alreadyFinishedAtStart;
     }
 
-    public void start() {
+    @Override
+    public boolean start() {
         // 只能从未开始到开始
+        boolean started = status.compareAndSet(ProgressStatusEnum.WAITING.getCode(), ProgressStatusEnum.RUNNING.getCode());
+        if (!started) {
+            return false;
+        }
         startTime = LocalDateTime.now();
+        return true;
     }
 
+    /**
+     * @deprecated 不建议直接set，建议使用 getTotal().compareAndSet() / increment ..
+     */
     public void setTotal(int total) {
+        AssertUtils.isTrue(status.get() < ProgressStatusEnum.EXCEPTION.getCode(), CommonErrorCodeEnum.ILLEGAL_STATUS);
         this.total.getAndSet(total);
     }
 
     public void failStop() {
+        AssertUtils.isTrue(status.get() < ProgressStatusEnum.EXCEPTION.getCode(), CommonErrorCodeEnum.ILLEGAL_STATUS);
         status.getAndSet(ProgressStatusEnum.EXCEPTION.getCode());
         stopTime = LocalDateTime.now();
     }
 
     public void finish() {
+        AssertUtils.equals(processed.get(), total.get(), CommonErrorCodeEnum.ILLEGAL_STATUS);
         status.getAndSet(ProgressStatusEnum.FINISHED.getCode());
         stopTime = LocalDateTime.now();
+        if (startTime == null) {
+            startTime = stopTime;
+        }
     }
 
     public boolean hasFinish() {
         if (status.get() > ProgressStatusEnum.RUNNING.getCode()) {
             return true;
         }
-        checkFinished();
+        checkFinished(autoFished);
         return status.get() > ProgressStatusEnum.RUNNING.getCode();
     }
 
@@ -203,7 +224,7 @@ public class BatchProgress implements Serializable, Progress {
     }
 
     @Override
-    public BatchProgressRecord getBatchProgress() {
+    public BatchProgressRecord toProgressRecord() {
         return toRecord();
     }
 
@@ -219,10 +240,11 @@ public class BatchProgress implements Serializable, Progress {
 
     private void addProcessed(int processedNum) {
         this.processed.addAndGet(processedNum);
-        checkFinished();
+        checkFinished(autoFished);
     }
 
-    private void checkFinished() {
+    public void checkFinished(boolean autoFished) {
+        // 先取 processed 再取 total，即使发生
         if (processed.get() == total.get() && autoFished) {
             finish();
         }

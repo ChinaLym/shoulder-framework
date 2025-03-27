@@ -1,5 +1,88 @@
 = 更新记录
 
+== 1.1 （2025-xxx）
+
+* Core
+
+[x] ** Threads 工具类增加线程名，启动、完成/异常日志、摘要日志打印
+[x] ** 鲁棒性优化：【兼容性】字典 getEnumItemIdClass 改名 resolveEnumClass，避免序列化问题
+
+* Batch
+[x]** 鲁棒性优化【兼容性】：org.shoulder.batch.progress.Progress#getBatchProgress 改为 toBatchProgressRecord，避免部分框架反序列化问题
+[-]** 使用简化：[.line-through]#ProgressAble 增加 flushDuration 字段，默认 2s，而非只能是2s；实现这个功能的方式从实现并替换 BatchProgressCache 优化为 setXxx# DefaultCache 增加字段 flushDuration，默认 2s，而非只能是2s。
+[]** 性能优化：triggerFlushProgress从每个任务manager刷新改为固定线程刷新所有任务；实现这个功能的方式从实现并替换 BatchProgressCache 优化为框架默认。
+[]** 鲁棒性优化：progressCache.triggerFlushProgress 需要立即同步写一次，避免一些问题并发问题
+[x]** 功能增强【兼容性】triggerFlushProgress 如果本地缓存（包括可能代理），则直接放引用，注意 getProgress 时，不再只返回 BatchProgressRecord 类了
+[x]** 鲁棒性优化：batchProgress.start CAS 设置 startTime，支持幂等，成功返回 true，未修改返回 false
+[x]** BatchProgress 预估剩余时间、完成状态不一致，checkFinished 加 boolean 入参，检查的时候true，其他时候传 autoFished，设置为 public
+** 使用简化：如果只调用 finish，没调用 start，无法计算剩余耗时，可多判断 if xx || startTime == null
+[x]** doc: autoFinished 加注释，如果总量会变化，建议设置为 false
+[x]** 鲁棒性优化：batchProgress 完成了（没调用 start、没调用 setTotal，也就是 0 任务情况下）直接调用 finished 会导致 startTime 为空，从而计算剩余时间时失败
+[x]** BUGFIX: FixedNumProgress.checkFinished 方法修复
+
+** AI 友好【兼容性】返回的 result convert时通过 ProgressStatusEnum映射一下，换成可读性强的返回值
+
+|===
+|项 |说明 |备注
+
+|模块
+|Shoulder-Batch
+|
+
+| 场景
+| 生成 SLA 报告需要20个步骤，步骤间有复杂的依赖关系，并且单个步骤可能有多个子任务，子任务个数可能因其他任务的执行而产生不确定的变化，在任务执行前无法确定子任务个数。
+| 非通用场景，设计时未考虑or支持当前场景，预期内问题
+
+|功能
+|管理一个大任务中多个小任务的执行进度
+| 借助 BatchProgress 和 ProgressCache 自动刷新进度条能力快速创建复杂任务的进度条
+
+|类
+| `org.shoulder.batch.progress.BatchProgress`
+|
+
+|方法
+| start
+|
+
+|问题（非预期表现）
+| 多次调用 start，startTime 会用最后一次调用的时间
+|
+
+|期望表现
+| 多次调用 start，startTime 会用第一次调用的时间，后续调用幂等
+|
+
+|当前解决方案
+| boolean start = progress.getStatus().cas('WAITING', 'RUNNING'); if (start) startTime = Instant.now();
+|
+
+| 必要性分析
+| 不修改会让使用者：1. 潜在的BUG；2. 花时间研究应对方案；3. 多写几行代码解决
+|
+
+| 痛点程度
+| 一般
+|
+
+| 建议改法
+| 在 `org.shoulder.batch.progress.BatchProgress#start` 中用 CAS 包装 startTime。
+|
+
+| 改后影响/后果
+| 多次调 start 取最后 start 时间的场景少，让少场景通过其他字段判断。
+|
+
+| 改后影响评估
+| 多次调 start 取最后 start 时间的场景更少，让少场景通过其他字段判断，合理。
+|
+
+| 修复计划
+| 人员、时间、发布计划
+|
+
+|===
+
 == 1.0（2025-1-26）
 
 === 🛠️ Refactor 优化
