@@ -16,5 +16,5 @@ public interface OperationLogValidator {
      *
      * @param log 操作日志
      */
-    void validate(OperationLogDTO log);
+    boolean validate(OperationLogDTO log);
 }

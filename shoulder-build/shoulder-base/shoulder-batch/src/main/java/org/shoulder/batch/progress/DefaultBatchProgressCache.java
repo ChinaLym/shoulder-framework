@@ -64,6 +64,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      */
     @Override
     public void triggerFlushProgress(ProgressAble task) {
+        // TODO 【性能】P2：triggerFlushProgress从每个任务manager刷新改为固定线程刷新所有任务
         if (localCache) {
             progressCache.put(task.toProgressRecord().getId(), task.toProgressRecord());
             return;

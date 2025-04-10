@@ -43,7 +43,7 @@
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
-            <version>1.0.0</version><!-- shoulder-version -->
+            <version>1.1.0-SNAPSHOT</version><!-- shoulder-version -->
         </dependency>
 ```
 

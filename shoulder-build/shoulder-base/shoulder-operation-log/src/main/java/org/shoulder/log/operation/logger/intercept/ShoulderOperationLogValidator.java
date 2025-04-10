@@ -20,7 +20,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
      * 校验失败将抛出 runtimeException
      */
     @Override
-    public void validate(OperationLogDTO log) {
+    public boolean validate(OperationLogDTO log) {
         Assert.notNull(log, "log is null.");
         // 必填项校验
         validateRequiredFields(log);
@@ -38,6 +38,7 @@ public class ShoulderOperationLogValidator implements OperationLogValidator {
             int maxParamLength = 2048;
             assertSmallerLimit(sj.length(), maxParamLength, "opLogParam");
         }
+        return true;
     }
 
 

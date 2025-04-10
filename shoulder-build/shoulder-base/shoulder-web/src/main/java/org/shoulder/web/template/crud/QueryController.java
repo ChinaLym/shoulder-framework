@@ -17,6 +17,7 @@ import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
+import org.shoulder.log.operation.logger.OperationLoggerInterceptor;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,10 @@ import java.util.List;
  * GET /{bizId}   根据 bizId 查询
  * POST /page     条件查询，分页
  * POST /listAll  条件查询，不分页
+ *
+ * <p>
+ *     默认记录操作日志，若不想记录查询操作日志，可通过 {@link OperationLoggerInterceptor#beforeLog} 拦截器控制，根据 operation、objectType 拦截。
+ * </p>
  *
  * @param <ENTITY>           实体
  * @param <ID>               主键

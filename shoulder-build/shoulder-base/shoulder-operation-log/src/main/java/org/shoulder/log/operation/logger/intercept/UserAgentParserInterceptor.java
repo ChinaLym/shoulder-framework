@@ -15,9 +15,10 @@ import org.shoulder.log.operation.model.OperationLogDTO.ExtFields;
 public class UserAgentParserInterceptor implements OperationLoggerInterceptor {
 
     @Override
-    public void beforeLog(OperationLogDTO opLog) {
+    public boolean beforeLog(OperationLogDTO opLog) {
         UserAgent userAgent = UserAgentUtil.parse(opLog.getTerminalInfo());
         opLog.setExtField(ExtFields.USER_AGENT, JsonUtils.toJson(userAgent));
+        return true;
     }
 
 }

@@ -32,11 +32,13 @@ public abstract class AbstractOperationLogger implements OperationLogger {
     @Override
     public void log(@Nonnull OperationLogDTO opLog) {
         try {
-            beforeLog(opLog);
+            if(!beforeLog(opLog)) {
+                log.trace("Ignored operation log.");
+                return;
+            }
             doLog(opLog);
             afterLog(opLog);
         } catch (Exception e) {
-            //afterValidateFail();
             handleLogException(e, opLog);
         }
     }
@@ -105,16 +107,13 @@ public abstract class AbstractOperationLogger implements OperationLogger {
     }
 
 
-    private void beforeLog(OperationLogDTO opLog) {
-        logInterceptors.forEach(listener -> listener.beforeLog(opLog));
+    private boolean beforeLog(OperationLogDTO opLog) {
+        return logInterceptors.stream()
+                .allMatch(interceptor -> interceptor.beforeLog(opLog));
     }
 
-    /*private void afterValidateFail(OperationLog opLog){
-        logInterceptors.forEach(listener -> listener.afterValidateFail(opLog));
-    }*/
-
     private void afterLog(OperationLogDTO opLog) {
-        logInterceptors.forEach(listener -> listener.afterLog(opLog));
+        logInterceptors.forEach(interceptor -> interceptor.afterLog(opLog));
     }
 
     @Override

@@ -52,9 +52,10 @@ public interface OperationLoggerInterceptor {
      * 可以进行一些格式校验，以免记录的日志某些字段超长（加入存储是关系型数据库则推荐使用）
      *
      * @param opLog 待验证的日志实体
+     * @return 是否记录日志，true 记录，false 不记录
      */
-    default void beforeLog(OperationLogDTO opLog) {
-
+    default boolean beforeLog(OperationLogDTO opLog) {
+        return true;
     }
 
     /**

@@ -233,8 +233,9 @@ public class PageResult<T> extends ListResult<T> {
             pageResult.setPageNum((int) page.getCurrent());
             pageResult.setPageSize((int) page.getSize());
             pageResult.setSize(list == null ? 0 : list.size());
-            pageResult.setHasPreviousPage(!pageResult.getFirstPage());
-            pageResult.setHasNextPage(!pageResult.getLastPage());
+            // 这两个先不考虑负数，大于total 的边界值
+            pageResult.setHasPreviousPage(page.getCurrent() > 1L);
+            pageResult.setHasNextPage(page.getCurrent() < page.getTotal());
 
             return pageResult;
         }

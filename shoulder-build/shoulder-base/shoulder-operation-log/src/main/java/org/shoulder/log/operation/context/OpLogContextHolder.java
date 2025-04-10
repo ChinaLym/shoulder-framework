@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 该类充当 OperationLogHolder 的角色。set日志对象后，可以通过该工具在同一线程内操作这个日志对象。
@@ -182,7 +183,7 @@ public class OpLogContextHolder {
      * 在方法中调用 closeAutoLog，告诉框架在本方法结束后不要记录操作日志
      */
     public static void disableAutoLog() {
-        getContextOrException().setAutoLog(false);
+        Optional.ofNullable(CURRENT_OP_LOG_CONTEXT.get()).ifPresent(c -> c.setAutoLog(false));
     }
 
     /**

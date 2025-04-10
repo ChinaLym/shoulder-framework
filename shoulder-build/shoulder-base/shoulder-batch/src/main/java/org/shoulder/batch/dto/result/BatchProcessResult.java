@@ -2,15 +2,9 @@ package org.shoulder.batch.dto.result;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
-import org.shoulder.batch.enums.BatchDetailResultStatusEnum;
-import org.shoulder.web.template.dictionary.validation.DictionaryEnumItem;
+import org.shoulder.batch.progress.ProgressStatusEnum;
 import org.springframework.http.MediaType;
 
 import java.util.List;
@@ -52,9 +46,14 @@ public class BatchProcessResult {
     @Schema(description = "是否完成标识", requiredMode = Schema.RequiredMode.REQUIRED, type = "boolean", example = "true")
     private Boolean finish;
 
+    /**
+     * @see ProgressStatusEnum
+     */
     @Schema(description = "状态", requiredMode = Schema.RequiredMode.REQUIRED, type = "Integer", example = "1")
-    @DictionaryEnumItem(value = BatchDetailResultStatusEnum.class)
     private Integer status;
+
+    @Schema(description = "状态说明", requiredMode = Schema.RequiredMode.REQUIRED, type = "ProgressStatusEnum", example = "WAITING")
+    private String statusInfo;
 
     /**
      * 查进度时暂不返回
