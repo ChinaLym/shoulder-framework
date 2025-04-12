@@ -173,7 +173,7 @@ public class OpLogContextHolder {
      */
     public static boolean isEnableAutoLog() {
         // 默认开启
-        return getContextOrException().isAutoLog();
+        return Optional.ofNullable(CURRENT_OP_LOG_CONTEXT.get()).map(OpLogContext::isAutoLog).orElse(false);
     }
 
     /**

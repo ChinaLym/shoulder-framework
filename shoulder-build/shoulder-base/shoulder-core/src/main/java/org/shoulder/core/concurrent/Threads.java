@@ -145,11 +145,12 @@ public class Threads {
      */
     public static void execute(String taskName, Runnable runnable, Instant exceptedFinishTime, Consumer<TaskInfo> exceptionCallBack) {
         ensureInit();
-        Instant submitTaskTime = Instant.now();
-        AtomicReference<Thread> threadRef = null;
-        AtomicReference<Exception> errorRef = null;
-        AtomicReference<Instant> runTimeRef = null;
-        AtomicReference<Instant> endTimeRef = null;
+        Instant taskSubmitTime = Instant.now();
+        AtomicReference<Thread> threadRef = new AtomicReference<>();
+        AtomicReference<Exception> errorRef = new AtomicReference<>();
+        AtomicReference<Instant> runStartTimeRef = new AtomicReference<>();
+        AtomicReference<Instant> runEndTimeRef = new AtomicReference<>();
+        AtomicBoolean allowRun = new AtomicBoolean(true);
         AtomicBoolean hasDetected = new AtomicBoolean(false);
         if (log.isTraceEnabled()) {
             log.trace("{} add to EXECUTOR_SERVICE", taskName);
@@ -157,17 +158,21 @@ public class Threads {
         Runnable detectRun = () -> {
             boolean isFirstDetect = hasDetected.compareAndSet(false, true);
             if (isFirstDetect) {
-                exceptionCallBack.accept(new TaskInfo(taskName, submitTaskTime, Instant.now(), threadRef, errorRef, runTimeRef, endTimeRef));
+                exceptionCallBack.accept(new TaskInfo(taskName, taskSubmitTime, runStartTimeRef, runEndTimeRef, Instant.now(), threadRef, errorRef, allowRun));
             }
         };
         EnhancedRunnable enhancedRunnable = new EnhancedRunnable(() -> {
-            Instant runtime = Instant.now();
-            runTimeRef.set(runtime);
-            threadRef.set(Thread.currentThread());
-            String originThreadName = Thread.currentThread().getName();
+            Instant runStartTime = Instant.now();
+            if (!allowRun.get()) {
+                log.info("{} execute cancel, wait={}ms.", taskName, Duration.between(taskSubmitTime, runStartTime).toMillis());
+            }
+            runStartTimeRef.set(runStartTime);
+            Thread runThread = Thread.currentThread();
+            threadRef.set(runThread);
+            String originThreadName = runThread.getName();
             boolean success = false;
             try {
-                Thread.currentThread().setName(taskName);
+                runThread.setName(taskName);
                 runnable.run();
                 success = true;
             } catch (Exception e) {
@@ -175,15 +180,19 @@ public class Threads {
                 errorRef.set(e);
                 if (exceptionCallBack != null) {
                     // 回调监工
-                    endTimeRef.set(Instant.now());
+                    runEndTimeRef.set(Instant.now());
                     Threads.execute("D_" + taskName, detectRun, null, null);
                 }
                 throw e;
             } finally {
-                Instant endTime = Instant.now();
-                endTimeRef.set(endTime);
-                log.info("{} execute end, success={}, cost={}ms.", taskName, success, Duration.between(runtime, endTime).toMillis());
-                Thread.currentThread().setName(originThreadName);
+                synchronized (runThread) {
+                    Instant endTime = Instant.now();
+                    runEndTimeRef.set(endTime);
+                    // 释放线程引用，避免回调函数执行时，该线程已经在执行其他任务从而引起的误操作和判断
+                    threadRef.set(null);
+                    log.info("{} execute end, success={}, cost={}ms.", taskName, success, Duration.between(runStartTime, endTime).toMillis());
+                    runThread.setName(originThreadName);
+                }
             }
         });
 
@@ -213,12 +222,12 @@ public class Threads {
                 if (EXECUTOR_SERVICE == null) {
                     boolean containsBean = ContextUtils.containsBean(SHOULDER_THREAD_POOL_NAME);
                     AssertUtils.isTrue(containsBean, CommonErrorCodeEnum.CODING,
-                        "Need invoke setExecutorService first! no fallback threadPool named " + SHOULDER_THREAD_POOL_NAME);
+                            "Need invoke setExecutorService first! no fallback threadPool named " + SHOULDER_THREAD_POOL_NAME);
 
                     Object threadPoolBean = ContextUtils.getBeanOrNull(SHOULDER_THREAD_POOL_NAME);
                     AssertUtils.isTrue(threadPoolBean instanceof ExecutorService, CommonErrorCodeEnum.CODING,
-                        "Need invoke setExecutorService first! Error fallback threadPool.class="
-                            + Optional.ofNullable(threadPoolBean).map(Object::getClass).map(Class::getName).orElse(null));
+                            "Need invoke setExecutorService first! Error fallback threadPool.class="
+                                    + Optional.ofNullable(threadPoolBean).map(Object::getClass).map(Class::getName).orElse(null));
 
                     log.warn("not set threadPool fall back: try use bean named '{}' in context.", SHOULDER_THREAD_POOL_NAME);
                     setExecutorService((ExecutorService) threadPoolBean);
@@ -226,12 +235,12 @@ public class Threads {
                 if (TASK_SCHEDULER == null) {
                     boolean containsBean = ContextUtils.containsBean(SHOULDER_TASK_SCHEDULER);
                     AssertUtils.isTrue(containsBean, CommonErrorCodeEnum.CODING,
-                        "Need invoke setTaskScheduler first! no fallback taskScheduler named " + SHOULDER_TASK_SCHEDULER);
+                            "Need invoke setTaskScheduler first! no fallback taskScheduler named " + SHOULDER_TASK_SCHEDULER);
 
                     Object taskScheduler = ContextUtils.getBeanOrNull(SHOULDER_TASK_SCHEDULER);
                     AssertUtils.isTrue(taskScheduler instanceof TaskScheduler, CommonErrorCodeEnum.CODING,
-                        "Need invoke setTaskScheduler first! Error fallback taskScheduler.class="
-                            + Optional.ofNullable(taskScheduler).map(Object::getClass).map(Class::getName).orElse(null));
+                            "Need invoke setTaskScheduler first! Error fallback taskScheduler.class="
+                                    + Optional.ofNullable(taskScheduler).map(Object::getClass).map(Class::getName).orElse(null));
 
                     log.warn("not set threadPool fall back: try use bean named '{}' in context.", SHOULDER_TASK_SCHEDULER);
                     setTaskScheduler((TaskScheduler) taskScheduler);
@@ -250,13 +259,13 @@ public class Threads {
      * @throws InterruptedException executeAndWait
      */
     public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout)
-        throws InterruptedException {
+            throws InterruptedException {
         ensureInit();
         printCallerDebugLog("executeAndWait");
         CountDownLatch latch = new CountDownLatch(tasks.size());
         List<Callable<Object>> callList = tasks.stream().map(runnable -> new NotifyOnFinishRunnable(runnable, latch::countDown))
-            .map(Executors::callable)
-            .toList();
+                .map(Executors::callable)
+                .toList();
         EXECUTOR_SERVICE.invokeAll(callList, timeout.toNanos(), TimeUnit.NANOSECONDS);
         return latch.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
@@ -311,7 +320,7 @@ public class Threads {
                 }
             }
             log.warn("Discard for the executor's queue is full. Task({}), Executor({})", r.toString(),
-                executor);
+                    executor);
         }
     }
 
@@ -330,7 +339,7 @@ public class Threads {
                 }
             }
             log.warn("Discard for the executor's queue is full. Task({}), Executor({})", r.toString(),
-                executor);
+                    executor);
         }
     }
 
@@ -342,7 +351,7 @@ public class Threads {
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
             throw new RejectedExecutionException("Discard for the executor's queue is full. " +
-                "Task(" + r.toString() + "), Executor({" + executor.toString() + "})");
+                    "Task(" + r.toString() + "), Executor({" + executor.toString() + "})");
         }
     }
 
@@ -414,9 +423,32 @@ public class Threads {
 
 
     // 任务名、执行线程、异常（如果有）、提交任务时间、实际任务执行时间、检测时间
-    public record TaskInfo(String taskName, Instant submitTime, Instant detectTime, AtomicReference<Thread> threadRef,
-                           AtomicReference<Exception> exceptionRef, AtomicReference<Instant> runTimeRef,
-                           AtomicReference<Instant> endTimeRef) {
-    }
+    public record TaskInfo(String taskName, Instant taskSubmitTime, AtomicReference<Instant> runStartTimeRef,
+                           AtomicReference<Instant> runEndTimeRef, Instant detectTime,
+                           AtomicReference<Thread> threadRef,
+                           AtomicReference<Exception> exceptionRef, AtomicBoolean allowRun) {
+        /**
+         * 对于还没开始执行的任务，可以取消
+         *
+         * @param interruptRunning 在运行时是否触发中断；对于超时敏感的可以传 true
+         * @return 是否取消or中断任务，如果已经成功运行结束，也会返回 false
+         */
+        public boolean cancelTask(boolean interruptRunning) {
+            boolean isCancelled = allowRun.compareAndSet(runStartTimeRef.get() == null, false);
+            if (!interruptRunning) {
+                return isCancelled;
+            }
 
+            Thread thread = threadRef.get();
+            synchronized (thread) {
+                // DCL + runEndTime 确认正在运行，且这段代码运行时，会确保运行线程没结束
+                boolean isRunning = runEndTimeRef.get() != null && threadRef.get() != null;
+                if (isRunning) {
+                    thread.interrupt();
+                    return true;
+                }
+                return false;
+            }
+        }
+    }
 }
