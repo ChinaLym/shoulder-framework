@@ -93,12 +93,13 @@ public class FixedNumProgress implements Serializable, Progress {
     }
 
     @Override
-    public void finish() {
+    public boolean finish() {
         status.getAndSet(ProgressStatusEnum.FINISHED.getCode());
         stopTime = LocalDateTime.now();
         if (startTime == null) {
             startTime = stopTime;
         }
+        return true;
     }
 
     @Override

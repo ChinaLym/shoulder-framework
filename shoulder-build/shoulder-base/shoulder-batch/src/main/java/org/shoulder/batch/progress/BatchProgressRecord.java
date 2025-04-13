@@ -97,14 +97,14 @@ public class BatchProgressRecord implements Serializable, Progress {
     }
 
     @Override
-    public void finish() {
+    public boolean finish() {
         AssertUtils.equals(total, processed, CommonErrorCodeEnum.ILLEGAL_STATUS);
-        ;
         status = ProgressStatusEnum.FINISHED.getCode();
         stopTime = LocalDateTime.now();
         if (startTime == null) {
             startTime = stopTime;
         }
+        return true;
     }
 
     public boolean hasFinish() {

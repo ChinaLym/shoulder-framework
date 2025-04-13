@@ -169,7 +169,7 @@ public class BatchManager implements Runnable, ProgressAble {
 
         // 阻塞式处理结果
         handleResult(dataItemTotalNum);
-        progress.finish();
+        AssertUtils.isTrue(progress.finish(), CommonErrorCodeEnum.CODING);
         //result.setTotalNum();
         result.setSuccessNum(progress.getSuccessNum());
         result.setFailNum(progress.getFailNum());

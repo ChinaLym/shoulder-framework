@@ -18,7 +18,12 @@ public interface Progress extends ProgressAble {
 
     void failStop();
 
-    void finish();
+    /**
+     * 尝试设置为完成
+     *
+     * @return 如果任务完成返回 true，其他返回 false
+     */
+    boolean finish();
 
     boolean hasFinish();
 
@@ -26,6 +31,10 @@ public interface Progress extends ProgressAble {
 
     float calculateProgress();
 
+    /**
+     * 剩余时间
+     * @return -1 无法预估，0 未开始，其余正常
+     */
     long calculateTimeLeft();
 
     /**

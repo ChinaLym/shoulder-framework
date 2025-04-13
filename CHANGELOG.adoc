@@ -14,7 +14,7 @@
 
 * Batch
 ** 鲁棒性优化【兼容性】：Progress#getBatchProgress 改为 toProgressRecord，避免部分框架反序列化问题
-** 功能增强：DefaultCache 增加字段 flushDuration，默认 2s，而非只能是2s。
+** 功能增强：DefaultCache 增加字段 flushDuration，默认 2s，而非只能是2s
 ** 功能增强【兼容性】triggerFlushProgress 如果本地缓存（包括可能代理），则直接放引用，注意 getProgress 时，不再只返回 BatchProgressRecord 类了
 ** 鲁棒性优化：batchProgress.start CAS 设置 startTime，支持幂等，成功返回 true，未修改返回 false
 ** BatchProgress 预估剩余时间、完成状态不一致，checkFinished 加 boolean 入参，检查的时候true，其他时候传 autoFished，设置为 public

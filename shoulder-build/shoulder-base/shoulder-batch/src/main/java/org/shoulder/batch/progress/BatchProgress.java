@@ -113,18 +113,27 @@ public class BatchProgress implements Serializable, Progress {
     }
 
     public void failStop() {
-        AssertUtils.isTrue(status.get() < ProgressStatusEnum.EXCEPTION.getCode(), CommonErrorCodeEnum.ILLEGAL_STATUS);
-        status.getAndSet(ProgressStatusEnum.EXCEPTION.getCode());
+        int currentStatus;
+        // 只允许 WAITING、RUNNING 进入失败
+        do {
+            currentStatus = status.get();
+            if (currentStatus >= ProgressStatusEnum.EXCEPTION.getCode()) {
+                throw CommonErrorCodeEnum.ILLEGAL_STATUS.toException();
+            }
+        } while (!status.compareAndSet(currentStatus, ProgressStatusEnum.EXCEPTION.getCode()));
         stopTime = LocalDateTime.now();
     }
 
-    public void finish() {
+    public boolean finish() {
         AssertUtils.equals(processed.get(), total.get(), CommonErrorCodeEnum.ILLEGAL_STATUS);
-        status.getAndSet(ProgressStatusEnum.FINISHED.getCode());
-        stopTime = LocalDateTime.now();
-        if (startTime == null) {
-            startTime = stopTime;
+        if (status.compareAndSet(ProgressStatusEnum.RUNNING.getCode(), ProgressStatusEnum.FINISHED.getCode())) {
+            stopTime = LocalDateTime.now();
+            if (startTime == null) {
+                startTime = stopTime;
+            }
+            return true;
         }
+        return false;
     }
 
     public boolean hasFinish() {
@@ -142,15 +151,11 @@ public class BatchProgress implements Serializable, Progress {
      */
     public long calculateProcessedTime() {
         if (status.get() == ProgressStatusEnum.WAITING.getCode()) {
+            // 没开始处理，没花时间
             return 0;
         }
-        if (hasFinish()) {
-            if (stopTime == null) {
-                stopTime = LocalDateTime.now();
-            }
-            return Duration.between(startTime, stopTime).toMillis();
-        }
-        return Duration.between(startTime, LocalDateTime.now()).toMillis();
+        LocalDateTime endTime = hasFinish() ? (stopTime != null ? stopTime : LocalDateTime.now()) : LocalDateTime.now();
+        return Duration.between(startTime, endTime).toMillis();
     }
 
     /**
@@ -165,7 +170,7 @@ public class BatchProgress implements Serializable, Progress {
         // 即将完成 99%
         int process = this.processed.get();
         int totalNum = this.total.get();
-        return process == totalNum ? 0.999F : process / (float) totalNum;
+        return totalNum == 0 ? 0 : Math.min(0.999F, process / (float) totalNum);
     }
 
     /**
@@ -180,8 +185,8 @@ public class BatchProgress implements Serializable, Progress {
         int processedNum = processed.get();
         int totalNum = total.get();
         if (processedNum - alreadyFinishedAtStart <= 0) {
-            // 默认 99 天
-            return Duration.ofDays(99).toMillis();
+            // 无法预估
+            return -1;
         }
         return (calculateProcessedTime() / (processedNum - alreadyFinishedAtStart) * (totalNum - processedNum));
     }
@@ -244,8 +249,10 @@ public class BatchProgress implements Serializable, Progress {
     }
 
     public void checkFinished(boolean autoFished) {
-        // 先取 processed 再取 total，即使发生
-        if (processed.get() == total.get() && autoFished) {
+        // 先取 processed 再取 total
+        int currentProcessed = processed.get();
+        int currentTotal = total.get();
+        if (currentProcessed == currentTotal && autoFished) {
             finish();
         }
     }
