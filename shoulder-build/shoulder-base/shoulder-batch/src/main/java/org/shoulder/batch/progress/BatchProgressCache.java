@@ -15,21 +15,21 @@ public interface BatchProgressCache {
      * @param progressId progressId
      * @return 任务
      */
-    Progress getProgress(String progressId);
+    Progress findProgress(String progressId);
 
     /**
      * 获取所有任务id
      *
      * @return 所有任务id
      */
-    Iterable<String> getAllTaskProgressId();
+    Iterable<String> fetchAllTaskProgressId();
 
     /**
      * 获取所有任务进度
      *
      * @return 所有任务进度
      */
-    Map<String, Progress> getAllTaskProgress();
+    Map<String, Progress> fetchAllTaskProgress();
 
     /**
      * 刷一次进度

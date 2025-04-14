@@ -303,7 +303,7 @@ public class DefaultBatchExportService implements BatchAndExportService {
      */
     @Override
     public BatchProgressRecord queryBatchProgress(String batchId) {
-        Progress result = batchProgressCache.getProgress(batchId);
+        Progress result = batchProgressCache.findProgress(batchId);
         if (result == null) {
             // 缓存过期无需从数据库中查，直接异常
             throw BatchErrorCodeEnum.BATCH_ID_NOT_EXIST.toException(batchId);

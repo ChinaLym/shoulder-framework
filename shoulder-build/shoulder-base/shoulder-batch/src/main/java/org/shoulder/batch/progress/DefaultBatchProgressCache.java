@@ -124,7 +124,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
 
     @SuppressWarnings("unechked")
     @Override
-    public Iterable<String> getAllTaskProgressId() {
+    public Iterable<String> fetchAllTaskProgressId() {
         Object nativeCache = getNativeCache();
         if (nativeCache instanceof Map) {
             Map<Object, Object> nMap = ((Map<Object, Object>) nativeCache);
@@ -140,7 +140,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map<String, Progress> getAllTaskProgress() {
+    public Map<String, Progress> fetchAllTaskProgress() {
         Object nativeCache = getNativeCache();
         if (nativeCache instanceof Map) {
             Map<Object, Object> nMap = ((Map<Object, Object>) nativeCache);
@@ -166,7 +166,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
      * @return 任务
      */
     @Override
-    public Progress getProgress(String progressId) {
+    public Progress findProgress(String progressId) {
         Cache.ValueWrapper valueWrapper = progressCache.get(progressId);
         return valueWrapper == null ? null : (Progress) valueWrapper.get();
     }
