@@ -41,12 +41,12 @@ public class WebExtProperties {
         /**
          * api 路径
          */
-        private String path = "/api/v1/dictionary";
+        private String path = "/api/v1/dictionaries";
 
         /**
-         * ui 路径
+         * ui 页面地址
          */
-        private String pageUrl = "/ui/dictionary/page.html";
+        private String pageUrl = "/ui/dictionaries/page.html";
 
         /**
          * 是否忽略 字典类型名 dictionaryType 的大小写，默认否
@@ -85,7 +85,7 @@ public class WebExtProperties {
         /**
          * api 路径
          */
-        private String path = "/api/v1/validate/rule";
+        private String path = "/api/v1/validation/rule";
 
     }
 
@@ -101,6 +101,11 @@ public class WebExtProperties {
          * api 路径
          */
         private String path = "/api/v1/oplogs";
+
+        /**
+         * ui 页面地址
+         */
+        private String pageUrl = "/ui/oplogs/page.html";
 
     }
 

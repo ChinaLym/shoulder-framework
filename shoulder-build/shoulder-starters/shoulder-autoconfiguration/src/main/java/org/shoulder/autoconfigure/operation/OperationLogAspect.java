@@ -20,6 +20,7 @@ import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.log.operation.context.OperationContextStrategy;
 import org.shoulder.log.operation.context.OperationContextStrategyEnum;
 import org.shoulder.log.operation.context.OperationLogFactory;
+import org.shoulder.log.operation.enums.OperationResult;
 import org.shoulder.log.operation.format.OperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.DefaultOperationLogParamValueConverter;
 import org.shoulder.log.operation.format.covertor.OperationLogParamValueConverterHolder;
@@ -220,18 +221,21 @@ public class OperationLogAspect {
     private OperationLogDTO createLog(ProceedingJoinPoint joinPoint,
                                       OperationLog methodAnnotation, @Nullable OperationLogConfig classAnnotation) {
         // 创建日志实体
-        OperationLogDTO entity =
+        OperationLogDTO logDTO =
             OperationLogFactory.create(methodAnnotation.operation());
+
+        // 先默认成功
+        logDTO.setResult(OperationResult.SUCCESS);
 
         // objectType
         if (StringUtils.isNotEmpty(methodAnnotation.objectType())) {
-            entity.setObjectType(methodAnnotation.objectType());
+            logDTO.setObjectType(methodAnnotation.objectType());
         } else if (classAnnotation != null && StringUtils.isNotEmpty(classAnnotation.objectType())) {
-            entity.setObjectType(classAnnotation.objectType());
+            logDTO.setObjectType(classAnnotation.objectType());
         }
 
         // terminalType
-        entity.setTerminalType(methodAnnotation.terminalType());
+        logDTO.setTerminalType(methodAnnotation.terminalType());
 
         // 操作详情
         String detailI18nKey = methodAnnotation.detailKey();
@@ -239,17 +243,17 @@ public class OperationLogAspect {
 
         if (StringUtils.isNotBlank(detailI18nKey)) {
             // 填写则表示支持多语言
-            entity.setDetailI18nKey(detailI18nKey);
+            logDTO.setDetailI18nKey(detailI18nKey);
         }
         if (StringUtils.isNotEmpty(detail)) {
             // 填写 detail 不填写 detailI18nKey 认为不支持多语言
-            entity.setDetail(detail);
+            logDTO.setDetail(detail);
         }
 
         // 解析日志参数
-        entity.setParams(createOperationParams(entity, joinPoint));
+        logDTO.setParams(createOperationParams(logDTO, joinPoint));
 
-        return entity;
+        return logDTO;
     }
 
 

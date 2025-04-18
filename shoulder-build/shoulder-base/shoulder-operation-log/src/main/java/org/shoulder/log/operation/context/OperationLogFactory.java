@@ -8,6 +8,7 @@ import org.shoulder.core.model.Operable;
 import org.shoulder.log.operation.model.OperationLogDTO;
 import org.shoulder.log.operation.model.Operator;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,6 +34,7 @@ public class OperationLogFactory {
         return new OperationLogDTO(operation)
                 .setOperator(currentOperator)
                 .setAppId(AppInfo.appId())
+                .setOperationTime(Instant.now())
                 // todo 【可选优化】默认加入version
                 //.setVersion(AppInfo.version())
                 .setInstanceId(AppInfo.instanceId())

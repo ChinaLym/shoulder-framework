@@ -6,6 +6,7 @@ import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.data.mybatis.template.service.BaseServiceImpl;
 import org.shoulder.web.template.dictionary.controller.DictionaryEnumQueryController;
+import org.shoulder.web.template.oplog.controller.OperationLogPageController;
 import org.shoulder.web.template.oplog.controller.OperationLogQueryController;
 import org.shoulder.web.template.oplog.convert.OperationLogDTO2EntityConverter;
 import org.shoulder.web.template.oplog.convert.OperationLogEntity2DTOConverter;
@@ -98,6 +99,10 @@ public class WebExtAutoConfiguration {
         @Bean
         public OperationLogQueryController operationLogQueryController(OperationLogService service, ShoulderConversionService conversionService) {
             return new OperationLogQueryController(service, conversionService);
+        }
+        @Bean
+        public OperationLogPageController operationLogPageController() {
+            return new OperationLogPageController();
         }
 
         @Bean

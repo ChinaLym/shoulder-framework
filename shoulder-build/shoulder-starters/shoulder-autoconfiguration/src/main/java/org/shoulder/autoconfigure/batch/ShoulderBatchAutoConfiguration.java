@@ -15,7 +15,9 @@ import org.shoulder.batch.model.BatchData;
 import org.shoulder.batch.model.convert.BatchProgressRecordDomain2DTOConverter;
 import org.shoulder.batch.model.convert.BatchRecordDetailDomain2DTOConverter;
 import org.shoulder.batch.model.convert.BatchRecordDomain2DTOConverter;
+import org.shoulder.batch.progress.BatchActivityRepository;
 import org.shoulder.batch.progress.BatchProgressCache;
+import org.shoulder.batch.progress.DefaultBatchActivityRepository;
 import org.shoulder.batch.progress.DefaultBatchProgressCache;
 import org.shoulder.batch.repository.*;
 import org.shoulder.batch.service.BatchAndExportService;
@@ -87,6 +89,11 @@ public class ShoulderBatchAutoConfiguration {
     @ConditionalOnMissingBean
     public BatchRecordDomain2DTOConverter batchRecordDomain2DTOConverter() {
         return BatchRecordDomain2DTOConverter.INSTANCE;
+    }
+    @Bean
+    @ConditionalOnMissingBean(BatchActivityRepository.class)
+    public BatchActivityRepository defaultBatchActivityRepository() {
+        return new DefaultBatchActivityRepository();
     }
 
     @Order(Ordered.LOWEST_PRECEDENCE)

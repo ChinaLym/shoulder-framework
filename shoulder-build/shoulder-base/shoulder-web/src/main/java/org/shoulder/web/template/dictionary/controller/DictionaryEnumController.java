@@ -8,24 +8,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.shoulder.core.dictionary.spi.DictionaryEnumStore;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
+import org.shoulder.core.util.ServletUtil;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 /**
  * 枚举型字典接口-默认实现
- * http://localhost:8080/api/v1/dictionary/type/all
- * http://localhost:8080/ui/dictionary/page.html
- *
+ * http://localhost:8080/api/v1/dictionaries/types/listAll
+ * http://localhost:8080/ui/dictionaries/page.html
+ * <p>
  * 页面使用了 bootstrap，下面是一些 bootstraps 技术参考和说明
  * https://bootstrapshuffle.com/cn/classes
  * https://www.w3schools.com/bootstrap4/bootstrap_colors.asp
@@ -43,7 +40,7 @@ public class DictionaryEnumController implements DictionaryEnumQueryController {
 
     private String page;
 
-    @Value("${shoulder.web.ext.dictionary.path:/api/v1/dictionary}")
+    @Value("${shoulder.web.ext.dictionary.path:/api/v1/dictionaries}")
     private String dictionaryApiPath;
 
     public DictionaryEnumController(DictionaryEnumStore dictionaryEnumStore) {
@@ -59,39 +56,30 @@ public class DictionaryEnumController implements DictionaryEnumQueryController {
             @Parameter(name = "dictionaryType", description = "字典类型"),
     })
     @Operation(summary = "查询所有支持的字典项名称", description = "查询所有支持的字典项名称")
-    @RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionary}/type/all", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "${shoulder.web.ext.dictionary.path:/api/v1/dictionaries}/types/listAll", method = {RequestMethod.POST, RequestMethod.GET})
     public BaseResult<ListResult<String>> allTypes() {
         Collection<String> allTypeNames = dictionaryEnumStore.listAllTypeNames();
         return BaseResult.success(allTypeNames);
     }
 
     @SkipResponseWrap
-    @GetMapping("${shoulder.web.ext.dictionary.pageUrl:/ui/dictionary/page.html}")
+    @GetMapping("${shoulder.web.ext.dictionary.pageUrl:/ui/dictionaries/page.html}")
     public String uiPage(HttpServletRequest request) {
         String pageAjaxHost = request.getRequestURL().toString()
                 .replace(request.getRequestURI(), "");
-        return loadPage(pageAjaxHost);
+        pageAjaxHost = pageAjaxHost.endsWith("/") ? pageAjaxHost.subSequence(0, pageAjaxHost.length() - 1).toString() : pageAjaxHost;
+        page = loadPage();
+        return page.replaceFirst("SHOULDER_PAGE_HOST", pageAjaxHost);
     }
 
-    private synchronized String loadPage(String pageAjaxHost) {
+    private synchronized String loadPage() {
         if (page != null) {
             return page;
         }
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        String classPath = "classpath*:shoulder/dictionary/dictionaryEnums.html.config";
-        try {
-            Resource[] resources = resolver.getResources(classPath);
-            if (resources.length > 0) {
-                Resource resource = resources[0];
-                pageAjaxHost = pageAjaxHost.endsWith("/") ? pageAjaxHost.subSequence(0, pageAjaxHost.length() - 1).toString() : pageAjaxHost;
-                page = resource.getContentAsString(StandardCharsets.UTF_8).replaceFirst("CONFIG_PAGE_HOST", pageAjaxHost);
-            }
-        } catch (IOException e) {
-            page = "";
-        }
+        String classPath = "classpath*:shoulder/pages/dictionaryQueryPage.html.config";
+        page = ServletUtil.loadResourceContent(classPath);
         page = page.replace("##DICTIONARY_API_PATH##", dictionaryApiPath);
         return page;
     }
-
 
 }

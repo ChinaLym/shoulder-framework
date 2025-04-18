@@ -56,5 +56,10 @@ public interface Progress extends ProgressAble {
 
     void setTotal(int total);
 
+    default boolean setTotalAndStart(int total) {
+        setTotal(total);
+        return start();
+    }
+
     void setOnFinishCallback(BiConsumer<String, Progress> onFinishedCallback);
 }

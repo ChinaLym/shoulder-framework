@@ -35,11 +35,11 @@ import java.util.List;
  * 统一获取表单校验规则
  * 两种拉取方式<br>
  * A表单的保存url为 [POST] http://ip:port/projectName/role/save <br>
- * 第一种（通过增加前缀<font color="red">/api/v1/validate/rule/</font>）<br>
- * 那么获取A表单的验证规则url： [GET] http://ip:port/projectName<font color="red">/api/v1/validate/rule</font>/role/save?method=post <br>
+ * 第一种（通过增加前缀<font color="red">/api/v1/validation/rule/</font>）<br>
+ * 那么获取A表单的验证规则url： [GET] http://ip:port/projectName<font color="red">/api/v1/validation/rule</font>/role/save?method=post <br>
  * <br>
  * 第二种（通过参数传递uri路径的方式来拉取）：<br>
- * [GET] http://ip:port/projectName<font color="red">/api/v1/validate/rule</font>?method=post&uri=/projectName/role/save <br>
+ * [GET] http://ip:port/projectName<font color="red">/api/v1/validation/rule</font>?method=post&uri=/projectName/role/save <br>
  * <br>
  * 固定了验证uri地址，而要验证的表单地址作为参数进行传输。当然，可以一次性拿多个表单验证地址。有些界面可能同时存在多个表单需要提交。
  *
@@ -52,7 +52,7 @@ public class ValidateRuleEndPoint {
 
     private final Logger log = ShoulderLoggers.SHOULDER_WEB;
 
-    public static final String VALIDATION_RULE_URL_VALUE_EXPRESSION = "${shoulder.web.ext.dynamic-validate.path:/api/v1/validate/rule}";
+    public static final String VALIDATION_RULE_URL_VALUE_EXPRESSION = "${shoulder.web.ext.dynamic-validate.path:/api/v1/validation/rule}";
 
     /**
      * 动态路径

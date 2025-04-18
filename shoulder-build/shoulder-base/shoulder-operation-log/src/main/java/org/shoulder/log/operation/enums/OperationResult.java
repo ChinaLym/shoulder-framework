@@ -31,7 +31,15 @@ import java.util.Collection;
     /**
      * 部分成功（适用于批量操作，如批量保存10条数据，5条成功，5条失败）
      */
-    PARTIAL(2);
+    PARTIAL(2)
+    ,
+
+    /**
+     * 未知结果，如依赖外部，受理成功但未响应终态
+     */
+    UNKNOWN(3)
+    ,
+    ;
 
     public final Integer itemId;
 

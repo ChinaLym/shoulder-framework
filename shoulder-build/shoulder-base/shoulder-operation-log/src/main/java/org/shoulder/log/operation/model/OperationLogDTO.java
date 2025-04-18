@@ -73,7 +73,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
     /**
      * 操作者终端类型 （必填）
      */
-    protected TerminalType terminalType = TerminalType.UNKNOWN;
+    protected TerminalType terminalType;
 
     /**
      * 操作者所在终端标识，如 IP （选填）
@@ -107,7 +107,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
     /**
      * 操作发生时间
      */
-    protected Instant operationTime = Instant.now();
+    protected Instant operationTime;
 
     /**
      * 操作结束时间
@@ -143,7 +143,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
     /**
      * 本次操作结果（必填）
      */
-    protected OperationResult result = OperationResult.SUCCESS;
+    protected OperationResult result;
 
 
     /**

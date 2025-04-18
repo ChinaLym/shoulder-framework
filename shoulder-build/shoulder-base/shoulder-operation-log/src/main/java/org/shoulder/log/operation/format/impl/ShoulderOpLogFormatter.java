@@ -5,6 +5,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.log.operation.enums.TerminalType;
 import org.shoulder.log.operation.format.OperationLogFormatter;
 import org.shoulder.log.operation.model.OpLogParam;
 import org.shoulder.log.operation.model.OperationLogDTO;
@@ -12,10 +13,7 @@ import org.shoulder.log.operation.model.OperationLogDTO;
 import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -86,7 +84,7 @@ public class ShoulderOpLogFormatter implements OperationLogFormatter {
 
         // 拼接特殊类型
         builder
-                .add("terminalType", String.valueOf(opLog.getTerminalType().getItemId()))
+                .add("terminalType", String.valueOf(Optional.ofNullable(opLog.getTerminalType()).orElse(TerminalType.UNKNOWN).getItemId()))
                 .add("result", String.valueOf(opLog.getResult().getItemId()))
                 .add("operationTime", DATE_TIME_FORMATTER.format(ZonedDateTime.ofInstant(opLog.getOperationTime(), AppInfo.timeZone().toZoneId())));
         if (opLog.getEndTime() != null) {

@@ -8,14 +8,28 @@
 ** Threads 添加回调功能，除了支持统计数据外，还允许回调时 cancel / interrupt 提交的任务
 ** 鲁棒性优化：【兼容性】字典 getEnumItemIdClass 改名 resolveEnumClass，避免序列化问题
 
-* operation-log
+* Operation-log
 ** 功能增强【兼容性】OperationLoggerInterceptor 支持返回 false 不记录日志
 ** 优化 isEnableAutoLog disableAutoLog 执行时间，不再强制检查上下文
+** 优化，去除 OperationLogDTO 的默认值，改为手动设置
+** 添加默认日志查询界面
+** OperationResult 操作结果类型新增 `UNKNOWN`
+
+* Web
+** 扩展功能调整
+*** 校验规则默认api路径 `/api/v1/validate` 更换为 `/api/v1/validation`
+*** 字典默认api路径 `/api/v1/dictionary` 更换为 `/api/v1/dictionaries`、`/api/v1/dictionary/type` 更换为 `/api/v1/dictionaries/types`、`/api/v1/dictionary/type/all` 更换为 `/api/v1/dictionaries/types/listAll`、`/ui/dictionary` 更换为 `/ui/dictionaries`
+*** 访问优化：默认的UI页面不再限制只能通过单个域名访问
+*** 为操作日志添加默认的查询页面，默认路径 `/ui/optlogs/page.html`，并支持常用条件分页查询
+
+* DB
+** 优化 BaseService.calculateDbField，即使开发者偷懒未配置 @TableField 也可以获取到对应字段而非空值
 
 * Batch
 ** 鲁棒性优化【兼容性】：Progress#getBatchProgress 改为 toProgressRecord，避免部分框架反序列化问题
 ** 功能增强【兼容性】triggerFlushProgress 如果本地缓存（包括可能代理），则直接放引用。注意调用 getProgress 时，不再只返回 BatchProgressRecord 类了
 ** 功能增强【兼容性】BatchProgressCache 部分方法重命名，避免 json 反序列化问题
+** 新功能：新增 BatchActivity，可通过实现 BatchActivityEnum 快速渲染进度展示页面
 ** 功能增强：BatchProgress 预估剩余时间、完成状态不一致，checkFinished 加 boolean 入参，检查的时候true，其他时候传 autoFished，设置为 public
 ** 功能增强：DefaultCache 增加字段 flushDuration，默认 2s，而非只能是2s
 ** 鲁棒性优化：BatchProgress.start / finish 改为 CAS 并支持幂等，成功返回 true，未修改返回 false

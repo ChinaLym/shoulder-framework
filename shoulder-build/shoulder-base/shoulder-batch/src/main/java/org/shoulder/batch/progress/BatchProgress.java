@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Duration;
@@ -24,7 +25,7 @@ import java.util.function.BiConsumer;
  */
 @Data
 @NoArgsConstructor
-//@javax.annotation.concurrent.ThreadSafe
+@ThreadSafe
 public class BatchProgress implements Serializable, Progress {
 
     @Serial private static final long serialVersionUID = 1L;
@@ -98,7 +99,7 @@ public class BatchProgress implements Serializable, Progress {
         // 只能从未开始到开始
         boolean started = status.compareAndSet(ProgressStatusEnum.WAITING.getCode(), ProgressStatusEnum.RUNNING.getCode());
         if (!started) {
-            return false;
+            return status.get() == ProgressStatusEnum.RUNNING.getCode();
         }
         startTime = LocalDateTime.now();
         return true;
@@ -125,15 +126,18 @@ public class BatchProgress implements Serializable, Progress {
     }
 
     public boolean finish() {
-        AssertUtils.equals(processed.get(), total.get(), CommonErrorCodeEnum.ILLEGAL_STATUS);
-        if (status.compareAndSet(ProgressStatusEnum.RUNNING.getCode(), ProgressStatusEnum.FINISHED.getCode())) {
+        if(processed.get() != total.get()) {
+            return status.get() == ProgressStatusEnum.FINISHED.getCode();
+        }
+        if (status.compareAndSet(ProgressStatusEnum.WAITING.getCode(), ProgressStatusEnum.FINISHED.getCode()) ||
+                status.compareAndSet(ProgressStatusEnum.RUNNING.getCode(), ProgressStatusEnum.FINISHED.getCode())) {
             stopTime = LocalDateTime.now();
             if (startTime == null) {
                 startTime = stopTime;
             }
             return true;
         }
-        return false;
+        return status.get() == ProgressStatusEnum.FINISHED.getCode();
     }
 
     public boolean hasFinish() {

@@ -7,13 +7,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.slf4j.Logger;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -295,6 +299,22 @@ public class ServletUtil {
         serverUrl.append(':');
         serverUrl.append(request.getServerPort());
         return serverUrl.toString();
+    }
+
+    public static String loadResourceContent(String classPath) {
+        try {
+            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            Resource[] resources = resolver.getResources(classPath);
+            if (resources.length > 0) {
+                Resource resource = resources[0];
+                return resource.getContentAsString(StandardCharsets.UTF_8);
+            }
+        } catch (IOException e) {
+            ShoulderLoggers.SHOULDER_WEB.error("load resource FAIL for [{}]", classPath, e);
+        }
+
+        ShoulderLoggers.SHOULDER_WEB.error("can't find resource for [{}]", classPath);
+        return "";
     }
 
 }

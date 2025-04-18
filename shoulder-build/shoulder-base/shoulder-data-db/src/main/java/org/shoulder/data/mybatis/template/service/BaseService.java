@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.conditions.AbstractChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -19,7 +21,9 @@ import org.shoulder.core.converter.DateConverter;
 import org.shoulder.core.dto.request.BasePageQuery;
 import org.shoulder.core.dto.response.PageResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.AssertUtils;
+import org.shoulder.core.util.StringUtils;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
@@ -260,13 +264,24 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
     static String calculateDbField(String fieldName, Class<?> clazz) {
         Field field = ReflectUtil.getField(clazz, fieldName);
         if (field == null) {
-            return StrUtil.EMPTY;
+            ShoulderLoggers.SHOULDER_WEB.warn("can't find field [{}] in [{}]", fieldName, clazz);
+            return fieldName;
         }
         TableField tf = field.getAnnotation(TableField.class);
         if (tf != null && StrUtil.isNotEmpty(tf.value())) {
             return tf.value();
         }
-        return StrUtil.EMPTY;
+
+        return TableInfoHelper.getTableInfo(clazz)
+                .getFieldList()
+                .stream()
+                .filter(fieldInfo ->
+                        StringUtils.equals(fieldInfo.getProperty(), fieldName)
+                ).findFirst()
+                .map(TableFieldInfo::getColumn).orElseGet(() -> {
+                    ShoulderLoggers.SHOULDER_WEB.warn("can't find mapping column for field [{}] in [{}]", fieldName, clazz);
+                    return fieldName;
+                });
     }
 
     // ================= extends =============
