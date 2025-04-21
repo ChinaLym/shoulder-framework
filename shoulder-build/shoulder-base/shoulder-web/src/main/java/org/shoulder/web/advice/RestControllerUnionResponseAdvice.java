@@ -1,13 +1,16 @@
 package org.shoulder.web.advice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.dto.response.ListResult;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.ArrayUtils;
+import org.shoulder.core.util.JsonUtils;
 import org.shoulder.core.util.ServletUtil;
 import org.shoulder.core.util.StringUtils;
 import org.shoulder.web.annotation.SkipResponseWrap;
@@ -50,13 +53,15 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
 
     private final Logger log = ShoulderLoggers.SHOULDER_WEB;
 
-    private PathMatcher matcher = new AntPathMatcher();
+    private final PathMatcher matcher = new AntPathMatcher();
 
     private final List<String> skipWarpPathPatterns;
 
     public RestControllerUnionResponseAdvice(List<String> skipWarpPathPatterns) {
         this.skipWarpPathPatterns = skipWarpPathPatterns;
     }
+
+    private final String errorResponse = "{\"code\":\"" + CommonErrorCodeEnum.UNKNOWN.getCode() + "\",\"msg\":\"RestControllerUnionResponseAdvice write FAIL!\",\"data\":\"\"}";
 
     /**
      * 是否需要包装返回值，自动包装必须符合以下条件
@@ -130,10 +135,18 @@ public class RestControllerUnionResponseAdvice implements ResponseBodyAdvice<Obj
             return BaseResult.success().setData(body);
         } else {
             // string 类型单独处理
-            if (body == null || StringUtils.isEmpty((CharSequence) body)) {
+            CharSequence bodyStr = (CharSequence) body;
+            if (bodyStr == null) {
+                return  "{\"code\":\"0\",\"msg\":\"success\",\"data\":null}";
+            } else if(bodyStr.isEmpty()) {
                 return "{\"code\":\"0\",\"msg\":\"success\",\"data\":\"\"}";
             } else {
-                return "{\"code\":\"0\",\"msg\":\"success\",\"data\":\"" + body + "\"}";
+                try {
+                    return JsonUtils.getInstance().writeValueAsString(BaseResult.success().setData(body));
+                } catch (JsonProcessingException e) {
+                    log.error(CommonErrorCodeEnum.UNKNOWN, e);
+                    return errorResponse;
+                }
             }
 
         }
