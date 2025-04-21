@@ -2,6 +2,7 @@ package org.shoulder.autoconfigure.batch;
 
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvWriter;
+import org.apache.commons.collections4.CollectionUtils;
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
 import org.shoulder.autoconfigure.core.I18nAutoConfiguration;
 import org.shoulder.autoconfigure.lock.LockAutoConfiguration;
@@ -9,6 +10,8 @@ import org.shoulder.batch.config.DefaultExportConfigManager;
 import org.shoulder.batch.config.ExportConfigInitializer;
 import org.shoulder.batch.config.ExportConfigManager;
 import org.shoulder.batch.constant.BatchConstants;
+import org.shoulder.batch.endpoint.ActivityController;
+import org.shoulder.batch.endpoint.ActivityUiController;
 import org.shoulder.batch.endpoint.ImportController;
 import org.shoulder.batch.endpoint.ImportRestfulApi;
 import org.shoulder.batch.model.BatchData;
@@ -36,6 +39,7 @@ import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.lock.ServerLock;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -47,8 +51,10 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.sql.DataSource;
 import java.time.Duration;
@@ -90,10 +96,15 @@ public class ShoulderBatchAutoConfiguration {
     public BatchRecordDomain2DTOConverter batchRecordDomain2DTOConverter() {
         return BatchRecordDomain2DTOConverter.INSTANCE;
     }
+
     @Bean
     @ConditionalOnMissingBean(BatchActivityRepository.class)
-    public BatchActivityRepository defaultBatchActivityRepository() {
-        return new DefaultBatchActivityRepository();
+    public BatchActivityRepository defaultBatchActivityRepository(@Nullable List<BatchActivityEnumRepositoryCustomizer> customizers) {
+        DefaultBatchActivityRepository repository = new DefaultBatchActivityRepository();
+        if (CollectionUtils.isNotEmpty(customizers)) {
+            customizers.forEach(c -> c.customize(repository));
+        }
+        return repository;
     }
 
     @Order(Ordered.LOWEST_PRECEDENCE)
@@ -151,6 +162,26 @@ public class ShoulderBatchAutoConfiguration {
     ) {
         return new ImportController(serverLock, batchService, exportService, recordService,
                 dataItemConvertFactory, conversionService, exportDataQueryFactoryList);
+    }
+    /**
+     * service
+     */
+    @Bean
+    @ConditionalOnClass(RequestMapping.class)
+    @ConditionalOnMissingBean(ActivityController.class)
+    @ConditionalOnProperty(value = "shoulder.batch.activity.enable", havingValue = "true")
+    public ActivityController activityController(BatchActivityRepository dynamicProgressActivityRepository,
+                                                 ConversionService conversionService) {
+        return new ActivityController(dynamicProgressActivityRepository, conversionService);
+    }
+
+    @Bean
+    @ConditionalOnClass(RequestMapping.class)
+    @ConditionalOnMissingBean(ActivityUiController.class)
+    @ConditionalOnProperty(value = "shoulder.batch.activity.enable", havingValue = "true")
+    public ActivityUiController activityUiController(
+            @Value("${shoulder.batch.activity.path:/api/v1/activities}") String apiPath) {
+        return new ActivityUiController(apiPath);
     }
 
     /**

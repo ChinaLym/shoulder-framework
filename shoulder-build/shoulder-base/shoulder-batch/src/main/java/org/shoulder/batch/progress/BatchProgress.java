@@ -216,7 +216,8 @@ public class BatchProgress implements Serializable, Progress {
         addProcessed(num);
     }
 
-    public BatchProgressRecord toRecord() {
+    @Override
+    public BatchProgressRecord toProgressRecord() {
         // set 顺序按照不易变化 -> 易变化顺序设置，为了逻辑严谨部分字段内容、顺序单独处理
         BatchProgressRecord record = new BatchProgressRecord();
         record.setId(id);
@@ -230,11 +231,6 @@ public class BatchProgress implements Serializable, Progress {
         record.setTotal(total.get());
         record.setExt(ext);
         return record;
-    }
-
-    @Override
-    public BatchProgressRecord toProgressRecord() {
-        return toRecord();
     }
 
     @Override

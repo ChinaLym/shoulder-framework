@@ -24,6 +24,7 @@ import org.shoulder.web.template.dictionary.convert.DictionaryTypeDomain2DTOConv
 import org.shoulder.web.template.dictionary.convert.DictionaryTypeEntity2DTOConverter;
 import org.shoulder.web.template.dictionary.service.DictionaryItemService;
 import org.shoulder.web.template.dictionary.service.DictionaryService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -42,7 +43,7 @@ import java.util.List;
 @ConditionalOnClass(DictionaryEnumQueryController.class)
 @AutoConfiguration(before = {EnableWebMvcConfiguration.class})
 @EnableConfigurationProperties(WebExtProperties.class)
-@ConditionalOnProperty(value = "shoulder.web.ext.dictionary.enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "shoulder.web.ext.dictionary.enable", havingValue = "true")
 public class WebExtDictionaryAutoConfiguration {
 
     @AutoConfiguration(after = {I18nAutoConfiguration.class})
@@ -82,8 +83,9 @@ public class WebExtDictionaryAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean(value = DictionaryEnumQueryController.class)
-        public DictionaryEnumController dictionaryController(DictionaryEnumStore dictionaryEnumStore) {
-            return new DictionaryEnumController(dictionaryEnumStore);
+        public DictionaryEnumController dictionaryController(DictionaryEnumStore dictionaryEnumStore,
+                                                             @Value("${shoulder.web.ext.dictionary.path:/api/v1/dictionaries}") String apiPath) {
+            return new DictionaryEnumController(dictionaryEnumStore, apiPath);
         }
 
         @Bean

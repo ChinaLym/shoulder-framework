@@ -1,9 +1,8 @@
 package org.shoulder.batch.progress;
 
-import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.shoulder.core.util.ContextUtils;
 import org.springframework.core.GenericTypeResolver;
 
-import java.time.Duration;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
@@ -14,7 +13,14 @@ import java.util.function.BiConsumer;
  */
 public interface BatchActivityEnum<E extends Enum<? extends BatchActivityEnum<?>>> {
 
-    BatchProgressCache progressCache = new DefaultBatchProgressCache(new ConcurrentMapCache("DefaultBatchProgressCache"), Duration.ofSeconds(5));
+    static BatchProgressCache progressCache() {
+        if(!ContextUtils.hasContextRefreshed()) {
+            throw new IllegalStateException("unSupport access progressCache util app context refreshed in default. pleas wait app started.");
+//            new DefaultBatchProgressCache(new ConcurrentMapCache("DefaultBatchProgressCache"), Duration.ofSeconds(5));
+        }
+        return ContextUtils.getBean(BatchProgressCache.class);
+
+    }
 
     String getKey();
 
@@ -23,6 +29,8 @@ public interface BatchActivityEnum<E extends Enum<? extends BatchActivityEnum<?>
     String getDisplayName();
 
     default BatchProgress findProgressOrCreate(String progressId) {
+        BatchProgressCache progressCache = progressCache();
+
         String realProgressId = genCacheKey(progressId);// DCL create
         Progress cached = progressCache.findProgress(realProgressId);
         if (cached != null) {

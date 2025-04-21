@@ -66,7 +66,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     public void triggerFlushProgress(ProgressAble task) {
         // TODO 【性能】P2：triggerFlushProgress从每个任务manager刷新改为固定线程刷新所有任务
         if (localCache) {
-            progressCache.put(task.toProgressRecord().getId(), task.toProgressRecord());
+            progressCache.put(task.toProgressRecord().getId(), task);
             return;
         }
         PeriodicTask flushBatchProgressTask = new PeriodicTask() {
@@ -115,7 +115,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
     @Override
     public synchronized void flushProgress(ProgressAble progress) {
         if (localCache) {
-            progressCache.put(progress.toProgressRecord().getId(), progress.toProgressRecord());
+            progressCache.put(progress.toProgressRecord().getId(), progress);
             return;
         }
         BatchProgressRecord record = progress.toProgressRecord();

@@ -1,5 +1,6 @@
 package org.shoulder.batch.endpoint;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.SneakyThrows;
 import org.shoulder.batch.dto.BatchActivityDTO;
@@ -8,20 +9,20 @@ import org.shoulder.batch.model.BatchActivityBlock;
 import org.shoulder.batch.model.BatchActivityRoot;
 import org.shoulder.batch.progress.BatchActivityEnum;
 import org.shoulder.batch.progress.BatchActivityRepository;
+import org.shoulder.batch.progress.BatchProgressCache;
+import org.shoulder.batch.progress.Progress;
 import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -30,65 +31,88 @@ import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Tag(name = "ActivityController", description = "自定义流程进度管理")
 @Controller
 @Validated
-@RequestMapping("activity")
+@RequestMapping("${shoulder.batch.activity.path:/api/v1/activities}")
 @OperationLogConfig(objectType = "objectType.activity")
 public class ActivityController {
 
-    @Autowired
-    private BatchActivityRepository dynamicProgressActivityRepository;
+    private final BatchActivityRepository dynamicProgressActivityRepository;
 
-    @Autowired
-    private ConversionService conversionService;
+    private final ConversionService conversionService;
 
-    @RequestMapping("showProgress")
-    public Object showProgress(Model model, 
-                              @RequestParam @NotBlank String activityId,
-                              @RequestParam @NotBlank String progressId) {
-        BatchActivityRoot activityRoot = dynamicProgressActivityRepository.queryActivity(activityId);
-        model.addAttribute("activityStruct", activityRoot);
-        model.addAttribute("progressId", progressId);
-        return "progress/progress";
+
+    public ActivityController(BatchActivityRepository dynamicProgressActivityRepository, ConversionService conversionService) {
+        this.dynamicProgressActivityRepository = dynamicProgressActivityRepository;
+        this.conversionService = conversionService;
     }
 
+    /**
+     * 查找动态流程任务定义 todo body包装
+     *
+     * @param activityId 流程 id
+     * @return 流程定义
+     */
+    @SkipResponseWrap
     @ResponseBody
-    @RequestMapping("progress")
-    public Map<String, BatchProcessResult> queryActivity(
+    @GetMapping("definition")
+    public BatchActivityRoot definition(@RequestParam @NotBlank String activityId) {
+        BatchActivityRoot batchActivityRoot = dynamicProgressActivityRepository.queryActivity(activityId);
+        AssertUtils.notNull(batchActivityRoot, ParamErrorCodeEnum.DATA_NON_EXIST, activityId);
+        return batchActivityRoot;
+    }
+
+    /**
+     * 查找动态流程任务定义 todo body包装
+     *
+     * @param activityId 流程 id
+     * @return 流程定义
+     */
+    @ResponseBody
+    @GetMapping("progress")
+    public Map<String, BatchProcessResult> queryProgress(
             @RequestParam @NotBlank String activityId,
             @RequestParam @NotBlank String progressId) {
         BatchActivityRoot activityRoot = dynamicProgressActivityRepository.queryActivity(activityId);
-        AssertUtils.notNull(activityRoot, ParamErrorCodeEnum.PARAM_ILLEGAL, activityId);
+        AssertUtils.notNull(activityRoot, ParamErrorCodeEnum.DATA_NON_EXIST, activityId);
+
+        BatchProgressCache progressCache = BatchActivityEnum.progressCache();
         Map<String, BatchProcessResult> mergedProgress = new HashMap<>();
         for (BatchActivityEnum<?> value : activityRoot.getOriginalClass().getEnumConstants()) {
-            mergedProgress.put(value.getKey(), 
-                    conversionService.convert(value.findProgressOrCreate(progressId).toRecord(), BatchProcessResult.class));
+            Progress progress = progressCache.findProgress(value.genCacheKey(progressId));
+            AssertUtils.notNull(progress, ParamErrorCodeEnum.DATA_NON_EXIST, progressId);
+            mergedProgress.put(value.getKey(),
+                    conversionService.convert(progress.toProgressRecord(), BatchProcessResult.class));
         }
         return mergedProgress;
     }
+    // ------ 演示用 -----------
 
+    /**
+     * 短期方案，后续引入鉴权、是否完成等判断
+     */
     @ResponseBody
-    @RequestMapping("cleanCache")
+    @PostMapping("cleanCache")
     @OperationLog(operation = OperationLog.Operations.DELETE)
     public String cleanCache() {
-        BatchActivityEnum.progressCache.clear();
+        BatchActivityEnum.progressCache().clear();
         OpLogContextHolder.getLog().setObjectId("all").setObjectName("progressCache");
         return "success";
     }
 
-    // ------ 演示用 -----------
-    @RequestMapping("testProgress")
-    public Object testProgress(Model model, 
-                              @RequestParam @NotBlank String activityId) throws ClassNotFoundException {
+    @PostMapping("testProgress")
+    public String testProgress(Model model,
+                               @RequestParam @NotBlank String activityId) throws ClassNotFoundException {
         BatchActivityRoot activityRoot = dynamicProgressActivityRepository.queryActivity(activityId);
         String progressId = "demo";
         model.addAttribute("activityStruct", activityRoot);
         model.addAttribute("progressId", progressId);
-        
+
         // 清理演示用的进度
         BatchActivityEnum<?>[] steps = activityRoot.getOriginalClass().getEnumConstants();
         for (BatchActivityEnum<?> step : steps) {
-            BatchActivityEnum.progressCache.evict(step.genCacheKey(progressId));
+            BatchActivityEnum.progressCache().evict(step.genCacheKey(progressId));
         }
 
         Semaphore s = null;
@@ -104,10 +128,10 @@ public class ActivityController {
     }
 
     @SneakyThrows
-    private Semaphore mockExecuteBlocks(Semaphore dependency, 
-                                       BatchActivityBlock activityBlock,
-                                       String progressId,
-                                       Class<? extends Enum> originalClass) {
+    private Semaphore mockExecuteBlocks(Semaphore dependency,
+                                        BatchActivityBlock activityBlock,
+                                        String progressId,
+                                        Class<? extends Enum> originalClass) {
         Semaphore current = new Semaphore(0);
         Threads.execute(() -> {
             if (dependency != null) {
@@ -124,7 +148,7 @@ public class ActivityController {
                 Semaphore parallelSemaphore = new Semaphore(0);
                 for (List<BatchActivityDTO> parallelActivityDTOList : parallelActivities) {
                     Threads.execute(() ->
-                        triggerRunSteps(progressId, originalClass, parallelSemaphore, parallelActivityDTOList));
+                            triggerRunSteps(progressId, originalClass, parallelSemaphore, parallelActivityDTOList));
                 }
                 Threads.execute(() -> {
                     try {
@@ -144,9 +168,9 @@ public class ActivityController {
     }
 
     private void triggerRunSteps(String progressId,
-                                Class<? extends Enum> activityClass,
-                                Semaphore semaphore,
-                                List<BatchActivityDTO> activityDTOList) {
+                                 Class<? extends Enum> activityClass,
+                                 Semaphore semaphore,
+                                 List<BatchActivityDTO> activityDTOList) {
         BatchActivityEnum<?>[] steps = new BatchActivityEnum[activityDTOList.size()];
         for (int i = 0; i < activityDTOList.size(); i++) {
             steps[i] = (BatchActivityEnum<?>) Enum.valueOf(activityClass, activityDTOList.get(i).getId());
@@ -156,9 +180,9 @@ public class ActivityController {
     }
 
     @SneakyThrows
-    private void mockExecuteStepWithOrder(int index, 
-                                         BatchActivityEnum<?>[] steps,
-                                         String progressId) {
+    private void mockExecuteStepWithOrder(int index,
+                                          BatchActivityEnum<?>[] steps,
+                                          String progressId) {
         if (index >= steps.length) {
             return;
         }
@@ -177,5 +201,4 @@ public class ActivityController {
         mockExecuteStepWithOrder(index + 1, steps, progressId);
     }
 
-    // 其他辅助方法...
 }

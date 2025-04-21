@@ -184,17 +184,6 @@
 
         </plugins>
 
-        <!-- 构建时包含进 export-localize.json -->
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>META-INF/export-localize.json</include>
-                </includes>
-            </resource>
-        </resources>
-
     </build>
 
 

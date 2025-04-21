@@ -1,4 +1,4 @@
-package org.shoulder.web.template.oplog.controller;
+package org.shoulder.batch.endpoint;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,25 +7,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-/**
- * 操作日志查询 api
- *
- * @author lym
- */
-@Tag(name = "OperationLogPageController", description = "操作日志-页面")
+@Tag(name = "ActivityController", description = "自定义流程进度页面")
 @Controller
-public class OperationLogPageController {
+public class ActivityUiController {
 
     private String page;
 
     private final String apiPath;
 
-    public OperationLogPageController(String apiPath) {
+    public ActivityUiController(String apiPath) {
         this.apiPath = apiPath;
     }
 
     @ResponseBody
-    @GetMapping("${shoulder.web.ext.oplog.pageUrl:/ui/oplogs/page.html}")
+    @GetMapping("${shoulder.batch.activity.pageUrl:/ui/activities/page.html}")
     public String uiPage(HttpServletRequest request) {
         String pageAjaxHost = request.getRequestURL().toString()
                 .replace(request.getRequestURI(), "");
@@ -34,14 +29,13 @@ public class OperationLogPageController {
         return page.replaceFirst("SHOULDER_PAGE_HOST", pageAjaxHost);
     }
 
-
     private synchronized String loadPage() {
         if (page != null) {
             return page;
         }
-        String classPath = "classpath*:shoulder/pages/operationLogQueryPage.html.config";
+        String classPath = "classpath*:shoulder/pages/activityPage.html.config";
         page = ServletUtil.loadResourceContent(classPath);
-        page = page.replace("##OP_LOG_API_PATH##", apiPath);
+        page = page.replace("##BATCH_ACTIVITIES_API_PATH##", apiPath);
         return page;
     }
 

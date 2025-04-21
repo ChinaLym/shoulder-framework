@@ -58,7 +58,7 @@ public enum ParamErrorCodeEnum implements ErrorCode {
     /**
      * 数据不存在
      */
-    DATA_EXIST(322, "The data is not exist, reject such operation."),
+    DATA_NON_EXIST(322, "Data not exist: %s."),
 
     ;
 

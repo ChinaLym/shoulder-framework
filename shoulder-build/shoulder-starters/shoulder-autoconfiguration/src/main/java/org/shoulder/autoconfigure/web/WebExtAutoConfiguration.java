@@ -18,6 +18,7 @@ import org.shoulder.web.template.tag.converter.TagDomain2DTOConverter;
 import org.shoulder.web.template.tag.service.TagCoreService;
 import org.shoulder.web.template.tag.service.TagMappingService;
 import org.shoulder.web.template.tag.service.TagServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -101,8 +102,8 @@ public class WebExtAutoConfiguration {
             return new OperationLogQueryController(service, conversionService);
         }
         @Bean
-        public OperationLogPageController operationLogPageController() {
-            return new OperationLogPageController();
+        public OperationLogPageController operationLogPageController(@Value("${shoulder.web.ext.oplog.path:/api/v1/oplogs}") String apiPath) {
+            return new OperationLogPageController(apiPath);
         }
 
         @Bean
