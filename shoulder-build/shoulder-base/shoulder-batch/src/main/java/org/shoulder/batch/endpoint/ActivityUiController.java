@@ -26,7 +26,7 @@ public class ActivityUiController {
                 .replace(request.getRequestURI(), "");
         pageAjaxHost = pageAjaxHost.endsWith("/") ? pageAjaxHost.subSequence(0, pageAjaxHost.length() - 1).toString() : pageAjaxHost;
         page = loadPage();
-        return page.replaceFirst("SHOULDER_PAGE_HOST", pageAjaxHost);
+        return page.replace("SHOULDER_PAGE_HOST", pageAjaxHost);
     }
 
     private synchronized String loadPage() {
@@ -35,7 +35,7 @@ public class ActivityUiController {
         }
         String classPath = "classpath*:shoulder/pages/activityPage.html.config";
         page = ServletUtil.loadResourceContent(classPath);
-        page = page.replace("##BATCH_ACTIVITIES_API_PATH##", apiPath);
+        page = page.replace("##BATCH_ACTIVITY_API_PATH##", apiPath);
         return page;
     }
 

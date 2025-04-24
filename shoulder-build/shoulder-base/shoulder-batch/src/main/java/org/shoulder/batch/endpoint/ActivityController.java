@@ -17,10 +17,7 @@ import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLogConfig;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.shoulder.validate.exception.ParamErrorCodeEnum;
-import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +29,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Tag(name = "ActivityController", description = "自定义流程进度管理")
-@Controller
+@RestController
 @Validated
 @RequestMapping("${shoulder.batch.activity.path:/api/v1/activities}")
 @OperationLogConfig(objectType = "objectType.activity")
@@ -54,7 +51,6 @@ public class ActivityController {
      * @param activityId 流程 id
      * @return 流程定义
      */
-    @SkipResponseWrap
     @ResponseBody
     @GetMapping("definition")
     public BatchActivityRoot definition(@RequestParam @NotBlank String activityId) {
@@ -81,7 +77,7 @@ public class ActivityController {
         Map<String, BatchProcessResult> mergedProgress = new HashMap<>();
         for (BatchActivityEnum<?> value : activityRoot.getOriginalClass().getEnumConstants()) {
             Progress progress = progressCache.findProgress(value.genCacheKey(progressId));
-            AssertUtils.notNull(progress, ParamErrorCodeEnum.DATA_NON_EXIST, progressId);
+            AssertUtils.notNull(progress, ParamErrorCodeEnum.DATA_NON_EXIST, progressId + ":" + value.getKey());
             mergedProgress.put(value.getKey(),
                     conversionService.convert(progress.toProgressRecord(), BatchProcessResult.class));
         }
@@ -102,17 +98,17 @@ public class ActivityController {
     }
 
     @PostMapping("testProgress")
-    public String testProgress(Model model,
-                               @RequestParam @NotBlank String activityId) throws ClassNotFoundException {
+    public String testProgress(@RequestParam @NotBlank String activityId,
+                               @RequestParam(defaultValue = "_shoulderMockAndTest") String progressId
+    ) throws ClassNotFoundException {
         BatchActivityRoot activityRoot = dynamicProgressActivityRepository.queryActivity(activityId);
-        String progressId = "demo";
-        model.addAttribute("activityStruct", activityRoot);
-        model.addAttribute("progressId", progressId);
+        AssertUtils.notNull(activityRoot, ParamErrorCodeEnum.DATA_NON_EXIST, activityId);
 
-        // 清理演示用的进度
+        // 清理并重建演示用的进度缓存
         BatchActivityEnum<?>[] steps = activityRoot.getOriginalClass().getEnumConstants();
         for (BatchActivityEnum<?> step : steps) {
             BatchActivityEnum.progressCache().evict(step.genCacheKey(progressId));
+            step.findProgressOrCreate(progressId);
         }
 
         Semaphore s = null;
@@ -124,7 +120,7 @@ public class ActivityController {
             originalClass = (Class<? extends Enum>) classLoader.loadClass(classFullName);
             s = mockExecuteBlocks(s, activityBlock, progressId, originalClass);
         }
-        return "progress/progress";
+        return "ok";
     }
 
     @SneakyThrows

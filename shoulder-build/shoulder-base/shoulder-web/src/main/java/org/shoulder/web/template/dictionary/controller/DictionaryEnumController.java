@@ -68,7 +68,7 @@ public class DictionaryEnumController implements DictionaryEnumQueryController {
                 .replace(request.getRequestURI(), "");
         pageAjaxHost = pageAjaxHost.endsWith("/") ? pageAjaxHost.subSequence(0, pageAjaxHost.length() - 1).toString() : pageAjaxHost;
         page = loadPage();
-        return page.replaceFirst("SHOULDER_PAGE_HOST", pageAjaxHost);
+        return page.replace("SHOULDER_PAGE_HOST", pageAjaxHost);
     }
 
     private synchronized String loadPage() {
