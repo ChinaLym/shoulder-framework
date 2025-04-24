@@ -53,6 +53,7 @@ public class ActivityController {
      */
     @ResponseBody
     @GetMapping("definition")
+    @OperationLog(operation = OperationLog.Operations.QUERY, objectType = "obj.batch.activity.definition", logAllParams = true)
     public BatchActivityRoot definition(@RequestParam @NotBlank String activityId) {
         BatchActivityRoot batchActivityRoot = dynamicProgressActivityRepository.queryActivity(activityId);
         AssertUtils.notNull(batchActivityRoot, ParamErrorCodeEnum.DATA_NON_EXIST, activityId);
@@ -97,6 +98,7 @@ public class ActivityController {
         return "success";
     }
 
+    @OperationLog(operation = OperationLog.Operations.CREATE, objectType = "obj.batch.activity.mock", logAllParams = true)
     @PostMapping("testProgress")
     public String testProgress(@RequestParam @NotBlank String activityId,
                                @RequestParam(defaultValue = "_shoulderMockAndTest") String progressId

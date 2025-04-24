@@ -16,6 +16,7 @@
 ** OperationResult 操作结果类型新增 `UNKNOWN`
 
 * Web
+** 修复 RestController 返回包含 json 转义字符的 str 时，部分场景返回格式不符合预期
 ** 扩展功能调整
 *** 校验规则默认api路径 `/api/v1/validate` 更换为 `/api/v1/validation`
 *** 字典默认api路径 `/api/v1/dictionary` 更换为 `/api/v1/dictionaries`、`/api/v1/dictionary/type` 更换为 `/api/v1/dictionaries/types`、`/api/v1/dictionary/type/all` 更换为 `/api/v1/dictionaries/types/listAll`、`/ui/dictionary` 更换为 `/ui/dictionaries`

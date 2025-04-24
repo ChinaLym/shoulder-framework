@@ -176,10 +176,12 @@ public class OperationLogDTO implements Cloneable, Serializable {
 
     /**
      * 与本次操作所关联其他业务操作的业务号 ，用于多个请求完共同完成一个业务功能时（选填）
-     * 例   上传csv进行数据的批量导入场景：上传导入文件、校验导入数据、点击确认导入、导入成功业务相关可以填同一个标识符
+     * <p>
+     * 例   上传csv进行数据的批量导入场景：上传导入文件、校验导入数据、点击确认导入、导入成功业务相关可以填同一个标识符，标志这是统一个文件的多个处理动作。
+     * <p>
      * 上传新头像、确定修改个人信息也可以有相同的业务标识
      */
-    protected String businessId;
+    protected String relationId;
 
     /**
      * 租户编码
@@ -358,7 +360,7 @@ public class OperationLogDTO implements Cloneable, Serializable {
         clone.setAppId(appId);
         clone.setInstanceId(instanceId);
         clone.setTraceId(traceId);
-        clone.setBusinessId(businessId);
+        clone.setRelationId(relationId);
         clone.setExtFields(extFields);
 
         return clone;

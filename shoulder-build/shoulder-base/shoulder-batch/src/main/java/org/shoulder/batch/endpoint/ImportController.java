@@ -37,6 +37,7 @@ import org.shoulder.core.lock.ServerLock;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.log.operation.annotation.OperationLog;
 import org.shoulder.log.operation.annotation.OperationLog.Operations;
+import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -118,8 +119,8 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     @OperationLog(operation = Operations.UPLOAD_AND_VALIDATE)
-    public BaseResult<String> validate(String businessType, MultipartFile file,
-                                       String encoding) throws Exception {
+    public BaseResult<String> validate(@OperationLogParam String businessType, MultipartFile file,
+                                       @OperationLogParam String encoding) throws Exception {
         // todo P2 功能增强 文件 > 10M Error; > 1M persistent and validate; > 100kb;
         // 暂时只支持 csv
         AssertUtils.isTrue(file.getOriginalFilename().endsWith(".csv"), BatchErrorCodeEnum.CSV_HEADER_ERROR);
@@ -166,7 +167,7 @@ public class ImportController implements ImportRestfulApi {
      */
     @Override
     @OperationLog(operation = Operations.IMPORT)
-    public BaseResult<String> advance(AdvanceBatchParam advanceBatchParam) {
+    public BaseResult<String> advance(@OperationLogParam AdvanceBatchParam advanceBatchParam) {
         // 从缓存中拿出校验结果，根据校验结果组装为 BatchData，执行导入
         String batchId = advanceBatchParam.getBatchId();
         BatchProgressRecord process = batchService.queryBatchProgress(batchId);

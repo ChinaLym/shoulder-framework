@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.shoulder.core.context.AppContext;
 import org.shoulder.core.exception.ErrorCode;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.ShoulderLoggers;
@@ -252,6 +253,7 @@ public class OperationLogAspect {
 
         // 解析日志参数
         logDTO.setParams(createOperationParams(logDTO, joinPoint));
+        logDTO.setTraceId(AppContext.getTraceId());
 
         return logDTO;
     }
