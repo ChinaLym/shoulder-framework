@@ -113,6 +113,11 @@ public class BatchProgress implements Serializable, Progress {
         this.total.getAndSet(total);
     }
 
+    public void enableAutoFinished() {
+        this.autoFished = true;
+        checkFinished(true);
+    }
+
     public void failStop() {
         int currentStatus;
         // 只允许 WAITING、RUNNING 进入失败
