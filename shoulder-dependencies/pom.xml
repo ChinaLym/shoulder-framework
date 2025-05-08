@@ -39,7 +39,7 @@
         <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info https://www.json.cn/  -->
         <!-- 最新 spring cloud 版本：https://spring.io/projects/spring-cloud#learn -->
         <!-- springboot 2.6-2.7 2021.0.9  springboot3.0/1: 2022.0.4  springboot3.2.12: 2023.0.5 -->
-        <spring-cloud.version>2023.0.5</spring-cloud.version>
+        <spring-cloud.version>2023.0.4</spring-cloud.version>
 
         <!-- build -->
         <java.version>17</java.version>
@@ -50,7 +50,7 @@
         <!-- api-doc -->
         <!-- openApi(swagger)是行业标准，swagger 1.7 更名为 io.swagger.core.v3 但 swagger2 绝大多数开发者更熟悉而非 swagger3 -->
         <swagger3.version>2.2.28</swagger3.version>
-        <springdoc.version>2.8.5</springdoc.version>
+        <springdoc.version>2.8.8</springdoc.version>
         <!-- knife4j 前身是 swagger-bootstrap-ui，一个用于优化 swagger-ui 的项目，视觉效果更好 -->
         <knife4j.version>4.5.0</knife4j.version>
 
@@ -75,7 +75,7 @@
         <jna.version>5.16.0</jna.version>
         <!-- useful tools -->
         <pinyin4j.version>2.5.1</pinyin4j.version>
-        <hutool.version>5.8.36</hutool.version>
+        <hutool.version>5.8.37</hutool.version>
         <javassist.version>3.30.2-GA</javassist.version>
         <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
 
@@ -416,6 +416,17 @@
                 <groupId>org.springframework.security.oauth.boot</groupId>
                 <artifactId>spring-security-oauth2-autoconfigure</artifactId>
                 <version>${spring-security-oauth2-autoconfigure.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- spring-security-oauth 授权服务器 -->
