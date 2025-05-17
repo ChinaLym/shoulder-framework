@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,8 +58,24 @@ public class ExportConfigInitializer implements ResourceLoaderAware, Initializin
             this::readResourceToExportLocalizeConfigList,
             exportConfigManager::addLocalizeConfig);
 
+        String appCharset = AppInfo.charset().name();
         initializeExportConfigManagerField(settings.getExportFileConfigLocations(),
-            this::readResourceToExportFileConfigList,
+            r -> {
+                return readResourceToExportFileConfigList(r)
+                        .stream()
+                        .peek(c -> {
+                            if(c.getEncode() == null) {
+                                c.setEncode(appCharset);
+                            }
+                            try {
+                                Charset.forName(c.getEncode());
+                            } catch (UnsupportedCharsetException e) {
+                                log.warn("unknown charset({}) in batchConfig(id={})", c.getEncode(), c.getId());
+                                c.setEncode(appCharset);
+                            }
+                        })
+                        .toList();
+            },
             exportConfigManager::addFileConfig);
     }
 
@@ -72,9 +89,6 @@ public class ExportConfigInitializer implements ResourceLoaderAware, Initializin
             .map(resourceReader)
             .flatMap(List::stream)
             .forEach(fieldSetter);
-
-        List<String> ExportFileConfigLocations;
-
     }
 
     private List<Resource> doGetResources(String location) {

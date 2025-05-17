@@ -80,6 +80,11 @@
         "delimiter": ","
     },
     {
+        "languageId": "en_US",
+        "encoding": "UTF-8",
+        "delimiter": ","
+    },
+    {
         "languageId": "zh",
         "encoding": "GB18030",
         "delimiter": ","

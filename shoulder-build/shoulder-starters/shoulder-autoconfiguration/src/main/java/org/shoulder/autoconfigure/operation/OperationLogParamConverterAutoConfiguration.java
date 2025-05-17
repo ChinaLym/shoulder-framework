@@ -8,6 +8,7 @@ import org.shoulder.log.operation.model.OperationLogDTO;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -32,8 +33,8 @@ public class OperationLogParamConverterAutoConfiguration implements ApplicationC
      * 默认的 value 解析器
      */
     @Bean
+    @ConditionalOnMissingBean(OperationLogParamValueConverter.class)
     public static DefaultOperationLogParamValueConverter defaultOperationLogParamValueConverter(OperationLogProperties operationLogProperties) {
-
         return new DefaultOperationLogParamValueConverter(operationLogProperties.getNullParamOutput());
     }
 

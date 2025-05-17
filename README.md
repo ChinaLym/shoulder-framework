@@ -59,7 +59,7 @@ Just add the dependencies that you want to use into your `pom.xml` like this:
 <dependency>
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-starter-web</artifactId>
-    <version>1.1.0</version><!-- shoulder-version -->
+    <version>1.1.1-SNAPSHOT</version><!-- shoulder-version -->
 </dependency>
 ```
 

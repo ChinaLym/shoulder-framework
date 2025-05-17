@@ -81,7 +81,7 @@ public class ShoulderLocalDateTimeDeserializer extends JSR310DateTimeDeserialize
                     // JavaScript by default includes time and zone in JSON serialized Dates (UTC/ISO instant format).
                     if (string.length() > 10 && string.charAt(10) == 'T') {
                         if (string.endsWith("Z")) {
-                            return LocalDateTime.ofInstant(Instant.parse(string), ZoneOffset.UTC);
+                            return LocalDateTime.ofInstant(Instant.parse(string), ZoneOffset.systemDefault());
                         } else {
                             return LocalDateTime.parse(string, DEFAULT_FORMATTER);
                         }

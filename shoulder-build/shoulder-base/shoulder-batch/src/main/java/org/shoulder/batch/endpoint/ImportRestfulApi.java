@@ -19,15 +19,10 @@ import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.dto.result.BatchRecordResult;
 import org.shoulder.core.dto.request.PageQuery;
 import org.shoulder.core.dto.response.BaseResult;
-import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.validate.annotation.FileType;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -121,24 +116,38 @@ public interface ImportRestfulApi {
     BaseResult<BatchProcessResult> queryProcess(@PathVariable("batchId") String batchId);
 
     // ===================================  导入记录查询  =====================================
+    /**
+     * 查询当前用户最近一次处理记录
+     * 可用于界面展示，（当前用户）最近一次导入记录
+     *
+     * @return 批量处理进度 / 结果
+     */
+    @Operation(summary = "查询最近一次处理记录",
+            description = "查询最近一次导入记录",
+            parameters = {
+                    @Parameter(name = "dataType", in = ParameterIn.PATH, required = true,
+                            description = "数据类型",
+                            schema = @Schema(type = "string", example = "user"))
+            },
+            method = "GET")
+    @RequestMapping(value = "record/last", method = { GET, POST })
+    BaseResult<BatchRecordResult> queryLastImportRecord(@PathVariable("dataType") String dataType);
 
     /**
-     * 查询最近一次处理记录
-     * 可用于界面展示，（当前用户）最近一次导入记录
      * todo 【进阶】支持分页查询，查所有历史
      *
      * @return 分页-批量处理进度 / 结果
      */
-    @Operation(summary = "查询最近一次处理记录",
-        description = "查询最近一次导入记录，暂不支持分页",
-        parameters = {
-            @Parameter(name = "dataType", in = ParameterIn.PATH, required = true,
-                description = "数据类型",
-                schema = @Schema(type = "string", example = "user"))
-        },
-        method = "GET")
-    @RequestMapping(value = "record/list", method = { GET, POST })
-    BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord(@PathVariable("dataType") String dataType);
+//    @Operation(summary = "查询最近一次处理记录",
+//        description = "查询最近一次导入记录，暂不支持分页",
+//        parameters = {
+//            @Parameter(name = "dataType", in = ParameterIn.PATH, required = true,
+//                description = "数据类型",
+//                schema = @Schema(type = "string", example = "user"))
+//        },
+//        method = "GET")
+//    @RequestMapping(value = "record/list", method = { GET, POST })
+//    BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord(@PathVariable("dataType") String dataType);
 
     /**
      * 查询某次处理记录详情

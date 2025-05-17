@@ -10,12 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.unit.DataSize;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -53,7 +48,7 @@ public class ShoulderConversionServiceImpl extends WebConversionService implemen
                 in -> LocalDateTime.ofInstant(in, ZoneId.systemDefault()).toLocalDate());
 
         addConverter(LocalDateTime.class, Date.class, ldt -> convert(convert(ldt, Instant.class), Date.class));
-        addConverter(LocalDateTime.class, Instant.class, t -> t.toInstant(ZoneOffset.UTC));
+        addConverter(LocalDateTime.class, Instant.class, t -> t.atZone(ZoneId.systemDefault()).toInstant());
         addConverter(LocalDateTime.class, LocalDate.class, LocalDateTime::toLocalDate);
 
         addConverter(LocalDate.class, Date.class, d -> convert(convert(d, LocalDateTime.class), Date.class));

@@ -5,6 +5,7 @@ import org.shoulder.batch.config.model.ExportColumnConfig;
 import org.shoulder.batch.config.model.ExportFileConfig;
 import org.shoulder.batch.config.model.ExportLocalizeConfig;
 import org.shoulder.batch.log.ShoulderBatchLoggers;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.i18.Translator;
 import org.shoulder.core.log.Logger;
@@ -15,11 +16,7 @@ import org.shoulder.core.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -115,7 +112,9 @@ public class DefaultExportConfigManager implements ExportConfigManager {
             exportFileConfig.setEncode(exportLocalize.getEncoding());
             exportFileConfig.setSeparator(exportLocalize.getDelimiter().charAt(0));
         } else {
-            log.info("locale {} is not found, fall back to default", locale);
+            String encode = AppInfo.charset().name();
+            exportFileConfig.setEncode(encode);
+            log.info("locale {} is not found, fall back to default, and encode with app.default={}.", locale, encode);
         }
         // 模型字段
         for (ExportColumnConfig column : exportFileConfig.getColumns()) {

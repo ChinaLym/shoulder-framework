@@ -7,10 +7,7 @@ import org.shoulder.batch.dto.BatchActivityDTO;
 import org.shoulder.batch.dto.result.BatchProcessResult;
 import org.shoulder.batch.model.BatchActivityBlock;
 import org.shoulder.batch.model.BatchActivityRoot;
-import org.shoulder.batch.progress.BatchActivityEnum;
-import org.shoulder.batch.progress.BatchActivityRepository;
-import org.shoulder.batch.progress.BatchProgressCache;
-import org.shoulder.batch.progress.Progress;
+import org.shoulder.batch.progress.*;
 import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.log.operation.annotation.OperationLog;
@@ -76,9 +73,14 @@ public class ActivityController {
 
         BatchProgressCache progressCache = BatchActivityEnum.progressCache();
         Map<String, BatchProcessResult> mergedProgress = new HashMap<>();
-        for (BatchActivityEnum<?> value : activityRoot.getOriginalClass().getEnumConstants()) {
+
+        BatchActivityEnum<?>[] steps = activityRoot.getOriginalClass().getEnumConstants();
+        Progress firstStep = progressCache.findProgress(steps[0].genCacheKey(progressId));
+        AssertUtils.notNull(firstStep, ParamErrorCodeEnum.DATA_NON_EXIST, progressId + ":" + steps[0].getKey());
+
+        for (BatchActivityEnum<?> value : steps) {
             Progress progress = progressCache.findProgress(value.genCacheKey(progressId));
-            AssertUtils.notNull(progress, ParamErrorCodeEnum.DATA_NON_EXIST, progressId + ":" + value.getKey());
+            progress = progress == null ? new BatchProgress() : progress;
             mergedProgress.put(value.getKey(),
                     conversionService.convert(progress.toProgressRecord(), BatchProcessResult.class));
         }

@@ -30,7 +30,6 @@ import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.converter.ShoulderConversionService;
 import org.shoulder.core.dto.request.PageQuery;
 import org.shoulder.core.dto.response.BaseResult;
-import org.shoulder.core.dto.response.ListResult;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.lock.ServerLock;
@@ -41,6 +40,7 @@ import org.shoulder.log.operation.annotation.OperationLogParam;
 import org.shoulder.log.operation.context.OpLogContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 导入 API
@@ -216,19 +215,27 @@ public class ImportController implements ImportRestfulApi {
         return BaseResult.success(conversionService.convert(process, BatchProcessResult.class));
     }
 
+    @Override
+    public BaseResult<BatchRecordResult> queryLastImportRecord(@PathVariable("dataType") String dataType) {
+        String userId = AppContext.getUserId();
+        BatchRecord batchRecord = recordService.findLastRecord(dataType, userId);
+        return BaseResult.success(conversionService.convert(batchRecord, BatchRecordResult.class));
+    }
+
     /**
      * 查询数据导入记录
      */
-    @Override
-    public BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord(String dataType) {
-        return BaseResult.success(
-                // admin 可以不带 userId 查所有
-                Stream.of(recordService.findLastRecord(dataType, AppContext.getUserId()))
-                        .map(r -> conversionService.convert(r, BatchRecordResult.class))
-                        .collect(Collectors.toList()
-                        )
-        );
-    }
+//    @Override
+//    public BaseResult<ListResult<BatchRecordResult>> pageQueryImportRecord(String dataType) {
+//        BatchRecord batchRecord = recordService.findLastRecord(dataType, AppContext.getUserId());
+//        return BaseResult.success(
+//                // admin 可以不带 userId 查所有
+//                Stream.of()
+//                        .map(r -> conversionService.convert(r, BatchRecordResult.class))
+//                        .collect(Collectors.toList()
+//                        )
+//        );
+//    }
 
     /**
      * 查询某次处理记录详情

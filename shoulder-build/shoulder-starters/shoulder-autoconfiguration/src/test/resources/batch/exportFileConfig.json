@@ -18,7 +18,7 @@
         "displayName": "Second"
       }
     ],
-    "encode": null,
+    "encode": "UTF-8",
     "separator": ",",
     "lineSeparator": "\n",
     "comment": "#",
