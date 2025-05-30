@@ -36,7 +36,7 @@ public class RedisAutoConfiguration {
         return lock;
     }*/
 
-    @Bean(name = "redisTemplate")
+    @Bean
     @ConditionalOnMissingBean(StringRedisSerializer.class)
     public WithPrefixKeyStringRedisSerializer withPrefixKeyStringRedisSerializer(@Value("${shoulder.redis.key-prefix:}")String redisKeyPrefix) {
         if(StringUtils.isEmpty(redisKeyPrefix)) {
@@ -74,13 +74,6 @@ public class RedisAutoConfiguration {
         redisTemplate.setKeySerializer(stringRedisSerializer);
         redisTemplate.setHashKeySerializer(stringRedisSerializer);
         return redisTemplate;
-    }
-
-    /**
-     * 获取应用标识
-     */
-    private String getKeyPrefix() {
-        return AppInfo.appId() + ":";
     }
 
     /**
