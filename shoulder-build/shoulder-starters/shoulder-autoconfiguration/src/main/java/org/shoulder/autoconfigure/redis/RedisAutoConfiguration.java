@@ -4,14 +4,18 @@ import jakarta.annotation.Nullable;
 import org.shoulder.cluster.redis.annotation.AppExclusive;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.util.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import javax.annotation.Nonnull;
 
 /**
  * redis相关配置，提供 string 和 string-object 两种
@@ -32,19 +36,27 @@ public class RedisAutoConfiguration {
         return lock;
     }*/
 
+    @Bean(name = "redisTemplate")
+    @ConditionalOnMissingBean(StringRedisSerializer.class)
+    public WithPrefixKeyStringRedisSerializer withPrefixKeyStringRedisSerializer(@Value("${shoulder.redis.key-prefix:}")String redisKeyPrefix) {
+        if(StringUtils.isEmpty(redisKeyPrefix)) {
+            redisKeyPrefix = AppInfo.appId() + ":";
+        }
+        return new WithPrefixKeyStringRedisSerializer(redisKeyPrefix);
+    }
+
     /**
      * 必须配置 redis 相关参数
      * 应用专属
      */
     @Bean(name = "redisTemplate")
     @AppExclusive
-    public RedisTemplate<String, Object> serviceExclusiveRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> serviceExclusiveRedisTemplate(RedisConnectionFactory redisConnectionFactory, StringRedisSerializer stringRedisSerializer) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         //new StringRedisSerializer(ApplicationInfo.charset())
-        RedisSerializer<String> redisKeySerializer = new WithPrefixKeyStringRedisSerializer(getKeyPrefix());
         redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(redisKeySerializer);
-        redisTemplate.setHashKeySerializer(redisKeySerializer);
+        redisTemplate.setKeySerializer(stringRedisSerializer);
+        redisTemplate.setHashKeySerializer(stringRedisSerializer);
         redisTemplate.setValueSerializer(RedisSerializer.json());
         redisTemplate.setHashValueSerializer(RedisSerializer.json());
         return redisTemplate;
@@ -56,12 +68,11 @@ public class RedisAutoConfiguration {
      */
     @Bean
     @AppExclusive
-    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory, StringRedisSerializer stringRedisSerializer) {
         StringRedisTemplate redisTemplate = new StringRedisTemplate();
-        RedisSerializer<String> redisKeySerializer = new WithPrefixKeyStringRedisSerializer(getKeyPrefix());
         redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(redisKeySerializer);
-        redisTemplate.setHashKeySerializer(redisKeySerializer);
+        redisTemplate.setKeySerializer(stringRedisSerializer);
+        redisTemplate.setHashKeySerializer(stringRedisSerializer);
         return redisTemplate;
     }
 
@@ -75,20 +86,21 @@ public class RedisAutoConfiguration {
     /**
      * redis key 包装
      */
-    static class WithPrefixKeyStringRedisSerializer extends StringRedisSerializer {
+    public static class WithPrefixKeyStringRedisSerializer extends StringRedisSerializer {
 
         /**
          * key 前缀
          */
         private final String keyPrefix;
 
-        WithPrefixKeyStringRedisSerializer(String keyPrefix) {
+        public WithPrefixKeyStringRedisSerializer(String keyPrefix) {
             this.keyPrefix = keyPrefix;
         }
 
         /**
          * 存放至 redis 前添加 key 前缀
          */
+        @Nonnull
         @Override
         public byte[] serialize(@Nullable String string) {
             if (!StringUtils.isEmpty(this.keyPrefix)) {
@@ -100,13 +112,12 @@ public class RedisAutoConfiguration {
         /**
          * 取出时去掉 key 前缀
          */
+        @Nonnull
         @Override
         public String deserialize(@Nullable byte[] bytes) {
             String str = super.deserialize(bytes);
-            // key can't be null
-            assert str != null;
             if (!StringUtils.isEmpty(this.keyPrefix) && str.startsWith(this.keyPrefix)) {
-                str = str.substring(this.keyPrefix.length() + 1);
+                str = str.substring(this.keyPrefix.length());
             }
             return str;
         }
