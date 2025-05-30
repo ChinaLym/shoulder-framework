@@ -164,7 +164,7 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
         RedisScript<Long> releaseInstanceIdScript = new DefaultRedisScript<>(luaScript, Long.class);
 
         Long result = (Long) redis.execute(releaseInstanceIdScript, List.of(idAssignCacheKey), super.getCurrentInstanceId());
-        if (result != null && result == 1) {
+        if (result == 1) {
             log.debug("releaseInstanceId SUCCESS.");
             instanceId = ILLEGAL;
         } else {

@@ -41,7 +41,7 @@ public class BatchActivityFactory {
         List<BatchActivityBlock> progressBlocks = tempStructure.values().stream()
                 .map(map -> map.values().stream().toList())
                 .map(l -> l.size() == 1 ?
-                        new BatchActivityBlock(BatchActivityBlock.SERIAL, l.getFirst())
+                        new BatchActivityBlock(BatchActivityBlock.SERIAL, l.get(0))
                         : new BatchActivityBlock(BatchActivityBlock.PARALLEL, l)
                 ).toList();
         activityRoot.setActivityBlocks(progressBlocks);

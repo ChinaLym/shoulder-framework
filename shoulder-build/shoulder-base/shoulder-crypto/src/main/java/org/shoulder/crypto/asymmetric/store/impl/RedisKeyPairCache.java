@@ -60,9 +60,10 @@ public class RedisKeyPairCache implements KeyPairCache {
         String kpJson = JsonUtils.toJson(keyPairDto);
         if (keyPairDto.getExpireTime() != null) {
             long duration = ChronoUnit.MILLIS.between(Instant.now(), keyPairDto.getExpireTime());
-            return redisTemplate.opsForValue().setIfAbsent(key, kpJson, duration, TimeUnit.MILLISECONDS);
+            // redis 返回 null 则认为设置失败，但无需抛异常，返回 false
+            return Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, kpJson, duration, TimeUnit.MILLISECONDS));
         } else {
-            return redisTemplate.opsForValue().setIfAbsent(key, kpJson);
+            return Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, kpJson));
         }
     }
 

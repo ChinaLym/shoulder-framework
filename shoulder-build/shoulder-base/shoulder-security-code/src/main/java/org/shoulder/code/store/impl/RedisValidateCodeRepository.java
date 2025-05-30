@@ -25,7 +25,7 @@ public class RedisValidateCodeRepository implements ValidateCodeStore {
      */
     private final String unionCodePramName;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked,rawtypes")
     public RedisValidateCodeRepository(RedisTemplate redisTemplate, String unionCodePramName) {
         this.redisTemplate = redisTemplate;
         this.unionCodePramName = unionCodePramName;
