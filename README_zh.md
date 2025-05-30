@@ -4,7 +4,7 @@
 
 [![AUR](https://img.shields.io/badge/©️%20license-Apache%20License%202.0-yellow.svg)](https://github.com/ChinaLym/shoulder-framework/blob/master/LICENSE) [![](https://img.shields.io/badge/🧑%20Author-lym-yellow.svg)](https://github.com/ChinaLym)
 
-[![](https://img.shields.io/badge/🚀%20当前发布版-1.1.0-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v1.1.0)
+[![](https://img.shields.io/badge/🚀%20当前发布版-1.1.1-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v1.1.0)
 [![](https://img.shields.io/badge/🌱%20Spring%20Boot%20版本-3.2.x-blue.svg)](https://spring.io/projects/spring-boot)
 
 # 📖介绍 [English language](README.md)
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>cn.itlym</groupId>
             <artifactId>shoulder-starter-web</artifactId>
-            <version>1.1.1-SNAPSHOT</version><!-- shoulder-version -->
+            <version>1.1.1</version><!-- shoulder-version -->
         </dependency>
 ```
 

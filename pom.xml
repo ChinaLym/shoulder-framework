@@ -5,7 +5,7 @@
 
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-framework</artifactId>
-    <version>1.1.1-SNAPSHOT</version><!-- shoulder-version -->
+    <version>1.1.1</version><!-- shoulder-version -->
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>

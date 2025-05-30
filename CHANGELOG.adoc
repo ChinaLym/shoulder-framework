@@ -1,5 +1,26 @@
 = 更新记录
 
+== 1.1.1 （2025-05-30）
+
+* Batch
+
+** 优化: batch-activity 示例页面不再需手动调整Enum名称
+** 优化: batch-activity.queryProgress 处理进度检查逻辑，仅检查第一个节点是否存在
+** 优化: batch 导入导出字符集未配置时使用全局默认编码
+** 优化: 为 en_US 设置默认 UTF-8
+** 功能: batch 支持查询单个处理详情
+
+* Core
+
+** 修复: 非默认时区下， LocalDateTime 转 Instant 的时区转化错误
+** 修复: WithPrefixKeyStringRedisSerializer 获取key时少了第一位字符问题
+** 功能: 支持替换默认的 WithPrefixKeyStringRedisSerializer
+** 优化: 优化编译警告，JDK 17 可编译与运行
+
+* Operation-Log
+
+** 优化: 支持通过注入 Bean 替换默认的 DefaultOperationLogParamValueConverter
+
 == 1.1 （2025-05-09）
 
 * Core

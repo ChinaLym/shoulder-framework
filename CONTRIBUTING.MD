@@ -126,7 +126,7 @@ pre-{x.y.z}
 场景描述：已经发布`1.1`，但发现缺陷，需要发布`1.1.1`修复版本
 
 1.	基于1.1.0分支创建1.1.x的维护分支：maintain/1.1.x，1.1.x版本后续所有维护修改均以该分支为基础开发，停止维护时删除该分支。
-2.	在 `maintain/1.1.x` 上将版本修改为 `1.1.1-SNAPSHOT`，修复缺陷
+2.	在 `maintain/1.1.x` 上将版本修改为 `1.1.1`，修复缺陷
 3.	集成测试通过后修改版本为 `1.1.1`
 4.  将 `1.1.1` 的jar发布到maven仓库
 5.  基于`maintain/1.1.x`分支创建`release/1.1.1`分支
@@ -134,7 +134,7 @@ pre-{x.y.z}
 7.  删除 `release/1.1.1` 分支
 
 注：
-- 当`1.1.1-SNAPSHOT`再出现缺陷时，回到第2步直到7。
+- 当`1.1.1`再出现缺陷时，回到第2步直到7。
 
 参考：[spring security 发布流程](https://github.com/spring-projects/spring-security/wiki/Release-Process)
 
