@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.itlym</groupId>
         <artifactId>shoulder-framework</artifactId>
-        <version>1.1.1</version><!-- shoulder-version -->
+        <version>1.2.0</version><!-- shoulder-version -->
         <!--<relativePath>../pom.xml</relativePath>-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -21,7 +21,7 @@
     <properties>
         <!-- shoulder framework bom -->
         <shoulder-lombok.version>0.1</shoulder-lombok.version>
-        <shoulder.version>1.1.1</shoulder.version><!-- shoulder-version -->
+        <shoulder.version>1.2.0</shoulder.version><!-- shoulder-version -->
 
         <!-- dependencies bom -->
 
@@ -32,14 +32,14 @@
         <nimbus-jose-jwt.version>9.48</nimbus-jose-jwt.version>
         <spring-oauth2-server.version>1.2.3</spring-oauth2-server.version>
 
-        <spring-boot.version>3.2.12</spring-boot.version>
+        <spring-boot.version>3.3.13</spring-boot.version>
         <crac.version>1.5.0</crac.version>
         <!-- 由于Spring Boot提供了Maven BOM来管理依赖版本，因此您无需指定版本 -->
 
         <!-- 与 boot 版本对应关系 https://start.spring.io/actuator/info https://www.json.cn/  -->
         <!-- 最新 spring cloud 版本：https://spring.io/projects/spring-cloud#learn -->
-        <!-- springboot 2.6-2.7 2021.0.9  springboot3.0/1: 2022.0.4  springboot3.2.12: 2023.0.5 -->
-        <spring-cloud.version>2023.0.4</spring-cloud.version>
+        <!-- springboot3.2/3.3: 2023.x springboot3.4: 2024.x  -->
+        <spring-cloud.version>2023.0.6</spring-cloud.version>
 
         <!-- build -->
         <java.version>17</java.version>
@@ -72,37 +72,37 @@
         <commons-daemon.version>1.4.0</commons-daemon.version>
 
         <!-- java native access -->
-        <jna.version>5.16.0</jna.version>
+        <jna.version>5.17.0</jna.version>
         <!-- useful tools -->
         <pinyin4j.version>2.5.1</pinyin4j.version>
-        <hutool.version>5.8.37</hutool.version>
+        <hutool.version>5.8.39</hutool.version>
         <javassist.version>3.30.2-GA</javassist.version>
         <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
 
-        <guava.version>33.4.0-jre</guava.version>
+        <guava.version>33.4.8-jre</guava.version>
         <!-- google 最新 3.0.1版本（jdk1.7+）还用的javax.xxx 不支持 jakarta.xxx 暂时移除  https://findbugs.sourceforge.net/ -->
         <findbugs-annotations.version>3.0.1_temp_removal_for_not_support_spring_boot_3</findbugs-annotations.version>
         <!-- inheritable threadLocal https://github.com/alibaba/transmittable-thread-local/releases -->
         <alibaba.transmittable.version>2.14.5</alibaba.transmittable.version>
 
-        <bcprov.jdk18on.version>1.80</bcprov.jdk18on.version>
-        <bcpkix.jdk18on.version>1.80</bcpkix.jdk18on.version>
+        <bcprov.jdk18on.version>1.81</bcprov.jdk18on.version>
+        <bcpkix.jdk18on.version>1.81</bcpkix.jdk18on.version>
 
-        <caffeine.version>3.0.5</caffeine.version>
+        <caffeine.version>3.1.8</caffeine.version>
+        <!-- spring boot 3.4 后考虑升级 -->
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-
         <!-- tools-file -->
-        <tika-core.version>2.9.2</tika-core.version>
-        <opencsv.version>5.6</opencsv.version>
+        <tika-core.version>2.9.4</tika-core.version>
+        <opencsv.version>5.9</opencsv.version>
 
         <!-- JDK21 注意该版本： https://github.com/projectlombok/lombok/issues/3393-->
-        <lombok.version>1.18.36</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
 
         <!-- dataBase-->
         <mysql-connector-j.version>8.4.0</mysql-connector-j.version>
         <durid-boot3.version>1.2.24</durid-boot3.version>
         <h2.version>2.3.230</h2.version>
-        <druid.version>1.2.8</druid.version>
+        <druid.version>1.2.23</druid.version>
         <!-- 暂时不要向上升级 mybatis-plus 功能稳定性、兼容性差，且版本更新慢，bug修复可能长达数月，尽量只用其稳定功能，减少版本变更 -->
         <mybatis-plus.version>3.5.6</mybatis-plus.version>
         <freemarker.version>2.3.34</freemarker.version>
@@ -111,7 +111,7 @@
         <pagehelper-starter.version>2.1.0</pagehelper-starter.version>
         <beecp.version>4.0.6</beecp.version>
         <p6spy.version>3.9.1</p6spy.version>
-        <redisson.version>3.45.0</redisson.version>
+        <redisson.version>3.45.1</redisson.version>
 
         <!-- test -->
         <mockito-all.version>1.10.19</mockito-all.version>

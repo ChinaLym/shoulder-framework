@@ -1,5 +1,13 @@
 = 更新记录
 
+== 1.2.0 （DEV）
+
+* Dependency 兼容性升级
+
+** Spring Boot （3.2 -> 3.3）小版本升级，部分依赖稳定性小版本升级
+*** jna: 5.17.0、hutool 5.8.39、guava:33.4.8-jre、bcprov:1.81、caffeine:3.1.8、tika:2.9.4、opencsv:5.9、lombok:1.18.38、druid:1.2.23、redisson:3.45.1
+
+
 == 1.1.1 （2025-05-30）
 
 * Batch

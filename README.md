@@ -3,8 +3,8 @@
 > Based on `Spring Boot` dedicated to simplify development, improve efficiency. Hope to become the best partner
 > for `Spring Boot`.
 
-[![](https://img.shields.io/badge/🚀%20Release%20Version-1.1.1-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v1.1.0)
-[![](https://img.shields.io/badge/🌱%20Spring%20Boot%20Version-3.2.x-blue.svg)](https://spring.io/projects/spring-boot)
+[![](https://img.shields.io/badge/🚀%20Release%20Version-1.2.0-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v1.1.0)
+[![](https://img.shields.io/badge/🌱%20Spring%20Boot%20Version-3.3.x-blue.svg)](https://spring.io/projects/spring-boot)
 
 
 # 📖Introduction [中文 language](README_zh.md)
@@ -59,7 +59,7 @@ Just add the dependencies that you want to use into your `pom.xml` like this:
 <dependency>
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-starter-web</artifactId>
-    <version>1.1.1</version><!-- shoulder-version -->
+    <version>1.2.0</version><!-- shoulder-version -->
 </dependency>
 ```
 
