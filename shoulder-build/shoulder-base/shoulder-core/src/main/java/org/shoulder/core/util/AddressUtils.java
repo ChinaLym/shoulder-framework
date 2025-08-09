@@ -48,6 +48,7 @@ public class AddressUtils {
     private static String LOCAL_IP_CACHE = "127.0.0.1";
     private static String LOCAL_IPV4_HEX = "ffffffff";
     private static String LOCAL_MAC_CACHE = "00-00-00-00-00-00";
+    private static String LOCAL_HOSTNAME_CACHE = "unknown";
     private static int LOCAL_PID = 0;
     private static String LOCAL_PID_HEX = "0000";
 
@@ -57,11 +58,25 @@ public class AddressUtils {
             InetAddress inetAddress = getLocalNetAddress();
             LOCAL_IP_CACHE = inetAddress.getHostAddress();
             LOCAL_MAC_CACHE = getMac(inetAddress);
+            LOCAL_HOSTNAME_CACHE = getHostName(inetAddress);
             LOCAL_IPV4_HEX = AddressUtils.toHexStr(LOCAL_IP_CACHE);
             LOCAL_PID = getCurrentPid();
             LOCAL_PID_HEX = convertPidToHex(LOCAL_PID);
         } catch (Exception e) {
             log.warn("can't find local network address info.", e);
+        }
+    }
+
+    private static String getHostName(InetAddress inetAddress) {
+        try {
+            String hostname = inetAddress.getHostName();
+            if (StringUtils.isBlank(hostname)) {
+                hostname = System.getProperty("os.name").toLowerCase().contains("windows") ?
+                        System.getenv("COMPUTERNAME") : System.getenv("HOSTNAME");
+            }
+            return hostname;
+        } catch (Exception e) {
+            return "unknown";
         }
     }
 
@@ -90,6 +105,13 @@ public class AddressUtils {
      */
     public static String getMac() {
         return LOCAL_MAC_CACHE;
+    }
+
+    /**
+     * 获取本机mac
+     */
+    public static String getHostname() {
+        return LOCAL_HOSTNAME_CACHE;
     }
 
     /**

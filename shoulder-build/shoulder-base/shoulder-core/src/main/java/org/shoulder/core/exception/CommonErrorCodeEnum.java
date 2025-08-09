@@ -57,7 +57,7 @@ public enum CommonErrorCodeEnum implements ErrorCode {
     /**
      * 文件系统错误：读文件失败
      */
-    FILE_READ_FAIL(101, "Failed to write the file.", Level.ERROR),
+    FILE_READ_FAIL(101, "Failed to read the file.", Level.ERROR),
     /**
      * 文件系统错误：写文件失败
      */

@@ -74,11 +74,13 @@ public class InstanceIdProviderAutoConfiguration {
          */
         @Bean
         @ConditionalOnMissingBean
-        public InstanceIdProvider instanceIdProvider(RedisTemplate redisTemplate) {
+        public InstanceIdProvider instanceIdProvider(RedisTemplate redisTemplate, InstanceIdProperties instanceIdProperties) {
             return new RedisInstanceIdProvider(
-                    AppInfo.appId() + ":idAssigner",
-                    // 这个数要与 GUID 中 instanceId 占用位数(默认10)相关，两者保持一致
-                    (1 << 10) - 1,
+                    instanceIdProperties.getRedis().getKeyName(),
+                    instanceIdProperties.getRedis().getKeyName(),
+                    instanceIdProperties.getRedis().getMax(),
+                    instanceIdProperties.getRedis().getHeartbeatPeriod(),
+                    instanceIdProperties.getRedis().getExpiredPeriod(),
                     redisTemplate
             );
         }
