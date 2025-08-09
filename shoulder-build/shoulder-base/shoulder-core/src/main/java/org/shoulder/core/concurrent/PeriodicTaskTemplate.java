@@ -5,6 +5,7 @@ import org.shoulder.core.log.LoggerFactory;
 import org.springframework.scheduling.TaskScheduler;
 
 import java.time.Instant;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -18,6 +19,8 @@ public class PeriodicTaskTemplate implements Runnable {
 
     private final TaskScheduler scheduler;
 
+    private final Executor executor;
+
     private final PeriodicTask task;
 
     /**
@@ -25,9 +28,10 @@ public class PeriodicTaskTemplate implements Runnable {
      */
     private final AtomicInteger runCounter = new AtomicInteger(0);
 
-    public PeriodicTaskTemplate(PeriodicTask task, TaskScheduler scheduler) {
+    public PeriodicTaskTemplate(PeriodicTask task, TaskScheduler scheduler, Executor executor) {
         this.task = task;
         this.scheduler = scheduler;
+        this.executor = executor;
     }
 
     @Override
@@ -35,9 +39,12 @@ public class PeriodicTaskTemplate implements Runnable {
         // 执行任务逻辑
         int runCount = runCounter.incrementAndGet();
         try {
-            // run
-            logger.debug("{} trigger run {}.", task.getTaskName(), runCount);
-            task.process();
+            logger.debug("{} trigger run {} in {} mode.", task.getTaskName(), runCount, executor == null ? "sync" : "async");
+            if (executor == null) {
+                task.process();
+            } else {
+                executor.execute(task::process);
+            }
 
         } catch (Exception e) {
             task.handleException(logger, runCount, e);

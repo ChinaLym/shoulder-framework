@@ -7,6 +7,7 @@ import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.log.beautify.LogHelper;
 import org.shoulder.core.util.AssertUtils;
 import org.shoulder.core.util.ContextUtils;
+import org.shoulder.core.util.StringUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
@@ -63,6 +64,8 @@ public class Threads {
         log.debug("Threads' TASK_SCHEDULER has changed to " + taskScheduler);
     }
 
+    // ---------------- Delay -------------------
+
     /**
      * 延迟执行
      *
@@ -71,18 +74,25 @@ public class Threads {
      * @param delayDuration 延迟的时间
      */
     public static ScheduledFuture<?> delay(@NonNull String taskName, @NonNull Runnable task, @NonNull Duration delayDuration) {
-        return schedule(taskName, task, Instant.now().plus(delayDuration), null);
+        return delay(taskName, task, delayDuration, EXECUTOR_SERVICE);
+    }
+
+    public static ScheduledFuture<?> delay(@NonNull String taskName, @NonNull Runnable task, @NonNull Duration delayDuration, String executorBeanName) {
+        return delay(taskName, task, delayDuration, resolveExecutorFromContext(executorBeanName));
+    }
+    public static ScheduledFuture<?> delay(@NonNull String taskName, @NonNull Runnable task, @NonNull Duration delayDuration, Executor executor) {
+        return schedule(taskName, task, Instant.now().plus(delayDuration), null, executor);
     }
 
     /**
      * 定期调度执行
      *
-     * @param taskName                  要执行的任务名称
-     * @param task                      要执行的任务
-     * @param firstExecutionTime        （null 或 过去时间 立即执行）
-     * @param executionPeriodCalculator 调度间隔计算器 null 只执行一次，否则计算下次执行时间
+     * @param taskName           要执行的任务名称
+     * @param task               要执行的任务
+     * @param firstExecutionTime （null 或 过去时间 立即执行）
+     * @deprecated 请自定义 PeriodicTask {@link Threads#schedule(PeriodicTask, Instant)}
      */
-    public static ScheduledFuture<?> schedule(@NonNull String taskName, @NonNull Runnable task, @NonNull Instant firstExecutionTime, @Nullable BiFunction<Instant, Integer, Instant> executionPeriodCalculator) {
+    public static ScheduledFuture<?> schedule(@NonNull String taskName, @NonNull Runnable task, @NonNull Instant firstExecutionTime, @Nullable BiFunction<Instant, Integer, Instant> executionPeriodCalculator, Executor executor) {
         PeriodicTask periodicTask = new PeriodicTask() {
             @Override
             public String getTaskName() {
@@ -101,7 +111,30 @@ public class Threads {
         };
 
         // 执行时放在 EXECUTOR_SERVICE 执行，避免阻塞调度
-        return schedule(periodicTask, firstExecutionTime);
+        return schedule(periodicTask, firstExecutionTime, executor);
+    }
+
+    // ---------------- Schedule -------------------
+
+    /**
+     * 定期调度执行（默认异步执行）
+     *
+     * @param periodicTask       要执行的任务
+     * @param firstExecutionTime （null 或小与当前时间则立即执行）
+     */
+    public static ScheduledFuture<?> schedule(PeriodicTask periodicTask, Instant firstExecutionTime) {
+        return schedule(periodicTask, firstExecutionTime, EXECUTOR_SERVICE);
+    }
+
+    /**
+     * 定期调度执行（默认异步执行）
+     *
+     * @param periodicTask       要执行的任务
+     * @param firstExecutionTime （null 或小与当前时间则立即执行）
+     * @param executorBeanName 上下文为该 name 的 Executor
+     */
+    public static ScheduledFuture<?> schedule(PeriodicTask periodicTask, Instant firstExecutionTime, String executorBeanName) {
+        return schedule(periodicTask, firstExecutionTime, resolveExecutorFromContext(executorBeanName));
     }
 
     /**
@@ -109,21 +142,26 @@ public class Threads {
      *
      * @param periodicTask       要执行的任务
      * @param firstExecutionTime （null 或小与当前时间则立即执行）
+     * @param executor 执行器
      */
-    public static ScheduledFuture<?> schedule(PeriodicTask periodicTask, Instant firstExecutionTime) {
+    public static ScheduledFuture<?> schedule(PeriodicTask periodicTask, Instant firstExecutionTime, Executor executor) {
         ensureInit();
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "schedule", true);
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
             log.debug("{} creat delay task will run at {}", callerName, firstExecutionTime.toEpochMilli());
         }
-        return TASK_SCHEDULER.schedule(new PeriodicTaskTemplate(periodicTask, TASK_SCHEDULER), firstExecutionTime);
+        return TASK_SCHEDULER.schedule(new PeriodicTaskTemplate(periodicTask, TASK_SCHEDULER, executor), firstExecutionTime);
     }
+
+    // ---------------- Execute -------------------
 
     /**
      * 放入线程池执行
      *
      * @param runnable 要执行的任务
+     * @deprecated 请指定 任务名称
+     * @see Threads#execute(String, Runnable)
      */
     public static void execute(Runnable runnable) {
         ensureInit();
@@ -132,18 +170,26 @@ public class Threads {
     }
 
     public static void execute(String taskName, Runnable runnable) {
-        execute(taskName, runnable, null, null);
+        execute(taskName, runnable, EXECUTOR_SERVICE);
     }
 
+    public static void execute(String taskName, Runnable runnable, String executorBeanName) {
+        execute(taskName, runnable, null, null, resolveExecutorFromContext(executorBeanName));
+    }
+
+    public static void execute(String taskName, Runnable runnable, Executor executor) {
+        execute(taskName, runnable, null, null, executor);
+    }
     /**
      * 异步执行
      *
      * @param taskName           任务名称（线程名）
      * @param runnable           任务
      * @param exceptedFinishTime 预期完成时间
-     * @param exceptionCallBack  回调（监督人），预期时间未完成 or 执行出现异常则回调监督人
+     * @param exceptionCallBack  回调（监督人），预期时间未完成 or 执行出现异常则回调监督人；特殊的，超时 & 失败时只会在超时时候回调一次；回调时不占用 executor 线程
+     * @param executor           任务执行器
      */
-    public static void execute(String taskName, Runnable runnable, Instant exceptedFinishTime, Consumer<TaskInfo> exceptionCallBack) {
+    public static void execute(String taskName, Runnable runnable, Instant exceptedFinishTime, Consumer<TaskInfo> exceptionCallBack, Executor executor) {
         ensureInit();
         Instant taskSubmitTime = Instant.now();
         AtomicReference<Thread> threadRef = new AtomicReference<>();
@@ -181,7 +227,7 @@ public class Threads {
                 if (exceptionCallBack != null) {
                     // 回调监工
                     runEndTimeRef.set(Instant.now());
-                    Threads.execute("D_" + taskName, detectRun, null, null);
+                    Threads.execute("D_" + taskName, detectRun, null, null, EXECUTOR_SERVICE);
                 }
                 throw e;
             } finally {
@@ -196,12 +242,24 @@ public class Threads {
             }
         });
 
-        EXECUTOR_SERVICE.execute(enhancedRunnable);
+        executor.execute(enhancedRunnable);
 
         // 注册监工
         if (exceptionCallBack != null && exceptedFinishTime != null) {
-            Threads.schedule("D_" + taskName, detectRun, exceptedFinishTime, null);
+            Threads.schedule("D_" + taskName, detectRun, exceptedFinishTime, null, EXECUTOR_SERVICE);
         }
+    }
+
+    // -----------------------------------
+
+    /**
+     * 从上下文获取执行器
+     *
+     * @param executorBeanName 执行器 bean 名称
+     * @return 执行器
+     */
+    private static Executor resolveExecutorFromContext(String executorBeanName) {
+        return StringUtils.isBlank(executorBeanName) ? EXECUTOR_SERVICE : ContextUtils.getBean(executorBeanName);
     }
 
     private static void printCallerDebugLog(String methodName) {
@@ -258,7 +316,14 @@ public class Threads {
      * @return true: 已经全部完成； false: 未全部完成
      * @throws InterruptedException executeAndWait
      */
-    public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout)
+    public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout) throws InterruptedException {
+        return executeAndWait(tasks, timeout, EXECUTOR_SERVICE);
+    }
+    public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout, String executorServiceBeanName) throws InterruptedException {
+        return executeAndWait(tasks, timeout, (ExecutorService) resolveExecutorFromContext(executorServiceBeanName));
+    }
+
+    public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout, ExecutorService executor)
             throws InterruptedException {
         ensureInit();
         printCallerDebugLog("executeAndWait");
@@ -266,7 +331,7 @@ public class Threads {
         List<Callable<Object>> callList = tasks.stream().map(runnable -> new NotifyOnFinishRunnable(runnable, latch::countDown))
                 .map(Executors::callable)
                 .toList();
-        EXECUTOR_SERVICE.invokeAll(callList, timeout.toNanos(), TimeUnit.NANOSECONDS);
+        executor.invokeAll(callList, timeout.toNanos(), TimeUnit.NANOSECONDS);
         return latch.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
 

@@ -26,7 +26,7 @@ public class ThreadsTest {
         Threads.schedule("ut-testSchedule",
             () -> count.addAndGet(1),
                 Instant.now(),
-            (now, executionTimes) -> executionTimes == 5 ? PeriodicTask.NO_NEED_EXECUTE : now.plus(Duration.ofMillis(200))
+            (now, executionTimes) -> executionTimes == 5 ? PeriodicTask.NO_NEED_EXECUTE : now.plus(Duration.ofMillis(200)), null
         );
 
         Thread.sleep(1000 * 2);

@@ -3,6 +3,10 @@ package org.shoulder.core.util;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.ServletContext;
+import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.log.AppLoggers;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -10,20 +14,18 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.type.classreading.ConcurrentReferenceCachingMetadataReaderFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.io.InputStream;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -167,6 +169,24 @@ public class ContextUtils {
     @Nonnull
     public static Resource getResource(String location) {
         return getResourceResolver().getResource(location);
+    }
+
+    /**
+     * 加载 classPath 下的文件内容
+     *
+     * @param filePath abc/xxx.txt
+     * @return 文件内容
+     */
+    @Nonnull
+    public static String loadClassPathFileContent(String location) {
+        ClassPathResource resource = new ClassPathResource(location);
+        try (InputStream is = resource.getInputStream()){
+            byte[] bytes = FileCopyUtils.copyToByteArray(is);
+            return new String(bytes, AppInfo.charset());
+        } catch (IOException e) {
+            AppLoggers.APP_CONFIG.error("Fail to load classPath file({})", location, e);
+            throw new BaseRuntimeException(CommonErrorCodeEnum.FILE_READ_FAIL, e);
+        }
     }
 
     @Nullable

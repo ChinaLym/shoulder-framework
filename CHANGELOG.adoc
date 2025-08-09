@@ -7,6 +7,14 @@
 ** Spring Boot （3.2 -> 3.3）小版本升级，部分依赖稳定性小版本升级
 *** jna: 5.17.0、hutool 5.8.39、guava:33.4.8-jre、bcprov:1.81、caffeine:3.1.8、tika:2.9.4、opencsv:5.9、lombok:1.18.38、druid:1.2.23、redisson:3.45.1
 
+* Core
+
+** 优化: PeriodicTask 支持使用异步线程池
+** 优化: Threads execute、delay、schedule、executeAndWait 方法支持指定线程池运行
+
+* Cluster
+
+** 功能: 升级 RedisInstanceIdProvider 提供企业级 instantId 分配策略（支持 redis 集群、增加权限、更精准的报错提示和排查指南等）。
 
 == 1.1.1 （2025-05-30）
 

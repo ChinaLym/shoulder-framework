@@ -133,7 +133,7 @@ public class ActivityController {
                                         String progressId,
                                         Class<? extends Enum> originalClass) {
         Semaphore current = new Semaphore(0);
-        Threads.execute(() -> {
+        Threads.execute("mockExecuteBlocks:" + progressId, () -> {
             if (dependency != null) {
                 try {
                     dependency.acquire();
@@ -147,10 +147,10 @@ public class ActivityController {
                 int parallelSize = parallelActivities.size();
                 Semaphore parallelSemaphore = new Semaphore(0);
                 for (List<BatchActivityDTO> parallelActivityDTOList : parallelActivities) {
-                    Threads.execute(() ->
+                    Threads.execute("mockExecuteBlocks.triggerRunSteps:" + progressId, () ->
                             triggerRunSteps(progressId, originalClass, parallelSemaphore, parallelActivityDTOList));
                 }
-                Threads.execute(() -> {
+                Threads.execute("mockExecuteBlocks.waitRunSteps:" + progressId, () -> {
                     try {
                         parallelSemaphore.acquire(parallelSize);
                     } catch (InterruptedException e) {
