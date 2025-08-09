@@ -14,6 +14,11 @@ public class ShoulderFramework {
     public static final long SERIAL_ID = 666L;
 
     /**
+     * 框架名称
+     */
+    public static final String NAME = "shoulder";
+
+    /**
      * 当前框架版本
      */
     public static String VERSION;

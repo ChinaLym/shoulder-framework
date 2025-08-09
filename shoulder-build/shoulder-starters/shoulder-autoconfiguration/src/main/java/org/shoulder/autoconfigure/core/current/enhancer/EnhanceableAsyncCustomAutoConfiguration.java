@@ -1,10 +1,12 @@
 package org.shoulder.autoconfigure.core.current.enhancer;
 
 import jakarta.annotation.Nonnull;
+import org.shoulder.autoconfigure.core.BaseAppProperties;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 
 /**
@@ -18,6 +20,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
  */
 @AutoConfiguration(before = EnhanceableAsyncDefaultAutoConfiguration.class)
 @ConditionalOnBean(AsyncConfigurer.class)
+@ConditionalOnProperty(name = BaseAppProperties.concurrentEnhanceConfigPath, havingValue = "true", matchIfMissing = true)
 public class EnhanceableAsyncCustomAutoConfiguration implements BeanPostProcessor {
 
     @Override

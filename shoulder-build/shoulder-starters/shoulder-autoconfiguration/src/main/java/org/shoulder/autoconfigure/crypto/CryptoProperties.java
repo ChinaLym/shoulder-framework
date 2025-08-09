@@ -3,6 +3,7 @@ package org.shoulder.autoconfigure.crypto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.shoulder.autoconfigure.core.BaseAppProperties;
 import org.shoulder.crypto.asymmetric.dto.KeyPairDto;
 import org.shoulder.crypto.negotiation.constant.NegotiationConstants;
 import org.shoulder.crypto.negotiation.util.TransportCryptoByteUtil;
@@ -19,8 +20,10 @@ import java.util.Set;
  * @author lym
  */
 @Data
-@ConfigurationProperties(prefix = "shoulder.crypto")
+@ConfigurationProperties(prefix = CryptoProperties.PREFIX)
 public class CryptoProperties {
+
+    public static final String PREFIX = BaseAppProperties.KEY_PREFIX + "crypto";
 
     /**
      * 预留的公私钥对。若为空则代表采用自动生成，默认为空

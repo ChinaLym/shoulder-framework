@@ -7,11 +7,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 /**
- * 包装 AsyncTaskExecutor
+ * 包装 Spring 异步任务执行器 AsyncTaskExecutor
  *
  * @author lym
  */
-public class EnhanceableAsyncTaskExecutor implements AsyncTaskExecutor {
+public class EnhanceableAsyncTaskExecutor implements AsyncTaskExecutor, EnhanceableExecutorMark {
 
     private final AsyncTaskExecutor delegate;
 
@@ -20,24 +20,25 @@ public class EnhanceableAsyncTaskExecutor implements AsyncTaskExecutor {
     }
 
     @Override
-    public void execute(@Nonnull Runnable task) {
+    public void execute(Runnable task) {
         this.delegate.execute(ThreadEnhanceHelper.doEnhance(task));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void execute(@Nonnull Runnable task, long startTimeout) {
+    public void execute(Runnable task, long startTimeout) {
         this.delegate.execute((ThreadEnhanceHelper.doEnhance(task)), startTimeout);
     }
 
     @Nonnull
     @Override
-    public Future<?> submit(@Nonnull Runnable task) {
+    public Future<?> submit(Runnable task) {
         return this.delegate.submit(ThreadEnhanceHelper.doEnhance(task));
     }
 
     @Nonnull
     @Override
-    public <T> Future<T> submit(@Nonnull Callable<T> task) {
+    public <T> Future<T> submit(Callable<T> task) {
         return this.delegate.submit(ThreadEnhanceHelper.doEnhance(task));
     }
 

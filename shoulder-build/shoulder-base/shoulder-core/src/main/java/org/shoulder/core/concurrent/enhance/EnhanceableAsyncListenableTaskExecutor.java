@@ -9,10 +9,12 @@ import java.util.concurrent.Future;
 
 /**
  * 包装 AsyncListenableTaskExecutor 如常用的 ThreadPoolTaskExecutor
+ * 注意：spring6 不建议使用 AsyncListenableTaskExecutor
  *
  * @author lym
  */
-public class EnhanceableAsyncListenableTaskExecutor implements AsyncListenableTaskExecutor {
+@SuppressWarnings("deprecation")
+public class EnhanceableAsyncListenableTaskExecutor implements AsyncListenableTaskExecutor, EnhanceableExecutorMark {
 
     private final AsyncListenableTaskExecutor delegate;
 

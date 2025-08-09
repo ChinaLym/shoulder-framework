@@ -46,4 +46,8 @@ public class BatchProperties extends BatchInitializationSettings {
         private String pageUrl = "/ui/activities/page.html";
 
     }
+
+    public static void main(String[] args) {
+        System.out.println("");
+    }
 }

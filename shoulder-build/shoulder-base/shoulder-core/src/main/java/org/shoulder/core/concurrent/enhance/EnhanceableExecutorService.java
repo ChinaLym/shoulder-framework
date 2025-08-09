@@ -5,24 +5,27 @@ import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * 包装 ExecutorService
  *
  * @author lym
  */
-public class EnhanceableExecutorService implements ExecutorService {
+public class EnhanceableExecutorService implements ExecutorService, EnhanceableExecutorMark {
 
-    private final ExecutorService delegate;
+    private static final Map<ExecutorService, EnhanceableExecutorService> CACHE = new ConcurrentHashMap<>();
+
+    protected final ExecutorService delegate;
 
     public EnhanceableExecutorService(ExecutorService delegate) {
         this.delegate = delegate;
+    }
+
+    public static ExecutorService wrap(ExecutorService delegate) {
+        return CACHE.computeIfAbsent(delegate,
+                e -> new EnhanceableExecutorService(delegate));
     }
 
     @Override

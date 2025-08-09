@@ -9,7 +9,7 @@ import java.util.concurrent.Executor;
  *
  * @author lym
  */
-public class EnhanceableExecutor implements Executor {
+public class EnhanceableExecutor implements Executor, EnhanceableExecutorMark {
 
     private final Executor delegate;
 

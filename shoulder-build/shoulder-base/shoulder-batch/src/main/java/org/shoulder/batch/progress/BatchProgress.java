@@ -1,11 +1,11 @@
 package org.shoulder.batch.progress;
 
+import com.google.errorprone.annotations.ThreadSafe;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.util.AssertUtils;
 
-import javax.annotation.concurrent.ThreadSafe;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Duration;

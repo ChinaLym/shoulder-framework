@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.core.current.enhancer;
 
+import jakarta.annotation.Nonnull;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.shoulder.core.concurrent.enhance.EnhanceableExecutor;
@@ -25,12 +26,12 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
     }
 
     @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
+    public Object invoke(@Nonnull MethodInvocation invocation) throws Throwable {
         T executor = executor(this.delegate);
-        Method methodOnTracedBean = getMethod(invocation, executor);
-        if (methodOnTracedBean != null) {
+        Method methodOnEnhancedBean = getMethod(invocation, executor);
+        if (methodOnEnhancedBean != null) {
             try {
-                return methodOnTracedBean.invoke(executor, invocation.getArguments());
+                return methodOnEnhancedBean.invoke(executor, invocation.getArguments());
             } catch (InvocationTargetException ex) {
                 // gh-1092: throw the target exception (if present)
                 Throwable cause = ex.getCause();

@@ -1,6 +1,5 @@
 package org.shoulder.core.concurrent;
 
-import org.shoulder.core.concurrent.enhance.EnhancedRunnable;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.ShoulderLoggers;
@@ -11,6 +10,7 @@ import org.shoulder.core.util.StringUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -50,7 +50,9 @@ public class Threads {
     static volatile ExecutorService EXECUTOR_SERVICE;
 
     /**
-     * 县城调度器：主要做延迟执行等任务
+     * 线程调度器：主要做延迟执行等任务
+     * @see ScheduledExecutorService Spring 基于该JDK中的类封装，JDK 中的功能较少
+     * @see ThreadPoolTaskScheduler Spring 的默认实现，补充了 bean 生命周期管理等能力
      */
     static volatile TaskScheduler TASK_SCHEDULER;
 
@@ -207,7 +209,8 @@ public class Threads {
                 exceptionCallBack.accept(new TaskInfo(taskName, taskSubmitTime, runStartTimeRef, runEndTimeRef, Instant.now(), threadRef, errorRef, allowRun));
             }
         };
-        EnhancedRunnable enhancedRunnable = new EnhancedRunnable(() -> {
+        // todo 考虑 completeFuture
+        Runnable callBackRunnable = () -> {
             Instant runStartTime = Instant.now();
             if (!allowRun.get()) {
                 log.info("{} execute cancel, wait={}ms.", taskName, Duration.between(taskSubmitTime, runStartTime).toMillis());
@@ -240,9 +243,9 @@ public class Threads {
                     runThread.setName(originThreadName);
                 }
             }
-        });
+        };
 
-        executor.execute(enhancedRunnable);
+        executor.execute(callBackRunnable);
 
         // 注册监工
         if (exceptionCallBack != null && exceptedFinishTime != null) {

@@ -28,6 +28,7 @@ import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.shoulder.data.mybatis.template.entity.BizEntity;
 import org.shoulder.data.uid.EntityIdGenerator;
+import org.shoulder.validate.exception.ParamErrorCodeEnum;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -70,6 +72,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
      * @return 非空，已经存在；空：不存在
      */
     default ENTITY lockById(Serializable id) {
+        AssertUtils.notNull(id, ParamErrorCodeEnum.PARAM_BLANK, "id");
         return getBaseMapper().selectForUpdateById(id);
     }
 
@@ -79,8 +82,10 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
      * @param id id
      * @return 非空，已经存在；空：不存在
      */
-    default List<ENTITY> lockByIds(List<? extends Serializable> id) {
-        return getBaseMapper().selectBatchForUpdateByIds(id);
+    default List<ENTITY> lockByIds(List<? extends Serializable> idList) {
+        AssertUtils.notEmpty(idList, ParamErrorCodeEnum.PARAM_BLANK, "idList");
+        AssertUtils.isTrue(idList.stream().noneMatch(Objects::isNull), ParamErrorCodeEnum.PARAM_BLANK, "idList");
+        return getBaseMapper().selectBatchForUpdateByIds(idList);
     }
 
     /**
@@ -90,6 +95,7 @@ public interface BaseService<ENTITY extends BaseEntity<? extends Serializable>>
      * @return 非空，已经存在；空：不存在
      */
     default ENTITY lockByBizId(String bizId) {
+        AssertUtils.notNull(bizId, ParamErrorCodeEnum.PARAM_BLANK, "bizId");
         checkEntityAs(BizEntity.class);
         return getBaseMapper().selectForUpdateByBizId(bizId);
     }

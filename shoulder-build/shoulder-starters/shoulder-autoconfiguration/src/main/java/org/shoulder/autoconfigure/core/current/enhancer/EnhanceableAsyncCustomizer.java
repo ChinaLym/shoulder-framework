@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.core.current.enhancer;
 
 import org.shoulder.core.concurrent.enhance.EnhanceableExecutor;
+import org.shoulder.core.concurrent.enhance.EnhanceableExecutorMark;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
@@ -22,7 +23,7 @@ public class EnhanceableAsyncCustomizer extends AsyncConfigurerSupport {
 
     @Override
     public Executor getAsyncExecutor() {
-        return this.delegate.getAsyncExecutor() instanceof EnhanceableExecutor ?
+        return this.delegate.getAsyncExecutor() instanceof EnhanceableExecutorMark ?
             this.delegate.getAsyncExecutor() :
             new EnhanceableExecutor(this.delegate.getAsyncExecutor());
     }

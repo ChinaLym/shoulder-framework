@@ -1,6 +1,6 @@
 package org.shoulder.http;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.net.URI;
 
 /**

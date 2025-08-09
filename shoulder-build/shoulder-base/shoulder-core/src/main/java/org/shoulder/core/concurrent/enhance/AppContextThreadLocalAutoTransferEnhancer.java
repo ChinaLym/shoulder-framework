@@ -1,5 +1,6 @@
 package org.shoulder.core.concurrent.enhance;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.TraceIdGenerator;
 
@@ -14,13 +15,13 @@ import java.util.Map;
 public class AppContextThreadLocalAutoTransferEnhancer implements ThreadEnhancer {
 
     /**
-     * 包装 runnable
+     * Wrap runnable
      *
-     * @param runnable 包装前
-     * @return 包装后
+     * @param runnable task
+     * @return enhancedRunnable
      */
     @Override
-    public EnhancedRunnable doEnhance(EnhancedRunnable runnable) {
+    public EnhancedRunnable doEnhance(@Nonnull EnhancedRunnable runnable) {
         Map<String, Serializable> allContext = AppContext.getAll();
         return new EnhancedRunnable(() -> {
             try {
@@ -34,7 +35,7 @@ public class AppContextThreadLocalAutoTransferEnhancer implements ThreadEnhancer
     }
 
     /**
-     * 包装 callable
+     * Wrap callable
      *
      * @param callable 包装前
      * @param <T>      泛型

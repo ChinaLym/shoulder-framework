@@ -1,5 +1,6 @@
 package org.shoulder.core.concurrent.enhance;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +31,17 @@ public class ThreadEnhanceHelper {
             enhancedCallable = enhancer.doEnhance(enhancedCallable);
         }
         return enhancedCallable;
+    }
+
+    public static <T> Collection<? extends Callable<T>> doEnhance(Collection<? extends Callable<T>> tasks) {
+        List<Callable<T>> ts = new ArrayList<>();
+        for (Callable<T> task : tasks) {
+            if (!(task instanceof EnhancedCallable)) {
+                ts.add(ThreadEnhanceHelper.doEnhance(task));
+            }
+            ts.add(task);
+        }
+        return ts;
     }
 
     public static synchronized void register(ThreadEnhancer enhancer) {

@@ -1,5 +1,7 @@
 package org.shoulder.core.concurrent.enhance;
 
+import lombok.Getter;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -23,7 +25,13 @@ public class EnhancedCallable<V> implements Callable<V> {
 
     /**
      * 血统（装饰器的类）
+     * -- GETTER --
+     *  所有包装过的装饰器
+     *
+     * @return List class
+
      */
+    @Getter
     private List<Callable<V>> decorators = new LinkedList<>();
 
     public EnhancedCallable(Callable<V> delegate) {
@@ -52,15 +60,6 @@ public class EnhancedCallable<V> implements Callable<V> {
             }
         }
         return false;
-    }
-
-    /**
-     * 所有包装过的装饰器
-     *
-     * @return List class
-     */
-    public List<Callable<V>> getDecorators() {
-        return decorators;
     }
 
     /**

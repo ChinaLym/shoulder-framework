@@ -4,6 +4,7 @@ import jakarta.annotation.Nonnull;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.shoulder.core.constant.ShoulderFramework;
 import org.shoulder.core.dto.response.BaseResult;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.ShoulderLoggers;
@@ -89,7 +90,7 @@ public class BasicAuthorizationTokenAuthenticationSuccessHandler extends SavedRe
 
         // 自定义的认证模式，非4中模式中的
         TokenRequest tokenRequest = new TokenRequest(Collections.emptyMap(), clientDetails.getClientId(),
-                clientDetails.getScope(), "shoulder");
+                clientDetails.getScope(), ShoulderFramework.NAME);
 
         OAuth2Request oAuth2Request = tokenRequest.createOAuth2Request(clientDetails);
 

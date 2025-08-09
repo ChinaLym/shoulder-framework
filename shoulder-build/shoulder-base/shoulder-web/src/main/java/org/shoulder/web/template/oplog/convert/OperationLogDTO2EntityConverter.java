@@ -5,7 +5,7 @@ import org.shoulder.log.operation.model.OperationLogDTO;
 import org.shoulder.web.template.crud.AbstractDTODataConverter;
 import org.shoulder.web.template.oplog.model.OperationLogEntity;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * DTO -> domain

@@ -1,5 +1,6 @@
 package org.shoulder.monitor.concurrent;
 
+import jakarta.annotation.Nonnull;
 import org.shoulder.core.concurrent.enhance.EnhancedCallable;
 import org.shoulder.core.concurrent.enhance.EnhancedRunnable;
 import org.shoulder.core.concurrent.enhance.ThreadEnhancer;
@@ -16,8 +17,9 @@ public class MonitorRunnableEnhancer implements ThreadEnhancer {
      * @param runnable 包装前
      * @return 包装后
      */
+    @Nonnull
     @Override
-    public EnhancedRunnable doEnhance(EnhancedRunnable runnable) {
+    public EnhancedRunnable doEnhance(@Nonnull EnhancedRunnable runnable) {
         return new DefaultMonitorableRunnable(runnable);
     }
 
@@ -29,7 +31,8 @@ public class MonitorRunnableEnhancer implements ThreadEnhancer {
      * @return 包装后
      */
     @Override
-    public <T> EnhancedCallable<T> doEnhance(EnhancedCallable<T> callable) {
+    @Nonnull
+    public <T> EnhancedCallable<T> doEnhance(@Nonnull EnhancedCallable<T> callable) {
         return new DefaultMonitorableCallable<>(callable);
     }
 

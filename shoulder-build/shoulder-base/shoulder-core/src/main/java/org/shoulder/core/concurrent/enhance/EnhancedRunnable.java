@@ -89,7 +89,7 @@ public class EnhancedRunnable implements Runnable {
      *
      * @param <T> 可以是 Runnable 子类 / 接口
      */
-    public static <T> Optional<T> asOptional(Runnable runnable, Class<T> clazz) {
+    public static <T> Optional<T> asOptional(@Nullable Runnable runnable, Class<T> clazz) {
         if(runnable == null) {
             return Optional.empty();
         }

@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.security.token;
 
+import org.shoulder.core.constant.ShoulderFramework;
 import org.shoulder.security.SecurityConst;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -16,7 +17,7 @@ public class TokenProperties {
     /**
      * 使用jwt时，为token签名的密钥对标识，重要！
      */
-    private String jwtSigningKey = "shoulder";
+    private String jwtSigningKey = ShoulderFramework.NAME;
 
     /**
      * jwt/jdbc/redis/memory

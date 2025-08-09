@@ -4,7 +4,7 @@ import org.shoulder.web.template.crud.AbstractDTODataConverter;
 import org.shoulder.web.template.tag.dto.TagDTO;
 import org.shoulder.web.template.tag.model.TagEntity;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * Tag DTO -> domain

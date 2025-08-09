@@ -21,13 +21,13 @@ import java.util.concurrent.TimeoutException;
  *
  * @author lym
  */
-public class EnhanceableThreadPoolExecutor extends ThreadPoolExecutor {
+public class EnhanceableThreadPoolExecutor extends ThreadPoolExecutor implements EnhanceableExecutorMark {
 
     private final ThreadPoolExecutor delegate;
 
     public EnhanceableThreadPoolExecutor(ThreadPoolExecutor delegate) {
         // 由于继承必须初始化,这里初始化一个0线程的
-        super(0, 1, 1, TimeUnit.NANOSECONDS, new LinkedBlockingQueue<>());
+        super(0, 1, 1, TimeUnit.NANOSECONDS, new LinkedBlockingQueue<>(1));
         this.delegate = delegate;
     }
 

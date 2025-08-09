@@ -6,6 +6,8 @@ import org.shoulder.log.operation.model.OperationLogDTO;
 
 /**
  * 日志异步执行器公共方法
+ * 作用：继承调用线程上下文的操作日志信息，如果执行异常则 setResult=fail；
+ * 注意：默认异步不触发记录日志，而是认为主线程会处理日志记录
  *
  * @author lym
  */
