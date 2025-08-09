@@ -1,6 +1,6 @@
-package org.shoulder.web.filter;
+package org.shoulder.core.util;
 
-import org.shoulder.core.util.AddressUtils;
+import org.shoulder.core.context.AppContext;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -63,11 +63,20 @@ public class TraceIdGenerator {
             "^0058[0-9a-f]{4}[0-9]{13}[0-9]{4}\\w([0-9a-f]{32}:){7}[0-9a-f]{32}$"
     );
 
-    static String generateTraceWithLocalIpV4() {
+    public static String checkContextTracOrGenerateNew() {
+        String traceId = AppContext.getTraceId();
+        if(StringUtils.isEmpty(traceId)) {
+            traceId = generateTraceWithLocalIpV4();
+            AppContext.setTraceId(traceId);
+        }
+        return traceId;
+    }
+
+    public static String generateTraceWithLocalIpV4() {
         return generateTraceIdWithIpV4(System.currentTimeMillis(), genSequence(), FLAG_DEFAULT, AddressUtils.getIpV4Hex());
     }
 
-    static String generateTraceIdWithIpV4(String ipv4) {
+    public static String generateTraceIdWithIpV4(String ipv4) {
         if (ipv4 != null && !ipv4.isEmpty() && AddressUtils.isIpv4(ipv4)) {
             return generateTraceIdWithIpV4(System.currentTimeMillis(), genSequence(), FLAG_DEFAULT, AddressUtils.toHexStr(ipv4));
         } else {

@@ -9,6 +9,7 @@ import org.shoulder.core.context.AppContext;
 import org.shoulder.core.util.AddressUtils;
 import org.shoulder.core.util.ServletUtil;
 import org.shoulder.core.util.StringUtils;
+import org.shoulder.core.util.TraceIdGenerator;
 
 import java.io.IOException;
 

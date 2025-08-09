@@ -1,6 +1,7 @@
 package org.shoulder.core.concurrent.enhance;
 
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.util.TraceIdGenerator;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class AppContextThreadLocalAutoTransferEnhancer implements ThreadEnhancer
         return new EnhancedRunnable(() -> {
             try {
                 AppContext.set(allContext);
+                TraceIdGenerator.checkContextTracOrGenerateNew();
                 runnable.run();
             } finally {
                 AppContext.clean();
@@ -44,6 +46,7 @@ public class AppContextThreadLocalAutoTransferEnhancer implements ThreadEnhancer
         return new EnhancedCallable<>(() -> {
             try {
                 AppContext.set(allContext);
+                TraceIdGenerator.checkContextTracOrGenerateNew();
                 return callable.call();
             } finally {
                 AppContext.clean();

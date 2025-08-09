@@ -3,6 +3,7 @@ package org.shoulder.core.concurrent;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
+import org.shoulder.core.util.TraceIdGenerator;
 import org.springframework.scheduling.TaskScheduler;
 
 import java.time.Instant;
@@ -43,6 +44,7 @@ public class PeriodicTaskTemplate implements Runnable {
         // 清空上下文
         AppContext.clean();
         AppContext.setRelatedTraceId(relatedTraceId);
+        AppContext.setRelatedTraceId(TraceIdGenerator.generateTraceWithLocalIpV4());
 
         int runCount = runCounter.incrementAndGet();
         try {
