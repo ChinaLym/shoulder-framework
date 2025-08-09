@@ -2,16 +2,17 @@ package org.shoulder.core.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.shoulder.core.exception.BaseRuntimeException;
+import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.log.ShoulderLoggers;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
+import java.net.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * 获取本机 IP、MAC 等
@@ -131,28 +132,108 @@ public class AddressUtils {
      */
     public static InetAddress getLocalNetAddress() throws SocketException {
         // enumerates all network interfaces
-        Enumeration<NetworkInterface> enu = NetworkInterface.getNetworkInterfaces();
+        List<NetworkInterface> enu = Collections.list(NetworkInterface.getNetworkInterfaces());
+        List<NetworkInterface> filtered = new ArrayList<>(enu.size());
 
-        while (enu.hasMoreElements()) {
-            NetworkInterface ni = enu.nextElement();
-            if (ni.isLoopback()) {
-                // 本地环回地址
+        List<String> preferredPrefixes = List.of("eth", "eno", "ens", "enp", "enx", "wl");
+        Set<String> excludedPatterns = Set.of(
+                "vboxnet", "vmnet", "vmxnet", "vmnic", "Hyper-V",
+                "docker", "br-", "veth", "cni", "flannel.", "cali",
+                "lo", "ppp", "tun", "tap", "bridge", "vlan", "bond"
+        );
+
+        for (NetworkInterface ni : enu) {
+            boolean include = !ni.isVirtual() || ni.isLoopback() || !ni.isPointToPoint() && ni.isUp();
+            boolean exclude = excludedPatterns.stream().anyMatch(pattern -> ni.getName().contains(pattern) || ni.getDisplayName().contains(pattern));
+            if (!include || exclude) {
                 continue;
             }
-            Enumeration<InetAddress> addressEnumeration = ni.getInetAddresses();
-            while (addressEnumeration.hasMoreElements()) {
-                InetAddress address = addressEnumeration.nextElement();
-                // ignores all invalidated addresses
+            List<InetAddress> addressEnumeration = ni.inetAddresses().toList();
+            for (InetAddress address : addressEnumeration) {
+                // 跳过多播、回环、链路本地、任意地址 todo address.isMulticastAddress()、isSiteLocalAddress
                 if (address.isLinkLocalAddress() || address.isLoopbackAddress() || address.isAnyLocalAddress()
                         // not ipv6
                         || address.getHostAddress().contains(":")) {
                     continue;
                 }
-                return address;
+                filtered.add(ni);
             }
         }
 
-        throw new RuntimeException("No validated local address!");
+        List<NetworkInterface> sortedNetworkInterfaceList = filtered.stream().sorted((ni1, ni2) -> {
+            String name1 = ni1.getName().toLowerCase();
+            String name2 = ni2.getName().toLowerCase();
+
+            int score1 = getPriorityScoreFromNetworkInterfaceName(name1, preferredPrefixes);
+            int score2 = getPriorityScoreFromNetworkInterfaceName(name2, preferredPrefixes);
+            if (score1 != score2) {
+                return score1 - score2;
+            }
+
+            return extractNumberFromNetworkInterfaceName(name1) - extractNumberFromNetworkInterfaceName(name2);
+        }).toList();
+        AssertUtils.notEmpty(sortedNetworkInterfaceList, CommonErrorCodeEnum.ILLEGAL_STATUS, "No validated local address!");
+
+        InetAddress finalResult = selectOptimalIPAddress(sortedNetworkInterfaceList.get(0).inetAddresses().toList(), true);
+
+        ShoulderLoggers.SHOULDER_CONFIG.warn("found address {}, from {}", finalResult, sortedNetworkInterfaceList.stream()
+                .map(ni -> "{ \"" + ni.getName() + "\" : [" + ni.inetAddresses().toList().stream().map(InetAddress::getHostAddress).collect(Collectors.joining(", ")) + "]}\n")
+                .collect(Collectors.joining(", ")));
+
+        return finalResult;
+    }
+
+    /**
+     * prefixes 中越靠前的优先级越靠前
+     */
+    private static int getPriorityScoreFromNetworkInterfaceName(String name, List<String> prefixes) {
+        for (int i = 0; i < prefixes.size(); i++) {
+            if (name.startsWith(prefixes.get(i))) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private static int extractNumberFromNetworkInterfaceName(String name) {
+        try {
+            String[] parts = name.split("\\D+");
+            if (parts.length > 1) {
+                return Integer.parseInt(parts[1]);
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    /**
+     * 选择合适的IP地址
+     *
+     * @param preferIPv4 是否优先选择IPv4地址
+     * @return 最优IP地址，如果未找到则返回null
+     */
+    public static InetAddress selectOptimalIPAddress(List<InetAddress> intnetAddressList, boolean preferIPv4) throws SocketException {
+        // 按优先级排序
+        return intnetAddressList.stream().min((a1, a2) -> {
+            // 优先级：IPv4 > IPv6
+            boolean isIPv4_1 = a1 instanceof Inet4Address;
+            boolean isIPv4_2 = a2 instanceof Inet4Address;
+
+            if (preferIPv4) {
+                if (isIPv4_1 && !isIPv4_2) return -1; // IPv4优先
+                if (!isIPv4_1 && isIPv4_2) return 1;  // IPv4优先
+            }
+
+            // 如果类型相同，按是否为私有地址排序（公网优先）
+            boolean isSiteLocal_1 = a1.isSiteLocalAddress();
+            boolean isSiteLocal_2 = a2.isSiteLocalAddress();
+
+            if (!isSiteLocal_1 && isSiteLocal_2) return -1; // 公网优先
+            if (isSiteLocal_1 && !isSiteLocal_2) return 1;  // 公网优先
+
+            return 0;
+        }).orElseThrow(() -> new BaseRuntimeException(CommonErrorCodeEnum.ILLEGAL_STATUS, "No validated InetAddress!"));
     }
 
     /**

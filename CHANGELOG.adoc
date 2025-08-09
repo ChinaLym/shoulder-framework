@@ -9,6 +9,8 @@
 
 * Core
 
+** ⚠️ 优化: LockInfo 默认在 key 前添加 lock 前缀
+** 优化: AddressUtils 选择ip结果更准、更稳定
 ** 功能: 支持异步线程若缺少 traceId 将自动设置，并新增 relatedTraceId，允许关联异步任务trace、触发trace
 ** 优化: PeriodicTask 支持使用异步线程池
 ** 优化: Threads execute、delay、schedule、executeAndWait 方法支持指定线程池运行
