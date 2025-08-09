@@ -11,6 +11,8 @@
 
 ** 优化: PeriodicTask 支持使用异步线程池
 ** 优化: Threads execute、delay、schedule、executeAndWait 方法支持指定线程池运行
+** 优化: 支持配置缓存key 分隔符（`shoulder.application.cacheKeySplit`）
+** 优化: EmbeddedRedis 支持配置启动，默认不启动
 
 * Cluster
 

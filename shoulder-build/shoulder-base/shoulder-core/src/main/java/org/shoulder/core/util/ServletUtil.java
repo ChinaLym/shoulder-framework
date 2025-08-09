@@ -33,7 +33,7 @@ public class ServletUtil {
 
     private static final String XML_HTTP_REQ_VALUE = "XMLHttpRequest";
 
-    private static Logger logger = ShoulderLoggers.SHOULDER_DEFAULT;
+    private static final Logger logger = ShoulderLoggers.SHOULDER_DEFAULT;
 
     public static String getCookie(String cookieName) {
         HttpServletRequest request = ServletUtil.getRequest();
@@ -128,10 +128,8 @@ public class ServletUtil {
         return headers;
     }
 
-    private static final String IP_UTILS_FLAG = ",";
+    private static final String IP_SPLIT_CHAR = ",";
     private static final String UNKNOWN = "unknown";
-    private static final String LOCALHOST_IP = "0:0:0:0:0:0:0:1";
-    private static final String LOCALHOST_IP1 = "127.0.0.1";
 
     /**
      * User-Agent
@@ -185,7 +183,7 @@ public class ServletUtil {
             //兼容k8s集群获取ip
             if (StringUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
                 ip = request.getRemoteAddr();
-                if (LOCALHOST_IP1.equalsIgnoreCase(ip) || LOCALHOST_IP.equalsIgnoreCase(ip)) {
+                if (AddressUtils.LOCAL_HOST_IP4.equalsIgnoreCase(ip) || AddressUtils.LOCAL_HOST_IP6.equalsIgnoreCase(ip)) {
                     //根据网卡取本机配置的IP
                     InetAddress iNet;
                     try {
@@ -200,8 +198,8 @@ public class ServletUtil {
             logger.error("IPUtils ERROR ", e);
         }
         //使用代理，则获取第一个IP地址
-        if (!StringUtils.isEmpty(ip) && ip.indexOf(IP_UTILS_FLAG) > 0) {
-            ip = ip.substring(0, ip.indexOf(IP_UTILS_FLAG));
+        if (!StringUtils.isEmpty(ip) && ip.indexOf(IP_SPLIT_CHAR) > 0) {
+            ip = ip.substring(0, ip.indexOf(IP_SPLIT_CHAR));
         }
 
         return ip;

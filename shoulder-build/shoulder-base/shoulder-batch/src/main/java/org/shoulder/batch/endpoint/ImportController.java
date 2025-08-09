@@ -201,8 +201,10 @@ public class ImportController implements ImportRestfulApi {
 
     private boolean lockDefendRepeatAdvance(AdvanceBatchParam param) {
         // 不用关心谁持有，主打一个短时间防重复，长期可重试
-        String resource = param.getDataType() + ":" + param.getBatchId() + ":"
-                + param.getCurrentOperation() + ":" + param.getNextOperation();
+        String resource = param.getDataType() + AppInfo.cacheKeySplit()
+                + param.getBatchId() + AppInfo.cacheKeySplit()
+                + param.getCurrentOperation() + AppInfo.cacheKeySplit()
+                + param.getNextOperation();
         return serverLock.tryLock(resource, VALIDATE_RESULT_EXPIRATION);
     }
 

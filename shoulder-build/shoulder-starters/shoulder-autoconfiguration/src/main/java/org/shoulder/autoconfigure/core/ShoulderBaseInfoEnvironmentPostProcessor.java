@@ -73,6 +73,7 @@ public class ShoulderBaseInfoEnvironmentPostProcessor implements EnvironmentPost
         AppInfo.initCharset(Objects.requireNonNull(environment.getProperty("shoulder.application.charset")));
         AppInfo.initCluster(Boolean.parseBoolean(environment.getProperty("shoulder.application.cluster")));
         AppInfo.initDefaultLocale(StringUtils.parseLocale(environment.getProperty("shoulder.application.defaultLocale")));
+        AppInfo.initCacheKeySplit(environment.getProperty("shoulder.application.cacheKeySplit"));
         AppInfo.initTimeZone(TimeZone.getTimeZone(environment.getProperty("shoulder.application.timeZone")));
 
         // -----

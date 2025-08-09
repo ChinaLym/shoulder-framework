@@ -14,6 +14,7 @@ import java.lang.annotation.*;
  *
  * @author lym
  * @see RedisServer 若只使用注解，而未引入相关 jar/class，则该配置不生效
+ * @deprecated 推荐使用配置而非注解 shoulder.redis.active
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

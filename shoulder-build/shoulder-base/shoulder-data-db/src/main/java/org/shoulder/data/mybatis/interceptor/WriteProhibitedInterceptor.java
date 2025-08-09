@@ -17,6 +17,7 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import org.shoulder.core.context.AppContext;
 import org.shoulder.core.exception.BaseRuntimeException;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
+import org.shoulder.core.util.AddressUtils;
 import org.shoulder.core.util.RegexpUtils;
 import org.shoulder.core.util.ServletUtil;
 
@@ -41,7 +42,7 @@ public class WriteProhibitedInterceptor implements Interceptor {
 
     public WriteProhibitedInterceptor() {
         importantDataList = new String[]{"Tenant", "GlobalUser", "User", "Menu", "Resource", "Role", "Dictionary", "Parameter", "Application"};
-        allowIpList = new String[]{"127.0.0.1"};
+        allowIpList = new String[]{AddressUtils.LOCAL_HOST_IP4};
     }
 
     public WriteProhibitedInterceptor(String[] importantDataList, String[] allowIpList) {

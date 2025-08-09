@@ -27,6 +27,7 @@ import java.util.Objects;
  * 执行 LUA 脚本的 redisTemplate.valueSerializer 不能为 jdk 的策略
  *
  * @author lym
+ * @see <a href="https://redis.io/docs/latest/commands/zrem/">Redis 文档</a>
  */
 @SuppressWarnings("rawtypes, unchecked")
 public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implements ApplicationListener<ContextRefreshedEvent>, DisposableBean {

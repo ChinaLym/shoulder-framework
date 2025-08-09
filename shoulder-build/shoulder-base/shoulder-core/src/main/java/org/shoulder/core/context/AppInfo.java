@@ -79,7 +79,7 @@ public class AppInfo {
     private static Charset charset = LocaleInfo.getSystemDefault().getCharset();
 
     /**
-     * 部署 Region
+     * 机器所在地区
      */
     private static String region = "default";
 
@@ -87,6 +87,10 @@ public class AppInfo {
      * 默认语言环境，从用户中获取不到地区/语言信息时，将采用该值，若不设置则从系统中获取
      */
     private static Locale defaultLocale = LocaleInfo.getSystemDefault().getLocale();
+    /**
+     * 缓存 key 分隔符
+     */
+    private static String cacheKeySplit = ";";
 
     /**
      * 时区，若不设置则从系统中获取
@@ -134,6 +138,14 @@ public class AppInfo {
      */
     public static Locale defaultLocale() {
         return defaultLocale;
+    }
+    /**
+     * 获取 缓存 key 分隔符
+     *
+     * @return 缓存 key 分隔符
+     */
+    public static String cacheKeySplit() {
+        return cacheKeySplit;
     }
 
     public static TimeZone timeZone() {
@@ -187,6 +199,15 @@ public class AppInfo {
     public static void initDefaultLocale(Locale locale) {
         AppInfo.defaultLocale = locale;
         log.info("initDefaultLocale: " + locale);
+    }
+    /**
+     * 设置语言标识
+     *
+     * @param locale 语言标识
+     */
+    public static void initCacheKeySplit(String cacheKeySplit) {
+        AppInfo.cacheKeySplit = cacheKeySplit;
+        log.info("initCacheKeySplit: " + cacheKeySplit);
     }
 
 

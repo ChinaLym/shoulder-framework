@@ -3,6 +3,7 @@ package org.shoulder.code.store.impl;
 import org.shoulder.code.dto.ValidateCodeDTO;
 import org.shoulder.code.store.ValidateCodeStore;
 import org.shoulder.core.context.AppContext;
+import org.shoulder.core.context.AppInfo;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +41,9 @@ public class MemoryValidateCodeRepository implements ValidateCodeStore {
      * 验证码放入 session 的 key
      */
     protected String buildCacheKey(String validateCodeType) {
-        return AppContext.getTenantCode() + ":" + AppContext.getUserId() + ":" + validateCodeType.toUpperCase();
+        return AppContext.getTenantCode() + AppInfo.cacheKeySplit()
+                + AppContext.getUserId() + AppInfo.cacheKeySplit()
+                + validateCodeType.toUpperCase();
     }
 
 }

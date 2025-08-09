@@ -13,6 +13,7 @@ import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.session.SqlSession;
 import org.shoulder.core.cache.Cache;
 import org.shoulder.core.cache.CacheDecorate;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.data.mybatis.template.dao.BaseMapper;
 import org.shoulder.data.mybatis.template.entity.BaseEntity;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -75,7 +76,7 @@ public abstract class BaseCacheableServiceImpl<MAPPER extends BaseMapper<ENTITY>
 
         StringBuilder cacheKey = new StringBuilder(getEntityClass().getSimpleName());
         for (Object keyword : keywords) {
-            cacheKey.append(":");
+            cacheKey.append(AppInfo.cacheKeySplit());
             cacheKey.append(keyword.toString());
         }
         return cacheKey.toString();

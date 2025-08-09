@@ -3,6 +3,7 @@ package org.shoulder.code.store.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.shoulder.code.dto.ValidateCodeDTO;
 import org.shoulder.code.store.ValidateCodeStore;
+import org.shoulder.core.context.AppInfo;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -66,7 +67,7 @@ public class RedisValidateCodeRepository implements ValidateCodeStore {
         if (StringUtils.isBlank(unionCode)) {
             throw new IllegalStateException("please add the parameter(" + unionCodePramName + ") in your requests!");
         }
-        return DEFAULT_KEY_PREFIX + unionCode + ":" + type;
+        return DEFAULT_KEY_PREFIX + unionCode + AppInfo.cacheKeySplit() + type;
     }
 
 }

@@ -61,4 +61,8 @@ public class BaseAppProperties {
      */
     private String timeZone = "GMT+8:00";
 
+    /**
+     * 缓存 key 分隔符，默认冒号
+     */
+    private String cacheKeySplit = ":";
 }

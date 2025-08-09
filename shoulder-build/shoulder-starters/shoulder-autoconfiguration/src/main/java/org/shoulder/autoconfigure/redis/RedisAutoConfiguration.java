@@ -40,7 +40,7 @@ public class RedisAutoConfiguration {
     @ConditionalOnMissingBean(StringRedisSerializer.class)
     public WithPrefixKeyStringRedisSerializer withPrefixKeyStringRedisSerializer(@Value("${shoulder.redis.key-prefix:}")String redisKeyPrefix) {
         if(StringUtils.isEmpty(redisKeyPrefix)) {
-            redisKeyPrefix = AppInfo.appId() + ":";
+            redisKeyPrefix = AppInfo.appId() + AppInfo.cacheKeySplit();
         }
         return new WithPrefixKeyStringRedisSerializer(redisKeyPrefix);
     }

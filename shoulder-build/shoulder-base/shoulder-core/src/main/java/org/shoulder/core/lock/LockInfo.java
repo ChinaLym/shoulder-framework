@@ -64,7 +64,10 @@ public class LockInfo {
     public LockInfo(String resource, Duration holdTime) {
         this(resource,
             // appId:instanceId:threadId 不用于区分是否唯一，token 需要唯一
-            AddressUtils.getIp() + ":" + AppInfo.appId() + ":" + AppInfo.instanceId() + ":" + Thread.currentThread().getId(),
+            AddressUtils.getIp() + AppInfo.cacheKeySplit()
+                    + AppInfo.appId() + AppInfo.cacheKeySplit()
+                    + AppInfo.instanceId() + AppInfo.cacheKeySplit()
+                    + Thread.currentThread().getId(),
             holdTime
         );
     }

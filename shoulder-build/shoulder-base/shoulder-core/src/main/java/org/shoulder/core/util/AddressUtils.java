@@ -45,7 +45,9 @@ public class AddressUtils {
 
     private static final Pattern PORT_PATTERN = Pattern.compile("^([0-9]{1,5})$");
     private static final Pattern IPV6_ZERO_LEADING_PATTERN = Pattern.compile("(?i)^0+$");
-    private static String LOCAL_IP_CACHE = "127.0.0.1";
+    public static final String LOCAL_HOST_IP4 = "127.0.0.1";
+    public static final String LOCAL_HOST_IP6 = "0:0:0:0:0:0:0:1";
+    private static String LOCAL_IP_CACHE = LOCAL_HOST_IP4;
     private static String LOCAL_IPV4_HEX = "ffffffff";
     private static String LOCAL_MAC_CACHE = "00-00-00-00-00-00";
     private static String LOCAL_HOSTNAME_CACHE = "unknown";
