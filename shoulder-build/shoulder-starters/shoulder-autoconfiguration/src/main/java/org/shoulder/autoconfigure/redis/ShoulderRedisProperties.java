@@ -19,6 +19,12 @@ public class ShoulderRedisProperties {
 
     public static final String PREFIX = BaseAppProperties.KEY_PREFIX + "redis";
 
+    /**
+     * key 前缀，默认添加 appId 前缀
+     * 注意：scan 操作时需注意手动添加前缀【keyPrefix + AppInfo.cacheKeySplit()】
+     * 原因：redis集群部署时key路由问题, 无论 Spring.redisTemplate / Jedis 都默认不支持集群 scan；需要手动遍历分片并拼接 key前缀再扫描
+     */
+    private String keyPrefix = "${shoulder.application.id}";
 
     private EmbeddedRedisProperties embedded = new EmbeddedRedisProperties();
 
@@ -28,7 +34,7 @@ public class ShoulderRedisProperties {
         /**
          * 是否要启动嵌入式 redis
          */
-        private Boolean active = false;
+        private Boolean enable = false;
 
         /**
          * 绑定 host，默认仅本机可访问，设置为 `0.0.0.0` 则允许其他机器访问（注意同时配置 requirepass xxx 要求连接时使用密码）

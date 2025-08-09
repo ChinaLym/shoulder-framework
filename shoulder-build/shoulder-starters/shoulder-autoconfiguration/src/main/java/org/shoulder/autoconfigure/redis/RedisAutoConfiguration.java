@@ -3,6 +3,7 @@ package org.shoulder.autoconfigure.redis;
 import jakarta.annotation.Nullable;
 import org.shoulder.cluster.redis.annotation.AppExclusive;
 import org.shoulder.core.context.AppInfo;
+import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -38,10 +39,12 @@ public class RedisAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(StringRedisSerializer.class)
-    public WithPrefixKeyStringRedisSerializer withPrefixKeyStringRedisSerializer(@Value("${shoulder.redis.key-prefix:}")String redisKeyPrefix) {
-        if(StringUtils.isEmpty(redisKeyPrefix)) {
-            redisKeyPrefix = AppInfo.appId() + AppInfo.cacheKeySplit();
+    public WithPrefixKeyStringRedisSerializer withPrefixKeyStringRedisSerializer(ShoulderRedisProperties shoulderRedisProperties) {
+        String redisKeyPrefix = shoulderRedisProperties.getKeyPrefix();
+        if (StringUtils.isNotEmpty(redisKeyPrefix) && !redisKeyPrefix.endsWith(AppInfo.cacheKeySplit())) {
+            redisKeyPrefix = redisKeyPrefix + AppInfo.cacheKeySplit();
         }
+        ShoulderLoggers.SHOULDER_CONFIG.info("redis key prefix set to [{}].", redisKeyPrefix);
         return new WithPrefixKeyStringRedisSerializer(redisKeyPrefix);
     }
 
@@ -82,7 +85,7 @@ public class RedisAutoConfiguration {
     public static class WithPrefixKeyStringRedisSerializer extends StringRedisSerializer {
 
         /**
-         * key 前缀
+         * redis key 前缀，注意：因 Redis 自身设计, redisTemplate.scan 时需注意手动添加前缀【keyPrefix + AppInfo.cacheKeySplit()】
          */
         private final String keyPrefix;
 

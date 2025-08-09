@@ -15,7 +15,7 @@ import org.springframework.lang.Nullable;
 import redis.embedded.RedisServer;
 import redis.embedded.core.RedisServerBuilder;
 
-@ConditionalOnProperty(name = "shoulder.redis.embedded.active", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "shoulder.redis.embedded.enable", havingValue = "true", matchIfMissing = false)
 @AutoConfiguration(
         before = {RedisAutoConfiguration.class,
                 org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class,

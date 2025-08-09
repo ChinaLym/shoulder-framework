@@ -5,7 +5,6 @@ import org.shoulder.data.sequence.DefaultSequenceGenerator;
 import org.shoulder.data.sequence.SequenceGenerator;
 import org.shoulder.data.sequence.dao.JdbcSequenceDAO;
 import org.shoulder.data.sequence.dao.SequenceDao;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -24,22 +23,21 @@ import javax.sql.DataSource;
 @AutoConfiguration(after = DataSourceAutoConfiguration.class)
 @ConditionalOnClass(SequenceDao.class)
 @EnableConfigurationProperties(DatabaseProperties.class)
+@ConditionalOnProperty(name = "shoulder.db.sequence.enable", havingValue = "true", matchIfMissing = true)
 public class ShoulderSequenceAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(SequenceDao.class)
-    @ConditionalOnProperty(name = "shoulder.db.sequence.enable", havingValue = "true", matchIfMissing = true)
-    public JdbcSequenceDAO jdbcSequenceDAO(DataSource dataSource,
-                                           @Value("${shoulder.db.sequence.table_name:tb_sequence}") String tableName) {
+    public JdbcSequenceDAO jdbcSequenceDAO(DataSource dataSource, DatabaseProperties databaseProperties) {
         JdbcSequenceDAO sequenceDAO = new JdbcSequenceDAO();
         sequenceDAO.setDataSource(dataSource);
-        sequenceDAO.setSequenceTableName(tableName);
+        sequenceDAO.setSequenceTableName(databaseProperties.getSequence().getTableName());
         return sequenceDAO;
     }
 
     @Bean
     @ConditionalOnMissingBean(SequenceGenerator.class)
-    public DefaultSequenceGenerator defaultSequenceGenerator(SequenceDao sequenceDao) {
+    public SequenceGenerator defaultSequenceGenerator(SequenceDao sequenceDao) {
         return new DefaultSequenceGenerator(sequenceDao);
     }
 }

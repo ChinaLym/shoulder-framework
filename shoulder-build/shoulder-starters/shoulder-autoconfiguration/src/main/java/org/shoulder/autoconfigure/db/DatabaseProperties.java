@@ -33,6 +33,8 @@ public class DatabaseProperties {
      */
     private Boolean checkSqlPerformance = false;
 
+    private SequenceProperties sequence = new SequenceProperties();
+
     /**
      * 分页大小限制（默认500 与 mybatis-plus 默认值一致）
      */
@@ -130,6 +132,22 @@ public class DatabaseProperties {
         DB_SEQUENCE,
         ;
 
+    }
+
+    @Data
+    public static class SequenceProperties {
+
+        /**
+         * 默认激活 shoulder 内置的 sequence 生成器
+         * 关闭时需要自定义 SequenceGenerator 或 EntityIdGenerator、EntityIdGenerator
+         */
+        private Boolean enable = true;
+
+        /**
+         * 默认激活 shoulder 内置的 sequence 生成器
+         * 关闭时需要自定义 SequenceGenerator 或 EntityIdGenerator、EntityIdGenerator
+         */
+        private String tableName = "tb_sequence";
     }
 
     /**
