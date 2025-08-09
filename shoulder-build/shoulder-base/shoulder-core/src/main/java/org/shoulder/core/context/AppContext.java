@@ -206,6 +206,23 @@ public class AppContext {
     public static void setTraceId(String traceId) {
         set(ShoulderContextKey.TRACE_ID, traceId);
     }
+    /**
+     * 获取链路追踪标识
+     *
+     * @return traceId
+     */
+    public static String getRelatedTraceId() {
+        return (String) get(ShoulderContextKey.RELATED_TRACE_ID);
+    }
+
+    /**
+     * 设置链路追踪标识
+     *
+     * @param traceId 链路追踪标识
+     */
+    public static void setRelatedTraceId(String relatedTraceId) {
+        set(ShoulderContextKey.RELATED_TRACE_ID, relatedTraceId);
+    }
 
     /**
      * 从上下文中获取值

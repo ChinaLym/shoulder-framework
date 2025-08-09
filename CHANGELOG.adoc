@@ -9,6 +9,7 @@
 
 * Core
 
+** 功能: 上下文新增 relatedTraceId，允许关联异步任务trace、触发trace
 ** 优化: PeriodicTask 支持使用异步线程池
 ** 优化: Threads execute、delay、schedule、executeAndWait 方法支持指定线程池运行
 ** 优化: 支持配置缓存key 分隔符（`shoulder.application.cacheKeySplit`）

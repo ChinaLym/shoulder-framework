@@ -1,5 +1,6 @@
 package org.shoulder.core.concurrent;
 
+import org.shoulder.core.context.AppContext;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.LoggerFactory;
 import org.springframework.scheduling.TaskScheduler;
@@ -23,6 +24,8 @@ public class PeriodicTaskTemplate implements Runnable {
 
     private final PeriodicTask task;
 
+    private final String relatedTraceId;
+
     /**
      * 执行计数器
      */
@@ -32,14 +35,19 @@ public class PeriodicTaskTemplate implements Runnable {
         this.task = task;
         this.scheduler = scheduler;
         this.executor = executor;
+        this.relatedTraceId = AppContext.getTraceId();
     }
 
     @Override
     public void run() {
-        // 执行任务逻辑
+        // 清空上下文
+        AppContext.clean();
+        AppContext.setRelatedTraceId(relatedTraceId);
+
         int runCount = runCounter.incrementAndGet();
         try {
-            logger.debug("{} trigger run {} in {} mode.", task.getTaskName(), runCount, executor == null ? "sync" : "async");
+            logger.debug("{} trigger run {} in {} mode. relatedTraceId={}", task.getTaskName(), runCount, executor == null ? "sync" : "async", relatedTraceId);
+            // 执行任务逻辑
             if (executor == null) {
                 task.process();
             } else {

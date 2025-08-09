@@ -80,6 +80,10 @@ public interface ShoulderContextKey {
      * traceId
      */
     String TRACE_ID           = "traceId";
+    /**
+     * 关联 traceId
+     */
+    String RELATED_TRACE_ID           = "rTraceId";
 
     /**
      * 灰度发布版本号
