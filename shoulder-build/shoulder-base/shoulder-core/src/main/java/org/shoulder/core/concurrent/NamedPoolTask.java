@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
  *
  * @author lym
  */
-public interface PoolAndNamedTask {
+public interface NamedPoolTask {
 
     /**
      * 任务名称，打印日志使用

@@ -96,33 +96,7 @@ public class Threads {
      * @deprecated 请自定义 PeriodicTask {@link Threads#schedule(PeriodicTask)}
      */
     public static ScheduledFuture<?> schedule(@NonNull String taskName, @NonNull Runnable task, @NonNull Instant firstExecutionTime, @Nullable BiFunction<Instant, Integer, Instant> executionPeriodCalculator, ExecutorService executor) {
-        PeriodicTask periodicTask = new PeriodicTask() {
-            @Override
-            public String getTaskName() {
-                return taskName;
-            }
-
-            @Override
-            public void process() {
-                task.run();
-            }
-
-            @Override
-            public Instant firstExecutionTime() {
-                return firstExecutionTime;
-            }
-
-            @Override
-            public Instant calculateNextRunTime(Instant now, int runCount) {
-                return executionPeriodCalculator == null ? NO_NEED_EXECUTE : executionPeriodCalculator.apply(now, runCount);
-            }
-
-            @Override
-            public ExecutorService getExecutorService() {
-                return executor;
-            }
-        };
-
+        PeriodicTask periodicTask = PeriodicTask.create(taskName, task, firstExecutionTime, executionPeriodCalculator, executor);
         return schedule(periodicTask);
     }
 
@@ -132,6 +106,7 @@ public class Threads {
      * 定期调度执行
      *
      * @param periodicTask 要执行的任务
+     * @see PeriodicTask#create
      */
     public static ScheduledFuture<?> schedule(PeriodicTask periodicTask) {
         ensureInit();
@@ -179,52 +154,9 @@ public class Threads {
      * @param exceptionCallBack  回调（监督人），预期时间未完成 or 执行出现异常则回调监督人；特殊的，超时 & 失败时只会在超时时候回调一次；回调时不占用 executor 线程
      * @param executorService    任务执行器
      */
-    public static void execute(String taskName, Runnable runnable, Instant exceptedFinishTime, Consumer<TaskInfo> exceptionCallBack, ExecutorService executorService) {
-        execute(new AsyncTask() {
-            @Override
-            public String getTaskName() {
-                return taskName;
-            }
-            @Override
-            public void process() {
-                runnable.run();
-            }
-
-            @Override
-            public void handleException(Threads.TaskInfo task, Exception e) {
-                if (exceptionCallBack != null) {
-                    exceptionCallBack.accept(task);
-                } else {
-                    AsyncTask.super.handleException(task, e);
-                }
-            }
-            @Override
-            public void handleTimeout(Threads.TaskInfo task) {
-                if (exceptionCallBack != null) {
-                    exceptionCallBack.accept(task);
-                } else {
-                    AsyncTask.super.handleTimeout(task);
-                }
-            }
-            @Override
-            public void handleCancelled(Threads.TaskInfo task) {
-                if (exceptionCallBack != null) {
-                    exceptionCallBack.accept(task);
-                } else {
-                    AsyncTask.super.handleCancelled(task);
-                }
-            }
-
-            @Override
-            public Instant exceptedFinishTime() {
-                return exceptedFinishTime;
-            }
-
-            @Override
-            public ExecutorService getExecutorService() {
-                return executorService;
-            }
-        });
+    public static void execute(String taskName, Runnable runnable, Consumer<TaskInfo> exceptionCallBack, Instant exceptedFinishTime, ExecutorService executorService) {
+        AsyncTask t = AsyncTask.create(taskName, runnable, exceptionCallBack, exceptedFinishTime, executorService);
+        execute(t);
     }
 
     public static void execute(AsyncTask task) {
