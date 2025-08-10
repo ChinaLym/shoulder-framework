@@ -15,7 +15,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -51,6 +50,7 @@ public class Threads {
 
     /**
      * 线程调度器：主要做延迟执行等任务
+     *
      * @see ScheduledExecutorService Spring 基于该JDK中的类封装，JDK 中的功能较少
      * @see ThreadPoolTaskScheduler Spring 的默认实现，补充了 bean 生命周期管理等能力
      */
@@ -79,10 +79,11 @@ public class Threads {
         return delay(taskName, task, delayDuration, EXECUTOR_SERVICE);
     }
 
-    public static ScheduledFuture<?> delay(@NonNull String taskName, @NonNull Runnable task, @NonNull Duration delayDuration, String executorBeanName) {
-        return delay(taskName, task, delayDuration, resolveExecutorFromContext(executorBeanName));
+    public static ScheduledFuture<?> delay(@NonNull String taskName, @NonNull Runnable task, @NonNull Duration delayDuration, String executorServiceBeanName) {
+        return delay(taskName, task, delayDuration, resolveExecutorServiceFromContext(executorServiceBeanName));
     }
-    public static ScheduledFuture<?> delay(@NonNull String taskName, @NonNull Runnable task, @NonNull Duration delayDuration, Executor executor) {
+
+    public static ScheduledFuture<?> delay(@NonNull String taskName, @NonNull Runnable task, @NonNull Duration delayDuration, ExecutorService executor) {
         return schedule(taskName, task, Instant.now().plus(delayDuration), null, executor);
     }
 
@@ -92,10 +93,10 @@ public class Threads {
      * @param taskName           要执行的任务名称
      * @param task               要执行的任务
      * @param firstExecutionTime （null 或 过去时间 立即执行）
-     * @deprecated 请自定义 PeriodicTask {@link Threads#schedule(PeriodicTask, Instant)}
+     * @deprecated 请自定义 PeriodicTask {@link Threads#schedule(ShoulderPeriodicTask)}
      */
-    public static ScheduledFuture<?> schedule(@NonNull String taskName, @NonNull Runnable task, @NonNull Instant firstExecutionTime, @Nullable BiFunction<Instant, Integer, Instant> executionPeriodCalculator, Executor executor) {
-        PeriodicTask periodicTask = new PeriodicTask() {
+    public static ScheduledFuture<?> schedule(@NonNull String taskName, @NonNull Runnable task, @NonNull Instant firstExecutionTime, @Nullable BiFunction<Instant, Integer, Instant> executionPeriodCalculator, ExecutorService executor) {
+        ShoulderPeriodicTask periodicTask = new ShoulderPeriodicTask() {
             @Override
             public String getTaskName() {
                 return taskName;
@@ -107,53 +108,39 @@ public class Threads {
             }
 
             @Override
+            public Instant firstExecutionTime() {
+                return firstExecutionTime;
+            }
+
+            @Override
             public Instant calculateNextRunTime(Instant now, int runCount) {
                 return executionPeriodCalculator == null ? NO_NEED_EXECUTE : executionPeriodCalculator.apply(now, runCount);
             }
+
+            @Override
+            public ExecutorService getExecutorService() {
+                return executor;
+            }
         };
 
-        // 执行时放在 EXECUTOR_SERVICE 执行，避免阻塞调度
-        return schedule(periodicTask, firstExecutionTime, executor);
+        return schedule(periodicTask);
     }
 
     // ---------------- Schedule -------------------
 
     /**
-     * 定期调度执行（默认异步执行）
-     *
-     * @param periodicTask       要执行的任务
-     * @param firstExecutionTime （null 或小与当前时间则立即执行）
-     */
-    public static ScheduledFuture<?> schedule(PeriodicTask periodicTask, Instant firstExecutionTime) {
-        return schedule(periodicTask, firstExecutionTime, EXECUTOR_SERVICE);
-    }
-
-    /**
-     * 定期调度执行（默认异步执行）
-     *
-     * @param periodicTask       要执行的任务
-     * @param firstExecutionTime （null 或小与当前时间则立即执行）
-     * @param executorBeanName 上下文为该 name 的 Executor
-     */
-    public static ScheduledFuture<?> schedule(PeriodicTask periodicTask, Instant firstExecutionTime, String executorBeanName) {
-        return schedule(periodicTask, firstExecutionTime, resolveExecutorFromContext(executorBeanName));
-    }
-
-    /**
      * 定期调度执行
      *
-     * @param periodicTask       要执行的任务
-     * @param firstExecutionTime （null 或小与当前时间则立即执行）
-     * @param executor 执行器
+     * @param periodicTask 要执行的任务
      */
-    public static ScheduledFuture<?> schedule(PeriodicTask periodicTask, Instant firstExecutionTime, Executor executor) {
+    public static ScheduledFuture<?> schedule(ShoulderPeriodicTask periodicTask) {
         ensureInit();
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "schedule", true);
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
-            log.debug("{} creat delay task will run at {}", callerName, firstExecutionTime.toEpochMilli());
+            log.debug("{} creat delay task will run at {}", callerName, periodicTask.firstExecutionTime().toEpochMilli());
         }
-        return TASK_SCHEDULER.schedule(new PeriodicTaskTemplate(periodicTask, TASK_SCHEDULER, executor), firstExecutionTime);
+        return TASK_SCHEDULER.schedule(new ShoulderPeriodicTaskRunnable(periodicTask, TASK_SCHEDULER, periodicTask.getExecutorService()), periodicTask.firstExecutionTime());
     }
 
     // ---------------- Execute -------------------
@@ -162,8 +149,8 @@ public class Threads {
      * 放入线程池执行
      *
      * @param runnable 要执行的任务
-     * @deprecated 请指定 任务名称
      * @see Threads#execute(String, Runnable)
+     * @deprecated 请指定 任务名称
      */
     public static void execute(Runnable runnable) {
         ensureInit();
@@ -175,13 +162,14 @@ public class Threads {
         execute(taskName, runnable, EXECUTOR_SERVICE);
     }
 
-    public static void execute(String taskName, Runnable runnable, String executorBeanName) {
-        execute(taskName, runnable, null, null, resolveExecutorFromContext(executorBeanName));
+    public static void execute(String taskName, Runnable runnable, String executorServiceBeanName) {
+        execute(taskName, runnable, null, null, resolveExecutorServiceFromContext(executorServiceBeanName));
     }
 
-    public static void execute(String taskName, Runnable runnable, Executor executor) {
+    public static void execute(String taskName, Runnable runnable, ExecutorService executor) {
         execute(taskName, runnable, null, null, executor);
     }
+
     /**
      * 异步执行
      *
@@ -189,9 +177,63 @@ public class Threads {
      * @param runnable           任务
      * @param exceptedFinishTime 预期完成时间
      * @param exceptionCallBack  回调（监督人），预期时间未完成 or 执行出现异常则回调监督人；特殊的，超时 & 失败时只会在超时时候回调一次；回调时不占用 executor 线程
-     * @param executor           任务执行器
+     * @param executorService    任务执行器
      */
-    public static void execute(String taskName, Runnable runnable, Instant exceptedFinishTime, Consumer<TaskInfo> exceptionCallBack, Executor executor) {
+    public static void execute(String taskName, Runnable runnable, Instant exceptedFinishTime, Consumer<TaskInfo> exceptionCallBack, ExecutorService executorService) {
+        execute(new ShoulderCallbackTask() {
+            @Override
+            public String getTaskName() {
+                return taskName;
+            }
+            @Override
+            public void process() {
+                runnable.run();
+            }
+
+            @Override
+            public void handleException(Threads.TaskInfo task, Exception e) {
+                if (exceptionCallBack != null) {
+                    exceptionCallBack.accept(task);
+                } else {
+                    ShoulderCallbackTask.super.handleException(task, e);
+                }
+            }
+            @Override
+            public void handleTimeout(Threads.TaskInfo task) {
+                if (exceptionCallBack != null) {
+                    exceptionCallBack.accept(task);
+                } else {
+                    ShoulderCallbackTask.super.handleTimeout(task);
+                }
+            }
+            @Override
+            public void handleCancelled(Threads.TaskInfo task) {
+                if (exceptionCallBack != null) {
+                    exceptionCallBack.accept(task);
+                } else {
+                    ShoulderCallbackTask.super.handleCancelled(task);
+                }
+            }
+
+            @Override
+            public Instant exceptedFinishTime() {
+                return exceptedFinishTime;
+            }
+
+            @Override
+            public ExecutorService getExecutorService() {
+                return executorService;
+            }
+        });
+    }
+
+    public static void execute(ShoulderCallbackTask task) {
+        String taskName = task.getTaskName();
+        Instant exceptedFinishTime = task.exceptedFinishTime();
+        Instant now = Instant.now();
+        AssertUtils.notEmpty(taskName, CommonErrorCodeEnum.ILLEGAL_PARAM);
+        AssertUtils.isTrue(exceptedFinishTime == null || exceptedFinishTime.isAfter(now), CommonErrorCodeEnum.ILLEGAL_PARAM);
+
         ensureInit();
         Instant taskSubmitTime = Instant.now();
         AtomicReference<Thread> threadRef = new AtomicReference<>();
@@ -200,16 +242,28 @@ public class Threads {
         AtomicReference<Instant> runEndTimeRef = new AtomicReference<>();
         AtomicBoolean allowRun = new AtomicBoolean(true);
         AtomicBoolean hasDetected = new AtomicBoolean(false);
+        AtomicBoolean timeout = new AtomicBoolean(false);
         if (log.isTraceEnabled()) {
             log.trace("{} add to EXECUTOR_SERVICE", taskName);
         }
         Runnable detectRun = () -> {
             boolean isFirstDetect = hasDetected.compareAndSet(false, true);
             if (isFirstDetect) {
-                exceptionCallBack.accept(new TaskInfo(taskName, taskSubmitTime, runStartTimeRef, runEndTimeRef, Instant.now(), threadRef, errorRef, allowRun));
+                TaskInfo t = new TaskInfo(taskName, taskSubmitTime, runStartTimeRef, runEndTimeRef, Instant.now(), threadRef, errorRef, allowRun);
+
+                if(!allowRun.get()) {
+                    // 取消
+                    task.handleCancelled(t);
+                } else if(timeout.get()) {
+                    // 超时
+                    task.handleTimeout(t);
+                } else {
+                    // 异常
+                    task.handleException(t, errorRef.get());
+                }
             }
         };
-        // todo 考虑 completeFuture
+
         Runnable callBackRunnable = () -> {
             Instant runStartTime = Instant.now();
             if (!allowRun.get()) {
@@ -221,17 +275,15 @@ public class Threads {
             String originThreadName = runThread.getName();
             boolean success = false;
             try {
-                runThread.setName(taskName);
-                runnable.run();
+                runThread.setName(originThreadName + ":" + taskName);
+                task.process();
                 success = true;
             } catch (Exception e) {
                 log.error("{} execute occur Exception! ", taskName, e);
                 errorRef.set(e);
-                if (exceptionCallBack != null) {
-                    // 回调监工
-                    runEndTimeRef.set(Instant.now());
-                    Threads.execute("D_" + taskName, detectRun, null, null, EXECUTOR_SERVICE);
-                }
+                runEndTimeRef.set(Instant.now());
+                // exception 回调监工
+                Threads.execute("D_" + taskName, detectRun, null, null, EXECUTOR_SERVICE);
                 throw e;
             } finally {
                 synchronized (runThread) {
@@ -244,12 +296,18 @@ public class Threads {
                 }
             }
         };
-
+        ExecutorService executor = task.getExecutorService();
+        if (executor == null) {
+            executor = EXECUTOR_SERVICE;
+        }
         executor.execute(callBackRunnable);
 
-        // 注册监工
-        if (exceptionCallBack != null && exceptedFinishTime != null) {
-            Threads.schedule("D_" + taskName, detectRun, exceptedFinishTime, null, EXECUTOR_SERVICE);
+        // 注册 timeout 监工
+        if (exceptedFinishTime != null) {
+            Threads.schedule("D_" + taskName, () -> {
+                timeout.set(true);
+                detectRun.run();
+                }, exceptedFinishTime, null, EXECUTOR_SERVICE);
         }
     }
 
@@ -258,11 +316,11 @@ public class Threads {
     /**
      * 从上下文获取执行器
      *
-     * @param executorBeanName 执行器 bean 名称
+     * @param executorServiceBeanName 执行器 bean 名称
      * @return 执行器
      */
-    private static Executor resolveExecutorFromContext(String executorBeanName) {
-        return StringUtils.isBlank(executorBeanName) ? EXECUTOR_SERVICE : ContextUtils.getBean(executorBeanName);
+    static ExecutorService resolveExecutorServiceFromContext(String executorServiceBeanName) {
+        return StringUtils.isBlank(executorServiceBeanName) ? EXECUTOR_SERVICE : ContextUtils.getBean(executorServiceBeanName);
     }
 
     private static void printCallerDebugLog(String methodName) {
@@ -322,8 +380,9 @@ public class Threads {
     public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout) throws InterruptedException {
         return executeAndWait(tasks, timeout, EXECUTOR_SERVICE);
     }
+
     public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout, String executorServiceBeanName) throws InterruptedException {
-        return executeAndWait(tasks, timeout, (ExecutorService) resolveExecutorFromContext(executorServiceBeanName));
+        return executeAndWait(tasks, timeout, (ExecutorService) resolveExecutorServiceFromContext(executorServiceBeanName));
     }
 
     public static boolean executeAndWait(@NonNull Collection<? extends Runnable> tasks, Duration timeout, ExecutorService executor)
@@ -331,10 +390,13 @@ public class Threads {
         ensureInit();
         printCallerDebugLog("executeAndWait");
         CountDownLatch latch = new CountDownLatch(tasks.size());
-        List<Callable<Object>> callList = tasks.stream().map(runnable -> new NotifyOnFinishRunnable(runnable, latch::countDown))
-                .map(Executors::callable)
-                .toList();
-        executor.invokeAll(callList, timeout.toNanos(), TimeUnit.NANOSECONDS);
+
+        tasks.stream()
+                .map(runnable -> CompletableFuture.runAsync(runnable, executor))
+                .forEach(f -> f.handle((v, e) -> null)
+                        .thenRun(latch::countDown)
+                );
+
         return latch.await(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
 

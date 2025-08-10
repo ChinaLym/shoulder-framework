@@ -11,11 +11,11 @@
 * Core
 
 ** ⚠️ 优化: LockInfo 默认在 key 前添加 lock 前缀
-** 优化: AddressUtils 选择ip结果更准、更稳定
+** ⚠️ 优化: Threads execute、delay、schedule、executeAndWait 方法支持指定线程池运行，规范 Threads 使用；移除 NotifyOnFinish.Runnable/Callable（使用 JDK.CompletableFuture）
 ** 功能: 支持异步线程若缺少 traceId 将自动设置，并新增 relatedTraceId，允许关联异步任务trace、触发trace
 ** 优化: PeriodicTask 支持使用异步线程池
 ** 优化: Enhanceable 新支持增强 支持 ScheduledExecutorService、ScheduledThreadPoolExecutor、ThreadPoolTaskExecutor、ThreadPoolTaskScheduler；移除 Spring 废弃的 ListenableTaskExecutor 支持
-** 优化: Threads execute、delay、schedule、executeAndWait 方法支持指定线程池运行
+** 优化: AddressUtils 选择ip结果更准、更稳定
 ** 优化: 支持配置缓存key 分隔符（`shoulder.application.cacheKeySplit`）
 ** 优化: EmbeddedRedis 支持配置启动，默认不启动
 

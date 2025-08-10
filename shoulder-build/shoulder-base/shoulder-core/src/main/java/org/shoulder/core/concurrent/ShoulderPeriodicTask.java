@@ -1,25 +1,24 @@
 package org.shoulder.core.concurrent;
 
-import org.shoulder.core.log.Logger;
+import org.shoulder.core.log.ShoulderLoggers;
 
 import java.time.Instant;
 
 /**
  * 重复执行任务
  */
-public interface PeriodicTask {
+public interface ShoulderPeriodicTask extends ShoulderTask {
 
     Instant NO_NEED_EXECUTE = null;
 
     /**
-     * 任务明，打印日志使用
+     * 第一次什么时候运行
+     *
+     * @return null 或小与当前时间则立即执行
      */
-    String getTaskName();
-
-    /**
-     * 执行内容
-     */
-    void process();
+    default Instant firstExecutionTime() {
+        return null;
+    }
 
     /**
      * 计算下次延迟时间的方法
@@ -35,11 +34,12 @@ public interface PeriodicTask {
     /**
      * 处理异常
      *
-     * @param logger   日志
-     * @param runCount 运行轮次
+     * @param task     任务资深
+     * @param runTimes 运行次数
      * @param e        异常
      */
-    default void handleException(Logger logger, int runCount, Exception e) {
-        logger.error("{} error int runCount={}", getTaskName(), runCount, e);
+    default void handleException(ShoulderPeriodicTask task, int runTimes, Exception e) {
+        ShoulderLoggers.SHOULDER_THREADS.error("{} error int runTimes={}", task.getTaskName(), runTimes, e);
     }
+
 }

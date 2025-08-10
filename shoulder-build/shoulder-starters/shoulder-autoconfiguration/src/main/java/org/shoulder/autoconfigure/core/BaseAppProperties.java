@@ -84,7 +84,4 @@ public class BaseAppProperties {
         private Boolean enhance = true;
     }
 
-    public static void main(String[] args) {
-        System.out.println("");
-    }
 }
