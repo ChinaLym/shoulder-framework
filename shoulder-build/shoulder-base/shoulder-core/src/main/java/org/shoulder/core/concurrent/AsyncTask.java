@@ -5,9 +5,11 @@ import org.shoulder.core.log.ShoulderLoggers;
 import java.time.Instant;
 
 /**
- * 重复执行任务
+ * 普通异步任务
+ *
+ * @author lym
  */
-public interface ShoulderCallbackTask extends ShoulderTask {
+public interface AsyncTask extends PoolAndNamedTask {
 
 
     /**

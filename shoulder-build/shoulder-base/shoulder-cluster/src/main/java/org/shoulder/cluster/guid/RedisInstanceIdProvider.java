@@ -1,7 +1,7 @@
 package org.shoulder.cluster.guid;
 
 import jakarta.annotation.Nonnull;
-import org.shoulder.core.concurrent.ShoulderPeriodicTask;
+import org.shoulder.core.concurrent.PeriodicTask;
 import org.shoulder.core.concurrent.Threads;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.guid.AbstractInstanceIdProvider;
@@ -140,7 +140,7 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
 
     @Override
     public void onApplicationEvent(@Nonnull ContextRefreshedEvent event) {
-        ShoulderPeriodicTask hearBeatTask = new ShoulderPeriodicTask() {
+        PeriodicTask hearBeatTask = new PeriodicTask() {
 
             @Override public String getTaskName() {
                 return "RedisInstanceIdProviderHeartBeat";

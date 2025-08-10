@@ -5,9 +5,11 @@ import org.shoulder.core.log.ShoulderLoggers;
 import java.time.Instant;
 
 /**
- * 重复执行任务
+ * 周期性、在线程池中运行的任务
+ *
+ * @author lym
  */
-public interface ShoulderPeriodicTask extends ShoulderTask {
+public interface PeriodicTask extends PoolAndNamedTask {
 
     Instant NO_NEED_EXECUTE = null;
 
@@ -38,7 +40,7 @@ public interface ShoulderPeriodicTask extends ShoulderTask {
      * @param runTimes 运行次数
      * @param e        异常
      */
-    default void handleException(ShoulderPeriodicTask task, int runTimes, Exception e) {
+    default void handleException(PeriodicTask task, int runTimes, Exception e) {
         ShoulderLoggers.SHOULDER_THREADS.error("{} error int runTimes={}", task.getTaskName(), runTimes, e);
     }
 

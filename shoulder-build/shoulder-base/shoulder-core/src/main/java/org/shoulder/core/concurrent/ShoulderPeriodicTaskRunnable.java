@@ -26,7 +26,7 @@ public class ShoulderPeriodicTaskRunnable implements Runnable {
     private final Executor executor;
 
     @Getter
-    private final ShoulderPeriodicTask task;
+    private final PeriodicTask task;
 
     @Getter
     private final String relatedTraceId;
@@ -36,7 +36,7 @@ public class ShoulderPeriodicTaskRunnable implements Runnable {
      */
     private final AtomicInteger runTimesCounter = new AtomicInteger(0);
 
-    public ShoulderPeriodicTaskRunnable(ShoulderPeriodicTask task, TaskScheduler scheduler, Executor executor) {
+    public ShoulderPeriodicTaskRunnable(PeriodicTask task, TaskScheduler scheduler, Executor executor) {
         this.task = task;
         this.scheduler = scheduler;
         this.executor = executor;
@@ -62,7 +62,7 @@ public class ShoulderPeriodicTaskRunnable implements Runnable {
 
             // 3. 计算下次执行的延迟时间
             Instant nextRunTime = task.calculateNextRunTime(Instant.now(), runCount);
-            if (nextRunTime == ShoulderPeriodicTask.NO_NEED_EXECUTE) {
+            if (nextRunTime == PeriodicTask.NO_NEED_EXECUTE) {
                 logger.debug("{} Terminal after run {}.", task.getTaskName(), runCount);
                 return;
             }

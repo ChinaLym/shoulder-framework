@@ -93,10 +93,10 @@ public class Threads {
      * @param taskName           要执行的任务名称
      * @param task               要执行的任务
      * @param firstExecutionTime （null 或 过去时间 立即执行）
-     * @deprecated 请自定义 PeriodicTask {@link Threads#schedule(ShoulderPeriodicTask)}
+     * @deprecated 请自定义 PeriodicTask {@link Threads#schedule(PeriodicTask)}
      */
     public static ScheduledFuture<?> schedule(@NonNull String taskName, @NonNull Runnable task, @NonNull Instant firstExecutionTime, @Nullable BiFunction<Instant, Integer, Instant> executionPeriodCalculator, ExecutorService executor) {
-        ShoulderPeriodicTask periodicTask = new ShoulderPeriodicTask() {
+        PeriodicTask periodicTask = new PeriodicTask() {
             @Override
             public String getTaskName() {
                 return taskName;
@@ -133,7 +133,7 @@ public class Threads {
      *
      * @param periodicTask 要执行的任务
      */
-    public static ScheduledFuture<?> schedule(ShoulderPeriodicTask periodicTask) {
+    public static ScheduledFuture<?> schedule(PeriodicTask periodicTask) {
         ensureInit();
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "schedule", true);
@@ -180,7 +180,7 @@ public class Threads {
      * @param executorService    任务执行器
      */
     public static void execute(String taskName, Runnable runnable, Instant exceptedFinishTime, Consumer<TaskInfo> exceptionCallBack, ExecutorService executorService) {
-        execute(new ShoulderCallbackTask() {
+        execute(new AsyncTask() {
             @Override
             public String getTaskName() {
                 return taskName;
@@ -195,7 +195,7 @@ public class Threads {
                 if (exceptionCallBack != null) {
                     exceptionCallBack.accept(task);
                 } else {
-                    ShoulderCallbackTask.super.handleException(task, e);
+                    AsyncTask.super.handleException(task, e);
                 }
             }
             @Override
@@ -203,7 +203,7 @@ public class Threads {
                 if (exceptionCallBack != null) {
                     exceptionCallBack.accept(task);
                 } else {
-                    ShoulderCallbackTask.super.handleTimeout(task);
+                    AsyncTask.super.handleTimeout(task);
                 }
             }
             @Override
@@ -211,7 +211,7 @@ public class Threads {
                 if (exceptionCallBack != null) {
                     exceptionCallBack.accept(task);
                 } else {
-                    ShoulderCallbackTask.super.handleCancelled(task);
+                    AsyncTask.super.handleCancelled(task);
                 }
             }
 
@@ -227,7 +227,7 @@ public class Threads {
         });
     }
 
-    public static void execute(ShoulderCallbackTask task) {
+    public static void execute(AsyncTask task) {
         String taskName = task.getTaskName();
         Instant exceptedFinishTime = task.exceptedFinishTime();
         Instant now = Instant.now();

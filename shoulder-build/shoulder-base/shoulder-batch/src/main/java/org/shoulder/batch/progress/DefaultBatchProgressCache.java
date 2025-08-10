@@ -1,6 +1,6 @@
 package org.shoulder.batch.progress;
 
-import org.shoulder.core.concurrent.ShoulderPeriodicTask;
+import org.shoulder.core.concurrent.PeriodicTask;
 import org.shoulder.core.concurrent.Threads;
 import org.springframework.cache.Cache;
 
@@ -69,7 +69,7 @@ public class DefaultBatchProgressCache implements BatchProgressCache {
             progressCache.put(task.toProgressRecord().getId(), task);
             return;
         }
-        ShoulderPeriodicTask flushBatchProgressTask = new ShoulderPeriodicTask() {
+        PeriodicTask flushBatchProgressTask = new PeriodicTask() {
 
             private final String taskName = "flushBatchProgressTask-" + task.toProgressRecord().getId();
 

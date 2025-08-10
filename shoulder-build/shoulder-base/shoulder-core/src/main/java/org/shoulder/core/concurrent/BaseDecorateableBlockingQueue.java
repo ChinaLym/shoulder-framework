@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 装饰器-阻塞队列 base
  * 队列内不能有多个 null 元素
+ *
+ * @author lym
  */
 public abstract class BaseDecorateableBlockingQueue<E> implements BlockingQueue<E> {
 
