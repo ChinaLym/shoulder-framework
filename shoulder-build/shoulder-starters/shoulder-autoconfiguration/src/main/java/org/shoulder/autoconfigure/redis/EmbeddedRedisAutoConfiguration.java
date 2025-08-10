@@ -4,6 +4,7 @@ import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.AddressUtils;
 import org.shoulder.core.util.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,7 +31,9 @@ public class EmbeddedRedisAutoConfiguration {
     @Bean
     @Nullable
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public RedisServer redisServer(ShoulderRedisProperties shoulderRedisProperties) {
+    public RedisServer redisServer(ShoulderRedisProperties shoulderRedisProperties,
+                                   @Value("${spring.data.redis.port:6379}")Integer redisPort,
+                                   @Value("${spring.data.redis.password:}")String redisPwd) {
         ShoulderRedisProperties.EmbeddedRedisProperties embeddedRedisProperties = shoulderRedisProperties.getEmbedded();
         try {
             // 默认仅 本机访问，其他 ip 机器无法访问内嵌 redis
@@ -43,11 +46,20 @@ public class EmbeddedRedisAutoConfiguration {
 
             // java进程退出时，自动关闭 redisServer
             //Runtime.getRuntime().addShutdownHook(new Thread(redisServer::stop));
+
             boolean noPwdNotLocal = !AddressUtils.LOCAL_HOST_IP4.equals(embeddedRedisProperties.getBind()) && StringUtils.containsNone(embeddedRedisProperties.getConfiguration(), "requirepass ");
             ShoulderLoggers.SHOULDER_CONFIG.info("EmbeddedRedis active on {}:{}.", embeddedRedisProperties.getBind(), embeddedRedisProperties.getPort());
             if (noPwdNotLocal) {
                 ShoulderLoggers.SHOULDER_CONFIG.warn("Recommend set a password for the redisServer!");
             }
+
+            // 检查 redis 连接配置，是否和本机一致，不一致可能导致 RedisTemplate 连不上内嵌 redis 或连的不是内嵌 redis
+            boolean portDiff = !redisPort.equals(embeddedRedisProperties.getPort());
+            boolean pwdDiff = embeddedRedisProperties.getConfiguration().contains("requirepass ") && !embeddedRedisProperties.getConfiguration().contains(redisPwd);
+            if(portDiff || pwdDiff) {
+                ShoulderLoggers.SHOULDER_CONFIG.error("Please check your configuration, spring.redis.host/ip/password is diff with shoulder.redis.embedded.port/configuration !");
+            }
+
             return redisServer;
         } catch (Exception e) {
             // 用 mock 肯定时本地/单侧，启动失败打印异常

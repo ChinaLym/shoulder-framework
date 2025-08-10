@@ -52,27 +52,26 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
             return bean;
         }
         log.info("EnhanceableExecutorSupport: Wrapped Executor " + beanName);
-        // spring 的可监听的异步线程池
+
         if (bean instanceof ThreadPoolTaskExecutor) {
-            // Spring.ThreadPoolTaskExecutor
+            // Spring 线程池
             return wrapThreadPoolTaskExecutor(bean);
         } else if (bean instanceof ScheduledExecutorService) {
-            // JDK.ScheduledExecutorService
+            // JDK 任务调度
             return wrapScheduledExecutorService(bean);
+        } else if (bean instanceof ThreadPoolExecutor) {
+            // JDK 线程池
+            return wrapThreadPoolExecutor(bean);
         } else if (bean instanceof ExecutorService) {
-            // JDK.i.ScheduledExecutorService、ExecutorService
+            // JDK 线程池接口：ExecutorService
             return wrapExecutorService(bean);
         } else if (bean instanceof AsyncTaskExecutor) {
-            // Spring.ThreadPoolTaskScheduler、AsyncTaskExecutor
+            // Spring 任务调度器 ThreadPoolTaskScheduler、AsyncTaskExecutor
             return wrapAsyncTaskExecutor(bean);
-        } else if (bean instanceof Executor) {
+        } else {
             // jdk 的执行器
             return wrapExecutor(bean);
-        } else if (bean instanceof ThreadPoolExecutor) {
-            // jdk 的线程池
-            return wrapThreadPoolExecutor(bean);
         }
-        return bean;
     }
     private Object wrapThreadPoolTaskExecutor(Object bean) {
         ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;
@@ -130,8 +129,10 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
     }
 
     private Object wrapThreadPoolExecutor(Object bean) {
-        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
-        boolean cglibProxy = !classFinal;
+        // cglib 不支持这个类，直接用装饰器
+//        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
+//        boolean methodsFinal = anyFinalMethods(bean);
+        boolean cglibProxy = false;
         ThreadPoolExecutor executor = (ThreadPoolExecutor) bean;
         return createThreadPoolExecutorProxy(bean, cglibProxy, executor);
     }
@@ -174,16 +175,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
     }
 
     private Object createExecutorServiceProxy(Object bean, boolean cglibProxy, ExecutorService executor) {
-        return getProxiedObject(bean, cglibProxy, executor, () -> {
-            if (executor instanceof ScheduledExecutorService) {
-                // todo 什么常见会来这里？
-                return EnhanceableScheduledExecutorService.wrap(executor);
-            }
-            return EnhanceableExecutorService.wrap(executor);
-        });
-    }
-    Supplier<Executor> createThreadPoolTaskSchedulerProxySupplier(ThreadPoolTaskScheduler executor, String beanName) {
-        return () -> EnhanceableThreadPoolTaskScheduler.wrap(executor);
+        return getProxiedObject(bean, cglibProxy, executor, () -> EnhanceableExecutorService.wrap(executor));
     }
 
     private Object getProxiedObject(Object bean, boolean cglibProxy, Executor executor, Supplier<Executor> supplier) {

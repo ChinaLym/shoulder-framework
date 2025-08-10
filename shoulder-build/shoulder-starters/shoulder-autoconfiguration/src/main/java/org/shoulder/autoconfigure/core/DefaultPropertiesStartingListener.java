@@ -42,6 +42,7 @@ public class DefaultPropertiesStartingListener implements ApplicationListener<Ap
         properties.putIfAbsent("shoulder.application.charset", "UTF-8");
         properties.putIfAbsent("shoulder.application.defaultLocale", "zh_CN");
         properties.putIfAbsent("shoulder.application.timeZone", "GMT+8:00");
+        properties.putIfAbsent("shoulder.application.cacheKeySplit", ":");
 
         // 默认关闭 banner
         properties.put("mybatis-plus.global-config.banner=false", "false");

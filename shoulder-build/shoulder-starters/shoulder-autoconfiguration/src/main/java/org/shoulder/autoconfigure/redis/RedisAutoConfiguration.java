@@ -1,22 +1,21 @@
 package org.shoulder.autoconfigure.redis;
 
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.shoulder.cluster.redis.annotation.AppExclusive;
 import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * redis相关配置，提供 string 和 string-object 两种
@@ -26,6 +25,7 @@ import jakarta.annotation.Nonnull;
  */
 @AutoConfiguration(before = org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class)
 @ConditionalOnClass(RedisTemplate.class)
+@EnableConfigurationProperties(ShoulderRedisProperties.class)
 public class RedisAutoConfiguration {
 
     /*@SuppressWarnings("unchecked")
@@ -40,12 +40,13 @@ public class RedisAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(StringRedisSerializer.class)
     public WithPrefixKeyStringRedisSerializer withPrefixKeyStringRedisSerializer(ShoulderRedisProperties shoulderRedisProperties) {
-        String redisKeyPrefix = shoulderRedisProperties.getKeyPrefix();
-        if (StringUtils.isNotEmpty(redisKeyPrefix) && !redisKeyPrefix.endsWith(AppInfo.cacheKeySplit())) {
-            redisKeyPrefix = redisKeyPrefix + AppInfo.cacheKeySplit();
+        String redisKeyPrefixInCfg = shoulderRedisProperties.getKeyPrefix();
+        String prefix = StringUtils.isNotEmpty(redisKeyPrefixInCfg) ? redisKeyPrefixInCfg : AppInfo.appId();
+        if (!prefix.endsWith(AppInfo.cacheKeySplit())) {
+            prefix = prefix + AppInfo.cacheKeySplit();
         }
-        ShoulderLoggers.SHOULDER_CONFIG.info("redis key prefix set to [{}].", redisKeyPrefix);
-        return new WithPrefixKeyStringRedisSerializer(redisKeyPrefix);
+        ShoulderLoggers.SHOULDER_CONFIG.info("redis key prefix set to [{}].", prefix);
+        return new WithPrefixKeyStringRedisSerializer(redisKeyPrefixInCfg);
     }
 
     /**

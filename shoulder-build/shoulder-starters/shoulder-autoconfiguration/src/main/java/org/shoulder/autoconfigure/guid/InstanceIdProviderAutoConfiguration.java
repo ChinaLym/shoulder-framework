@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 @AutoConfiguration
 @ConditionalOnClass(InstanceIdProvider.class)
-@AutoConfigureAfter(RedisAutoConfiguration.class)
+@AutoConfigureAfter({RedisAutoConfiguration.class, InstanceIdProviderAutoConfiguration.RedisInstanceIdProviderConfiguration.class})
 @EnableConfigurationProperties(InstanceIdProperties.class)
 public class InstanceIdProviderAutoConfiguration {
 
@@ -53,7 +53,7 @@ public class InstanceIdProviderAutoConfiguration {
     public InstanceIdProvider fixedInstanceIdProvider() {
         if (AppInfo.cluster() && Objects.equals(instanceIdProperties.getType(), 0L)) {
             // 集群模式下，应确保每个进程 instantId 不同，要么在启动参数手动分配不同值，或者采用 REDIS 等其他方式自动分配 instantId
-            log.warn("Active cluster mode, but instanceId is DEFAULT VALUE: 0! Please change shoulder.instance.id in application.properties!");
+            log.warn("Active cluster mode, but instanceId is DEFAULT FIXED VALUE: 0! Please change shoulder.instance.id in application.properties!");
         }
         return new FixedInstanceIdProvider(instanceIdProperties.getId());
     }
@@ -62,9 +62,11 @@ public class InstanceIdProviderAutoConfiguration {
     /**
      * 集群时，引入 redis 情况
      */
-    @ConditionalOnCluster(cluster = true)
+    @ConditionalOnCluster
     @ConditionalOnClass({RedisTemplate.class, org.shoulder.cluster.guid.RedisInstanceIdProvider.class})
+    @AutoConfigureAfter({RedisAutoConfiguration.class})
     @ConditionalOnProperty(value = InstanceIdProperties.PREFIX + ".type", havingValue = "redis", matchIfMissing = true)
+    @EnableConfigurationProperties(InstanceIdProperties.class)
     public static class RedisInstanceIdProviderConfiguration {
 
         /**

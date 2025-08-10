@@ -6,6 +6,7 @@
 
 ** Spring Boot （3.2 -> 3.3）小版本升级，部分依赖稳定性小版本升级
 *** jna: 5.17.0、hutool 5.8.39、guava:33.4.8-jre、bcprov:1.81、caffeine:3.1.8、tika:2.9.4、opencsv:5.9、lombok:1.18.38、druid:1.2.23、redisson:3.45.1
+*** commons-xxx 升级最新安全版
 *** javax -> jakarta
 
 * Core
@@ -17,7 +18,7 @@
 ** 优化: Enhanceable 新支持增强 支持 ScheduledExecutorService、ScheduledThreadPoolExecutor、ThreadPoolTaskExecutor、ThreadPoolTaskScheduler；移除 Spring 废弃的 ListenableTaskExecutor 支持
 ** 优化: AddressUtils 选择ip结果更准、更稳定
 ** 优化: 支持配置缓存key 分隔符（`shoulder.application.cacheKeySplit`）
-** 优化: EmbeddedRedis 支持配置启动，默认不启动
+** 优化: EmbeddedRedis 支持配置控制启动、参数，默认不启动（`shoulder.redis.embedded.enable=false`）
 
 * Cluster
 

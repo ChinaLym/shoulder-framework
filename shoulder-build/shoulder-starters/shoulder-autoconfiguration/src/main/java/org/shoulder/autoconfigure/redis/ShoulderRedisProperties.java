@@ -24,7 +24,7 @@ public class ShoulderRedisProperties {
      * 注意：scan 操作时需注意手动添加前缀【keyPrefix + AppInfo.cacheKeySplit()】
      * 原因：redis集群部署时key路由问题, 无论 Spring.redisTemplate / Jedis 都默认不支持集群 scan；需要手动遍历分片并拼接 key前缀再扫描
      */
-    private String keyPrefix = "${shoulder.application.id}";
+    private String keyPrefix;
 
     private EmbeddedRedisProperties embedded = new EmbeddedRedisProperties();
 

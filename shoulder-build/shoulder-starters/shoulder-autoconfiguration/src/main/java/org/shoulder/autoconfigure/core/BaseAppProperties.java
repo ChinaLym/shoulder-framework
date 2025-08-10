@@ -66,12 +66,12 @@ public class BaseAppProperties {
          * 时区，默认 GMT+8:00（北京/上海/台北时间）
          */
         private String timeZone = "GMT+8:00";
-    }
 
-    /**
-     * 缓存 key 分隔符，默认冒号
-     */
-    private String cacheKeySplit = ":";
+        /**
+         * 缓存 key 分隔符，默认冒号
+         */
+        private String cacheKeySplit = ":";
+    }
 
     private ShoulderConcurrentProperties concurrent = new ShoulderConcurrentProperties();
 

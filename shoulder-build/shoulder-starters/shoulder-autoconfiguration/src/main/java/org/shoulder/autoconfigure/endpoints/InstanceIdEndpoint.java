@@ -1,5 +1,6 @@
 package org.shoulder.autoconfigure.endpoints;
 
+import org.shoulder.autoconfigure.guid.InstanceIdProviderAutoConfiguration;
 import org.shoulder.core.guid.InstanceIdProvider;
 import org.shoulder.web.annotation.SkipResponseWrap;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -14,7 +15,7 @@ import java.util.Map;
  *
  * @author lym
  */
-@AutoConfiguration
+@AutoConfiguration(after = {InstanceIdProviderAutoConfiguration.class, InstanceIdProviderAutoConfiguration.RedisInstanceIdProviderConfiguration.class})
 @Endpoint(id = "instanceId") // 不能驼峰
 public class InstanceIdEndpoint {
 
