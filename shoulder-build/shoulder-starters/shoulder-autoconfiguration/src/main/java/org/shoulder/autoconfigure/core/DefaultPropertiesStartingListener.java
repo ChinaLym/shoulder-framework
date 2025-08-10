@@ -10,6 +10,12 @@ import java.util.Properties;
 
 /**
  * 设置默认配置项
+ * 此处动作发生在 Spring 生命周期较早阶段：加载了环境配置，但还未加载 application.properties；在此之后，Spring 还会做以下事情：
+ * 1. 加载配置文件（application.properties 或 application.yml，并将配置解析为 PropertySource）
+ * 2. 处理 Profile（激活 Profile 并加载 Profile 特定的配置）
+ * 3. 解析  ${} 占位符、设置默认值。
+ * 4. 准备 Environment，确保 Environment 包含完整的配置信息。
+ * 5. 触发事件 ApplicationEnvironmentPreparedEvent，通知监听器 Environment 已准备就绪。
  *
  * @author lym
  */
@@ -46,6 +52,8 @@ public class DefaultPropertiesStartingListener implements ApplicationListener<Ap
 
         // 默认关闭 banner
         properties.put("mybatis-plus.global-config.banner=false", "false");
+
+        // todo P1【开发】security token 认证响应默认为 json
 
         return properties;
     }

@@ -113,9 +113,10 @@ public class Threads {
         if (log.isDebugEnabled()) {
             StackTraceElement caller = LogHelper.findStackTraceElement(Threads.class, "schedule", true);
             String callerName = caller == null ? "" : LogHelper.genCodeLocationLinkFromStack(caller);
-            log.debug("{} creat delay task will run at {}", callerName, periodicTask.firstExecutionTime().toEpochMilli());
+            log.debug("{} creat delay task will run at {}", callerName, periodicTask.firstExecutionTime() == null ? "now" : periodicTask.firstExecutionTime().toEpochMilli());
         }
-        return TASK_SCHEDULER.schedule(new ShoulderPeriodicTaskRunnable(periodicTask, TASK_SCHEDULER, periodicTask.getExecutorService()), periodicTask.firstExecutionTime());
+        return TASK_SCHEDULER.schedule(new ShoulderPeriodicTaskRunnable(periodicTask, TASK_SCHEDULER, periodicTask.getExecutorService()),
+                periodicTask.firstExecutionTime() == null ? Instant.EPOCH : periodicTask.firstExecutionTime());
     }
 
     // ---------------- Execute -------------------
@@ -183,10 +184,10 @@ public class Threads {
             if (isFirstDetect) {
                 TaskInfo t = new TaskInfo(taskName, taskSubmitTime, runStartTimeRef, runEndTimeRef, Instant.now(), threadRef, errorRef, allowRun);
 
-                if(!allowRun.get()) {
+                if (!allowRun.get()) {
                     // 取消
                     task.handleCancelled(t);
-                } else if(timeout.get()) {
+                } else if (timeout.get()) {
                     // 超时
                     task.handleTimeout(t);
                 } else {
@@ -239,7 +240,7 @@ public class Threads {
             Threads.schedule("D_" + taskName, () -> {
                 timeout.set(true);
                 detectRun.run();
-                }, exceptedFinishTime, null, EXECUTOR_SERVICE);
+            }, exceptedFinishTime, null, EXECUTOR_SERVICE);
         }
     }
 

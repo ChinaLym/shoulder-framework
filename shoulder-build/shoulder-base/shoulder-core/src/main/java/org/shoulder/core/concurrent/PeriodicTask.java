@@ -24,7 +24,7 @@ public interface PeriodicTask extends NamedPoolTask {
      * @return null 或小与当前时间则立即执行
      */
     default Instant firstExecutionTime() {
-        return null;
+        return Instant.EPOCH;
     }
 
     /**

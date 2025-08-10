@@ -75,6 +75,10 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
     final String token = StringUtils.uuid32();
 
     public RedisInstanceIdProvider(String idAssignCacheKey, String machineInfoKeyPrefix, long maxId, Duration heartbeatPeriod, Duration expiredPeriod, RedisTemplate redisTemplate) {
+        AssertUtils.notBlank(idAssignCacheKey, CommonErrorCodeEnum.CODING);
+        AssertUtils.notBlank(machineInfoKeyPrefix, CommonErrorCodeEnum.CODING);
+        AssertUtils.notEquals(idAssignCacheKey, machineInfoKeyPrefix, CommonErrorCodeEnum.CODING);
+
         this.idAssignCacheKey = idAssignCacheKey;
         this.machineInfoKeyPrefix = machineInfoKeyPrefix;
         this.maxId = maxId;
@@ -163,15 +167,23 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                             -- ARGV[5]: IP (STR)
                             -- ARGV[6]: HOST (STR)
                             
+                            if #KEYS < 2 then
+                                return -10  -- key 参数不足
+                            end
+                            if #ARGV < 6 then
+                                return -11  -- arg 参数不足
+                            end
+                            
                             local tokenInfo = redis.call('HGET', KEYS[2], "token");
-                            local tokenRight = #macInfo > 0 and tokenInfo[1] == ARGV[3]
+                            local tokenRight = tokenInfo ~= nil and #tokenInfo > 0 and tokenInfo == ARGV[3]
                             if tokenInfo ~=nil and not tokenRight then
                                 return -2
                             end
                             
                             local currentSecondStamp = redis.call('time')[1];
                             local lastHeartBeatTimeStamp = redis.call('ZSCORE', KEYS[1], ARGV[1]);
-                            local heartRight = #lastHeartBeatTimeStamp > 0 and lastHeartBeatTimeStamp < currentSecondStamp - tonumber(ARGV[2])
+                            local heartRight = tonumber(lastHeartBeatTimeStamp) > tonumber(currentSecondStamp) - tonumber(ARGV[2])
+
                             if not heartRight then
                                 return -3
                             end
@@ -180,10 +192,10 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                             redis.call('HSET', KEYS[2], "ip", ARGV[5]);
                             redis.call('HSET', KEYS[2], "host", ARGV[6]);
                             local opResult = redis.call('ZADD', KEYS[1], "CH", currentSecondStamp, ARGV[1]);
-                            if(opResult ~= 1) then
-                                instanceId = -1
+                            if(opResult == 1) then
+                                instanceId = 1
                             else
-                                return 1
+                                return -1
                             end
                             """;
 
@@ -228,25 +240,33 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                             -- ARGV[2]: expiredSeconds (INT)
                             -- ARGV[3]: token (INT)
                             
+                            if #KEYS < 2 then
+                                return -10  -- key 参数不足
+                            end
+                            if #ARGV < 3 then
+                                return -11  -- arg 参数不足
+                            end
+                            
                             local tokenInfo = redis.call('HGET', KEYS[2], "token");
-                            local tokenRight = #macInfo > 0 and tokenInfo[1] == ARGV[3]
+                            local tokenRight = tokenInfo ~= nil and #tokenInfo > 0 and tokenInfo == ARGV[3]
                             if tokenInfo ~=nil and not tokenRight then
                                 return -2
                             end
                             
                             local currentSecondStamp = redis.call('time')[1];
                             local lastHeartBeatTimeStamp = redis.call('ZSCORE', KEYS[1], ARGV[1]);
-                            local heartRight = #lastHeartBeatTimeStamp > 0 and lastHeartBeatTimeStamp < currentSecondStamp - tonumber(ARGV[2])
+                            local heartRight = tonumber(lastHeartBeatTimeStamp) > tonumber(currentSecondStamp) - tonumber(ARGV[2])
+
                             if not heartRight then
                                 return -3
                             end
                             
                             redis.call('DEL', KEYS[2]);
                             local opResult = redis.call('ZREM', KEYS[1], ARGV[1]);
-                            if(opResult ~= 1) then
-                                instanceId = -1
+                            if(opResult == 1) then
+                                instanceId = 1
                             else
-                                return 1
+                                return -1
                             end
                             """;
         RedisScript<Long> releaseInstanceIdScript = new DefaultRedisScript<>(luaScript, Long.class);
@@ -272,6 +292,9 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
         FAIL_ALLOW_RETRY(-1),
         FAIL_FOR_PRIVILEGE_DENIED(-2),
         FAIL_FOR_EXPIRED(-3),
+        // todo 1.2
+        FAIL_FOR_KEY_ERROR(-10),
+        FAIL_FOR_ARG_ERROR(-11),
         FAIL_FOR_UNKNOWN_REASON(-99),
         ;
 

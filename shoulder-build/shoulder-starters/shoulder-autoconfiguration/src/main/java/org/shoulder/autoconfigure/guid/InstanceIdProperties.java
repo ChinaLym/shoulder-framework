@@ -37,7 +37,7 @@ public class InstanceIdProperties {
         /**
          * redis keyName
          */
-        private String keyName = "{meta}:instance:assign";
+        private String assignKey = "{meta}:instance:assign";
         /**
          * redis machineInfoKeyPrefix
          * 注意：修改时需要确保 同一个Lua 脚本中的多个 key 能够位于同一个 hash 槽中！(Redis集群模式限制,若不同在使用redis集群模式时将报错)

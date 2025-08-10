@@ -78,8 +78,8 @@ public class InstanceIdProviderAutoConfiguration {
         @ConditionalOnMissingBean
         public InstanceIdProvider instanceIdProvider(RedisTemplate redisTemplate, InstanceIdProperties instanceIdProperties) {
             return new RedisInstanceIdProvider(
-                    instanceIdProperties.getRedis().getKeyName(),
-                    instanceIdProperties.getRedis().getKeyName(),
+                    instanceIdProperties.getRedis().getAssignKey(),
+                    instanceIdProperties.getRedis().getMachineInfoKeyPrefix(),
                     instanceIdProperties.getRedis().getMax(),
                     instanceIdProperties.getRedis().getHeartbeatPeriod(),
                     instanceIdProperties.getRedis().getExpiredPeriod(),

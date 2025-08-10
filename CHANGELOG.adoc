@@ -1,5 +1,9 @@
 = 更新记录
 
+== 1.3.0 （PLAN）
+
+TODO 检查 key 需要手动分片的（一个功能依赖多个 key）
+
 == 1.2.0 （DEV）
 
 * Dependency 兼容性升级
@@ -11,21 +15,22 @@
 
 * Core
 
-** ⚠️ 优化: LockInfo 默认在 key 前添加 lock 前缀
-** ⚠️ 优化: Threads execute、delay、schedule、executeAndWait 方法支持指定线程池运行，规范 Threads 使用；移除 NotifyOnFinish.Runnable/Callable（使用 JDK.CompletableFuture）
-** 功能: 支持异步线程若缺少 traceId 将自动设置，并新增 relatedTraceId，允许关联异步任务trace、触发trace
-** 优化: PeriodicTask 支持使用异步线程池
+** ⚠️ 优化: LockInfo 默认在 key 前添加 lock 前缀  TODO CHECK
+** ⚠️ 优化: TODO 继续完善 Threads execute、delay、schedule、executeAndWait 方法支持指定线程池运行，规范 Threads 使用；移除 NotifyOnFinish.Runnable/Callable（使用 JDK.CompletableFuture）
+** 功能: TODO CHECK 支持异步线程若缺少 traceId 将自动设置（一次性异步任务默认继承调用处 trace、周期性任务默认新建trace），并新增 relatedTraceId，允许关联异步任务trace、触发trace
+** 优化: PeriodicTask 支持使用异步线程池 TODO CHECK
 ** 优化: Enhanceable 新支持增强 支持 ScheduledExecutorService、ScheduledThreadPoolExecutor、ThreadPoolTaskExecutor、ThreadPoolTaskScheduler；移除 Spring 废弃的 ListenableTaskExecutor 支持
 ** 优化: AddressUtils 选择ip结果更准、更稳定
 ** 优化: 支持配置缓存key 分隔符（`shoulder.application.cacheKeySplit`）
 ** 优化: EmbeddedRedis 支持配置控制启动、参数，默认不启动（`shoulder.redis.embedded.enable=false`）
 
-* Cluster
+* Cluster TODO CHECK
 
 ** 功能: 升级 RedisInstanceIdProvider 提供企业级 instantId 分配策略（支持 redis 集群、增加权限、更精准的报错提示和排查指南等）。
 
 * 其他
 ** 优化: 部分配置项添加提示
+** ⚠️ 鲁棒性优化: 提前识别hack玩法导致的缺少关键配置的场景，将阻断启动并提示，而非到运行时使用者发现预期不符（如 AppInfo#appId = UNKNOWN）
 *** `shoulder.redis.key-prefix` 默认以 `appId:` 开头，
 *** `shoulder.db.sequence.table-name` 配置添加开关，默认 `tb_sequence`
 *** `shoulder.application.xx` 重构
