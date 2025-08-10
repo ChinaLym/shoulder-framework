@@ -155,7 +155,7 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                 String ip = AddressUtils.getIp();
                 String hostname = AddressUtils.getHostname();
 
-                // 获取 info，检查和当前 mac 地址相同才更新
+                // 获取 info，检查和当前 mac 地址相同才更新 todo 1.2 fixme
                 final String luaScript =
                     """
                             -- KEYS[1]: idAssignCacheKey (ZSET)
@@ -167,6 +167,7 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                             -- ARGV[5]: IP (STR)
                             -- ARGV[6]: HOST (STR)
                             
+                            -- 参数校验
                             if #KEYS < 2 then
                                 return -10  -- key 参数不足
                             end
@@ -174,28 +175,32 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                                 return -11  -- arg 参数不足
                             end
                             
-                            local tokenInfo = redis.call('HGET', KEYS[2], "token");
+                            -- 校验 token 是否匹配
+                            local tokenInfo = redis.call('HGET', KEYS[2], "token")
                             local tokenRight = tokenInfo ~= nil and #tokenInfo > 0 and tokenInfo == ARGV[3]
-                            if tokenInfo ~=nil and not tokenRight then
-                                return -2
+                            if tokenInfo ~= nil and not tokenRight then
+                                return -2  -- 权限不足
                             end
                             
-                            local currentSecondStamp = redis.call('time')[1];
-                            local lastHeartBeatTimeStamp = redis.call('ZSCORE', KEYS[1], ARGV[1]);
-                            local heartRight = tonumber(lastHeartBeatTimeStamp) > tonumber(currentSecondStamp) - tonumber(ARGV[2])
-
+                            -- 获取当前时间戳和最后心跳时间
+                            local currentSecondStamp = redis.call('time')[1]
+                            local lastHeartBeatTimeStamp = redis.call('ZSCORE', KEYS[1], ARGV[1])
+                            local heartRight = lastHeartBeatTimeStamp == nil or tonumber(lastHeartBeatTimeStamp) > tonumber(currentSecondStamp) - tonumber(ARGV[2])
                             if not heartRight then
-                                return -3
+                                return -3  -- 心跳太慢了，超时
                             end
                             
-                            redis.call('HSET', KEYS[2], "mac", ARGV[4]);
-                            redis.call('HSET', KEYS[2], "ip", ARGV[5]);
-                            redis.call('HSET', KEYS[2], "host", ARGV[6]);
-                            local opResult = redis.call('ZADD', KEYS[1], "CH", currentSecondStamp, ARGV[1]);
-                            if(opResult == 1) then
-                                instanceId = 1
+                            -- 更新机器信息
+                            redis.call('HSET', KEYS[2], "mac", ARGV[4])
+                            redis.call('HSET', KEYS[2], "ip", ARGV[5])
+                            redis.call('HSET', KEYS[2], "host", ARGV[6])
+                            
+                            -- 更新 ZSET 中的时间戳
+                            local opResult = redis.call('ZADD', KEYS[1], "CH", currentSecondStamp, ARGV[1])
+                            if opResult == 1 then
+                                return 1
                             else
-                                return -1
+                                return -1  -- 更新失败
                             end
                             """;
 
@@ -247,26 +252,27 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                                 return -11  -- arg 参数不足
                             end
                             
-                            local tokenInfo = redis.call('HGET', KEYS[2], "token");
+                            -- 校验 token 是否匹配
+                            local tokenInfo = redis.call('HGET', KEYS[2], "token")
                             local tokenRight = tokenInfo ~= nil and #tokenInfo > 0 and tokenInfo == ARGV[3]
-                            if tokenInfo ~=nil and not tokenRight then
-                                return -2
+                            if tokenInfo ~= nil and not tokenRight then
+                                return -2  -- 权限不足
                             end
                             
-                            local currentSecondStamp = redis.call('time')[1];
-                            local lastHeartBeatTimeStamp = redis.call('ZSCORE', KEYS[1], ARGV[1]);
-                            local heartRight = tonumber(lastHeartBeatTimeStamp) > tonumber(currentSecondStamp) - tonumber(ARGV[2])
-
+                            -- 获取当前时间戳和最后心跳时间
+                            local currentSecondStamp = redis.call('time')[1]
+                            local lastHeartBeatTimeStamp = redis.call('ZSCORE', KEYS[1], ARGV[1])
+                            local heartRight = lastHeartBeatTimeStamp == nil or tonumber(lastHeartBeatTimeStamp) > tonumber(currentSecondStamp) - tonumber(ARGV[2])
                             if not heartRight then
-                                return -3
+                                return -3  -- 心跳太慢了，超时
                             end
                             
                             redis.call('DEL', KEYS[2]);
                             local opResult = redis.call('ZREM', KEYS[1], ARGV[1]);
-                            if(opResult == 1) then
-                                instanceId = 1
+                            if opResult == 1 then
+                                return 1
                             else
-                                return -1
+                                return -1  -- 更新失败
                             end
                             """;
         RedisScript<Long> releaseInstanceIdScript = new DefaultRedisScript<>(luaScript, Long.class);
