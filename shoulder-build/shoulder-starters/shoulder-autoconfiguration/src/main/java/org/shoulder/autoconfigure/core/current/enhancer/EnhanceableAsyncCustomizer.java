@@ -25,7 +25,7 @@ public class EnhanceableAsyncCustomizer extends AsyncConfigurerSupport {
     public Executor getAsyncExecutor() {
         return this.delegate.getAsyncExecutor() instanceof EnhanceableExecutorMark ?
             this.delegate.getAsyncExecutor() :
-            new EnhanceableExecutor(this.delegate.getAsyncExecutor());
+                EnhanceableExecutor.wrap(this.delegate.getAsyncExecutor());
     }
 
     @Override

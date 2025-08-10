@@ -17,7 +17,13 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 /**
- * Wrap Spring 任务调度器
+ * Wrap Spring 任务调度器（@Scheduled ）
+ * 对 JDK.ScheduledExecutorService 封装，适合需要定时触发的任务场景。
+ * 提供了任务调度的能力，支持一次性任务、延迟任务以及周期性任务。
+ * ---
+ * 为什么不封装 TaskScheduler？Spring 提供的实现主要是 ThreadPoolTaskScheduler，
+ * 此外 ConcurrentTaskScheduler（不支持 cron） 也是一个选择，但通常不会使用；结合开发习惯，
+ * 使用者通常直接依赖 ThreadPoolTaskScheduler 类而非接口，故如此实现
  *
  * @author lym
  */
@@ -58,7 +64,7 @@ public class EnhanceableThreadPoolTaskScheduler extends ThreadPoolTaskScheduler 
 	 *
 	 * @param delegate delegate to wrap
 	 */
-	static EnhanceableThreadPoolTaskScheduler wrap(@NonNull ThreadPoolTaskScheduler delegate) {
+	public static EnhanceableThreadPoolTaskScheduler wrap(@NonNull ThreadPoolTaskScheduler delegate) {
 		return CACHE.computeIfAbsent(delegate,
 				e -> new EnhanceableThreadPoolTaskScheduler(delegate));
 	}

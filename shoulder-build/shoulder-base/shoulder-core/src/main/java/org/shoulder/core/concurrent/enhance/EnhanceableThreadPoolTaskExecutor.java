@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 /**
- * JDK 并发线程池
+ * Spring 并发线程池（@Async）
+ * 封装 JDK.ThreadPoolExecutor 线程池，不提供定时任务或周期性任务调度功能
  *
  * @author lym
  */

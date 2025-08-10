@@ -48,7 +48,7 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
     }
 
     <E extends Executor> E executor(E executor) {
-        return (E) new EnhanceableExecutor(executor);
+        return (E) EnhanceableExecutor.wrap(executor);
     }
 
 }

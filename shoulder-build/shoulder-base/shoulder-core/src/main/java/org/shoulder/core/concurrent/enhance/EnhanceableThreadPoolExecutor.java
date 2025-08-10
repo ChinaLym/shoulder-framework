@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * 包装 ThreadPoolExecutor
+ * 包装 JDK.ThreadPoolExecutor 默认线程池
  *
  * @author lym
  */

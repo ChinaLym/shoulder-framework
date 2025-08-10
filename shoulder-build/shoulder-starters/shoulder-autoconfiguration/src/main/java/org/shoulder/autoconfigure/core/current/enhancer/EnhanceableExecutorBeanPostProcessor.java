@@ -9,17 +9,16 @@ import org.springframework.aop.framework.AopConfigException;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.core.task.AsyncListenableTaskExecutor;
 import org.springframework.core.task.AsyncTaskExecutor;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.util.Assert;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.Map;
+import java.util.concurrent.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -31,6 +30,8 @@ import java.util.function.Supplier;
 public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
 
     private static final Logger log = ShoulderLoggers.SHOULDER_CONFIG;
+
+    private static final Map<Executor, Executor> CACHE = new ConcurrentHashMap<>();
 
     // todo 1.2
 //    private final Supplier<List<String>> ignoredBeans = () -> C.ignoredBeans;
@@ -52,29 +53,41 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
         }
         log.info("EnhanceableExecutorSupport: Wrapped Executor " + beanName);
         // spring 的可监听的异步线程池
-        if (bean instanceof AsyncListenableTaskExecutor) {
-            return wrapAsyncListenableTaskExecutor(bean);
-        }
-        // spring 的可监听的异步线程池
-        else if (bean instanceof AsyncTaskExecutor) {
+        if (bean instanceof ThreadPoolTaskExecutor) {
+            // Spring.ThreadPoolTaskExecutor
+            return wrapThreadPoolTaskExecutor(bean);
+        } else if (bean instanceof ScheduledExecutorService) {
+            // JDK.ScheduledExecutorService
+            return wrapScheduledExecutorService(bean);
+        } else if (bean instanceof ExecutorService) {
+            // JDK.i.ScheduledExecutorService、ExecutorService
+            return wrapExecutorService(bean);
+        } else if (bean instanceof AsyncTaskExecutor) {
+            // Spring.ThreadPoolTaskScheduler、AsyncTaskExecutor
             return wrapAsyncTaskExecutor(bean);
-        }
-        // spring 任务执行器 todo 1.2
-//        else if (bean instanceof TaskScheduler) {
-//            return wrapTaskScheduler(bean);
-//        }
-        // jdk 的线程池
-        else if (bean instanceof ThreadPoolExecutor) {
+        } else if (bean instanceof Executor) {
+            // jdk 的执行器
+            return wrapExecutor(bean);
+        } else if (bean instanceof ThreadPoolExecutor) {
+            // jdk 的线程池
             return wrapThreadPoolExecutor(bean);
         }
-        // jdk 的执行器接口
-        else if (bean instanceof ExecutorService) {
-            return wrapExecutorService(bean);
-        }
-        // jdk 的执行器
-        else {
-            return wrapExecutor(bean);
-        }
+        return bean;
+    }
+    private Object wrapThreadPoolTaskExecutor(Object bean) {
+        ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;
+        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
+        boolean methodsFinal = anyFinalMethods(executor);
+        boolean cglibProxy = !classFinal && !methodsFinal;
+        return createThreadPoolTaskExecutorProxy(bean, cglibProxy, executor);
+    }
+    
+    private Object wrapScheduledExecutorService(Object bean) {
+        ScheduledExecutorService executor = (ScheduledExecutorService) bean;
+        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
+        boolean methodFinal = anyFinalMethods(executor);
+        boolean cglibProxy = !classFinal && !methodFinal;
+        return createScheduledExecutorServiceProxy(bean, cglibProxy, executor);
     }
 
 //    private Object wrapTaskScheduler(Object bean) {
@@ -88,16 +101,12 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
     // =========================== 包装 =====================================
 
     private Object wrapExecutor(Object bean) {
-        Method execute = ReflectionUtils.findMethod(bean.getClass(), "execute",
-                Runnable.class);
-        Assert.notNull(execute, () -> "not a executor bean:" + bean.getClass());
-        boolean methodFinal = Modifier.isFinal(execute.getModifiers());
+        boolean methodFinal = anyFinalMethods((Executor)bean);
         boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
         boolean cglibProxy = !methodFinal && !classFinal;
         Executor executor = (Executor) bean;
         try {
-            return createProxy(bean, cglibProxy,
-                    new ExecutorMethodInterceptor<>(executor));
+            return createProxy(bean, cglibProxy, new ExecutorMethodInterceptor<>(executor));
         } catch (AopConfigException ex) {
             if (cglibProxy) {
                 if (log.isDebugEnabled()) {
@@ -105,25 +114,18 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
                             "Exception occurred while trying to create a proxy, falling back to JDK proxy",
                             ex);
                 }
-                return createProxy(bean, false,
-                        new ExecutorMethodInterceptor<>(executor));
+                return createProxy(bean, false, new ExecutorMethodInterceptor<>(executor));
             }
             throw ex;
         }
     }
 
 
-    private Object wrapAsyncListenableTaskExecutor(Object bean) {
-        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
-        boolean cglibProxy = !classFinal;
-        AsyncListenableTaskExecutor executor = (AsyncListenableTaskExecutor) bean;
-        return createAsyncListenableTaskExecutorProxy(bean, cglibProxy, executor);
-    }
-
     private Object wrapAsyncTaskExecutor(Object bean) {
-        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
-        boolean cglibProxy = !classFinal;
         AsyncTaskExecutor executor = (AsyncTaskExecutor) bean;
+        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
+        boolean methodsFinal = anyFinalMethods(executor);
+        boolean cglibProxy = !classFinal && !methodsFinal;
         return createAsyncTaskExecutorProxy(bean, cglibProxy, executor);
     }
 
@@ -135,30 +137,35 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
     }
 
     private Object wrapExecutorService(Object bean) {
-        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
-        boolean cglibProxy = !classFinal;
         ExecutorService executor = (ExecutorService) bean;
+        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
+        boolean methodFinal = anyFinalMethods(executor);
+        boolean cglibProxy = !classFinal && !methodFinal;
         return createExecutorServiceProxy(bean, cglibProxy, executor);
     }
-
-
+    
     // =========================== 包装实现（创建代理） =====================================
 
-    private Object createTaskSchedulerProxy(Object bean, boolean cglibProxy, TaskScheduler executor) {
-        /// todo 1.2
-        return null;
-//        return getProxiedObject(bean, cglibProxy, executor,
-//                () -> new EnhanceableTaskScheduler(executor));
+    Object createThreadPoolTaskExecutorProxy(Object bean, boolean cglibProxy, ThreadPoolTaskExecutor executor) {
+        if (!cglibProxy) {
+            return EnhanceableThreadPoolTaskExecutor.wrap(executor);
+        }
+        return getProxiedObject(bean, true, executor,
+                () -> EnhanceableThreadPoolTaskExecutor.wrap(executor));
     }
-
-    private Object createAsyncListenableTaskExecutorProxy(Object bean, boolean cglibProxy, AsyncListenableTaskExecutor executor) {
+    
+    Object createScheduledExecutorServiceProxy(Object bean, boolean cglibProxy, ScheduledExecutorService executor) {
         return getProxiedObject(bean, cglibProxy, executor,
-                () -> new EnhanceableAsyncListenableTaskExecutor(executor));
+                () -> EnhanceableScheduledExecutorService.wrap(executor));
     }
 
     private Object createAsyncTaskExecutorProxy(Object bean, boolean cglibProxy, AsyncTaskExecutor executor) {
-        return getProxiedObject(bean, cglibProxy, executor,
-                () -> new EnhanceableAsyncTaskExecutor(executor));
+        return getProxiedObject(bean, cglibProxy, executor, () -> {
+            if (bean instanceof ThreadPoolTaskScheduler) {
+                return EnhanceableThreadPoolTaskScheduler.wrap((ThreadPoolTaskScheduler) executor);
+            }
+            return EnhanceableAsyncTaskExecutor.wrap(executor);
+        });
     }
 
     private Object createThreadPoolExecutorProxy(Object bean, boolean cglibProxy, ThreadPoolExecutor executor) {
@@ -167,8 +174,16 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
     }
 
     private Object createExecutorServiceProxy(Object bean, boolean cglibProxy, ExecutorService executor) {
-        return getProxiedObject(bean, cglibProxy, executor,
-                () -> new EnhanceableExecutorService(executor));
+        return getProxiedObject(bean, cglibProxy, executor, () -> {
+            if (executor instanceof ScheduledExecutorService) {
+                // todo 什么常见会来这里？
+                return EnhanceableScheduledExecutorService.wrap(executor);
+            }
+            return EnhanceableExecutorService.wrap(executor);
+        });
+    }
+    Supplier<Executor> createThreadPoolTaskSchedulerProxySupplier(ThreadPoolTaskScheduler executor, String beanName) {
+        return () -> EnhanceableThreadPoolTaskScheduler.wrap(executor);
     }
 
     private Object getProxiedObject(Object bean, boolean cglibProxy, Executor executor, Supplier<Executor> supplier) {
@@ -186,9 +201,32 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
         try {
             return getObject(factory);
         } catch (Exception e) {
-            log.debug("Exception occurred while trying to get a proxy for [{}]. Will fallback to a default implementation", bean.getClass());
+            log.debug("Exception occurred while trying to get a proxy for [{}]. Will fallback to a default implementation", bean.getClass(), e);
+            try {
+                if (bean instanceof ThreadPoolTaskScheduler) {
+                    return EnhanceableThreadPoolTaskScheduler.wrap((ThreadPoolTaskScheduler) executor);
+                }
+                else if (bean instanceof ScheduledThreadPoolExecutor) {
+                    ScheduledThreadPoolExecutor
+                            scheduledThreadPoolExecutor = (ScheduledThreadPoolExecutor) executor;
+
+                    return EnhanceableScheduledThreadPoolExecutor.wrap(scheduledThreadPoolExecutor.getCorePoolSize(),
+                            scheduledThreadPoolExecutor.getThreadFactory(),
+                            scheduledThreadPoolExecutor.getRejectedExecutionHandler(),
+                            scheduledThreadPoolExecutor);
+                }
+            }
+            catch (Exception ex2) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Fallback for special wrappers failed, will try the tracing representation instead", ex2);
+                }
+            }
             return supplier.get();
         }
+    }
+
+    Executor executorFromCache(Executor executor, Function<Executor, Executor> function) {
+        return CACHE.computeIfAbsent(executor, function);
     }
 
     private Object getObject(ProxyFactoryBean factory) {
@@ -202,6 +240,26 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
         factory.setTarget(bean);
         return getObject(factory);
     }
-
+    
+    private static <T> boolean anyFinalMethods(T object) {
+        try {
+            for (Method method : ReflectionUtils.getAllDeclaredMethods(object.getClass())) {
+                if (method.getDeclaringClass().equals(Object.class)) {
+                    continue;
+                }
+                Method m = ReflectionUtils.findMethod(object.getClass(), method.getName(), method.getParameterTypes());
+                if (m != null && Modifier.isPublic(m.getModifiers()) && Modifier.isFinal(m.getModifiers())) {
+                    return true;
+                }
+            }
+        }
+        catch (IllegalAccessError er) {
+            if (log.isDebugEnabled()) {
+                log.debug("Error occurred while trying to access methods", er);
+            }
+            return false;
+        }
+        return false;
+    }
 }
 

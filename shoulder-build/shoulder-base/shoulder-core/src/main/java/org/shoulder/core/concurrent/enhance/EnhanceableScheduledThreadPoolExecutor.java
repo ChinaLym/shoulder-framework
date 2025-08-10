@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 /**
- * 包装 JDK 调度任务执行器 ScheduledThreadPoolExecutor
+ * 包装 JDK.ScheduledThreadPoolExecutor JDK 提供的任务调度执行器
  *
  * @author lym
  */

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 /**
- * 包装 ExecutorService
+ * 包装 JKD.i.ExecutorService 线程池通用接口
  *
  * @author lym
  */
