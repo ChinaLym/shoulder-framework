@@ -3,7 +3,7 @@
 > Based on `Spring Boot` dedicated to simplify development, improve efficiency. Hope to become the best partner
 > for `Spring Boot`.
 
-[![](https://img.shields.io/badge/🚀%20Release%20Version-1.2.0-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v1.1.0)
+[![](https://img.shields.io/badge/🚀%20Release%20Version-1.2.0-blue.svg)](https://github.com/ChinaLym/shoulder-framework/releases/tag/v1.2.0)
 [![](https://img.shields.io/badge/🌱%20Spring%20Boot%20Version-3.3.x-blue.svg)](https://spring.io/projects/spring-boot)
 
 
