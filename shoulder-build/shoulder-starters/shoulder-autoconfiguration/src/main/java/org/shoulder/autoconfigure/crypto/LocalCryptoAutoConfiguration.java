@@ -99,7 +99,7 @@ public class LocalCryptoAutoConfiguration {
     @ConditionalOnProperty(name = "shoulder.crypto.local.repository", havingValue = "jdbc", matchIfMissing = true)
     public static class JdbcLocalCryptoInfoRepositoryAutoConfiguration {
         /**
-         * 使用了 redis，通常并不推荐，因为 redis 大多时候是作缓存的，而加密元数据最好要持久化存储
+         * 推荐的方案，加密元数据最好持久化存储
          */
         @Bean
         @ConditionalOnMissingBean(LocalCryptoInfoRepository.class)

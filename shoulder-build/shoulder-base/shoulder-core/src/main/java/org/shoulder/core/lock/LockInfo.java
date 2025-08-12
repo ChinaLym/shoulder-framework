@@ -84,7 +84,7 @@ public class LockInfo {
     }
 
     public LockInfo(String resource, String owner, String token, LocalDateTime lockTime, LocalDateTime releaseTime, Duration holdTime, int reenterCount, int version) {
-        this.resource = "lock" + AppInfo.cacheKeySplit() + resource;
+        this.resource = AppInfo.cacheKeySplit() + resource;
         this.owner = owner;
         this.token = token;
         this.lockTime = lockTime;

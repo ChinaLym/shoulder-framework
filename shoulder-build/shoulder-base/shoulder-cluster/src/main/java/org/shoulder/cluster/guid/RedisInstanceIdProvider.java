@@ -1,15 +1,16 @@
 package org.shoulder.cluster.guid;
 
+import cn.hutool.core.util.RandomUtil;
 import jakarta.annotation.Nonnull;
 import org.shoulder.core.concurrent.PeriodicTask;
 import org.shoulder.core.concurrent.Threads;
+import org.shoulder.core.context.AppInfo;
 import org.shoulder.core.exception.CommonErrorCodeEnum;
 import org.shoulder.core.guid.AbstractInstanceIdProvider;
 import org.shoulder.core.log.Logger;
 import org.shoulder.core.log.ShoulderLoggers;
 import org.shoulder.core.util.AddressUtils;
 import org.shoulder.core.util.AssertUtils;
-import org.shoulder.core.util.StringUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -60,7 +61,7 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
     private final long expiredSeconds;
 
     /**
-     * 不能是 StringRedisTemplate
+     * 不能是 StringRedisTemplate（LUA返回 long，否则 classCastEx）
      */
     private final RedisTemplate redis;
 
@@ -70,9 +71,9 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
     private volatile boolean alreadyStop = false;
 
     /**
-     * 该 instanceId 操作 token
+     * 验证码 token，用于权限校验
      */
-    final String token = StringUtils.uuid32();
+    private final long token = RandomUtil.randomLong(100_000L, 999_999L);
 
     public RedisInstanceIdProvider(String idAssignCacheKey, String machineInfoKeyPrefix, long maxId, Duration heartbeatPeriod, Duration expiredPeriod, RedisTemplate redisTemplate) {
         AssertUtils.notBlank(idAssignCacheKey, CommonErrorCodeEnum.CODING);
@@ -155,14 +156,15 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                 String ip = AddressUtils.getIp();
                 String hostname = AddressUtils.getHostname();
 
-                // 获取 info，检查和当前 mac 地址相同才更新 todo 1.2 fixme
+                // 获取 info，检查和当前 mac 地址相同才更新 todo 1.2 fixme attempt to get length of local 'tokenInfo' (a boolean value)
+                // redis server 7.4+ 支持 hset 时候设置过期时间，考虑兼容性优先使用两条命令
                 final String luaScript =
                     """
                             -- KEYS[1]: idAssignCacheKey (ZSET)
                             -- KEYS[2]: infoCacheKey (HASH)
                             -- ARGV[1]: currentInstantId (INT)
                             -- ARGV[2]: expiredSeconds (INT)
-                            -- ARGV[3]: token (INT)
+                            -- ARGV[3]: token (STR)
                             -- ARGV[4]: MAC (STR)
                             -- ARGV[5]: IP (STR)
                             -- ARGV[6]: HOST (STR)
@@ -176,9 +178,9 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                             end
                             
                             -- 校验 token 是否匹配
-                            local tokenInfo = redis.call('HGET', KEYS[2], "token")
-                            local tokenRight = tokenInfo ~= nil and #tokenInfo > 0 and tokenInfo == ARGV[3]
-                            if tokenInfo ~= nil and not tokenRight then
+                            local tokenInRedis = redis.call('HGET', KEYS[2], "token")
+                            local invalidToken = tonumber(tokenInRedis) ~= nil and tokenInRedis ~= ARGV[3]
+                            if invalidToken then
                                 return -2  -- 权限不足
                             end
                             
@@ -191,9 +193,11 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                             end
                             
                             -- 更新机器信息
+                            redis.call('HSET', KEYS[2], "token", ARGV[3])
                             redis.call('HSET', KEYS[2], "mac", ARGV[4])
                             redis.call('HSET', KEYS[2], "ip", ARGV[5])
                             redis.call('HSET', KEYS[2], "host", ARGV[6])
+                            redis.call('EXPIRE', KEYS[2], ARGV[2])
                             
                             -- 更新 ZSET 中的时间戳
                             local opResult = redis.call('ZADD', KEYS[1], "CH", currentSecondStamp, ARGV[1])
@@ -207,7 +211,7 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                 try {
                     RedisScript<Long> heartbeatScript = new DefaultRedisScript<>(luaScript, Long.class);
                     long instanceId = getCurrentInstanceId();
-                    long resultCode = (Long) redis.execute(heartbeatScript, List.of(idAssignCacheKey, machineInfoKeyPrefix), instanceId, expiredSeconds, token, mac, ip, hostname);
+                    long resultCode = (Long) redis.execute(heartbeatScript, List.of(idAssignCacheKey, calculateInfoKey()), instanceId, expiredSeconds, token, mac, ip, hostname);
 
                     LuaExecutionResult result = LuaExecutionResult.fromResultCode(resultCode);
                     if (result == LuaExecutionResult.SUCCESS) {
@@ -235,6 +239,10 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
         releaseInstanceId();
     }
 
+    private String calculateInfoKey() {
+        return machineInfoKeyPrefix + AppInfo.cacheKeySplit() + instanceId;
+    }
+
     private void releaseInstanceId() {
         alreadyStop = true;
         final String luaScript =
@@ -243,7 +251,7 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                             -- KEYS[2]: infoCacheKey (HASH)
                             -- ARGV[1]: currentInstantId (INT)
                             -- ARGV[2]: expiredSeconds (INT)
-                            -- ARGV[3]: token (INT)
+                            -- ARGV[3]: token (STR)
                             
                             if #KEYS < 2 then
                                 return -10  -- key 参数不足
@@ -253,9 +261,9 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
                             end
                             
                             -- 校验 token 是否匹配
-                            local tokenInfo = redis.call('HGET', KEYS[2], "token")
-                            local tokenRight = tokenInfo ~= nil and #tokenInfo > 0 and tokenInfo == ARGV[3]
-                            if tokenInfo ~= nil and not tokenRight then
+                            local tokenInRedis = redis.call('HGET', KEYS[2], "token")
+                            local invalidToken = tonumber(tokenInRedis) ~= nil and tokenInRedis ~= ARGV[3]
+                            if invalidToken then
                                 return -2  -- 权限不足
                             end
                             
@@ -278,7 +286,7 @@ public class RedisInstanceIdProvider extends AbstractInstanceIdProvider implemen
         RedisScript<Long> releaseInstanceIdScript = new DefaultRedisScript<>(luaScript, Long.class);
 
         long instanceId = getCurrentInstanceId();
-        long resultCode = (Long) redis.execute(releaseInstanceIdScript, List.of(idAssignCacheKey), instanceId, expiredSeconds, token);
+        long resultCode = (Long) redis.execute(releaseInstanceIdScript, List.of(idAssignCacheKey, calculateInfoKey()), instanceId, expiredSeconds, token);
 
         LuaExecutionResult result = LuaExecutionResult.fromResultCode(resultCode);
         if (result == LuaExecutionResult.SUCCESS) {

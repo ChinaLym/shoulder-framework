@@ -57,7 +57,7 @@ public class InstanceIdProperties {
         /**
          * redis 抢占 instantId 的最小时间间隔，如果超过这个时间没有续期，则认为该实例已经挂掉，需要重新获取，并且该 instantId 可被其他机器抢占
          */
-        private Duration expiredPeriod = Duration.ofMinutes(30);
+        private Duration expiredPeriod = Duration.ofMinutes(20);
 
     }
 

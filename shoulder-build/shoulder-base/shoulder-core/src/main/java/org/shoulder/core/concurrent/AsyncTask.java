@@ -67,18 +67,6 @@ public interface AsyncTask extends NamedPoolTask {
         return create(taskName, runnable, null, null, null, null, null, executorService);
     }
 
-    static AsyncTask create(@Nonnull String taskName, @Nonnull Runnable runnable, @Nonnull Consumer<Threads.TaskInfo> exceptionCallBack) {
-        return create(taskName, runnable, (t, e) -> exceptionCallBack.accept(t), exceptionCallBack, exceptionCallBack, null, null, null);
-    }
-
-    static AsyncTask create(@Nonnull String taskName, @Nonnull Runnable runnable, @Nonnull Consumer<Threads.TaskInfo> exceptionCallBack, @Nonnull Instant exceptedFinishTime) {
-        return create(taskName, runnable, (t, e) -> exceptionCallBack.accept(t), exceptionCallBack, exceptionCallBack, exceptedFinishTime, null, null);
-    }
-
-    static AsyncTask create(@Nonnull String taskName, @Nonnull Runnable runnable, @Nonnull Consumer<Threads.TaskInfo> exceptionCallBack, @Nullable Instant exceptedFinishTime, String executorServiceBeanName) {
-        return create(taskName, runnable, (t, e) -> exceptionCallBack.accept(t), exceptionCallBack, exceptionCallBack, exceptedFinishTime, executorServiceBeanName, null);
-    }
-
     static AsyncTask create(@Nonnull String taskName, @Nonnull Runnable runnable, @Nonnull Consumer<Threads.TaskInfo> exceptionCallBack, @Nullable Instant exceptedFinishTime, ExecutorService executorService) {
         return create(taskName, runnable, (t, e) -> exceptionCallBack.accept(t), exceptionCallBack, exceptionCallBack, exceptedFinishTime, null, executorService);
     }

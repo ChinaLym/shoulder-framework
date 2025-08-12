@@ -11,6 +11,8 @@ import org.shoulder.crypto.exception.CipherRuntimeException;
 import org.shoulder.crypto.exception.CryptoErrorCodeEnum;
 import org.shoulder.crypto.log.ShoulderCryptoLoggers;
 import org.slf4j.Logger;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 
 import java.nio.charset.Charset;
 
@@ -44,8 +46,12 @@ public class DefaultAsymmetricTextCipher implements AsymmetricTextCipher {
     public DefaultAsymmetricTextCipher(AsymmetricCipher processor, String defaultKeyPairId) {
         this.defaultKeyPairId = defaultKeyPairId;
         this.processor = processor;
+    }
+
+    @EventListener
+    public void onContextRefreshedEvent(ContextRefreshedEvent event) {
         try {
-            this.processor.buildKeyPair(defaultKeyPairId);
+            processor.buildKeyPair(defaultKeyPairId);
         } catch (Exception e) {
             log.error("asymmetric crypto init fail");
             throw new RuntimeException(e);

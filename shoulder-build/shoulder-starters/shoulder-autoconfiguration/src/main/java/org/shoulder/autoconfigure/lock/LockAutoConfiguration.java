@@ -1,6 +1,7 @@
 package org.shoulder.autoconfigure.lock;
 
 import org.shoulder.autoconfigure.condition.ConditionalOnCluster;
+import org.shoulder.autoconfigure.redis.ShoulderRedisProperties;
 import org.shoulder.cluster.lock.redis.RedisLock;
 import org.shoulder.core.lock.ServerLock;
 import org.shoulder.core.lock.impl.JdbcLock;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -82,6 +84,7 @@ public class LockAutoConfiguration {
     @AutoConfiguration
     @ConditionalOnClass(RedisTemplate.class)
     @ConditionalOnProperty(name = "shoulder.lock.type", havingValue = "redis")
+    @EnableConfigurationProperties(ShoulderRedisProperties.class)
     static class RedisLockAutoConfiguration {
 
         /**
@@ -89,8 +92,8 @@ public class LockAutoConfiguration {
          */
         @Bean
         @ConditionalOnMissingBean
-        public ServerLock redisLock(StringRedisTemplate redisTemplate) {
-            return new RedisLock(redisTemplate);
+        public ServerLock redisLock(ShoulderRedisProperties shoulderRedisProperties, StringRedisTemplate redisTemplate) {
+            return new RedisLock(shoulderRedisProperties.getLockKeyPrefix(), redisTemplate);
         }
     }
 

@@ -55,9 +55,8 @@ public class DefaultBatchExportService implements BatchAndExportService {
     private static final int DEFAULT_MAX_CONCURRENT_PROCESSOR = Runtime.getRuntime().availableProcessors() << 1;
 
     /**
-     * 批处理线程池
+     * 批处理线程池，不能使用 ExecutorService（不能通过JDK代理）
      */
-
     protected final ThreadPoolExecutor batchThreadPool;
 
     protected final Translator translator;

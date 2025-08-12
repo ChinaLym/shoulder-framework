@@ -73,6 +73,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
             return wrapExecutor(bean);
         }
     }
+
     private Object wrapThreadPoolTaskExecutor(Object bean) {
         ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;
         boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
@@ -80,7 +81,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
         boolean cglibProxy = !classFinal && !methodsFinal;
         return createThreadPoolTaskExecutorProxy(bean, cglibProxy, executor);
     }
-    
+
     private Object wrapScheduledExecutorService(Object bean) {
         ScheduledExecutorService executor = (ScheduledExecutorService) bean;
         boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
@@ -100,7 +101,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
     // =========================== 包装 =====================================
 
     private Object wrapExecutor(Object bean) {
-        boolean methodFinal = anyFinalMethods((Executor)bean);
+        boolean methodFinal = anyFinalMethods((Executor) bean);
         boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
         boolean cglibProxy = !methodFinal && !classFinal;
         Executor executor = (Executor) bean;
@@ -110,9 +111,9 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
             if (cglibProxy) {
                 if (log.isDebugEnabled()) {
                     log.debug(
-                            "Exception occurred while trying to create a proxy, falling back to JDK proxy",
-                            ex);
+                            "Exception occurred while trying to create a proxy, falling back to JDK proxy", ex);
                 }
+                // 由于接收器是 Executor（接口），故直接使用 JDK 代理即可
                 return createProxy(bean, false, new ExecutorMethodInterceptor<>(executor));
             }
             throw ex;
@@ -129,10 +130,10 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
     }
 
     private Object wrapThreadPoolExecutor(Object bean) {
-        // cglib 不支持这个类，直接用装饰器
-//        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
-//        boolean methodsFinal = anyFinalMethods(bean);
-        boolean cglibProxy = false;
+        // cglib 、JDK 都不支持这个类，直接用装饰器
+        boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
+        boolean methodsFinal = anyFinalMethods(bean);
+        boolean cglibProxy = !classFinal && !methodsFinal;;
         ThreadPoolExecutor executor = (ThreadPoolExecutor) bean;
         return createThreadPoolExecutorProxy(bean, cglibProxy, executor);
     }
@@ -144,7 +145,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
         boolean cglibProxy = !classFinal && !methodFinal;
         return createExecutorServiceProxy(bean, cglibProxy, executor);
     }
-    
+
     // =========================== 包装实现（创建代理） =====================================
 
     Object createThreadPoolTaskExecutorProxy(Object bean, boolean cglibProxy, ThreadPoolTaskExecutor executor) {
@@ -154,7 +155,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
         return getProxiedObject(bean, true, executor,
                 () -> EnhanceableThreadPoolTaskExecutor.wrap(executor));
     }
-    
+
     Object createScheduledExecutorServiceProxy(Object bean, boolean cglibProxy, ScheduledExecutorService executor) {
         return getProxiedObject(bean, cglibProxy, executor,
                 () -> EnhanceableScheduledExecutorService.wrap(executor));
@@ -197,8 +198,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
             try {
                 if (bean instanceof ThreadPoolTaskScheduler) {
                     return EnhanceableThreadPoolTaskScheduler.wrap((ThreadPoolTaskScheduler) executor);
-                }
-                else if (bean instanceof ScheduledThreadPoolExecutor) {
+                } else if (bean instanceof ScheduledThreadPoolExecutor) {
                     ScheduledThreadPoolExecutor
                             scheduledThreadPoolExecutor = (ScheduledThreadPoolExecutor) executor;
 
@@ -207,8 +207,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
                             scheduledThreadPoolExecutor.getRejectedExecutionHandler(),
                             scheduledThreadPoolExecutor);
                 }
-            }
-            catch (Exception ex2) {
+            } catch (Exception ex2) {
                 if (log.isDebugEnabled()) {
                     log.debug("Fallback for special wrappers failed, will try the tracing representation instead", ex2);
                 }
@@ -232,7 +231,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
         factory.setTarget(bean);
         return getObject(factory);
     }
-    
+
     private static <T> boolean anyFinalMethods(T object) {
         try {
             for (Method method : ReflectionUtils.getAllDeclaredMethods(object.getClass())) {
@@ -244,8 +243,7 @@ public class EnhanceableExecutorBeanPostProcessor implements BeanPostProcessor {
                     return true;
                 }
             }
-        }
-        catch (IllegalAccessError er) {
+        } catch (IllegalAccessError er) {
             if (log.isDebugEnabled()) {
                 log.debug("Error occurred while trying to access methods", er);
             }

@@ -26,6 +26,11 @@ public class ShoulderRedisProperties {
      */
     private String keyPrefix;
 
+    /**
+     * redis 锁前缀
+     */
+    private String lockKeyPrefix = "lock:";
+
     private EmbeddedRedisProperties embedded = new EmbeddedRedisProperties();
 
     @Data

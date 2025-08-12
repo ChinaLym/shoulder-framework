@@ -25,11 +25,19 @@ import java.util.Collections;
 public class RedisLock extends AbstractDistributeLock implements ServerLock {
 
     /**
+     * redis 锁 key 前缀
+     */
+    public final String lockKeyPrefix;
+
+    /**
      * redis 模板
      */
     private final StringRedisTemplate redis;
 
-    public RedisLock(StringRedisTemplate redis) {
+    public RedisLock(String lockKeyPrefix, StringRedisTemplate redis) {
+        this.lockKeyPrefix = StringUtils.isBlank(lockKeyPrefix) ? "" :
+                lockKeyPrefix.endsWith(SPLIT) ?
+                lockKeyPrefix : lockKeyPrefix + SPLIT;
         this.redis = redis;
     }
 
@@ -50,26 +58,36 @@ public class RedisLock extends AbstractDistributeLock implements ServerLock {
     @Override
     public boolean tryLock(LockInfo lockInfo) {
         log.debug("Try lock [{}].", lockInfo.getResource());
-        boolean success = Boolean.TRUE.equals(redis.opsForValue().setIfAbsent(lockInfo.getResource(),
-            genLockValue(lockInfo.getToken()), lockInfo.getHoldTime()));
+        boolean success = Boolean.TRUE.equals(redis.opsForValue().setIfAbsent(genLockKey(lockInfo.getResource()),
+                genLockValue(lockInfo.getToken()), lockInfo.getHoldTime()));
         log.info("Lock [{}] {} for {}.", lockInfo.getResource(), lockInfo.getHoldTime(), success ? "SUCCESS" : "FAIL");
         return success;
     }
 
     @Override
     public boolean holdLock(@Nonnull String resource, @Nonnull String token) {
-        return genLockValue(token).equals(redis.opsForValue().get(resource));
+        return genLockValue(token).equals(redis.opsForValue().get(genLockKey(resource)));
     }
 
     @Override
     public void unlock(@Nonnull String resource, @Nonnull String token) {
-        Long result = redis.execute(releaseLockScript(), Collections.singletonList(resource),
+        Long result = redis.execute(releaseLockScript(), Collections.singletonList(genLockKey(resource)),
                 genLockValue(token));
         if (result == null || 1 != result) {
             log.debug("invalid release operation: resource={}, token={}", resource, token);
         } else {
             log.debug("Released lock [{}].", resource);
         }
+    }
+
+    /**
+     * 附带拥有者标识
+     *
+     * @param token 令牌
+     * @return 添加了实例标识
+     */
+    private String genLockKey(String resource) {
+        return lockKeyPrefix + resource;
     }
 
     /**

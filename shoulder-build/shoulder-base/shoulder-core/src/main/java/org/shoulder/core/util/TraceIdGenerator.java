@@ -63,6 +63,9 @@ public class TraceIdGenerator {
             "^0058[0-9a-f]{4}[0-9]{13}[0-9]{4}\\w([0-9a-f]{32}:){7}[0-9a-f]{32}$"
     );
 
+    /**
+     * 确保当前上下文存在 traceId，不存在的话生成并设置到上下文
+     */
     public static String checkContextTracOrGenerateNew() {
         String traceId = AppContext.getTraceId();
         if(StringUtils.isEmpty(traceId)) {
