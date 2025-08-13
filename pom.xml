@@ -48,7 +48,7 @@
         <license-maven-plugin.version>2.2.0</license-maven-plugin.version>
         <clirr-maven-plugin.version>2.8</clirr-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.14</nexus-staging-maven-plugin.version>
-        <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
         <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
 
     </properties>
@@ -316,7 +316,7 @@
 
                 <configuration>
                     <serverId>oss</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2/</nexusUrl>
                     <!--国内发布网络容易超时，设置长一点，1小时-->
                     <stagingProgressTimeoutMinutes>60</stagingProgressTimeoutMinutes>
                     <stagingDescription>preRelease</stagingDescription>
