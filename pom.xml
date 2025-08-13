@@ -316,7 +316,7 @@
 
                 <configuration>
                     <serverId>oss</serverId>
-                    <nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2/</nexusUrl>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <!--国内发布网络容易超时，设置长一点，1小时-->
                     <stagingProgressTimeoutMinutes>60</stagingProgressTimeoutMinutes>
                     <stagingDescription>preRelease</stagingDescription>
