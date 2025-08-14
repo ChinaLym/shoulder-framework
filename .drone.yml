@@ -32,7 +32,7 @@ steps:
       #
       # ========== deploy script ==========
       - bash scripts/prepareRelease.sh
-      - mvn clean deploy -P release -Dmaven.test.skip=true -B -V -T 1.5C
+      - mvn clean deploy -P release -X -Dmaven.test.skip=true -B -V -T 1.5C
       # ========== deploy script end ==========
       - echo '========FINISHED CICD=========='
 
