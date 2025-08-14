@@ -309,22 +309,33 @@
                 </configuration>
             </plugin>-->
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>${nexus-staging-maven-plugin.version}</version>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
                 <extensions>true</extensions>
-
                 <configuration>
-                    <serverId>oss</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <!--国内发布网络容易超时，设置长一点，1小时-->
-                    <stagingProgressTimeoutMinutes>60</stagingProgressTimeoutMinutes>
-                    <stagingDescription>preRelease</stagingDescription>
-                    <!-- 目标仓库 -->
-                    <!--<stagingRepositoryId>1078</stagingRepositoryId>-->
-                    <!--<stagingDescription>preRelease</stagingDescription>-->
+                    <publishingServerId>oss</publishingServerId>
+                    <waitMaxTime>3600</waitMaxTime>
+<!--                    <autoPublish>true</autoPublish>-->
                 </configuration>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.sonatype.plugins</groupId>-->
+<!--                <artifactId>nexus-staging-maven-plugin</artifactId>-->
+<!--                <version>${nexus-staging-maven-plugin.version}</version>-->
+<!--                <extensions>true</extensions>-->
+
+<!--                <configuration>-->
+<!--                    <serverId>oss</serverId>-->
+<!--                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
+<!--                    &lt;!&ndash;国内发布网络容易超时，设置长一点，1小时&ndash;&gt;-->
+<!--                    <stagingProgressTimeoutMinutes>60</stagingProgressTimeoutMinutes>-->
+<!--                    <stagingDescription>preRelease</stagingDescription>-->
+<!--                    &lt;!&ndash; 目标仓库 &ndash;&gt;-->
+<!--                    &lt;!&ndash;<stagingRepositoryId>1078</stagingRepositoryId>&ndash;&gt;-->
+<!--                    &lt;!&ndash;<stagingDescription>preRelease</stagingDescription>&ndash;&gt;-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
 <!--            检查 api 兼容性-->
 <!--            <groupId>org.revapi</groupId>-->
