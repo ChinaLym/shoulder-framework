@@ -32,7 +32,7 @@
         <!-- 基础模块 -->
         <module>shoulder-build</module>
         <!-- 骨架工程 -->
-        <module>shoulder-archetype-simple</module>
+<!--        <module>shoulder-archetype-simple</module>-->
     </modules>
 
     <properties>
