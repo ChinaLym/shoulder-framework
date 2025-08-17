@@ -314,8 +314,10 @@
                 <version>0.8.0</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <publishingServerId>oss</publishingServerId>
+                    <publishingServerId>central</publishingServerId>
                     <waitMaxTime>3600</waitMaxTime>
+                    <waitPollingInterval>10</waitPollingInterval>
+                    <deploymentName>shoulder1.2</deploymentName>
 <!--                    <autoPublish>true</autoPublish>-->
                 </configuration>
             </plugin>

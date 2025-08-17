@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>shoulder-base</artifactId>
+    <name>${project.artifactId}</name>
     <version>1.2.0</version><!-- shoulder-version -->
     <packaging>pom</packaging>
 

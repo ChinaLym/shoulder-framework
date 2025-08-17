@@ -9,7 +9,7 @@
         <relativePath>../../../shoulder-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <name>${project.artifactId}</name>
     <artifactId>shoulder-starter-auth-server</artifactId>
     <description>
         默认的认证服务器
