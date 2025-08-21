@@ -3,6 +3,13 @@
 == 1.3.0 （PLAN）
 
 TODO 检查 key 需要手动分片的（一个功能依赖多个 key）
+TODO ServerLock
+
+== 1.2.1 （TODO）
+
+* Cluster
+
+** 修复: 未设置 RedisLock key 前缀 `shoulder.redis.lockKeyPrefix` 时，前缀为空，修复为 'appId:' 与 1.2 之前版本保持一致。
 
 == 1.2.0 （2025-08-13）
 

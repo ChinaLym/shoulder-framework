@@ -28,15 +28,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableConfigurationProperties(ShoulderRedisProperties.class)
 public class RedisAutoConfiguration {
 
-    /*@SuppressWarnings("unchecked")
-    @Bean
-    @ConditionalOnMissingBean
-    public GlobalLock globalLock(StringRedisTemplate redisTemplate){
-        RedisSimpleGlobalLock lock = new RedisSimpleGlobalLock(redisTemplate);
-        lock.setAppName(AppInfo.appId());
-        return lock;
-    }*/
-
     @Bean
     @ConditionalOnMissingBean(StringRedisSerializer.class)
     public WithPrefixKeyStringRedisSerializer withPrefixKeyStringRedisSerializer(ShoulderRedisProperties shoulderRedisProperties) {
@@ -46,7 +37,7 @@ public class RedisAutoConfiguration {
             prefix = prefix + AppInfo.cacheKeySplit();
         }
         ShoulderLoggers.SHOULDER_CONFIG.info("redis key prefix set to [{}].", prefix);
-        return new WithPrefixKeyStringRedisSerializer(redisKeyPrefixInCfg);
+        return new WithPrefixKeyStringRedisSerializer(prefix);
     }
 
     /**

@@ -5,7 +5,7 @@
 
     <groupId>cn.itlym</groupId>
     <artifactId>shoulder-framework</artifactId>
-    <version>1.2.0</version><!-- shoulder-version -->
+    <version>1.2.1</version><!-- shoulder-version -->
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -309,6 +309,7 @@
                 </configuration>
             </plugin>-->
             <plugin>
+                <!--https://central.sonatype.com/publishing-->
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
                 <version>0.8.0</version>
