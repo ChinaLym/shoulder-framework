@@ -5,7 +5,7 @@
 TODO 检查 key 需要手动分片的（一个功能依赖多个 key）
 TODO ServerLock
 
-== 1.2.1 （TODO）
+== 1.2.1 （2025-08-26）
 
 * Cluster
 
